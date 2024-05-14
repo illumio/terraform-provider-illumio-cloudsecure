@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 # Local .terraform directories
 **/.terraform/*
 
@@ -32,3 +33,25 @@ override.tf.json
 # Ignore CLI configuration files
 .terraformrc
 terraform.rc
+
+# https://github.com/hashicorp/terraform-provider-scaffolding-framework/blob/main/.gitignore
+.DS_Store
+example.tf
+terraform.tfplan
+bin/
+dist/
+website/.vagrant
+website/.bundle
+website/build
+website/node_modules
+*.backup
+*.log
+*.bak
+*~
+.*.swp
+.idea
+*.iml
+*.test
+*.iml
+
+website/vendor

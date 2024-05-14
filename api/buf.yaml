@@ -1,0 +1,11 @@
+# Copyright (c) Illumio, Inc.
+# SPDX-License-Identifier: MPL-2.0
+
+version: v1
+lint:
+  use:
+    - DEFAULT
+  except:
+    - MESSAGE_PASCAL_CASE
+  rpc_allow_google_protobuf_empty_requests: true
+  rpc_allow_google_protobuf_empty_responses: true
