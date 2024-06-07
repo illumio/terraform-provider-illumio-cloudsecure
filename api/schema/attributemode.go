@@ -34,8 +34,8 @@ type AttributeMode struct {
 var (
 	// These variables should be considered constant and must not be modified.
 
-	// IdAttributeMode is the mode of "id" attributes.
-	IdAttributeMode AttributeMode = AttributeMode{
+	// IDAttributeMode is the mode of "id" attributes.
+	IDAttributeMode = AttributeMode{
 		InCreateResponse: true,
 		InReadRequest:    true,
 		InReadResponse:   true,
@@ -45,7 +45,7 @@ var (
 	}
 
 	// ReadWriteAttributeMode is the mode of read-write attributes. This is the default mode.
-	ReadWriteAttributeMode AttributeMode = AttributeMode{
+	ReadWriteAttributeMode = AttributeMode{
 		InCreateRequest:  true,
 		InCreateResponse: true,
 		InReadResponse:   true,
@@ -55,7 +55,7 @@ var (
 
 	// ImmutableAttributeMode is the mode of immutable attributes, which can be set only at creation and can be read afterwards. This is the default mode.
 	// Attributes with this mode should also have the RequiresReplace plan modifier.
-	ImmutableAttributeMode AttributeMode = AttributeMode{
+	ImmutableAttributeMode = AttributeMode{
 		InCreateRequest:  true,
 		InCreateResponse: true,
 		InReadResponse:   true,
@@ -63,7 +63,7 @@ var (
 	}
 
 	// ReadOnlyAttributeMode is the mode of read-only attributes, which are returned by every create, read, and update operation.
-	ReadOnlyAttributeMode AttributeMode = AttributeMode{
+	ReadOnlyAttributeMode = AttributeMode{
 		InCreateResponse: true,
 		InReadResponse:   true,
 		InUpdateResponse: true,
@@ -71,20 +71,20 @@ var (
 
 	// ReadOnlyOnceAttributeMode is the mode of read-only-once attributes, which are returned only by create operations.
 	// Attributes with this mode should also have the UseStateForUnknown plan modifier.
-	ReadOnlyOnceAttributeMode AttributeMode = AttributeMode{
+	ReadOnlyOnceAttributeMode = AttributeMode{
 		InCreateResponse: true,
 	}
 
 	// WriteOnlyAttributeMode is the mode of write-only attributes, which are sent in every create and update operation, and never in any response.
 	// Attribute with this mode should also have the UseStateForUnknown plan modifier.
-	WriteOnlyAttributeMode AttributeMode = AttributeMode{
+	WriteOnlyAttributeMode = AttributeMode{
 		InCreateRequest: true,
 		InUpdateRequest: true,
 	}
 
 	// WriteOnlyOnceAttributeMode is the mode of write-only-once attributes, which are sent in only in create operations.
 	// Attribute with this mode should also have the UseStateForUnknown plan modifier.
-	WriteOnlyOnceAttributeMode AttributeMode = AttributeMode{
+	WriteOnlyOnceAttributeMode = AttributeMode{
 		InCreateRequest: true,
 	}
 )
@@ -176,7 +176,7 @@ var (
 func GetAttributeMode(attrSchema resource_schema.Attribute) AttributeMode {
 	if m, ok := attrSchema.(AttributeWithMode); ok {
 		return m.GetMode()
-	} else {
-		return ReadWriteAttributeMode
 	}
+
+	return ReadWriteAttributeMode
 }

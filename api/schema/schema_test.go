@@ -14,10 +14,13 @@ func (suite *SchemaTestSuite) TestResourcesAreSorted() {
 func (suite *SchemaTestSuite) TestResourcesHaveUniqueTypeNames() {
 	resources := suite.Schema.Resources()
 	typeNames := make(map[string]struct{}, len(resources))
+
 	for i, resource := range resources {
 		typeName := resource.TypeName
 		_, found := typeNames[typeName]
+
 		suite.False(found, "Resource type name %q is duplicated at index %d", typeName, i)
+
 		typeNames[typeName] = struct{}{}
 	}
 }
@@ -25,14 +28,18 @@ func (suite *SchemaTestSuite) TestResourcesHaveUniqueTypeNames() {
 func (suite *SchemaTestSuite) TestEachResourceHasIdAttribute() {
 	for i, resource := range suite.Schema.Resources() {
 		attributes := resource.Schema.Attributes
+
 		var idAttributeFound bool
+
 		for name, attribute := range attributes {
-			if name == IdFieldName {
+			if name == IDFieldName {
 				idAttributeFound = true
-				suite.Equal(idAttribute, attribute, "Attribute %q in resource %q at index %d should have the expected schema", IdFieldName, resource.TypeName, i)
+
+				suite.Equal(idAttribute, attribute, "Attribute %q in resource %q at index %d should have the expected schema", IDFieldName, resource.TypeName, i)
 			}
 		}
-		suite.True(idAttributeFound, "Resource %q at index %d should have an %q attribute", resource.TypeName, i, IdFieldName)
+
+		suite.True(idAttributeFound, "Resource %q at index %d should have an %q attribute", resource.TypeName, i, IDFieldName)
 	}
 }
 
@@ -52,10 +59,13 @@ func (suite *SchemaTestSuite) TestDataSourcesAreSorted() {
 func (suite *SchemaTestSuite) TestDataSourcesHaveUniqueTypeNames() {
 	dataSources := suite.Schema.DataSources()
 	typeNames := make(map[string]struct{}, len(dataSources))
+
 	for i, dataSource := range dataSources {
 		typeName := dataSource.TypeName
 		_, found := typeNames[typeName]
+
 		suite.False(found, "Data source type name %q is duplicated at index %d", typeName, i)
+
 		typeNames[typeName] = struct{}{}
 	}
 }

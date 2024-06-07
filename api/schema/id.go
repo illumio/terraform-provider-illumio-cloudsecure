@@ -14,7 +14,7 @@ var (
 			Computed:    true,
 		},
 		attributeWithMode: attributeWithMode{
-			Mode: IdAttributeMode,
+			Mode: IDAttributeMode,
 		},
 	}
 )

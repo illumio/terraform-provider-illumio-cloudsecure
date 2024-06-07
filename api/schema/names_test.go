@@ -46,17 +46,17 @@ func (suite *SchemaTestSuite) TestSortResourceAttributes() {
 	}{
 		"id-only": {
 			attrs: map[string]resource_schema.Attribute{
-				IdFieldName: resource_schema.StringAttribute{},
+				IDFieldName: resource_schema.StringAttribute{},
 			},
-			output: []string{IdFieldName},
+			output: []string{IDFieldName},
 		},
 		"3-attributes": {
 			attrs: map[string]resource_schema.Attribute{
-				IdFieldName: resource_schema.StringAttribute{},
+				IDFieldName: resource_schema.StringAttribute{},
 				"a":         resource_schema.StringAttribute{},
 				"z":         resource_schema.StringAttribute{},
 			},
-			output: []string{IdFieldName, "a", "z"},
+			output: []string{IDFieldName, "a", "z"},
 		},
 	}
 
@@ -75,17 +75,17 @@ func (suite *SchemaTestSuite) TestSortDataSourceAttributes() {
 	}{
 		"id-only": {
 			attrs: map[string]datasource_schema.Attribute{
-				IdFieldName: datasource_schema.StringAttribute{},
+				IDFieldName: datasource_schema.StringAttribute{},
 			},
-			output: []string{IdFieldName},
+			output: []string{IDFieldName},
 		},
 		"3-attributes": {
 			attrs: map[string]datasource_schema.Attribute{
-				IdFieldName: datasource_schema.StringAttribute{},
+				IDFieldName: datasource_schema.StringAttribute{},
 				"a":         datasource_schema.StringAttribute{},
 				"z":         datasource_schema.StringAttribute{},
 			},
-			output: []string{IdFieldName, "a", "z"},
+			output: []string{IDFieldName, "a", "z"},
 		},
 	}
 

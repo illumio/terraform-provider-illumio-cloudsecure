@@ -27,19 +27,19 @@ func init() {
 func main() {
 	flag.Parse()
 
-	f, err := os.OpenFile(outfile, os.O_WRONLY|os.O_CREATE|os.O_TRUNC, 0644)
+	file, err := os.OpenFile(outfile, os.O_WRONLY|os.O_CREATE|os.O_TRUNC, 0644)
 	if err != nil {
 		fmt.Fprintf(os.Stderr, "failed to open file %q: %s", outfile, err)
 		os.Exit(1)
 	}
 
-	err = GenerateFakeServer(f, goPackage, schema.CloudSecure())
+	err = GenerateFakeServer(file, goPackage, schema.CloudSecure())
 	if err != nil {
 		fmt.Fprintf(os.Stderr, "failed to generate and write fake server implementation into file %q: %s", outfile, err)
 		os.Exit(1)
 	}
 
-	err = f.Close()
+	err = file.Close()
 	if err != nil {
 		fmt.Fprintf(os.Stderr, "failed to close file %q: %s", outfile, err)
 		os.Exit(1)

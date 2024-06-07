@@ -20,6 +20,7 @@ func (c *cloudSecureSchema) Resources() Resources {
 		awsAccountResource,
 	}
 	sort.Sort(resources)
+
 	return resources
 }
 
@@ -27,6 +28,7 @@ func (c *cloudSecureSchema) DataSources() DataSources {
 	// Keep all data sources sorted by lexicographic name order.
 	dataSources := DataSources{}
 	sort.Sort(dataSources)
+
 	return dataSources
 }
 

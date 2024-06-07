@@ -536,7 +536,7 @@ func GenerateProvider(dst io.Writer, pkg string, src schema.Schema) error {
 		Resources:             make([]resourceData, 0, len(src.Resources())),
 	}
 
-	camelCasedIdFieldName := schema.ProtoMessageName(schema.IdFieldName)
+	camelCasedIdFieldName := schema.ProtoMessageName(schema.IDFieldName)
 	camelCasedUpdateMaskFieldName := schema.ProtoMessageName(schema.UpdateMaskFieldName)
 
 	for _, resource := range src.Resources() {
@@ -621,21 +621,27 @@ func GenerateProvider(dst io.Writer, pkg string, src schema.Schema) error {
 			if mode.InCreateRequest {
 				createRequestFunc.Fields = append(createRequestFunc.Fields, f)
 			}
+
 			if mode.InCreateResponse {
 				createResponseFunc.Fields = append(createResponseFunc.Fields, f)
 			}
+
 			if mode.InReadRequest {
 				readRequestFunc.Fields = append(readRequestFunc.Fields, f)
 			}
+
 			if mode.InReadResponse {
 				readResponseFunc.Fields = append(readResponseFunc.Fields, f)
 			}
+
 			if mode.InUpdateRequest {
 				updateRequestFunc.Fields = append(updateRequestFunc.Fields, f)
 			}
+
 			if mode.InUpdateResponse {
 				updateResponseFunc.Fields = append(updateResponseFunc.Fields, f)
 			}
+
 			if mode.InDeleteRequest {
 				deleteRequestFunc.Fields = append(deleteRequestFunc.Fields, f)
 			}
@@ -709,6 +715,7 @@ func TerraformAttributeTypeToProtoType(nestedMessageNamePrefix, attrName string,
 		if err != nil {
 			return fieldType{}, err
 		}
+
 		return fieldType{
 			ModelTypeName:               "List",
 			ProtoTypeName:               protoTypeName,
@@ -721,6 +728,7 @@ func TerraformAttributeTypeToProtoType(nestedMessageNamePrefix, attrName string,
 		if err != nil {
 			return fieldType{}, err
 		}
+
 		return fieldType{
 			ModelTypeName:               "Set",
 			ProtoTypeName:               protoTypeName,
@@ -739,6 +747,7 @@ func TerraformRepeatedAttributeTypeToProtoType(nestedMessageNamePrefix, attrName
 	wrapperMessageName := nestedMessageNamePrefix + "_" + camelCasedAttrName
 
 	elemType, err := TerraformAttributeTypeToProtoType(wrapperMessageName, attrName, elementType)
+
 	switch {
 	case err != nil:
 		return "", nil, nil, fieldType{}, fmt.Errorf("unsupported element type %s: %w", elementType.String(), err)
@@ -746,6 +755,7 @@ func TerraformRepeatedAttributeTypeToProtoType(nestedMessageNamePrefix, attrName
 	case elemType.CollectionElementType != nil: // The element type itself is repeated. Every element is wrapped into a nested Protocol Buffer message.
 		wrapProtoValueElementExpr := fmt.Sprintf("&%s{%s:protoValue}", wrapperMessageName, camelCasedAttrName)
 		unwrapProtoValueElementExpr := "protoElement." + camelCasedAttrName
+
 		return "[]*" + wrapperMessageName, &wrapProtoValueElementExpr, &unwrapProtoValueElementExpr, elemType, nil
 
 	default: // The element type is not repeated. Normal case.
