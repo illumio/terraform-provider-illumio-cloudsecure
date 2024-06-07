@@ -298,7 +298,7 @@ func GenerateFakeServer(dst io.Writer, pkg string, src schema.Schema) error {
 		Models:         make([]model, 0, len(src.Resources())),
 	}
 
-	camelCasedIdFieldName := schema.ProtoMessageName(schema.IdFieldName)
+	camelCasedIdFieldName := schema.ProtoMessageName(schema.IDFieldName)
 	camelCasedUpdateMaskFieldName := schema.ProtoMessageName(schema.UpdateMaskFieldName)
 
 	for _, resource := range src.Resources() {
@@ -358,44 +358,50 @@ func GenerateFakeServer(dst io.Writer, pkg string, src schema.Schema) error {
 				},
 			},
 		}
+
 		attrNames := schema.SortResourceAttributes(resource.Schema.Attributes)
+
 		for _, attrName := range attrNames {
 			attrSchema := resource.Schema.Attributes[attrName]
 
-			t, err := TerraformAttributeTypeToProtoType("configv1."+resourceMessageName, attrName, attrSchema.GetType(), attrSchema.IsOptional())
+			typ, err := TerraformAttributeTypeToProtoType("configv1."+resourceMessageName, attrName, attrSchema.GetType(), attrSchema.IsOptional())
 			if err != nil {
 				return fmt.Errorf("failed to parse field %s in resource %s: %w", attrName, resourceMessageName, err)
 			}
 
-			f := field{
+			field := field{
 				Name:          schema.ProtoMessageName(attrName),
 				AttributeName: attrName,
-				Type:          t,
+				Type:          typ,
 			}
 
-			resourceModel.Fields = append(resourceModel.Fields, f)
+			resourceModel.Fields = append(resourceModel.Fields, field)
 
 			mode := schema.GetAttributeMode(attrSchema)
 
 			// "id" is handled specially by the fake server, since it's used for looking up resources, etc.
-			if f.AttributeName == schema.IdFieldName {
+			if field.AttributeName == schema.IDFieldName {
 				continue
 			}
 
 			if mode.InCreateRequest {
-				res.CreateRPC.RequestMessage.Fields = append(res.CreateRPC.RequestMessage.Fields, f)
+				res.CreateRPC.RequestMessage.Fields = append(res.CreateRPC.RequestMessage.Fields, field)
 			}
+
 			if mode.InCreateResponse {
-				res.CreateRPC.ResponseMessage.Fields = append(res.CreateRPC.ResponseMessage.Fields, f)
+				res.CreateRPC.ResponseMessage.Fields = append(res.CreateRPC.ResponseMessage.Fields, field)
 			}
+
 			if mode.InReadResponse {
-				res.ReadRPC.ResponseMessage.Fields = append(res.ReadRPC.ResponseMessage.Fields, f)
+				res.ReadRPC.ResponseMessage.Fields = append(res.ReadRPC.ResponseMessage.Fields, field)
 			}
+
 			if mode.InUpdateRequest {
-				res.UpdateRPC.RequestMessage.Fields = append(res.UpdateRPC.RequestMessage.Fields, f)
+				res.UpdateRPC.RequestMessage.Fields = append(res.UpdateRPC.RequestMessage.Fields, field)
 			}
+
 			if mode.InUpdateResponse {
-				res.UpdateRPC.ResponseMessage.Fields = append(res.UpdateRPC.ResponseMessage.Fields, f)
+				res.UpdateRPC.ResponseMessage.Fields = append(res.UpdateRPC.ResponseMessage.Fields, field)
 			}
 		}
 
@@ -411,7 +417,7 @@ func GenerateFakeServer(dst io.Writer, pkg string, src schema.Schema) error {
 
 // TerraformAttributeTypeToProtoType converts a Terraform attribute type into the corresponding Protocol Buffer Golang type.
 func TerraformAttributeTypeToProtoType(nestedMessageNamePrefix, attrName string, attrType attr.Type, optional bool) (t string, err error) {
-	switch v := attrType.(type) {
+	switch value := attrType.(type) {
 	case basetypes.BoolType:
 		if optional {
 			return "*bool", nil
@@ -437,9 +443,9 @@ func TerraformAttributeTypeToProtoType(nestedMessageNamePrefix, attrName string,
 			return "string", nil
 		}
 	case types.ListType:
-		return TerraformRepeatedAttributeTypeToProtoType(nestedMessageNamePrefix, attrName, v.ElementType())
+		return TerraformRepeatedAttributeTypeToProtoType(nestedMessageNamePrefix, attrName, value.ElementType())
 	case types.SetType:
-		return TerraformRepeatedAttributeTypeToProtoType(nestedMessageNamePrefix, attrName, v.ElementType())
+		return TerraformRepeatedAttributeTypeToProtoType(nestedMessageNamePrefix, attrName, value.ElementType())
 	// TODO: Add support for nested objects.
 	default:
 		return "", fmt.Errorf("unsupported Terraform type: %s", attrType.String())
@@ -462,6 +468,7 @@ func TerraformRepeatedAttributeTypeToProtoType(nestedMessageNamePrefix, attrName
 		if err != nil {
 			return "", fmt.Errorf("unsupported element type %s: %w", elementType.String(), err)
 		}
+
 		return "[]" + elemType, nil
 	}
 }

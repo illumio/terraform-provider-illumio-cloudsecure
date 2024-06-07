@@ -19,7 +19,7 @@ var (
 			Version:     1,
 			Description: "Manages an AWS account in CloudSecure.",
 			Attributes: map[string]resource_schema.Attribute{
-				IdFieldName: idAttribute,
+				IDFieldName: idAttribute,
 				"name": resource_schema.StringAttribute{
 					Description: "Display name.",
 					Required:    true,

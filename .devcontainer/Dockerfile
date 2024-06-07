@@ -2,6 +2,7 @@ ARG VARIANT=1.22-bookworm
 FROM mcr.microsoft.com/vscode/devcontainers/go:${VARIANT}
 
 ARG BUF_VERSION=v1.30.0
+ARG GOLANGCI_VERSION=v1.59.0
 ARG TERRAFORM_VERSION=1.7.5-1
 
 USER root
@@ -36,7 +37,8 @@ USER vscode
 # Install Terraform shell autocomplete
 RUN terraform -install-autocomplete
 
-RUN go install github.com/bufbuild/buf/cmd/buf@${BUF_VERSION}
+RUN go install github.com/bufbuild/buf/cmd/buf@${BUF_VERSION} \
+    && go install github.com/golangci/golangci-lint/cmd/golangci-lint@${GOLANGCI_VERSION}
 
 USER root
 

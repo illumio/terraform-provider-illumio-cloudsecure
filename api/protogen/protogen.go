@@ -149,12 +149,13 @@ func GenerateGRPCAPISpec(dst io.Writer, src schema.Schema) error {
 			Fields: make([]field, 0, 1),
 		}
 
-		var nextTag int = 1
+		nextTag := 1
 		attrNames := schema.SortResourceAttributes(resource.Schema.Attributes)
+
 		for _, attrName := range attrNames {
 			attrSchema := resource.Schema.Attributes[attrName]
 
-			repeated, t, msg, err := TerraformAttributeTypeToProtoType(attrName, attrSchema.GetType())
+			repeated, t, msg, err := terraformAttributeTypeToProtoType(attrName, attrSchema.GetType())
 			if err != nil {
 				return fmt.Errorf("failed to parse field %s in resource %s: %w", attrName, resourceMessageName, err)
 			}
@@ -181,28 +182,34 @@ func GenerateGRPCAPISpec(dst io.Writer, src schema.Schema) error {
 				Tag:      nextTag,
 			}
 
-			nextTag += 1
+			nextTag++
 
 			attrMode := schema.GetAttributeMode(attrSchema)
 
 			if attrMode.InCreateRequest {
 				createRequestMessage.Fields = append(createRequestMessage.Fields, f)
 			}
+
 			if attrMode.InCreateResponse {
 				createResponseMessage.Fields = append(createResponseMessage.Fields, f)
 			}
+
 			if attrMode.InReadRequest {
 				readRequestMessage.Fields = append(readRequestMessage.Fields, f)
 			}
+
 			if attrMode.InReadResponse {
 				readResponseMessage.Fields = append(readResponseMessage.Fields, f)
 			}
+
 			if attrMode.InUpdateRequest {
 				updateRequestMessage.Fields = append(updateRequestMessage.Fields, f)
 			}
+
 			if attrMode.InUpdateResponse {
 				updateResponseMessage.Fields = append(updateResponseMessage.Fields, f)
 			}
+
 			if attrMode.InDeleteRequest {
 				deleteRequestMessage.Fields = append(deleteRequestMessage.Fields, f)
 			}
@@ -213,7 +220,6 @@ func GenerateGRPCAPISpec(dst io.Writer, src schema.Schema) error {
 			Name: schema.UpdateMaskFieldName,
 			Tag:  nextTag,
 		})
-		nextTag += 1
 
 		data.RPCs = append(data.RPCs,
 			rpc{
@@ -252,8 +258,8 @@ func GenerateGRPCAPISpec(dst io.Writer, src schema.Schema) error {
 	return grpcAPISpecTemplate.Execute(dst, &data)
 }
 
-// TerraformAttributeTypeToProtoType converts a Terraform attribute type into the corresponding Protocol Buffer type, and optionally additional Protocol Buffer messages that represent nested types.
-func TerraformAttributeTypeToProtoType(attrName string, attrType attr.Type) (repeated bool, protoType string, messages *message, err error) {
+// terraformAttributeTypeToProtoType converts a Terraform attribute type into the corresponding Protocol Buffer type, and optionally additional Protocol Buffer messages that represent nested types.
+func terraformAttributeTypeToProtoType(attrName string, attrType attr.Type) (repeated bool, protoType string, messages *message, err error) {
 	switch v := attrType.(type) {
 	case basetypes.BoolType:
 		return false, "bool", nil, nil
@@ -264,24 +270,24 @@ func TerraformAttributeTypeToProtoType(attrName string, attrType attr.Type) (rep
 	case basetypes.StringType:
 		return false, "string", nil, nil
 	case types.ListType:
-		return TerraformRepeatedAttributeTypeToProtoType(attrName, v.ElementType())
+		return terraformRepeatedAttributeTypeToProtoType(attrName, v.ElementType())
 	case types.SetType:
-		return TerraformRepeatedAttributeTypeToProtoType(attrName, v.ElementType())
+		return terraformRepeatedAttributeTypeToProtoType(attrName, v.ElementType())
 	// TODO: Add support for nested objects.
 	default:
 		return false, "", nil, fmt.Errorf("unsupported Terraform type: %s", attrType.String())
 	}
 }
 
-func TerraformRepeatedAttributeTypeToProtoType(attrName string, elementType attr.Type) (repeated bool, protoType string, messages *message, err error) {
-	elemRepeated, elemProtoType, elemMessage, err := TerraformAttributeTypeToProtoType(attrName, elementType)
+func terraformRepeatedAttributeTypeToProtoType(attrName string, elementType attr.Type) (repeated bool, protoType string, messages *message, err error) {
+	elemRepeated, elemProtoType, elemMessage, err := terraformAttributeTypeToProtoType(attrName, elementType)
+
 	switch {
 	case err != nil:
 		return false, "", nil, fmt.Errorf("unsupported element type %s: %w", elementType.String(), err)
 
 	case elemRepeated: // The element type itself is repeated.
 		// The attribute is a set of lists or a set of sets. This must be modeled in Protocol Buffer as a repeated field of a message type, which itself contains a repeated field.
-
 		// In case an extra message is created for a nested field type, it will be named with the CamelCased attribute name.
 		wrapperMessageName := schema.ProtoMessageName(attrName)
 

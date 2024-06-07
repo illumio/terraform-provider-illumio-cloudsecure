@@ -5,23 +5,24 @@ issues:
   max-same-issues: 0
 
 linters:
-  disable-all: true
-  enable:
-    - durationcheck
-    - errcheck
-    - exportloopref
-    - forcetypeassert
-    - godot
-    - gofmt
-    - gosimple
-    - ineffassign
-    - makezero
-    - misspell
-    - nilerr
-    - predeclared
-    - staticcheck
-    - tenv
-    - unconvert
-    - unparam
-    - unused
-    - vet
+  enable-all: true
+  disable:
+    - cyclop
+    - depguard
+    - dupl
+    - err113
+    - exhaustruct
+    - funlen
+    - gochecknoglobals
+    - gochecknoinits
+    - godox
+    - gofumpt
+    - gomnd
+    - ireturn
+    - lll
+    - mnd
+    - nonamedreturns
+    - paralleltest
+    - testpackage
+    - varnamelen
+    - wrapcheck

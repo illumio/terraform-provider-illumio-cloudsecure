@@ -13,8 +13,8 @@ import (
 )
 
 const (
-	// IdFieldName is the name of the "id" attribute/field that is used to identify any Illumio CloudSecure resource or data source.
-	IdFieldName = "id"
+	// IDFieldName is the name of the "id" attribute/field that is used to identify any Illumio CloudSecure resource or data source.
+	IDFieldName = "id"
 
 	// UpdateMaskFieldName is the name of the "update_mask" field used in resource update requests to list the fields modified by the operation.
 	UpdateMaskFieldName = "update_mask"
@@ -29,6 +29,7 @@ func ProtoMessageName(tfName string) string {
 func SortResourceAttributes(attrs map[string]resource_schema.Attribute) []string {
 	names := maps.Keys(attrs)
 	sortAttributeNames(names)
+
 	return names
 }
 
@@ -36,15 +37,16 @@ func SortResourceAttributes(attrs map[string]resource_schema.Attribute) []string
 func SortDataSourceAttributes(attrs map[string]datasource_schema.Attribute) []string {
 	names := maps.Keys(attrs)
 	sortAttributeNames(names)
+
 	return names
 }
 
 func sortAttributeNames(names []string) {
 	slices.SortFunc(names, func(a, b string) int {
 		switch {
-		case a == IdFieldName:
+		case a == IDFieldName:
 			return -1
-		case b == IdFieldName:
+		case b == IDFieldName:
 			return 1
 		case a < b:
 			return -1

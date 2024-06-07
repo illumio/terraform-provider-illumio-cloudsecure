@@ -37,7 +37,7 @@ type Provider struct {
 var _ provider.ProviderWithConfigValidators = &Provider{}
 
 // ProviderModel describes the provider data model.
-type ProviderModel struct {
+type ProviderModel struct { //nolint:revive
 	APIEndpoint    types.String `tfsdk:"api_endpoint"`
 	TokenEndpoint  types.String `tfsdk:"token_endpoint"`
 	ClientID       types.String `tfsdk:"client_id"`
@@ -47,7 +47,7 @@ type ProviderModel struct {
 	DisableTLS     types.Bool   `tfsdk:"disable_tls"`
 }
 
-// providerData is the
+// providerData contains the configuration shared with all resources and data sources.
 type providerData struct {
 	// client is the CloudSecure Config API client.
 	client configv1.ConfigServiceClient
@@ -73,7 +73,7 @@ func (d *providerData) RequestTimeout() time.Duration {
 	return d.requestTimeout
 }
 
-func (p *Provider) Metadata(ctx context.Context, req provider.MetadataRequest, resp *provider.MetadataResponse) {
+func (p *Provider) Metadata(_ context.Context, _ provider.MetadataRequest, resp *provider.MetadataResponse) {
 	resp.TypeName = "illumio-cloudsecure"
 	resp.Version = p.version
 }
@@ -85,13 +85,13 @@ const (
 
 	// DefaultTokenEndpoint is the default CloudSecure OAuth 2 Token endpoint.
 	// TODO: This is a placeholder. Update to use the correct endpoint.
-	DefaultTokenEndpoint = "https://cloud.illum.io/token"
+	DefaultTokenEndpoint = "https://cloud.illum.io/token" //nolint:gosec // This URL is not a credential.
 
 	// DefaultRequestTimeout is the default CloudConfig Config API request timeout.
 	DefaultRequestTimeout = "10s"
 )
 
-func (p *Provider) Schema(ctx context.Context, req provider.SchemaRequest, resp *provider.SchemaResponse) {
+func (p *Provider) Schema(_ context.Context, _ provider.SchemaRequest, resp *provider.SchemaResponse) {
 	resp.Schema = provider_schema.Schema{
 		MarkdownDescription: "A Provider for managing Illumio CloudSecure.",
 		Attributes: map[string]provider_schema.Attribute{
@@ -142,14 +142,14 @@ func (p *Provider) Schema(ctx context.Context, req provider.SchemaRequest, resp 
 				},
 			},
 			"disable_tls": provider_schema.BoolAttribute{
-				MarkdownDescription: "Disables TLS for all all requests to the CloudSecure Token and Config API endpoints. TLS is enabled by default. Should only be used for testing the provider.",
+				MarkdownDescription: "Disables TLS for all requests to the CloudSecure Token and Config API endpoints. TLS is enabled by default. Should only be used for testing the provider.",
 				Optional:            true,
 			},
 		},
 	}
 }
 
-func (p *Provider) ConfigValidators(ctx context.Context) []provider.ConfigValidator {
+func (p *Provider) ConfigValidators(_ context.Context) []provider.ConfigValidator {
 	return []provider.ConfigValidator{
 		providervalidator.RequiredTogether(
 			path.MatchRoot("client_id"),
@@ -166,6 +166,7 @@ func (p *Provider) Configure(ctx context.Context, req provider.ConfigureRequest,
 	var data ProviderModel
 
 	resp.Diagnostics.Append(req.Config.Get(ctx, &data)...)
+
 	if resp.Diagnostics.HasError() {
 		return
 	}
@@ -173,9 +174,11 @@ func (p *Provider) Configure(ctx context.Context, req provider.ConfigureRequest,
 	if data.APIEndpoint.IsUnknown() || data.APIEndpoint.IsNull() {
 		data.APIEndpoint = types.StringValue(DefaultAPIEndpoint)
 	}
+
 	if data.TokenEndpoint.IsUnknown() || data.TokenEndpoint.IsNull() {
 		data.TokenEndpoint = types.StringValue(DefaultTokenEndpoint)
 	}
+
 	if data.RequestTimeout.IsUnknown() || data.RequestTimeout.IsNull() {
 		data.RequestTimeout = types.StringValue(DefaultRequestTimeout)
 	}
@@ -192,7 +195,9 @@ func (p *Provider) Configure(ctx context.Context, req provider.ConfigureRequest,
 	if data.DisableTLS.ValueBool() {
 		creds = insecure.NewCredentials()
 	} else {
-		tlsConfig := &tls.Config{}
+		tlsConfig := &tls.Config{
+			MinVersion: tls.VersionTLS12,
+		}
 		creds = credentials.NewTLS(tlsConfig)
 	}
 

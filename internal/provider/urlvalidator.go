@@ -19,7 +19,7 @@ func (v *urlStringValidator) Description(ctx context.Context) string {
 	return v.MarkdownDescription(ctx)
 }
 
-func (v *urlStringValidator) MarkdownDescription(ctx context.Context) string {
+func (v *urlStringValidator) MarkdownDescription(_ context.Context) string {
 	return "value must be a valid RFC 3986 URL"
 }
 

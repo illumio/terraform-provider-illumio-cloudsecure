@@ -19,7 +19,7 @@ func (v *durationStringValidator) Description(ctx context.Context) string {
 	return v.MarkdownDescription(ctx)
 }
 
-func (v *durationStringValidator) MarkdownDescription(ctx context.Context) string {
+func (v *durationStringValidator) MarkdownDescription(_ context.Context) string {
 	return "value must be a valid time duration"
 }
 
