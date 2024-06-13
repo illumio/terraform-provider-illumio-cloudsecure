@@ -5,8 +5,8 @@ package main
 
 import (
 	"fmt"
-	"html/template"
 	"io"
+	"text/template" // nosemgrep: go.lang.security.audit.xss.import-text-template.import-text-template
 
 	"github.com/hashicorp/terraform-plugin-framework/attr"
 	"github.com/hashicorp/terraform-plugin-framework/types"

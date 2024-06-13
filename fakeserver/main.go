@@ -49,6 +49,7 @@ func main() {
 		logger.Fatal("failed to open network port", zap.Error(err))
 	}
 
+	// nosemgrep: go.grpc.security.grpc-server-insecure-connection.grpc-server-insecure-connection
 	server := grpc.NewServer()
 	configv1.RegisterConfigServiceServer(server, NewFakeConfigServer(logger))
 	logger.Info("server listening", zap.String("network", listener.Addr().Network()), zap.String("address", listener.Addr().String()))
