@@ -11,7 +11,7 @@ plugins:
     out: .
     opt:
       - paths=source_relative
-  - plugin: buf.build/protocolbuffers/go
+  - plugin: buf.build/protocolbuffers/go:v1.34.2
     out: .
     opt:
       - paths=source_relative
