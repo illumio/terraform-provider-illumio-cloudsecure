@@ -40,7 +40,7 @@ func main() {
 	flag.Parse()
 
 	opts := providerserver.ServeOpts{
-		Address: "registry.terraform.io/hashicorp/illumio-cloudsecure",
+		Address: "registry.terraform.io/illumio/illumio-cloudsecure",
 		Debug:   debug,
 	}
 
