@@ -4,6 +4,7 @@
 package main
 
 import (
+	"crypto/tls"
 	"encoding/json"
 	"log"
 	"net/http"
@@ -92,7 +93,7 @@ func jsonResponse(w http.ResponseWriter, status int, data any) {
 	}
 }
 
-func startHTTPServer(address string, loggerToUse *zap.Logger, clientID string, clientSecret string, token string) {
+func startHTTPServer(address string, loggerToUse *zap.Logger, clientID string, clientSecret string, token string, cert tls.Certificate) {
 	authService := &AuthService{
 		logger:       loggerToUse,
 		clientID:     clientID,
@@ -105,6 +106,10 @@ func startHTTPServer(address string, loggerToUse *zap.Logger, clientID string, c
 		Addr:         address,
 		ReadTimeout:  5 * time.Second,
 		WriteTimeout: 10 * time.Second,
+		TLSConfig: &tls.Config{
+			Certificates: []tls.Certificate{cert},
+			MinVersion:   tls.VersionTLS12,
+		},
 	}
-	log.Fatal(server.ListenAndServe())
+	log.Fatal(server.ListenAndServeTLS("", ""))
 }

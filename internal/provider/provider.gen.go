@@ -26,9 +26,6 @@ type ProviderData interface {
 	// Client returns the CloudSecure Config API client.
 	Client() configv1.ConfigServiceClient
 
-	// AccessToken returns the OAuth 2 access token to use to authenticate against the CloudSecure Config API.
-	AccessToken() string
-
 	// RequestTimeout returns the maximum duration of each API request.
 	RequestTimeout() time.Duration
 }
