@@ -7,6 +7,7 @@ import (
 	"context"
 	"crypto/tls"
 	"fmt"
+	"net/http"
 	"time"
 
 	"github.com/hashicorp/terraform-plugin-framework-validators/providervalidator"
@@ -18,9 +19,11 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework/types"
 	configv1 "github.com/illumio/terraform-provider-illumio-cloudsecure/api/illumio/cloud/config/v1"
 	api_schema "github.com/illumio/terraform-provider-illumio-cloudsecure/api/schema"
+	"golang.org/x/oauth2"
+	"golang.org/x/oauth2/clientcredentials"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials"
-	"google.golang.org/grpc/credentials/insecure"
+	"google.golang.org/grpc/credentials/oauth"
 )
 
 // Provider defines the provider implementation.
@@ -44,16 +47,13 @@ type ProviderModel struct { //nolint:revive
 	ClientSecret   types.String `tfsdk:"client_secret"`
 	AccessToken    types.String `tfsdk:"access_token"`
 	RequestTimeout types.String `tfsdk:"request_timeout"`
-	DisableTLS     types.Bool   `tfsdk:"disable_tls"`
+	InsecureTLS    types.Bool   `tfsdk:"insecure_tls"`
 }
 
 // providerData contains the configuration shared with all resources and data sources.
 type providerData struct {
 	// client is the CloudSecure Config API client.
 	client configv1.ConfigServiceClient
-
-	// accessToken is the OAuth 2 access token to use to authenticate against the CloudSecure Config API.
-	accessToken string
 
 	// requestTimeout is the maximum duration of each API request.
 	requestTimeout time.Duration
@@ -63,10 +63,6 @@ var _ ProviderData = &providerData{}
 
 func (d *providerData) Client() configv1.ConfigServiceClient {
 	return d.client
-}
-
-func (d *providerData) AccessToken() string {
-	return d.accessToken
 }
 
 func (d *providerData) RequestTimeout() time.Duration {
@@ -141,8 +137,8 @@ func (p *Provider) Schema(_ context.Context, _ provider.SchemaRequest, resp *pro
 					Duration(),
 				},
 			},
-			"disable_tls": provider_schema.BoolAttribute{
-				MarkdownDescription: "Disables TLS for all requests to the CloudSecure Token and Config API endpoints. TLS is enabled by default. Should only be used for testing the provider.",
+			"insecure_tls": provider_schema.BoolAttribute{
+				MarkdownDescription: "Disables TLS server certificate verification for all requests to the CloudSecure Config API and Token endpoints. Server certificate verification is enabled by default. Should only be used for testing the provider.",
 				Optional:            true,
 			},
 		},
@@ -165,12 +161,14 @@ func (p *Provider) ConfigValidators(_ context.Context) []provider.ConfigValidato
 func (p *Provider) Configure(ctx context.Context, req provider.ConfigureRequest, resp *provider.ConfigureResponse) {
 	var data ProviderModel
 
+	// Get configuration from the request and append diagnostics if any
 	resp.Diagnostics.Append(req.Config.Get(ctx, &data)...)
 
 	if resp.Diagnostics.HasError() {
 		return
 	}
 
+	// Set default values if configuration values are unknown or null
 	if data.APIEndpoint.IsUnknown() || data.APIEndpoint.IsNull() {
 		data.APIEndpoint = types.StringValue(DefaultAPIEndpoint)
 	}
@@ -183,37 +181,79 @@ func (p *Provider) Configure(ctx context.Context, req provider.ConfigureRequest,
 		data.RequestTimeout = types.StringValue(DefaultRequestTimeout)
 	}
 
+	// Parse request timeout duration
 	requestTimeout, err := time.ParseDuration(data.RequestTimeout.ValueString())
 	if err != nil {
 		resp.Diagnostics.AddError(
 			"Unexpected Invalid Request Timeout",
 			fmt.Sprintf("Failed to parse request_timeout: %s. Please report this issue to the provider developers.", data.RequestTimeout.ValueString()),
 		)
+
+		return
 	}
 
-	var creds credentials.TransportCredentials
-	if data.DisableTLS.ValueBool() {
-		creds = insecure.NewCredentials()
+	// Configure TLS settings
+	// nosemgrep: bypass-tls-verification
+	tlsConfig := &tls.Config{
+		MinVersion: tls.VersionTLS12,
+	}
+
+	// Allow insecure TLS if specified
+	if data.InsecureTLS.ValueBool() {
+		tlsConfig.InsecureSkipVerify = true
+
+		resp.Diagnostics.AddWarning("Config API Warning", "Running in insecure TLS mode. Server certificate verification is disabled.")
+	}
+
+	// Configure OAuth2 token source
+	var tokenSource oauth2.TokenSource
+
+	if !data.AccessToken.IsUnknown() && !data.AccessToken.IsNull() {
+		tokenSource = oauth2.StaticTokenSource(&oauth2.Token{AccessToken: data.AccessToken.ValueString()})
 	} else {
-		tlsConfig := &tls.Config{
-			MinVersion: tls.VersionTLS12,
+		c := clientcredentials.Config{
+			ClientSecret: data.ClientSecret.ValueString(),
+			ClientID:     data.ClientID.ValueString(),
+			TokenURL:     data.TokenEndpoint.ValueString(),
+			AuthStyle:    oauth2.AuthStyleInParams,
 		}
-		creds = credentials.NewTLS(tlsConfig)
+		// Use custom HTTP client with the TLS settings based on provider config
+		//nolint: contextcheck
+		tokenSource = c.TokenSource(context.WithValue(context.Background(), oauth2.HTTPClient, &http.Client{
+			// nosemgrep: bypass-tls-verification
+			Transport: &http.Transport{
+				TLSClientConfig: tlsConfig,
+			},
+		}))
 	}
 
-	conn, err := grpc.NewClient(data.APIEndpoint.ValueString(), grpc.WithTransportCredentials(creds))
+	// Create gRPC credentials
+	creds := credentials.NewTLS(tlsConfig)
+
+	// Establish gRPC connection
+	conn, err := grpc.NewClient(
+		data.APIEndpoint.ValueString(),
+		grpc.WithTransportCredentials(creds),
+		grpc.WithPerRPCCredentials(oauth.TokenSource{
+			TokenSource: tokenSource,
+		}),
+	)
 	if err != nil {
 		resp.Diagnostics.AddError("Config API Error", fmt.Sprintf("Unable to create Config API client, got error: %s", err))
+
+		return
 	}
 
+	// Create the gRPC client
 	client := configv1.NewConfigServiceClient(conn)
 
+	// Store the provider data
 	providerData := &providerData{
 		client:         client,
-		accessToken:    "", // TODO: Implement the OAuth 2 client credentials flow, and modify the generated resource code to pass this token as metadata in every RPC.
 		requestTimeout: requestTimeout,
 	}
 
+	// Set the provider data in the response
 	resp.DataSourceData = providerData
 	resp.ResourceData = providerData
 }
