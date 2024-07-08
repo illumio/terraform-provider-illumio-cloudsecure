@@ -7,7 +7,7 @@ managed:
   go_package_prefix:
     default: github.com/illumio/terraform-provider-illumio-cloudsecure/api
 plugins:
-  - plugin: buf.build/grpc/go:v1.3.0
+  - plugin: buf.build/grpc/go:v1.4.0
     out: .
     opt:
       - paths=source_relative
