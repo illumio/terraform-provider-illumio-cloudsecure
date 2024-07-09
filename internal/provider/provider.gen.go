@@ -424,6 +424,9 @@ func NewUpdateAwsAccountRequest(beforeData, afterData *AwsAccountResourceModel) 
 }
 func CopyCreateAwsAccountResponse(dst *AwsAccountResourceModel, src *configv1.CreateAwsAccountResponse) {
 	dst.Id = types.StringValue(src.Id)
+	dst.AccountId = types.StringValue(src.AccountId)
+	dst.AccountType = types.StringValue(src.AccountType)
+	dst.Disabled = types.BoolPointerValue(src.Disabled)
 	{
 		protoValue := src.ExcludedRegions
 		var dataValue types.Set
@@ -487,10 +490,15 @@ func CopyCreateAwsAccountResponse(dst *AwsAccountResourceModel, src *configv1.Cr
 		}
 		dst.ExcludedVpcIds = dataValue
 	}
+	dst.Mode = types.StringPointerValue(src.Mode)
 	dst.Name = types.StringValue(src.Name)
+	dst.ServiceAccountId = types.StringValue(src.ServiceAccountId)
 }
 func CopyReadAwsAccountResponse(dst *AwsAccountResourceModel, src *configv1.ReadAwsAccountResponse) {
 	dst.Id = types.StringValue(src.Id)
+	dst.AccountId = types.StringValue(src.AccountId)
+	dst.AccountType = types.StringValue(src.AccountType)
+	dst.Disabled = types.BoolPointerValue(src.Disabled)
 	{
 		protoValue := src.ExcludedRegions
 		var dataValue types.Set
@@ -554,10 +562,15 @@ func CopyReadAwsAccountResponse(dst *AwsAccountResourceModel, src *configv1.Read
 		}
 		dst.ExcludedVpcIds = dataValue
 	}
+	dst.Mode = types.StringPointerValue(src.Mode)
 	dst.Name = types.StringValue(src.Name)
+	dst.ServiceAccountId = types.StringValue(src.ServiceAccountId)
 }
 func CopyUpdateAwsAccountResponse(dst *AwsAccountResourceModel, src *configv1.UpdateAwsAccountResponse) {
 	dst.Id = types.StringValue(src.Id)
+	dst.AccountId = types.StringValue(src.AccountId)
+	dst.AccountType = types.StringValue(src.AccountType)
+	dst.Disabled = types.BoolPointerValue(src.Disabled)
 	{
 		protoValue := src.ExcludedRegions
 		var dataValue types.Set
@@ -621,5 +634,7 @@ func CopyUpdateAwsAccountResponse(dst *AwsAccountResourceModel, src *configv1.Up
 		}
 		dst.ExcludedVpcIds = dataValue
 	}
+	dst.Mode = types.StringPointerValue(src.Mode)
 	dst.Name = types.StringValue(src.Name)
+	dst.ServiceAccountId = types.StringValue(src.ServiceAccountId)
 }

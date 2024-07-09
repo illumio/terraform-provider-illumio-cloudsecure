@@ -32,7 +32,7 @@ var (
 						Default:     booldefault.StaticBool(false),
 					},
 					attributeWithMode: attributeWithMode{
-						Mode: WriteOnlyOnceAttributeMode,
+						Mode: ImmutableAttributeMode,
 					},
 				},
 				"account_id": StringAttributeWithMode{
@@ -41,7 +41,7 @@ var (
 						Required:            true,
 					},
 					attributeWithMode: attributeWithMode{
-						Mode: WriteOnlyOnceAttributeMode,
+						Mode: ImmutableAttributeMode,
 					},
 				},
 				"account_type": StringAttributeWithMode{
@@ -53,7 +53,7 @@ var (
 						},
 					},
 					attributeWithMode: attributeWithMode{
-						Mode: WriteOnlyOnceAttributeMode,
+						Mode: ImmutableAttributeMode,
 					},
 				},
 				"mode": StringAttributeWithMode{
@@ -67,7 +67,7 @@ var (
 						},
 					},
 					attributeWithMode: attributeWithMode{
-						Mode: WriteOnlyOnceAttributeMode,
+						Mode: ImmutableAttributeMode,
 					},
 				},
 				"service_account_id": StringAttributeWithMode{
@@ -76,7 +76,7 @@ var (
 						Required:    true,
 					},
 					attributeWithMode: attributeWithMode{
-						Mode: WriteOnlyOnceAttributeMode,
+						Mode: ImmutableAttributeMode,
 					},
 				},
 				"excluded_regions": resource_schema.SetAttribute{
