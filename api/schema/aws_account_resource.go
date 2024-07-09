@@ -24,35 +24,60 @@ var (
 					Description: "Display name.",
 					Required:    true,
 				},
-				"disabled": resource_schema.BoolAttribute{
-					Description: "If true, disables this account.",
-					Optional:    true,
-					Computed:    true,
-					Default:     booldefault.StaticBool(false),
-				},
-				"account_id": resource_schema.StringAttribute{
-					MarkdownDescription: "AWS account ID.",
-					Required:            true,
-				},
-				"account_type": resource_schema.StringAttribute{
-					Description: "AWS account type.",
-					Required:    true,
-					Validators: []validator.String{
-						stringvalidator.OneOf("Account", "Organization"),
+				"disabled": BoolAttributeWithMode{
+					BoolAttribute: resource_schema.BoolAttribute{
+						Description: "If true, disables this account.",
+						Optional:    true,
+						Computed:    true,
+						Default:     booldefault.StaticBool(false),
+					},
+					attributeWithMode: attributeWithMode{
+						Mode: WriteOnlyOnceAttributeMode,
 					},
 				},
-				"mode": resource_schema.StringAttribute{
-					Description: "Access mode.",
-					Optional:    true,
-					Computed:    true,
-					Default:     stringdefault.StaticString("ReadWrite"),
-					Validators: []validator.String{
-						stringvalidator.OneOf("Read", "ReadWrite"),
+				"account_id": StringAttributeWithMode{
+					StringAttribute: resource_schema.StringAttribute{
+						MarkdownDescription: "AWS account ID.",
+						Required:            true,
+					},
+					attributeWithMode: attributeWithMode{
+						Mode: WriteOnlyOnceAttributeMode,
 					},
 				},
-				"service_account_id": resource_schema.StringAttribute{
-					Description: "AWS service account ID.",
-					Required:    true,
+				"account_type": StringAttributeWithMode{
+					StringAttribute: resource_schema.StringAttribute{
+						Description: "AWS account type.",
+						Required:    true,
+						Validators: []validator.String{
+							stringvalidator.OneOf("Account", "Organization"),
+						},
+					},
+					attributeWithMode: attributeWithMode{
+						Mode: WriteOnlyOnceAttributeMode,
+					},
+				},
+				"mode": StringAttributeWithMode{
+					StringAttribute: resource_schema.StringAttribute{
+						Description: "Access mode.",
+						Optional:    true,
+						Computed:    true,
+						Default:     stringdefault.StaticString("ReadWrite"),
+						Validators: []validator.String{
+							stringvalidator.OneOf("Read", "ReadWrite"),
+						},
+					},
+					attributeWithMode: attributeWithMode{
+						Mode: WriteOnlyOnceAttributeMode,
+					},
+				},
+				"service_account_id": StringAttributeWithMode{
+					StringAttribute: resource_schema.StringAttribute{
+						Description: "AWS service account ID.",
+						Required:    true,
+					},
+					attributeWithMode: attributeWithMode{
+						Mode: WriteOnlyOnceAttributeMode,
+					},
 				},
 				"excluded_regions": resource_schema.SetAttribute{
 					Description: "Set of excluded AWS regions.",

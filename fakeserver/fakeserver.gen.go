@@ -63,15 +63,10 @@ func (s *FakeConfigServer) CreateAwsAccount(ctx context.Context, req *configv1.C
 	}
 	resp := &configv1.CreateAwsAccountResponse{
 		Id:                id,
-		AccountId:         model.AccountId,
-		AccountType:       model.AccountType,
-		Disabled:          model.Disabled,
 		ExcludedRegions:   model.ExcludedRegions,
 		ExcludedSubnetIds: model.ExcludedSubnetIds,
 		ExcludedVpcIds:    model.ExcludedVpcIds,
-		Mode:              model.Mode,
 		Name:              model.Name,
-		ServiceAccountId:  model.ServiceAccountId,
 	}
 	s.AwsAccountMutex.Lock()
 	s.AwsAccountMap[id] = model
@@ -99,15 +94,10 @@ func (s *FakeConfigServer) ReadAwsAccount(ctx context.Context, req *configv1.Rea
 	}
 	resp := &configv1.ReadAwsAccountResponse{
 		Id:                id,
-		AccountId:         model.AccountId,
-		AccountType:       model.AccountType,
-		Disabled:          model.Disabled,
 		ExcludedRegions:   model.ExcludedRegions,
 		ExcludedSubnetIds: model.ExcludedSubnetIds,
 		ExcludedVpcIds:    model.ExcludedVpcIds,
-		Mode:              model.Mode,
 		Name:              model.Name,
-		ServiceAccountId:  model.ServiceAccountId,
 	}
 	s.AwsAccountMutex.RUnlock()
 	s.Logger.Info("read resource",
@@ -138,24 +128,14 @@ func (s *FakeConfigServer) UpdateAwsAccount(ctx context.Context, req *configv1.U
 	}
 	for _, path := range updateMaskPaths {
 		switch path {
-		case "account_id":
-			model.AccountId = req.AccountId
-		case "account_type":
-			model.AccountType = req.AccountType
-		case "disabled":
-			model.Disabled = req.Disabled
 		case "excluded_regions":
 			model.ExcludedRegions = req.ExcludedRegions
 		case "excluded_subnet_ids":
 			model.ExcludedSubnetIds = req.ExcludedSubnetIds
 		case "excluded_vpc_ids":
 			model.ExcludedVpcIds = req.ExcludedVpcIds
-		case "mode":
-			model.Mode = req.Mode
 		case "name":
 			model.Name = req.Name
-		case "service_account_id":
-			model.ServiceAccountId = req.ServiceAccountId
 		default:
 			s.AwsAccountMutex.Unlock()
 			s.Logger.Error("attempted to update resource using invalid update_mask path",
@@ -170,15 +150,10 @@ func (s *FakeConfigServer) UpdateAwsAccount(ctx context.Context, req *configv1.U
 	}
 	resp := &configv1.UpdateAwsAccountResponse{
 		Id:                id,
-		AccountId:         model.AccountId,
-		AccountType:       model.AccountType,
-		Disabled:          model.Disabled,
 		ExcludedRegions:   model.ExcludedRegions,
 		ExcludedSubnetIds: model.ExcludedSubnetIds,
 		ExcludedVpcIds:    model.ExcludedVpcIds,
-		Mode:              model.Mode,
 		Name:              model.Name,
-		ServiceAccountId:  model.ServiceAccountId,
 	}
 	s.AwsAccountMutex.Unlock()
 	s.Logger.Info("updated resource",

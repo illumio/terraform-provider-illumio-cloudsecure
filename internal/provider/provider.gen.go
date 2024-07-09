@@ -354,33 +354,6 @@ func NewUpdateAwsAccountRequest(beforeData, afterData *AwsAccountResourceModel) 
 	proto := &configv1.UpdateAwsAccountRequest{}
 	proto.UpdateMask, _ = fieldmaskpb.New(proto)
 	proto.Id = beforeData.Id.ValueString()
-	if !afterData.AccountId.Equal(beforeData.AccountId) {
-		proto.UpdateMask.Append(proto, "account_id")
-		if !afterData.AccountId.IsUnknown() && !afterData.AccountId.IsNull() {
-			var dataValue attr.Value = afterData.AccountId
-			var protoValue string
-			protoValue = dataValue.(types.String).ValueString()
-			proto.AccountId = protoValue
-		}
-	}
-	if !afterData.AccountType.Equal(beforeData.AccountType) {
-		proto.UpdateMask.Append(proto, "account_type")
-		if !afterData.AccountType.IsUnknown() && !afterData.AccountType.IsNull() {
-			var dataValue attr.Value = afterData.AccountType
-			var protoValue string
-			protoValue = dataValue.(types.String).ValueString()
-			proto.AccountType = protoValue
-		}
-	}
-	if !afterData.Disabled.Equal(beforeData.Disabled) {
-		proto.UpdateMask.Append(proto, "disabled")
-		if !afterData.Disabled.IsUnknown() && !afterData.Disabled.IsNull() {
-			var dataValue attr.Value = afterData.Disabled
-			var protoValue bool
-			protoValue = dataValue.(types.Bool).ValueBool()
-			proto.Disabled = &protoValue
-		}
-	}
 	if !afterData.ExcludedRegions.Equal(beforeData.ExcludedRegions) {
 		proto.UpdateMask.Append(proto, "excluded_regions")
 		if !afterData.ExcludedRegions.IsUnknown() && !afterData.ExcludedRegions.IsNull() {
@@ -438,15 +411,6 @@ func NewUpdateAwsAccountRequest(beforeData, afterData *AwsAccountResourceModel) 
 			proto.ExcludedVpcIds = protoValue
 		}
 	}
-	if !afterData.Mode.Equal(beforeData.Mode) {
-		proto.UpdateMask.Append(proto, "mode")
-		if !afterData.Mode.IsUnknown() && !afterData.Mode.IsNull() {
-			var dataValue attr.Value = afterData.Mode
-			var protoValue string
-			protoValue = dataValue.(types.String).ValueString()
-			proto.Mode = &protoValue
-		}
-	}
 	if !afterData.Name.Equal(beforeData.Name) {
 		proto.UpdateMask.Append(proto, "name")
 		if !afterData.Name.IsUnknown() && !afterData.Name.IsNull() {
@@ -456,22 +420,10 @@ func NewUpdateAwsAccountRequest(beforeData, afterData *AwsAccountResourceModel) 
 			proto.Name = protoValue
 		}
 	}
-	if !afterData.ServiceAccountId.Equal(beforeData.ServiceAccountId) {
-		proto.UpdateMask.Append(proto, "service_account_id")
-		if !afterData.ServiceAccountId.IsUnknown() && !afterData.ServiceAccountId.IsNull() {
-			var dataValue attr.Value = afterData.ServiceAccountId
-			var protoValue string
-			protoValue = dataValue.(types.String).ValueString()
-			proto.ServiceAccountId = protoValue
-		}
-	}
 	return proto
 }
 func CopyCreateAwsAccountResponse(dst *AwsAccountResourceModel, src *configv1.CreateAwsAccountResponse) {
 	dst.Id = types.StringValue(src.Id)
-	dst.AccountId = types.StringValue(src.AccountId)
-	dst.AccountType = types.StringValue(src.AccountType)
-	dst.Disabled = types.BoolPointerValue(src.Disabled)
 	{
 		protoValue := src.ExcludedRegions
 		var dataValue types.Set
@@ -535,15 +487,10 @@ func CopyCreateAwsAccountResponse(dst *AwsAccountResourceModel, src *configv1.Cr
 		}
 		dst.ExcludedVpcIds = dataValue
 	}
-	dst.Mode = types.StringPointerValue(src.Mode)
 	dst.Name = types.StringValue(src.Name)
-	dst.ServiceAccountId = types.StringValue(src.ServiceAccountId)
 }
 func CopyReadAwsAccountResponse(dst *AwsAccountResourceModel, src *configv1.ReadAwsAccountResponse) {
 	dst.Id = types.StringValue(src.Id)
-	dst.AccountId = types.StringValue(src.AccountId)
-	dst.AccountType = types.StringValue(src.AccountType)
-	dst.Disabled = types.BoolPointerValue(src.Disabled)
 	{
 		protoValue := src.ExcludedRegions
 		var dataValue types.Set
@@ -607,15 +554,10 @@ func CopyReadAwsAccountResponse(dst *AwsAccountResourceModel, src *configv1.Read
 		}
 		dst.ExcludedVpcIds = dataValue
 	}
-	dst.Mode = types.StringPointerValue(src.Mode)
 	dst.Name = types.StringValue(src.Name)
-	dst.ServiceAccountId = types.StringValue(src.ServiceAccountId)
 }
 func CopyUpdateAwsAccountResponse(dst *AwsAccountResourceModel, src *configv1.UpdateAwsAccountResponse) {
 	dst.Id = types.StringValue(src.Id)
-	dst.AccountId = types.StringValue(src.AccountId)
-	dst.AccountType = types.StringValue(src.AccountType)
-	dst.Disabled = types.BoolPointerValue(src.Disabled)
 	{
 		protoValue := src.ExcludedRegions
 		var dataValue types.Set
@@ -679,7 +621,5 @@ func CopyUpdateAwsAccountResponse(dst *AwsAccountResourceModel, src *configv1.Up
 		}
 		dst.ExcludedVpcIds = dataValue
 	}
-	dst.Mode = types.StringPointerValue(src.Mode)
 	dst.Name = types.StringValue(src.Name)
-	dst.ServiceAccountId = types.StringValue(src.ServiceAccountId)
 }
