@@ -138,6 +138,8 @@ func (s *FakeConfigServer) UpdateAwsAccount(ctx context.Context, req *configv1.U
 	}
 	for _, path := range updateMaskPaths {
 		switch path {
+		case "disabled":
+			model.Disabled = req.Disabled
 		case "excluded_regions":
 			model.ExcludedRegions = req.ExcludedRegions
 		case "excluded_subnet_ids":

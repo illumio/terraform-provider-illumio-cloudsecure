@@ -24,16 +24,11 @@ var (
 					Description: "Display name.",
 					Required:    true,
 				},
-				"disabled": BoolAttributeWithMode{
-					BoolAttribute: resource_schema.BoolAttribute{
-						Description: "If true, disables this account.",
-						Optional:    true,
-						Computed:    true,
-						Default:     booldefault.StaticBool(false),
-					},
-					attributeWithMode: attributeWithMode{
-						Mode: ImmutableAttributeMode,
-					},
+				"disabled": resource_schema.BoolAttribute{
+					Description: "If true, disables this account.",
+					Optional:    true,
+					Computed:    true,
+					Default:     booldefault.StaticBool(false),
 				},
 				"account_id": StringAttributeWithMode{
 					StringAttribute: resource_schema.StringAttribute{

@@ -354,6 +354,15 @@ func NewUpdateAwsAccountRequest(beforeData, afterData *AwsAccountResourceModel) 
 	proto := &configv1.UpdateAwsAccountRequest{}
 	proto.UpdateMask, _ = fieldmaskpb.New(proto)
 	proto.Id = beforeData.Id.ValueString()
+	if !afterData.Disabled.Equal(beforeData.Disabled) {
+		proto.UpdateMask.Append(proto, "disabled")
+		if !afterData.Disabled.IsUnknown() && !afterData.Disabled.IsNull() {
+			var dataValue attr.Value = afterData.Disabled
+			var protoValue bool
+			protoValue = dataValue.(types.Bool).ValueBool()
+			proto.Disabled = &protoValue
+		}
+	}
 	if !afterData.ExcludedRegions.Equal(beforeData.ExcludedRegions) {
 		proto.UpdateMask.Append(proto, "excluded_regions")
 		if !afterData.ExcludedRegions.IsUnknown() && !afterData.ExcludedRegions.IsNull() {

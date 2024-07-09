@@ -51,6 +51,7 @@ message ReadAwsAccountResponse {
 }
 message UpdateAwsAccountRequest {
   string id = 1;
+  optional bool disabled = 4;
   repeated string excluded_regions = 5;
   repeated string excluded_subnet_ids = 6;
   repeated string excluded_vpc_ids = 7;
