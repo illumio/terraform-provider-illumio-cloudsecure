@@ -15,3 +15,8 @@ Full, comprehensive documentation is available on the [Terraform Registry](https
 The Terraform Illumio CloudSecure Provider package is released and distributed as open source software subject to the included [LICENSE](LICENSE). Illumio has no obligation or responsibility related to the package with respect to support, maintenance, availability, security or otherwise. Please read the entire [LICENSE](LICENSE) for additional information regarding the permissions and limitations.
 
 For bugs and feature requests, please open a Github Issue and label it appropriately.
+
+
+## Contributing
+
+Please read the [CONTRIBUTING.md](CONTRIBUTING.md) file for more information on how to contribute to this project.
