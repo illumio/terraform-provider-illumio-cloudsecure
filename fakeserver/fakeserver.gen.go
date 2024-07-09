@@ -138,10 +138,6 @@ func (s *FakeConfigServer) UpdateAwsAccount(ctx context.Context, req *configv1.U
 	}
 	for _, path := range updateMaskPaths {
 		switch path {
-		case "account_id":
-			model.AccountId = req.AccountId
-		case "account_type":
-			model.AccountType = req.AccountType
 		case "disabled":
 			model.Disabled = req.Disabled
 		case "excluded_regions":
@@ -150,12 +146,8 @@ func (s *FakeConfigServer) UpdateAwsAccount(ctx context.Context, req *configv1.U
 			model.ExcludedSubnetIds = req.ExcludedSubnetIds
 		case "excluded_vpc_ids":
 			model.ExcludedVpcIds = req.ExcludedVpcIds
-		case "mode":
-			model.Mode = req.Mode
 		case "name":
 			model.Name = req.Name
-		case "service_account_id":
-			model.ServiceAccountId = req.ServiceAccountId
 		default:
 			s.AwsAccountMutex.Unlock()
 			s.Logger.Error("attempted to update resource using invalid update_mask path",

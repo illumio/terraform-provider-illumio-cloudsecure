@@ -51,15 +51,11 @@ message ReadAwsAccountResponse {
 }
 message UpdateAwsAccountRequest {
   string id = 1;
-  string account_id = 2;
-  string account_type = 3;
   optional bool disabled = 4;
   repeated string excluded_regions = 5;
   repeated string excluded_subnet_ids = 6;
   repeated string excluded_vpc_ids = 7;
-  optional string mode = 8;
   string name = 9;
-  string service_account_id = 10;
   google.protobuf.FieldMask update_mask = 11;
 }
 message UpdateAwsAccountResponse {

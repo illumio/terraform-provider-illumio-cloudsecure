@@ -354,24 +354,6 @@ func NewUpdateAwsAccountRequest(beforeData, afterData *AwsAccountResourceModel) 
 	proto := &configv1.UpdateAwsAccountRequest{}
 	proto.UpdateMask, _ = fieldmaskpb.New(proto)
 	proto.Id = beforeData.Id.ValueString()
-	if !afterData.AccountId.Equal(beforeData.AccountId) {
-		proto.UpdateMask.Append(proto, "account_id")
-		if !afterData.AccountId.IsUnknown() && !afterData.AccountId.IsNull() {
-			var dataValue attr.Value = afterData.AccountId
-			var protoValue string
-			protoValue = dataValue.(types.String).ValueString()
-			proto.AccountId = protoValue
-		}
-	}
-	if !afterData.AccountType.Equal(beforeData.AccountType) {
-		proto.UpdateMask.Append(proto, "account_type")
-		if !afterData.AccountType.IsUnknown() && !afterData.AccountType.IsNull() {
-			var dataValue attr.Value = afterData.AccountType
-			var protoValue string
-			protoValue = dataValue.(types.String).ValueString()
-			proto.AccountType = protoValue
-		}
-	}
 	if !afterData.Disabled.Equal(beforeData.Disabled) {
 		proto.UpdateMask.Append(proto, "disabled")
 		if !afterData.Disabled.IsUnknown() && !afterData.Disabled.IsNull() {
@@ -438,15 +420,6 @@ func NewUpdateAwsAccountRequest(beforeData, afterData *AwsAccountResourceModel) 
 			proto.ExcludedVpcIds = protoValue
 		}
 	}
-	if !afterData.Mode.Equal(beforeData.Mode) {
-		proto.UpdateMask.Append(proto, "mode")
-		if !afterData.Mode.IsUnknown() && !afterData.Mode.IsNull() {
-			var dataValue attr.Value = afterData.Mode
-			var protoValue string
-			protoValue = dataValue.(types.String).ValueString()
-			proto.Mode = &protoValue
-		}
-	}
 	if !afterData.Name.Equal(beforeData.Name) {
 		proto.UpdateMask.Append(proto, "name")
 		if !afterData.Name.IsUnknown() && !afterData.Name.IsNull() {
@@ -454,15 +427,6 @@ func NewUpdateAwsAccountRequest(beforeData, afterData *AwsAccountResourceModel) 
 			var protoValue string
 			protoValue = dataValue.(types.String).ValueString()
 			proto.Name = protoValue
-		}
-	}
-	if !afterData.ServiceAccountId.Equal(beforeData.ServiceAccountId) {
-		proto.UpdateMask.Append(proto, "service_account_id")
-		if !afterData.ServiceAccountId.IsUnknown() && !afterData.ServiceAccountId.IsNull() {
-			var dataValue attr.Value = afterData.ServiceAccountId
-			var protoValue string
-			protoValue = dataValue.(types.String).ValueString()
-			proto.ServiceAccountId = protoValue
 		}
 	}
 	return proto
