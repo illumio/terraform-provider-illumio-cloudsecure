@@ -22,7 +22,6 @@ import (
 	"golang.org/x/oauth2"
 	"golang.org/x/oauth2/clientcredentials"
 	"google.golang.org/grpc"
-	"google.golang.org/grpc/credentials/insecure"
 	"google.golang.org/grpc/credentials/oauth"
 )
 
@@ -228,12 +227,12 @@ func (p *Provider) Configure(ctx context.Context, req provider.ConfigureRequest,
 	}
 
 	// Create gRPC credentials
-	creds := insecure.NewCredentials()
+	// creds := insecure.NewCredentials()
 
 	// Establish gRPC connection
 	conn, err := grpc.NewClient(
 		data.APIEndpoint.ValueString(),
-		grpc.WithTransportCredentials(creds),
+		grpc.WithInsecure(),
 		grpc.WithPerRPCCredentials(oauth.TokenSource{
 			TokenSource: tokenSource,
 		}),
