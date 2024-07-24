@@ -45,3 +45,6 @@ USER root
 RUN /go/bin/buf completion bash > "/etc/bash_completion.d/buf"
 
 USER vscode
+
+# Import the PGP key used by GitHub for commit and PR merge signing.
+RUN curl https://github.com/web-flow.gpg | gpg --import
