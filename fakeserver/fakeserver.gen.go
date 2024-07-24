@@ -38,11 +38,11 @@ type AwsAccount struct {
 	Id                string
 	AccountId         string
 	AccountType       string
-	Disabled          *bool
+	Disabled          bool
 	ExcludedRegions   []string
 	ExcludedSubnetIds []string
 	ExcludedVpcIds    []string
-	Mode              *string
+	Mode              string
 	Name              string
 	ServiceAccountId  string
 }

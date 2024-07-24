@@ -8,7 +8,7 @@ import (
 )
 
 var (
-	idAttribute = StringAttributeWithMode{
+	idAttribute = StringResourceAttributeWithMode{
 		StringAttribute: schema.StringAttribute{
 			Description: "CloudSecure ID.",
 			Computed:    true,
