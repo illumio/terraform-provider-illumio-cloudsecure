@@ -176,7 +176,7 @@ func GenerateGRPCAPISpec(dst io.Writer, src schema.Schema) error {
 
 			f := field{
 				Repeated: repeated,
-				Optional: attrSchema.IsOptional(),
+				Optional: schema.AttributeIsOptional(attrSchema),
 				Type:     t,
 				Name:     attrName,
 				Tag:      nextTag,
@@ -184,7 +184,7 @@ func GenerateGRPCAPISpec(dst io.Writer, src schema.Schema) error {
 
 			nextTag++
 
-			attrMode := schema.GetAttributeMode(attrSchema)
+			attrMode := schema.GetResourceAttributeMode(attrSchema)
 
 			if attrMode.InCreateRequest {
 				createRequestMessage.Fields = append(createRequestMessage.Fields, f)

@@ -608,12 +608,12 @@ func GenerateProvider(dst io.Writer, pkg string, src schema.Schema) error {
 				Name:          schema.ProtoMessageName(attrName),
 				AttributeName: attrName,
 				Type:          t,
-				Optional:      attrSchema.IsOptional(),
+				Optional:      schema.AttributeIsOptional(attrSchema),
 			}
 
 			resourceModel.Fields = append(resourceModel.Fields, f)
 
-			mode := schema.GetAttributeMode(attrSchema)
+			mode := schema.GetResourceAttributeMode(attrSchema)
 
 			if mode.InCreateRequest {
 				createRequestFunc.Fields = append(createRequestFunc.Fields, f)

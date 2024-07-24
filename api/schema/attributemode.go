@@ -105,75 +105,75 @@ func (a attributeWithMode) GetMode() AttributeMode {
 	return a.Mode
 }
 
-// BoolAttributeWithMode is a BoolAttribute with an explicit attribute mode.
-type BoolAttributeWithMode struct {
+// BoolResourceAttributeWithMode is a BoolAttribute with an explicit attribute mode.
+type BoolResourceAttributeWithMode struct {
 	resource_schema.BoolAttribute
 	attributeWithMode
 }
 
-// Float64AttributeWithMode is a Float64Attribute with an explicit attribute mode.
-type Float64AttributeWithMode struct {
+// Float64ResourceAttributeWithMode is a Float64Attribute with an explicit attribute mode.
+type Float64ResourceAttributeWithMode struct {
 	resource_schema.Float64Attribute
 	attributeWithMode
 }
 
-// Int64AttributeWithMode is a Int64Attribute with an explicit attribute mode.
-type Int64AttributeWithMode struct {
+// Int64ResourceAttributeWithMode is a Int64Attribute with an explicit attribute mode.
+type Int64ResourceAttributeWithMode struct {
 	resource_schema.Int64Attribute
 	attributeWithMode
 }
 
-// ListAttributeWithMode is a ListAttribute with an explicit attribute mode.
-type ListAttributeWithMode struct {
+// ListResourceAttributeWithMode is a ListAttribute with an explicit attribute mode.
+type ListResourceAttributeWithMode struct {
 	resource_schema.ListAttribute
 	attributeWithMode
 }
 
-// MapAttributeWithMode is a MapAttribute with an explicit attribute mode.
-type MapAttributeWithMode struct {
+// MapResourceAttributeWithMode is a MapAttribute with an explicit attribute mode.
+type MapResourceAttributeWithMode struct {
 	resource_schema.MapAttribute
 	attributeWithMode
 }
 
-// NumberAttributeWithMode is a NumberAttribute with an explicit attribute mode.
-type NumberAttributeWithMode struct {
+// NumberResourceAttributeWithMode is a NumberAttribute with an explicit attribute mode.
+type NumberResourceAttributeWithMode struct {
 	resource_schema.NumberAttribute
 	attributeWithMode
 }
 
-// ObjectAttributeWithMode is a ObjectAttribute with an explicit attribute mode.
-type ObjectAttributeWithMode struct {
+// ObjectResourceAttributeWithMode is a ObjectAttribute with an explicit attribute mode.
+type ObjectResourceAttributeWithMode struct {
 	resource_schema.ObjectAttribute
 	attributeWithMode
 }
 
-// SetAttributeWithMode is a SetAttribute with an explicit attribute mode.
-type SetAttributeWithMode struct {
+// SetResourceAttributeWithMode is a SetAttribute with an explicit attribute mode.
+type SetResourceAttributeWithMode struct {
 	resource_schema.SetAttribute
 	attributeWithMode
 }
 
-// StringAttributeWithMode is a StringAttribute with an explicit attribute mode.
-type StringAttributeWithMode struct {
+// StringResourceAttributeWithMode is a StringAttribute with an explicit attribute mode.
+type StringResourceAttributeWithMode struct {
 	resource_schema.StringAttribute
 	attributeWithMode
 }
 
 var (
 	_ AttributeWithMode = attributeWithMode{}
-	_ AttributeWithMode = BoolAttributeWithMode{}
-	_ AttributeWithMode = Float64AttributeWithMode{}
-	_ AttributeWithMode = Int64AttributeWithMode{}
-	_ AttributeWithMode = ListAttributeWithMode{}
-	_ AttributeWithMode = MapAttributeWithMode{}
-	_ AttributeWithMode = NumberAttributeWithMode{}
-	_ AttributeWithMode = ObjectAttributeWithMode{}
-	_ AttributeWithMode = SetAttributeWithMode{}
-	_ AttributeWithMode = StringAttributeWithMode{}
+	_ AttributeWithMode = BoolResourceAttributeWithMode{}
+	_ AttributeWithMode = Float64ResourceAttributeWithMode{}
+	_ AttributeWithMode = Int64ResourceAttributeWithMode{}
+	_ AttributeWithMode = ListResourceAttributeWithMode{}
+	_ AttributeWithMode = MapResourceAttributeWithMode{}
+	_ AttributeWithMode = NumberResourceAttributeWithMode{}
+	_ AttributeWithMode = ObjectResourceAttributeWithMode{}
+	_ AttributeWithMode = SetResourceAttributeWithMode{}
+	_ AttributeWithMode = StringResourceAttributeWithMode{}
 )
 
-// GetAttributeMode returns the mode for a resource attribute.
-func GetAttributeMode(attrSchema resource_schema.Attribute) AttributeMode {
+// GetResourceAttributeMode returns the mode for a resource attribute.
+func GetResourceAttributeMode(attrSchema resource_schema.Attribute) AttributeMode {
 	if m, ok := attrSchema.(AttributeWithMode); ok {
 		return m.GetMode()
 	}

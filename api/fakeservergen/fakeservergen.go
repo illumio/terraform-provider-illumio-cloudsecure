@@ -364,7 +364,7 @@ func GenerateFakeServer(dst io.Writer, pkg string, src schema.Schema) error {
 		for _, attrName := range attrNames {
 			attrSchema := resource.Schema.Attributes[attrName]
 
-			typ, err := TerraformAttributeTypeToProtoType("configv1."+resourceMessageName, attrName, attrSchema.GetType(), attrSchema.IsOptional())
+			typ, err := TerraformAttributeTypeToProtoType("configv1."+resourceMessageName, attrName, attrSchema.GetType(), schema.AttributeIsOptional(attrSchema))
 			if err != nil {
 				return fmt.Errorf("failed to parse field %s in resource %s: %w", attrName, resourceMessageName, err)
 			}
@@ -377,7 +377,7 @@ func GenerateFakeServer(dst io.Writer, pkg string, src schema.Schema) error {
 
 			resourceModel.Fields = append(resourceModel.Fields, field)
 
-			mode := schema.GetAttributeMode(attrSchema)
+			mode := schema.GetResourceAttributeMode(attrSchema)
 
 			// "id" is handled specially by the fake server, since it's used for looking up resources, etc.
 			if field.AttributeName == schema.IDFieldName {

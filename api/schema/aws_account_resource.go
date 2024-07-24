@@ -30,7 +30,7 @@ var (
 					Computed:    true,
 					Default:     booldefault.StaticBool(false),
 				},
-				"account_id": StringAttributeWithMode{
+				"account_id": StringResourceAttributeWithMode{
 					StringAttribute: resource_schema.StringAttribute{
 						MarkdownDescription: "AWS account ID.",
 						Required:            true,
@@ -39,7 +39,7 @@ var (
 						Mode: ImmutableAttributeMode,
 					},
 				},
-				"account_type": StringAttributeWithMode{
+				"account_type": StringResourceAttributeWithMode{
 					StringAttribute: resource_schema.StringAttribute{
 						Description: "AWS account type.",
 						Required:    true,
@@ -51,7 +51,7 @@ var (
 						Mode: ImmutableAttributeMode,
 					},
 				},
-				"mode": StringAttributeWithMode{
+				"mode": StringResourceAttributeWithMode{
 					StringAttribute: resource_schema.StringAttribute{
 						Description: "Access mode.",
 						Optional:    true,
@@ -65,7 +65,7 @@ var (
 						Mode: ImmutableAttributeMode,
 					},
 				},
-				"service_account_id": StringAttributeWithMode{
+				"service_account_id": StringResourceAttributeWithMode{
 					StringAttribute: resource_schema.StringAttribute{
 						Description: "AWS service account ID.",
 						Required:    true,
