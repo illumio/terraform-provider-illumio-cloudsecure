@@ -67,6 +67,24 @@ func AttributeIsOptional(attribute any) bool {
 		return a.Default == nil
 	case resource_schema.DynamicAttribute:
 		return a.Default == nil
+	case BoolResourceAttributeWithMode:
+		return a.Default == nil
+	case Float64ResourceAttributeWithMode:
+		return a.Default == nil
+	case Int64ResourceAttributeWithMode:
+		return a.Default == nil
+	case ListResourceAttributeWithMode:
+		return a.Default == nil
+	case MapResourceAttributeWithMode:
+		return a.Default == nil
+	case NumberResourceAttributeWithMode:
+		return a.Default == nil
+	case ObjectResourceAttributeWithMode:
+		return a.Default == nil
+	case SetResourceAttributeWithMode:
+		return a.Default == nil
+	case StringResourceAttributeWithMode:
+		return a.Default == nil
 	default:
 		panic(fmt.Sprintf("unknown attribute type: %T", attribute))
 	}

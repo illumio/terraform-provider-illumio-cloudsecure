@@ -111,9 +111,21 @@ type BoolResourceAttributeWithMode struct {
 	attributeWithMode
 }
 
+// Float32ResourceAttributeWithMode is a Float32Attribute with an explicit attribute mode.
+type Float32ResourceAttributeWithMode struct {
+	resource_schema.Float32Attribute
+	attributeWithMode
+}
+
 // Float64ResourceAttributeWithMode is a Float64Attribute with an explicit attribute mode.
 type Float64ResourceAttributeWithMode struct {
 	resource_schema.Float64Attribute
+	attributeWithMode
+}
+
+// Int32ResourceAttributeWithMode is a Int32Attribute with an explicit attribute mode.
+type Int32ResourceAttributeWithMode struct {
+	resource_schema.Int32Attribute
 	attributeWithMode
 }
 
@@ -162,7 +174,9 @@ type StringResourceAttributeWithMode struct {
 var (
 	_ AttributeWithMode = attributeWithMode{}
 	_ AttributeWithMode = BoolResourceAttributeWithMode{}
+	_ AttributeWithMode = Float32ResourceAttributeWithMode{}
 	_ AttributeWithMode = Float64ResourceAttributeWithMode{}
+	_ AttributeWithMode = Int32ResourceAttributeWithMode{}
 	_ AttributeWithMode = Int64ResourceAttributeWithMode{}
 	_ AttributeWithMode = ListResourceAttributeWithMode{}
 	_ AttributeWithMode = MapResourceAttributeWithMode{}
