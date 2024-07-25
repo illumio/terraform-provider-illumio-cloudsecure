@@ -11,6 +11,7 @@ linters:
     - depguard
     - dupl
     - err113
+    - execinquery
     - exhaustruct
     - funlen
     - gochecknoglobals

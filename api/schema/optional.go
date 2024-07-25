@@ -11,8 +11,8 @@ import (
 )
 
 // AttributeIsOptional returns whether an attribute should be optional in gRPC messages, i.e., whether it is optional with no default value.
-func AttributeIsOptional(attribute any) bool {
-	if !attribute.(resource_schema.Attribute).IsOptional() {
+func AttributeIsOptional(attribute any) bool { //nolint: gocyclo
+	if !attribute.(resource_schema.Attribute).IsOptional() { //nolint: forcetypeassert
 		return false
 	}
 
