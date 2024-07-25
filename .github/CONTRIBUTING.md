@@ -48,3 +48,44 @@ export ARCH=`dpkg --print-architecture`
 mkdir -p ~/.terraform.d/plugins/registry.terraform.io/illumio/illumio-cloudsecure/0.0.1/linux_${ARCH}
 cp terraform-provider-illumio-cloudsecure ~/.terraform.d/plugins/registry.terraform.io/illumio/illumio-cloudsecure/0.0.1/linux_${ARCH}
 ```
+
+## Release Checklist
+
+1. Implement the `ConfigService` gRPC server as specified in the commit to be released, and deploy that server.
+1. Choose a version number for the new release. Follow [Semantic Versioning 2.0.0](https://semver.org/spec/v2.0.0.html) format `vX.Y.Z`, e.g. `v1.2.3`.
+1. Update the version number in `examples/provider/provider.tf` (omit the `v` prefix):
+
+   ```
+   terraform {
+      required_providers {
+         illumio-cloudsecure = {
+            source  = "illumio/illumio-cloudsecure"
+            version = "~> 0.0.5"
+         }
+      }
+   }
+   ```
+
+1. Create a [new GitHub release](https://github.com/illumio/terraform-provider-illumio-cloudsecure/releases) from that commit. Summarize the changes in this release.
+
+   1. Click `Generate release notes` to generate the `What's Changed` section.
+   1. Edit the generated `What's Changed` section to follow the [Changelog Specification](https://developer.hashicorp.com/terraform/plugin/best-practices/versioning#changelog-specification), esp. to follow the same [categories](https://developer.hashicorp.com/terraform/plugin/best-practices/versioning#categorization) for subsections. Link to the PR(s) for each item. For example:
+
+      ```
+      ## What's Changed
+
+      ### BREAKING CHANGES:
+
+      * provider: Bump API version to v2 #12
+
+      ### FEATURES:
+
+      * **New Resource:** `azure_account` #14
+
+      ### BUG FIXES:
+
+      * provider: Fix handling of optional attributed #24
+      ```
+
+1. Verify that the `release` workflow completes for this release tag (see [Actions](https://github.com/illumio/terraform-provider-illumio-cloudsecure/actions)) and that it generates and publishes the artifacts (binaries for all systems, etc.) into [this release](https://github.com/illumio/terraform-provider-illumio-cloudsecure/releases).
+1. Verify that the [HashiCorp Terraform Registry](https://registry.terraform.io/providers/illumio/illumio-cloudsecure/latest) publishes the new release.

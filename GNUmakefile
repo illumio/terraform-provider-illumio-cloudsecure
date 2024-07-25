@@ -2,7 +2,7 @@
 # SPDX-License-Identifier: MPL-2.0
 
 BINARY_NAME=terraform-provider-illumio-cloudsecure
-VERSION=0.0.1
+VERSION=0.0.1-pre
 PLUGIN_DIR=~/.terraform.d/plugins/registry.terraform.io/illumio/illumio-cloudsecure
 OS ?= $(shell uname -s | tr '[:upper:]' '[:lower:]')
 ARCH ?= $(shell uname -m)
