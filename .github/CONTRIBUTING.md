@@ -66,8 +66,6 @@ cp terraform-provider-illumio-cloudsecure ~/.terraform.d/plugins/registry.terraf
    }
    ```
 
-   1. aa
-
 1. Create a [new GitHub release](https://github.com/illumio/terraform-provider-illumio-cloudsecure/releases) from that commit. Summarize the changes in this release.
 
    1. Click `Generate release notes` to generate the `What's Changed` section.
