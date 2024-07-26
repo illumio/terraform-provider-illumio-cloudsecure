@@ -227,16 +227,12 @@ func (r *AwsAccountResource) ImportState(ctx context.Context, req resource.Impor
 }
 
 type AwsAccountResourceModel struct {
-	Id                types.String `tfsdk:"id"`
-	AccountId         types.String `tfsdk:"account_id"`
-	AccountType       types.String `tfsdk:"account_type"`
-	Disabled          types.Bool   `tfsdk:"disabled"`
-	ExcludedRegions   types.Set    `tfsdk:"excluded_regions"`
-	ExcludedSubnetIds types.Set    `tfsdk:"excluded_subnet_ids"`
-	ExcludedVpcIds    types.Set    `tfsdk:"excluded_vpc_ids"`
-	Mode              types.String `tfsdk:"mode"`
-	Name              types.String `tfsdk:"name"`
-	ServiceAccountId  types.String `tfsdk:"service_account_id"`
+	Id               types.String `tfsdk:"id"`
+	AccountId        types.String `tfsdk:"account_id"`
+	AccountType      types.String `tfsdk:"account_type"`
+	Mode             types.String `tfsdk:"mode"`
+	Name             types.String `tfsdk:"name"`
+	ServiceAccountId types.String `tfsdk:"service_account_id"`
 }
 
 func NewCreateAwsAccountRequest(data *AwsAccountResourceModel) *configv1.CreateAwsAccountRequest {
@@ -252,60 +248,6 @@ func NewCreateAwsAccountRequest(data *AwsAccountResourceModel) *configv1.CreateA
 		var protoValue string
 		protoValue = dataValue.(types.String).ValueString()
 		proto.AccountType = protoValue
-	}
-	if !data.Disabled.IsUnknown() && !data.Disabled.IsNull() {
-		var dataValue attr.Value = data.Disabled
-		var protoValue bool
-		protoValue = dataValue.(types.Bool).ValueBool()
-		proto.Disabled = protoValue
-	}
-	if !data.ExcludedRegions.IsUnknown() && !data.ExcludedRegions.IsNull() {
-		var dataValue attr.Value = data.ExcludedRegions
-		var protoValue []string
-		{
-			dataElements := dataValue.(types.Set).Elements()
-			protoValues := make([]string, 0, len(dataElements))
-			for _, dataElement := range dataElements {
-				var dataValue attr.Value = dataElement
-				var protoValue string
-				protoValue = dataValue.(types.String).ValueString()
-				protoValues = append(protoValues, protoValue)
-			}
-			protoValue = protoValues
-		}
-		proto.ExcludedRegions = protoValue
-	}
-	if !data.ExcludedSubnetIds.IsUnknown() && !data.ExcludedSubnetIds.IsNull() {
-		var dataValue attr.Value = data.ExcludedSubnetIds
-		var protoValue []string
-		{
-			dataElements := dataValue.(types.Set).Elements()
-			protoValues := make([]string, 0, len(dataElements))
-			for _, dataElement := range dataElements {
-				var dataValue attr.Value = dataElement
-				var protoValue string
-				protoValue = dataValue.(types.String).ValueString()
-				protoValues = append(protoValues, protoValue)
-			}
-			protoValue = protoValues
-		}
-		proto.ExcludedSubnetIds = protoValue
-	}
-	if !data.ExcludedVpcIds.IsUnknown() && !data.ExcludedVpcIds.IsNull() {
-		var dataValue attr.Value = data.ExcludedVpcIds
-		var protoValue []string
-		{
-			dataElements := dataValue.(types.Set).Elements()
-			protoValues := make([]string, 0, len(dataElements))
-			for _, dataElement := range dataElements {
-				var dataValue attr.Value = dataElement
-				var protoValue string
-				protoValue = dataValue.(types.String).ValueString()
-				protoValues = append(protoValues, protoValue)
-			}
-			protoValue = protoValues
-		}
-		proto.ExcludedVpcIds = protoValue
 	}
 	if !data.Mode.IsUnknown() && !data.Mode.IsNull() {
 		var dataValue attr.Value = data.Mode
@@ -354,72 +296,6 @@ func NewUpdateAwsAccountRequest(beforeData, afterData *AwsAccountResourceModel) 
 	proto := &configv1.UpdateAwsAccountRequest{}
 	proto.UpdateMask, _ = fieldmaskpb.New(proto)
 	proto.Id = beforeData.Id.ValueString()
-	if !afterData.Disabled.Equal(beforeData.Disabled) {
-		proto.UpdateMask.Append(proto, "disabled")
-		if !afterData.Disabled.IsUnknown() && !afterData.Disabled.IsNull() {
-			var dataValue attr.Value = afterData.Disabled
-			var protoValue bool
-			protoValue = dataValue.(types.Bool).ValueBool()
-			proto.Disabled = protoValue
-		}
-	}
-	if !afterData.ExcludedRegions.Equal(beforeData.ExcludedRegions) {
-		proto.UpdateMask.Append(proto, "excluded_regions")
-		if !afterData.ExcludedRegions.IsUnknown() && !afterData.ExcludedRegions.IsNull() {
-			var dataValue attr.Value = afterData.ExcludedRegions
-			var protoValue []string
-			{
-				dataElements := dataValue.(types.Set).Elements()
-				protoValues := make([]string, 0, len(dataElements))
-				for _, dataElement := range dataElements {
-					var dataValue attr.Value = dataElement
-					var protoValue string
-					protoValue = dataValue.(types.String).ValueString()
-					protoValues = append(protoValues, protoValue)
-				}
-				protoValue = protoValues
-			}
-			proto.ExcludedRegions = protoValue
-		}
-	}
-	if !afterData.ExcludedSubnetIds.Equal(beforeData.ExcludedSubnetIds) {
-		proto.UpdateMask.Append(proto, "excluded_subnet_ids")
-		if !afterData.ExcludedSubnetIds.IsUnknown() && !afterData.ExcludedSubnetIds.IsNull() {
-			var dataValue attr.Value = afterData.ExcludedSubnetIds
-			var protoValue []string
-			{
-				dataElements := dataValue.(types.Set).Elements()
-				protoValues := make([]string, 0, len(dataElements))
-				for _, dataElement := range dataElements {
-					var dataValue attr.Value = dataElement
-					var protoValue string
-					protoValue = dataValue.(types.String).ValueString()
-					protoValues = append(protoValues, protoValue)
-				}
-				protoValue = protoValues
-			}
-			proto.ExcludedSubnetIds = protoValue
-		}
-	}
-	if !afterData.ExcludedVpcIds.Equal(beforeData.ExcludedVpcIds) {
-		proto.UpdateMask.Append(proto, "excluded_vpc_ids")
-		if !afterData.ExcludedVpcIds.IsUnknown() && !afterData.ExcludedVpcIds.IsNull() {
-			var dataValue attr.Value = afterData.ExcludedVpcIds
-			var protoValue []string
-			{
-				dataElements := dataValue.(types.Set).Elements()
-				protoValues := make([]string, 0, len(dataElements))
-				for _, dataElement := range dataElements {
-					var dataValue attr.Value = dataElement
-					var protoValue string
-					protoValue = dataValue.(types.String).ValueString()
-					protoValues = append(protoValues, protoValue)
-				}
-				protoValue = protoValues
-			}
-			proto.ExcludedVpcIds = protoValue
-		}
-	}
 	if !afterData.Name.Equal(beforeData.Name) {
 		proto.UpdateMask.Append(proto, "name")
 		if !afterData.Name.IsUnknown() && !afterData.Name.IsNull() {
@@ -435,70 +311,6 @@ func CopyCreateAwsAccountResponse(dst *AwsAccountResourceModel, src *configv1.Cr
 	dst.Id = types.StringValue(src.Id)
 	dst.AccountId = types.StringValue(src.AccountId)
 	dst.AccountType = types.StringValue(src.AccountType)
-	dst.Disabled = types.BoolValue(src.Disabled)
-	{
-		protoValue := src.ExcludedRegions
-		var dataValue types.Set
-		{
-			dataElementType := types.StringType
-			protoElements := protoValue
-			if protoElements == nil {
-				dataValue = types.SetNull(dataElementType)
-			} else {
-				dataValues := make([]attr.Value, 0, len(protoElements))
-				for _, protoElement := range protoElements {
-					var protoValue string = protoElement
-					var dataValue attr.Value
-					dataValue = types.StringValue(protoValue)
-					dataValues = append(dataValues, dataValue)
-				}
-				dataValue = types.SetValueMust(dataElementType, dataValues)
-			}
-		}
-		dst.ExcludedRegions = dataValue
-	}
-	{
-		protoValue := src.ExcludedSubnetIds
-		var dataValue types.Set
-		{
-			dataElementType := types.StringType
-			protoElements := protoValue
-			if protoElements == nil {
-				dataValue = types.SetNull(dataElementType)
-			} else {
-				dataValues := make([]attr.Value, 0, len(protoElements))
-				for _, protoElement := range protoElements {
-					var protoValue string = protoElement
-					var dataValue attr.Value
-					dataValue = types.StringValue(protoValue)
-					dataValues = append(dataValues, dataValue)
-				}
-				dataValue = types.SetValueMust(dataElementType, dataValues)
-			}
-		}
-		dst.ExcludedSubnetIds = dataValue
-	}
-	{
-		protoValue := src.ExcludedVpcIds
-		var dataValue types.Set
-		{
-			dataElementType := types.StringType
-			protoElements := protoValue
-			if protoElements == nil {
-				dataValue = types.SetNull(dataElementType)
-			} else {
-				dataValues := make([]attr.Value, 0, len(protoElements))
-				for _, protoElement := range protoElements {
-					var protoValue string = protoElement
-					var dataValue attr.Value
-					dataValue = types.StringValue(protoValue)
-					dataValues = append(dataValues, dataValue)
-				}
-				dataValue = types.SetValueMust(dataElementType, dataValues)
-			}
-		}
-		dst.ExcludedVpcIds = dataValue
-	}
 	dst.Mode = types.StringValue(src.Mode)
 	dst.Name = types.StringValue(src.Name)
 	dst.ServiceAccountId = types.StringValue(src.ServiceAccountId)
@@ -507,70 +319,6 @@ func CopyReadAwsAccountResponse(dst *AwsAccountResourceModel, src *configv1.Read
 	dst.Id = types.StringValue(src.Id)
 	dst.AccountId = types.StringValue(src.AccountId)
 	dst.AccountType = types.StringValue(src.AccountType)
-	dst.Disabled = types.BoolValue(src.Disabled)
-	{
-		protoValue := src.ExcludedRegions
-		var dataValue types.Set
-		{
-			dataElementType := types.StringType
-			protoElements := protoValue
-			if protoElements == nil {
-				dataValue = types.SetNull(dataElementType)
-			} else {
-				dataValues := make([]attr.Value, 0, len(protoElements))
-				for _, protoElement := range protoElements {
-					var protoValue string = protoElement
-					var dataValue attr.Value
-					dataValue = types.StringValue(protoValue)
-					dataValues = append(dataValues, dataValue)
-				}
-				dataValue = types.SetValueMust(dataElementType, dataValues)
-			}
-		}
-		dst.ExcludedRegions = dataValue
-	}
-	{
-		protoValue := src.ExcludedSubnetIds
-		var dataValue types.Set
-		{
-			dataElementType := types.StringType
-			protoElements := protoValue
-			if protoElements == nil {
-				dataValue = types.SetNull(dataElementType)
-			} else {
-				dataValues := make([]attr.Value, 0, len(protoElements))
-				for _, protoElement := range protoElements {
-					var protoValue string = protoElement
-					var dataValue attr.Value
-					dataValue = types.StringValue(protoValue)
-					dataValues = append(dataValues, dataValue)
-				}
-				dataValue = types.SetValueMust(dataElementType, dataValues)
-			}
-		}
-		dst.ExcludedSubnetIds = dataValue
-	}
-	{
-		protoValue := src.ExcludedVpcIds
-		var dataValue types.Set
-		{
-			dataElementType := types.StringType
-			protoElements := protoValue
-			if protoElements == nil {
-				dataValue = types.SetNull(dataElementType)
-			} else {
-				dataValues := make([]attr.Value, 0, len(protoElements))
-				for _, protoElement := range protoElements {
-					var protoValue string = protoElement
-					var dataValue attr.Value
-					dataValue = types.StringValue(protoValue)
-					dataValues = append(dataValues, dataValue)
-				}
-				dataValue = types.SetValueMust(dataElementType, dataValues)
-			}
-		}
-		dst.ExcludedVpcIds = dataValue
-	}
 	dst.Mode = types.StringValue(src.Mode)
 	dst.Name = types.StringValue(src.Name)
 	dst.ServiceAccountId = types.StringValue(src.ServiceAccountId)
@@ -579,70 +327,6 @@ func CopyUpdateAwsAccountResponse(dst *AwsAccountResourceModel, src *configv1.Up
 	dst.Id = types.StringValue(src.Id)
 	dst.AccountId = types.StringValue(src.AccountId)
 	dst.AccountType = types.StringValue(src.AccountType)
-	dst.Disabled = types.BoolValue(src.Disabled)
-	{
-		protoValue := src.ExcludedRegions
-		var dataValue types.Set
-		{
-			dataElementType := types.StringType
-			protoElements := protoValue
-			if protoElements == nil {
-				dataValue = types.SetNull(dataElementType)
-			} else {
-				dataValues := make([]attr.Value, 0, len(protoElements))
-				for _, protoElement := range protoElements {
-					var protoValue string = protoElement
-					var dataValue attr.Value
-					dataValue = types.StringValue(protoValue)
-					dataValues = append(dataValues, dataValue)
-				}
-				dataValue = types.SetValueMust(dataElementType, dataValues)
-			}
-		}
-		dst.ExcludedRegions = dataValue
-	}
-	{
-		protoValue := src.ExcludedSubnetIds
-		var dataValue types.Set
-		{
-			dataElementType := types.StringType
-			protoElements := protoValue
-			if protoElements == nil {
-				dataValue = types.SetNull(dataElementType)
-			} else {
-				dataValues := make([]attr.Value, 0, len(protoElements))
-				for _, protoElement := range protoElements {
-					var protoValue string = protoElement
-					var dataValue attr.Value
-					dataValue = types.StringValue(protoValue)
-					dataValues = append(dataValues, dataValue)
-				}
-				dataValue = types.SetValueMust(dataElementType, dataValues)
-			}
-		}
-		dst.ExcludedSubnetIds = dataValue
-	}
-	{
-		protoValue := src.ExcludedVpcIds
-		var dataValue types.Set
-		{
-			dataElementType := types.StringType
-			protoElements := protoValue
-			if protoElements == nil {
-				dataValue = types.SetNull(dataElementType)
-			} else {
-				dataValues := make([]attr.Value, 0, len(protoElements))
-				for _, protoElement := range protoElements {
-					var protoValue string = protoElement
-					var dataValue attr.Value
-					dataValue = types.StringValue(protoValue)
-					dataValues = append(dataValues, dataValue)
-				}
-				dataValue = types.SetValueMust(dataElementType, dataValues)
-			}
-		}
-		dst.ExcludedVpcIds = dataValue
-	}
 	dst.Mode = types.StringValue(src.Mode)
 	dst.Name = types.StringValue(src.Name)
 	dst.ServiceAccountId = types.StringValue(src.ServiceAccountId)

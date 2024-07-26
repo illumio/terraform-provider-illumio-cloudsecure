@@ -6,10 +6,8 @@ package schema
 import (
 	"github.com/hashicorp/terraform-plugin-framework-validators/stringvalidator"
 	resource_schema "github.com/hashicorp/terraform-plugin-framework/resource/schema"
-	"github.com/hashicorp/terraform-plugin-framework/resource/schema/booldefault"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/stringdefault"
 	"github.com/hashicorp/terraform-plugin-framework/schema/validator"
-	"github.com/hashicorp/terraform-plugin-framework/types"
 )
 
 var (
@@ -23,12 +21,6 @@ var (
 				"name": resource_schema.StringAttribute{
 					Description: "Display name.",
 					Required:    true,
-				},
-				"disabled": resource_schema.BoolAttribute{
-					Description: "If true, disables this account.",
-					Optional:    true,
-					Computed:    true,
-					Default:     booldefault.StaticBool(false),
 				},
 				"account_id": StringResourceAttributeWithMode{
 					StringAttribute: resource_schema.StringAttribute{
@@ -73,21 +65,6 @@ var (
 					attributeWithMode: attributeWithMode{
 						Mode: ImmutableAttributeMode,
 					},
-				},
-				"excluded_regions": resource_schema.SetAttribute{
-					Description: "Set of excluded AWS regions.",
-					Optional:    true,
-					ElementType: types.StringType,
-				},
-				"excluded_vpc_ids": resource_schema.SetAttribute{
-					Description: "Set of IDs of excluded AWS VPCs.",
-					Optional:    true,
-					ElementType: types.StringType,
-				},
-				"excluded_subnet_ids": resource_schema.SetAttribute{
-					Description: "Set of IDs of excluded AWS subnets.",
-					Optional:    true,
-					ElementType: types.StringType,
 				},
 			},
 		},

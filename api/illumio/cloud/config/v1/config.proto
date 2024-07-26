@@ -14,25 +14,17 @@ service ConfigService {
 message CreateAwsAccountRequest {
   string account_id = 2;
   string account_type = 3;
-  bool disabled = 4;
-  repeated string excluded_regions = 5;
-  repeated string excluded_subnet_ids = 6;
-  repeated string excluded_vpc_ids = 7;
-  string mode = 8;
-  string name = 9;
-  string service_account_id = 10;
+  string mode = 4;
+  string name = 5;
+  string service_account_id = 6;
 }
 message CreateAwsAccountResponse {
   string id = 1;
   string account_id = 2;
   string account_type = 3;
-  bool disabled = 4;
-  repeated string excluded_regions = 5;
-  repeated string excluded_subnet_ids = 6;
-  repeated string excluded_vpc_ids = 7;
-  string mode = 8;
-  string name = 9;
-  string service_account_id = 10;
+  string mode = 4;
+  string name = 5;
+  string service_account_id = 6;
 }
 message ReadAwsAccountRequest {
   string id = 1;
@@ -41,34 +33,22 @@ message ReadAwsAccountResponse {
   string id = 1;
   string account_id = 2;
   string account_type = 3;
-  bool disabled = 4;
-  repeated string excluded_regions = 5;
-  repeated string excluded_subnet_ids = 6;
-  repeated string excluded_vpc_ids = 7;
-  string mode = 8;
-  string name = 9;
-  string service_account_id = 10;
+  string mode = 4;
+  string name = 5;
+  string service_account_id = 6;
 }
 message UpdateAwsAccountRequest {
   string id = 1;
-  bool disabled = 4;
-  repeated string excluded_regions = 5;
-  repeated string excluded_subnet_ids = 6;
-  repeated string excluded_vpc_ids = 7;
-  string name = 9;
-  google.protobuf.FieldMask update_mask = 11;
+  string name = 5;
+  google.protobuf.FieldMask update_mask = 7;
 }
 message UpdateAwsAccountResponse {
   string id = 1;
   string account_id = 2;
   string account_type = 3;
-  bool disabled = 4;
-  repeated string excluded_regions = 5;
-  repeated string excluded_subnet_ids = 6;
-  repeated string excluded_vpc_ids = 7;
-  string mode = 8;
-  string name = 9;
-  string service_account_id = 10;
+  string mode = 4;
+  string name = 5;
+  string service_account_id = 6;
 }
 message DeleteAwsAccountRequest {
   string id = 1;
