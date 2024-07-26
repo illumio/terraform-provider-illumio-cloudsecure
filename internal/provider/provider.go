@@ -76,12 +76,10 @@ func (p *Provider) Metadata(_ context.Context, _ provider.MetadataRequest, resp 
 
 const (
 	// DefaultAPIEndpoint is the default CloudSecure Config API endpoint.
-	// TODO: This is a placeholder. Update to use the correct endpoint.
 	DefaultAPIEndpoint = "dns:///cloud.illum.io:443"
 
 	// DefaultTokenEndpoint is the default CloudSecure OAuth 2 Token endpoint.
-	// TODO: This is a placeholder. Update to use the correct endpoint.
-	DefaultTokenEndpoint = "https://cloud.illum.io/token" //nolint:gosec // This URL is not a credential.
+	DefaultTokenEndpoint = "https://cloud.illum.io/api/v1/authenticate" //nolint:gosec // This URL is not a credential.
 
 	// DefaultRequestTimeout is the default CloudConfig Config API request timeout.
 	DefaultRequestTimeout = "10s"
