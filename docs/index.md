@@ -55,7 +55,7 @@ provider "illumio-cloudsecure" {
 
 ### Environment Variables
 
-Credentials can be provided by using the `ILLUMIO_CLOUDSECURE_CLIENT_ID` and `ILLUMIO_CLOUDSECURE_CLIENT_SECRET` environment variables.
+Credentials can be provided in input variables.
 
 ```terraform
 variable "illumio_cloudsecure_client_id" {
