@@ -76,8 +76,8 @@ provider "illumio-cloudsecure" {
 ```
 
 ```
-% export ILLUMIO_CLOUDSECURE_CLIENT_ID="my-access-id"
-% export ILLUMIO_CLOUDSECURE_CLIENT_SECRET="my-secret-id"
+% export TF_VAR_illumio_cloudsecure_client_id="my-client-id"
+% export TF_VAR_illumio_cloudsecure_client_secret="my-client-secret"
 % terraform plan
 ```
 
