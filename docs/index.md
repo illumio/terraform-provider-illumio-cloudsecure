@@ -58,7 +58,21 @@ provider "illumio-cloudsecure" {
 Credentials can be provided by using the `ILLUMIO_CLOUDSECURE_CLIENT_ID` and `ILLUMIO_CLOUDSECURE_CLIENT_SECRET` environment variables.
 
 ```terraform
-provider "illumio-cloudsecure" {}
+variable "illumio_cloudsecure_client_id" {
+  type        = string
+  description = "The OAuth 2 client identifier used to authenticate against the CloudSecure Config API."
+}
+
+variable "illumio_cloudsecure_client_secret" {
+  type        = string
+  sensitive   = true
+  description = "The OAuth 2 client secret used to authenticate against the CloudSecure Config API."
+}
+
+provider "illumio-cloudsecure" {
+  client_id     = var.illumio_cloudsecure_client_id
+  client_secret = var.illumio_cloudsecure_client_secret
+}
 ```
 
 ```
