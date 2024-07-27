@@ -18,7 +18,7 @@ terraform {
   required_providers {
     illumio-cloudsecure = {
       source  = "illumio/illumio-cloudsecure"
-      version = "~> 0.1"
+      version = "~> 1.0.0"
     }
   }
 }
@@ -40,4 +40,4 @@ resource "illumio-cloudsecure_aws_account" "example" {
 - `client_secret` (String, Sensitive) OAuth 2 client secret used to authenticate against the CloudSecure Config API. Either client_id+client_secret or access_token must be specified.
 - `insecure_tls` (Boolean) Disables TLS server certificate verification for all requests to the CloudSecure Config API and Token endpoints. Server certificate verification is enabled by default. Should only be used for testing the provider.
 - `request_timeout` (String) Maximum duration of each API request, defaults to 10s.
-- `token_endpoint` (String) CloudSecure OAuth 2 Token endpoint, defaults to https://cloud.illum.io/token.
+- `token_endpoint` (String) CloudSecure OAuth 2 Token endpoint, defaults to https://cloud.illum.io/api/v1/authenticate.

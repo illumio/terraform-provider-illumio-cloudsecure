@@ -35,43 +35,31 @@ func NewFakeConfigServer(logger *zap.Logger) configv1.ConfigServiceServer {
 }
 
 type AwsAccount struct {
-	Id                string
-	AccountId         string
-	AccountType       string
-	Disabled          bool
-	ExcludedRegions   []string
-	ExcludedSubnetIds []string
-	ExcludedVpcIds    []string
-	Mode              string
-	Name              string
-	ServiceAccountId  string
+	Id               string
+	AccountId        string
+	AccountType      string
+	Mode             string
+	Name             string
+	ServiceAccountId string
 }
 
 func (s *FakeConfigServer) CreateAwsAccount(ctx context.Context, req *configv1.CreateAwsAccountRequest) (*configv1.CreateAwsAccountResponse, error) {
 	id := uuid.New().String()
 	model := &AwsAccount{
-		Id:                id,
-		AccountId:         req.AccountId,
-		AccountType:       req.AccountType,
-		Disabled:          req.Disabled,
-		ExcludedRegions:   req.ExcludedRegions,
-		ExcludedSubnetIds: req.ExcludedSubnetIds,
-		ExcludedVpcIds:    req.ExcludedVpcIds,
-		Mode:              req.Mode,
-		Name:              req.Name,
-		ServiceAccountId:  req.ServiceAccountId,
+		Id:               id,
+		AccountId:        req.AccountId,
+		AccountType:      req.AccountType,
+		Mode:             req.Mode,
+		Name:             req.Name,
+		ServiceAccountId: req.ServiceAccountId,
 	}
 	resp := &configv1.CreateAwsAccountResponse{
-		Id:                id,
-		AccountId:         model.AccountId,
-		AccountType:       model.AccountType,
-		Disabled:          model.Disabled,
-		ExcludedRegions:   model.ExcludedRegions,
-		ExcludedSubnetIds: model.ExcludedSubnetIds,
-		ExcludedVpcIds:    model.ExcludedVpcIds,
-		Mode:              model.Mode,
-		Name:              model.Name,
-		ServiceAccountId:  model.ServiceAccountId,
+		Id:               id,
+		AccountId:        model.AccountId,
+		AccountType:      model.AccountType,
+		Mode:             model.Mode,
+		Name:             model.Name,
+		ServiceAccountId: model.ServiceAccountId,
 	}
 	s.AwsAccountMutex.Lock()
 	s.AwsAccountMap[id] = model
@@ -98,16 +86,12 @@ func (s *FakeConfigServer) ReadAwsAccount(ctx context.Context, req *configv1.Rea
 		return nil, status.Errorf(codes.NotFound, "no aws_account found with id %s", id)
 	}
 	resp := &configv1.ReadAwsAccountResponse{
-		Id:                id,
-		AccountId:         model.AccountId,
-		AccountType:       model.AccountType,
-		Disabled:          model.Disabled,
-		ExcludedRegions:   model.ExcludedRegions,
-		ExcludedSubnetIds: model.ExcludedSubnetIds,
-		ExcludedVpcIds:    model.ExcludedVpcIds,
-		Mode:              model.Mode,
-		Name:              model.Name,
-		ServiceAccountId:  model.ServiceAccountId,
+		Id:               id,
+		AccountId:        model.AccountId,
+		AccountType:      model.AccountType,
+		Mode:             model.Mode,
+		Name:             model.Name,
+		ServiceAccountId: model.ServiceAccountId,
 	}
 	s.AwsAccountMutex.RUnlock()
 	s.Logger.Info("read resource",
@@ -138,14 +122,6 @@ func (s *FakeConfigServer) UpdateAwsAccount(ctx context.Context, req *configv1.U
 	}
 	for _, path := range updateMaskPaths {
 		switch path {
-		case "disabled":
-			model.Disabled = req.Disabled
-		case "excluded_regions":
-			model.ExcludedRegions = req.ExcludedRegions
-		case "excluded_subnet_ids":
-			model.ExcludedSubnetIds = req.ExcludedSubnetIds
-		case "excluded_vpc_ids":
-			model.ExcludedVpcIds = req.ExcludedVpcIds
 		case "name":
 			model.Name = req.Name
 		default:
@@ -161,16 +137,12 @@ func (s *FakeConfigServer) UpdateAwsAccount(ctx context.Context, req *configv1.U
 		}
 	}
 	resp := &configv1.UpdateAwsAccountResponse{
-		Id:                id,
-		AccountId:         model.AccountId,
-		AccountType:       model.AccountType,
-		Disabled:          model.Disabled,
-		ExcludedRegions:   model.ExcludedRegions,
-		ExcludedSubnetIds: model.ExcludedSubnetIds,
-		ExcludedVpcIds:    model.ExcludedVpcIds,
-		Mode:              model.Mode,
-		Name:              model.Name,
-		ServiceAccountId:  model.ServiceAccountId,
+		Id:               id,
+		AccountId:        model.AccountId,
+		AccountType:      model.AccountType,
+		Mode:             model.Mode,
+		Name:             model.Name,
+		ServiceAccountId: model.ServiceAccountId,
 	}
 	s.AwsAccountMutex.Unlock()
 	s.Logger.Info("updated resource",
