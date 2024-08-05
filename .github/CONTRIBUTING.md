@@ -53,14 +53,14 @@ cp terraform-provider-illumio-cloudsecure ~/.terraform.d/plugins/registry.terraf
 
 1. Implement the `ConfigService` gRPC server as specified in the commit to be released, and deploy that server.
 1. Choose a version number for the new release. Follow [Semantic Versioning 2.0.0](https://semver.org/spec/v2.0.0.html) format `vX.Y.Z`, e.g. `v1.2.3`.
-1. Update the version number in `examples/provider/provider.tf` (omit the `v` prefix):
+1. Update the version number in `examples/provider/provider.tf` (omit the `v` prefix), and re-generate the docs (`make generate`):
 
    ```
    terraform {
       required_providers {
          illumio-cloudsecure = {
             source  = "illumio/illumio-cloudsecure"
-            version = "~> 1.0.0"
+            version = "~> 1.0.1"
          }
       }
    }
