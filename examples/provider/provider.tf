@@ -8,7 +8,7 @@ terraform {
   }
 }
 
-# Onboard an AWS account
-resource "illumio-cloudsecure_aws_account" "example" {
-  # ...
+provider "illumio-cloudsecure" {
+  client_id     = "my-access-id"
+  client_secret = "my-secret-id"
 }
