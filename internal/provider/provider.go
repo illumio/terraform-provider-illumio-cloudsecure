@@ -90,7 +90,7 @@ func (p *Provider) Schema(_ context.Context, _ provider.SchemaRequest, resp *pro
 		MarkdownDescription: "A Provider for managing Illumio CloudSecure.",
 		Attributes: map[string]provider_schema.Attribute{
 			"api_endpoint": provider_schema.StringAttribute{
-				MarkdownDescription: "CloudSecure Config API endpoint, defaults to " + DefaultAPIEndpoint + ".",
+				MarkdownDescription: "CloudSecure Config API endpoint, defaults to `" + DefaultAPIEndpoint + "`.",
 				Optional:            true,
 				Validators: []validator.String{
 					stringvalidator.LengthBetween(1, 1024),
@@ -98,7 +98,7 @@ func (p *Provider) Schema(_ context.Context, _ provider.SchemaRequest, resp *pro
 				},
 			},
 			"token_endpoint": provider_schema.StringAttribute{
-				MarkdownDescription: "CloudSecure OAuth 2 Token endpoint, defaults to " + DefaultTokenEndpoint + ".",
+				MarkdownDescription: "CloudSecure OAuth 2 Token endpoint, defaults to `" + DefaultTokenEndpoint + "`.",
 				Optional:            true,
 				Validators: []validator.String{
 					stringvalidator.LengthBetween(1, 1024),
@@ -106,14 +106,14 @@ func (p *Provider) Schema(_ context.Context, _ provider.SchemaRequest, resp *pro
 				},
 			},
 			"client_id": provider_schema.StringAttribute{
-				MarkdownDescription: "OAuth 2 client identifier used to authenticate against the CloudSecure Config API. Either client_id+client_secret or access_token must be specified.",
+				MarkdownDescription: "OAuth 2 client identifier used to authenticate against the CloudSecure Config API. Either `client_id`+`client_secret` or `access_token` must be specified.",
 				Optional:            true,
 				Validators: []validator.String{
 					stringvalidator.LengthBetween(1, 1024),
 				},
 			},
 			"client_secret": provider_schema.StringAttribute{
-				MarkdownDescription: "OAuth 2 client secret used to authenticate against the CloudSecure Config API. Either client_id+client_secret or access_token must be specified.",
+				MarkdownDescription: "OAuth 2 client secret used to authenticate against the CloudSecure Config API. Either `client_id`+`client_secret` or `access_token` must be specified.",
 				Optional:            true,
 				Sensitive:           true,
 				Validators: []validator.String{
@@ -121,7 +121,7 @@ func (p *Provider) Schema(_ context.Context, _ provider.SchemaRequest, resp *pro
 				},
 			},
 			"access_token": provider_schema.StringAttribute{
-				MarkdownDescription: "OAuth 2 access token used to authenticate against the CloudSecure Config API. Either client_id+client_secret or access_token must be specified.",
+				MarkdownDescription: "OAuth 2 access token used to authenticate against the CloudSecure Config API. Either `client_id`+`client_secret` or `access_token` must be specified.",
 				Optional:            true,
 				Sensitive:           true,
 				Validators: []validator.String{
