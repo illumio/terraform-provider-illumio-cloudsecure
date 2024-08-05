@@ -1,0 +1,92 @@
+page_title: "{{.ProviderShortName}} Provider"
+subcategory: ""
+description: |-
+{{ .Description | plainmarkdown | trimspace | prefixlines "  " }}
+---
+
+# {{.ProviderShortName}} Provider
+
+{{ .Description | trimspace }}
+
+{{ if .HasExample -}}
+## Example Usage
+
+{{tffile .ExampleFile }}
+{{- end }}
+
+## Authentication
+
+Illumio CloudSecure follows the OAuth 2 standard protocol for authenticating the Terraform provider.
+To generate the necessary OAuth 2 `client_id` and `client_secret` to authenticate the CloudSecure Terraform provider, you will need to create a Service Account from the [console](https://console.illum.io/#/serviceAccounts) and generate a new secret.
+
+Illumio CloudSecure provides several methods for authenticating the Terraform provider using OAuth 2:
+
+1. Using the `client_id` and `client_secret`
+1. Using an access token
+
+### Configuring `client_id` and `client_secret` in the Provider Configuration
+
+Credentials can be provided by adding a `client_id` and client_secret, or an `access_token`, into the `illumio-cloudsecure` provider block.
+
+```terraform
+provider "illumio-cloudsecure" {
+  client_id     = "my-access-id"
+  client_secret = "my-secret-id"
+}
+```
+
+| :warning: WARNING:                                                                                                                                                        |
+| :------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| Hard-coded credentials are not recommended in any Terraform configuration and risks secret leakage should this file ever be committed to a public version control system. |
+
+### Configuring `client_id` and `client_secret` using Environment Variables
+
+Preferably, these credentials can be provided via input variables which values are set using environment variables.
+
+```terraform
+variable "illumio_cloudsecure_client_id" {
+  type        = string
+  description = "The OAuth 2 client identifier used to authenticate against the CloudSecure Config API."
+}
+
+variable "illumio_cloudsecure_client_secret" {
+  type        = string
+  sensitive   = true
+  description = "The OAuth 2 client secret used to authenticate against the CloudSecure Config API."
+}
+
+provider "illumio-cloudsecure" {
+  client_id     = var.illumio_cloudsecure_client_id
+  client_secret = var.illumio_cloudsecure_client_secret
+}
+```
+
+```terraform
+% export TF_VAR_illumio_cloudsecure_client_id="my-client-id"
+% export TF_VAR_illumio_cloudsecure_client_secret="my-client-secret"
+% terraform plan
+```
+
+### Access Token
+
+Clients may pass the `access_token` directly instead of using the `client_id` and `client_secret`.
+You will need to call the OAuth 2 Token Endpoint at https://cloud.illum.io/api/v1/authenticate on your own with the `client_id` and `client_secret` to obtain the `access_token`.
+
+```terraform
+variable "illumio_cloudsecure_access_token" {  
+  type        = string  
+  sensitive   = true  
+  description = "The OAuth 2 access token used to authenticate against the CloudSecure Config API."  
+}  
+
+provider "illumio-cloudsecure" {  
+  access_token = var.illumio_cloudsecure_access_token  
+}
+```
+
+```terraform
+% export TF_VAR_illumio_cloudsecure_access_token="my-access-token"  
+% terraform plan  
+```
+
+{{ .SchemaMarkdown | trimspace }}
