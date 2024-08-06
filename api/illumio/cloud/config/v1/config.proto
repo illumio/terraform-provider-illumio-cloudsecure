@@ -48,10 +48,7 @@ message ReadAwsAccountResponse {
 }
 message UpdateAwsAccountRequest {
   string id = 1;
-  optional string management_account_id = 4;
   string name = 6;
-  optional string organization_id = 7;
-  string role_arn = 8;
   google.protobuf.FieldMask update_mask = 10;
 }
 message UpdateAwsAccountResponse {

@@ -317,15 +317,6 @@ func NewUpdateAwsAccountRequest(beforeData, afterData *AwsAccountResourceModel) 
 	proto := &configv1.UpdateAwsAccountRequest{}
 	proto.UpdateMask, _ = fieldmaskpb.New(proto)
 	proto.Id = beforeData.Id.ValueString()
-	if !afterData.ManagementAccountId.Equal(beforeData.ManagementAccountId) {
-		proto.UpdateMask.Append(proto, "management_account_id")
-		if !afterData.ManagementAccountId.IsUnknown() && !afterData.ManagementAccountId.IsNull() {
-			var dataValue attr.Value = afterData.ManagementAccountId
-			var protoValue string
-			protoValue = dataValue.(types.String).ValueString()
-			proto.ManagementAccountId = &protoValue
-		}
-	}
 	if !afterData.Name.Equal(beforeData.Name) {
 		proto.UpdateMask.Append(proto, "name")
 		if !afterData.Name.IsUnknown() && !afterData.Name.IsNull() {
@@ -333,24 +324,6 @@ func NewUpdateAwsAccountRequest(beforeData, afterData *AwsAccountResourceModel) 
 			var protoValue string
 			protoValue = dataValue.(types.String).ValueString()
 			proto.Name = protoValue
-		}
-	}
-	if !afterData.OrganizationId.Equal(beforeData.OrganizationId) {
-		proto.UpdateMask.Append(proto, "organization_id")
-		if !afterData.OrganizationId.IsUnknown() && !afterData.OrganizationId.IsNull() {
-			var dataValue attr.Value = afterData.OrganizationId
-			var protoValue string
-			protoValue = dataValue.(types.String).ValueString()
-			proto.OrganizationId = &protoValue
-		}
-	}
-	if !afterData.RoleArn.Equal(beforeData.RoleArn) {
-		proto.UpdateMask.Append(proto, "role_arn")
-		if !afterData.RoleArn.IsUnknown() && !afterData.RoleArn.IsNull() {
-			var dataValue attr.Value = afterData.RoleArn
-			var protoValue string
-			protoValue = dataValue.(types.String).ValueString()
-			proto.RoleArn = protoValue
 		}
 	}
 	return proto

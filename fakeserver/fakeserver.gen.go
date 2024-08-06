@@ -134,14 +134,8 @@ func (s *FakeConfigServer) UpdateAwsAccount(ctx context.Context, req *configv1.U
 	}
 	for _, path := range updateMaskPaths {
 		switch path {
-		case "management_account_id":
-			model.ManagementAccountId = req.ManagementAccountId
 		case "name":
 			model.Name = req.Name
-		case "organization_id":
-			model.OrganizationId = req.OrganizationId
-		case "role_arn":
-			model.RoleArn = req.RoleArn
 		default:
 			s.AwsAccountMutex.Unlock()
 			s.Logger.Error("attempted to update resource using invalid update_mask path",

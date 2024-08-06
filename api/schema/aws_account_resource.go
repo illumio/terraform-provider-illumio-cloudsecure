@@ -66,17 +66,32 @@ var (
 						Mode: ImmutableAttributeMode,
 					},
 				},
-				"role_arn": resource_schema.StringAttribute{
-					Description: "Provider AWS role ARN.",
-					Required:    true,
+				"role_arn": StringResourceAttributeWithMode{
+					StringAttribute: resource_schema.StringAttribute{
+						Description: "Provider AWS role ARN.",
+						Required:    true,
+					},
+					attributeWithMode: attributeWithMode{
+						Mode: ImmutableAttributeMode,
+					},
 				},
-				"management_account_id": resource_schema.StringAttribute{
-					Description: "Management account ID.",
-					Optional:    true,
+				"management_account_id": StringResourceAttributeWithMode{
+					StringAttribute: resource_schema.StringAttribute{
+						Description: "Management account ID.",
+						Optional:    true,
+					},
+					attributeWithMode: attributeWithMode{
+						Mode: ImmutableAttributeMode,
+					},
 				},
-				"organization_id": resource_schema.StringAttribute{
-					Description: "AWS organization ID.",
-					Optional:    true,
+				"organization_id": StringResourceAttributeWithMode{
+					StringAttribute: resource_schema.StringAttribute{
+						Description: "AWS organization ID.",
+						Optional:    true,
+					},
+					attributeWithMode: attributeWithMode{
+						Mode: ImmutableAttributeMode,
+					},
 				},
 			},
 		},
