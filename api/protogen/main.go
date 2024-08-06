@@ -29,7 +29,7 @@ func main() {
 		os.Exit(1)
 	}
 
-	err = GenerateGRPCAPISpec(f, schema.CloudSecure())
+	err = GenerateGRPCAPISpec(f, schema.CloudSecure(), newApiSpecTagger())
 	if err != nil {
 		fmt.Fprintf(os.Stderr, "failed to generate and write API into file %q: %s", outfile, err)
 		os.Exit(1)

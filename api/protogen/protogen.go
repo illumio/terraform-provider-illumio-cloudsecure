@@ -101,7 +101,7 @@ type field struct {
 }
 
 // GenerateGRPCAPISpec generates the Protocol Buffer and gRPC spec for the Illumio CloudSecure Config API, and outputs it into the given Writer.
-func GenerateGRPCAPISpec(dst io.Writer, src schema.Schema) error {
+func GenerateGRPCAPISpec(dst io.Writer, src schema.Schema, tagger *apiSpecTagger) error {
 	data := grpcAPISpecTemplateData{
 		Version: src.Version(),
 		// TODO: Support data sources.
@@ -149,7 +149,6 @@ func GenerateGRPCAPISpec(dst io.Writer, src schema.Schema) error {
 			Fields: make([]field, 0, 1),
 		}
 
-		nextTag := 1
 		attrNames := schema.SortResourceAttributes(resource.Schema.Attributes)
 
 		for _, attrName := range attrNames {
@@ -179,10 +178,8 @@ func GenerateGRPCAPISpec(dst io.Writer, src schema.Schema) error {
 				Optional: schema.AttributeIsOptional(attrSchema),
 				Type:     t,
 				Name:     attrName,
-				Tag:      nextTag,
+				Tag:      tagger.AssignTag("resource/"+resourceName, attrName),
 			}
-
-			nextTag++
 
 			attrMode := schema.GetResourceAttributeMode(attrSchema)
 
@@ -218,7 +215,7 @@ func GenerateGRPCAPISpec(dst io.Writer, src schema.Schema) error {
 		updateRequestMessage.Fields = append(updateRequestMessage.Fields, field{
 			Type: "google.protobuf.FieldMask",
 			Name: schema.UpdateMaskFieldName,
-			Tag:  nextTag,
+			Tag:  tagger.AssignTag("resource/"+resourceName, schema.UpdateMaskFieldName),
 		})
 
 		data.RPCs = append(data.RPCs,
