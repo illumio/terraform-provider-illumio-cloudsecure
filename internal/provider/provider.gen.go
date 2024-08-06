@@ -332,32 +332,23 @@ func CopyCreateAwsAccountResponse(dst *AwsAccountResourceModel, src *configv1.Cr
 	dst.Id = types.StringValue(src.Id)
 	dst.AccountId = types.StringValue(src.AccountId)
 	dst.AccountType = types.StringValue(src.AccountType)
-	dst.ManagementAccountId = types.StringPointerValue(src.ManagementAccountId)
 	dst.Mode = types.StringValue(src.Mode)
 	dst.Name = types.StringValue(src.Name)
-	dst.OrganizationId = types.StringPointerValue(src.OrganizationId)
-	dst.RoleArn = types.StringValue(src.RoleArn)
 	dst.ServiceAccountId = types.StringValue(src.ServiceAccountId)
 }
 func CopyReadAwsAccountResponse(dst *AwsAccountResourceModel, src *configv1.ReadAwsAccountResponse) {
 	dst.Id = types.StringValue(src.Id)
 	dst.AccountId = types.StringValue(src.AccountId)
 	dst.AccountType = types.StringValue(src.AccountType)
-	dst.ManagementAccountId = types.StringPointerValue(src.ManagementAccountId)
 	dst.Mode = types.StringValue(src.Mode)
 	dst.Name = types.StringValue(src.Name)
-	dst.OrganizationId = types.StringPointerValue(src.OrganizationId)
-	dst.RoleArn = types.StringValue(src.RoleArn)
 	dst.ServiceAccountId = types.StringValue(src.ServiceAccountId)
 }
 func CopyUpdateAwsAccountResponse(dst *AwsAccountResourceModel, src *configv1.UpdateAwsAccountResponse) {
 	dst.Id = types.StringValue(src.Id)
 	dst.AccountId = types.StringValue(src.AccountId)
 	dst.AccountType = types.StringValue(src.AccountType)
-	dst.ManagementAccountId = types.StringPointerValue(src.ManagementAccountId)
 	dst.Mode = types.StringValue(src.Mode)
 	dst.Name = types.StringValue(src.Name)
-	dst.OrganizationId = types.StringPointerValue(src.OrganizationId)
-	dst.RoleArn = types.StringValue(src.RoleArn)
 	dst.ServiceAccountId = types.StringValue(src.ServiceAccountId)
 }

@@ -72,7 +72,7 @@ var (
 						Required:    true,
 					},
 					attributeWithMode: attributeWithMode{
-						Mode: ImmutableAttributeMode,
+						Mode: WriteOnlyOnceAttributeMode,
 					},
 				},
 				"management_account_id": StringResourceAttributeWithMode{
@@ -81,7 +81,7 @@ var (
 						Optional:    true,
 					},
 					attributeWithMode: attributeWithMode{
-						Mode: ImmutableAttributeMode,
+						Mode: WriteOnlyOnceAttributeMode,
 					},
 				},
 				"organization_id": StringResourceAttributeWithMode{
@@ -90,7 +90,7 @@ var (
 						Optional:    true,
 					},
 					attributeWithMode: attributeWithMode{
-						Mode: ImmutableAttributeMode,
+						Mode: WriteOnlyOnceAttributeMode,
 					},
 				},
 			},

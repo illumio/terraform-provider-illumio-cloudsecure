@@ -25,11 +25,8 @@ message CreateAwsAccountResponse {
   string id = 1;
   string account_id = 2;
   string account_type = 3;
-  optional string management_account_id = 4;
   string mode = 5;
   string name = 6;
-  optional string organization_id = 7;
-  string role_arn = 8;
   string service_account_id = 9;
 }
 message ReadAwsAccountRequest {
@@ -39,11 +36,8 @@ message ReadAwsAccountResponse {
   string id = 1;
   string account_id = 2;
   string account_type = 3;
-  optional string management_account_id = 4;
   string mode = 5;
   string name = 6;
-  optional string organization_id = 7;
-  string role_arn = 8;
   string service_account_id = 9;
 }
 message UpdateAwsAccountRequest {
@@ -55,11 +49,8 @@ message UpdateAwsAccountResponse {
   string id = 1;
   string account_id = 2;
   string account_type = 3;
-  optional string management_account_id = 4;
   string mode = 5;
   string name = 6;
-  optional string organization_id = 7;
-  string role_arn = 8;
   string service_account_id = 9;
 }
 message DeleteAwsAccountRequest {
