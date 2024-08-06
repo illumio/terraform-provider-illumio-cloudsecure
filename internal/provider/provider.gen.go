@@ -227,12 +227,15 @@ func (r *AwsAccountResource) ImportState(ctx context.Context, req resource.Impor
 }
 
 type AwsAccountResourceModel struct {
-	Id               types.String `tfsdk:"id"`
-	AccountId        types.String `tfsdk:"account_id"`
-	AccountType      types.String `tfsdk:"account_type"`
-	Mode             types.String `tfsdk:"mode"`
-	Name             types.String `tfsdk:"name"`
-	ServiceAccountId types.String `tfsdk:"service_account_id"`
+	Id                  types.String `tfsdk:"id"`
+	AccountId           types.String `tfsdk:"account_id"`
+	AccountType         types.String `tfsdk:"account_type"`
+	ManagementAccountId types.String `tfsdk:"management_account_id"`
+	Mode                types.String `tfsdk:"mode"`
+	Name                types.String `tfsdk:"name"`
+	OrganizationId      types.String `tfsdk:"organization_id"`
+	RoleArn             types.String `tfsdk:"role_arn"`
+	ServiceAccountId    types.String `tfsdk:"service_account_id"`
 }
 
 func NewCreateAwsAccountRequest(data *AwsAccountResourceModel) *configv1.CreateAwsAccountRequest {
@@ -249,6 +252,12 @@ func NewCreateAwsAccountRequest(data *AwsAccountResourceModel) *configv1.CreateA
 		protoValue = dataValue.(types.String).ValueString()
 		proto.AccountType = protoValue
 	}
+	if !data.ManagementAccountId.IsUnknown() && !data.ManagementAccountId.IsNull() {
+		var dataValue attr.Value = data.ManagementAccountId
+		var protoValue string
+		protoValue = dataValue.(types.String).ValueString()
+		proto.ManagementAccountId = &protoValue
+	}
 	if !data.Mode.IsUnknown() && !data.Mode.IsNull() {
 		var dataValue attr.Value = data.Mode
 		var protoValue string
@@ -260,6 +269,18 @@ func NewCreateAwsAccountRequest(data *AwsAccountResourceModel) *configv1.CreateA
 		var protoValue string
 		protoValue = dataValue.(types.String).ValueString()
 		proto.Name = protoValue
+	}
+	if !data.OrganizationId.IsUnknown() && !data.OrganizationId.IsNull() {
+		var dataValue attr.Value = data.OrganizationId
+		var protoValue string
+		protoValue = dataValue.(types.String).ValueString()
+		proto.OrganizationId = &protoValue
+	}
+	if !data.RoleArn.IsUnknown() && !data.RoleArn.IsNull() {
+		var dataValue attr.Value = data.RoleArn
+		var protoValue string
+		protoValue = dataValue.(types.String).ValueString()
+		proto.RoleArn = protoValue
 	}
 	if !data.ServiceAccountId.IsUnknown() && !data.ServiceAccountId.IsNull() {
 		var dataValue attr.Value = data.ServiceAccountId
@@ -296,6 +317,15 @@ func NewUpdateAwsAccountRequest(beforeData, afterData *AwsAccountResourceModel) 
 	proto := &configv1.UpdateAwsAccountRequest{}
 	proto.UpdateMask, _ = fieldmaskpb.New(proto)
 	proto.Id = beforeData.Id.ValueString()
+	if !afterData.ManagementAccountId.Equal(beforeData.ManagementAccountId) {
+		proto.UpdateMask.Append(proto, "management_account_id")
+		if !afterData.ManagementAccountId.IsUnknown() && !afterData.ManagementAccountId.IsNull() {
+			var dataValue attr.Value = afterData.ManagementAccountId
+			var protoValue string
+			protoValue = dataValue.(types.String).ValueString()
+			proto.ManagementAccountId = &protoValue
+		}
+	}
 	if !afterData.Name.Equal(beforeData.Name) {
 		proto.UpdateMask.Append(proto, "name")
 		if !afterData.Name.IsUnknown() && !afterData.Name.IsNull() {
@@ -305,29 +335,56 @@ func NewUpdateAwsAccountRequest(beforeData, afterData *AwsAccountResourceModel) 
 			proto.Name = protoValue
 		}
 	}
+	if !afterData.OrganizationId.Equal(beforeData.OrganizationId) {
+		proto.UpdateMask.Append(proto, "organization_id")
+		if !afterData.OrganizationId.IsUnknown() && !afterData.OrganizationId.IsNull() {
+			var dataValue attr.Value = afterData.OrganizationId
+			var protoValue string
+			protoValue = dataValue.(types.String).ValueString()
+			proto.OrganizationId = &protoValue
+		}
+	}
+	if !afterData.RoleArn.Equal(beforeData.RoleArn) {
+		proto.UpdateMask.Append(proto, "role_arn")
+		if !afterData.RoleArn.IsUnknown() && !afterData.RoleArn.IsNull() {
+			var dataValue attr.Value = afterData.RoleArn
+			var protoValue string
+			protoValue = dataValue.(types.String).ValueString()
+			proto.RoleArn = protoValue
+		}
+	}
 	return proto
 }
 func CopyCreateAwsAccountResponse(dst *AwsAccountResourceModel, src *configv1.CreateAwsAccountResponse) {
 	dst.Id = types.StringValue(src.Id)
 	dst.AccountId = types.StringValue(src.AccountId)
 	dst.AccountType = types.StringValue(src.AccountType)
+	dst.ManagementAccountId = types.StringPointerValue(src.ManagementAccountId)
 	dst.Mode = types.StringValue(src.Mode)
 	dst.Name = types.StringValue(src.Name)
+	dst.OrganizationId = types.StringPointerValue(src.OrganizationId)
+	dst.RoleArn = types.StringValue(src.RoleArn)
 	dst.ServiceAccountId = types.StringValue(src.ServiceAccountId)
 }
 func CopyReadAwsAccountResponse(dst *AwsAccountResourceModel, src *configv1.ReadAwsAccountResponse) {
 	dst.Id = types.StringValue(src.Id)
 	dst.AccountId = types.StringValue(src.AccountId)
 	dst.AccountType = types.StringValue(src.AccountType)
+	dst.ManagementAccountId = types.StringPointerValue(src.ManagementAccountId)
 	dst.Mode = types.StringValue(src.Mode)
 	dst.Name = types.StringValue(src.Name)
+	dst.OrganizationId = types.StringPointerValue(src.OrganizationId)
+	dst.RoleArn = types.StringValue(src.RoleArn)
 	dst.ServiceAccountId = types.StringValue(src.ServiceAccountId)
 }
 func CopyUpdateAwsAccountResponse(dst *AwsAccountResourceModel, src *configv1.UpdateAwsAccountResponse) {
 	dst.Id = types.StringValue(src.Id)
 	dst.AccountId = types.StringValue(src.AccountId)
 	dst.AccountType = types.StringValue(src.AccountType)
+	dst.ManagementAccountId = types.StringPointerValue(src.ManagementAccountId)
 	dst.Mode = types.StringValue(src.Mode)
 	dst.Name = types.StringValue(src.Name)
+	dst.OrganizationId = types.StringPointerValue(src.OrganizationId)
+	dst.RoleArn = types.StringValue(src.RoleArn)
 	dst.ServiceAccountId = types.StringValue(src.ServiceAccountId)
 }

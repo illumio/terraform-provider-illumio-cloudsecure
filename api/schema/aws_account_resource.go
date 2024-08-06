@@ -66,6 +66,18 @@ var (
 						Mode: ImmutableAttributeMode,
 					},
 				},
+				"role_arn": resource_schema.StringAttribute{
+					Description: "Provider AWS role ARN.",
+					Required:    true,
+				},
+				"management_account_id": resource_schema.StringAttribute{
+					Description: "Management account ID.",
+					Optional:    true,
+				},
+				"organization_id": resource_schema.StringAttribute{
+					Description: "AWS organization ID.",
+					Optional:    true,
+				},
 			},
 		},
 	}
