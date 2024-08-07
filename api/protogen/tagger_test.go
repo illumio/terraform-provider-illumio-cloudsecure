@@ -180,7 +180,7 @@ func (suite *GenerateTestSuite) TestAPISpecTaggerJSONMarshaling() {
 	suite.NoError(gotErr, "JSON marshaling failed")
 	suite.Equal(`{"resource/res1":{"field1":1,"field2":2},"resource/res2":{"field1":1,"field2":2}}`, string(gotJSONBytes), "JSON value should match")
 
-	// Test that the next tags were calculated correct on unmarshaling.
+	// Test that the next tags were calculated correctly on unmarshaling.
 	gotTag = tagger.AssignTag("resource/res1", "field3")
 	suite.Equal(3, gotTag, "attribute tag should match")
 
