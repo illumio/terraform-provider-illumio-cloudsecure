@@ -22,7 +22,7 @@ var (
 // newAttributeTagger creates a new attributeTagger with the given previously assigned tags.
 // The values in preAssignedTags must be distinct.
 func newAttributeTagger(preAssignedTags map[string]int) *attributeTagger {
-	// Since all tags are assigned monotonically, the next tag immediatly follows the highest previously assigned tag.
+	// Since all tags are assigned monotonically, the next tag immediately follows the highest previously assigned tag.
 	// If no tags were previouysly assigned, start from 1.
 	nextTag := 1
 
@@ -95,8 +95,8 @@ var (
 	_ json.Unmarshaler = &apiSpecTagger{}
 )
 
-// newApiSpecTagger creates a new empty apiSpecTagger.
-func newApiSpecTagger() *apiSpecTagger {
+// newAPISpecTagger creates a new empty apiSpecTagger.
+func newAPISpecTagger() *apiSpecTagger {
 	return &apiSpecTagger{
 		AttributeTaggers: make(map[string]*attributeTagger),
 	}

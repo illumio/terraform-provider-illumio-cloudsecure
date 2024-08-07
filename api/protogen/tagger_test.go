@@ -130,7 +130,7 @@ func (suite *GenerateTestSuite) TestAttributeTaggerUnmarshalJSON() {
 func (suite *GenerateTestSuite) TestAPISpecTaggerAssignTag() {
 	var gotTag int
 
-	tagger := newApiSpecTagger()
+	tagger := newAPISpecTagger()
 
 	// The first attribute in a new namespace should have tag 1.
 	gotTag = tagger.AssignTag("resource/res1", "field1")
@@ -155,10 +155,12 @@ func (suite *GenerateTestSuite) TestAPISpecTaggerAssignTag() {
 
 func (suite *GenerateTestSuite) TestAPISpecTaggerJSONMarshaling() {
 	var gotJSONBytes []byte
+
 	var gotErr error
+
 	var gotTag int
 
-	tagger := newApiSpecTagger()
+	tagger := newAPISpecTagger()
 
 	_ = tagger.AssignTag("resource/res1", "field1")
 	_ = tagger.AssignTag("resource/res1", "field2")
@@ -187,5 +189,4 @@ func (suite *GenerateTestSuite) TestAPISpecTaggerJSONMarshaling() {
 	gotJSONBytes, gotErr = json.Marshal(tagger)
 	suite.NoError(gotErr, "JSON marshaling failed")
 	suite.Equal(`{"resource/res1":{"field1":1,"field2":2,"field3":3},"resource/res2":{"field1":1,"field2":2},"resource/res3":{"field1":1}}`, string(gotJSONBytes), "JSON value should match")
-
 }

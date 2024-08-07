@@ -42,7 +42,7 @@ func main() {
 	}
 
 	if tagger == nil {
-		tagger = newApiSpecTagger()
+		tagger = newAPISpecTagger()
 	}
 
 	f, err := os.OpenFile(outfile, os.O_WRONLY|os.O_CREATE|os.O_TRUNC, 0644)
@@ -70,7 +70,7 @@ func main() {
 		os.Exit(1)
 	}
 
-	err = os.WriteFile(tagsfile, tagsJSONBytes, 0644)
+	err = os.WriteFile(tagsfile, tagsJSONBytes, 0644) //nolint:gosec // 0600 permissions would be too restrictive.
 	if err != nil {
 		fmt.Fprintf(os.Stderr, "failed to write tags into tags file %q: %s", tagsfile, err)
 		os.Exit(1)
