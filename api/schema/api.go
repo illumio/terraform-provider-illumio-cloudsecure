@@ -48,7 +48,8 @@ type Schema interface {
 	// The version must be incremented whenever the schema is modified in a backward-incompatible manner, i.e. when
 	// a resource, datasource, or attribute is deleted,
 	// an optional attribute is modified to be required,
-	// or when a required attribute is added to an existing resource.
+	// when a required attribute is added to an existing resource,
+	// or when the type of an existing attribute is modified.
 	Version() string
 
 	// Resources returns the list of resources provided by the provider sorted by TypeName.
