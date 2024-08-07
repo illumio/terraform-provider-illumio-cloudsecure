@@ -15,8 +15,8 @@ type attributeTagger struct {
 }
 
 var (
-	_ json.Marshaler   = &apiSpecTagger{}
-	_ json.Unmarshaler = &apiSpecTagger{}
+	_ json.Marshaler   = &attributeTagger{}
+	_ json.Unmarshaler = &attributeTagger{}
 )
 
 // newAttributeTagger creates a new attributeTagger with the given previously assigned tags.
