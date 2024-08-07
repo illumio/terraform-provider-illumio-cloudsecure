@@ -66,6 +66,33 @@ var (
 						Mode: ImmutableAttributeMode,
 					},
 				},
+				"role_arn": StringResourceAttributeWithMode{
+					StringAttribute: resource_schema.StringAttribute{
+						Description: "ARN of the AWS role to be assumed by CloudSecure to manage this account.",
+						Required:    true,
+					},
+					attributeWithMode: attributeWithMode{
+						Mode: WriteOnlyOnceAttributeMode,
+					},
+				},
+				"management_account_id": StringResourceAttributeWithMode{
+					StringAttribute: resource_schema.StringAttribute{
+						MarkdownDescription: "AWS organization management account ID. If specified, `organization_id` must also be specified.",
+						Optional:            true,
+					},
+					attributeWithMode: attributeWithMode{
+						Mode: WriteOnlyOnceAttributeMode,
+					},
+				},
+				"organization_id": StringResourceAttributeWithMode{
+					StringAttribute: resource_schema.StringAttribute{
+						Description: "AWS organization ID. If specified, the whole AWS organization is onboarded instead of just the AWS account. If specified, `management_account_id` must also be specified.",
+						Optional:    true,
+					},
+					attributeWithMode: attributeWithMode{
+						Mode: WriteOnlyOnceAttributeMode,
+					},
+				},
 			},
 		},
 	}

@@ -32,11 +32,14 @@ resource "illumio-cloudsecure_aws_account" "example" {
 - `account_id` (String) AWS account ID.
 - `account_type` (String) AWS account type.
 - `name` (String) Display name.
+- `role_arn` (String) ARN of the AWS role to be assumed by CloudSecure to manage this account.
 - `service_account_id` (String) AWS service account ID.
 
 ### Optional
 
+- `management_account_id` (String) AWS organization management account ID. If specified, `organization_id` must also be specified.
 - `mode` (String) Access mode.
+- `organization_id` (String) AWS organization ID. If specified, the whole AWS organization is onboarded instead of just the AWS account. If specified, `management_account_id` must also be specified.
 
 ### Read-Only
 

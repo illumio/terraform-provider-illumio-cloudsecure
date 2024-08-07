@@ -14,17 +14,20 @@ service ConfigService {
 message CreateAwsAccountRequest {
   string account_id = 2;
   string account_type = 3;
-  string mode = 4;
-  string name = 5;
-  string service_account_id = 6;
+  optional string management_account_id = 4;
+  string mode = 5;
+  string name = 6;
+  optional string organization_id = 7;
+  string role_arn = 8;
+  string service_account_id = 9;
 }
 message CreateAwsAccountResponse {
   string id = 1;
   string account_id = 2;
   string account_type = 3;
-  string mode = 4;
-  string name = 5;
-  string service_account_id = 6;
+  string mode = 5;
+  string name = 6;
+  string service_account_id = 9;
 }
 message ReadAwsAccountRequest {
   string id = 1;
@@ -33,22 +36,22 @@ message ReadAwsAccountResponse {
   string id = 1;
   string account_id = 2;
   string account_type = 3;
-  string mode = 4;
-  string name = 5;
-  string service_account_id = 6;
+  string mode = 5;
+  string name = 6;
+  string service_account_id = 9;
 }
 message UpdateAwsAccountRequest {
   string id = 1;
-  string name = 5;
-  google.protobuf.FieldMask update_mask = 7;
+  string name = 6;
+  google.protobuf.FieldMask update_mask = 10;
 }
 message UpdateAwsAccountResponse {
   string id = 1;
   string account_id = 2;
   string account_type = 3;
-  string mode = 4;
-  string name = 5;
-  string service_account_id = 6;
+  string mode = 5;
+  string name = 6;
+  string service_account_id = 9;
 }
 message DeleteAwsAccountRequest {
   string id = 1;

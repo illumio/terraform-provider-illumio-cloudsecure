@@ -35,23 +35,29 @@ func NewFakeConfigServer(logger *zap.Logger) configv1.ConfigServiceServer {
 }
 
 type AwsAccount struct {
-	Id               string
-	AccountId        string
-	AccountType      string
-	Mode             string
-	Name             string
-	ServiceAccountId string
+	Id                  string
+	AccountId           string
+	AccountType         string
+	ManagementAccountId *string
+	Mode                string
+	Name                string
+	OrganizationId      *string
+	RoleArn             string
+	ServiceAccountId    string
 }
 
 func (s *FakeConfigServer) CreateAwsAccount(ctx context.Context, req *configv1.CreateAwsAccountRequest) (*configv1.CreateAwsAccountResponse, error) {
 	id := uuid.New().String()
 	model := &AwsAccount{
-		Id:               id,
-		AccountId:        req.AccountId,
-		AccountType:      req.AccountType,
-		Mode:             req.Mode,
-		Name:             req.Name,
-		ServiceAccountId: req.ServiceAccountId,
+		Id:                  id,
+		AccountId:           req.AccountId,
+		AccountType:         req.AccountType,
+		ManagementAccountId: req.ManagementAccountId,
+		Mode:                req.Mode,
+		Name:                req.Name,
+		OrganizationId:      req.OrganizationId,
+		RoleArn:             req.RoleArn,
+		ServiceAccountId:    req.ServiceAccountId,
 	}
 	resp := &configv1.CreateAwsAccountResponse{
 		Id:               id,

@@ -227,12 +227,15 @@ func (r *AwsAccountResource) ImportState(ctx context.Context, req resource.Impor
 }
 
 type AwsAccountResourceModel struct {
-	Id               types.String `tfsdk:"id"`
-	AccountId        types.String `tfsdk:"account_id"`
-	AccountType      types.String `tfsdk:"account_type"`
-	Mode             types.String `tfsdk:"mode"`
-	Name             types.String `tfsdk:"name"`
-	ServiceAccountId types.String `tfsdk:"service_account_id"`
+	Id                  types.String `tfsdk:"id"`
+	AccountId           types.String `tfsdk:"account_id"`
+	AccountType         types.String `tfsdk:"account_type"`
+	ManagementAccountId types.String `tfsdk:"management_account_id"`
+	Mode                types.String `tfsdk:"mode"`
+	Name                types.String `tfsdk:"name"`
+	OrganizationId      types.String `tfsdk:"organization_id"`
+	RoleArn             types.String `tfsdk:"role_arn"`
+	ServiceAccountId    types.String `tfsdk:"service_account_id"`
 }
 
 func NewCreateAwsAccountRequest(data *AwsAccountResourceModel) *configv1.CreateAwsAccountRequest {
@@ -249,6 +252,12 @@ func NewCreateAwsAccountRequest(data *AwsAccountResourceModel) *configv1.CreateA
 		protoValue = dataValue.(types.String).ValueString()
 		proto.AccountType = protoValue
 	}
+	if !data.ManagementAccountId.IsUnknown() && !data.ManagementAccountId.IsNull() {
+		var dataValue attr.Value = data.ManagementAccountId
+		var protoValue string
+		protoValue = dataValue.(types.String).ValueString()
+		proto.ManagementAccountId = &protoValue
+	}
 	if !data.Mode.IsUnknown() && !data.Mode.IsNull() {
 		var dataValue attr.Value = data.Mode
 		var protoValue string
@@ -260,6 +269,18 @@ func NewCreateAwsAccountRequest(data *AwsAccountResourceModel) *configv1.CreateA
 		var protoValue string
 		protoValue = dataValue.(types.String).ValueString()
 		proto.Name = protoValue
+	}
+	if !data.OrganizationId.IsUnknown() && !data.OrganizationId.IsNull() {
+		var dataValue attr.Value = data.OrganizationId
+		var protoValue string
+		protoValue = dataValue.(types.String).ValueString()
+		proto.OrganizationId = &protoValue
+	}
+	if !data.RoleArn.IsUnknown() && !data.RoleArn.IsNull() {
+		var dataValue attr.Value = data.RoleArn
+		var protoValue string
+		protoValue = dataValue.(types.String).ValueString()
+		proto.RoleArn = protoValue
 	}
 	if !data.ServiceAccountId.IsUnknown() && !data.ServiceAccountId.IsNull() {
 		var dataValue attr.Value = data.ServiceAccountId
