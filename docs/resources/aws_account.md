@@ -14,13 +14,16 @@ Manages an AWS account in CloudSecure.
 
 ```terraform
 resource "illumio-cloudsecure_aws_account" "example" {
-  account_id         = "123456789012"
+  account_id         = "812713887999"
   account_type       = "Organization"
-  name               = "My AWS Account"
-  service_account_id = "service-account-id"
+  name               = "Test AWS Account"
+  role_arn           = "arn:aws:iam::812713887999:role/IllumioAccess"
+  service_account_id = "eb287482-f582-4fab-8a69-88252d56eb6d"
 
   # Optional attributes
-  mode = "ReadWrite"
+  management_account_id = "965208753613"
+  mode                  = "ReadWrite"
+  organization_id       = "o-3eehyj6qk0"
 }
 ```
 
@@ -37,9 +40,9 @@ resource "illumio-cloudsecure_aws_account" "example" {
 
 ### Optional
 
-- `management_account_id` (String) AWS organization management account ID. If specified, `organization_id` must also be specified.
+- `management_account_id` (String) AWS organization management account ID. If specified, `organization_id` must also be specified. Required if `account_type` is `"Organization"`.
 - `mode` (String) Access mode.
-- `organization_id` (String) AWS organization ID. If specified, the whole AWS organization is onboarded instead of just the AWS account. If specified, `management_account_id` must also be specified.
+- `organization_id` (String) AWS organization ID. If specified, the whole AWS organization is onboarded instead of just the AWS account. If specified, `management_account_id` must also be specified. Required if `account_type` is `"Organization"`.
 
 ### Read-Only
 

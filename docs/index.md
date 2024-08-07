@@ -24,7 +24,7 @@ terraform {
 }
 
 provider "illumio-cloudsecure" {
-  client_id     = "my-access-id"
+  client_id     = "my-client-id"
   client_secret = "my-secret-id"
 }
 ```
@@ -45,7 +45,7 @@ Credentials can be provided by adding a `client_id` and client_secret, or an `ac
 
 ```terraform
 provider "illumio-cloudsecure" {
-  client_id     = "my-access-id"
+  client_id     = "my-client-id"
   client_secret = "my-secret-id"
 }
 ```

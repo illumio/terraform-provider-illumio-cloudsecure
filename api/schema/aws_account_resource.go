@@ -77,7 +77,7 @@ var (
 				},
 				"management_account_id": StringResourceAttributeWithMode{
 					StringAttribute: resource_schema.StringAttribute{
-						MarkdownDescription: "AWS organization management account ID. If specified, `organization_id` must also be specified.",
+						MarkdownDescription: "AWS organization management account ID. If specified, `organization_id` must also be specified. Required if `account_type` is `\"Organization\"`.",
 						Optional:            true,
 					},
 					attributeWithMode: attributeWithMode{
@@ -86,7 +86,7 @@ var (
 				},
 				"organization_id": StringResourceAttributeWithMode{
 					StringAttribute: resource_schema.StringAttribute{
-						Description: "AWS organization ID. If specified, the whole AWS organization is onboarded instead of just the AWS account. If specified, `management_account_id` must also be specified.",
+						Description: "AWS organization ID. If specified, the whole AWS organization is onboarded instead of just the AWS account. If specified, `management_account_id` must also be specified. Required if `account_type` is `\"Organization\"`.",
 						Optional:    true,
 					},
 					attributeWithMode: attributeWithMode{
