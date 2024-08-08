@@ -59,7 +59,7 @@ var (
 				},
 				"role_external_id": StringResourceAttributeWithMode{
 					StringAttribute: resource_schema.StringAttribute{
-						Description: "External ID defined in the AWS role to authorize CloudSecure when assuming that role.",
+						Description: "External ID defined in the AWS role to authenticate CloudSecure when assuming that role.",
 						Required:    true,
 					},
 					attributeWithMode: attributeWithMode{
