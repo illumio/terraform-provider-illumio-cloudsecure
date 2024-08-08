@@ -33,7 +33,7 @@ var (
 				},
 				"account_type": StringResourceAttributeWithMode{
 					StringAttribute: resource_schema.StringAttribute{
-						Description: "AWS account type",
+						Description: "AWS account type.",
 						Required:    true,
 						Validators: []validator.String{
 							stringvalidator.OneOf("Account", "Organization"),
