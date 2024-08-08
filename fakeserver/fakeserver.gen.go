@@ -38,12 +38,12 @@ type AwsAccount struct {
 	Id                  string
 	AccountId           string
 	AccountType         string
-	ExternalId          string
 	ManagementAccountId *string
 	Mode                string
 	Name                string
 	OrganizationId      *string
 	RoleArn             string
+	RoleExternalId      string
 }
 
 func (s *FakeConfigServer) CreateAwsAccount(ctx context.Context, req *configv1.CreateAwsAccountRequest) (*configv1.CreateAwsAccountResponse, error) {
@@ -52,12 +52,12 @@ func (s *FakeConfigServer) CreateAwsAccount(ctx context.Context, req *configv1.C
 		Id:                  id,
 		AccountId:           req.AccountId,
 		AccountType:         req.AccountType,
-		ExternalId:          req.ExternalId,
 		ManagementAccountId: req.ManagementAccountId,
 		Mode:                req.Mode,
 		Name:                req.Name,
 		OrganizationId:      req.OrganizationId,
 		RoleArn:             req.RoleArn,
+		RoleExternalId:      req.RoleExternalId,
 	}
 	resp := &configv1.CreateAwsAccountResponse{
 		Id:          id,

@@ -13,12 +13,24 @@ Manages an AWS account in CloudSecure.
 ## Example Usage
 
 ```terraform
-resource "illumio-cloudsecure_aws_account" "example" {
-  account_id         = "812713887999"
-  account_type       = "Organization"
-  name               = "Test AWS Account"
-  role_arn           = "arn:aws:iam::812713887999:role/IllumioAccess"
-  service_account_id = "eb287482-f582-4fab-8a69-88252d56eb6d"
+resource "illumio-cloudsecure_aws_account" "account_example" {
+  account_id       = "812713887999"
+  account_type     = "Account"
+  name             = "Test AWS Account"
+  role_arn         = "arn:aws:iam::812713887999:role/IllumioAccess"
+  role_external_id = "eb287482f5824fab8a6988252d56eb6d"
+
+  # Optional attributes
+  mode = "ReadWrite"
+}
+
+
+resource "illumio-cloudsecure_aws_account" "org_example" {
+  account_id       = "812713887999"
+  account_type     = "Organization"
+  name             = "Test AWS Org"
+  role_arn         = "arn:aws:iam::812713887999:role/IllumioAccess"
+  role_external_id = "eb287482f5824fab8a6988252d56eb6d"
 
   # Optional attributes
   management_account_id = "965208753613"
@@ -34,9 +46,9 @@ resource "illumio-cloudsecure_aws_account" "example" {
 
 - `account_id` (String) AWS account ID.
 - `account_type` (String) AWS account type.
-- `external_id` (String) external ID to authorize the AWS iam role with CloudSecure.
 - `name` (String) Display name.
 - `role_arn` (String) ARN of the AWS role to be assumed by CloudSecure to manage this account.
+- `role_external_id` (String) External ID defined in the AWS role to authorize CloudSecure when assuming that role.
 
 ### Optional
 

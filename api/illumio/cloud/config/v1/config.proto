@@ -14,12 +14,12 @@ service ConfigService {
 message CreateAwsAccountRequest {
   string account_id = 2;
   string account_type = 3;
-  string external_id = 9;
   optional string management_account_id = 4;
   string mode = 5;
   string name = 6;
   optional string organization_id = 7;
   string role_arn = 8;
+  string role_external_id = 9;
 }
 message CreateAwsAccountResponse {
   string id = 1;
