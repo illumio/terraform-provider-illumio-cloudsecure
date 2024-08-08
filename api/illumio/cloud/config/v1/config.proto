@@ -19,7 +19,7 @@ message CreateAwsAccountRequest {
   string name = 6;
   optional string organization_id = 7;
   string role_arn = 8;
-  string service_account_id = 9;
+  string role_external_id = 9;
 }
 message CreateAwsAccountResponse {
   string id = 1;
@@ -27,7 +27,6 @@ message CreateAwsAccountResponse {
   string account_type = 3;
   string mode = 5;
   string name = 6;
-  string service_account_id = 9;
 }
 message ReadAwsAccountRequest {
   string id = 1;
@@ -38,7 +37,6 @@ message ReadAwsAccountResponse {
   string account_type = 3;
   string mode = 5;
   string name = 6;
-  string service_account_id = 9;
 }
 message UpdateAwsAccountRequest {
   string id = 1;
@@ -51,7 +49,6 @@ message UpdateAwsAccountResponse {
   string account_type = 3;
   string mode = 5;
   string name = 6;
-  string service_account_id = 9;
 }
 message DeleteAwsAccountRequest {
   string id = 1;

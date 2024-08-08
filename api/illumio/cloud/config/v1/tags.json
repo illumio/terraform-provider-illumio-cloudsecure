@@ -1,1 +1,1 @@
-{"resource/aws_account":{"account_id":2,"account_type":3,"id":1,"management_account_id":4,"mode":5,"name":6,"organization_id":7,"role_arn":8,"service_account_id":9,"update_mask":10}}
+{"resource/aws_account":{"account_id":2,"account_type":3,"id":1,"management_account_id":4,"mode":5,"name":6,"organization_id":7,"role_arn":8,"role_external_id":9,"update_mask":10}}
