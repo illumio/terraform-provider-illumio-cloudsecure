@@ -34,7 +34,7 @@ var (
 				"account_type": StringResourceAttributeWithMode{
 					StringAttribute: resource_schema.StringAttribute{
 						MarkdownDescription: "AWS account type, must be `\"Account\"` or `\"Organization\"`.",
-						Required:    true,
+						Required:            true,
 						Validators: []validator.String{
 							stringvalidator.OneOf("Account", "Organization"),
 						},
@@ -45,12 +45,12 @@ var (
 				},
 				"mode": StringResourceAttributeWithMode{
 					StringAttribute: resource_schema.StringAttribute{
-						Description: "Access mode.",
+						Description: "Access mode, must be `\"ReadWrite\"` (default) or `\"Read\"`.",
 						Optional:    true,
 						Computed:    true,
 						Default:     stringdefault.StaticString("ReadWrite"),
 						Validators: []validator.String{
-							stringvalidator.OneOf("Read", "ReadWrite"),
+							stringvalidator.OneOf("ReadWrite", "Read"),
 						},
 					},
 					attributeWithMode: attributeWithMode{
