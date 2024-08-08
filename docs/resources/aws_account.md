@@ -53,7 +53,7 @@ resource "illumio-cloudsecure_aws_account" "org_example" {
 ### Optional
 
 - `management_account_id` (String) AWS organization management account ID. If specified, `organization_id` must also be specified. Required if `account_type` is `"Organization"`.
-- `mode` (String) Access mode.
+- `mode` (String) Access mode, must be `"ReadWrite"` (default) or `"Read"`.
 - `organization_id` (String) AWS organization ID. If specified, the whole AWS organization is onboarded instead of just the AWS account. If specified, `management_account_id` must also be specified. Required if `account_type` is `"Organization"`.
 
 ### Read-Only
