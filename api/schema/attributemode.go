@@ -53,7 +53,7 @@ var (
 		InUpdateResponse: true,
 	}
 
-	// ImmutableAttributeMode is the mode of immutable attributes, which can be set only at creation and can be read afterwards. This is the default mode.
+	// ImmutableAttributeMode is the mode of immutable attributes, which can be set only at creation and can be read afterwards.
 	// Attributes with this mode should also have the RequiresReplace plan modifier.
 	ImmutableAttributeMode = AttributeMode{
 		InCreateRequest:  true,
