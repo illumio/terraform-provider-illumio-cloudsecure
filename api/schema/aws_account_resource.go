@@ -57,13 +57,13 @@ var (
 						Mode: ImmutableAttributeMode,
 					},
 				},
-				"service_account_id": StringResourceAttributeWithMode{
+				"external_id": StringResourceAttributeWithMode{
 					StringAttribute: resource_schema.StringAttribute{
-						Description: "AWS service account ID.",
+						Description: "external ID to authorize the AWS iam role with CloudSecure.",
 						Required:    true,
 					},
 					attributeWithMode: attributeWithMode{
-						Mode: ImmutableAttributeMode,
+						Mode: WriteOnlyOnceAttributeMode,
 					},
 				},
 				"role_arn": StringResourceAttributeWithMode{

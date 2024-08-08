@@ -230,12 +230,12 @@ type AwsAccountResourceModel struct {
 	Id                  types.String `tfsdk:"id"`
 	AccountId           types.String `tfsdk:"account_id"`
 	AccountType         types.String `tfsdk:"account_type"`
+	ExternalId          types.String `tfsdk:"external_id"`
 	ManagementAccountId types.String `tfsdk:"management_account_id"`
 	Mode                types.String `tfsdk:"mode"`
 	Name                types.String `tfsdk:"name"`
 	OrganizationId      types.String `tfsdk:"organization_id"`
 	RoleArn             types.String `tfsdk:"role_arn"`
-	ServiceAccountId    types.String `tfsdk:"service_account_id"`
 }
 
 func NewCreateAwsAccountRequest(data *AwsAccountResourceModel) *configv1.CreateAwsAccountRequest {
@@ -251,6 +251,12 @@ func NewCreateAwsAccountRequest(data *AwsAccountResourceModel) *configv1.CreateA
 		var protoValue string
 		protoValue = dataValue.(types.String).ValueString()
 		proto.AccountType = protoValue
+	}
+	if !data.ExternalId.IsUnknown() && !data.ExternalId.IsNull() {
+		var dataValue attr.Value = data.ExternalId
+		var protoValue string
+		protoValue = dataValue.(types.String).ValueString()
+		proto.ExternalId = protoValue
 	}
 	if !data.ManagementAccountId.IsUnknown() && !data.ManagementAccountId.IsNull() {
 		var dataValue attr.Value = data.ManagementAccountId
@@ -281,12 +287,6 @@ func NewCreateAwsAccountRequest(data *AwsAccountResourceModel) *configv1.CreateA
 		var protoValue string
 		protoValue = dataValue.(types.String).ValueString()
 		proto.RoleArn = protoValue
-	}
-	if !data.ServiceAccountId.IsUnknown() && !data.ServiceAccountId.IsNull() {
-		var dataValue attr.Value = data.ServiceAccountId
-		var protoValue string
-		protoValue = dataValue.(types.String).ValueString()
-		proto.ServiceAccountId = protoValue
 	}
 	return proto
 }
@@ -334,7 +334,6 @@ func CopyCreateAwsAccountResponse(dst *AwsAccountResourceModel, src *configv1.Cr
 	dst.AccountType = types.StringValue(src.AccountType)
 	dst.Mode = types.StringValue(src.Mode)
 	dst.Name = types.StringValue(src.Name)
-	dst.ServiceAccountId = types.StringValue(src.ServiceAccountId)
 }
 func CopyReadAwsAccountResponse(dst *AwsAccountResourceModel, src *configv1.ReadAwsAccountResponse) {
 	dst.Id = types.StringValue(src.Id)
@@ -342,7 +341,6 @@ func CopyReadAwsAccountResponse(dst *AwsAccountResourceModel, src *configv1.Read
 	dst.AccountType = types.StringValue(src.AccountType)
 	dst.Mode = types.StringValue(src.Mode)
 	dst.Name = types.StringValue(src.Name)
-	dst.ServiceAccountId = types.StringValue(src.ServiceAccountId)
 }
 func CopyUpdateAwsAccountResponse(dst *AwsAccountResourceModel, src *configv1.UpdateAwsAccountResponse) {
 	dst.Id = types.StringValue(src.Id)
@@ -350,5 +348,4 @@ func CopyUpdateAwsAccountResponse(dst *AwsAccountResourceModel, src *configv1.Up
 	dst.AccountType = types.StringValue(src.AccountType)
 	dst.Mode = types.StringValue(src.Mode)
 	dst.Name = types.StringValue(src.Name)
-	dst.ServiceAccountId = types.StringValue(src.ServiceAccountId)
 }
