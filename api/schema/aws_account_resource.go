@@ -20,10 +20,6 @@ var (
 			Description: "Manages an AWS account in CloudSecure.",
 			Attributes: map[string]resource_schema.Attribute{
 				IDFieldName: idAttribute,
-				"name": resource_schema.StringAttribute{
-					Description: "Display name.",
-					Required:    true,
-				},
 				"account_id": StringResourceAttributeWithMode{
 					StringAttribute: resource_schema.StringAttribute{
 						MarkdownDescription: "AWS account ID.",
@@ -53,10 +49,14 @@ var (
 						Mode: ImmutableAttributeMode,
 					},
 				},
-				"role_external_id": StringResourceAttributeWithMode{
+				"name": resource_schema.StringAttribute{
+					Description: "Display name.",
+					Required:    true,
+				},
+				"organization_account_id": StringResourceAttributeWithMode{
 					StringAttribute: resource_schema.StringAttribute{
-						Description: "External ID defined in the AWS role to authenticate CloudSecure when assuming that role.",
-						Required:    true,
+						Description: "AWS management account ID of the organization this account belongs to. If specified, must be the `account_id` of an `aws_organization`.",
+						Optional:    true,
 						PlanModifiers: []planmodifier.String{
 							stringplanmodifier.RequiresReplace(),
 						},
@@ -77,10 +77,10 @@ var (
 						Mode: ImmutableAttributeMode,
 					},
 				},
-				"organization_account_id": StringResourceAttributeWithMode{
+				"role_external_id": StringResourceAttributeWithMode{
 					StringAttribute: resource_schema.StringAttribute{
-						Description: "AWS account ID of the organization this account belongs to. If specified, must be the `account_id` of an `aws_organization`.",
-						Optional:    true,
+						Description: "External ID defined in the AWS role to authenticate CloudSecure when assuming that role.",
+						Required:    true,
 						PlanModifiers: []planmodifier.String{
 							stringplanmodifier.RequiresReplace(),
 						},

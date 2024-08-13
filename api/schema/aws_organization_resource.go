@@ -20,22 +20,6 @@ var (
 			Description: "Manages an AWS organization in CloudSecure.",
 			Attributes: map[string]resource_schema.Attribute{
 				IDFieldName: idAttribute,
-				"name": resource_schema.StringAttribute{
-					Description: "Display name.",
-					Required:    true,
-				},
-				"organization_id": StringResourceAttributeWithMode{
-					StringAttribute: resource_schema.StringAttribute{
-						Description: "AWS organization ID.",
-						Required:    true,
-						PlanModifiers: []planmodifier.String{
-							stringplanmodifier.RequiresReplace(),
-						},
-					},
-					attributeWithMode: attributeWithMode{
-						Mode: ImmutableAttributeMode,
-					},
-				},
 				"account_id": StringResourceAttributeWithMode{
 					StringAttribute: resource_schema.StringAttribute{
 						MarkdownDescription: "ID of the management account of the AWS organization.",
@@ -65,9 +49,13 @@ var (
 						Mode: ImmutableAttributeMode,
 					},
 				},
-				"role_external_id": StringResourceAttributeWithMode{
+				"name": resource_schema.StringAttribute{
+					Description: "Display name.",
+					Required:    true,
+				},
+				"organization_id": StringResourceAttributeWithMode{
 					StringAttribute: resource_schema.StringAttribute{
-						Description: "External ID defined in the AWS role to authenticate CloudSecure when assuming that role.",
+						Description: "AWS organization ID.",
 						Required:    true,
 						PlanModifiers: []planmodifier.String{
 							stringplanmodifier.RequiresReplace(),
@@ -80,6 +68,18 @@ var (
 				"role_arn": StringResourceAttributeWithMode{
 					StringAttribute: resource_schema.StringAttribute{
 						Description: "ARN of the AWS role to be assumed by CloudSecure to manage this account.",
+						Required:    true,
+						PlanModifiers: []planmodifier.String{
+							stringplanmodifier.RequiresReplace(),
+						},
+					},
+					attributeWithMode: attributeWithMode{
+						Mode: ImmutableAttributeMode,
+					},
+				},
+				"role_external_id": StringResourceAttributeWithMode{
+					StringAttribute: resource_schema.StringAttribute{
+						Description: "External ID defined in the AWS role to authenticate CloudSecure when assuming that role.",
 						Required:    true,
 						PlanModifiers: []planmodifier.String{
 							stringplanmodifier.RequiresReplace(),
