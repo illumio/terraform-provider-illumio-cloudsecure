@@ -31,18 +31,6 @@ var (
 						Mode: ImmutableAttributeMode,
 					},
 				},
-				"account_type": StringResourceAttributeWithMode{
-					StringAttribute: resource_schema.StringAttribute{
-						MarkdownDescription: "AWS account type, must be `\"Account\"` or `\"Organization\"`.",
-						Required:            true,
-						Validators: []validator.String{
-							stringvalidator.OneOf("Account", "Organization"),
-						},
-					},
-					attributeWithMode: attributeWithMode{
-						Mode: ImmutableAttributeMode,
-					},
-				},
 				"mode": StringResourceAttributeWithMode{
 					StringAttribute: resource_schema.StringAttribute{
 						Description: "Access mode, must be `\"ReadWrite\"` (default) or `\"Read\"`.",
@@ -75,18 +63,9 @@ var (
 						Mode: WriteOnlyOnceAttributeMode,
 					},
 				},
-				"management_account_id": StringResourceAttributeWithMode{
+				"organization_account_id": StringResourceAttributeWithMode{
 					StringAttribute: resource_schema.StringAttribute{
-						MarkdownDescription: "AWS organization management account ID. If specified, `organization_id` must also be specified. Required if `account_type` is `\"Organization\"`.",
-						Optional:            true,
-					},
-					attributeWithMode: attributeWithMode{
-						Mode: WriteOnlyOnceAttributeMode,
-					},
-				},
-				"organization_id": StringResourceAttributeWithMode{
-					StringAttribute: resource_schema.StringAttribute{
-						Description: "AWS organization ID. If specified, the whole AWS organization is onboarded instead of just the AWS account. If specified, `management_account_id` must also be specified. Required if `account_type` is `\"Organization\"`.",
+						Description: "AWS account ID of the organization this account belongs to. If specified, must be the `account_id` of an `aws_organization`.",
 						Optional:    true,
 					},
 					attributeWithMode: attributeWithMode{
