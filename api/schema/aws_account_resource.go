@@ -6,7 +6,9 @@ package schema
 import (
 	"github.com/hashicorp/terraform-plugin-framework-validators/stringvalidator"
 	resource_schema "github.com/hashicorp/terraform-plugin-framework/resource/schema"
+	"github.com/hashicorp/terraform-plugin-framework/resource/schema/planmodifier"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/stringdefault"
+	"github.com/hashicorp/terraform-plugin-framework/resource/schema/stringplanmodifier"
 	"github.com/hashicorp/terraform-plugin-framework/schema/validator"
 )
 
@@ -26,6 +28,9 @@ var (
 					StringAttribute: resource_schema.StringAttribute{
 						MarkdownDescription: "AWS account ID.",
 						Required:            true,
+						PlanModifiers: []planmodifier.String{
+							stringplanmodifier.RequiresReplace(),
+						},
 					},
 					attributeWithMode: attributeWithMode{
 						Mode: ImmutableAttributeMode,
@@ -40,6 +45,9 @@ var (
 						Validators: []validator.String{
 							stringvalidator.OneOf("ReadWrite", "Read"),
 						},
+						PlanModifiers: []planmodifier.String{
+							stringplanmodifier.RequiresReplace(),
+						},
 					},
 					attributeWithMode: attributeWithMode{
 						Mode: ImmutableAttributeMode,
@@ -49,27 +57,36 @@ var (
 					StringAttribute: resource_schema.StringAttribute{
 						Description: "External ID defined in the AWS role to authenticate CloudSecure when assuming that role.",
 						Required:    true,
+						PlanModifiers: []planmodifier.String{
+							stringplanmodifier.RequiresReplace(),
+						},
 					},
 					attributeWithMode: attributeWithMode{
-						Mode: WriteOnlyOnceAttributeMode,
+						Mode: ImmutableAttributeMode,
 					},
 				},
 				"role_arn": StringResourceAttributeWithMode{
 					StringAttribute: resource_schema.StringAttribute{
 						Description: "ARN of the AWS role to be assumed by CloudSecure to manage this account.",
 						Required:    true,
+						PlanModifiers: []planmodifier.String{
+							stringplanmodifier.RequiresReplace(),
+						},
 					},
 					attributeWithMode: attributeWithMode{
-						Mode: WriteOnlyOnceAttributeMode,
+						Mode: ImmutableAttributeMode,
 					},
 				},
 				"organization_account_id": StringResourceAttributeWithMode{
 					StringAttribute: resource_schema.StringAttribute{
 						Description: "AWS account ID of the organization this account belongs to. If specified, must be the `account_id` of an `aws_organization`.",
 						Optional:    true,
+						PlanModifiers: []planmodifier.String{
+							stringplanmodifier.RequiresReplace(),
+						},
 					},
 					attributeWithMode: attributeWithMode{
-						Mode: WriteOnlyOnceAttributeMode,
+						Mode: ImmutableAttributeMode,
 					},
 				},
 			},
