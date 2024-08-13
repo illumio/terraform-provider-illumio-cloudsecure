@@ -15,27 +15,13 @@ Manages an AWS account in CloudSecure.
 ```terraform
 resource "illumio-cloudsecure_aws_account" "account_example" {
   account_id       = "812713887999"
-  account_type     = "Account"
   name             = "Test AWS Account"
   role_arn         = "arn:aws:iam::812713887999:role/IllumioAccess"
   role_external_id = "eb287482f5824fab8a6988252d56eb6d"
 
   # Optional attributes
-  mode = "ReadWrite"
-}
-
-
-resource "illumio-cloudsecure_aws_account" "org_example" {
-  account_id            = "812713887999"
-  account_type          = "Organization"
-  name                  = "Test AWS Org"
-  role_arn              = "arn:aws:iam::812713887999:role/IllumioAccess"
-  role_external_id      = "eb287482f5824fab8a6988252d56eb6d"
-  management_account_id = "965208753613"
-  organization_id       = "o-3eehyj6qk0"
-
-  # Optional attributes
-  mode = "ReadWrite"
+  organization_account_id = "965208753613"
+  mode                    = "ReadWrite"
 }
 ```
 
@@ -45,16 +31,14 @@ resource "illumio-cloudsecure_aws_account" "org_example" {
 ### Required
 
 - `account_id` (String) AWS account ID.
-- `account_type` (String) AWS account type, must be `"Account"` or `"Organization"`.
 - `name` (String) Display name.
 - `role_arn` (String) ARN of the AWS role to be assumed by CloudSecure to manage this account.
 - `role_external_id` (String) External ID defined in the AWS role to authenticate CloudSecure when assuming that role.
 
 ### Optional
 
-- `management_account_id` (String) AWS organization management account ID. If specified, `organization_id` must also be specified. Required if `account_type` is `"Organization"`.
 - `mode` (String) Access mode, must be `"ReadWrite"` (default) or `"Read"`.
-- `organization_id` (String) AWS organization ID. If specified, the whole AWS organization is onboarded instead of just the AWS account. If specified, `management_account_id` must also be specified. Required if `account_type` is `"Organization"`.
+- `organization_account_id` (String) AWS management account ID of the organization this account belongs to. If specified, must be the `account_id` of an `aws_organization`.
 
 ### Read-Only
 
