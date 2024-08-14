@@ -19,7 +19,7 @@ message CreateAwsAccountRequest {
   string account_id = 2;
   string mode = 5;
   string name = 6;
-  optional string organization_account_id = 11;
+  optional string organization_master_account_id = 12;
   string role_arn = 8;
   string role_external_id = 9;
 }
@@ -28,7 +28,7 @@ message CreateAwsAccountResponse {
   string account_id = 2;
   string mode = 5;
   string name = 6;
-  optional string organization_account_id = 11;
+  optional string organization_master_account_id = 12;
   string role_arn = 8;
   string role_external_id = 9;
 }
@@ -40,7 +40,7 @@ message ReadAwsAccountResponse {
   string account_id = 2;
   string mode = 5;
   string name = 6;
-  optional string organization_account_id = 11;
+  optional string organization_master_account_id = 12;
   string role_arn = 8;
   string role_external_id = 9;
 }
@@ -54,7 +54,7 @@ message UpdateAwsAccountResponse {
   string account_id = 2;
   string mode = 5;
   string name = 6;
-  optional string organization_account_id = 11;
+  optional string organization_master_account_id = 12;
   string role_arn = 8;
   string role_external_id = 9;
 }
@@ -62,7 +62,7 @@ message DeleteAwsAccountRequest {
   string id = 1;
 }
 message CreateAwsOrganizationRequest {
-  string account_id = 2;
+  string master_account_id = 9;
   string mode = 3;
   string name = 4;
   string organization_id = 5;
@@ -71,7 +71,7 @@ message CreateAwsOrganizationRequest {
 }
 message CreateAwsOrganizationResponse {
   string id = 1;
-  string account_id = 2;
+  string master_account_id = 9;
   string mode = 3;
   string name = 4;
   string organization_id = 5;
@@ -83,7 +83,7 @@ message ReadAwsOrganizationRequest {
 }
 message ReadAwsOrganizationResponse {
   string id = 1;
-  string account_id = 2;
+  string master_account_id = 9;
   string mode = 3;
   string name = 4;
   string organization_id = 5;
@@ -97,7 +97,7 @@ message UpdateAwsOrganizationRequest {
 }
 message UpdateAwsOrganizationResponse {
   string id = 1;
-  string account_id = 2;
+  string master_account_id = 9;
   string mode = 3;
   string name = 4;
   string organization_id = 5;

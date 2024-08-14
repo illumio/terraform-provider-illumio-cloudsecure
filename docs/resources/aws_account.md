@@ -20,8 +20,8 @@ resource "illumio-cloudsecure_aws_account" "account_example" {
   role_external_id = "eb287482f5824fab8a6988252d56eb6d"
 
   # Optional attributes
-  organization_account_id = "965208753613"
-  mode                    = "ReadWrite"
+  organization_master_account_id = "965208753613"
+  mode                           = "ReadWrite"
 }
 ```
 
@@ -38,7 +38,7 @@ resource "illumio-cloudsecure_aws_account" "account_example" {
 ### Optional
 
 - `mode` (String) Access mode, must be `"ReadWrite"` (default) or `"Read"`.
-- `organization_account_id` (String) AWS management account ID of the organization this account belongs to. If specified, must be the `account_id` of an `aws_organization`.
+- `organization_master_account_id` (String) AWS master account ID of the organization this account belongs to. If specified, must be the `master_account_id` of an `aws_organization`.
 
 ### Read-Only
 

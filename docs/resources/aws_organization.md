@@ -14,11 +14,11 @@ Manages an AWS organization in CloudSecure.
 
 ```terraform
 resource "illumio-cloudsecure_aws_organization" "organization_example" {
-  account_id       = "965208753613"
-  organization_id  = "o-3eehyj6qk0"
-  name             = "Test AWS Organization"
-  role_arn         = "arn:aws:iam::965208753613:role/IllumioAccess"
-  role_external_id = "eb287482f5824fab8a6988252d56eb6d"
+  master_account_id = "965208753613"
+  organization_id   = "o-3eehyj6qk0"
+  name              = "Test AWS Organization"
+  role_arn          = "arn:aws:iam::965208753613:role/IllumioAccess"
+  role_external_id  = "eb287482f5824fab8a6988252d56eb6d"
 
   # Optional attributes
   mode = "ReadWrite"
@@ -30,7 +30,7 @@ resource "illumio-cloudsecure_aws_organization" "organization_example" {
 
 ### Required
 
-- `account_id` (String) ID of the management account of the AWS organization.
+- `master_account_id` (String) ID of the master account of the AWS organization.
 - `name` (String) Display name.
 - `organization_id` (String) AWS organization ID.
 - `role_arn` (String) ARN of the AWS role to be assumed by CloudSecure to manage this account.

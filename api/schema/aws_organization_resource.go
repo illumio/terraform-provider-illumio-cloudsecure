@@ -20,9 +20,9 @@ var (
 			Description: "Manages an AWS organization in CloudSecure.",
 			Attributes: map[string]resource_schema.Attribute{
 				IDFieldName: idAttribute,
-				"account_id": StringResourceAttributeWithMode{
+				"master_account_id": StringResourceAttributeWithMode{
 					StringAttribute: resource_schema.StringAttribute{
-						MarkdownDescription: "ID of the management account of the AWS organization.",
+						MarkdownDescription: "ID of the master account of the AWS organization.",
 						Required:            true,
 						PlanModifiers: []planmodifier.String{
 							stringplanmodifier.RequiresReplace(),

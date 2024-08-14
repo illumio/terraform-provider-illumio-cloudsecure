@@ -407,23 +407,23 @@ func (r *AwsOrganizationResource) ImportState(ctx context.Context, req resource.
 }
 
 type AwsAccountResourceModel struct {
-	Id                    types.String `tfsdk:"id"`
-	AccountId             types.String `tfsdk:"account_id"`
-	Mode                  types.String `tfsdk:"mode"`
-	Name                  types.String `tfsdk:"name"`
-	OrganizationAccountId types.String `tfsdk:"organization_account_id"`
-	RoleArn               types.String `tfsdk:"role_arn"`
-	RoleExternalId        types.String `tfsdk:"role_external_id"`
+	Id                          types.String `tfsdk:"id"`
+	AccountId                   types.String `tfsdk:"account_id"`
+	Mode                        types.String `tfsdk:"mode"`
+	Name                        types.String `tfsdk:"name"`
+	OrganizationMasterAccountId types.String `tfsdk:"organization_master_account_id"`
+	RoleArn                     types.String `tfsdk:"role_arn"`
+	RoleExternalId              types.String `tfsdk:"role_external_id"`
 }
 
 type AwsOrganizationResourceModel struct {
-	Id             types.String `tfsdk:"id"`
-	AccountId      types.String `tfsdk:"account_id"`
-	Mode           types.String `tfsdk:"mode"`
-	Name           types.String `tfsdk:"name"`
-	OrganizationId types.String `tfsdk:"organization_id"`
-	RoleArn        types.String `tfsdk:"role_arn"`
-	RoleExternalId types.String `tfsdk:"role_external_id"`
+	Id              types.String `tfsdk:"id"`
+	MasterAccountId types.String `tfsdk:"master_account_id"`
+	Mode            types.String `tfsdk:"mode"`
+	Name            types.String `tfsdk:"name"`
+	OrganizationId  types.String `tfsdk:"organization_id"`
+	RoleArn         types.String `tfsdk:"role_arn"`
+	RoleExternalId  types.String `tfsdk:"role_external_id"`
 }
 
 func NewCreateAwsAccountRequest(data *AwsAccountResourceModel) *configv1.CreateAwsAccountRequest {
@@ -446,11 +446,11 @@ func NewCreateAwsAccountRequest(data *AwsAccountResourceModel) *configv1.CreateA
 		protoValue = dataValue.(types.String).ValueString()
 		proto.Name = protoValue
 	}
-	if !data.OrganizationAccountId.IsUnknown() && !data.OrganizationAccountId.IsNull() {
-		var dataValue attr.Value = data.OrganizationAccountId
+	if !data.OrganizationMasterAccountId.IsUnknown() && !data.OrganizationMasterAccountId.IsNull() {
+		var dataValue attr.Value = data.OrganizationMasterAccountId
 		var protoValue string
 		protoValue = dataValue.(types.String).ValueString()
-		proto.OrganizationAccountId = &protoValue
+		proto.OrganizationMasterAccountId = &protoValue
 	}
 	if !data.RoleArn.IsUnknown() && !data.RoleArn.IsNull() {
 		var dataValue attr.Value = data.RoleArn
@@ -491,11 +491,11 @@ func NewDeleteAwsAccountRequest(data *AwsAccountResourceModel) *configv1.DeleteA
 
 func NewCreateAwsOrganizationRequest(data *AwsOrganizationResourceModel) *configv1.CreateAwsOrganizationRequest {
 	proto := &configv1.CreateAwsOrganizationRequest{}
-	if !data.AccountId.IsUnknown() && !data.AccountId.IsNull() {
-		var dataValue attr.Value = data.AccountId
+	if !data.MasterAccountId.IsUnknown() && !data.MasterAccountId.IsNull() {
+		var dataValue attr.Value = data.MasterAccountId
 		var protoValue string
 		protoValue = dataValue.(types.String).ValueString()
-		proto.AccountId = protoValue
+		proto.MasterAccountId = protoValue
 	}
 	if !data.Mode.IsUnknown() && !data.Mode.IsNull() {
 		var dataValue attr.Value = data.Mode
@@ -588,7 +588,7 @@ func CopyCreateAwsAccountResponse(dst *AwsAccountResourceModel, src *configv1.Cr
 	dst.AccountId = types.StringValue(src.AccountId)
 	dst.Mode = types.StringValue(src.Mode)
 	dst.Name = types.StringValue(src.Name)
-	dst.OrganizationAccountId = types.StringPointerValue(src.OrganizationAccountId)
+	dst.OrganizationMasterAccountId = types.StringPointerValue(src.OrganizationMasterAccountId)
 	dst.RoleArn = types.StringValue(src.RoleArn)
 	dst.RoleExternalId = types.StringValue(src.RoleExternalId)
 }
@@ -597,7 +597,7 @@ func CopyReadAwsAccountResponse(dst *AwsAccountResourceModel, src *configv1.Read
 	dst.AccountId = types.StringValue(src.AccountId)
 	dst.Mode = types.StringValue(src.Mode)
 	dst.Name = types.StringValue(src.Name)
-	dst.OrganizationAccountId = types.StringPointerValue(src.OrganizationAccountId)
+	dst.OrganizationMasterAccountId = types.StringPointerValue(src.OrganizationMasterAccountId)
 	dst.RoleArn = types.StringValue(src.RoleArn)
 	dst.RoleExternalId = types.StringValue(src.RoleExternalId)
 }
@@ -606,13 +606,13 @@ func CopyUpdateAwsAccountResponse(dst *AwsAccountResourceModel, src *configv1.Up
 	dst.AccountId = types.StringValue(src.AccountId)
 	dst.Mode = types.StringValue(src.Mode)
 	dst.Name = types.StringValue(src.Name)
-	dst.OrganizationAccountId = types.StringPointerValue(src.OrganizationAccountId)
+	dst.OrganizationMasterAccountId = types.StringPointerValue(src.OrganizationMasterAccountId)
 	dst.RoleArn = types.StringValue(src.RoleArn)
 	dst.RoleExternalId = types.StringValue(src.RoleExternalId)
 }
 func CopyCreateAwsOrganizationResponse(dst *AwsOrganizationResourceModel, src *configv1.CreateAwsOrganizationResponse) {
 	dst.Id = types.StringValue(src.Id)
-	dst.AccountId = types.StringValue(src.AccountId)
+	dst.MasterAccountId = types.StringValue(src.MasterAccountId)
 	dst.Mode = types.StringValue(src.Mode)
 	dst.Name = types.StringValue(src.Name)
 	dst.OrganizationId = types.StringValue(src.OrganizationId)
@@ -621,7 +621,7 @@ func CopyCreateAwsOrganizationResponse(dst *AwsOrganizationResourceModel, src *c
 }
 func CopyReadAwsOrganizationResponse(dst *AwsOrganizationResourceModel, src *configv1.ReadAwsOrganizationResponse) {
 	dst.Id = types.StringValue(src.Id)
-	dst.AccountId = types.StringValue(src.AccountId)
+	dst.MasterAccountId = types.StringValue(src.MasterAccountId)
 	dst.Mode = types.StringValue(src.Mode)
 	dst.Name = types.StringValue(src.Name)
 	dst.OrganizationId = types.StringValue(src.OrganizationId)
@@ -630,7 +630,7 @@ func CopyReadAwsOrganizationResponse(dst *AwsOrganizationResourceModel, src *con
 }
 func CopyUpdateAwsOrganizationResponse(dst *AwsOrganizationResourceModel, src *configv1.UpdateAwsOrganizationResponse) {
 	dst.Id = types.StringValue(src.Id)
-	dst.AccountId = types.StringValue(src.AccountId)
+	dst.MasterAccountId = types.StringValue(src.MasterAccountId)
 	dst.Mode = types.StringValue(src.Mode)
 	dst.Name = types.StringValue(src.Name)
 	dst.OrganizationId = types.StringValue(src.OrganizationId)

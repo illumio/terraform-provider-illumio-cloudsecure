@@ -38,44 +38,44 @@ func NewFakeConfigServer(logger *zap.Logger) configv1.ConfigServiceServer {
 }
 
 type AwsAccount struct {
-	Id                    string
-	AccountId             string
-	Mode                  string
-	Name                  string
-	OrganizationAccountId *string
-	RoleArn               string
-	RoleExternalId        string
+	Id                          string
+	AccountId                   string
+	Mode                        string
+	Name                        string
+	OrganizationMasterAccountId *string
+	RoleArn                     string
+	RoleExternalId              string
 }
 
 type AwsOrganization struct {
-	Id             string
-	AccountId      string
-	Mode           string
-	Name           string
-	OrganizationId string
-	RoleArn        string
-	RoleExternalId string
+	Id              string
+	MasterAccountId string
+	Mode            string
+	Name            string
+	OrganizationId  string
+	RoleArn         string
+	RoleExternalId  string
 }
 
 func (s *FakeConfigServer) CreateAwsAccount(ctx context.Context, req *configv1.CreateAwsAccountRequest) (*configv1.CreateAwsAccountResponse, error) {
 	id := uuid.New().String()
 	model := &AwsAccount{
-		Id:                    id,
-		AccountId:             req.AccountId,
-		Mode:                  req.Mode,
-		Name:                  req.Name,
-		OrganizationAccountId: req.OrganizationAccountId,
-		RoleArn:               req.RoleArn,
-		RoleExternalId:        req.RoleExternalId,
+		Id:                          id,
+		AccountId:                   req.AccountId,
+		Mode:                        req.Mode,
+		Name:                        req.Name,
+		OrganizationMasterAccountId: req.OrganizationMasterAccountId,
+		RoleArn:                     req.RoleArn,
+		RoleExternalId:              req.RoleExternalId,
 	}
 	resp := &configv1.CreateAwsAccountResponse{
-		Id:                    id,
-		AccountId:             model.AccountId,
-		Mode:                  model.Mode,
-		Name:                  model.Name,
-		OrganizationAccountId: model.OrganizationAccountId,
-		RoleArn:               model.RoleArn,
-		RoleExternalId:        model.RoleExternalId,
+		Id:                          id,
+		AccountId:                   model.AccountId,
+		Mode:                        model.Mode,
+		Name:                        model.Name,
+		OrganizationMasterAccountId: model.OrganizationMasterAccountId,
+		RoleArn:                     model.RoleArn,
+		RoleExternalId:              model.RoleExternalId,
 	}
 	s.AwsAccountMutex.Lock()
 	s.AwsAccountMap[id] = model
@@ -102,13 +102,13 @@ func (s *FakeConfigServer) ReadAwsAccount(ctx context.Context, req *configv1.Rea
 		return nil, status.Errorf(codes.NotFound, "no aws_account found with id %s", id)
 	}
 	resp := &configv1.ReadAwsAccountResponse{
-		Id:                    id,
-		AccountId:             model.AccountId,
-		Mode:                  model.Mode,
-		Name:                  model.Name,
-		OrganizationAccountId: model.OrganizationAccountId,
-		RoleArn:               model.RoleArn,
-		RoleExternalId:        model.RoleExternalId,
+		Id:                          id,
+		AccountId:                   model.AccountId,
+		Mode:                        model.Mode,
+		Name:                        model.Name,
+		OrganizationMasterAccountId: model.OrganizationMasterAccountId,
+		RoleArn:                     model.RoleArn,
+		RoleExternalId:              model.RoleExternalId,
 	}
 	s.AwsAccountMutex.RUnlock()
 	s.Logger.Info("read resource",
@@ -154,13 +154,13 @@ func (s *FakeConfigServer) UpdateAwsAccount(ctx context.Context, req *configv1.U
 		}
 	}
 	resp := &configv1.UpdateAwsAccountResponse{
-		Id:                    id,
-		AccountId:             model.AccountId,
-		Mode:                  model.Mode,
-		Name:                  model.Name,
-		OrganizationAccountId: model.OrganizationAccountId,
-		RoleArn:               model.RoleArn,
-		RoleExternalId:        model.RoleExternalId,
+		Id:                          id,
+		AccountId:                   model.AccountId,
+		Mode:                        model.Mode,
+		Name:                        model.Name,
+		OrganizationMasterAccountId: model.OrganizationMasterAccountId,
+		RoleArn:                     model.RoleArn,
+		RoleExternalId:              model.RoleExternalId,
 	}
 	s.AwsAccountMutex.Unlock()
 	s.Logger.Info("updated resource",
@@ -197,22 +197,22 @@ func (s *FakeConfigServer) DeleteAwsAccount(ctx context.Context, req *configv1.D
 func (s *FakeConfigServer) CreateAwsOrganization(ctx context.Context, req *configv1.CreateAwsOrganizationRequest) (*configv1.CreateAwsOrganizationResponse, error) {
 	id := uuid.New().String()
 	model := &AwsOrganization{
-		Id:             id,
-		AccountId:      req.AccountId,
-		Mode:           req.Mode,
-		Name:           req.Name,
-		OrganizationId: req.OrganizationId,
-		RoleArn:        req.RoleArn,
-		RoleExternalId: req.RoleExternalId,
+		Id:              id,
+		MasterAccountId: req.MasterAccountId,
+		Mode:            req.Mode,
+		Name:            req.Name,
+		OrganizationId:  req.OrganizationId,
+		RoleArn:         req.RoleArn,
+		RoleExternalId:  req.RoleExternalId,
 	}
 	resp := &configv1.CreateAwsOrganizationResponse{
-		Id:             id,
-		AccountId:      model.AccountId,
-		Mode:           model.Mode,
-		Name:           model.Name,
-		OrganizationId: model.OrganizationId,
-		RoleArn:        model.RoleArn,
-		RoleExternalId: model.RoleExternalId,
+		Id:              id,
+		MasterAccountId: model.MasterAccountId,
+		Mode:            model.Mode,
+		Name:            model.Name,
+		OrganizationId:  model.OrganizationId,
+		RoleArn:         model.RoleArn,
+		RoleExternalId:  model.RoleExternalId,
 	}
 	s.AwsOrganizationMutex.Lock()
 	s.AwsOrganizationMap[id] = model
@@ -239,13 +239,13 @@ func (s *FakeConfigServer) ReadAwsOrganization(ctx context.Context, req *configv
 		return nil, status.Errorf(codes.NotFound, "no aws_organization found with id %s", id)
 	}
 	resp := &configv1.ReadAwsOrganizationResponse{
-		Id:             id,
-		AccountId:      model.AccountId,
-		Mode:           model.Mode,
-		Name:           model.Name,
-		OrganizationId: model.OrganizationId,
-		RoleArn:        model.RoleArn,
-		RoleExternalId: model.RoleExternalId,
+		Id:              id,
+		MasterAccountId: model.MasterAccountId,
+		Mode:            model.Mode,
+		Name:            model.Name,
+		OrganizationId:  model.OrganizationId,
+		RoleArn:         model.RoleArn,
+		RoleExternalId:  model.RoleExternalId,
 	}
 	s.AwsOrganizationMutex.RUnlock()
 	s.Logger.Info("read resource",
@@ -291,13 +291,13 @@ func (s *FakeConfigServer) UpdateAwsOrganization(ctx context.Context, req *confi
 		}
 	}
 	resp := &configv1.UpdateAwsOrganizationResponse{
-		Id:             id,
-		AccountId:      model.AccountId,
-		Mode:           model.Mode,
-		Name:           model.Name,
-		OrganizationId: model.OrganizationId,
-		RoleArn:        model.RoleArn,
-		RoleExternalId: model.RoleExternalId,
+		Id:              id,
+		MasterAccountId: model.MasterAccountId,
+		Mode:            model.Mode,
+		Name:            model.Name,
+		OrganizationId:  model.OrganizationId,
+		RoleArn:         model.RoleArn,
+		RoleExternalId:  model.RoleExternalId,
 	}
 	s.AwsOrganizationMutex.Unlock()
 	s.Logger.Info("updated resource",
