@@ -23,10 +23,14 @@ import (
 const _ = grpc.SupportPackageIsVersion8
 
 const (
-	ConfigService_CreateAwsAccount_FullMethodName = "/illumio.cloud.config.v1.ConfigService/CreateAwsAccount"
-	ConfigService_ReadAwsAccount_FullMethodName   = "/illumio.cloud.config.v1.ConfigService/ReadAwsAccount"
-	ConfigService_UpdateAwsAccount_FullMethodName = "/illumio.cloud.config.v1.ConfigService/UpdateAwsAccount"
-	ConfigService_DeleteAwsAccount_FullMethodName = "/illumio.cloud.config.v1.ConfigService/DeleteAwsAccount"
+	ConfigService_CreateAwsAccount_FullMethodName      = "/illumio.cloud.config.v1.ConfigService/CreateAwsAccount"
+	ConfigService_ReadAwsAccount_FullMethodName        = "/illumio.cloud.config.v1.ConfigService/ReadAwsAccount"
+	ConfigService_UpdateAwsAccount_FullMethodName      = "/illumio.cloud.config.v1.ConfigService/UpdateAwsAccount"
+	ConfigService_DeleteAwsAccount_FullMethodName      = "/illumio.cloud.config.v1.ConfigService/DeleteAwsAccount"
+	ConfigService_CreateAwsOrganization_FullMethodName = "/illumio.cloud.config.v1.ConfigService/CreateAwsOrganization"
+	ConfigService_ReadAwsOrganization_FullMethodName   = "/illumio.cloud.config.v1.ConfigService/ReadAwsOrganization"
+	ConfigService_UpdateAwsOrganization_FullMethodName = "/illumio.cloud.config.v1.ConfigService/UpdateAwsOrganization"
+	ConfigService_DeleteAwsOrganization_FullMethodName = "/illumio.cloud.config.v1.ConfigService/DeleteAwsOrganization"
 )
 
 // ConfigServiceClient is the client API for ConfigService service.
@@ -37,6 +41,10 @@ type ConfigServiceClient interface {
 	ReadAwsAccount(ctx context.Context, in *ReadAwsAccountRequest, opts ...grpc.CallOption) (*ReadAwsAccountResponse, error)
 	UpdateAwsAccount(ctx context.Context, in *UpdateAwsAccountRequest, opts ...grpc.CallOption) (*UpdateAwsAccountResponse, error)
 	DeleteAwsAccount(ctx context.Context, in *DeleteAwsAccountRequest, opts ...grpc.CallOption) (*emptypb.Empty, error)
+	CreateAwsOrganization(ctx context.Context, in *CreateAwsOrganizationRequest, opts ...grpc.CallOption) (*CreateAwsOrganizationResponse, error)
+	ReadAwsOrganization(ctx context.Context, in *ReadAwsOrganizationRequest, opts ...grpc.CallOption) (*ReadAwsOrganizationResponse, error)
+	UpdateAwsOrganization(ctx context.Context, in *UpdateAwsOrganizationRequest, opts ...grpc.CallOption) (*UpdateAwsOrganizationResponse, error)
+	DeleteAwsOrganization(ctx context.Context, in *DeleteAwsOrganizationRequest, opts ...grpc.CallOption) (*emptypb.Empty, error)
 }
 
 type configServiceClient struct {
@@ -87,6 +95,46 @@ func (c *configServiceClient) DeleteAwsAccount(ctx context.Context, in *DeleteAw
 	return out, nil
 }
 
+func (c *configServiceClient) CreateAwsOrganization(ctx context.Context, in *CreateAwsOrganizationRequest, opts ...grpc.CallOption) (*CreateAwsOrganizationResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(CreateAwsOrganizationResponse)
+	err := c.cc.Invoke(ctx, ConfigService_CreateAwsOrganization_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *configServiceClient) ReadAwsOrganization(ctx context.Context, in *ReadAwsOrganizationRequest, opts ...grpc.CallOption) (*ReadAwsOrganizationResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(ReadAwsOrganizationResponse)
+	err := c.cc.Invoke(ctx, ConfigService_ReadAwsOrganization_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *configServiceClient) UpdateAwsOrganization(ctx context.Context, in *UpdateAwsOrganizationRequest, opts ...grpc.CallOption) (*UpdateAwsOrganizationResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(UpdateAwsOrganizationResponse)
+	err := c.cc.Invoke(ctx, ConfigService_UpdateAwsOrganization_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *configServiceClient) DeleteAwsOrganization(ctx context.Context, in *DeleteAwsOrganizationRequest, opts ...grpc.CallOption) (*emptypb.Empty, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(emptypb.Empty)
+	err := c.cc.Invoke(ctx, ConfigService_DeleteAwsOrganization_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // ConfigServiceServer is the server API for ConfigService service.
 // All implementations must embed UnimplementedConfigServiceServer
 // for forward compatibility
@@ -95,6 +143,10 @@ type ConfigServiceServer interface {
 	ReadAwsAccount(context.Context, *ReadAwsAccountRequest) (*ReadAwsAccountResponse, error)
 	UpdateAwsAccount(context.Context, *UpdateAwsAccountRequest) (*UpdateAwsAccountResponse, error)
 	DeleteAwsAccount(context.Context, *DeleteAwsAccountRequest) (*emptypb.Empty, error)
+	CreateAwsOrganization(context.Context, *CreateAwsOrganizationRequest) (*CreateAwsOrganizationResponse, error)
+	ReadAwsOrganization(context.Context, *ReadAwsOrganizationRequest) (*ReadAwsOrganizationResponse, error)
+	UpdateAwsOrganization(context.Context, *UpdateAwsOrganizationRequest) (*UpdateAwsOrganizationResponse, error)
+	DeleteAwsOrganization(context.Context, *DeleteAwsOrganizationRequest) (*emptypb.Empty, error)
 	mustEmbedUnimplementedConfigServiceServer()
 }
 
@@ -113,6 +165,18 @@ func (UnimplementedConfigServiceServer) UpdateAwsAccount(context.Context, *Updat
 }
 func (UnimplementedConfigServiceServer) DeleteAwsAccount(context.Context, *DeleteAwsAccountRequest) (*emptypb.Empty, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method DeleteAwsAccount not implemented")
+}
+func (UnimplementedConfigServiceServer) CreateAwsOrganization(context.Context, *CreateAwsOrganizationRequest) (*CreateAwsOrganizationResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method CreateAwsOrganization not implemented")
+}
+func (UnimplementedConfigServiceServer) ReadAwsOrganization(context.Context, *ReadAwsOrganizationRequest) (*ReadAwsOrganizationResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method ReadAwsOrganization not implemented")
+}
+func (UnimplementedConfigServiceServer) UpdateAwsOrganization(context.Context, *UpdateAwsOrganizationRequest) (*UpdateAwsOrganizationResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method UpdateAwsOrganization not implemented")
+}
+func (UnimplementedConfigServiceServer) DeleteAwsOrganization(context.Context, *DeleteAwsOrganizationRequest) (*emptypb.Empty, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method DeleteAwsOrganization not implemented")
 }
 func (UnimplementedConfigServiceServer) mustEmbedUnimplementedConfigServiceServer() {}
 
@@ -199,6 +263,78 @@ func _ConfigService_DeleteAwsAccount_Handler(srv interface{}, ctx context.Contex
 	return interceptor(ctx, in, info, handler)
 }
 
+func _ConfigService_CreateAwsOrganization_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(CreateAwsOrganizationRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(ConfigServiceServer).CreateAwsOrganization(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: ConfigService_CreateAwsOrganization_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(ConfigServiceServer).CreateAwsOrganization(ctx, req.(*CreateAwsOrganizationRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _ConfigService_ReadAwsOrganization_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(ReadAwsOrganizationRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(ConfigServiceServer).ReadAwsOrganization(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: ConfigService_ReadAwsOrganization_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(ConfigServiceServer).ReadAwsOrganization(ctx, req.(*ReadAwsOrganizationRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _ConfigService_UpdateAwsOrganization_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(UpdateAwsOrganizationRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(ConfigServiceServer).UpdateAwsOrganization(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: ConfigService_UpdateAwsOrganization_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(ConfigServiceServer).UpdateAwsOrganization(ctx, req.(*UpdateAwsOrganizationRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _ConfigService_DeleteAwsOrganization_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(DeleteAwsOrganizationRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(ConfigServiceServer).DeleteAwsOrganization(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: ConfigService_DeleteAwsOrganization_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(ConfigServiceServer).DeleteAwsOrganization(ctx, req.(*DeleteAwsOrganizationRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // ConfigService_ServiceDesc is the grpc.ServiceDesc for ConfigService service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -221,6 +357,22 @@ var ConfigService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "DeleteAwsAccount",
 			Handler:    _ConfigService_DeleteAwsAccount_Handler,
+		},
+		{
+			MethodName: "CreateAwsOrganization",
+			Handler:    _ConfigService_CreateAwsOrganization_Handler,
+		},
+		{
+			MethodName: "ReadAwsOrganization",
+			Handler:    _ConfigService_ReadAwsOrganization_Handler,
+		},
+		{
+			MethodName: "UpdateAwsOrganization",
+			Handler:    _ConfigService_UpdateAwsOrganization_Handler,
+		},
+		{
+			MethodName: "DeleteAwsOrganization",
+			Handler:    _ConfigService_DeleteAwsOrganization_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

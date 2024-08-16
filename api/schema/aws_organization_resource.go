@@ -13,16 +13,16 @@ import (
 )
 
 var (
-	awsAccountResource = Resource{
-		TypeName: "aws_account",
+	awsOrganizationResource = Resource{
+		TypeName: "aws_organization",
 		Schema: resource_schema.Schema{
 			Version:     1,
-			Description: "Manages an AWS account in CloudSecure.",
+			Description: "Manages an AWS organization and its master account in CloudSecure.",
 			Attributes: map[string]resource_schema.Attribute{
 				IDFieldName: idAttribute,
-				"account_id": StringResourceAttributeWithMode{
+				"master_account_id": StringResourceAttributeWithMode{
 					StringAttribute: resource_schema.StringAttribute{
-						MarkdownDescription: "AWS account ID.",
+						MarkdownDescription: "ID of the master account of the AWS organization.",
 						Required:            true,
 						PlanModifiers: []planmodifier.String{
 							stringplanmodifier.RequiresReplace(),
@@ -50,13 +50,13 @@ var (
 					},
 				},
 				"name": resource_schema.StringAttribute{
-					Description: "Display name for the AWS account.",
+					Description: "Display name for the AWS organization's master account.",
 					Required:    true,
 				},
-				"organization_master_account_id": StringResourceAttributeWithMode{
+				"organization_id": StringResourceAttributeWithMode{
 					StringAttribute: resource_schema.StringAttribute{
-						Description: "ID of the master account of the AWS organization this account belongs to. If specified, should be the `master_account_id` of an `aws_organization`.",
-						Optional:    true,
+						Description: "ID of the AWS organization.",
+						Required:    true,
 						PlanModifiers: []planmodifier.String{
 							stringplanmodifier.RequiresReplace(),
 						},
@@ -67,7 +67,7 @@ var (
 				},
 				"role_arn": StringResourceAttributeWithMode{
 					StringAttribute: resource_schema.StringAttribute{
-						Description: "ARN of the AWS role to be assumed by CloudSecure to manage this account.",
+						Description: "ARN of the AWS role to be assumed by CloudSecure to manage this AWS organization's master account.",
 						Required:    true,
 						PlanModifiers: []planmodifier.String{
 							stringplanmodifier.RequiresReplace(),
