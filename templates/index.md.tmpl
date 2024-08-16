@@ -75,6 +75,10 @@ Clients may pass the `access_token` directly instead of using the `client_id` an
 You will need to call the OAuth 2 Token Endpoint at https://cloud.illum.io/api/v1/authenticate on your own with the `client_id` and `client_secret` to obtain the `access_token`.
 
 ```terraform
+curl -X POST https://cloud.illum.io/api/v1/authenticate -d 'client_id=my-client-id' -d 'client_secret=my-client-secret' -d 'grant_type=client_credentials'
+```
+
+```terraform
 variable "illumio_cloudsecure_access_token" {  
   type        = string  
   sensitive   = true  
