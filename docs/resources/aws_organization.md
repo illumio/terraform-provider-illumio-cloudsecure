@@ -3,12 +3,12 @@
 page_title: "illumio-cloudsecure_aws_organization Resource - illumio-cloudsecure"
 subcategory: ""
 description: |-
-  Manages an AWS organization in CloudSecure.
+  Manages an AWS organization and its master account in CloudSecure.
 ---
 
 # illumio-cloudsecure_aws_organization (Resource)
 
-Manages an AWS organization in CloudSecure.
+Manages an AWS organization and its master account in CloudSecure.
 
 ## Example Usage
 
@@ -31,9 +31,9 @@ resource "illumio-cloudsecure_aws_organization" "organization_example" {
 ### Required
 
 - `master_account_id` (String) ID of the master account of the AWS organization.
-- `name` (String) Display name.
-- `organization_id` (String) AWS organization ID.
-- `role_arn` (String) ARN of the AWS role to be assumed by CloudSecure to manage this account.
+- `name` (String) Display name for the AWS organization's master account.
+- `organization_id` (String) ID of the AWS organization.
+- `role_arn` (String) ARN of the AWS role to be assumed by CloudSecure to manage this AWS organization's master account.
 - `role_external_id` (String) External ID defined in the AWS role to authenticate CloudSecure when assuming that role.
 
 ### Optional

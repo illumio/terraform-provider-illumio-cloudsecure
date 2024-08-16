@@ -50,12 +50,12 @@ var (
 					},
 				},
 				"name": resource_schema.StringAttribute{
-					Description: "Display name.",
+					Description: "Display name for the AWS account.",
 					Required:    true,
 				},
 				"organization_master_account_id": StringResourceAttributeWithMode{
 					StringAttribute: resource_schema.StringAttribute{
-						Description: "AWS master account ID of the organization this account belongs to. If specified, must be the `master_account_id` of an `aws_organization`.",
+						Description: "ID of the master account of the AWS organization this account belongs to. If specified, should be the `master_account_id` of an `aws_organization`.",
 						Optional:    true,
 						PlanModifiers: []planmodifier.String{
 							stringplanmodifier.RequiresReplace(),
