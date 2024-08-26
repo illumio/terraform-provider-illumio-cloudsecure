@@ -29,6 +29,10 @@ func (suite *SchemaTestSuite) TestProtoMessageName() {
 			tfName: "service_account_id",
 			output: "ServiceAccountId",
 		},
+		"k8s_cluster": { // gRPC considers a digit to be a delimiter, so "k8s" is capitalized as "K8S".
+			tfName: "k8s_cluster",
+			output: "K8SCluster",
+		},
 	}
 
 	for name, tc := range tests {

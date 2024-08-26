@@ -6,9 +6,9 @@ package schema
 import (
 	"slices"
 
+	"github.com/gogo/protobuf/protoc-gen-gogo/generator"
 	datasource_schema "github.com/hashicorp/terraform-plugin-framework/datasource/schema"
 	resource_schema "github.com/hashicorp/terraform-plugin-framework/resource/schema"
-	"github.com/stoewer/go-strcase"
 	"golang.org/x/exp/maps"
 )
 
@@ -22,7 +22,7 @@ const (
 
 // ProtoMessageName converts a Terraform resource, data source, or field name (in snake_case) into a ProtocolBuffer message name (in UpperCamelCase).
 func ProtoMessageName(tfName string) string {
-	return strcase.UpperCamelCase(tfName)
+	return generator.CamelCase(tfName)
 }
 
 // SortResourceAttributes returns the sorted names of a set of resource attributes.
