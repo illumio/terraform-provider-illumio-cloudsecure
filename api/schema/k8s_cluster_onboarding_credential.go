@@ -15,14 +15,14 @@ var (
 	k8sClusterOnboardingCredential = Resource{
 		TypeName: "k8s_cluster_onboarding_credential",
 		Schema: resource_schema.Schema{
-			Version:     1,
-			Description: "Manages a credential (`client_id`/`client_secret` pair) that can be used to onboard one or more k8s clusters onto CloudSecure within a specific Illumio Region.",
+			Version:             1,
+			MarkdownDescription: "Manages a credential (`client_id`/`client_secret` pair) that can be used to onboard one or more k8s clusters onto CloudSecure within a specific Illumio Region.",
 			Attributes: map[string]resource_schema.Attribute{
 				IDFieldName: idAttribute,
 				"client_id": StringResourceAttributeWithMode{
 					StringAttribute: resource_schema.StringAttribute{
-						Description: "Client identifier used by CloudSecure's k8s operator to authenticate to CloudSecure for onboarding, in combination with `client_secret`. Identical to `id`.",
-						Computed:    true,
+						MarkdownDescription: "Client identifier used by CloudSecure's k8s operator to authenticate to CloudSecure for onboarding, in combination with `client_secret`. Identical to `id`.",
+						Computed:            true,
 					},
 					attributeWithMode: attributeWithMode{
 						Mode: ReadOnlyAttributeMode,
@@ -30,9 +30,9 @@ var (
 				},
 				"client_secret": StringResourceAttributeWithMode{
 					StringAttribute: resource_schema.StringAttribute{
-						Description: "Client secret used by CloudSecure's k8s operator to authenticate to CloudSecure for onboarding, in combination with `client_id`.",
-						Computed:    true,
-						Sensitive:   true,
+						MarkdownDescription: "Client secret used by CloudSecure's k8s operator to authenticate to CloudSecure for onboarding, in combination with `client_id`.",
+						Computed:            true,
+						Sensitive:           true,
 						PlanModifiers: []planmodifier.String{
 							stringplanmodifier.UseStateForUnknown(),
 						},
