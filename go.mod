@@ -4,12 +4,12 @@ go 1.22
 
 require (
 	github.com/bufbuild/buf v1.38.0
+	github.com/gogo/protobuf v1.3.2
 	github.com/google/uuid v1.6.0
 	github.com/hashicorp/terraform-plugin-docs v0.19.4
 	github.com/hashicorp/terraform-plugin-framework v1.11.0
 	github.com/hashicorp/terraform-plugin-framework-validators v0.13.0
 	github.com/hashicorp/terraform-plugin-log v0.9.0
-	github.com/stoewer/go-strcase v1.3.0
 	github.com/stretchr/testify v1.9.0
 	go.uber.org/zap v1.27.0
 	golang.org/x/exp v0.0.0-20240808152545-0cdaa3abc0fa
@@ -71,7 +71,6 @@ require (
 	github.com/go-task/slim-sprig v0.0.0-20230315185526-52ccab3ef572 // indirect
 	github.com/gofrs/flock v0.12.1 // indirect
 	github.com/gofrs/uuid/v5 v5.3.0 // indirect
-	github.com/gogo/protobuf v1.3.2 // indirect
 	github.com/golang/groupcache v0.0.0-20210331224755-41bb18bfe9da // indirect
 	github.com/golang/protobuf v1.5.4 // indirect
 	github.com/google/cel-go v0.21.0 // indirect
@@ -135,6 +134,7 @@ require (
 	github.com/spf13/cast v1.5.0 // indirect
 	github.com/spf13/cobra v1.8.1 // indirect
 	github.com/spf13/pflag v1.0.5 // indirect
+	github.com/stoewer/go-strcase v1.3.0 // indirect
 	github.com/vbatts/tar-split v0.11.5 // indirect
 	github.com/vmihailenco/msgpack/v5 v5.4.1 // indirect
 	github.com/vmihailenco/tagparser/v2 v2.0.0 // indirect

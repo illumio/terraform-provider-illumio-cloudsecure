@@ -39,6 +39,8 @@ func (p *Provider) Resources(ctx context.Context) []func() resource.Resource {
 			resp = append(resp, func() resource.Resource { return NewAwsAccountResource(r.Schema) })
 		case "aws_organization":
 			resp = append(resp, func() resource.Resource { return NewAwsOrganizationResource(r.Schema) })
+		case "k8s_cluster_onboarding_credential":
+			resp = append(resp, func() resource.Resource { return NewK8SClusterOnboardingCredentialResource(r.Schema) })
 		}
 	}
 	return resp
@@ -406,6 +408,184 @@ func (r *AwsOrganizationResource) ImportState(ctx context.Context, req resource.
 	// TODO
 }
 
+// K8SClusterOnboardingCredentialResource implements the k8s_cluster_onboarding_credential resource.
+type K8SClusterOnboardingCredentialResource struct {
+	// schema is the schema of the k8s_cluster_onboarding_credential resource.
+	schema resource_schema.Schema
+
+	// providerData is the provider configuration.
+	config ProviderData
+}
+
+var _ resource.ResourceWithConfigure = &K8SClusterOnboardingCredentialResource{}
+var _ resource.ResourceWithImportState = &K8SClusterOnboardingCredentialResource{}
+
+// NewK8SClusterOnboardingCredentialResource returns a new k8s_cluster_onboarding_credential resource.
+func NewK8SClusterOnboardingCredentialResource(schema resource_schema.Schema) resource.Resource {
+	return &K8SClusterOnboardingCredentialResource{
+		schema: schema,
+	}
+}
+
+func (r *K8SClusterOnboardingCredentialResource) Metadata(ctx context.Context, req resource.MetadataRequest, resp *resource.MetadataResponse) {
+	resp.TypeName = req.ProviderTypeName + "_k8s_cluster_onboarding_credential"
+}
+
+func (r *K8SClusterOnboardingCredentialResource) Schema(ctx context.Context, req resource.SchemaRequest, resp *resource.SchemaResponse) {
+	resp.Schema = r.schema
+}
+
+func (r *K8SClusterOnboardingCredentialResource) Configure(ctx context.Context, req resource.ConfigureRequest, resp *resource.ConfigureResponse) {
+	if req.ProviderData == nil {
+		return
+	}
+
+	providerData, ok := req.ProviderData.(ProviderData)
+	if !ok {
+		resp.Diagnostics.AddError(
+			"Unexpected Resource Configure Type",
+			fmt.Sprintf("Expected ProviderData, got: %T. Please report this issue to the provider developers.", req.ProviderData),
+		)
+
+		return
+	}
+
+	r.config = providerData
+}
+
+func (r *K8SClusterOnboardingCredentialResource) Create(ctx context.Context, req resource.CreateRequest, resp *resource.CreateResponse) {
+	var data K8SClusterOnboardingCredentialResourceModel
+
+	resp.Diagnostics.Append(req.Plan.Get(ctx, &data)...)
+	if resp.Diagnostics.HasError() {
+		return
+	}
+
+	protoReq := NewCreateK8SClusterOnboardingCredentialRequest(&data)
+
+	tflog.Trace(ctx, "creating a resource", map[string]any{"type": "k8s_cluster_onboarding_credential"})
+
+	rpcCtx, rpcCancel := context.WithTimeout(ctx, r.config.RequestTimeout())
+	protoResp, err := r.config.Client().CreateK8SClusterOnboardingCredential(rpcCtx, protoReq)
+	rpcCancel()
+	if err != nil {
+		resp.Diagnostics.AddError("Config API Error", fmt.Sprintf("Unable to create k8s_cluster_onboarding_credential, got error: %s", err))
+		return
+	}
+
+	CopyCreateK8SClusterOnboardingCredentialResponse(&data, protoResp)
+
+	tflog.Trace(ctx, "created a resource", map[string]any{"type": "k8s_cluster_onboarding_credential", "id": protoResp.Id})
+
+	resp.Diagnostics.Append(resp.State.Set(ctx, &data)...)
+}
+
+func (r *K8SClusterOnboardingCredentialResource) Read(ctx context.Context, req resource.ReadRequest, resp *resource.ReadResponse) {
+	var data K8SClusterOnboardingCredentialResourceModel
+
+	resp.Diagnostics.Append(req.State.Get(ctx, &data)...)
+	if resp.Diagnostics.HasError() {
+		return
+	}
+
+	protoReq := NewReadK8SClusterOnboardingCredentialRequest(&data)
+
+	tflog.Trace(ctx, "reading a resource", map[string]any{"type": "k8s_cluster_onboarding_credential", "id": protoReq.Id})
+
+	rpcCtx, rpcCancel := context.WithTimeout(ctx, r.config.RequestTimeout())
+	protoResp, err := r.config.Client().ReadK8SClusterOnboardingCredential(rpcCtx, protoReq)
+	rpcCancel()
+	if err != nil {
+		switch status.Code(err) {
+		case codes.NotFound:
+			resp.Diagnostics.AddWarning("Resource Not Found", fmt.Sprintf("No k8s_cluster_onboarding_credential found with id %s", protoReq.Id))
+			resp.State.RemoveResource(ctx)
+			return
+		default:
+			resp.Diagnostics.AddError("Config API Error", fmt.Sprintf("Unable to read k8s_cluster_onboarding_credential, got error: %s", err))
+			return
+		}
+	}
+
+	CopyReadK8SClusterOnboardingCredentialResponse(&data, protoResp)
+
+	tflog.Trace(ctx, "read a resource", map[string]any{"type": "k8s_cluster_onboarding_credential", "id": protoResp.Id})
+
+	resp.Diagnostics.Append(resp.State.Set(ctx, &data)...)
+}
+
+func (r *K8SClusterOnboardingCredentialResource) Update(ctx context.Context, req resource.UpdateRequest, resp *resource.UpdateResponse) {
+	var beforeData K8SClusterOnboardingCredentialResourceModel
+	var afterData K8SClusterOnboardingCredentialResourceModel
+
+	resp.Diagnostics.Append(req.State.Get(ctx, &beforeData)...)
+	if resp.Diagnostics.HasError() {
+		return
+	}
+
+	resp.Diagnostics.Append(req.Plan.Get(ctx, &afterData)...)
+	if resp.Diagnostics.HasError() {
+		return
+	}
+
+	protoReq := NewUpdateK8SClusterOnboardingCredentialRequest(&beforeData, &afterData)
+
+	tflog.Trace(ctx, "updating a resource", map[string]any{"type": "k8s_cluster_onboarding_credential", "id": protoReq.Id, "update_mask": protoReq.UpdateMask.Paths})
+
+	rpcCtx, rpcCancel := context.WithTimeout(ctx, r.config.RequestTimeout())
+	protoResp, err := r.config.Client().UpdateK8SClusterOnboardingCredential(rpcCtx, protoReq)
+	rpcCancel()
+	if err != nil {
+		switch status.Code(err) {
+		case codes.NotFound:
+			resp.Diagnostics.AddError("Resource Not Found", fmt.Sprintf("No k8s_cluster_onboarding_credential found with id %s", protoReq.Id))
+			resp.State.RemoveResource(ctx)
+			return
+		default:
+			resp.Diagnostics.AddError("Config API Error", fmt.Sprintf("Unable to update k8s_cluster_onboarding_credential, got error: %s", err))
+			return
+		}
+	}
+
+	CopyUpdateK8SClusterOnboardingCredentialResponse(&afterData, protoResp)
+
+	tflog.Trace(ctx, "updated a resource", map[string]any{"type": "k8s_cluster_onboarding_credential", "id": protoResp.Id})
+
+	resp.Diagnostics.Append(resp.State.Set(ctx, &afterData)...)
+}
+
+func (r *K8SClusterOnboardingCredentialResource) Delete(ctx context.Context, req resource.DeleteRequest, resp *resource.DeleteResponse) {
+	var data K8SClusterOnboardingCredentialResourceModel
+
+	resp.Diagnostics.Append(req.State.Get(ctx, &data)...)
+	if resp.Diagnostics.HasError() {
+		return
+	}
+
+	protoReq := NewDeleteK8SClusterOnboardingCredentialRequest(&data)
+
+	tflog.Trace(ctx, "deleting a resource", map[string]any{"type": "k8s_cluster_onboarding_credential", "id": protoReq.Id})
+
+	rpcCtx, rpcCancel := context.WithTimeout(ctx, r.config.RequestTimeout())
+	_, err := r.config.Client().DeleteK8SClusterOnboardingCredential(rpcCtx, protoReq)
+	rpcCancel()
+	if err != nil {
+		switch status.Code(err) {
+		case codes.NotFound:
+			tflog.Trace(ctx, "resource was already deleted", map[string]any{"type": "k8s_cluster_onboarding_credential", "id": protoReq.Id})
+		default:
+			resp.Diagnostics.AddError("Config API Error", fmt.Sprintf("Unable to delete k8s_cluster_onboarding_credential, got error: %s", err))
+			return
+		}
+	}
+
+	tflog.Trace(ctx, "deleted a resource", map[string]any{"type": "k8s_cluster_onboarding_credential", "id": protoReq.Id})
+}
+
+func (r *K8SClusterOnboardingCredentialResource) ImportState(ctx context.Context, req resource.ImportStateRequest, resp *resource.ImportStateResponse) {
+	// TODO
+}
+
 type AwsAccountResourceModel struct {
 	Id                          types.String `tfsdk:"id"`
 	AccountId                   types.String `tfsdk:"account_id"`
@@ -424,6 +604,16 @@ type AwsOrganizationResourceModel struct {
 	OrganizationId  types.String `tfsdk:"organization_id"`
 	RoleArn         types.String `tfsdk:"role_arn"`
 	RoleExternalId  types.String `tfsdk:"role_external_id"`
+}
+
+type K8SClusterOnboardingCredentialResourceModel struct {
+	Id            types.String `tfsdk:"id"`
+	ClientId      types.String `tfsdk:"client_id"`
+	ClientSecret  types.String `tfsdk:"client_secret"`
+	CreatedAt     types.String `tfsdk:"created_at"`
+	Description   types.String `tfsdk:"description"`
+	IllumioRegion types.String `tfsdk:"illumio_region"`
+	Name          types.String `tfsdk:"name"`
 }
 
 func NewCreateAwsAccountRequest(data *AwsAccountResourceModel) *configv1.CreateAwsAccountRequest {
@@ -552,6 +742,51 @@ func NewDeleteAwsOrganizationRequest(data *AwsOrganizationResourceModel) *config
 	return proto
 }
 
+func NewCreateK8SClusterOnboardingCredentialRequest(data *K8SClusterOnboardingCredentialResourceModel) *configv1.CreateK8SClusterOnboardingCredentialRequest {
+	proto := &configv1.CreateK8SClusterOnboardingCredentialRequest{}
+	if !data.Description.IsUnknown() && !data.Description.IsNull() {
+		var dataValue attr.Value = data.Description
+		var protoValue string
+		protoValue = dataValue.(types.String).ValueString()
+		proto.Description = &protoValue
+	}
+	if !data.IllumioRegion.IsUnknown() && !data.IllumioRegion.IsNull() {
+		var dataValue attr.Value = data.IllumioRegion
+		var protoValue string
+		protoValue = dataValue.(types.String).ValueString()
+		proto.IllumioRegion = protoValue
+	}
+	if !data.Name.IsUnknown() && !data.Name.IsNull() {
+		var dataValue attr.Value = data.Name
+		var protoValue string
+		protoValue = dataValue.(types.String).ValueString()
+		proto.Name = protoValue
+	}
+	return proto
+}
+
+func NewReadK8SClusterOnboardingCredentialRequest(data *K8SClusterOnboardingCredentialResourceModel) *configv1.ReadK8SClusterOnboardingCredentialRequest {
+	proto := &configv1.ReadK8SClusterOnboardingCredentialRequest{}
+	if !data.Id.IsUnknown() && !data.Id.IsNull() {
+		var dataValue attr.Value = data.Id
+		var protoValue string
+		protoValue = dataValue.(types.String).ValueString()
+		proto.Id = protoValue
+	}
+	return proto
+}
+
+func NewDeleteK8SClusterOnboardingCredentialRequest(data *K8SClusterOnboardingCredentialResourceModel) *configv1.DeleteK8SClusterOnboardingCredentialRequest {
+	proto := &configv1.DeleteK8SClusterOnboardingCredentialRequest{}
+	if !data.Id.IsUnknown() && !data.Id.IsNull() {
+		var dataValue attr.Value = data.Id
+		var protoValue string
+		protoValue = dataValue.(types.String).ValueString()
+		proto.Id = protoValue
+	}
+	return proto
+}
+
 func NewUpdateAwsAccountRequest(beforeData, afterData *AwsAccountResourceModel) *configv1.UpdateAwsAccountRequest {
 	proto := &configv1.UpdateAwsAccountRequest{}
 	proto.UpdateMask, _ = fieldmaskpb.New(proto)
@@ -572,6 +807,31 @@ func NewUpdateAwsOrganizationRequest(beforeData, afterData *AwsOrganizationResou
 	proto := &configv1.UpdateAwsOrganizationRequest{}
 	proto.UpdateMask, _ = fieldmaskpb.New(proto)
 	proto.Id = beforeData.Id.ValueString()
+	if !afterData.Name.Equal(beforeData.Name) {
+		proto.UpdateMask.Append(proto, "name")
+		if !afterData.Name.IsUnknown() && !afterData.Name.IsNull() {
+			var dataValue attr.Value = afterData.Name
+			var protoValue string
+			protoValue = dataValue.(types.String).ValueString()
+			proto.Name = protoValue
+		}
+	}
+	return proto
+}
+
+func NewUpdateK8SClusterOnboardingCredentialRequest(beforeData, afterData *K8SClusterOnboardingCredentialResourceModel) *configv1.UpdateK8SClusterOnboardingCredentialRequest {
+	proto := &configv1.UpdateK8SClusterOnboardingCredentialRequest{}
+	proto.UpdateMask, _ = fieldmaskpb.New(proto)
+	proto.Id = beforeData.Id.ValueString()
+	if !afterData.Description.Equal(beforeData.Description) {
+		proto.UpdateMask.Append(proto, "description")
+		if !afterData.Description.IsUnknown() && !afterData.Description.IsNull() {
+			var dataValue attr.Value = afterData.Description
+			var protoValue string
+			protoValue = dataValue.(types.String).ValueString()
+			proto.Description = &protoValue
+		}
+	}
 	if !afterData.Name.Equal(beforeData.Name) {
 		proto.UpdateMask.Append(proto, "name")
 		if !afterData.Name.IsUnknown() && !afterData.Name.IsNull() {
@@ -636,4 +896,29 @@ func CopyUpdateAwsOrganizationResponse(dst *AwsOrganizationResourceModel, src *c
 	dst.OrganizationId = types.StringValue(src.OrganizationId)
 	dst.RoleArn = types.StringValue(src.RoleArn)
 	dst.RoleExternalId = types.StringValue(src.RoleExternalId)
+}
+func CopyCreateK8SClusterOnboardingCredentialResponse(dst *K8SClusterOnboardingCredentialResourceModel, src *configv1.CreateK8SClusterOnboardingCredentialResponse) {
+	dst.Id = types.StringValue(src.Id)
+	dst.ClientId = types.StringValue(src.ClientId)
+	dst.ClientSecret = types.StringValue(src.ClientSecret)
+	dst.CreatedAt = types.StringValue(src.CreatedAt)
+	dst.Description = types.StringPointerValue(src.Description)
+	dst.IllumioRegion = types.StringValue(src.IllumioRegion)
+	dst.Name = types.StringValue(src.Name)
+}
+func CopyReadK8SClusterOnboardingCredentialResponse(dst *K8SClusterOnboardingCredentialResourceModel, src *configv1.ReadK8SClusterOnboardingCredentialResponse) {
+	dst.Id = types.StringValue(src.Id)
+	dst.ClientId = types.StringValue(src.ClientId)
+	dst.CreatedAt = types.StringValue(src.CreatedAt)
+	dst.Description = types.StringPointerValue(src.Description)
+	dst.IllumioRegion = types.StringValue(src.IllumioRegion)
+	dst.Name = types.StringValue(src.Name)
+}
+func CopyUpdateK8SClusterOnboardingCredentialResponse(dst *K8SClusterOnboardingCredentialResourceModel, src *configv1.UpdateK8SClusterOnboardingCredentialResponse) {
+	dst.Id = types.StringValue(src.Id)
+	dst.ClientId = types.StringValue(src.ClientId)
+	dst.CreatedAt = types.StringValue(src.CreatedAt)
+	dst.Description = types.StringPointerValue(src.Description)
+	dst.IllumioRegion = types.StringValue(src.IllumioRegion)
+	dst.Name = types.StringValue(src.Name)
 }

@@ -23,14 +23,18 @@ import (
 const _ = grpc.SupportPackageIsVersion8
 
 const (
-	ConfigService_CreateAwsAccount_FullMethodName      = "/illumio.cloud.config.v1.ConfigService/CreateAwsAccount"
-	ConfigService_ReadAwsAccount_FullMethodName        = "/illumio.cloud.config.v1.ConfigService/ReadAwsAccount"
-	ConfigService_UpdateAwsAccount_FullMethodName      = "/illumio.cloud.config.v1.ConfigService/UpdateAwsAccount"
-	ConfigService_DeleteAwsAccount_FullMethodName      = "/illumio.cloud.config.v1.ConfigService/DeleteAwsAccount"
-	ConfigService_CreateAwsOrganization_FullMethodName = "/illumio.cloud.config.v1.ConfigService/CreateAwsOrganization"
-	ConfigService_ReadAwsOrganization_FullMethodName   = "/illumio.cloud.config.v1.ConfigService/ReadAwsOrganization"
-	ConfigService_UpdateAwsOrganization_FullMethodName = "/illumio.cloud.config.v1.ConfigService/UpdateAwsOrganization"
-	ConfigService_DeleteAwsOrganization_FullMethodName = "/illumio.cloud.config.v1.ConfigService/DeleteAwsOrganization"
+	ConfigService_CreateAwsAccount_FullMethodName                     = "/illumio.cloud.config.v1.ConfigService/CreateAwsAccount"
+	ConfigService_ReadAwsAccount_FullMethodName                       = "/illumio.cloud.config.v1.ConfigService/ReadAwsAccount"
+	ConfigService_UpdateAwsAccount_FullMethodName                     = "/illumio.cloud.config.v1.ConfigService/UpdateAwsAccount"
+	ConfigService_DeleteAwsAccount_FullMethodName                     = "/illumio.cloud.config.v1.ConfigService/DeleteAwsAccount"
+	ConfigService_CreateAwsOrganization_FullMethodName                = "/illumio.cloud.config.v1.ConfigService/CreateAwsOrganization"
+	ConfigService_ReadAwsOrganization_FullMethodName                  = "/illumio.cloud.config.v1.ConfigService/ReadAwsOrganization"
+	ConfigService_UpdateAwsOrganization_FullMethodName                = "/illumio.cloud.config.v1.ConfigService/UpdateAwsOrganization"
+	ConfigService_DeleteAwsOrganization_FullMethodName                = "/illumio.cloud.config.v1.ConfigService/DeleteAwsOrganization"
+	ConfigService_CreateK8SClusterOnboardingCredential_FullMethodName = "/illumio.cloud.config.v1.ConfigService/CreateK8SClusterOnboardingCredential"
+	ConfigService_ReadK8SClusterOnboardingCredential_FullMethodName   = "/illumio.cloud.config.v1.ConfigService/ReadK8SClusterOnboardingCredential"
+	ConfigService_UpdateK8SClusterOnboardingCredential_FullMethodName = "/illumio.cloud.config.v1.ConfigService/UpdateK8SClusterOnboardingCredential"
+	ConfigService_DeleteK8SClusterOnboardingCredential_FullMethodName = "/illumio.cloud.config.v1.ConfigService/DeleteK8SClusterOnboardingCredential"
 )
 
 // ConfigServiceClient is the client API for ConfigService service.
@@ -45,6 +49,10 @@ type ConfigServiceClient interface {
 	ReadAwsOrganization(ctx context.Context, in *ReadAwsOrganizationRequest, opts ...grpc.CallOption) (*ReadAwsOrganizationResponse, error)
 	UpdateAwsOrganization(ctx context.Context, in *UpdateAwsOrganizationRequest, opts ...grpc.CallOption) (*UpdateAwsOrganizationResponse, error)
 	DeleteAwsOrganization(ctx context.Context, in *DeleteAwsOrganizationRequest, opts ...grpc.CallOption) (*emptypb.Empty, error)
+	CreateK8SClusterOnboardingCredential(ctx context.Context, in *CreateK8SClusterOnboardingCredentialRequest, opts ...grpc.CallOption) (*CreateK8SClusterOnboardingCredentialResponse, error)
+	ReadK8SClusterOnboardingCredential(ctx context.Context, in *ReadK8SClusterOnboardingCredentialRequest, opts ...grpc.CallOption) (*ReadK8SClusterOnboardingCredentialResponse, error)
+	UpdateK8SClusterOnboardingCredential(ctx context.Context, in *UpdateK8SClusterOnboardingCredentialRequest, opts ...grpc.CallOption) (*UpdateK8SClusterOnboardingCredentialResponse, error)
+	DeleteK8SClusterOnboardingCredential(ctx context.Context, in *DeleteK8SClusterOnboardingCredentialRequest, opts ...grpc.CallOption) (*emptypb.Empty, error)
 }
 
 type configServiceClient struct {
@@ -135,6 +143,46 @@ func (c *configServiceClient) DeleteAwsOrganization(ctx context.Context, in *Del
 	return out, nil
 }
 
+func (c *configServiceClient) CreateK8SClusterOnboardingCredential(ctx context.Context, in *CreateK8SClusterOnboardingCredentialRequest, opts ...grpc.CallOption) (*CreateK8SClusterOnboardingCredentialResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(CreateK8SClusterOnboardingCredentialResponse)
+	err := c.cc.Invoke(ctx, ConfigService_CreateK8SClusterOnboardingCredential_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *configServiceClient) ReadK8SClusterOnboardingCredential(ctx context.Context, in *ReadK8SClusterOnboardingCredentialRequest, opts ...grpc.CallOption) (*ReadK8SClusterOnboardingCredentialResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(ReadK8SClusterOnboardingCredentialResponse)
+	err := c.cc.Invoke(ctx, ConfigService_ReadK8SClusterOnboardingCredential_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *configServiceClient) UpdateK8SClusterOnboardingCredential(ctx context.Context, in *UpdateK8SClusterOnboardingCredentialRequest, opts ...grpc.CallOption) (*UpdateK8SClusterOnboardingCredentialResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(UpdateK8SClusterOnboardingCredentialResponse)
+	err := c.cc.Invoke(ctx, ConfigService_UpdateK8SClusterOnboardingCredential_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *configServiceClient) DeleteK8SClusterOnboardingCredential(ctx context.Context, in *DeleteK8SClusterOnboardingCredentialRequest, opts ...grpc.CallOption) (*emptypb.Empty, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(emptypb.Empty)
+	err := c.cc.Invoke(ctx, ConfigService_DeleteK8SClusterOnboardingCredential_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // ConfigServiceServer is the server API for ConfigService service.
 // All implementations must embed UnimplementedConfigServiceServer
 // for forward compatibility
@@ -147,6 +195,10 @@ type ConfigServiceServer interface {
 	ReadAwsOrganization(context.Context, *ReadAwsOrganizationRequest) (*ReadAwsOrganizationResponse, error)
 	UpdateAwsOrganization(context.Context, *UpdateAwsOrganizationRequest) (*UpdateAwsOrganizationResponse, error)
 	DeleteAwsOrganization(context.Context, *DeleteAwsOrganizationRequest) (*emptypb.Empty, error)
+	CreateK8SClusterOnboardingCredential(context.Context, *CreateK8SClusterOnboardingCredentialRequest) (*CreateK8SClusterOnboardingCredentialResponse, error)
+	ReadK8SClusterOnboardingCredential(context.Context, *ReadK8SClusterOnboardingCredentialRequest) (*ReadK8SClusterOnboardingCredentialResponse, error)
+	UpdateK8SClusterOnboardingCredential(context.Context, *UpdateK8SClusterOnboardingCredentialRequest) (*UpdateK8SClusterOnboardingCredentialResponse, error)
+	DeleteK8SClusterOnboardingCredential(context.Context, *DeleteK8SClusterOnboardingCredentialRequest) (*emptypb.Empty, error)
 	mustEmbedUnimplementedConfigServiceServer()
 }
 
@@ -177,6 +229,18 @@ func (UnimplementedConfigServiceServer) UpdateAwsOrganization(context.Context, *
 }
 func (UnimplementedConfigServiceServer) DeleteAwsOrganization(context.Context, *DeleteAwsOrganizationRequest) (*emptypb.Empty, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method DeleteAwsOrganization not implemented")
+}
+func (UnimplementedConfigServiceServer) CreateK8SClusterOnboardingCredential(context.Context, *CreateK8SClusterOnboardingCredentialRequest) (*CreateK8SClusterOnboardingCredentialResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method CreateK8SClusterOnboardingCredential not implemented")
+}
+func (UnimplementedConfigServiceServer) ReadK8SClusterOnboardingCredential(context.Context, *ReadK8SClusterOnboardingCredentialRequest) (*ReadK8SClusterOnboardingCredentialResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method ReadK8SClusterOnboardingCredential not implemented")
+}
+func (UnimplementedConfigServiceServer) UpdateK8SClusterOnboardingCredential(context.Context, *UpdateK8SClusterOnboardingCredentialRequest) (*UpdateK8SClusterOnboardingCredentialResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method UpdateK8SClusterOnboardingCredential not implemented")
+}
+func (UnimplementedConfigServiceServer) DeleteK8SClusterOnboardingCredential(context.Context, *DeleteK8SClusterOnboardingCredentialRequest) (*emptypb.Empty, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method DeleteK8SClusterOnboardingCredential not implemented")
 }
 func (UnimplementedConfigServiceServer) mustEmbedUnimplementedConfigServiceServer() {}
 
@@ -335,6 +399,78 @@ func _ConfigService_DeleteAwsOrganization_Handler(srv interface{}, ctx context.C
 	return interceptor(ctx, in, info, handler)
 }
 
+func _ConfigService_CreateK8SClusterOnboardingCredential_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(CreateK8SClusterOnboardingCredentialRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(ConfigServiceServer).CreateK8SClusterOnboardingCredential(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: ConfigService_CreateK8SClusterOnboardingCredential_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(ConfigServiceServer).CreateK8SClusterOnboardingCredential(ctx, req.(*CreateK8SClusterOnboardingCredentialRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _ConfigService_ReadK8SClusterOnboardingCredential_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(ReadK8SClusterOnboardingCredentialRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(ConfigServiceServer).ReadK8SClusterOnboardingCredential(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: ConfigService_ReadK8SClusterOnboardingCredential_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(ConfigServiceServer).ReadK8SClusterOnboardingCredential(ctx, req.(*ReadK8SClusterOnboardingCredentialRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _ConfigService_UpdateK8SClusterOnboardingCredential_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(UpdateK8SClusterOnboardingCredentialRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(ConfigServiceServer).UpdateK8SClusterOnboardingCredential(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: ConfigService_UpdateK8SClusterOnboardingCredential_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(ConfigServiceServer).UpdateK8SClusterOnboardingCredential(ctx, req.(*UpdateK8SClusterOnboardingCredentialRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _ConfigService_DeleteK8SClusterOnboardingCredential_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(DeleteK8SClusterOnboardingCredentialRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(ConfigServiceServer).DeleteK8SClusterOnboardingCredential(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: ConfigService_DeleteK8SClusterOnboardingCredential_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(ConfigServiceServer).DeleteK8SClusterOnboardingCredential(ctx, req.(*DeleteK8SClusterOnboardingCredentialRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // ConfigService_ServiceDesc is the grpc.ServiceDesc for ConfigService service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -373,6 +509,22 @@ var ConfigService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "DeleteAwsOrganization",
 			Handler:    _ConfigService_DeleteAwsOrganization_Handler,
+		},
+		{
+			MethodName: "CreateK8SClusterOnboardingCredential",
+			Handler:    _ConfigService_CreateK8SClusterOnboardingCredential_Handler,
+		},
+		{
+			MethodName: "ReadK8SClusterOnboardingCredential",
+			Handler:    _ConfigService_ReadK8SClusterOnboardingCredential_Handler,
+		},
+		{
+			MethodName: "UpdateK8SClusterOnboardingCredential",
+			Handler:    _ConfigService_UpdateK8SClusterOnboardingCredential_Handler,
+		},
+		{
+			MethodName: "DeleteK8SClusterOnboardingCredential",
+			Handler:    _ConfigService_DeleteK8SClusterOnboardingCredential_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

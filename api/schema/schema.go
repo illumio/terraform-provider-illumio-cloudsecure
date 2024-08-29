@@ -19,6 +19,7 @@ func (c *cloudSecureSchema) Resources() Resources {
 	resources := Resources{
 		awsAccountResource,
 		awsOrganizationResource,
+		k8sClusterOnboardingCredential,
 	}
 	sort.Sort(resources)
 
