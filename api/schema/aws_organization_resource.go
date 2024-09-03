@@ -53,42 +53,6 @@ var (
 					Description: "Display name for the AWS organization's master account.",
 					Required:    true,
 				},
-				"organization_id": StringResourceAttributeWithMode{
-					StringAttribute: resource_schema.StringAttribute{
-						Description: "ID of the AWS organization.",
-						Required:    true,
-						PlanModifiers: []planmodifier.String{
-							stringplanmodifier.RequiresReplace(),
-						},
-					},
-					attributeWithMode: attributeWithMode{
-						Mode: ImmutableAttributeMode,
-					},
-				},
-				"role_arn": StringResourceAttributeWithMode{
-					StringAttribute: resource_schema.StringAttribute{
-						Description: "ARN of the AWS role to be assumed by CloudSecure to manage this AWS organization's master account.",
-						Required:    true,
-						PlanModifiers: []planmodifier.String{
-							stringplanmodifier.RequiresReplace(),
-						},
-					},
-					attributeWithMode: attributeWithMode{
-						Mode: ImmutableAttributeMode,
-					},
-				},
-				"role_external_id": StringResourceAttributeWithMode{
-					StringAttribute: resource_schema.StringAttribute{
-						Description: "External ID defined in the AWS role to authenticate CloudSecure when assuming that role.",
-						Required:    true,
-						PlanModifiers: []planmodifier.String{
-							stringplanmodifier.RequiresReplace(),
-						},
-					},
-					attributeWithMode: attributeWithMode{
-						Mode: ImmutableAttributeMode,
-					},
-				},
 			},
 		},
 	}

@@ -24,6 +24,8 @@ type FakeConfigServer struct {
 	AwsAccountMutex                     sync.RWMutex
 	AwsOrganizationMap                  map[string]*AwsOrganization
 	AwsOrganizationMutex                sync.RWMutex
+	AwsOrganizationAccountMap           map[string]*AwsOrganizationAccount
+	AwsOrganizationAccountMutex         sync.RWMutex
 	K8SClusterOnboardingCredentialMap   map[string]*K8SClusterOnboardingCredential
 	K8SClusterOnboardingCredentialMutex sync.RWMutex
 }
@@ -36,18 +38,18 @@ func NewFakeConfigServer(logger *zap.Logger) configv1.ConfigServiceServer {
 		Logger:                            logger,
 		AwsAccountMap:                     make(map[string]*AwsAccount),
 		AwsOrganizationMap:                make(map[string]*AwsOrganization),
+		AwsOrganizationAccountMap:         make(map[string]*AwsOrganizationAccount),
 		K8SClusterOnboardingCredentialMap: make(map[string]*K8SClusterOnboardingCredential),
 	}
 }
 
 type AwsAccount struct {
-	Id                          string
-	AccountId                   string
-	Mode                        string
-	Name                        string
-	OrganizationMasterAccountId *string
-	RoleArn                     string
-	RoleExternalId              string
+	Id             string
+	AccountId      string
+	Mode           string
+	Name           string
+	RoleArn        string
+	RoleExternalId string
 }
 
 type AwsOrganization struct {
@@ -55,9 +57,15 @@ type AwsOrganization struct {
 	MasterAccountId string
 	Mode            string
 	Name            string
-	OrganizationId  string
-	RoleArn         string
-	RoleExternalId  string
+}
+
+type AwsOrganizationAccount struct {
+	Id                          string
+	AccountId                   string
+	Disabled                    bool
+	OrganizationMasterAccountId string
+	RoleArn                     string
+	RoleExternalId              string
 }
 
 type K8SClusterOnboardingCredential struct {
@@ -73,22 +81,18 @@ type K8SClusterOnboardingCredential struct {
 func (s *FakeConfigServer) CreateAwsAccount(ctx context.Context, req *configv1.CreateAwsAccountRequest) (*configv1.CreateAwsAccountResponse, error) {
 	id := uuid.New().String()
 	model := &AwsAccount{
-		Id:                          id,
-		AccountId:                   req.AccountId,
-		Mode:                        req.Mode,
-		Name:                        req.Name,
-		OrganizationMasterAccountId: req.OrganizationMasterAccountId,
-		RoleArn:                     req.RoleArn,
-		RoleExternalId:              req.RoleExternalId,
+		Id:             id,
+		AccountId:      req.AccountId,
+		Mode:           req.Mode,
+		Name:           req.Name,
+		RoleArn:        req.RoleArn,
+		RoleExternalId: req.RoleExternalId,
 	}
 	resp := &configv1.CreateAwsAccountResponse{
-		Id:                          id,
-		AccountId:                   model.AccountId,
-		Mode:                        model.Mode,
-		Name:                        model.Name,
-		OrganizationMasterAccountId: model.OrganizationMasterAccountId,
-		RoleArn:                     model.RoleArn,
-		RoleExternalId:              model.RoleExternalId,
+		Id:        id,
+		AccountId: model.AccountId,
+		Mode:      model.Mode,
+		Name:      model.Name,
 	}
 	s.AwsAccountMutex.Lock()
 	s.AwsAccountMap[id] = model
@@ -115,13 +119,10 @@ func (s *FakeConfigServer) ReadAwsAccount(ctx context.Context, req *configv1.Rea
 		return nil, status.Errorf(codes.NotFound, "no aws_account found with id %s", id)
 	}
 	resp := &configv1.ReadAwsAccountResponse{
-		Id:                          id,
-		AccountId:                   model.AccountId,
-		Mode:                        model.Mode,
-		Name:                        model.Name,
-		OrganizationMasterAccountId: model.OrganizationMasterAccountId,
-		RoleArn:                     model.RoleArn,
-		RoleExternalId:              model.RoleExternalId,
+		Id:        id,
+		AccountId: model.AccountId,
+		Mode:      model.Mode,
+		Name:      model.Name,
 	}
 	s.AwsAccountMutex.RUnlock()
 	s.Logger.Info("read resource",
@@ -154,6 +155,10 @@ func (s *FakeConfigServer) UpdateAwsAccount(ctx context.Context, req *configv1.U
 		switch path {
 		case "name":
 			model.Name = req.Name
+		case "role_arn":
+			model.RoleArn = req.RoleArn
+		case "role_external_id":
+			model.RoleExternalId = req.RoleExternalId
 		default:
 			s.AwsAccountMutex.Unlock()
 			s.Logger.Error("attempted to update resource using invalid update_mask path",
@@ -167,13 +172,10 @@ func (s *FakeConfigServer) UpdateAwsAccount(ctx context.Context, req *configv1.U
 		}
 	}
 	resp := &configv1.UpdateAwsAccountResponse{
-		Id:                          id,
-		AccountId:                   model.AccountId,
-		Mode:                        model.Mode,
-		Name:                        model.Name,
-		OrganizationMasterAccountId: model.OrganizationMasterAccountId,
-		RoleArn:                     model.RoleArn,
-		RoleExternalId:              model.RoleExternalId,
+		Id:        id,
+		AccountId: model.AccountId,
+		Mode:      model.Mode,
+		Name:      model.Name,
 	}
 	s.AwsAccountMutex.Unlock()
 	s.Logger.Info("updated resource",
@@ -214,18 +216,12 @@ func (s *FakeConfigServer) CreateAwsOrganization(ctx context.Context, req *confi
 		MasterAccountId: req.MasterAccountId,
 		Mode:            req.Mode,
 		Name:            req.Name,
-		OrganizationId:  req.OrganizationId,
-		RoleArn:         req.RoleArn,
-		RoleExternalId:  req.RoleExternalId,
 	}
 	resp := &configv1.CreateAwsOrganizationResponse{
 		Id:              id,
 		MasterAccountId: model.MasterAccountId,
 		Mode:            model.Mode,
 		Name:            model.Name,
-		OrganizationId:  model.OrganizationId,
-		RoleArn:         model.RoleArn,
-		RoleExternalId:  model.RoleExternalId,
 	}
 	s.AwsOrganizationMutex.Lock()
 	s.AwsOrganizationMap[id] = model
@@ -256,9 +252,6 @@ func (s *FakeConfigServer) ReadAwsOrganization(ctx context.Context, req *configv
 		MasterAccountId: model.MasterAccountId,
 		Mode:            model.Mode,
 		Name:            model.Name,
-		OrganizationId:  model.OrganizationId,
-		RoleArn:         model.RoleArn,
-		RoleExternalId:  model.RoleExternalId,
 	}
 	s.AwsOrganizationMutex.RUnlock()
 	s.Logger.Info("read resource",
@@ -308,9 +301,6 @@ func (s *FakeConfigServer) UpdateAwsOrganization(ctx context.Context, req *confi
 		MasterAccountId: model.MasterAccountId,
 		Mode:            model.Mode,
 		Name:            model.Name,
-		OrganizationId:  model.OrganizationId,
-		RoleArn:         model.RoleArn,
-		RoleExternalId:  model.RoleExternalId,
 	}
 	s.AwsOrganizationMutex.Unlock()
 	s.Logger.Info("updated resource",
@@ -340,6 +330,133 @@ func (s *FakeConfigServer) DeleteAwsOrganization(ctx context.Context, req *confi
 	s.Logger.Info("deleted resource",
 		zap.String("type", "aws_organization"),
 		zap.String("method", "DeleteAwsOrganization"),
+		zap.String("id", id),
+	)
+	return &emptypb.Empty{}, nil
+}
+func (s *FakeConfigServer) CreateAwsOrganizationAccount(ctx context.Context, req *configv1.CreateAwsOrganizationAccountRequest) (*configv1.CreateAwsOrganizationAccountResponse, error) {
+	id := uuid.New().String()
+	model := &AwsOrganizationAccount{
+		Id:                          id,
+		AccountId:                   req.AccountId,
+		Disabled:                    req.Disabled,
+		OrganizationMasterAccountId: req.OrganizationMasterAccountId,
+		RoleArn:                     req.RoleArn,
+		RoleExternalId:              req.RoleExternalId,
+	}
+	resp := &configv1.CreateAwsOrganizationAccountResponse{
+		Id:                          id,
+		AccountId:                   model.AccountId,
+		Disabled:                    model.Disabled,
+		OrganizationMasterAccountId: model.OrganizationMasterAccountId,
+	}
+	s.AwsOrganizationAccountMutex.Lock()
+	s.AwsOrganizationAccountMap[id] = model
+	s.AwsOrganizationAccountMutex.Unlock()
+	s.Logger.Info("created resource",
+		zap.String("type", "aws_organization_account"),
+		zap.String("method", "CreateAwsOrganizationAccount"),
+		zap.String("id", id),
+	)
+	return resp, nil
+}
+
+func (s *FakeConfigServer) ReadAwsOrganizationAccount(ctx context.Context, req *configv1.ReadAwsOrganizationAccountRequest) (*configv1.ReadAwsOrganizationAccountResponse, error) {
+	id := req.Id
+	s.AwsOrganizationAccountMutex.RLock()
+	model, found := s.AwsOrganizationAccountMap[id]
+	if !found {
+		s.AwsOrganizationAccountMutex.RUnlock()
+		s.Logger.Error("attempted to read resource with unknown id",
+			zap.String("type", "aws_organization_account"),
+			zap.String("method", "ReadAwsOrganizationAccount"),
+			zap.String("id", id),
+		)
+		return nil, status.Errorf(codes.NotFound, "no aws_organization_account found with id %s", id)
+	}
+	resp := &configv1.ReadAwsOrganizationAccountResponse{
+		Id:                          id,
+		AccountId:                   model.AccountId,
+		Disabled:                    model.Disabled,
+		OrganizationMasterAccountId: model.OrganizationMasterAccountId,
+	}
+	s.AwsOrganizationAccountMutex.RUnlock()
+	s.Logger.Info("read resource",
+		zap.String("type", "aws_organization_account"),
+		zap.String("method", "ReadAwsOrganizationAccount"),
+		zap.String("id", id),
+	)
+	return resp, nil
+}
+
+func (s *FakeConfigServer) UpdateAwsOrganizationAccount(ctx context.Context, req *configv1.UpdateAwsOrganizationAccountRequest) (*configv1.UpdateAwsOrganizationAccountResponse, error) {
+	id := req.Id
+	s.AwsOrganizationAccountMutex.Lock()
+	model, found := s.AwsOrganizationAccountMap[id]
+	if !found {
+		s.AwsOrganizationAccountMutex.Unlock()
+		s.Logger.Error("attempted to update resource with unknown id",
+			zap.String("type", "aws_organization_account"),
+			zap.String("method", "UpdateAwsOrganizationAccount"),
+			zap.String("id", id),
+		)
+		return nil, status.Errorf(codes.NotFound, "no aws_organization_account found with id %s", id)
+	}
+	updateMask := req.UpdateMask
+	var updateMaskPaths []string
+	if updateMask != nil {
+		updateMaskPaths = updateMask.Paths
+	}
+	for _, path := range updateMaskPaths {
+		switch path {
+		case "disabled":
+			model.Disabled = req.Disabled
+		default:
+			s.AwsAccountMutex.Unlock()
+			s.Logger.Error("attempted to update resource using invalid update_mask path",
+				zap.String("type", "aws_organization_account"),
+				zap.String("method", "UpdateAwsOrganizationAccount"),
+				zap.String("id", id),
+				zap.Strings("updateMaskPaths", updateMaskPaths),
+				zap.String("invalidUpdateMaskPath", path),
+			)
+			return nil, status.Errorf(codes.InvalidArgument, "invalid path in update_mask for aws_account: %s", path)
+		}
+	}
+	resp := &configv1.UpdateAwsOrganizationAccountResponse{
+		Id:                          id,
+		AccountId:                   model.AccountId,
+		Disabled:                    model.Disabled,
+		OrganizationMasterAccountId: model.OrganizationMasterAccountId,
+	}
+	s.AwsOrganizationAccountMutex.Unlock()
+	s.Logger.Info("updated resource",
+		zap.String("type", "aws_organization_account"),
+		zap.String("method", "UpdateAwsOrganizationAccount"),
+		zap.String("id", id),
+		zap.Strings("updateMaskPaths", updateMaskPaths),
+	)
+	return resp, nil
+}
+
+func (s *FakeConfigServer) DeleteAwsOrganizationAccount(ctx context.Context, req *configv1.DeleteAwsOrganizationAccountRequest) (*emptypb.Empty, error) {
+	id := req.Id
+	s.AwsOrganizationAccountMutex.Lock()
+	_, found := s.AwsOrganizationAccountMap[id]
+	if !found {
+		s.AwsOrganizationAccountMutex.Unlock()
+		s.Logger.Error("attempted to delete resource with unknown id",
+			zap.String("type", "aws_organization_account"),
+			zap.String("method", "DeleteAwsOrganizationAccount"),
+			zap.String("id", id),
+		)
+		return nil, status.Errorf(codes.NotFound, "no aws_organization_account found with id %s", id)
+	}
+	delete(s.AwsOrganizationAccountMap, id)
+	s.AwsOrganizationAccountMutex.Unlock()
+	s.Logger.Info("deleted resource",
+		zap.String("type", "aws_organization_account"),
+		zap.String("method", "DeleteAwsOrganizationAccount"),
 		zap.String("id", id),
 	)
 	return &emptypb.Empty{}, nil

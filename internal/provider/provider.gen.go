@@ -39,6 +39,8 @@ func (p *Provider) Resources(ctx context.Context) []func() resource.Resource {
 			resp = append(resp, func() resource.Resource { return NewAwsAccountResource(r.Schema) })
 		case "aws_organization":
 			resp = append(resp, func() resource.Resource { return NewAwsOrganizationResource(r.Schema) })
+		case "aws_organization_account":
+			resp = append(resp, func() resource.Resource { return NewAwsOrganizationAccountResource(r.Schema) })
 		case "k8s_cluster_onboarding_credential":
 			resp = append(resp, func() resource.Resource { return NewK8SClusterOnboardingCredentialResource(r.Schema) })
 		}
@@ -408,6 +410,184 @@ func (r *AwsOrganizationResource) ImportState(ctx context.Context, req resource.
 	// TODO
 }
 
+// AwsOrganizationAccountResource implements the aws_organization_account resource.
+type AwsOrganizationAccountResource struct {
+	// schema is the schema of the aws_organization_account resource.
+	schema resource_schema.Schema
+
+	// providerData is the provider configuration.
+	config ProviderData
+}
+
+var _ resource.ResourceWithConfigure = &AwsOrganizationAccountResource{}
+var _ resource.ResourceWithImportState = &AwsOrganizationAccountResource{}
+
+// NewAwsOrganizationAccountResource returns a new aws_organization_account resource.
+func NewAwsOrganizationAccountResource(schema resource_schema.Schema) resource.Resource {
+	return &AwsOrganizationAccountResource{
+		schema: schema,
+	}
+}
+
+func (r *AwsOrganizationAccountResource) Metadata(ctx context.Context, req resource.MetadataRequest, resp *resource.MetadataResponse) {
+	resp.TypeName = req.ProviderTypeName + "_aws_organization_account"
+}
+
+func (r *AwsOrganizationAccountResource) Schema(ctx context.Context, req resource.SchemaRequest, resp *resource.SchemaResponse) {
+	resp.Schema = r.schema
+}
+
+func (r *AwsOrganizationAccountResource) Configure(ctx context.Context, req resource.ConfigureRequest, resp *resource.ConfigureResponse) {
+	if req.ProviderData == nil {
+		return
+	}
+
+	providerData, ok := req.ProviderData.(ProviderData)
+	if !ok {
+		resp.Diagnostics.AddError(
+			"Unexpected Resource Configure Type",
+			fmt.Sprintf("Expected ProviderData, got: %T. Please report this issue to the provider developers.", req.ProviderData),
+		)
+
+		return
+	}
+
+	r.config = providerData
+}
+
+func (r *AwsOrganizationAccountResource) Create(ctx context.Context, req resource.CreateRequest, resp *resource.CreateResponse) {
+	var data AwsOrganizationAccountResourceModel
+
+	resp.Diagnostics.Append(req.Plan.Get(ctx, &data)...)
+	if resp.Diagnostics.HasError() {
+		return
+	}
+
+	protoReq := NewCreateAwsOrganizationAccountRequest(&data)
+
+	tflog.Trace(ctx, "creating a resource", map[string]any{"type": "aws_organization_account"})
+
+	rpcCtx, rpcCancel := context.WithTimeout(ctx, r.config.RequestTimeout())
+	protoResp, err := r.config.Client().CreateAwsOrganizationAccount(rpcCtx, protoReq)
+	rpcCancel()
+	if err != nil {
+		resp.Diagnostics.AddError("Config API Error", fmt.Sprintf("Unable to create aws_organization_account, got error: %s", err))
+		return
+	}
+
+	CopyCreateAwsOrganizationAccountResponse(&data, protoResp)
+
+	tflog.Trace(ctx, "created a resource", map[string]any{"type": "aws_organization_account", "id": protoResp.Id})
+
+	resp.Diagnostics.Append(resp.State.Set(ctx, &data)...)
+}
+
+func (r *AwsOrganizationAccountResource) Read(ctx context.Context, req resource.ReadRequest, resp *resource.ReadResponse) {
+	var data AwsOrganizationAccountResourceModel
+
+	resp.Diagnostics.Append(req.State.Get(ctx, &data)...)
+	if resp.Diagnostics.HasError() {
+		return
+	}
+
+	protoReq := NewReadAwsOrganizationAccountRequest(&data)
+
+	tflog.Trace(ctx, "reading a resource", map[string]any{"type": "aws_organization_account", "id": protoReq.Id})
+
+	rpcCtx, rpcCancel := context.WithTimeout(ctx, r.config.RequestTimeout())
+	protoResp, err := r.config.Client().ReadAwsOrganizationAccount(rpcCtx, protoReq)
+	rpcCancel()
+	if err != nil {
+		switch status.Code(err) {
+		case codes.NotFound:
+			resp.Diagnostics.AddWarning("Resource Not Found", fmt.Sprintf("No aws_organization_account found with id %s", protoReq.Id))
+			resp.State.RemoveResource(ctx)
+			return
+		default:
+			resp.Diagnostics.AddError("Config API Error", fmt.Sprintf("Unable to read aws_organization_account, got error: %s", err))
+			return
+		}
+	}
+
+	CopyReadAwsOrganizationAccountResponse(&data, protoResp)
+
+	tflog.Trace(ctx, "read a resource", map[string]any{"type": "aws_organization_account", "id": protoResp.Id})
+
+	resp.Diagnostics.Append(resp.State.Set(ctx, &data)...)
+}
+
+func (r *AwsOrganizationAccountResource) Update(ctx context.Context, req resource.UpdateRequest, resp *resource.UpdateResponse) {
+	var beforeData AwsOrganizationAccountResourceModel
+	var afterData AwsOrganizationAccountResourceModel
+
+	resp.Diagnostics.Append(req.State.Get(ctx, &beforeData)...)
+	if resp.Diagnostics.HasError() {
+		return
+	}
+
+	resp.Diagnostics.Append(req.Plan.Get(ctx, &afterData)...)
+	if resp.Diagnostics.HasError() {
+		return
+	}
+
+	protoReq := NewUpdateAwsOrganizationAccountRequest(&beforeData, &afterData)
+
+	tflog.Trace(ctx, "updating a resource", map[string]any{"type": "aws_organization_account", "id": protoReq.Id, "update_mask": protoReq.UpdateMask.Paths})
+
+	rpcCtx, rpcCancel := context.WithTimeout(ctx, r.config.RequestTimeout())
+	protoResp, err := r.config.Client().UpdateAwsOrganizationAccount(rpcCtx, protoReq)
+	rpcCancel()
+	if err != nil {
+		switch status.Code(err) {
+		case codes.NotFound:
+			resp.Diagnostics.AddError("Resource Not Found", fmt.Sprintf("No aws_organization_account found with id %s", protoReq.Id))
+			resp.State.RemoveResource(ctx)
+			return
+		default:
+			resp.Diagnostics.AddError("Config API Error", fmt.Sprintf("Unable to update aws_organization_account, got error: %s", err))
+			return
+		}
+	}
+
+	CopyUpdateAwsOrganizationAccountResponse(&afterData, protoResp)
+
+	tflog.Trace(ctx, "updated a resource", map[string]any{"type": "aws_organization_account", "id": protoResp.Id})
+
+	resp.Diagnostics.Append(resp.State.Set(ctx, &afterData)...)
+}
+
+func (r *AwsOrganizationAccountResource) Delete(ctx context.Context, req resource.DeleteRequest, resp *resource.DeleteResponse) {
+	var data AwsOrganizationAccountResourceModel
+
+	resp.Diagnostics.Append(req.State.Get(ctx, &data)...)
+	if resp.Diagnostics.HasError() {
+		return
+	}
+
+	protoReq := NewDeleteAwsOrganizationAccountRequest(&data)
+
+	tflog.Trace(ctx, "deleting a resource", map[string]any{"type": "aws_organization_account", "id": protoReq.Id})
+
+	rpcCtx, rpcCancel := context.WithTimeout(ctx, r.config.RequestTimeout())
+	_, err := r.config.Client().DeleteAwsOrganizationAccount(rpcCtx, protoReq)
+	rpcCancel()
+	if err != nil {
+		switch status.Code(err) {
+		case codes.NotFound:
+			tflog.Trace(ctx, "resource was already deleted", map[string]any{"type": "aws_organization_account", "id": protoReq.Id})
+		default:
+			resp.Diagnostics.AddError("Config API Error", fmt.Sprintf("Unable to delete aws_organization_account, got error: %s", err))
+			return
+		}
+	}
+
+	tflog.Trace(ctx, "deleted a resource", map[string]any{"type": "aws_organization_account", "id": protoReq.Id})
+}
+
+func (r *AwsOrganizationAccountResource) ImportState(ctx context.Context, req resource.ImportStateRequest, resp *resource.ImportStateResponse) {
+	// TODO
+}
+
 // K8SClusterOnboardingCredentialResource implements the k8s_cluster_onboarding_credential resource.
 type K8SClusterOnboardingCredentialResource struct {
 	// schema is the schema of the k8s_cluster_onboarding_credential resource.
@@ -587,13 +767,12 @@ func (r *K8SClusterOnboardingCredentialResource) ImportState(ctx context.Context
 }
 
 type AwsAccountResourceModel struct {
-	Id                          types.String `tfsdk:"id"`
-	AccountId                   types.String `tfsdk:"account_id"`
-	Mode                        types.String `tfsdk:"mode"`
-	Name                        types.String `tfsdk:"name"`
-	OrganizationMasterAccountId types.String `tfsdk:"organization_master_account_id"`
-	RoleArn                     types.String `tfsdk:"role_arn"`
-	RoleExternalId              types.String `tfsdk:"role_external_id"`
+	Id             types.String `tfsdk:"id"`
+	AccountId      types.String `tfsdk:"account_id"`
+	Mode           types.String `tfsdk:"mode"`
+	Name           types.String `tfsdk:"name"`
+	RoleArn        types.String `tfsdk:"role_arn"`
+	RoleExternalId types.String `tfsdk:"role_external_id"`
 }
 
 type AwsOrganizationResourceModel struct {
@@ -601,9 +780,15 @@ type AwsOrganizationResourceModel struct {
 	MasterAccountId types.String `tfsdk:"master_account_id"`
 	Mode            types.String `tfsdk:"mode"`
 	Name            types.String `tfsdk:"name"`
-	OrganizationId  types.String `tfsdk:"organization_id"`
-	RoleArn         types.String `tfsdk:"role_arn"`
-	RoleExternalId  types.String `tfsdk:"role_external_id"`
+}
+
+type AwsOrganizationAccountResourceModel struct {
+	Id                          types.String `tfsdk:"id"`
+	AccountId                   types.String `tfsdk:"account_id"`
+	Disabled                    types.Bool   `tfsdk:"disabled"`
+	OrganizationMasterAccountId types.String `tfsdk:"organization_master_account_id"`
+	RoleArn                     types.String `tfsdk:"role_arn"`
+	RoleExternalId              types.String `tfsdk:"role_external_id"`
 }
 
 type K8SClusterOnboardingCredentialResourceModel struct {
@@ -635,12 +820,6 @@ func NewCreateAwsAccountRequest(data *AwsAccountResourceModel) *configv1.CreateA
 		var protoValue string
 		protoValue = dataValue.(types.String).ValueString()
 		proto.Name = protoValue
-	}
-	if !data.OrganizationMasterAccountId.IsUnknown() && !data.OrganizationMasterAccountId.IsNull() {
-		var dataValue attr.Value = data.OrganizationMasterAccountId
-		var protoValue string
-		protoValue = dataValue.(types.String).ValueString()
-		proto.OrganizationMasterAccountId = &protoValue
 	}
 	if !data.RoleArn.IsUnknown() && !data.RoleArn.IsNull() {
 		var dataValue attr.Value = data.RoleArn
@@ -699,24 +878,6 @@ func NewCreateAwsOrganizationRequest(data *AwsOrganizationResourceModel) *config
 		protoValue = dataValue.(types.String).ValueString()
 		proto.Name = protoValue
 	}
-	if !data.OrganizationId.IsUnknown() && !data.OrganizationId.IsNull() {
-		var dataValue attr.Value = data.OrganizationId
-		var protoValue string
-		protoValue = dataValue.(types.String).ValueString()
-		proto.OrganizationId = protoValue
-	}
-	if !data.RoleArn.IsUnknown() && !data.RoleArn.IsNull() {
-		var dataValue attr.Value = data.RoleArn
-		var protoValue string
-		protoValue = dataValue.(types.String).ValueString()
-		proto.RoleArn = protoValue
-	}
-	if !data.RoleExternalId.IsUnknown() && !data.RoleExternalId.IsNull() {
-		var dataValue attr.Value = data.RoleExternalId
-		var protoValue string
-		protoValue = dataValue.(types.String).ValueString()
-		proto.RoleExternalId = protoValue
-	}
 	return proto
 }
 
@@ -733,6 +894,63 @@ func NewReadAwsOrganizationRequest(data *AwsOrganizationResourceModel) *configv1
 
 func NewDeleteAwsOrganizationRequest(data *AwsOrganizationResourceModel) *configv1.DeleteAwsOrganizationRequest {
 	proto := &configv1.DeleteAwsOrganizationRequest{}
+	if !data.Id.IsUnknown() && !data.Id.IsNull() {
+		var dataValue attr.Value = data.Id
+		var protoValue string
+		protoValue = dataValue.(types.String).ValueString()
+		proto.Id = protoValue
+	}
+	return proto
+}
+
+func NewCreateAwsOrganizationAccountRequest(data *AwsOrganizationAccountResourceModel) *configv1.CreateAwsOrganizationAccountRequest {
+	proto := &configv1.CreateAwsOrganizationAccountRequest{}
+	if !data.AccountId.IsUnknown() && !data.AccountId.IsNull() {
+		var dataValue attr.Value = data.AccountId
+		var protoValue string
+		protoValue = dataValue.(types.String).ValueString()
+		proto.AccountId = protoValue
+	}
+	if !data.Disabled.IsUnknown() && !data.Disabled.IsNull() {
+		var dataValue attr.Value = data.Disabled
+		var protoValue bool
+		protoValue = dataValue.(types.Bool).ValueBool()
+		proto.Disabled = protoValue
+	}
+	if !data.OrganizationMasterAccountId.IsUnknown() && !data.OrganizationMasterAccountId.IsNull() {
+		var dataValue attr.Value = data.OrganizationMasterAccountId
+		var protoValue string
+		protoValue = dataValue.(types.String).ValueString()
+		proto.OrganizationMasterAccountId = protoValue
+	}
+	if !data.RoleArn.IsUnknown() && !data.RoleArn.IsNull() {
+		var dataValue attr.Value = data.RoleArn
+		var protoValue string
+		protoValue = dataValue.(types.String).ValueString()
+		proto.RoleArn = protoValue
+	}
+	if !data.RoleExternalId.IsUnknown() && !data.RoleExternalId.IsNull() {
+		var dataValue attr.Value = data.RoleExternalId
+		var protoValue string
+		protoValue = dataValue.(types.String).ValueString()
+		proto.RoleExternalId = protoValue
+	}
+	return proto
+}
+
+func NewReadAwsOrganizationAccountRequest(data *AwsOrganizationAccountResourceModel) *configv1.ReadAwsOrganizationAccountRequest {
+	proto := &configv1.ReadAwsOrganizationAccountRequest{}
+	if !data.Id.IsUnknown() && !data.Id.IsNull() {
+		var dataValue attr.Value = data.Id
+		var protoValue string
+		protoValue = dataValue.(types.String).ValueString()
+		proto.Id = protoValue
+	}
+	return proto
+}
+
+func NewDeleteAwsOrganizationAccountRequest(data *AwsOrganizationAccountResourceModel) *configv1.DeleteAwsOrganizationAccountRequest {
+	proto := &configv1.DeleteAwsOrganizationAccountRequest{}
 	if !data.Id.IsUnknown() && !data.Id.IsNull() {
 		var dataValue attr.Value = data.Id
 		var protoValue string
@@ -800,6 +1018,24 @@ func NewUpdateAwsAccountRequest(beforeData, afterData *AwsAccountResourceModel) 
 			proto.Name = protoValue
 		}
 	}
+	if !afterData.RoleArn.Equal(beforeData.RoleArn) {
+		proto.UpdateMask.Append(proto, "role_arn")
+		if !afterData.RoleArn.IsUnknown() && !afterData.RoleArn.IsNull() {
+			var dataValue attr.Value = afterData.RoleArn
+			var protoValue string
+			protoValue = dataValue.(types.String).ValueString()
+			proto.RoleArn = protoValue
+		}
+	}
+	if !afterData.RoleExternalId.Equal(beforeData.RoleExternalId) {
+		proto.UpdateMask.Append(proto, "role_external_id")
+		if !afterData.RoleExternalId.IsUnknown() && !afterData.RoleExternalId.IsNull() {
+			var dataValue attr.Value = afterData.RoleExternalId
+			var protoValue string
+			protoValue = dataValue.(types.String).ValueString()
+			proto.RoleExternalId = protoValue
+		}
+	}
 	return proto
 }
 
@@ -814,6 +1050,22 @@ func NewUpdateAwsOrganizationRequest(beforeData, afterData *AwsOrganizationResou
 			var protoValue string
 			protoValue = dataValue.(types.String).ValueString()
 			proto.Name = protoValue
+		}
+	}
+	return proto
+}
+
+func NewUpdateAwsOrganizationAccountRequest(beforeData, afterData *AwsOrganizationAccountResourceModel) *configv1.UpdateAwsOrganizationAccountRequest {
+	proto := &configv1.UpdateAwsOrganizationAccountRequest{}
+	proto.UpdateMask, _ = fieldmaskpb.New(proto)
+	proto.Id = beforeData.Id.ValueString()
+	if !afterData.Disabled.Equal(beforeData.Disabled) {
+		proto.UpdateMask.Append(proto, "disabled")
+		if !afterData.Disabled.IsUnknown() && !afterData.Disabled.IsNull() {
+			var dataValue attr.Value = afterData.Disabled
+			var protoValue bool
+			protoValue = dataValue.(types.Bool).ValueBool()
+			proto.Disabled = protoValue
 		}
 	}
 	return proto
@@ -848,54 +1100,54 @@ func CopyCreateAwsAccountResponse(dst *AwsAccountResourceModel, src *configv1.Cr
 	dst.AccountId = types.StringValue(src.AccountId)
 	dst.Mode = types.StringValue(src.Mode)
 	dst.Name = types.StringValue(src.Name)
-	dst.OrganizationMasterAccountId = types.StringPointerValue(src.OrganizationMasterAccountId)
-	dst.RoleArn = types.StringValue(src.RoleArn)
-	dst.RoleExternalId = types.StringValue(src.RoleExternalId)
 }
 func CopyReadAwsAccountResponse(dst *AwsAccountResourceModel, src *configv1.ReadAwsAccountResponse) {
 	dst.Id = types.StringValue(src.Id)
 	dst.AccountId = types.StringValue(src.AccountId)
 	dst.Mode = types.StringValue(src.Mode)
 	dst.Name = types.StringValue(src.Name)
-	dst.OrganizationMasterAccountId = types.StringPointerValue(src.OrganizationMasterAccountId)
-	dst.RoleArn = types.StringValue(src.RoleArn)
-	dst.RoleExternalId = types.StringValue(src.RoleExternalId)
 }
 func CopyUpdateAwsAccountResponse(dst *AwsAccountResourceModel, src *configv1.UpdateAwsAccountResponse) {
 	dst.Id = types.StringValue(src.Id)
 	dst.AccountId = types.StringValue(src.AccountId)
 	dst.Mode = types.StringValue(src.Mode)
 	dst.Name = types.StringValue(src.Name)
-	dst.OrganizationMasterAccountId = types.StringPointerValue(src.OrganizationMasterAccountId)
-	dst.RoleArn = types.StringValue(src.RoleArn)
-	dst.RoleExternalId = types.StringValue(src.RoleExternalId)
 }
 func CopyCreateAwsOrganizationResponse(dst *AwsOrganizationResourceModel, src *configv1.CreateAwsOrganizationResponse) {
 	dst.Id = types.StringValue(src.Id)
 	dst.MasterAccountId = types.StringValue(src.MasterAccountId)
 	dst.Mode = types.StringValue(src.Mode)
 	dst.Name = types.StringValue(src.Name)
-	dst.OrganizationId = types.StringValue(src.OrganizationId)
-	dst.RoleArn = types.StringValue(src.RoleArn)
-	dst.RoleExternalId = types.StringValue(src.RoleExternalId)
 }
 func CopyReadAwsOrganizationResponse(dst *AwsOrganizationResourceModel, src *configv1.ReadAwsOrganizationResponse) {
 	dst.Id = types.StringValue(src.Id)
 	dst.MasterAccountId = types.StringValue(src.MasterAccountId)
 	dst.Mode = types.StringValue(src.Mode)
 	dst.Name = types.StringValue(src.Name)
-	dst.OrganizationId = types.StringValue(src.OrganizationId)
-	dst.RoleArn = types.StringValue(src.RoleArn)
-	dst.RoleExternalId = types.StringValue(src.RoleExternalId)
 }
 func CopyUpdateAwsOrganizationResponse(dst *AwsOrganizationResourceModel, src *configv1.UpdateAwsOrganizationResponse) {
 	dst.Id = types.StringValue(src.Id)
 	dst.MasterAccountId = types.StringValue(src.MasterAccountId)
 	dst.Mode = types.StringValue(src.Mode)
 	dst.Name = types.StringValue(src.Name)
-	dst.OrganizationId = types.StringValue(src.OrganizationId)
-	dst.RoleArn = types.StringValue(src.RoleArn)
-	dst.RoleExternalId = types.StringValue(src.RoleExternalId)
+}
+func CopyCreateAwsOrganizationAccountResponse(dst *AwsOrganizationAccountResourceModel, src *configv1.CreateAwsOrganizationAccountResponse) {
+	dst.Id = types.StringValue(src.Id)
+	dst.AccountId = types.StringValue(src.AccountId)
+	dst.Disabled = types.BoolValue(src.Disabled)
+	dst.OrganizationMasterAccountId = types.StringValue(src.OrganizationMasterAccountId)
+}
+func CopyReadAwsOrganizationAccountResponse(dst *AwsOrganizationAccountResourceModel, src *configv1.ReadAwsOrganizationAccountResponse) {
+	dst.Id = types.StringValue(src.Id)
+	dst.AccountId = types.StringValue(src.AccountId)
+	dst.Disabled = types.BoolValue(src.Disabled)
+	dst.OrganizationMasterAccountId = types.StringValue(src.OrganizationMasterAccountId)
+}
+func CopyUpdateAwsOrganizationAccountResponse(dst *AwsOrganizationAccountResourceModel, src *configv1.UpdateAwsOrganizationAccountResponse) {
+	dst.Id = types.StringValue(src.Id)
+	dst.AccountId = types.StringValue(src.AccountId)
+	dst.Disabled = types.BoolValue(src.Disabled)
+	dst.OrganizationMasterAccountId = types.StringValue(src.OrganizationMasterAccountId)
 }
 func CopyCreateK8SClusterOnboardingCredentialResponse(dst *K8SClusterOnboardingCredentialResourceModel, src *configv1.CreateK8SClusterOnboardingCredentialResponse) {
 	dst.Id = types.StringValue(src.Id)

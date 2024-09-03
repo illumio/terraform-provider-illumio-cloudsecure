@@ -31,6 +31,10 @@ const (
 	ConfigService_ReadAwsOrganization_FullMethodName                  = "/illumio.cloud.config.v1.ConfigService/ReadAwsOrganization"
 	ConfigService_UpdateAwsOrganization_FullMethodName                = "/illumio.cloud.config.v1.ConfigService/UpdateAwsOrganization"
 	ConfigService_DeleteAwsOrganization_FullMethodName                = "/illumio.cloud.config.v1.ConfigService/DeleteAwsOrganization"
+	ConfigService_CreateAwsOrganizationAccount_FullMethodName         = "/illumio.cloud.config.v1.ConfigService/CreateAwsOrganizationAccount"
+	ConfigService_ReadAwsOrganizationAccount_FullMethodName           = "/illumio.cloud.config.v1.ConfigService/ReadAwsOrganizationAccount"
+	ConfigService_UpdateAwsOrganizationAccount_FullMethodName         = "/illumio.cloud.config.v1.ConfigService/UpdateAwsOrganizationAccount"
+	ConfigService_DeleteAwsOrganizationAccount_FullMethodName         = "/illumio.cloud.config.v1.ConfigService/DeleteAwsOrganizationAccount"
 	ConfigService_CreateK8SClusterOnboardingCredential_FullMethodName = "/illumio.cloud.config.v1.ConfigService/CreateK8SClusterOnboardingCredential"
 	ConfigService_ReadK8SClusterOnboardingCredential_FullMethodName   = "/illumio.cloud.config.v1.ConfigService/ReadK8SClusterOnboardingCredential"
 	ConfigService_UpdateK8SClusterOnboardingCredential_FullMethodName = "/illumio.cloud.config.v1.ConfigService/UpdateK8SClusterOnboardingCredential"
@@ -49,6 +53,10 @@ type ConfigServiceClient interface {
 	ReadAwsOrganization(ctx context.Context, in *ReadAwsOrganizationRequest, opts ...grpc.CallOption) (*ReadAwsOrganizationResponse, error)
 	UpdateAwsOrganization(ctx context.Context, in *UpdateAwsOrganizationRequest, opts ...grpc.CallOption) (*UpdateAwsOrganizationResponse, error)
 	DeleteAwsOrganization(ctx context.Context, in *DeleteAwsOrganizationRequest, opts ...grpc.CallOption) (*emptypb.Empty, error)
+	CreateAwsOrganizationAccount(ctx context.Context, in *CreateAwsOrganizationAccountRequest, opts ...grpc.CallOption) (*CreateAwsOrganizationAccountResponse, error)
+	ReadAwsOrganizationAccount(ctx context.Context, in *ReadAwsOrganizationAccountRequest, opts ...grpc.CallOption) (*ReadAwsOrganizationAccountResponse, error)
+	UpdateAwsOrganizationAccount(ctx context.Context, in *UpdateAwsOrganizationAccountRequest, opts ...grpc.CallOption) (*UpdateAwsOrganizationAccountResponse, error)
+	DeleteAwsOrganizationAccount(ctx context.Context, in *DeleteAwsOrganizationAccountRequest, opts ...grpc.CallOption) (*emptypb.Empty, error)
 	CreateK8SClusterOnboardingCredential(ctx context.Context, in *CreateK8SClusterOnboardingCredentialRequest, opts ...grpc.CallOption) (*CreateK8SClusterOnboardingCredentialResponse, error)
 	ReadK8SClusterOnboardingCredential(ctx context.Context, in *ReadK8SClusterOnboardingCredentialRequest, opts ...grpc.CallOption) (*ReadK8SClusterOnboardingCredentialResponse, error)
 	UpdateK8SClusterOnboardingCredential(ctx context.Context, in *UpdateK8SClusterOnboardingCredentialRequest, opts ...grpc.CallOption) (*UpdateK8SClusterOnboardingCredentialResponse, error)
@@ -143,6 +151,46 @@ func (c *configServiceClient) DeleteAwsOrganization(ctx context.Context, in *Del
 	return out, nil
 }
 
+func (c *configServiceClient) CreateAwsOrganizationAccount(ctx context.Context, in *CreateAwsOrganizationAccountRequest, opts ...grpc.CallOption) (*CreateAwsOrganizationAccountResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(CreateAwsOrganizationAccountResponse)
+	err := c.cc.Invoke(ctx, ConfigService_CreateAwsOrganizationAccount_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *configServiceClient) ReadAwsOrganizationAccount(ctx context.Context, in *ReadAwsOrganizationAccountRequest, opts ...grpc.CallOption) (*ReadAwsOrganizationAccountResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(ReadAwsOrganizationAccountResponse)
+	err := c.cc.Invoke(ctx, ConfigService_ReadAwsOrganizationAccount_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *configServiceClient) UpdateAwsOrganizationAccount(ctx context.Context, in *UpdateAwsOrganizationAccountRequest, opts ...grpc.CallOption) (*UpdateAwsOrganizationAccountResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(UpdateAwsOrganizationAccountResponse)
+	err := c.cc.Invoke(ctx, ConfigService_UpdateAwsOrganizationAccount_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *configServiceClient) DeleteAwsOrganizationAccount(ctx context.Context, in *DeleteAwsOrganizationAccountRequest, opts ...grpc.CallOption) (*emptypb.Empty, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(emptypb.Empty)
+	err := c.cc.Invoke(ctx, ConfigService_DeleteAwsOrganizationAccount_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 func (c *configServiceClient) CreateK8SClusterOnboardingCredential(ctx context.Context, in *CreateK8SClusterOnboardingCredentialRequest, opts ...grpc.CallOption) (*CreateK8SClusterOnboardingCredentialResponse, error) {
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
 	out := new(CreateK8SClusterOnboardingCredentialResponse)
@@ -195,6 +243,10 @@ type ConfigServiceServer interface {
 	ReadAwsOrganization(context.Context, *ReadAwsOrganizationRequest) (*ReadAwsOrganizationResponse, error)
 	UpdateAwsOrganization(context.Context, *UpdateAwsOrganizationRequest) (*UpdateAwsOrganizationResponse, error)
 	DeleteAwsOrganization(context.Context, *DeleteAwsOrganizationRequest) (*emptypb.Empty, error)
+	CreateAwsOrganizationAccount(context.Context, *CreateAwsOrganizationAccountRequest) (*CreateAwsOrganizationAccountResponse, error)
+	ReadAwsOrganizationAccount(context.Context, *ReadAwsOrganizationAccountRequest) (*ReadAwsOrganizationAccountResponse, error)
+	UpdateAwsOrganizationAccount(context.Context, *UpdateAwsOrganizationAccountRequest) (*UpdateAwsOrganizationAccountResponse, error)
+	DeleteAwsOrganizationAccount(context.Context, *DeleteAwsOrganizationAccountRequest) (*emptypb.Empty, error)
 	CreateK8SClusterOnboardingCredential(context.Context, *CreateK8SClusterOnboardingCredentialRequest) (*CreateK8SClusterOnboardingCredentialResponse, error)
 	ReadK8SClusterOnboardingCredential(context.Context, *ReadK8SClusterOnboardingCredentialRequest) (*ReadK8SClusterOnboardingCredentialResponse, error)
 	UpdateK8SClusterOnboardingCredential(context.Context, *UpdateK8SClusterOnboardingCredentialRequest) (*UpdateK8SClusterOnboardingCredentialResponse, error)
@@ -232,6 +284,18 @@ func (UnimplementedConfigServiceServer) UpdateAwsOrganization(context.Context, *
 }
 func (UnimplementedConfigServiceServer) DeleteAwsOrganization(context.Context, *DeleteAwsOrganizationRequest) (*emptypb.Empty, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method DeleteAwsOrganization not implemented")
+}
+func (UnimplementedConfigServiceServer) CreateAwsOrganizationAccount(context.Context, *CreateAwsOrganizationAccountRequest) (*CreateAwsOrganizationAccountResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method CreateAwsOrganizationAccount not implemented")
+}
+func (UnimplementedConfigServiceServer) ReadAwsOrganizationAccount(context.Context, *ReadAwsOrganizationAccountRequest) (*ReadAwsOrganizationAccountResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method ReadAwsOrganizationAccount not implemented")
+}
+func (UnimplementedConfigServiceServer) UpdateAwsOrganizationAccount(context.Context, *UpdateAwsOrganizationAccountRequest) (*UpdateAwsOrganizationAccountResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method UpdateAwsOrganizationAccount not implemented")
+}
+func (UnimplementedConfigServiceServer) DeleteAwsOrganizationAccount(context.Context, *DeleteAwsOrganizationAccountRequest) (*emptypb.Empty, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method DeleteAwsOrganizationAccount not implemented")
 }
 func (UnimplementedConfigServiceServer) CreateK8SClusterOnboardingCredential(context.Context, *CreateK8SClusterOnboardingCredentialRequest) (*CreateK8SClusterOnboardingCredentialResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method CreateK8SClusterOnboardingCredential not implemented")
@@ -410,6 +474,78 @@ func _ConfigService_DeleteAwsOrganization_Handler(srv interface{}, ctx context.C
 	return interceptor(ctx, in, info, handler)
 }
 
+func _ConfigService_CreateAwsOrganizationAccount_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(CreateAwsOrganizationAccountRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(ConfigServiceServer).CreateAwsOrganizationAccount(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: ConfigService_CreateAwsOrganizationAccount_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(ConfigServiceServer).CreateAwsOrganizationAccount(ctx, req.(*CreateAwsOrganizationAccountRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _ConfigService_ReadAwsOrganizationAccount_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(ReadAwsOrganizationAccountRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(ConfigServiceServer).ReadAwsOrganizationAccount(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: ConfigService_ReadAwsOrganizationAccount_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(ConfigServiceServer).ReadAwsOrganizationAccount(ctx, req.(*ReadAwsOrganizationAccountRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _ConfigService_UpdateAwsOrganizationAccount_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(UpdateAwsOrganizationAccountRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(ConfigServiceServer).UpdateAwsOrganizationAccount(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: ConfigService_UpdateAwsOrganizationAccount_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(ConfigServiceServer).UpdateAwsOrganizationAccount(ctx, req.(*UpdateAwsOrganizationAccountRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _ConfigService_DeleteAwsOrganizationAccount_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(DeleteAwsOrganizationAccountRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(ConfigServiceServer).DeleteAwsOrganizationAccount(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: ConfigService_DeleteAwsOrganizationAccount_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(ConfigServiceServer).DeleteAwsOrganizationAccount(ctx, req.(*DeleteAwsOrganizationAccountRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 func _ConfigService_CreateK8SClusterOnboardingCredential_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(CreateK8SClusterOnboardingCredentialRequest)
 	if err := dec(in); err != nil {
@@ -520,6 +656,22 @@ var ConfigService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "DeleteAwsOrganization",
 			Handler:    _ConfigService_DeleteAwsOrganization_Handler,
+		},
+		{
+			MethodName: "CreateAwsOrganizationAccount",
+			Handler:    _ConfigService_CreateAwsOrganizationAccount_Handler,
+		},
+		{
+			MethodName: "ReadAwsOrganizationAccount",
+			Handler:    _ConfigService_ReadAwsOrganizationAccount_Handler,
+		},
+		{
+			MethodName: "UpdateAwsOrganizationAccount",
+			Handler:    _ConfigService_UpdateAwsOrganizationAccount_Handler,
+		},
+		{
+			MethodName: "DeleteAwsOrganizationAccount",
+			Handler:    _ConfigService_DeleteAwsOrganizationAccount_Handler,
 		},
 		{
 			MethodName: "CreateK8SClusterOnboardingCredential",
