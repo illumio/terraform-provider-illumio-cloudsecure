@@ -4,7 +4,7 @@
 version: v1
 lint:
   use:
-    - DEFAULT
+    - STANDARD
   except:
     - MESSAGE_PASCAL_CASE
   rpc_allow_google_protobuf_empty_requests: true
