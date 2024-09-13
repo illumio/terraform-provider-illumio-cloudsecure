@@ -1,7 +1,7 @@
 # Copyright (c) Illumio, Inc.
 # SPDX-License-Identifier: MPL-2.0
 
-version: v1
+version: v2
 lint:
   use:
     - STANDARD
@@ -9,3 +9,4 @@ lint:
     - MESSAGE_PASCAL_CASE
   rpc_allow_google_protobuf_empty_requests: true
   rpc_allow_google_protobuf_empty_responses: true
+  disallow_comment_ignores: true

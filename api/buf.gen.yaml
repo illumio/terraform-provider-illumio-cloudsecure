@@ -1,17 +1,16 @@
 # Copyright (c) Illumio, Inc.
 # SPDX-License-Identifier: MPL-2.0
 
-version: v1
+version: v2
 managed:
   enabled: true
-  go_package_prefix:
-    default: github.com/illumio/terraform-provider-illumio-cloudsecure/api
+  override:
+    - file_option: go_package_prefix
+      value: github.com/illumio/terraform-provider-illumio-cloudsecure/api
 plugins:
-  - plugin: buf.build/grpc/go:v1.5.1
+  - remote: buf.build/grpc/go:v1.5.1
     out: .
-    opt:
-      - paths=source_relative
-  - plugin: buf.build/protocolbuffers/go:v1.34.2
+    opt: paths=source_relative
+  - remote: buf.build/protocolbuffers/go:v1.34.2
     out: .
-    opt:
-      - paths=source_relative
+    opt: paths=source_relative
