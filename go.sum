@@ -48,8 +48,8 @@ github.com/bgentry/speakeasy v0.1.0 h1:ByYyxL9InA1OWqxJqqp2A5pYHUrCiAL6K3J+LKSsQ
 github.com/bgentry/speakeasy v0.1.0/go.mod h1:+zsyZBPWlz7T6j88CTgSN5bM796AkVf0kBD4zp0CCIs=
 github.com/bmatcuk/doublestar/v4 v4.6.1 h1:FH9SifrbvJhnlQpztAx++wlkk70QBf0iBWDwNy7PA4I=
 github.com/bmatcuk/doublestar/v4 v4.6.1/go.mod h1:xBQ8jztBU6kakFMg+8WGxn0c6z1fTSPVIjEY1Wr7jzc=
-github.com/bufbuild/buf v1.40.0 h1:EWiJiZsJumV0z8sPVjGx+3e8IxqAVv/Jg/4zG9bFxSI=
-github.com/bufbuild/buf v1.40.0/go.mod h1:PMkhwcFMP8d/aBJsvJL7GZq/CdeT7jwTS96RwFyKSU8=
+github.com/bufbuild/buf v1.40.1 h1:u99ME/yC6zzZH5yGfwmcTt46bxFqDfuvFuif/W9F3Qo=
+github.com/bufbuild/buf v1.40.1/go.mod h1:PMkhwcFMP8d/aBJsvJL7GZq/CdeT7jwTS96RwFyKSU8=
 github.com/bufbuild/bufplugin-go v0.1.0 h1:3LmgSHaSf8mPvwoFunimgm8uKJFLg+YePdi7NQgnfdY=
 github.com/bufbuild/bufplugin-go v0.1.0/go.mod h1:gIbsJlcYJRLylxxNN3FPNd91fYxJmGVQgbZ67xLVrXk=
 github.com/bufbuild/protocompile v0.14.1 h1:iA73zAf/fyljNjQKwYzUHD6AD4R8KMasmwa/FBatYVw=

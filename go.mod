@@ -5,7 +5,7 @@ go 1.22.0
 toolchain go1.22.6
 
 require (
-	github.com/bufbuild/buf v1.40.0
+	github.com/bufbuild/buf v1.40.1
 	github.com/gogo/protobuf v1.3.2
 	github.com/google/uuid v1.6.0
 	github.com/hashicorp/terraform-plugin-docs v0.19.4
