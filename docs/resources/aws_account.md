@@ -37,7 +37,7 @@ resource "illumio-cloudsecure_aws_account" "account_example" {
 
 ### Optional
 
-- `mode` (String) Access mode, must be `"ReadWrite"` (default) or `"Read"`.
+- `access_mode` (String) Access mode, must be `"ReadWrite"` (default) or `"Read"`.
 - `organization_master_account_id` (String) ID of the master account of the AWS organization this account belongs to. If specified, should be the `master_account_id` of an `aws_organization`.
 
 ### Read-Only

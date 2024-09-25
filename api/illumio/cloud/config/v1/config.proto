@@ -20,8 +20,8 @@ service ConfigService {
   rpc DeleteK8SClusterOnboardingCredential(DeleteK8SClusterOnboardingCredentialRequest) returns (google.protobuf.Empty);
 }
 message CreateAwsAccountRequest {
+  string access_mode = 13;
   string account_id = 2;
-  string mode = 5;
   string name = 6;
   optional string organization_master_account_id = 12;
   string role_arn = 8;
@@ -29,24 +29,18 @@ message CreateAwsAccountRequest {
 }
 message CreateAwsAccountResponse {
   string id = 1;
+  string access_mode = 13;
   string account_id = 2;
-  string mode = 5;
   string name = 6;
-  optional string organization_master_account_id = 12;
-  string role_arn = 8;
-  string role_external_id = 9;
 }
 message ReadAwsAccountRequest {
   string id = 1;
 }
 message ReadAwsAccountResponse {
   string id = 1;
+  string access_mode = 13;
   string account_id = 2;
-  string mode = 5;
   string name = 6;
-  optional string organization_master_account_id = 12;
-  string role_arn = 8;
-  string role_external_id = 9;
 }
 message UpdateAwsAccountRequest {
   string id = 1;
@@ -55,12 +49,9 @@ message UpdateAwsAccountRequest {
 }
 message UpdateAwsAccountResponse {
   string id = 1;
+  string access_mode = 13;
   string account_id = 2;
-  string mode = 5;
   string name = 6;
-  optional string organization_master_account_id = 12;
-  string role_arn = 8;
-  string role_external_id = 9;
 }
 message DeleteAwsAccountRequest {
   string id = 1;

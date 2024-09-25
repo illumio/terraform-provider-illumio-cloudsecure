@@ -588,8 +588,8 @@ func (r *K8SClusterOnboardingCredentialResource) ImportState(ctx context.Context
 
 type AwsAccountResourceModel struct {
 	Id                          types.String `tfsdk:"id"`
+	AccessMode                  types.String `tfsdk:"access_mode"`
 	AccountId                   types.String `tfsdk:"account_id"`
-	Mode                        types.String `tfsdk:"mode"`
 	Name                        types.String `tfsdk:"name"`
 	OrganizationMasterAccountId types.String `tfsdk:"organization_master_account_id"`
 	RoleArn                     types.String `tfsdk:"role_arn"`
@@ -618,17 +618,17 @@ type K8SClusterOnboardingCredentialResourceModel struct {
 
 func NewCreateAwsAccountRequest(data *AwsAccountResourceModel) *configv1.CreateAwsAccountRequest {
 	proto := &configv1.CreateAwsAccountRequest{}
+	if !data.AccessMode.IsUnknown() && !data.AccessMode.IsNull() {
+		var dataValue attr.Value = data.AccessMode
+		var protoValue string
+		protoValue = dataValue.(types.String).ValueString()
+		proto.AccessMode = protoValue
+	}
 	if !data.AccountId.IsUnknown() && !data.AccountId.IsNull() {
 		var dataValue attr.Value = data.AccountId
 		var protoValue string
 		protoValue = dataValue.(types.String).ValueString()
 		proto.AccountId = protoValue
-	}
-	if !data.Mode.IsUnknown() && !data.Mode.IsNull() {
-		var dataValue attr.Value = data.Mode
-		var protoValue string
-		protoValue = dataValue.(types.String).ValueString()
-		proto.Mode = protoValue
 	}
 	if !data.Name.IsUnknown() && !data.Name.IsNull() {
 		var dataValue attr.Value = data.Name
@@ -845,30 +845,21 @@ func NewUpdateK8SClusterOnboardingCredentialRequest(beforeData, afterData *K8SCl
 }
 func CopyCreateAwsAccountResponse(dst *AwsAccountResourceModel, src *configv1.CreateAwsAccountResponse) {
 	dst.Id = types.StringValue(src.Id)
+	dst.AccessMode = types.StringValue(src.AccessMode)
 	dst.AccountId = types.StringValue(src.AccountId)
-	dst.Mode = types.StringValue(src.Mode)
 	dst.Name = types.StringValue(src.Name)
-	dst.OrganizationMasterAccountId = types.StringPointerValue(src.OrganizationMasterAccountId)
-	dst.RoleArn = types.StringValue(src.RoleArn)
-	dst.RoleExternalId = types.StringValue(src.RoleExternalId)
 }
 func CopyReadAwsAccountResponse(dst *AwsAccountResourceModel, src *configv1.ReadAwsAccountResponse) {
 	dst.Id = types.StringValue(src.Id)
+	dst.AccessMode = types.StringValue(src.AccessMode)
 	dst.AccountId = types.StringValue(src.AccountId)
-	dst.Mode = types.StringValue(src.Mode)
 	dst.Name = types.StringValue(src.Name)
-	dst.OrganizationMasterAccountId = types.StringPointerValue(src.OrganizationMasterAccountId)
-	dst.RoleArn = types.StringValue(src.RoleArn)
-	dst.RoleExternalId = types.StringValue(src.RoleExternalId)
 }
 func CopyUpdateAwsAccountResponse(dst *AwsAccountResourceModel, src *configv1.UpdateAwsAccountResponse) {
 	dst.Id = types.StringValue(src.Id)
+	dst.AccessMode = types.StringValue(src.AccessMode)
 	dst.AccountId = types.StringValue(src.AccountId)
-	dst.Mode = types.StringValue(src.Mode)
 	dst.Name = types.StringValue(src.Name)
-	dst.OrganizationMasterAccountId = types.StringPointerValue(src.OrganizationMasterAccountId)
-	dst.RoleArn = types.StringValue(src.RoleArn)
-	dst.RoleExternalId = types.StringValue(src.RoleExternalId)
 }
 func CopyCreateAwsOrganizationResponse(dst *AwsOrganizationResourceModel, src *configv1.CreateAwsOrganizationResponse) {
 	dst.Id = types.StringValue(src.Id)

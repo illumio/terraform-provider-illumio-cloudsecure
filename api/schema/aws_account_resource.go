@@ -32,7 +32,7 @@ var (
 						Mode: ImmutableAttributeMode,
 					},
 				},
-				"mode": StringResourceAttributeWithMode{
+				"access_mode": StringResourceAttributeWithMode{
 					StringAttribute: resource_schema.StringAttribute{
 						Description: "Access mode, must be `\"ReadWrite\"` (default) or `\"Read\"`.",
 						Optional:    true,
@@ -52,6 +52,9 @@ var (
 				"name": resource_schema.StringAttribute{
 					Description: "Display name for the AWS account.",
 					Required:    true,
+					Validators: []validator.String{
+						stringvalidator.LengthAtLeast(3),
+					},
 				},
 				"organization_master_account_id": StringResourceAttributeWithMode{
 					StringAttribute: resource_schema.StringAttribute{
@@ -62,7 +65,7 @@ var (
 						},
 					},
 					attributeWithMode: attributeWithMode{
-						Mode: ImmutableAttributeMode,
+						Mode: WriteOnlyOnceAttributeMode,
 					},
 				},
 				"role_arn": StringResourceAttributeWithMode{
@@ -74,7 +77,7 @@ var (
 						},
 					},
 					attributeWithMode: attributeWithMode{
-						Mode: ImmutableAttributeMode,
+						Mode: WriteOnlyOnceAttributeMode,
 					},
 				},
 				"role_external_id": StringResourceAttributeWithMode{
@@ -86,7 +89,7 @@ var (
 						},
 					},
 					attributeWithMode: attributeWithMode{
-						Mode: ImmutableAttributeMode,
+						Mode: WriteOnlyOnceAttributeMode,
 					},
 				},
 			},

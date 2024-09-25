@@ -11,7 +11,7 @@ ifeq ($(ARCH),x86_64)
 else ifeq ($(ARCH),arm64)
     ARCH=arm64
 else ifeq ($(ARCH),aarch64)
-    ARCH=arm64
+    ARCH=amd64
 endif
 TF_PLUGIN_DIR = $(OS)_$(ARCH)
 
