@@ -18,7 +18,6 @@ func (c *cloudSecureSchema) Resources() Resources {
 	// Keep all resources sorted by lexicographic name order.
 	resources := Resources{
 		awsAccountResource,
-		awsOrganizationResource,
 		k8sClusterOnboardingCredential,
 	}
 	sort.Sort(resources)

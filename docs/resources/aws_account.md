@@ -14,14 +14,13 @@ Manages an AWS account in CloudSecure.
 
 ```terraform
 resource "illumio-cloudsecure_aws_account" "account_example" {
-  account_id       = "812713887999"
-  name             = "Test AWS Account"
-  role_arn         = "arn:aws:iam::812713887999:role/IllumioAccess"
-  role_external_id = "eb287482f5824fab8a6988252d56eb6d"
-
-  # Optional attributes
+  account_id                     = "812713887999"
+  name                           = "Test AWS Account"
+  role_arn                       = "arn:aws:iam::812713887999:role/IllumioAccess"
+  role_external_id               = "eb287482f5824fab8a6988252d56eb6d"
   organization_master_account_id = "965208753613"
-  mode                           = "ReadWrite"
+  organization_id                = "o-1234567890"
+  access_mode                    = "ReadWrite"
 }
 ```
 
@@ -38,6 +37,7 @@ resource "illumio-cloudsecure_aws_account" "account_example" {
 ### Optional
 
 - `access_mode` (String) Access mode, must be `"ReadWrite"` (default) or `"Read"`.
+- `organization_id` (String) ID of the AWS organization.
 - `organization_master_account_id` (String) ID of the master account of the AWS organization this account belongs to. If specified, should be the `master_account_id` of an `aws_organization`.
 
 ### Read-Only
