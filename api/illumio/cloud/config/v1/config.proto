@@ -19,8 +19,8 @@ message CreateAwsAccountRequest {
   string access_mode = 13;
   string account_id = 2;
   string name = 6;
-  optional string organization_id = 7;
-  optional string organization_master_account_id = 12;
+  string organization_id = 7;
+  string organization_master_account_id = 12;
   string role_arn = 8;
   string role_external_id = 9;
 }

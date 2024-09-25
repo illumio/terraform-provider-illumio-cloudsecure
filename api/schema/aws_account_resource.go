@@ -59,7 +59,7 @@ var (
 				"organization_master_account_id": StringResourceAttributeWithMode{
 					StringAttribute: resource_schema.StringAttribute{
 						Description: "ID of the master account of the AWS organization this account belongs to. If specified, should be the `master_account_id` of an `aws_organization`.",
-						Optional:    true,
+						Required:    true,
 						PlanModifiers: []planmodifier.String{
 							stringplanmodifier.RequiresReplace(),
 						},
@@ -71,7 +71,7 @@ var (
 				"organization_id": StringResourceAttributeWithMode{
 					StringAttribute: resource_schema.StringAttribute{
 						Description: "ID of the AWS organization.",
-						Optional:    true,
+						Required:    true,
 						PlanModifiers: []planmodifier.String{
 							stringplanmodifier.RequiresReplace(),
 						},

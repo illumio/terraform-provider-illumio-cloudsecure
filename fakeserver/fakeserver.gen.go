@@ -42,8 +42,8 @@ type AwsAccount struct {
 	AccessMode                  string
 	AccountId                   string
 	Name                        string
-	OrganizationId              *string
-	OrganizationMasterAccountId *string
+	OrganizationId              string
+	OrganizationMasterAccountId string
 	RoleArn                     string
 	RoleExternalId              string
 }

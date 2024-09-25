@@ -31,14 +31,14 @@ resource "illumio-cloudsecure_aws_account" "account_example" {
 
 - `account_id` (String) AWS account ID.
 - `name` (String) Display name for the AWS account.
+- `organization_id` (String) ID of the AWS organization.
+- `organization_master_account_id` (String) ID of the master account of the AWS organization this account belongs to. If specified, should be the `master_account_id` of an `aws_organization`.
 - `role_arn` (String) ARN of the AWS role to be assumed by CloudSecure to manage this account.
 - `role_external_id` (String) External ID defined in the AWS role to authenticate CloudSecure when assuming that role.
 
 ### Optional
 
 - `access_mode` (String) Access mode, must be `"ReadWrite"` (default) or `"Read"`.
-- `organization_id` (String) ID of the AWS organization.
-- `organization_master_account_id` (String) ID of the master account of the AWS organization this account belongs to. If specified, should be the `master_account_id` of an `aws_organization`.
 
 ### Read-Only
 

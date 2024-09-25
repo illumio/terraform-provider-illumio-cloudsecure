@@ -451,13 +451,13 @@ func NewCreateAwsAccountRequest(data *AwsAccountResourceModel) *configv1.CreateA
 		var dataValue attr.Value = data.OrganizationId
 		var protoValue string
 		protoValue = dataValue.(types.String).ValueString()
-		proto.OrganizationId = &protoValue
+		proto.OrganizationId = protoValue
 	}
 	if !data.OrganizationMasterAccountId.IsUnknown() && !data.OrganizationMasterAccountId.IsNull() {
 		var dataValue attr.Value = data.OrganizationMasterAccountId
 		var protoValue string
 		protoValue = dataValue.(types.String).ValueString()
-		proto.OrganizationMasterAccountId = &protoValue
+		proto.OrganizationMasterAccountId = protoValue
 	}
 	if !data.RoleArn.IsUnknown() && !data.RoleArn.IsNull() {
 		var dataValue attr.Value = data.RoleArn
