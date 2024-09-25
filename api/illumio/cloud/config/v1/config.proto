@@ -30,7 +30,6 @@ message CreateAwsAccountResponse {
   string name = 6;
   optional string organization_id = 7;
   string role_arn = 8;
-  string role_external_id = 9;
 }
 message ReadAwsAccountRequest {
   string id = 1;
@@ -42,7 +41,6 @@ message ReadAwsAccountResponse {
   string name = 6;
   optional string organization_id = 7;
   string role_arn = 8;
-  string role_external_id = 9;
 }
 message UpdateAwsAccountRequest {
   string id = 1;
@@ -56,7 +54,6 @@ message UpdateAwsAccountResponse {
   string name = 6;
   optional string organization_id = 7;
   string role_arn = 8;
-  string role_external_id = 9;
 }
 message DeleteAwsAccountRequest {
   string id = 1;

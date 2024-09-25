@@ -75,7 +75,6 @@ func (s *FakeConfigServer) CreateAwsAccount(ctx context.Context, req *configv1.C
 		Name:           model.Name,
 		OrganizationId: model.OrganizationId,
 		RoleArn:        model.RoleArn,
-		RoleExternalId: model.RoleExternalId,
 	}
 	s.AwsAccountMutex.Lock()
 	s.AwsAccountMap[id] = model
@@ -108,7 +107,6 @@ func (s *FakeConfigServer) ReadAwsAccount(ctx context.Context, req *configv1.Rea
 		Name:           model.Name,
 		OrganizationId: model.OrganizationId,
 		RoleArn:        model.RoleArn,
-		RoleExternalId: model.RoleExternalId,
 	}
 	s.AwsAccountMutex.RUnlock()
 	s.Logger.Info("read resource",
@@ -160,7 +158,6 @@ func (s *FakeConfigServer) UpdateAwsAccount(ctx context.Context, req *configv1.U
 		Name:           model.Name,
 		OrganizationId: model.OrganizationId,
 		RoleArn:        model.RoleArn,
-		RoleExternalId: model.RoleExternalId,
 	}
 	s.AwsAccountMutex.Unlock()
 	s.Logger.Info("updated resource",

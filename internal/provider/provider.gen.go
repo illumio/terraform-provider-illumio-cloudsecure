@@ -581,7 +581,6 @@ func CopyCreateAwsAccountResponse(dst *AwsAccountResourceModel, src *configv1.Cr
 	dst.Name = types.StringValue(src.Name)
 	dst.OrganizationId = types.StringPointerValue(src.OrganizationId)
 	dst.RoleArn = types.StringValue(src.RoleArn)
-	dst.RoleExternalId = types.StringValue(src.RoleExternalId)
 }
 func CopyReadAwsAccountResponse(dst *AwsAccountResourceModel, src *configv1.ReadAwsAccountResponse) {
 	dst.Id = types.StringValue(src.Id)
@@ -590,7 +589,6 @@ func CopyReadAwsAccountResponse(dst *AwsAccountResourceModel, src *configv1.Read
 	dst.Name = types.StringValue(src.Name)
 	dst.OrganizationId = types.StringPointerValue(src.OrganizationId)
 	dst.RoleArn = types.StringValue(src.RoleArn)
-	dst.RoleExternalId = types.StringValue(src.RoleExternalId)
 }
 func CopyUpdateAwsAccountResponse(dst *AwsAccountResourceModel, src *configv1.UpdateAwsAccountResponse) {
 	dst.Id = types.StringValue(src.Id)
@@ -599,7 +597,6 @@ func CopyUpdateAwsAccountResponse(dst *AwsAccountResourceModel, src *configv1.Up
 	dst.Name = types.StringValue(src.Name)
 	dst.OrganizationId = types.StringPointerValue(src.OrganizationId)
 	dst.RoleArn = types.StringValue(src.RoleArn)
-	dst.RoleExternalId = types.StringValue(src.RoleExternalId)
 }
 func CopyCreateK8SClusterOnboardingCredentialResponse(dst *K8SClusterOnboardingCredentialResourceModel, src *configv1.CreateK8SClusterOnboardingCredentialResponse) {
 	dst.Id = types.StringValue(src.Id)

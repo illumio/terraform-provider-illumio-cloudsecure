@@ -86,7 +86,7 @@ var (
 						},
 					},
 					attributeWithMode: attributeWithMode{
-						Mode: ImmutableAttributeMode,
+						Mode: WriteOnlyOnceAttributeMode,
 					},
 				},
 			},
