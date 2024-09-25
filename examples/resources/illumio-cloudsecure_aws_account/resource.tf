@@ -5,5 +5,7 @@ resource "illumio-cloudsecure_aws_account" "account_example" {
   role_external_id               = "eb287482f5824fab8a6988252d56eb6d"
   organization_master_account_id = "965208753613"
   organization_id                = "o-1234567890"
-  access_mode                    = "ReadWrite"
+
+  # Optional Parameters
+  access_mode = "ReadWrite"
 }
