@@ -81,6 +81,7 @@ var (
 					StringAttribute: resource_schema.StringAttribute{
 						Description: "External ID defined in the AWS role to authenticate CloudSecure when assuming that role.",
 						Required:    true,
+						Sensitive:   true,
 						PlanModifiers: []planmodifier.String{
 							stringplanmodifier.RequiresReplace(),
 						},

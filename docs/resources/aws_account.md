@@ -33,7 +33,7 @@ resource "illumio-cloudsecure_aws_account" "account_example" {
 - `account_id` (String) AWS account ID.
 - `name` (String) Display name for the AWS account.
 - `role_arn` (String) ARN of the AWS role to be assumed by CloudSecure to manage this account.
-- `role_external_id` (String) External ID defined in the AWS role to authenticate CloudSecure when assuming that role.
+- `role_external_id` (String, Sensitive) External ID defined in the AWS role to authenticate CloudSecure when assuming that role.
 
 ### Optional
 
