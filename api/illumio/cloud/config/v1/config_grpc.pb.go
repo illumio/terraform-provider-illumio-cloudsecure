@@ -27,6 +27,10 @@ const (
 	ConfigService_ReadAwsAccount_FullMethodName                       = "/illumio.cloud.config.v1.ConfigService/ReadAwsAccount"
 	ConfigService_UpdateAwsAccount_FullMethodName                     = "/illumio.cloud.config.v1.ConfigService/UpdateAwsAccount"
 	ConfigService_DeleteAwsAccount_FullMethodName                     = "/illumio.cloud.config.v1.ConfigService/DeleteAwsAccount"
+	ConfigService_CreateAwsFlowLogsS3Bucket_FullMethodName            = "/illumio.cloud.config.v1.ConfigService/CreateAwsFlowLogsS3Bucket"
+	ConfigService_ReadAwsFlowLogsS3Bucket_FullMethodName              = "/illumio.cloud.config.v1.ConfigService/ReadAwsFlowLogsS3Bucket"
+	ConfigService_UpdateAwsFlowLogsS3Bucket_FullMethodName            = "/illumio.cloud.config.v1.ConfigService/UpdateAwsFlowLogsS3Bucket"
+	ConfigService_DeleteAwsFlowLogsS3Bucket_FullMethodName            = "/illumio.cloud.config.v1.ConfigService/DeleteAwsFlowLogsS3Bucket"
 	ConfigService_CreateK8SClusterOnboardingCredential_FullMethodName = "/illumio.cloud.config.v1.ConfigService/CreateK8SClusterOnboardingCredential"
 	ConfigService_ReadK8SClusterOnboardingCredential_FullMethodName   = "/illumio.cloud.config.v1.ConfigService/ReadK8SClusterOnboardingCredential"
 	ConfigService_UpdateK8SClusterOnboardingCredential_FullMethodName = "/illumio.cloud.config.v1.ConfigService/UpdateK8SClusterOnboardingCredential"
@@ -41,6 +45,10 @@ type ConfigServiceClient interface {
 	ReadAwsAccount(ctx context.Context, in *ReadAwsAccountRequest, opts ...grpc.CallOption) (*ReadAwsAccountResponse, error)
 	UpdateAwsAccount(ctx context.Context, in *UpdateAwsAccountRequest, opts ...grpc.CallOption) (*UpdateAwsAccountResponse, error)
 	DeleteAwsAccount(ctx context.Context, in *DeleteAwsAccountRequest, opts ...grpc.CallOption) (*emptypb.Empty, error)
+	CreateAwsFlowLogsS3Bucket(ctx context.Context, in *CreateAwsFlowLogsS3BucketRequest, opts ...grpc.CallOption) (*CreateAwsFlowLogsS3BucketResponse, error)
+	ReadAwsFlowLogsS3Bucket(ctx context.Context, in *ReadAwsFlowLogsS3BucketRequest, opts ...grpc.CallOption) (*ReadAwsFlowLogsS3BucketResponse, error)
+	UpdateAwsFlowLogsS3Bucket(ctx context.Context, in *UpdateAwsFlowLogsS3BucketRequest, opts ...grpc.CallOption) (*UpdateAwsFlowLogsS3BucketResponse, error)
+	DeleteAwsFlowLogsS3Bucket(ctx context.Context, in *DeleteAwsFlowLogsS3BucketRequest, opts ...grpc.CallOption) (*emptypb.Empty, error)
 	CreateK8SClusterOnboardingCredential(ctx context.Context, in *CreateK8SClusterOnboardingCredentialRequest, opts ...grpc.CallOption) (*CreateK8SClusterOnboardingCredentialResponse, error)
 	ReadK8SClusterOnboardingCredential(ctx context.Context, in *ReadK8SClusterOnboardingCredentialRequest, opts ...grpc.CallOption) (*ReadK8SClusterOnboardingCredentialResponse, error)
 	UpdateK8SClusterOnboardingCredential(ctx context.Context, in *UpdateK8SClusterOnboardingCredentialRequest, opts ...grpc.CallOption) (*UpdateK8SClusterOnboardingCredentialResponse, error)
@@ -95,6 +103,46 @@ func (c *configServiceClient) DeleteAwsAccount(ctx context.Context, in *DeleteAw
 	return out, nil
 }
 
+func (c *configServiceClient) CreateAwsFlowLogsS3Bucket(ctx context.Context, in *CreateAwsFlowLogsS3BucketRequest, opts ...grpc.CallOption) (*CreateAwsFlowLogsS3BucketResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(CreateAwsFlowLogsS3BucketResponse)
+	err := c.cc.Invoke(ctx, ConfigService_CreateAwsFlowLogsS3Bucket_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *configServiceClient) ReadAwsFlowLogsS3Bucket(ctx context.Context, in *ReadAwsFlowLogsS3BucketRequest, opts ...grpc.CallOption) (*ReadAwsFlowLogsS3BucketResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(ReadAwsFlowLogsS3BucketResponse)
+	err := c.cc.Invoke(ctx, ConfigService_ReadAwsFlowLogsS3Bucket_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *configServiceClient) UpdateAwsFlowLogsS3Bucket(ctx context.Context, in *UpdateAwsFlowLogsS3BucketRequest, opts ...grpc.CallOption) (*UpdateAwsFlowLogsS3BucketResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(UpdateAwsFlowLogsS3BucketResponse)
+	err := c.cc.Invoke(ctx, ConfigService_UpdateAwsFlowLogsS3Bucket_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *configServiceClient) DeleteAwsFlowLogsS3Bucket(ctx context.Context, in *DeleteAwsFlowLogsS3BucketRequest, opts ...grpc.CallOption) (*emptypb.Empty, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(emptypb.Empty)
+	err := c.cc.Invoke(ctx, ConfigService_DeleteAwsFlowLogsS3Bucket_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 func (c *configServiceClient) CreateK8SClusterOnboardingCredential(ctx context.Context, in *CreateK8SClusterOnboardingCredentialRequest, opts ...grpc.CallOption) (*CreateK8SClusterOnboardingCredentialResponse, error) {
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
 	out := new(CreateK8SClusterOnboardingCredentialResponse)
@@ -143,6 +191,10 @@ type ConfigServiceServer interface {
 	ReadAwsAccount(context.Context, *ReadAwsAccountRequest) (*ReadAwsAccountResponse, error)
 	UpdateAwsAccount(context.Context, *UpdateAwsAccountRequest) (*UpdateAwsAccountResponse, error)
 	DeleteAwsAccount(context.Context, *DeleteAwsAccountRequest) (*emptypb.Empty, error)
+	CreateAwsFlowLogsS3Bucket(context.Context, *CreateAwsFlowLogsS3BucketRequest) (*CreateAwsFlowLogsS3BucketResponse, error)
+	ReadAwsFlowLogsS3Bucket(context.Context, *ReadAwsFlowLogsS3BucketRequest) (*ReadAwsFlowLogsS3BucketResponse, error)
+	UpdateAwsFlowLogsS3Bucket(context.Context, *UpdateAwsFlowLogsS3BucketRequest) (*UpdateAwsFlowLogsS3BucketResponse, error)
+	DeleteAwsFlowLogsS3Bucket(context.Context, *DeleteAwsFlowLogsS3BucketRequest) (*emptypb.Empty, error)
 	CreateK8SClusterOnboardingCredential(context.Context, *CreateK8SClusterOnboardingCredentialRequest) (*CreateK8SClusterOnboardingCredentialResponse, error)
 	ReadK8SClusterOnboardingCredential(context.Context, *ReadK8SClusterOnboardingCredentialRequest) (*ReadK8SClusterOnboardingCredentialResponse, error)
 	UpdateK8SClusterOnboardingCredential(context.Context, *UpdateK8SClusterOnboardingCredentialRequest) (*UpdateK8SClusterOnboardingCredentialResponse, error)
@@ -168,6 +220,18 @@ func (UnimplementedConfigServiceServer) UpdateAwsAccount(context.Context, *Updat
 }
 func (UnimplementedConfigServiceServer) DeleteAwsAccount(context.Context, *DeleteAwsAccountRequest) (*emptypb.Empty, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method DeleteAwsAccount not implemented")
+}
+func (UnimplementedConfigServiceServer) CreateAwsFlowLogsS3Bucket(context.Context, *CreateAwsFlowLogsS3BucketRequest) (*CreateAwsFlowLogsS3BucketResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method CreateAwsFlowLogsS3Bucket not implemented")
+}
+func (UnimplementedConfigServiceServer) ReadAwsFlowLogsS3Bucket(context.Context, *ReadAwsFlowLogsS3BucketRequest) (*ReadAwsFlowLogsS3BucketResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method ReadAwsFlowLogsS3Bucket not implemented")
+}
+func (UnimplementedConfigServiceServer) UpdateAwsFlowLogsS3Bucket(context.Context, *UpdateAwsFlowLogsS3BucketRequest) (*UpdateAwsFlowLogsS3BucketResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method UpdateAwsFlowLogsS3Bucket not implemented")
+}
+func (UnimplementedConfigServiceServer) DeleteAwsFlowLogsS3Bucket(context.Context, *DeleteAwsFlowLogsS3BucketRequest) (*emptypb.Empty, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method DeleteAwsFlowLogsS3Bucket not implemented")
 }
 func (UnimplementedConfigServiceServer) CreateK8SClusterOnboardingCredential(context.Context, *CreateK8SClusterOnboardingCredentialRequest) (*CreateK8SClusterOnboardingCredentialResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method CreateK8SClusterOnboardingCredential not implemented")
@@ -274,6 +338,78 @@ func _ConfigService_DeleteAwsAccount_Handler(srv interface{}, ctx context.Contex
 	return interceptor(ctx, in, info, handler)
 }
 
+func _ConfigService_CreateAwsFlowLogsS3Bucket_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(CreateAwsFlowLogsS3BucketRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(ConfigServiceServer).CreateAwsFlowLogsS3Bucket(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: ConfigService_CreateAwsFlowLogsS3Bucket_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(ConfigServiceServer).CreateAwsFlowLogsS3Bucket(ctx, req.(*CreateAwsFlowLogsS3BucketRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _ConfigService_ReadAwsFlowLogsS3Bucket_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(ReadAwsFlowLogsS3BucketRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(ConfigServiceServer).ReadAwsFlowLogsS3Bucket(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: ConfigService_ReadAwsFlowLogsS3Bucket_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(ConfigServiceServer).ReadAwsFlowLogsS3Bucket(ctx, req.(*ReadAwsFlowLogsS3BucketRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _ConfigService_UpdateAwsFlowLogsS3Bucket_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(UpdateAwsFlowLogsS3BucketRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(ConfigServiceServer).UpdateAwsFlowLogsS3Bucket(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: ConfigService_UpdateAwsFlowLogsS3Bucket_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(ConfigServiceServer).UpdateAwsFlowLogsS3Bucket(ctx, req.(*UpdateAwsFlowLogsS3BucketRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _ConfigService_DeleteAwsFlowLogsS3Bucket_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(DeleteAwsFlowLogsS3BucketRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(ConfigServiceServer).DeleteAwsFlowLogsS3Bucket(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: ConfigService_DeleteAwsFlowLogsS3Bucket_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(ConfigServiceServer).DeleteAwsFlowLogsS3Bucket(ctx, req.(*DeleteAwsFlowLogsS3BucketRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 func _ConfigService_CreateK8SClusterOnboardingCredential_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(CreateK8SClusterOnboardingCredentialRequest)
 	if err := dec(in); err != nil {
@@ -368,6 +504,22 @@ var ConfigService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "DeleteAwsAccount",
 			Handler:    _ConfigService_DeleteAwsAccount_Handler,
+		},
+		{
+			MethodName: "CreateAwsFlowLogsS3Bucket",
+			Handler:    _ConfigService_CreateAwsFlowLogsS3Bucket_Handler,
+		},
+		{
+			MethodName: "ReadAwsFlowLogsS3Bucket",
+			Handler:    _ConfigService_ReadAwsFlowLogsS3Bucket_Handler,
+		},
+		{
+			MethodName: "UpdateAwsFlowLogsS3Bucket",
+			Handler:    _ConfigService_UpdateAwsFlowLogsS3Bucket_Handler,
+		},
+		{
+			MethodName: "DeleteAwsFlowLogsS3Bucket",
+			Handler:    _ConfigService_DeleteAwsFlowLogsS3Bucket_Handler,
 		},
 		{
 			MethodName: "CreateK8SClusterOnboardingCredential",

@@ -22,6 +22,8 @@ type FakeConfigServer struct {
 	Logger                              *zap.Logger
 	AwsAccountMap                       map[string]*AwsAccount
 	AwsAccountMutex                     sync.RWMutex
+	AwsFlowLogsS3BucketMap              map[string]*AwsFlowLogsS3Bucket
+	AwsFlowLogsS3BucketMutex            sync.RWMutex
 	K8SClusterOnboardingCredentialMap   map[string]*K8SClusterOnboardingCredential
 	K8SClusterOnboardingCredentialMutex sync.RWMutex
 }
@@ -33,6 +35,7 @@ func NewFakeConfigServer(logger *zap.Logger) configv1.ConfigServiceServer {
 	return &FakeConfigServer{
 		Logger:                            logger,
 		AwsAccountMap:                     make(map[string]*AwsAccount),
+		AwsFlowLogsS3BucketMap:            make(map[string]*AwsFlowLogsS3Bucket),
 		K8SClusterOnboardingCredentialMap: make(map[string]*K8SClusterOnboardingCredential),
 	}
 }
@@ -45,6 +48,12 @@ type AwsAccount struct {
 	OrganizationId *string
 	RoleArn        string
 	RoleExternalId string
+}
+
+type AwsFlowLogsS3Bucket struct {
+	Id          string
+	AccountId   string
+	S3BucketArn string
 }
 
 type K8SClusterOnboardingCredential struct {
@@ -187,6 +196,125 @@ func (s *FakeConfigServer) DeleteAwsAccount(ctx context.Context, req *configv1.D
 	s.Logger.Info("deleted resource",
 		zap.String("type", "aws_account"),
 		zap.String("method", "DeleteAwsAccount"),
+		zap.String("id", id),
+	)
+	return &emptypb.Empty{}, nil
+}
+func (s *FakeConfigServer) CreateAwsFlowLogsS3Bucket(ctx context.Context, req *configv1.CreateAwsFlowLogsS3BucketRequest) (*configv1.CreateAwsFlowLogsS3BucketResponse, error) {
+	id := uuid.New().String()
+	model := &AwsFlowLogsS3Bucket{
+		Id:          id,
+		AccountId:   req.AccountId,
+		S3BucketArn: req.S3BucketArn,
+	}
+	resp := &configv1.CreateAwsFlowLogsS3BucketResponse{
+		Id:          id,
+		AccountId:   model.AccountId,
+		S3BucketArn: model.S3BucketArn,
+	}
+	s.AwsFlowLogsS3BucketMutex.Lock()
+	s.AwsFlowLogsS3BucketMap[id] = model
+	s.AwsFlowLogsS3BucketMutex.Unlock()
+	s.Logger.Info("created resource",
+		zap.String("type", "aws_flow_logs_s3_bucket"),
+		zap.String("method", "CreateAwsFlowLogsS3Bucket"),
+		zap.String("id", id),
+	)
+	return resp, nil
+}
+
+func (s *FakeConfigServer) ReadAwsFlowLogsS3Bucket(ctx context.Context, req *configv1.ReadAwsFlowLogsS3BucketRequest) (*configv1.ReadAwsFlowLogsS3BucketResponse, error) {
+	id := req.Id
+	s.AwsFlowLogsS3BucketMutex.RLock()
+	model, found := s.AwsFlowLogsS3BucketMap[id]
+	if !found {
+		s.AwsFlowLogsS3BucketMutex.RUnlock()
+		s.Logger.Error("attempted to read resource with unknown id",
+			zap.String("type", "aws_flow_logs_s3_bucket"),
+			zap.String("method", "ReadAwsFlowLogsS3Bucket"),
+			zap.String("id", id),
+		)
+		return nil, status.Errorf(codes.NotFound, "no aws_flow_logs_s3_bucket found with id %s", id)
+	}
+	resp := &configv1.ReadAwsFlowLogsS3BucketResponse{
+		Id:          id,
+		AccountId:   model.AccountId,
+		S3BucketArn: model.S3BucketArn,
+	}
+	s.AwsFlowLogsS3BucketMutex.RUnlock()
+	s.Logger.Info("read resource",
+		zap.String("type", "aws_flow_logs_s3_bucket"),
+		zap.String("method", "ReadAwsFlowLogsS3Bucket"),
+		zap.String("id", id),
+	)
+	return resp, nil
+}
+
+func (s *FakeConfigServer) UpdateAwsFlowLogsS3Bucket(ctx context.Context, req *configv1.UpdateAwsFlowLogsS3BucketRequest) (*configv1.UpdateAwsFlowLogsS3BucketResponse, error) {
+	id := req.Id
+	s.AwsFlowLogsS3BucketMutex.Lock()
+	model, found := s.AwsFlowLogsS3BucketMap[id]
+	if !found {
+		s.AwsFlowLogsS3BucketMutex.Unlock()
+		s.Logger.Error("attempted to update resource with unknown id",
+			zap.String("type", "aws_flow_logs_s3_bucket"),
+			zap.String("method", "UpdateAwsFlowLogsS3Bucket"),
+			zap.String("id", id),
+		)
+		return nil, status.Errorf(codes.NotFound, "no aws_flow_logs_s3_bucket found with id %s", id)
+	}
+	updateMask := req.UpdateMask
+	var updateMaskPaths []string
+	if updateMask != nil {
+		updateMaskPaths = updateMask.Paths
+	}
+	for _, path := range updateMaskPaths {
+		switch path {
+		default:
+			s.AwsAccountMutex.Unlock()
+			s.Logger.Error("attempted to update resource using invalid update_mask path",
+				zap.String("type", "aws_flow_logs_s3_bucket"),
+				zap.String("method", "UpdateAwsFlowLogsS3Bucket"),
+				zap.String("id", id),
+				zap.Strings("updateMaskPaths", updateMaskPaths),
+				zap.String("invalidUpdateMaskPath", path),
+			)
+			return nil, status.Errorf(codes.InvalidArgument, "invalid path in update_mask for aws_account: %s", path)
+		}
+	}
+	resp := &configv1.UpdateAwsFlowLogsS3BucketResponse{
+		Id:          id,
+		AccountId:   model.AccountId,
+		S3BucketArn: model.S3BucketArn,
+	}
+	s.AwsFlowLogsS3BucketMutex.Unlock()
+	s.Logger.Info("updated resource",
+		zap.String("type", "aws_flow_logs_s3_bucket"),
+		zap.String("method", "UpdateAwsFlowLogsS3Bucket"),
+		zap.String("id", id),
+		zap.Strings("updateMaskPaths", updateMaskPaths),
+	)
+	return resp, nil
+}
+
+func (s *FakeConfigServer) DeleteAwsFlowLogsS3Bucket(ctx context.Context, req *configv1.DeleteAwsFlowLogsS3BucketRequest) (*emptypb.Empty, error) {
+	id := req.Id
+	s.AwsFlowLogsS3BucketMutex.Lock()
+	_, found := s.AwsFlowLogsS3BucketMap[id]
+	if !found {
+		s.AwsFlowLogsS3BucketMutex.Unlock()
+		s.Logger.Error("attempted to delete resource with unknown id",
+			zap.String("type", "aws_flow_logs_s3_bucket"),
+			zap.String("method", "DeleteAwsFlowLogsS3Bucket"),
+			zap.String("id", id),
+		)
+		return nil, status.Errorf(codes.NotFound, "no aws_flow_logs_s3_bucket found with id %s", id)
+	}
+	delete(s.AwsFlowLogsS3BucketMap, id)
+	s.AwsFlowLogsS3BucketMutex.Unlock()
+	s.Logger.Info("deleted resource",
+		zap.String("type", "aws_flow_logs_s3_bucket"),
+		zap.String("method", "DeleteAwsFlowLogsS3Bucket"),
 		zap.String("id", id),
 	)
 	return &emptypb.Empty{}, nil
