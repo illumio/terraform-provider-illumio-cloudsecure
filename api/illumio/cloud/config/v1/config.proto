@@ -10,10 +10,6 @@ service ConfigService {
   rpc ReadAwsAccount(ReadAwsAccountRequest) returns (ReadAwsAccountResponse);
   rpc UpdateAwsAccount(UpdateAwsAccountRequest) returns (UpdateAwsAccountResponse);
   rpc DeleteAwsAccount(DeleteAwsAccountRequest) returns (google.protobuf.Empty);
-  rpc CreateAwsOrganization(CreateAwsOrganizationRequest) returns (CreateAwsOrganizationResponse);
-  rpc ReadAwsOrganization(ReadAwsOrganizationRequest) returns (ReadAwsOrganizationResponse);
-  rpc UpdateAwsOrganization(UpdateAwsOrganizationRequest) returns (UpdateAwsOrganizationResponse);
-  rpc DeleteAwsOrganization(DeleteAwsOrganizationRequest) returns (google.protobuf.Empty);
   rpc CreateK8SClusterOnboardingCredential(CreateK8SClusterOnboardingCredentialRequest) returns (CreateK8SClusterOnboardingCredentialResponse);
   rpc ReadK8SClusterOnboardingCredential(ReadK8SClusterOnboardingCredentialRequest) returns (ReadK8SClusterOnboardingCredentialResponse);
   rpc UpdateK8SClusterOnboardingCredential(UpdateK8SClusterOnboardingCredentialRequest) returns (UpdateK8SClusterOnboardingCredentialResponse);
@@ -23,7 +19,7 @@ message CreateAwsAccountRequest {
   string account_id = 2;
   string mode = 5;
   string name = 6;
-  optional string organization_master_account_id = 12;
+  optional string organization_id = 7;
   string role_arn = 8;
   string role_external_id = 9;
 }
@@ -32,9 +28,8 @@ message CreateAwsAccountResponse {
   string account_id = 2;
   string mode = 5;
   string name = 6;
-  optional string organization_master_account_id = 12;
+  optional string organization_id = 7;
   string role_arn = 8;
-  string role_external_id = 9;
 }
 message ReadAwsAccountRequest {
   string id = 1;
@@ -44,9 +39,8 @@ message ReadAwsAccountResponse {
   string account_id = 2;
   string mode = 5;
   string name = 6;
-  optional string organization_master_account_id = 12;
+  optional string organization_id = 7;
   string role_arn = 8;
-  string role_external_id = 9;
 }
 message UpdateAwsAccountRequest {
   string id = 1;
@@ -58,57 +52,10 @@ message UpdateAwsAccountResponse {
   string account_id = 2;
   string mode = 5;
   string name = 6;
-  optional string organization_master_account_id = 12;
+  optional string organization_id = 7;
   string role_arn = 8;
-  string role_external_id = 9;
 }
 message DeleteAwsAccountRequest {
-  string id = 1;
-}
-message CreateAwsOrganizationRequest {
-  string master_account_id = 9;
-  string mode = 3;
-  string name = 4;
-  string organization_id = 5;
-  string role_arn = 6;
-  string role_external_id = 7;
-}
-message CreateAwsOrganizationResponse {
-  string id = 1;
-  string master_account_id = 9;
-  string mode = 3;
-  string name = 4;
-  string organization_id = 5;
-  string role_arn = 6;
-  string role_external_id = 7;
-}
-message ReadAwsOrganizationRequest {
-  string id = 1;
-}
-message ReadAwsOrganizationResponse {
-  string id = 1;
-  string master_account_id = 9;
-  string mode = 3;
-  string name = 4;
-  string organization_id = 5;
-  string role_arn = 6;
-  string role_external_id = 7;
-}
-message UpdateAwsOrganizationRequest {
-  string id = 1;
-  string name = 4;
-  google.protobuf.FieldMask update_mask = 8;
-}
-message UpdateAwsOrganizationResponse {
-  string id = 1;
-  string master_account_id = 9;
-  string mode = 3;
-  string name = 4;
-  string organization_id = 5;
-  string role_arn = 6;
-  string role_external_id = 7;
-}
-message DeleteAwsOrganizationRequest {
   string id = 1;
 }
 message CreateK8SClusterOnboardingCredentialRequest {
