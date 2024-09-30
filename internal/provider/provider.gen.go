@@ -37,6 +37,8 @@ func (p *Provider) Resources(ctx context.Context) []func() resource.Resource {
 		switch r.TypeName {
 		case "aws_account":
 			resp = append(resp, func() resource.Resource { return NewAwsAccountResource(r.Schema) })
+		case "aws_flow_logs_s3_bucket":
+			resp = append(resp, func() resource.Resource { return NewAwsFlowLogsS3BucketResource(r.Schema) })
 		case "k8s_cluster_onboarding_credential":
 			resp = append(resp, func() resource.Resource { return NewK8SClusterOnboardingCredentialResource(r.Schema) })
 		}
@@ -228,6 +230,184 @@ func (r *AwsAccountResource) ImportState(ctx context.Context, req resource.Impor
 	// TODO
 }
 
+// AwsFlowLogsS3BucketResource implements the aws_flow_logs_s3_bucket resource.
+type AwsFlowLogsS3BucketResource struct {
+	// schema is the schema of the aws_flow_logs_s3_bucket resource.
+	schema resource_schema.Schema
+
+	// providerData is the provider configuration.
+	config ProviderData
+}
+
+var _ resource.ResourceWithConfigure = &AwsFlowLogsS3BucketResource{}
+var _ resource.ResourceWithImportState = &AwsFlowLogsS3BucketResource{}
+
+// NewAwsFlowLogsS3BucketResource returns a new aws_flow_logs_s3_bucket resource.
+func NewAwsFlowLogsS3BucketResource(schema resource_schema.Schema) resource.Resource {
+	return &AwsFlowLogsS3BucketResource{
+		schema: schema,
+	}
+}
+
+func (r *AwsFlowLogsS3BucketResource) Metadata(ctx context.Context, req resource.MetadataRequest, resp *resource.MetadataResponse) {
+	resp.TypeName = req.ProviderTypeName + "_aws_flow_logs_s3_bucket"
+}
+
+func (r *AwsFlowLogsS3BucketResource) Schema(ctx context.Context, req resource.SchemaRequest, resp *resource.SchemaResponse) {
+	resp.Schema = r.schema
+}
+
+func (r *AwsFlowLogsS3BucketResource) Configure(ctx context.Context, req resource.ConfigureRequest, resp *resource.ConfigureResponse) {
+	if req.ProviderData == nil {
+		return
+	}
+
+	providerData, ok := req.ProviderData.(ProviderData)
+	if !ok {
+		resp.Diagnostics.AddError(
+			"Unexpected Resource Configure Type",
+			fmt.Sprintf("Expected ProviderData, got: %T. Please report this issue to the provider developers.", req.ProviderData),
+		)
+
+		return
+	}
+
+	r.config = providerData
+}
+
+func (r *AwsFlowLogsS3BucketResource) Create(ctx context.Context, req resource.CreateRequest, resp *resource.CreateResponse) {
+	var data AwsFlowLogsS3BucketResourceModel
+
+	resp.Diagnostics.Append(req.Plan.Get(ctx, &data)...)
+	if resp.Diagnostics.HasError() {
+		return
+	}
+
+	protoReq := NewCreateAwsFlowLogsS3BucketRequest(&data)
+
+	tflog.Trace(ctx, "creating a resource", map[string]any{"type": "aws_flow_logs_s3_bucket"})
+
+	rpcCtx, rpcCancel := context.WithTimeout(ctx, r.config.RequestTimeout())
+	protoResp, err := r.config.Client().CreateAwsFlowLogsS3Bucket(rpcCtx, protoReq)
+	rpcCancel()
+	if err != nil {
+		resp.Diagnostics.AddError("Config API Error", fmt.Sprintf("Unable to create aws_flow_logs_s3_bucket, got error: %s", err))
+		return
+	}
+
+	CopyCreateAwsFlowLogsS3BucketResponse(&data, protoResp)
+
+	tflog.Trace(ctx, "created a resource", map[string]any{"type": "aws_flow_logs_s3_bucket", "id": protoResp.Id})
+
+	resp.Diagnostics.Append(resp.State.Set(ctx, &data)...)
+}
+
+func (r *AwsFlowLogsS3BucketResource) Read(ctx context.Context, req resource.ReadRequest, resp *resource.ReadResponse) {
+	var data AwsFlowLogsS3BucketResourceModel
+
+	resp.Diagnostics.Append(req.State.Get(ctx, &data)...)
+	if resp.Diagnostics.HasError() {
+		return
+	}
+
+	protoReq := NewReadAwsFlowLogsS3BucketRequest(&data)
+
+	tflog.Trace(ctx, "reading a resource", map[string]any{"type": "aws_flow_logs_s3_bucket", "id": protoReq.Id})
+
+	rpcCtx, rpcCancel := context.WithTimeout(ctx, r.config.RequestTimeout())
+	protoResp, err := r.config.Client().ReadAwsFlowLogsS3Bucket(rpcCtx, protoReq)
+	rpcCancel()
+	if err != nil {
+		switch status.Code(err) {
+		case codes.NotFound:
+			resp.Diagnostics.AddWarning("Resource Not Found", fmt.Sprintf("No aws_flow_logs_s3_bucket found with id %s", protoReq.Id))
+			resp.State.RemoveResource(ctx)
+			return
+		default:
+			resp.Diagnostics.AddError("Config API Error", fmt.Sprintf("Unable to read aws_flow_logs_s3_bucket, got error: %s", err))
+			return
+		}
+	}
+
+	CopyReadAwsFlowLogsS3BucketResponse(&data, protoResp)
+
+	tflog.Trace(ctx, "read a resource", map[string]any{"type": "aws_flow_logs_s3_bucket", "id": protoResp.Id})
+
+	resp.Diagnostics.Append(resp.State.Set(ctx, &data)...)
+}
+
+func (r *AwsFlowLogsS3BucketResource) Update(ctx context.Context, req resource.UpdateRequest, resp *resource.UpdateResponse) {
+	var beforeData AwsFlowLogsS3BucketResourceModel
+	var afterData AwsFlowLogsS3BucketResourceModel
+
+	resp.Diagnostics.Append(req.State.Get(ctx, &beforeData)...)
+	if resp.Diagnostics.HasError() {
+		return
+	}
+
+	resp.Diagnostics.Append(req.Plan.Get(ctx, &afterData)...)
+	if resp.Diagnostics.HasError() {
+		return
+	}
+
+	protoReq := NewUpdateAwsFlowLogsS3BucketRequest(&beforeData, &afterData)
+
+	tflog.Trace(ctx, "updating a resource", map[string]any{"type": "aws_flow_logs_s3_bucket", "id": protoReq.Id, "update_mask": protoReq.UpdateMask.Paths})
+
+	rpcCtx, rpcCancel := context.WithTimeout(ctx, r.config.RequestTimeout())
+	protoResp, err := r.config.Client().UpdateAwsFlowLogsS3Bucket(rpcCtx, protoReq)
+	rpcCancel()
+	if err != nil {
+		switch status.Code(err) {
+		case codes.NotFound:
+			resp.Diagnostics.AddError("Resource Not Found", fmt.Sprintf("No aws_flow_logs_s3_bucket found with id %s", protoReq.Id))
+			resp.State.RemoveResource(ctx)
+			return
+		default:
+			resp.Diagnostics.AddError("Config API Error", fmt.Sprintf("Unable to update aws_flow_logs_s3_bucket, got error: %s", err))
+			return
+		}
+	}
+
+	CopyUpdateAwsFlowLogsS3BucketResponse(&afterData, protoResp)
+
+	tflog.Trace(ctx, "updated a resource", map[string]any{"type": "aws_flow_logs_s3_bucket", "id": protoResp.Id})
+
+	resp.Diagnostics.Append(resp.State.Set(ctx, &afterData)...)
+}
+
+func (r *AwsFlowLogsS3BucketResource) Delete(ctx context.Context, req resource.DeleteRequest, resp *resource.DeleteResponse) {
+	var data AwsFlowLogsS3BucketResourceModel
+
+	resp.Diagnostics.Append(req.State.Get(ctx, &data)...)
+	if resp.Diagnostics.HasError() {
+		return
+	}
+
+	protoReq := NewDeleteAwsFlowLogsS3BucketRequest(&data)
+
+	tflog.Trace(ctx, "deleting a resource", map[string]any{"type": "aws_flow_logs_s3_bucket", "id": protoReq.Id})
+
+	rpcCtx, rpcCancel := context.WithTimeout(ctx, r.config.RequestTimeout())
+	_, err := r.config.Client().DeleteAwsFlowLogsS3Bucket(rpcCtx, protoReq)
+	rpcCancel()
+	if err != nil {
+		switch status.Code(err) {
+		case codes.NotFound:
+			tflog.Trace(ctx, "resource was already deleted", map[string]any{"type": "aws_flow_logs_s3_bucket", "id": protoReq.Id})
+		default:
+			resp.Diagnostics.AddError("Config API Error", fmt.Sprintf("Unable to delete aws_flow_logs_s3_bucket, got error: %s", err))
+			return
+		}
+	}
+
+	tflog.Trace(ctx, "deleted a resource", map[string]any{"type": "aws_flow_logs_s3_bucket", "id": protoReq.Id})
+}
+
+func (r *AwsFlowLogsS3BucketResource) ImportState(ctx context.Context, req resource.ImportStateRequest, resp *resource.ImportStateResponse) {
+	// TODO
+}
+
 // K8SClusterOnboardingCredentialResource implements the k8s_cluster_onboarding_credential resource.
 type K8SClusterOnboardingCredentialResource struct {
 	// schema is the schema of the k8s_cluster_onboarding_credential resource.
@@ -416,6 +596,12 @@ type AwsAccountResourceModel struct {
 	RoleExternalId types.String `tfsdk:"role_external_id"`
 }
 
+type AwsFlowLogsS3BucketResourceModel struct {
+	Id          types.String `tfsdk:"id"`
+	AccountId   types.String `tfsdk:"account_id"`
+	S3BucketArn types.String `tfsdk:"s3_bucket_arn"`
+}
+
 type K8SClusterOnboardingCredentialResourceModel struct {
 	Id            types.String `tfsdk:"id"`
 	ClientId      types.String `tfsdk:"client_id"`
@@ -489,6 +675,45 @@ func NewDeleteAwsAccountRequest(data *AwsAccountResourceModel) *configv1.DeleteA
 	return proto
 }
 
+func NewCreateAwsFlowLogsS3BucketRequest(data *AwsFlowLogsS3BucketResourceModel) *configv1.CreateAwsFlowLogsS3BucketRequest {
+	proto := &configv1.CreateAwsFlowLogsS3BucketRequest{}
+	if !data.AccountId.IsUnknown() && !data.AccountId.IsNull() {
+		var dataValue attr.Value = data.AccountId
+		var protoValue string
+		protoValue = dataValue.(types.String).ValueString()
+		proto.AccountId = protoValue
+	}
+	if !data.S3BucketArn.IsUnknown() && !data.S3BucketArn.IsNull() {
+		var dataValue attr.Value = data.S3BucketArn
+		var protoValue string
+		protoValue = dataValue.(types.String).ValueString()
+		proto.S3BucketArn = protoValue
+	}
+	return proto
+}
+
+func NewReadAwsFlowLogsS3BucketRequest(data *AwsFlowLogsS3BucketResourceModel) *configv1.ReadAwsFlowLogsS3BucketRequest {
+	proto := &configv1.ReadAwsFlowLogsS3BucketRequest{}
+	if !data.Id.IsUnknown() && !data.Id.IsNull() {
+		var dataValue attr.Value = data.Id
+		var protoValue string
+		protoValue = dataValue.(types.String).ValueString()
+		proto.Id = protoValue
+	}
+	return proto
+}
+
+func NewDeleteAwsFlowLogsS3BucketRequest(data *AwsFlowLogsS3BucketResourceModel) *configv1.DeleteAwsFlowLogsS3BucketRequest {
+	proto := &configv1.DeleteAwsFlowLogsS3BucketRequest{}
+	if !data.Id.IsUnknown() && !data.Id.IsNull() {
+		var dataValue attr.Value = data.Id
+		var protoValue string
+		protoValue = dataValue.(types.String).ValueString()
+		proto.Id = protoValue
+	}
+	return proto
+}
+
 func NewCreateK8SClusterOnboardingCredentialRequest(data *K8SClusterOnboardingCredentialResourceModel) *configv1.CreateK8SClusterOnboardingCredentialRequest {
 	proto := &configv1.CreateK8SClusterOnboardingCredentialRequest{}
 	if !data.Description.IsUnknown() && !data.Description.IsNull() {
@@ -550,6 +775,13 @@ func NewUpdateAwsAccountRequest(beforeData, afterData *AwsAccountResourceModel) 
 	return proto
 }
 
+func NewUpdateAwsFlowLogsS3BucketRequest(beforeData, afterData *AwsFlowLogsS3BucketResourceModel) *configv1.UpdateAwsFlowLogsS3BucketRequest {
+	proto := &configv1.UpdateAwsFlowLogsS3BucketRequest{}
+	proto.UpdateMask, _ = fieldmaskpb.New(proto)
+	proto.Id = beforeData.Id.ValueString()
+	return proto
+}
+
 func NewUpdateK8SClusterOnboardingCredentialRequest(beforeData, afterData *K8SClusterOnboardingCredentialResourceModel) *configv1.UpdateK8SClusterOnboardingCredentialRequest {
 	proto := &configv1.UpdateK8SClusterOnboardingCredentialRequest{}
 	proto.UpdateMask, _ = fieldmaskpb.New(proto)
@@ -597,6 +829,21 @@ func CopyUpdateAwsAccountResponse(dst *AwsAccountResourceModel, src *configv1.Up
 	dst.Name = types.StringValue(src.Name)
 	dst.OrganizationId = types.StringPointerValue(src.OrganizationId)
 	dst.RoleArn = types.StringValue(src.RoleArn)
+}
+func CopyCreateAwsFlowLogsS3BucketResponse(dst *AwsFlowLogsS3BucketResourceModel, src *configv1.CreateAwsFlowLogsS3BucketResponse) {
+	dst.Id = types.StringValue(src.Id)
+	dst.AccountId = types.StringValue(src.AccountId)
+	dst.S3BucketArn = types.StringValue(src.S3BucketArn)
+}
+func CopyReadAwsFlowLogsS3BucketResponse(dst *AwsFlowLogsS3BucketResourceModel, src *configv1.ReadAwsFlowLogsS3BucketResponse) {
+	dst.Id = types.StringValue(src.Id)
+	dst.AccountId = types.StringValue(src.AccountId)
+	dst.S3BucketArn = types.StringValue(src.S3BucketArn)
+}
+func CopyUpdateAwsFlowLogsS3BucketResponse(dst *AwsFlowLogsS3BucketResourceModel, src *configv1.UpdateAwsFlowLogsS3BucketResponse) {
+	dst.Id = types.StringValue(src.Id)
+	dst.AccountId = types.StringValue(src.AccountId)
+	dst.S3BucketArn = types.StringValue(src.S3BucketArn)
 }
 func CopyCreateK8SClusterOnboardingCredentialResponse(dst *K8SClusterOnboardingCredentialResourceModel, src *configv1.CreateK8SClusterOnboardingCredentialResponse) {
 	dst.Id = types.StringValue(src.Id)

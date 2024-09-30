@@ -10,6 +10,10 @@ service ConfigService {
   rpc ReadAwsAccount(ReadAwsAccountRequest) returns (ReadAwsAccountResponse);
   rpc UpdateAwsAccount(UpdateAwsAccountRequest) returns (UpdateAwsAccountResponse);
   rpc DeleteAwsAccount(DeleteAwsAccountRequest) returns (google.protobuf.Empty);
+  rpc CreateAwsFlowLogsS3Bucket(CreateAwsFlowLogsS3BucketRequest) returns (CreateAwsFlowLogsS3BucketResponse);
+  rpc ReadAwsFlowLogsS3Bucket(ReadAwsFlowLogsS3BucketRequest) returns (ReadAwsFlowLogsS3BucketResponse);
+  rpc UpdateAwsFlowLogsS3Bucket(UpdateAwsFlowLogsS3BucketRequest) returns (UpdateAwsFlowLogsS3BucketResponse);
+  rpc DeleteAwsFlowLogsS3Bucket(DeleteAwsFlowLogsS3BucketRequest) returns (google.protobuf.Empty);
   rpc CreateK8SClusterOnboardingCredential(CreateK8SClusterOnboardingCredentialRequest) returns (CreateK8SClusterOnboardingCredentialResponse);
   rpc ReadK8SClusterOnboardingCredential(ReadK8SClusterOnboardingCredentialRequest) returns (ReadK8SClusterOnboardingCredentialResponse);
   rpc UpdateK8SClusterOnboardingCredential(UpdateK8SClusterOnboardingCredentialRequest) returns (UpdateK8SClusterOnboardingCredentialResponse);
@@ -56,6 +60,35 @@ message UpdateAwsAccountResponse {
   string role_arn = 8;
 }
 message DeleteAwsAccountRequest {
+  string id = 1;
+}
+message CreateAwsFlowLogsS3BucketRequest {
+  string account_id = 2;
+  string s3_bucket_arn = 3;
+}
+message CreateAwsFlowLogsS3BucketResponse {
+  string id = 1;
+  string account_id = 2;
+  string s3_bucket_arn = 3;
+}
+message ReadAwsFlowLogsS3BucketRequest {
+  string id = 1;
+}
+message ReadAwsFlowLogsS3BucketResponse {
+  string id = 1;
+  string account_id = 2;
+  string s3_bucket_arn = 3;
+}
+message UpdateAwsFlowLogsS3BucketRequest {
+  string id = 1;
+  google.protobuf.FieldMask update_mask = 4;
+}
+message UpdateAwsFlowLogsS3BucketResponse {
+  string id = 1;
+  string account_id = 2;
+  string s3_bucket_arn = 3;
+}
+message DeleteAwsFlowLogsS3BucketRequest {
   string id = 1;
 }
 message CreateK8SClusterOnboardingCredentialRequest {
