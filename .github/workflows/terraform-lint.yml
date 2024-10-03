@@ -1,14 +1,25 @@
 name: terraform-lint
 
-on: [push, pull_request]
+on:
+    push:
+        branches:
+            - main
+        paths:
+            - '**.tf'
+    pull_request:
+        branches:
+            - main
+        paths:
+            - '**.tf'
+  
 
 jobs:
-  delivery:
+    delivery:
 
-    runs-on: ubuntu-latest
+      runs-on: ubuntu-latest
 
-    steps:
-    - name: Check out code
-      uses: actions/checkout@main
-    - name: Lint Terraform
-      uses: actionshub/terraform-lint@main
+      steps:
+      - name: Check out code
+        uses: actions/checkout@main
+      - name: Lint Terraform
+        uses: actionshub/terraform-lint@main
