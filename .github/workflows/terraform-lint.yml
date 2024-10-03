@@ -11,15 +11,14 @@ on:
             - main
         paths:
             - '**.tf'
-  
 
 jobs:
-    delivery:
+    terraform:
 
       runs-on: ubuntu-latest
 
       steps:
       - name: Check out code
-        uses: actions/checkout@main
+        uses: actions/checkout@v4
       - name: Lint Terraform
-        uses: actionshub/terraform-lint@main
+        uses: actionshub/terraform-lint@v2
