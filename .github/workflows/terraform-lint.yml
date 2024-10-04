@@ -1,0 +1,24 @@
+name: terraform-lint
+
+on:
+    push:
+        branches:
+            - main
+        paths:
+            - '**.tf'
+    pull_request:
+        branches:
+            - main
+        paths:
+            - '**.tf'
+
+jobs:
+    terraform:
+
+      runs-on: ubuntu-latest
+
+      steps:
+      - name: Check out code
+        uses: actions/checkout@v4
+      - name: Lint Terraform
+        uses: actionshub/terraform-lint@v2
