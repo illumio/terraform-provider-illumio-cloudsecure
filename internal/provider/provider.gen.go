@@ -1117,7 +1117,6 @@ func CopyUpdateAwsFlowLogsS3BucketResponse(dst *AwsFlowLogsS3BucketResourceModel
 func CopyCreateAzureSubscriptionResponse(dst *AzureSubscriptionResourceModel, src *configv1.CreateAzureSubscriptionResponse) {
 	dst.Id = types.StringValue(src.Id)
 	dst.ClientId = types.StringValue(src.ClientId)
-	dst.ClientSecret = types.StringValue(src.ClientSecret)
 	dst.Mode = types.StringValue(src.Mode)
 	dst.Name = types.StringValue(src.Name)
 	dst.SubscriptionId = types.StringValue(src.SubscriptionId)
@@ -1126,7 +1125,6 @@ func CopyCreateAzureSubscriptionResponse(dst *AzureSubscriptionResourceModel, sr
 func CopyReadAzureSubscriptionResponse(dst *AzureSubscriptionResourceModel, src *configv1.ReadAzureSubscriptionResponse) {
 	dst.Id = types.StringValue(src.Id)
 	dst.ClientId = types.StringValue(src.ClientId)
-	dst.ClientSecret = types.StringValue(src.ClientSecret)
 	dst.Mode = types.StringValue(src.Mode)
 	dst.Name = types.StringValue(src.Name)
 	dst.SubscriptionId = types.StringValue(src.SubscriptionId)
@@ -1135,7 +1133,6 @@ func CopyReadAzureSubscriptionResponse(dst *AzureSubscriptionResourceModel, src 
 func CopyUpdateAzureSubscriptionResponse(dst *AzureSubscriptionResourceModel, src *configv1.UpdateAzureSubscriptionResponse) {
 	dst.Id = types.StringValue(src.Id)
 	dst.ClientId = types.StringValue(src.ClientId)
-	dst.ClientSecret = types.StringValue(src.ClientSecret)
 	dst.Mode = types.StringValue(src.Mode)
 	dst.Name = types.StringValue(src.Name)
 	dst.SubscriptionId = types.StringValue(src.SubscriptionId)
