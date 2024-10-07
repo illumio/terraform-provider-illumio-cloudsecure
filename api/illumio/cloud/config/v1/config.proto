@@ -95,6 +95,22 @@ message UpdateAwsFlowLogsS3BucketResponse {
 message DeleteAwsFlowLogsS3BucketRequest {
   string id = 1;
 }
+message CreateAzureSubscriptionRequest {
+  string client_id = 2;
+  string client_secret = 3;
+  string mode = 4;
+  string name = 5;
+  string subscription_id = 6;
+  string tenant_id = 7;
+}
+message CreateAzureSubscriptionResponse {
+  string id = 1;
+  string client_id = 2;
+  string mode = 4;
+  string name = 5;
+  string subscription_id = 6;
+  string tenant_id = 7;
+}
 message ReadAzureSubscriptionRequest {
   string id = 1;
 }
@@ -163,49 +179,5 @@ message UpdateK8SClusterOnboardingCredentialResponse {
   string name = 7;
 }
 message DeleteK8SClusterOnboardingCredentialRequest {
-  string id = 1;
-}
-
-message CreateAzureSubscriptionRequest {
-  string client_id = 2;
-  string client_secret = 3;
-  string mode = 4;
-  string name = 5;
-  string subscription_id = 6;
-  string tenant_id = 7;
-}
-message CreateAzureSubscriptionResponse {
-  string id = 1;
-  string client_id = 2;
-  string mode = 4;
-  string name = 5;
-  string subscription_id = 6;
-  string tenant_id = 7;
-}
-message ReadAzureSubscriptionRequest {
-  string id = 1;
-}
-message ReadAzureSubscriptionResponse {
-  string id = 1;
-  string client_id = 2;
-  string mode = 3;
-  string name = 4;
-  string subscription_id = 5;
-  string tenant_id = 6;
-}
-message UpdateAzureSubscriptionRequest {
-  string id = 1;
-  string name = 3;
-  google.protobuf.FieldMask update_mask = 4;
-}
-message UpdateAzureSubscriptionResponse {
-  string id = 1;
-  string client_id = 2;
-  string mode = 4;
-  string name = 5;
-  string subscription_id = 6;
-  string tenant_id = 7;
-}
-message DeleteAzureSubscriptionRequest {
   string id = 1;
 }
