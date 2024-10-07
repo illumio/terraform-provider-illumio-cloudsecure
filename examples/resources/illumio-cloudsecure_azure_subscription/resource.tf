@@ -1,5 +1,5 @@
 
-resource "illumio-cloudsecure_azure_subscription" "account_example" {
+resource "illumio-cloudsecure_azure_subscription" "subscription_example" {
   client_id       = "ZDIASAD7RGBTESTJUPUJ"
   client_secret   = "iam12TsTe1s17h7M27e8REGw7oqGocKR2ZDveZsM"
   name            = "Test Azure Subscription"
