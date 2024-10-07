@@ -24,6 +24,8 @@ type FakeConfigServer struct {
 	AwsAccountMutex                     sync.RWMutex
 	AwsFlowLogsS3BucketMap              map[string]*AwsFlowLogsS3Bucket
 	AwsFlowLogsS3BucketMutex            sync.RWMutex
+	AzureSubscriptionMap                map[string]*AzureSubscription
+	AzureSubscriptionMutex              sync.RWMutex
 	K8SClusterOnboardingCredentialMap   map[string]*K8SClusterOnboardingCredential
 	K8SClusterOnboardingCredentialMutex sync.RWMutex
 }
@@ -36,6 +38,7 @@ func NewFakeConfigServer(logger *zap.Logger) configv1.ConfigServiceServer {
 		Logger:                            logger,
 		AwsAccountMap:                     make(map[string]*AwsAccount),
 		AwsFlowLogsS3BucketMap:            make(map[string]*AwsFlowLogsS3Bucket),
+		AzureSubscriptionMap:              make(map[string]*AzureSubscription),
 		K8SClusterOnboardingCredentialMap: make(map[string]*K8SClusterOnboardingCredential),
 	}
 }
@@ -54,6 +57,16 @@ type AwsFlowLogsS3Bucket struct {
 	Id          string
 	AccountId   string
 	S3BucketArn string
+}
+
+type AzureSubscription struct {
+	Id             string
+	ClientId       string
+	ClientSecret   string
+	Mode           string
+	Name           string
+	SubscriptionId string
+	TenantId       string
 }
 
 type K8SClusterOnboardingCredential struct {
@@ -315,6 +328,142 @@ func (s *FakeConfigServer) DeleteAwsFlowLogsS3Bucket(ctx context.Context, req *c
 	s.Logger.Info("deleted resource",
 		zap.String("type", "aws_flow_logs_s3_bucket"),
 		zap.String("method", "DeleteAwsFlowLogsS3Bucket"),
+		zap.String("id", id),
+	)
+	return &emptypb.Empty{}, nil
+}
+func (s *FakeConfigServer) CreateAzureSubscription(ctx context.Context, req *configv1.CreateAzureSubscriptionRequest) (*configv1.CreateAzureSubscriptionResponse, error) {
+	id := uuid.New().String()
+	model := &AzureSubscription{
+		Id:             id,
+		ClientId:       req.ClientId,
+		ClientSecret:   req.ClientSecret,
+		Mode:           req.Mode,
+		Name:           req.Name,
+		SubscriptionId: req.SubscriptionId,
+		TenantId:       req.TenantId,
+	}
+	resp := &configv1.CreateAzureSubscriptionResponse{
+		Id:             id,
+		ClientId:       model.ClientId,
+		Mode:           model.Mode,
+		Name:           model.Name,
+		SubscriptionId: model.SubscriptionId,
+		TenantId:       model.TenantId,
+	}
+	s.AzureSubscriptionMutex.Lock()
+	s.AzureSubscriptionMap[id] = model
+	s.AzureSubscriptionMutex.Unlock()
+	s.Logger.Info("created resource",
+		zap.String("type", "azure_subscription"),
+		zap.String("method", "CreateAzureSubscription"),
+		zap.String("id", id),
+	)
+	return resp, nil
+}
+
+func (s *FakeConfigServer) ReadAzureSubscription(ctx context.Context, req *configv1.ReadAzureSubscriptionRequest) (*configv1.ReadAzureSubscriptionResponse, error) {
+	id := req.Id
+	s.AzureSubscriptionMutex.RLock()
+	model, found := s.AzureSubscriptionMap[id]
+	if !found {
+		s.AzureSubscriptionMutex.RUnlock()
+		s.Logger.Error("attempted to read resource with unknown id",
+			zap.String("type", "azure_subscription"),
+			zap.String("method", "ReadAzureSubscription"),
+			zap.String("id", id),
+		)
+		return nil, status.Errorf(codes.NotFound, "no azure_subscription found with id %s", id)
+	}
+	resp := &configv1.ReadAzureSubscriptionResponse{
+		Id:             id,
+		ClientId:       model.ClientId,
+		Mode:           model.Mode,
+		Name:           model.Name,
+		SubscriptionId: model.SubscriptionId,
+		TenantId:       model.TenantId,
+	}
+	s.AzureSubscriptionMutex.RUnlock()
+	s.Logger.Info("read resource",
+		zap.String("type", "azure_subscription"),
+		zap.String("method", "ReadAzureSubscription"),
+		zap.String("id", id),
+	)
+	return resp, nil
+}
+
+func (s *FakeConfigServer) UpdateAzureSubscription(ctx context.Context, req *configv1.UpdateAzureSubscriptionRequest) (*configv1.UpdateAzureSubscriptionResponse, error) {
+	id := req.Id
+	s.AzureSubscriptionMutex.Lock()
+	model, found := s.AzureSubscriptionMap[id]
+	if !found {
+		s.AzureSubscriptionMutex.Unlock()
+		s.Logger.Error("attempted to update resource with unknown id",
+			zap.String("type", "azure_subscription"),
+			zap.String("method", "UpdateAzureSubscription"),
+			zap.String("id", id),
+		)
+		return nil, status.Errorf(codes.NotFound, "no azure_subscription found with id %s", id)
+	}
+	updateMask := req.UpdateMask
+	var updateMaskPaths []string
+	if updateMask != nil {
+		updateMaskPaths = updateMask.Paths
+	}
+	for _, path := range updateMaskPaths {
+		switch path {
+		case "client_secret":
+			model.ClientSecret = req.ClientSecret
+		case "name":
+			model.Name = req.Name
+		default:
+			s.AwsAccountMutex.Unlock()
+			s.Logger.Error("attempted to update resource using invalid update_mask path",
+				zap.String("type", "azure_subscription"),
+				zap.String("method", "UpdateAzureSubscription"),
+				zap.String("id", id),
+				zap.Strings("updateMaskPaths", updateMaskPaths),
+				zap.String("invalidUpdateMaskPath", path),
+			)
+			return nil, status.Errorf(codes.InvalidArgument, "invalid path in update_mask for aws_account: %s", path)
+		}
+	}
+	resp := &configv1.UpdateAzureSubscriptionResponse{
+		Id:             id,
+		ClientId:       model.ClientId,
+		Mode:           model.Mode,
+		Name:           model.Name,
+		SubscriptionId: model.SubscriptionId,
+		TenantId:       model.TenantId,
+	}
+	s.AzureSubscriptionMutex.Unlock()
+	s.Logger.Info("updated resource",
+		zap.String("type", "azure_subscription"),
+		zap.String("method", "UpdateAzureSubscription"),
+		zap.String("id", id),
+		zap.Strings("updateMaskPaths", updateMaskPaths),
+	)
+	return resp, nil
+}
+
+func (s *FakeConfigServer) DeleteAzureSubscription(ctx context.Context, req *configv1.DeleteAzureSubscriptionRequest) (*emptypb.Empty, error) {
+	id := req.Id
+	s.AzureSubscriptionMutex.Lock()
+	_, found := s.AzureSubscriptionMap[id]
+	if !found {
+		s.AzureSubscriptionMutex.Unlock()
+		s.Logger.Error("attempted to delete resource with unknown id",
+			zap.String("type", "azure_subscription"),
+			zap.String("method", "DeleteAzureSubscription"),
+			zap.String("id", id),
+		)
+		return nil, status.Errorf(codes.NotFound, "no azure_subscription found with id %s", id)
+	}
+	delete(s.AzureSubscriptionMap, id)
+	s.AzureSubscriptionMutex.Unlock()
+	s.Logger.Info("deleted resource",
+		zap.String("type", "azure_subscription"),
+		zap.String("method", "DeleteAzureSubscription"),
 		zap.String("id", id),
 	)
 	return &emptypb.Empty{}, nil
