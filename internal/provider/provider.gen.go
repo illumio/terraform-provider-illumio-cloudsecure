@@ -1039,15 +1039,6 @@ func NewUpdateAzureSubscriptionRequest(beforeData, afterData *AzureSubscriptionR
 	proto := &configv1.UpdateAzureSubscriptionRequest{}
 	proto.UpdateMask, _ = fieldmaskpb.New(proto)
 	proto.Id = beforeData.Id.ValueString()
-	if !afterData.ClientSecret.Equal(beforeData.ClientSecret) {
-		proto.UpdateMask.Append(proto, "client_secret")
-		if !afterData.ClientSecret.IsUnknown() && !afterData.ClientSecret.IsNull() {
-			var dataValue attr.Value = afterData.ClientSecret
-			var protoValue string
-			protoValue = dataValue.(types.String).ValueString()
-			proto.ClientSecret = protoValue
-		}
-	}
 	if !afterData.Name.Equal(beforeData.Name) {
 		proto.UpdateMask.Append(proto, "name")
 		if !afterData.Name.IsUnknown() && !afterData.Name.IsNull() {
@@ -1126,6 +1117,7 @@ func CopyUpdateAwsFlowLogsS3BucketResponse(dst *AwsFlowLogsS3BucketResourceModel
 func CopyCreateAzureSubscriptionResponse(dst *AzureSubscriptionResourceModel, src *configv1.CreateAzureSubscriptionResponse) {
 	dst.Id = types.StringValue(src.Id)
 	dst.ClientId = types.StringValue(src.ClientId)
+	dst.ClientSecret = types.StringValue(src.ClientSecret)
 	dst.Mode = types.StringValue(src.Mode)
 	dst.Name = types.StringValue(src.Name)
 	dst.SubscriptionId = types.StringValue(src.SubscriptionId)
@@ -1134,6 +1126,7 @@ func CopyCreateAzureSubscriptionResponse(dst *AzureSubscriptionResourceModel, sr
 func CopyReadAzureSubscriptionResponse(dst *AzureSubscriptionResourceModel, src *configv1.ReadAzureSubscriptionResponse) {
 	dst.Id = types.StringValue(src.Id)
 	dst.ClientId = types.StringValue(src.ClientId)
+	dst.ClientSecret = types.StringValue(src.ClientSecret)
 	dst.Mode = types.StringValue(src.Mode)
 	dst.Name = types.StringValue(src.Name)
 	dst.SubscriptionId = types.StringValue(src.SubscriptionId)
@@ -1142,6 +1135,7 @@ func CopyReadAzureSubscriptionResponse(dst *AzureSubscriptionResourceModel, src 
 func CopyUpdateAzureSubscriptionResponse(dst *AzureSubscriptionResourceModel, src *configv1.UpdateAzureSubscriptionResponse) {
 	dst.Id = types.StringValue(src.Id)
 	dst.ClientId = types.StringValue(src.ClientId)
+	dst.ClientSecret = types.StringValue(src.ClientSecret)
 	dst.Mode = types.StringValue(src.Mode)
 	dst.Name = types.StringValue(src.Name)
 	dst.SubscriptionId = types.StringValue(src.SubscriptionId)

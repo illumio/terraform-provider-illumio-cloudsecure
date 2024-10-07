@@ -106,6 +106,7 @@ message CreateAzureSubscriptionRequest {
 message CreateAzureSubscriptionResponse {
   string id = 1;
   string client_id = 2;
+  string client_secret = 3;
   string mode = 4;
   string name = 5;
   string subscription_id = 6;
@@ -117,6 +118,7 @@ message ReadAzureSubscriptionRequest {
 message ReadAzureSubscriptionResponse {
   string id = 1;
   string client_id = 2;
+  string client_secret = 3;
   string mode = 4;
   string name = 5;
   string subscription_id = 6;
@@ -124,13 +126,13 @@ message ReadAzureSubscriptionResponse {
 }
 message UpdateAzureSubscriptionRequest {
   string id = 1;
-  string client_secret = 3;
   string name = 5;
   google.protobuf.FieldMask update_mask = 8;
 }
 message UpdateAzureSubscriptionResponse {
   string id = 1;
   string client_id = 2;
+  string client_secret = 3;
   string mode = 4;
   string name = 5;
   string subscription_id = 6;
