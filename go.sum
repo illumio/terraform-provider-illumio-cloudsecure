@@ -56,12 +56,16 @@ github.com/bmatcuk/doublestar/v4 v4.6.1 h1:FH9SifrbvJhnlQpztAx++wlkk70QBf0iBWDwN
 github.com/bmatcuk/doublestar/v4 v4.6.1/go.mod h1:xBQ8jztBU6kakFMg+8WGxn0c6z1fTSPVIjEY1Wr7jzc=
 github.com/bufbuild/buf v1.43.0 h1:XLcLestk8PjwdjutG42R6mlrsxwk3JMmqyIpqZ8XkII=
 github.com/bufbuild/buf v1.43.0/go.mod h1:8kvtRL5QwGMvMQTWW4/nxOMg7jURsrxnYUpSi2Xel4Y=
+github.com/bufbuild/buf v1.44.0 h1:95vd2ZbgaDkKIJ557eZrx2z6jdMULEpVbNpLlw/9Y5w=
+github.com/bufbuild/buf v1.44.0/go.mod h1:Ksh+C0pR3t1or0BGyzq7krkam3zhBv21QVs1zsqdOik=
 github.com/bufbuild/protocompile v0.14.1 h1:iA73zAf/fyljNjQKwYzUHD6AD4R8KMasmwa/FBatYVw=
 github.com/bufbuild/protocompile v0.14.1/go.mod h1:ppVdAIhbr2H8asPk6k4pY7t9zB1OU5DoEw9xY/FUi1c=
 github.com/bufbuild/protoplugin v0.0.0-20240911180120-7bb73e41a54a h1:l3RhVoG0RtC61h6TVWnkniGj4TgBebuyPQRdleFAmTg=
 github.com/bufbuild/protoplugin v0.0.0-20240911180120-7bb73e41a54a/go.mod h1:c5D8gWRIZ2HLWO3gXYTtUfw/hbJyD8xikv2ooPxnklQ=
 github.com/bufbuild/protovalidate-go v0.7.0 h1:MYU9GSZM7TSsWNywvyXoEc8y3kc1MNqD3k5mddIBEL4=
 github.com/bufbuild/protovalidate-go v0.7.0/go.mod h1:PHV5pFuWlRzdDW02/cmVyNzdiQ+RNNwo7idGxdzS7o4=
+github.com/bufbuild/protovalidate-go v0.7.1 h1:ac50NTO6+1+mKg5sP/GBPLlMkQFeI+OeaYGFdS1vu98=
+github.com/bufbuild/protovalidate-go v0.7.1/go.mod h1:PHV5pFuWlRzdDW02/cmVyNzdiQ+RNNwo7idGxdzS7o4=
 github.com/cenkalti/backoff/v4 v4.3.0 h1:MyRJ/UdXutAwSAT+s3wNd7MfTIcy71VQueUuFK343L8=
 github.com/cenkalti/backoff/v4 v4.3.0/go.mod h1:Y3VNntkOUPxTVeUxJ/G5vcM//AlwfmyYozVcomhLiZE=
 github.com/census-instrumentation/opencensus-proto v0.2.1/go.mod h1:f6KPmirojxKA12rnyqOA5BBL4O983OfeGPqjHWSTneU=

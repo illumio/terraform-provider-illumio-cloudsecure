@@ -5,7 +5,7 @@ go 1.22.0
 toolchain go1.22.6
 
 require (
-	github.com/bufbuild/buf v1.43.0
+	github.com/bufbuild/buf v1.44.0
 	github.com/gogo/protobuf v1.3.2
 	github.com/google/uuid v1.6.0
 	github.com/hashicorp/terraform-plugin-docs v0.19.4
@@ -48,7 +48,7 @@ require (
 	github.com/bmatcuk/doublestar/v4 v4.6.1 // indirect
 	github.com/bufbuild/protocompile v0.14.1 // indirect
 	github.com/bufbuild/protoplugin v0.0.0-20240911180120-7bb73e41a54a // indirect
-	github.com/bufbuild/protovalidate-go v0.7.0 // indirect
+	github.com/bufbuild/protovalidate-go v0.7.1 // indirect
 	github.com/cloudflare/circl v1.3.7 // indirect
 	github.com/containerd/cgroups/v3 v3.0.3 // indirect
 	github.com/containerd/containerd v1.7.22 // indirect
