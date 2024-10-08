@@ -20,16 +20,28 @@ var (
 			Description: "Manages an Azure subscription in CloudSecure.",
 			Attributes: map[string]resource_schema.Attribute{
 				IDFieldName: idAttribute,
-				"subscription_id": StringResourceAttributeWithMode{
+				"client_id": StringResourceAttributeWithMode{
 					StringAttribute: resource_schema.StringAttribute{
-						MarkdownDescription: "Azure subscription ID.",
-						Required:            true,
+						Description: "The client_id of the Azure Active Directory App Service Principal used by CloudSecure to manage this subscription.",
+						Required:    true,
 						PlanModifiers: []planmodifier.String{
 							stringplanmodifier.RequiresReplace(),
 						},
 					},
 					attributeWithMode: attributeWithMode{
 						Mode: ImmutableAttributeMode,
+					},
+				},
+				"client_secret": StringResourceAttributeWithMode{
+					StringAttribute: resource_schema.StringAttribute{
+						Description: "The client_secret of the Azure Active Directory App Service Principal used by CloudSecure to manage this subscription.",
+						Required:    true,
+						PlanModifiers: []planmodifier.String{
+							stringplanmodifier.RequiresReplace(),
+						},
+					},
+					attributeWithMode: attributeWithMode{
+						Mode: WriteOnlyOnceAttributeMode,
 					},
 				},
 				"mode": StringResourceAttributeWithMode{
@@ -53,6 +65,18 @@ var (
 					Description: "Display name for the Azure subscription.",
 					Required:    true,
 				},
+				"subscription_id": StringResourceAttributeWithMode{
+					StringAttribute: resource_schema.StringAttribute{
+						MarkdownDescription: "Azure subscription ID.",
+						Required:            true,
+						PlanModifiers: []planmodifier.String{
+							stringplanmodifier.RequiresReplace(),
+						},
+					},
+					attributeWithMode: attributeWithMode{
+						Mode: ImmutableAttributeMode,
+					},
+				},
 				"tenant_id": StringResourceAttributeWithMode{
 					StringAttribute: resource_schema.StringAttribute{
 						Description: "ID of the Azure tenant.",
@@ -63,30 +87,6 @@ var (
 					},
 					attributeWithMode: attributeWithMode{
 						Mode: ImmutableAttributeMode,
-					},
-				},
-				"client_id": StringResourceAttributeWithMode{
-					StringAttribute: resource_schema.StringAttribute{
-						Description: "ID of the Azure client.",
-						Required:    true,
-						PlanModifiers: []planmodifier.String{
-							stringplanmodifier.RequiresReplace(),
-						},
-					},
-					attributeWithMode: attributeWithMode{
-						Mode: WriteOnlyOnceAttributeMode,
-					},
-				},
-				"client_secret": StringResourceAttributeWithMode{
-					StringAttribute: resource_schema.StringAttribute{
-						Description: "Secret of the Azure client.",
-						Required:    true,
-						PlanModifiers: []planmodifier.String{
-							stringplanmodifier.RequiresReplace(),
-						},
-					},
-					attributeWithMode: attributeWithMode{
-						Mode: WriteOnlyOnceAttributeMode,
 					},
 				},
 			},
