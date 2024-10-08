@@ -105,6 +105,7 @@ message CreateAzureSubscriptionRequest {
 }
 message CreateAzureSubscriptionResponse {
   string id = 1;
+  string client_id = 2;
   string mode = 4;
   string name = 5;
   string subscription_id = 6;
@@ -115,6 +116,7 @@ message ReadAzureSubscriptionRequest {
 }
 message ReadAzureSubscriptionResponse {
   string id = 1;
+  string client_id = 2;
   string mode = 4;
   string name = 5;
   string subscription_id = 6;
@@ -127,6 +129,7 @@ message UpdateAzureSubscriptionRequest {
 }
 message UpdateAzureSubscriptionResponse {
   string id = 1;
+  string client_id = 2;
   string mode = 4;
   string name = 5;
   string subscription_id = 6;

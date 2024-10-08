@@ -30,8 +30,8 @@ resource "illumio-cloudsecure_azure_subscription" "subscription_example" {
 
 ### Required
 
-- `client_id` (String) ID of the Azure client.
-- `client_secret` (String) Secret of the Azure client.
+- `client_id` (String) The client_id of the Azure Active Directory App Service Principal used by CloudSecure to manage this subscription.
+- `client_secret` (String) The client_secret of the Azure Active Directory App Service Principal used by CloudSecure to manage this subscription.
 - `name` (String) Display name for the Azure subscription.
 - `subscription_id` (String) Azure subscription ID.
 - `tenant_id` (String) ID of the Azure tenant.
