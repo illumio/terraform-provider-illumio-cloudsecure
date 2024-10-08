@@ -18,8 +18,8 @@ func (c *cloudSecureSchema) Resources() Resources {
 	// Keep all resources sorted by lexicographic name order.
 	resources := Resources{
 		awsAccountResource,
-		awsFlowLogsS3Bucket,
-		k8sClusterOnboardingCredential,
+		awsFlowLogsS3BucketResource,
+		k8sClusterOnboardingCredentialResource,
 	}
 	sort.Sort(resources)
 
@@ -28,7 +28,9 @@ func (c *cloudSecureSchema) Resources() Resources {
 
 func (c *cloudSecureSchema) DataSources() DataSources {
 	// Keep all data sources sorted by lexicographic name order.
-	dataSources := DataSources{}
+	dataSources := DataSources{
+		awsFlowLogsS3BucketsDataSource,
+	}
 	sort.Sort(dataSources)
 
 	return dataSources

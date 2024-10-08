@@ -22,8 +22,8 @@ var (
 				IDFieldName: idAttribute,
 				"account_id": StringResourceAttributeWithMode{
 					StringAttribute: resource_schema.StringAttribute{
-						MarkdownDescription: "AWS account ID.",
-						Required:            true,
+						Description: "AWS account ID.",
+						Required:    true,
 						PlanModifiers: []planmodifier.String{
 							stringplanmodifier.RequiresReplace(),
 						},

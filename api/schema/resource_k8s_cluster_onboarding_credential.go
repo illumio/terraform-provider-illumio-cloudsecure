@@ -10,7 +10,7 @@ import (
 )
 
 var (
-	k8sClusterOnboardingCredential = Resource{
+	k8sClusterOnboardingCredentialResource = Resource{
 		TypeName: "k8s_cluster_onboarding_credential",
 		Schema: resource_schema.Schema{
 			Version:             1,

@@ -10,7 +10,7 @@ import (
 )
 
 var (
-	awsFlowLogsS3Bucket = Resource{
+	awsFlowLogsS3BucketResource = Resource{
 		TypeName: "aws_flow_logs_s3_bucket",
 		Schema: resource_schema.Schema{
 			Version:     1,
@@ -19,8 +19,8 @@ var (
 				IDFieldName: idAttribute,
 				"account_id": StringResourceAttributeWithMode{
 					StringAttribute: resource_schema.StringAttribute{
-						MarkdownDescription: "AWS account ID.",
-						Required:            true,
+						Description: "AWS account ID.",
+						Required:    true,
 						PlanModifiers: []planmodifier.String{
 							stringplanmodifier.RequiresReplace(),
 						},
