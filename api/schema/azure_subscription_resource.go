@@ -74,7 +74,7 @@ var (
 						},
 					},
 					attributeWithMode: attributeWithMode{
-						Mode: ImmutableAttributeMode,
+						Mode: WriteOnlyOnceAttributeMode,
 					},
 				},
 				"client_secret": StringResourceAttributeWithMode{

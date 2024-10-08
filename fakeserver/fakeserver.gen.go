@@ -345,7 +345,6 @@ func (s *FakeConfigServer) CreateAzureSubscription(ctx context.Context, req *con
 	}
 	resp := &configv1.CreateAzureSubscriptionResponse{
 		Id:             id,
-		ClientId:       model.ClientId,
 		Mode:           model.Mode,
 		Name:           model.Name,
 		SubscriptionId: model.SubscriptionId,
@@ -377,7 +376,6 @@ func (s *FakeConfigServer) ReadAzureSubscription(ctx context.Context, req *confi
 	}
 	resp := &configv1.ReadAzureSubscriptionResponse{
 		Id:             id,
-		ClientId:       model.ClientId,
 		Mode:           model.Mode,
 		Name:           model.Name,
 		SubscriptionId: model.SubscriptionId,
@@ -428,7 +426,6 @@ func (s *FakeConfigServer) UpdateAzureSubscription(ctx context.Context, req *con
 	}
 	resp := &configv1.UpdateAzureSubscriptionResponse{
 		Id:             id,
-		ClientId:       model.ClientId,
 		Mode:           model.Mode,
 		Name:           model.Name,
 		SubscriptionId: model.SubscriptionId,
