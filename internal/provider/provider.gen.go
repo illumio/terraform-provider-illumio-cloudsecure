@@ -39,6 +39,8 @@ func (p *Provider) Resources(ctx context.Context) []func() resource.Resource {
 			resp = append(resp, func() resource.Resource { return NewAwsAccountResource(r.Schema) })
 		case "aws_flow_logs_s3_bucket":
 			resp = append(resp, func() resource.Resource { return NewAwsFlowLogsS3BucketResource(r.Schema) })
+		case "azure_subscription":
+			resp = append(resp, func() resource.Resource { return NewAzureSubscriptionResource(r.Schema) })
 		case "k8s_cluster_onboarding_credential":
 			resp = append(resp, func() resource.Resource { return NewK8SClusterOnboardingCredentialResource(r.Schema) })
 		}
@@ -408,6 +410,184 @@ func (r *AwsFlowLogsS3BucketResource) ImportState(ctx context.Context, req resou
 	// TODO
 }
 
+// AzureSubscriptionResource implements the azure_subscription resource.
+type AzureSubscriptionResource struct {
+	// schema is the schema of the azure_subscription resource.
+	schema resource_schema.Schema
+
+	// providerData is the provider configuration.
+	config ProviderData
+}
+
+var _ resource.ResourceWithConfigure = &AzureSubscriptionResource{}
+var _ resource.ResourceWithImportState = &AzureSubscriptionResource{}
+
+// NewAzureSubscriptionResource returns a new azure_subscription resource.
+func NewAzureSubscriptionResource(schema resource_schema.Schema) resource.Resource {
+	return &AzureSubscriptionResource{
+		schema: schema,
+	}
+}
+
+func (r *AzureSubscriptionResource) Metadata(ctx context.Context, req resource.MetadataRequest, resp *resource.MetadataResponse) {
+	resp.TypeName = req.ProviderTypeName + "_azure_subscription"
+}
+
+func (r *AzureSubscriptionResource) Schema(ctx context.Context, req resource.SchemaRequest, resp *resource.SchemaResponse) {
+	resp.Schema = r.schema
+}
+
+func (r *AzureSubscriptionResource) Configure(ctx context.Context, req resource.ConfigureRequest, resp *resource.ConfigureResponse) {
+	if req.ProviderData == nil {
+		return
+	}
+
+	providerData, ok := req.ProviderData.(ProviderData)
+	if !ok {
+		resp.Diagnostics.AddError(
+			"Unexpected Resource Configure Type",
+			fmt.Sprintf("Expected ProviderData, got: %T. Please report this issue to the provider developers.", req.ProviderData),
+		)
+
+		return
+	}
+
+	r.config = providerData
+}
+
+func (r *AzureSubscriptionResource) Create(ctx context.Context, req resource.CreateRequest, resp *resource.CreateResponse) {
+	var data AzureSubscriptionResourceModel
+
+	resp.Diagnostics.Append(req.Plan.Get(ctx, &data)...)
+	if resp.Diagnostics.HasError() {
+		return
+	}
+
+	protoReq := NewCreateAzureSubscriptionRequest(&data)
+
+	tflog.Trace(ctx, "creating a resource", map[string]any{"type": "azure_subscription"})
+
+	rpcCtx, rpcCancel := context.WithTimeout(ctx, r.config.RequestTimeout())
+	protoResp, err := r.config.Client().CreateAzureSubscription(rpcCtx, protoReq)
+	rpcCancel()
+	if err != nil {
+		resp.Diagnostics.AddError("Config API Error", fmt.Sprintf("Unable to create azure_subscription, got error: %s", err))
+		return
+	}
+
+	CopyCreateAzureSubscriptionResponse(&data, protoResp)
+
+	tflog.Trace(ctx, "created a resource", map[string]any{"type": "azure_subscription", "id": protoResp.Id})
+
+	resp.Diagnostics.Append(resp.State.Set(ctx, &data)...)
+}
+
+func (r *AzureSubscriptionResource) Read(ctx context.Context, req resource.ReadRequest, resp *resource.ReadResponse) {
+	var data AzureSubscriptionResourceModel
+
+	resp.Diagnostics.Append(req.State.Get(ctx, &data)...)
+	if resp.Diagnostics.HasError() {
+		return
+	}
+
+	protoReq := NewReadAzureSubscriptionRequest(&data)
+
+	tflog.Trace(ctx, "reading a resource", map[string]any{"type": "azure_subscription", "id": protoReq.Id})
+
+	rpcCtx, rpcCancel := context.WithTimeout(ctx, r.config.RequestTimeout())
+	protoResp, err := r.config.Client().ReadAzureSubscription(rpcCtx, protoReq)
+	rpcCancel()
+	if err != nil {
+		switch status.Code(err) {
+		case codes.NotFound:
+			resp.Diagnostics.AddWarning("Resource Not Found", fmt.Sprintf("No azure_subscription found with id %s", protoReq.Id))
+			resp.State.RemoveResource(ctx)
+			return
+		default:
+			resp.Diagnostics.AddError("Config API Error", fmt.Sprintf("Unable to read azure_subscription, got error: %s", err))
+			return
+		}
+	}
+
+	CopyReadAzureSubscriptionResponse(&data, protoResp)
+
+	tflog.Trace(ctx, "read a resource", map[string]any{"type": "azure_subscription", "id": protoResp.Id})
+
+	resp.Diagnostics.Append(resp.State.Set(ctx, &data)...)
+}
+
+func (r *AzureSubscriptionResource) Update(ctx context.Context, req resource.UpdateRequest, resp *resource.UpdateResponse) {
+	var beforeData AzureSubscriptionResourceModel
+	var afterData AzureSubscriptionResourceModel
+
+	resp.Diagnostics.Append(req.State.Get(ctx, &beforeData)...)
+	if resp.Diagnostics.HasError() {
+		return
+	}
+
+	resp.Diagnostics.Append(req.Plan.Get(ctx, &afterData)...)
+	if resp.Diagnostics.HasError() {
+		return
+	}
+
+	protoReq := NewUpdateAzureSubscriptionRequest(&beforeData, &afterData)
+
+	tflog.Trace(ctx, "updating a resource", map[string]any{"type": "azure_subscription", "id": protoReq.Id, "update_mask": protoReq.UpdateMask.Paths})
+
+	rpcCtx, rpcCancel := context.WithTimeout(ctx, r.config.RequestTimeout())
+	protoResp, err := r.config.Client().UpdateAzureSubscription(rpcCtx, protoReq)
+	rpcCancel()
+	if err != nil {
+		switch status.Code(err) {
+		case codes.NotFound:
+			resp.Diagnostics.AddError("Resource Not Found", fmt.Sprintf("No azure_subscription found with id %s", protoReq.Id))
+			resp.State.RemoveResource(ctx)
+			return
+		default:
+			resp.Diagnostics.AddError("Config API Error", fmt.Sprintf("Unable to update azure_subscription, got error: %s", err))
+			return
+		}
+	}
+
+	CopyUpdateAzureSubscriptionResponse(&afterData, protoResp)
+
+	tflog.Trace(ctx, "updated a resource", map[string]any{"type": "azure_subscription", "id": protoResp.Id})
+
+	resp.Diagnostics.Append(resp.State.Set(ctx, &afterData)...)
+}
+
+func (r *AzureSubscriptionResource) Delete(ctx context.Context, req resource.DeleteRequest, resp *resource.DeleteResponse) {
+	var data AzureSubscriptionResourceModel
+
+	resp.Diagnostics.Append(req.State.Get(ctx, &data)...)
+	if resp.Diagnostics.HasError() {
+		return
+	}
+
+	protoReq := NewDeleteAzureSubscriptionRequest(&data)
+
+	tflog.Trace(ctx, "deleting a resource", map[string]any{"type": "azure_subscription", "id": protoReq.Id})
+
+	rpcCtx, rpcCancel := context.WithTimeout(ctx, r.config.RequestTimeout())
+	_, err := r.config.Client().DeleteAzureSubscription(rpcCtx, protoReq)
+	rpcCancel()
+	if err != nil {
+		switch status.Code(err) {
+		case codes.NotFound:
+			tflog.Trace(ctx, "resource was already deleted", map[string]any{"type": "azure_subscription", "id": protoReq.Id})
+		default:
+			resp.Diagnostics.AddError("Config API Error", fmt.Sprintf("Unable to delete azure_subscription, got error: %s", err))
+			return
+		}
+	}
+
+	tflog.Trace(ctx, "deleted a resource", map[string]any{"type": "azure_subscription", "id": protoReq.Id})
+}
+
+func (r *AzureSubscriptionResource) ImportState(ctx context.Context, req resource.ImportStateRequest, resp *resource.ImportStateResponse) {
+	// TODO
+}
+
 // K8SClusterOnboardingCredentialResource implements the k8s_cluster_onboarding_credential resource.
 type K8SClusterOnboardingCredentialResource struct {
 	// schema is the schema of the k8s_cluster_onboarding_credential resource.
@@ -602,6 +782,16 @@ type AwsFlowLogsS3BucketResourceModel struct {
 	S3BucketArn types.String `tfsdk:"s3_bucket_arn"`
 }
 
+type AzureSubscriptionResourceModel struct {
+	Id             types.String `tfsdk:"id"`
+	ClientId       types.String `tfsdk:"client_id"`
+	ClientSecret   types.String `tfsdk:"client_secret"`
+	Mode           types.String `tfsdk:"mode"`
+	Name           types.String `tfsdk:"name"`
+	SubscriptionId types.String `tfsdk:"subscription_id"`
+	TenantId       types.String `tfsdk:"tenant_id"`
+}
+
 type K8SClusterOnboardingCredentialResourceModel struct {
 	Id            types.String `tfsdk:"id"`
 	ClientId      types.String `tfsdk:"client_id"`
@@ -714,6 +904,69 @@ func NewDeleteAwsFlowLogsS3BucketRequest(data *AwsFlowLogsS3BucketResourceModel)
 	return proto
 }
 
+func NewCreateAzureSubscriptionRequest(data *AzureSubscriptionResourceModel) *configv1.CreateAzureSubscriptionRequest {
+	proto := &configv1.CreateAzureSubscriptionRequest{}
+	if !data.ClientId.IsUnknown() && !data.ClientId.IsNull() {
+		var dataValue attr.Value = data.ClientId
+		var protoValue string
+		protoValue = dataValue.(types.String).ValueString()
+		proto.ClientId = protoValue
+	}
+	if !data.ClientSecret.IsUnknown() && !data.ClientSecret.IsNull() {
+		var dataValue attr.Value = data.ClientSecret
+		var protoValue string
+		protoValue = dataValue.(types.String).ValueString()
+		proto.ClientSecret = protoValue
+	}
+	if !data.Mode.IsUnknown() && !data.Mode.IsNull() {
+		var dataValue attr.Value = data.Mode
+		var protoValue string
+		protoValue = dataValue.(types.String).ValueString()
+		proto.Mode = protoValue
+	}
+	if !data.Name.IsUnknown() && !data.Name.IsNull() {
+		var dataValue attr.Value = data.Name
+		var protoValue string
+		protoValue = dataValue.(types.String).ValueString()
+		proto.Name = protoValue
+	}
+	if !data.SubscriptionId.IsUnknown() && !data.SubscriptionId.IsNull() {
+		var dataValue attr.Value = data.SubscriptionId
+		var protoValue string
+		protoValue = dataValue.(types.String).ValueString()
+		proto.SubscriptionId = protoValue
+	}
+	if !data.TenantId.IsUnknown() && !data.TenantId.IsNull() {
+		var dataValue attr.Value = data.TenantId
+		var protoValue string
+		protoValue = dataValue.(types.String).ValueString()
+		proto.TenantId = protoValue
+	}
+	return proto
+}
+
+func NewReadAzureSubscriptionRequest(data *AzureSubscriptionResourceModel) *configv1.ReadAzureSubscriptionRequest {
+	proto := &configv1.ReadAzureSubscriptionRequest{}
+	if !data.Id.IsUnknown() && !data.Id.IsNull() {
+		var dataValue attr.Value = data.Id
+		var protoValue string
+		protoValue = dataValue.(types.String).ValueString()
+		proto.Id = protoValue
+	}
+	return proto
+}
+
+func NewDeleteAzureSubscriptionRequest(data *AzureSubscriptionResourceModel) *configv1.DeleteAzureSubscriptionRequest {
+	proto := &configv1.DeleteAzureSubscriptionRequest{}
+	if !data.Id.IsUnknown() && !data.Id.IsNull() {
+		var dataValue attr.Value = data.Id
+		var protoValue string
+		protoValue = dataValue.(types.String).ValueString()
+		proto.Id = protoValue
+	}
+	return proto
+}
+
 func NewCreateK8SClusterOnboardingCredentialRequest(data *K8SClusterOnboardingCredentialResourceModel) *configv1.CreateK8SClusterOnboardingCredentialRequest {
 	proto := &configv1.CreateK8SClusterOnboardingCredentialRequest{}
 	if !data.Description.IsUnknown() && !data.Description.IsNull() {
@@ -782,6 +1035,22 @@ func NewUpdateAwsFlowLogsS3BucketRequest(beforeData, afterData *AwsFlowLogsS3Buc
 	return proto
 }
 
+func NewUpdateAzureSubscriptionRequest(beforeData, afterData *AzureSubscriptionResourceModel) *configv1.UpdateAzureSubscriptionRequest {
+	proto := &configv1.UpdateAzureSubscriptionRequest{}
+	proto.UpdateMask, _ = fieldmaskpb.New(proto)
+	proto.Id = beforeData.Id.ValueString()
+	if !afterData.Name.Equal(beforeData.Name) {
+		proto.UpdateMask.Append(proto, "name")
+		if !afterData.Name.IsUnknown() && !afterData.Name.IsNull() {
+			var dataValue attr.Value = afterData.Name
+			var protoValue string
+			protoValue = dataValue.(types.String).ValueString()
+			proto.Name = protoValue
+		}
+	}
+	return proto
+}
+
 func NewUpdateK8SClusterOnboardingCredentialRequest(beforeData, afterData *K8SClusterOnboardingCredentialResourceModel) *configv1.UpdateK8SClusterOnboardingCredentialRequest {
 	proto := &configv1.UpdateK8SClusterOnboardingCredentialRequest{}
 	proto.UpdateMask, _ = fieldmaskpb.New(proto)
@@ -844,6 +1113,30 @@ func CopyUpdateAwsFlowLogsS3BucketResponse(dst *AwsFlowLogsS3BucketResourceModel
 	dst.Id = types.StringValue(src.Id)
 	dst.AccountId = types.StringValue(src.AccountId)
 	dst.S3BucketArn = types.StringValue(src.S3BucketArn)
+}
+func CopyCreateAzureSubscriptionResponse(dst *AzureSubscriptionResourceModel, src *configv1.CreateAzureSubscriptionResponse) {
+	dst.Id = types.StringValue(src.Id)
+	dst.ClientId = types.StringValue(src.ClientId)
+	dst.Mode = types.StringValue(src.Mode)
+	dst.Name = types.StringValue(src.Name)
+	dst.SubscriptionId = types.StringValue(src.SubscriptionId)
+	dst.TenantId = types.StringValue(src.TenantId)
+}
+func CopyReadAzureSubscriptionResponse(dst *AzureSubscriptionResourceModel, src *configv1.ReadAzureSubscriptionResponse) {
+	dst.Id = types.StringValue(src.Id)
+	dst.ClientId = types.StringValue(src.ClientId)
+	dst.Mode = types.StringValue(src.Mode)
+	dst.Name = types.StringValue(src.Name)
+	dst.SubscriptionId = types.StringValue(src.SubscriptionId)
+	dst.TenantId = types.StringValue(src.TenantId)
+}
+func CopyUpdateAzureSubscriptionResponse(dst *AzureSubscriptionResourceModel, src *configv1.UpdateAzureSubscriptionResponse) {
+	dst.Id = types.StringValue(src.Id)
+	dst.ClientId = types.StringValue(src.ClientId)
+	dst.Mode = types.StringValue(src.Mode)
+	dst.Name = types.StringValue(src.Name)
+	dst.SubscriptionId = types.StringValue(src.SubscriptionId)
+	dst.TenantId = types.StringValue(src.TenantId)
 }
 func CopyCreateK8SClusterOnboardingCredentialResponse(dst *K8SClusterOnboardingCredentialResourceModel, src *configv1.CreateK8SClusterOnboardingCredentialResponse) {
 	dst.Id = types.StringValue(src.Id)

@@ -14,6 +14,10 @@ service ConfigService {
   rpc ReadAwsFlowLogsS3Bucket(ReadAwsFlowLogsS3BucketRequest) returns (ReadAwsFlowLogsS3BucketResponse);
   rpc UpdateAwsFlowLogsS3Bucket(UpdateAwsFlowLogsS3BucketRequest) returns (UpdateAwsFlowLogsS3BucketResponse);
   rpc DeleteAwsFlowLogsS3Bucket(DeleteAwsFlowLogsS3BucketRequest) returns (google.protobuf.Empty);
+  rpc CreateAzureSubscription(CreateAzureSubscriptionRequest) returns (CreateAzureSubscriptionResponse);
+  rpc ReadAzureSubscription(ReadAzureSubscriptionRequest) returns (ReadAzureSubscriptionResponse);
+  rpc UpdateAzureSubscription(UpdateAzureSubscriptionRequest) returns (UpdateAzureSubscriptionResponse);
+  rpc DeleteAzureSubscription(DeleteAzureSubscriptionRequest) returns (google.protobuf.Empty);
   rpc CreateK8SClusterOnboardingCredential(CreateK8SClusterOnboardingCredentialRequest) returns (CreateK8SClusterOnboardingCredentialResponse);
   rpc ReadK8SClusterOnboardingCredential(ReadK8SClusterOnboardingCredentialRequest) returns (ReadK8SClusterOnboardingCredentialResponse);
   rpc UpdateK8SClusterOnboardingCredential(UpdateK8SClusterOnboardingCredentialRequest) returns (UpdateK8SClusterOnboardingCredentialResponse);
@@ -89,6 +93,49 @@ message UpdateAwsFlowLogsS3BucketResponse {
   string s3_bucket_arn = 3;
 }
 message DeleteAwsFlowLogsS3BucketRequest {
+  string id = 1;
+}
+message CreateAzureSubscriptionRequest {
+  string client_id = 2;
+  string client_secret = 3;
+  string mode = 4;
+  string name = 5;
+  string subscription_id = 6;
+  string tenant_id = 7;
+}
+message CreateAzureSubscriptionResponse {
+  string id = 1;
+  string client_id = 2;
+  string mode = 4;
+  string name = 5;
+  string subscription_id = 6;
+  string tenant_id = 7;
+}
+message ReadAzureSubscriptionRequest {
+  string id = 1;
+}
+message ReadAzureSubscriptionResponse {
+  string id = 1;
+  string client_id = 2;
+  string mode = 4;
+  string name = 5;
+  string subscription_id = 6;
+  string tenant_id = 7;
+}
+message UpdateAzureSubscriptionRequest {
+  string id = 1;
+  string name = 5;
+  google.protobuf.FieldMask update_mask = 8;
+}
+message UpdateAzureSubscriptionResponse {
+  string id = 1;
+  string client_id = 2;
+  string mode = 4;
+  string name = 5;
+  string subscription_id = 6;
+  string tenant_id = 7;
+}
+message DeleteAzureSubscriptionRequest {
   string id = 1;
 }
 message CreateK8SClusterOnboardingCredentialRequest {

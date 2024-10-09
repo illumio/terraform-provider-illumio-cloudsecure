@@ -31,6 +31,10 @@ const (
 	ConfigService_ReadAwsFlowLogsS3Bucket_FullMethodName              = "/illumio.cloud.config.v1.ConfigService/ReadAwsFlowLogsS3Bucket"
 	ConfigService_UpdateAwsFlowLogsS3Bucket_FullMethodName            = "/illumio.cloud.config.v1.ConfigService/UpdateAwsFlowLogsS3Bucket"
 	ConfigService_DeleteAwsFlowLogsS3Bucket_FullMethodName            = "/illumio.cloud.config.v1.ConfigService/DeleteAwsFlowLogsS3Bucket"
+	ConfigService_CreateAzureSubscription_FullMethodName              = "/illumio.cloud.config.v1.ConfigService/CreateAzureSubscription"
+	ConfigService_ReadAzureSubscription_FullMethodName                = "/illumio.cloud.config.v1.ConfigService/ReadAzureSubscription"
+	ConfigService_UpdateAzureSubscription_FullMethodName              = "/illumio.cloud.config.v1.ConfigService/UpdateAzureSubscription"
+	ConfigService_DeleteAzureSubscription_FullMethodName              = "/illumio.cloud.config.v1.ConfigService/DeleteAzureSubscription"
 	ConfigService_CreateK8SClusterOnboardingCredential_FullMethodName = "/illumio.cloud.config.v1.ConfigService/CreateK8SClusterOnboardingCredential"
 	ConfigService_ReadK8SClusterOnboardingCredential_FullMethodName   = "/illumio.cloud.config.v1.ConfigService/ReadK8SClusterOnboardingCredential"
 	ConfigService_UpdateK8SClusterOnboardingCredential_FullMethodName = "/illumio.cloud.config.v1.ConfigService/UpdateK8SClusterOnboardingCredential"
@@ -49,6 +53,10 @@ type ConfigServiceClient interface {
 	ReadAwsFlowLogsS3Bucket(ctx context.Context, in *ReadAwsFlowLogsS3BucketRequest, opts ...grpc.CallOption) (*ReadAwsFlowLogsS3BucketResponse, error)
 	UpdateAwsFlowLogsS3Bucket(ctx context.Context, in *UpdateAwsFlowLogsS3BucketRequest, opts ...grpc.CallOption) (*UpdateAwsFlowLogsS3BucketResponse, error)
 	DeleteAwsFlowLogsS3Bucket(ctx context.Context, in *DeleteAwsFlowLogsS3BucketRequest, opts ...grpc.CallOption) (*emptypb.Empty, error)
+	CreateAzureSubscription(ctx context.Context, in *CreateAzureSubscriptionRequest, opts ...grpc.CallOption) (*CreateAzureSubscriptionResponse, error)
+	ReadAzureSubscription(ctx context.Context, in *ReadAzureSubscriptionRequest, opts ...grpc.CallOption) (*ReadAzureSubscriptionResponse, error)
+	UpdateAzureSubscription(ctx context.Context, in *UpdateAzureSubscriptionRequest, opts ...grpc.CallOption) (*UpdateAzureSubscriptionResponse, error)
+	DeleteAzureSubscription(ctx context.Context, in *DeleteAzureSubscriptionRequest, opts ...grpc.CallOption) (*emptypb.Empty, error)
 	CreateK8SClusterOnboardingCredential(ctx context.Context, in *CreateK8SClusterOnboardingCredentialRequest, opts ...grpc.CallOption) (*CreateK8SClusterOnboardingCredentialResponse, error)
 	ReadK8SClusterOnboardingCredential(ctx context.Context, in *ReadK8SClusterOnboardingCredentialRequest, opts ...grpc.CallOption) (*ReadK8SClusterOnboardingCredentialResponse, error)
 	UpdateK8SClusterOnboardingCredential(ctx context.Context, in *UpdateK8SClusterOnboardingCredentialRequest, opts ...grpc.CallOption) (*UpdateK8SClusterOnboardingCredentialResponse, error)
@@ -143,6 +151,46 @@ func (c *configServiceClient) DeleteAwsFlowLogsS3Bucket(ctx context.Context, in 
 	return out, nil
 }
 
+func (c *configServiceClient) CreateAzureSubscription(ctx context.Context, in *CreateAzureSubscriptionRequest, opts ...grpc.CallOption) (*CreateAzureSubscriptionResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(CreateAzureSubscriptionResponse)
+	err := c.cc.Invoke(ctx, ConfigService_CreateAzureSubscription_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *configServiceClient) ReadAzureSubscription(ctx context.Context, in *ReadAzureSubscriptionRequest, opts ...grpc.CallOption) (*ReadAzureSubscriptionResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(ReadAzureSubscriptionResponse)
+	err := c.cc.Invoke(ctx, ConfigService_ReadAzureSubscription_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *configServiceClient) UpdateAzureSubscription(ctx context.Context, in *UpdateAzureSubscriptionRequest, opts ...grpc.CallOption) (*UpdateAzureSubscriptionResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(UpdateAzureSubscriptionResponse)
+	err := c.cc.Invoke(ctx, ConfigService_UpdateAzureSubscription_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *configServiceClient) DeleteAzureSubscription(ctx context.Context, in *DeleteAzureSubscriptionRequest, opts ...grpc.CallOption) (*emptypb.Empty, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(emptypb.Empty)
+	err := c.cc.Invoke(ctx, ConfigService_DeleteAzureSubscription_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 func (c *configServiceClient) CreateK8SClusterOnboardingCredential(ctx context.Context, in *CreateK8SClusterOnboardingCredentialRequest, opts ...grpc.CallOption) (*CreateK8SClusterOnboardingCredentialResponse, error) {
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
 	out := new(CreateK8SClusterOnboardingCredentialResponse)
@@ -195,6 +243,10 @@ type ConfigServiceServer interface {
 	ReadAwsFlowLogsS3Bucket(context.Context, *ReadAwsFlowLogsS3BucketRequest) (*ReadAwsFlowLogsS3BucketResponse, error)
 	UpdateAwsFlowLogsS3Bucket(context.Context, *UpdateAwsFlowLogsS3BucketRequest) (*UpdateAwsFlowLogsS3BucketResponse, error)
 	DeleteAwsFlowLogsS3Bucket(context.Context, *DeleteAwsFlowLogsS3BucketRequest) (*emptypb.Empty, error)
+	CreateAzureSubscription(context.Context, *CreateAzureSubscriptionRequest) (*CreateAzureSubscriptionResponse, error)
+	ReadAzureSubscription(context.Context, *ReadAzureSubscriptionRequest) (*ReadAzureSubscriptionResponse, error)
+	UpdateAzureSubscription(context.Context, *UpdateAzureSubscriptionRequest) (*UpdateAzureSubscriptionResponse, error)
+	DeleteAzureSubscription(context.Context, *DeleteAzureSubscriptionRequest) (*emptypb.Empty, error)
 	CreateK8SClusterOnboardingCredential(context.Context, *CreateK8SClusterOnboardingCredentialRequest) (*CreateK8SClusterOnboardingCredentialResponse, error)
 	ReadK8SClusterOnboardingCredential(context.Context, *ReadK8SClusterOnboardingCredentialRequest) (*ReadK8SClusterOnboardingCredentialResponse, error)
 	UpdateK8SClusterOnboardingCredential(context.Context, *UpdateK8SClusterOnboardingCredentialRequest) (*UpdateK8SClusterOnboardingCredentialResponse, error)
@@ -232,6 +284,18 @@ func (UnimplementedConfigServiceServer) UpdateAwsFlowLogsS3Bucket(context.Contex
 }
 func (UnimplementedConfigServiceServer) DeleteAwsFlowLogsS3Bucket(context.Context, *DeleteAwsFlowLogsS3BucketRequest) (*emptypb.Empty, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method DeleteAwsFlowLogsS3Bucket not implemented")
+}
+func (UnimplementedConfigServiceServer) CreateAzureSubscription(context.Context, *CreateAzureSubscriptionRequest) (*CreateAzureSubscriptionResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method CreateAzureSubscription not implemented")
+}
+func (UnimplementedConfigServiceServer) ReadAzureSubscription(context.Context, *ReadAzureSubscriptionRequest) (*ReadAzureSubscriptionResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method ReadAzureSubscription not implemented")
+}
+func (UnimplementedConfigServiceServer) UpdateAzureSubscription(context.Context, *UpdateAzureSubscriptionRequest) (*UpdateAzureSubscriptionResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method UpdateAzureSubscription not implemented")
+}
+func (UnimplementedConfigServiceServer) DeleteAzureSubscription(context.Context, *DeleteAzureSubscriptionRequest) (*emptypb.Empty, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method DeleteAzureSubscription not implemented")
 }
 func (UnimplementedConfigServiceServer) CreateK8SClusterOnboardingCredential(context.Context, *CreateK8SClusterOnboardingCredentialRequest) (*CreateK8SClusterOnboardingCredentialResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method CreateK8SClusterOnboardingCredential not implemented")
@@ -410,6 +474,78 @@ func _ConfigService_DeleteAwsFlowLogsS3Bucket_Handler(srv interface{}, ctx conte
 	return interceptor(ctx, in, info, handler)
 }
 
+func _ConfigService_CreateAzureSubscription_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(CreateAzureSubscriptionRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(ConfigServiceServer).CreateAzureSubscription(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: ConfigService_CreateAzureSubscription_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(ConfigServiceServer).CreateAzureSubscription(ctx, req.(*CreateAzureSubscriptionRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _ConfigService_ReadAzureSubscription_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(ReadAzureSubscriptionRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(ConfigServiceServer).ReadAzureSubscription(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: ConfigService_ReadAzureSubscription_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(ConfigServiceServer).ReadAzureSubscription(ctx, req.(*ReadAzureSubscriptionRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _ConfigService_UpdateAzureSubscription_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(UpdateAzureSubscriptionRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(ConfigServiceServer).UpdateAzureSubscription(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: ConfigService_UpdateAzureSubscription_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(ConfigServiceServer).UpdateAzureSubscription(ctx, req.(*UpdateAzureSubscriptionRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _ConfigService_DeleteAzureSubscription_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(DeleteAzureSubscriptionRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(ConfigServiceServer).DeleteAzureSubscription(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: ConfigService_DeleteAzureSubscription_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(ConfigServiceServer).DeleteAzureSubscription(ctx, req.(*DeleteAzureSubscriptionRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 func _ConfigService_CreateK8SClusterOnboardingCredential_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(CreateK8SClusterOnboardingCredentialRequest)
 	if err := dec(in); err != nil {
@@ -520,6 +656,22 @@ var ConfigService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "DeleteAwsFlowLogsS3Bucket",
 			Handler:    _ConfigService_DeleteAwsFlowLogsS3Bucket_Handler,
+		},
+		{
+			MethodName: "CreateAzureSubscription",
+			Handler:    _ConfigService_CreateAzureSubscription_Handler,
+		},
+		{
+			MethodName: "ReadAzureSubscription",
+			Handler:    _ConfigService_ReadAzureSubscription_Handler,
+		},
+		{
+			MethodName: "UpdateAzureSubscription",
+			Handler:    _ConfigService_UpdateAzureSubscription_Handler,
+		},
+		{
+			MethodName: "DeleteAzureSubscription",
+			Handler:    _ConfigService_DeleteAzureSubscription_Handler,
 		},
 		{
 			MethodName: "CreateK8SClusterOnboardingCredential",
