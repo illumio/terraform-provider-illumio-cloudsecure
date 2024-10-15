@@ -39,6 +39,8 @@ func (p *Provider) Resources(ctx context.Context) []func() resource.Resource {
 			resp = append(resp, func() resource.Resource { return NewAwsAccountResource(r.Schema) })
 		case "aws_flow_logs_s3_bucket":
 			resp = append(resp, func() resource.Resource { return NewAwsFlowLogsS3BucketResource(r.Schema) })
+		case "azure_flow_logs_storage_account":
+			resp = append(resp, func() resource.Resource { return NewAzureFlowLogsStorageAccountResource(r.Schema) })
 		case "azure_subscription":
 			resp = append(resp, func() resource.Resource { return NewAzureSubscriptionResource(r.Schema) })
 		case "k8s_cluster_onboarding_credential":
@@ -407,6 +409,184 @@ func (r *AwsFlowLogsS3BucketResource) Delete(ctx context.Context, req resource.D
 }
 
 func (r *AwsFlowLogsS3BucketResource) ImportState(ctx context.Context, req resource.ImportStateRequest, resp *resource.ImportStateResponse) {
+	// TODO
+}
+
+// AzureFlowLogsStorageAccountResource implements the azure_flow_logs_storage_account resource.
+type AzureFlowLogsStorageAccountResource struct {
+	// schema is the schema of the azure_flow_logs_storage_account resource.
+	schema resource_schema.Schema
+
+	// providerData is the provider configuration.
+	config ProviderData
+}
+
+var _ resource.ResourceWithConfigure = &AzureFlowLogsStorageAccountResource{}
+var _ resource.ResourceWithImportState = &AzureFlowLogsStorageAccountResource{}
+
+// NewAzureFlowLogsStorageAccountResource returns a new azure_flow_logs_storage_account resource.
+func NewAzureFlowLogsStorageAccountResource(schema resource_schema.Schema) resource.Resource {
+	return &AzureFlowLogsStorageAccountResource{
+		schema: schema,
+	}
+}
+
+func (r *AzureFlowLogsStorageAccountResource) Metadata(ctx context.Context, req resource.MetadataRequest, resp *resource.MetadataResponse) {
+	resp.TypeName = req.ProviderTypeName + "_azure_flow_logs_storage_account"
+}
+
+func (r *AzureFlowLogsStorageAccountResource) Schema(ctx context.Context, req resource.SchemaRequest, resp *resource.SchemaResponse) {
+	resp.Schema = r.schema
+}
+
+func (r *AzureFlowLogsStorageAccountResource) Configure(ctx context.Context, req resource.ConfigureRequest, resp *resource.ConfigureResponse) {
+	if req.ProviderData == nil {
+		return
+	}
+
+	providerData, ok := req.ProviderData.(ProviderData)
+	if !ok {
+		resp.Diagnostics.AddError(
+			"Unexpected Resource Configure Type",
+			fmt.Sprintf("Expected ProviderData, got: %T. Please report this issue to the provider developers.", req.ProviderData),
+		)
+
+		return
+	}
+
+	r.config = providerData
+}
+
+func (r *AzureFlowLogsStorageAccountResource) Create(ctx context.Context, req resource.CreateRequest, resp *resource.CreateResponse) {
+	var data AzureFlowLogsStorageAccountResourceModel
+
+	resp.Diagnostics.Append(req.Plan.Get(ctx, &data)...)
+	if resp.Diagnostics.HasError() {
+		return
+	}
+
+	protoReq := NewCreateAzureFlowLogsStorageAccountRequest(&data)
+
+	tflog.Trace(ctx, "creating a resource", map[string]any{"type": "azure_flow_logs_storage_account"})
+
+	rpcCtx, rpcCancel := context.WithTimeout(ctx, r.config.RequestTimeout())
+	protoResp, err := r.config.Client().CreateAzureFlowLogsStorageAccount(rpcCtx, protoReq)
+	rpcCancel()
+	if err != nil {
+		resp.Diagnostics.AddError("Config API Error", fmt.Sprintf("Unable to create azure_flow_logs_storage_account, got error: %s", err))
+		return
+	}
+
+	CopyCreateAzureFlowLogsStorageAccountResponse(&data, protoResp)
+
+	tflog.Trace(ctx, "created a resource", map[string]any{"type": "azure_flow_logs_storage_account", "id": protoResp.Id})
+
+	resp.Diagnostics.Append(resp.State.Set(ctx, &data)...)
+}
+
+func (r *AzureFlowLogsStorageAccountResource) Read(ctx context.Context, req resource.ReadRequest, resp *resource.ReadResponse) {
+	var data AzureFlowLogsStorageAccountResourceModel
+
+	resp.Diagnostics.Append(req.State.Get(ctx, &data)...)
+	if resp.Diagnostics.HasError() {
+		return
+	}
+
+	protoReq := NewReadAzureFlowLogsStorageAccountRequest(&data)
+
+	tflog.Trace(ctx, "reading a resource", map[string]any{"type": "azure_flow_logs_storage_account", "id": protoReq.Id})
+
+	rpcCtx, rpcCancel := context.WithTimeout(ctx, r.config.RequestTimeout())
+	protoResp, err := r.config.Client().ReadAzureFlowLogsStorageAccount(rpcCtx, protoReq)
+	rpcCancel()
+	if err != nil {
+		switch status.Code(err) {
+		case codes.NotFound:
+			resp.Diagnostics.AddWarning("Resource Not Found", fmt.Sprintf("No azure_flow_logs_storage_account found with id %s", protoReq.Id))
+			resp.State.RemoveResource(ctx)
+			return
+		default:
+			resp.Diagnostics.AddError("Config API Error", fmt.Sprintf("Unable to read azure_flow_logs_storage_account, got error: %s", err))
+			return
+		}
+	}
+
+	CopyReadAzureFlowLogsStorageAccountResponse(&data, protoResp)
+
+	tflog.Trace(ctx, "read a resource", map[string]any{"type": "azure_flow_logs_storage_account", "id": protoResp.Id})
+
+	resp.Diagnostics.Append(resp.State.Set(ctx, &data)...)
+}
+
+func (r *AzureFlowLogsStorageAccountResource) Update(ctx context.Context, req resource.UpdateRequest, resp *resource.UpdateResponse) {
+	var beforeData AzureFlowLogsStorageAccountResourceModel
+	var afterData AzureFlowLogsStorageAccountResourceModel
+
+	resp.Diagnostics.Append(req.State.Get(ctx, &beforeData)...)
+	if resp.Diagnostics.HasError() {
+		return
+	}
+
+	resp.Diagnostics.Append(req.Plan.Get(ctx, &afterData)...)
+	if resp.Diagnostics.HasError() {
+		return
+	}
+
+	protoReq := NewUpdateAzureFlowLogsStorageAccountRequest(&beforeData, &afterData)
+
+	tflog.Trace(ctx, "updating a resource", map[string]any{"type": "azure_flow_logs_storage_account", "id": protoReq.Id, "update_mask": protoReq.UpdateMask.Paths})
+
+	rpcCtx, rpcCancel := context.WithTimeout(ctx, r.config.RequestTimeout())
+	protoResp, err := r.config.Client().UpdateAzureFlowLogsStorageAccount(rpcCtx, protoReq)
+	rpcCancel()
+	if err != nil {
+		switch status.Code(err) {
+		case codes.NotFound:
+			resp.Diagnostics.AddError("Resource Not Found", fmt.Sprintf("No azure_flow_logs_storage_account found with id %s", protoReq.Id))
+			resp.State.RemoveResource(ctx)
+			return
+		default:
+			resp.Diagnostics.AddError("Config API Error", fmt.Sprintf("Unable to update azure_flow_logs_storage_account, got error: %s", err))
+			return
+		}
+	}
+
+	CopyUpdateAzureFlowLogsStorageAccountResponse(&afterData, protoResp)
+
+	tflog.Trace(ctx, "updated a resource", map[string]any{"type": "azure_flow_logs_storage_account", "id": protoResp.Id})
+
+	resp.Diagnostics.Append(resp.State.Set(ctx, &afterData)...)
+}
+
+func (r *AzureFlowLogsStorageAccountResource) Delete(ctx context.Context, req resource.DeleteRequest, resp *resource.DeleteResponse) {
+	var data AzureFlowLogsStorageAccountResourceModel
+
+	resp.Diagnostics.Append(req.State.Get(ctx, &data)...)
+	if resp.Diagnostics.HasError() {
+		return
+	}
+
+	protoReq := NewDeleteAzureFlowLogsStorageAccountRequest(&data)
+
+	tflog.Trace(ctx, "deleting a resource", map[string]any{"type": "azure_flow_logs_storage_account", "id": protoReq.Id})
+
+	rpcCtx, rpcCancel := context.WithTimeout(ctx, r.config.RequestTimeout())
+	_, err := r.config.Client().DeleteAzureFlowLogsStorageAccount(rpcCtx, protoReq)
+	rpcCancel()
+	if err != nil {
+		switch status.Code(err) {
+		case codes.NotFound:
+			tflog.Trace(ctx, "resource was already deleted", map[string]any{"type": "azure_flow_logs_storage_account", "id": protoReq.Id})
+		default:
+			resp.Diagnostics.AddError("Config API Error", fmt.Sprintf("Unable to delete azure_flow_logs_storage_account, got error: %s", err))
+			return
+		}
+	}
+
+	tflog.Trace(ctx, "deleted a resource", map[string]any{"type": "azure_flow_logs_storage_account", "id": protoReq.Id})
+}
+
+func (r *AzureFlowLogsStorageAccountResource) ImportState(ctx context.Context, req resource.ImportStateRequest, resp *resource.ImportStateResponse) {
 	// TODO
 }
 
@@ -782,6 +962,12 @@ type AwsFlowLogsS3BucketResourceModel struct {
 	S3BucketArn types.String `tfsdk:"s3_bucket_arn"`
 }
 
+type AzureFlowLogsStorageAccountResourceModel struct {
+	Id                       types.String `tfsdk:"id"`
+	StorageAccountResourceId types.String `tfsdk:"storage_account_resource_id"`
+	SubscriptionId           types.String `tfsdk:"subscription_id"`
+}
+
 type AzureSubscriptionResourceModel struct {
 	Id             types.String `tfsdk:"id"`
 	ClientId       types.String `tfsdk:"client_id"`
@@ -895,6 +1081,45 @@ func NewReadAwsFlowLogsS3BucketRequest(data *AwsFlowLogsS3BucketResourceModel) *
 
 func NewDeleteAwsFlowLogsS3BucketRequest(data *AwsFlowLogsS3BucketResourceModel) *configv1.DeleteAwsFlowLogsS3BucketRequest {
 	proto := &configv1.DeleteAwsFlowLogsS3BucketRequest{}
+	if !data.Id.IsUnknown() && !data.Id.IsNull() {
+		var dataValue attr.Value = data.Id
+		var protoValue string
+		protoValue = dataValue.(types.String).ValueString()
+		proto.Id = protoValue
+	}
+	return proto
+}
+
+func NewCreateAzureFlowLogsStorageAccountRequest(data *AzureFlowLogsStorageAccountResourceModel) *configv1.CreateAzureFlowLogsStorageAccountRequest {
+	proto := &configv1.CreateAzureFlowLogsStorageAccountRequest{}
+	if !data.StorageAccountResourceId.IsUnknown() && !data.StorageAccountResourceId.IsNull() {
+		var dataValue attr.Value = data.StorageAccountResourceId
+		var protoValue string
+		protoValue = dataValue.(types.String).ValueString()
+		proto.StorageAccountResourceId = protoValue
+	}
+	if !data.SubscriptionId.IsUnknown() && !data.SubscriptionId.IsNull() {
+		var dataValue attr.Value = data.SubscriptionId
+		var protoValue string
+		protoValue = dataValue.(types.String).ValueString()
+		proto.SubscriptionId = protoValue
+	}
+	return proto
+}
+
+func NewReadAzureFlowLogsStorageAccountRequest(data *AzureFlowLogsStorageAccountResourceModel) *configv1.ReadAzureFlowLogsStorageAccountRequest {
+	proto := &configv1.ReadAzureFlowLogsStorageAccountRequest{}
+	if !data.Id.IsUnknown() && !data.Id.IsNull() {
+		var dataValue attr.Value = data.Id
+		var protoValue string
+		protoValue = dataValue.(types.String).ValueString()
+		proto.Id = protoValue
+	}
+	return proto
+}
+
+func NewDeleteAzureFlowLogsStorageAccountRequest(data *AzureFlowLogsStorageAccountResourceModel) *configv1.DeleteAzureFlowLogsStorageAccountRequest {
+	proto := &configv1.DeleteAzureFlowLogsStorageAccountRequest{}
 	if !data.Id.IsUnknown() && !data.Id.IsNull() {
 		var dataValue attr.Value = data.Id
 		var protoValue string
@@ -1035,6 +1260,13 @@ func NewUpdateAwsFlowLogsS3BucketRequest(beforeData, afterData *AwsFlowLogsS3Buc
 	return proto
 }
 
+func NewUpdateAzureFlowLogsStorageAccountRequest(beforeData, afterData *AzureFlowLogsStorageAccountResourceModel) *configv1.UpdateAzureFlowLogsStorageAccountRequest {
+	proto := &configv1.UpdateAzureFlowLogsStorageAccountRequest{}
+	proto.UpdateMask, _ = fieldmaskpb.New(proto)
+	proto.Id = beforeData.Id.ValueString()
+	return proto
+}
+
 func NewUpdateAzureSubscriptionRequest(beforeData, afterData *AzureSubscriptionResourceModel) *configv1.UpdateAzureSubscriptionRequest {
 	proto := &configv1.UpdateAzureSubscriptionRequest{}
 	proto.UpdateMask, _ = fieldmaskpb.New(proto)
@@ -1113,6 +1345,21 @@ func CopyUpdateAwsFlowLogsS3BucketResponse(dst *AwsFlowLogsS3BucketResourceModel
 	dst.Id = types.StringValue(src.Id)
 	dst.AccountId = types.StringValue(src.AccountId)
 	dst.S3BucketArn = types.StringValue(src.S3BucketArn)
+}
+func CopyCreateAzureFlowLogsStorageAccountResponse(dst *AzureFlowLogsStorageAccountResourceModel, src *configv1.CreateAzureFlowLogsStorageAccountResponse) {
+	dst.Id = types.StringValue(src.Id)
+	dst.StorageAccountResourceId = types.StringValue(src.StorageAccountResourceId)
+	dst.SubscriptionId = types.StringValue(src.SubscriptionId)
+}
+func CopyReadAzureFlowLogsStorageAccountResponse(dst *AzureFlowLogsStorageAccountResourceModel, src *configv1.ReadAzureFlowLogsStorageAccountResponse) {
+	dst.Id = types.StringValue(src.Id)
+	dst.StorageAccountResourceId = types.StringValue(src.StorageAccountResourceId)
+	dst.SubscriptionId = types.StringValue(src.SubscriptionId)
+}
+func CopyUpdateAzureFlowLogsStorageAccountResponse(dst *AzureFlowLogsStorageAccountResourceModel, src *configv1.UpdateAzureFlowLogsStorageAccountResponse) {
+	dst.Id = types.StringValue(src.Id)
+	dst.StorageAccountResourceId = types.StringValue(src.StorageAccountResourceId)
+	dst.SubscriptionId = types.StringValue(src.SubscriptionId)
 }
 func CopyCreateAzureSubscriptionResponse(dst *AzureSubscriptionResourceModel, src *configv1.CreateAzureSubscriptionResponse) {
 	dst.Id = types.StringValue(src.Id)

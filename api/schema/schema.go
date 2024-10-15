@@ -19,6 +19,7 @@ func (c *cloudSecureSchema) Resources() Resources {
 	resources := Resources{
 		awsAccountResource,
 		awsFlowLogsS3Bucket,
+		azureFlowLogsStorageAccount,
 		azureSubscriptionResource,
 		k8sClusterOnboardingCredential,
 	}
