@@ -31,6 +31,10 @@ const (
 	ConfigService_ReadAwsFlowLogsS3Bucket_FullMethodName              = "/illumio.cloud.config.v1.ConfigService/ReadAwsFlowLogsS3Bucket"
 	ConfigService_UpdateAwsFlowLogsS3Bucket_FullMethodName            = "/illumio.cloud.config.v1.ConfigService/UpdateAwsFlowLogsS3Bucket"
 	ConfigService_DeleteAwsFlowLogsS3Bucket_FullMethodName            = "/illumio.cloud.config.v1.ConfigService/DeleteAwsFlowLogsS3Bucket"
+	ConfigService_CreateAzureFlowLogsStorageAccount_FullMethodName    = "/illumio.cloud.config.v1.ConfigService/CreateAzureFlowLogsStorageAccount"
+	ConfigService_ReadAzureFlowLogsStorageAccount_FullMethodName      = "/illumio.cloud.config.v1.ConfigService/ReadAzureFlowLogsStorageAccount"
+	ConfigService_UpdateAzureFlowLogsStorageAccount_FullMethodName    = "/illumio.cloud.config.v1.ConfigService/UpdateAzureFlowLogsStorageAccount"
+	ConfigService_DeleteAzureFlowLogsStorageAccount_FullMethodName    = "/illumio.cloud.config.v1.ConfigService/DeleteAzureFlowLogsStorageAccount"
 	ConfigService_CreateAzureSubscription_FullMethodName              = "/illumio.cloud.config.v1.ConfigService/CreateAzureSubscription"
 	ConfigService_ReadAzureSubscription_FullMethodName                = "/illumio.cloud.config.v1.ConfigService/ReadAzureSubscription"
 	ConfigService_UpdateAzureSubscription_FullMethodName              = "/illumio.cloud.config.v1.ConfigService/UpdateAzureSubscription"
@@ -53,6 +57,10 @@ type ConfigServiceClient interface {
 	ReadAwsFlowLogsS3Bucket(ctx context.Context, in *ReadAwsFlowLogsS3BucketRequest, opts ...grpc.CallOption) (*ReadAwsFlowLogsS3BucketResponse, error)
 	UpdateAwsFlowLogsS3Bucket(ctx context.Context, in *UpdateAwsFlowLogsS3BucketRequest, opts ...grpc.CallOption) (*UpdateAwsFlowLogsS3BucketResponse, error)
 	DeleteAwsFlowLogsS3Bucket(ctx context.Context, in *DeleteAwsFlowLogsS3BucketRequest, opts ...grpc.CallOption) (*emptypb.Empty, error)
+	CreateAzureFlowLogsStorageAccount(ctx context.Context, in *CreateAzureFlowLogsStorageAccountRequest, opts ...grpc.CallOption) (*CreateAzureFlowLogsStorageAccountResponse, error)
+	ReadAzureFlowLogsStorageAccount(ctx context.Context, in *ReadAzureFlowLogsStorageAccountRequest, opts ...grpc.CallOption) (*ReadAzureFlowLogsStorageAccountResponse, error)
+	UpdateAzureFlowLogsStorageAccount(ctx context.Context, in *UpdateAzureFlowLogsStorageAccountRequest, opts ...grpc.CallOption) (*UpdateAzureFlowLogsStorageAccountResponse, error)
+	DeleteAzureFlowLogsStorageAccount(ctx context.Context, in *DeleteAzureFlowLogsStorageAccountRequest, opts ...grpc.CallOption) (*emptypb.Empty, error)
 	CreateAzureSubscription(ctx context.Context, in *CreateAzureSubscriptionRequest, opts ...grpc.CallOption) (*CreateAzureSubscriptionResponse, error)
 	ReadAzureSubscription(ctx context.Context, in *ReadAzureSubscriptionRequest, opts ...grpc.CallOption) (*ReadAzureSubscriptionResponse, error)
 	UpdateAzureSubscription(ctx context.Context, in *UpdateAzureSubscriptionRequest, opts ...grpc.CallOption) (*UpdateAzureSubscriptionResponse, error)
@@ -151,6 +159,46 @@ func (c *configServiceClient) DeleteAwsFlowLogsS3Bucket(ctx context.Context, in 
 	return out, nil
 }
 
+func (c *configServiceClient) CreateAzureFlowLogsStorageAccount(ctx context.Context, in *CreateAzureFlowLogsStorageAccountRequest, opts ...grpc.CallOption) (*CreateAzureFlowLogsStorageAccountResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(CreateAzureFlowLogsStorageAccountResponse)
+	err := c.cc.Invoke(ctx, ConfigService_CreateAzureFlowLogsStorageAccount_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *configServiceClient) ReadAzureFlowLogsStorageAccount(ctx context.Context, in *ReadAzureFlowLogsStorageAccountRequest, opts ...grpc.CallOption) (*ReadAzureFlowLogsStorageAccountResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(ReadAzureFlowLogsStorageAccountResponse)
+	err := c.cc.Invoke(ctx, ConfigService_ReadAzureFlowLogsStorageAccount_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *configServiceClient) UpdateAzureFlowLogsStorageAccount(ctx context.Context, in *UpdateAzureFlowLogsStorageAccountRequest, opts ...grpc.CallOption) (*UpdateAzureFlowLogsStorageAccountResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(UpdateAzureFlowLogsStorageAccountResponse)
+	err := c.cc.Invoke(ctx, ConfigService_UpdateAzureFlowLogsStorageAccount_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *configServiceClient) DeleteAzureFlowLogsStorageAccount(ctx context.Context, in *DeleteAzureFlowLogsStorageAccountRequest, opts ...grpc.CallOption) (*emptypb.Empty, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(emptypb.Empty)
+	err := c.cc.Invoke(ctx, ConfigService_DeleteAzureFlowLogsStorageAccount_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 func (c *configServiceClient) CreateAzureSubscription(ctx context.Context, in *CreateAzureSubscriptionRequest, opts ...grpc.CallOption) (*CreateAzureSubscriptionResponse, error) {
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
 	out := new(CreateAzureSubscriptionResponse)
@@ -243,6 +291,10 @@ type ConfigServiceServer interface {
 	ReadAwsFlowLogsS3Bucket(context.Context, *ReadAwsFlowLogsS3BucketRequest) (*ReadAwsFlowLogsS3BucketResponse, error)
 	UpdateAwsFlowLogsS3Bucket(context.Context, *UpdateAwsFlowLogsS3BucketRequest) (*UpdateAwsFlowLogsS3BucketResponse, error)
 	DeleteAwsFlowLogsS3Bucket(context.Context, *DeleteAwsFlowLogsS3BucketRequest) (*emptypb.Empty, error)
+	CreateAzureFlowLogsStorageAccount(context.Context, *CreateAzureFlowLogsStorageAccountRequest) (*CreateAzureFlowLogsStorageAccountResponse, error)
+	ReadAzureFlowLogsStorageAccount(context.Context, *ReadAzureFlowLogsStorageAccountRequest) (*ReadAzureFlowLogsStorageAccountResponse, error)
+	UpdateAzureFlowLogsStorageAccount(context.Context, *UpdateAzureFlowLogsStorageAccountRequest) (*UpdateAzureFlowLogsStorageAccountResponse, error)
+	DeleteAzureFlowLogsStorageAccount(context.Context, *DeleteAzureFlowLogsStorageAccountRequest) (*emptypb.Empty, error)
 	CreateAzureSubscription(context.Context, *CreateAzureSubscriptionRequest) (*CreateAzureSubscriptionResponse, error)
 	ReadAzureSubscription(context.Context, *ReadAzureSubscriptionRequest) (*ReadAzureSubscriptionResponse, error)
 	UpdateAzureSubscription(context.Context, *UpdateAzureSubscriptionRequest) (*UpdateAzureSubscriptionResponse, error)
@@ -284,6 +336,18 @@ func (UnimplementedConfigServiceServer) UpdateAwsFlowLogsS3Bucket(context.Contex
 }
 func (UnimplementedConfigServiceServer) DeleteAwsFlowLogsS3Bucket(context.Context, *DeleteAwsFlowLogsS3BucketRequest) (*emptypb.Empty, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method DeleteAwsFlowLogsS3Bucket not implemented")
+}
+func (UnimplementedConfigServiceServer) CreateAzureFlowLogsStorageAccount(context.Context, *CreateAzureFlowLogsStorageAccountRequest) (*CreateAzureFlowLogsStorageAccountResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method CreateAzureFlowLogsStorageAccount not implemented")
+}
+func (UnimplementedConfigServiceServer) ReadAzureFlowLogsStorageAccount(context.Context, *ReadAzureFlowLogsStorageAccountRequest) (*ReadAzureFlowLogsStorageAccountResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method ReadAzureFlowLogsStorageAccount not implemented")
+}
+func (UnimplementedConfigServiceServer) UpdateAzureFlowLogsStorageAccount(context.Context, *UpdateAzureFlowLogsStorageAccountRequest) (*UpdateAzureFlowLogsStorageAccountResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method UpdateAzureFlowLogsStorageAccount not implemented")
+}
+func (UnimplementedConfigServiceServer) DeleteAzureFlowLogsStorageAccount(context.Context, *DeleteAzureFlowLogsStorageAccountRequest) (*emptypb.Empty, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method DeleteAzureFlowLogsStorageAccount not implemented")
 }
 func (UnimplementedConfigServiceServer) CreateAzureSubscription(context.Context, *CreateAzureSubscriptionRequest) (*CreateAzureSubscriptionResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method CreateAzureSubscription not implemented")
@@ -474,6 +538,78 @@ func _ConfigService_DeleteAwsFlowLogsS3Bucket_Handler(srv interface{}, ctx conte
 	return interceptor(ctx, in, info, handler)
 }
 
+func _ConfigService_CreateAzureFlowLogsStorageAccount_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(CreateAzureFlowLogsStorageAccountRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(ConfigServiceServer).CreateAzureFlowLogsStorageAccount(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: ConfigService_CreateAzureFlowLogsStorageAccount_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(ConfigServiceServer).CreateAzureFlowLogsStorageAccount(ctx, req.(*CreateAzureFlowLogsStorageAccountRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _ConfigService_ReadAzureFlowLogsStorageAccount_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(ReadAzureFlowLogsStorageAccountRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(ConfigServiceServer).ReadAzureFlowLogsStorageAccount(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: ConfigService_ReadAzureFlowLogsStorageAccount_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(ConfigServiceServer).ReadAzureFlowLogsStorageAccount(ctx, req.(*ReadAzureFlowLogsStorageAccountRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _ConfigService_UpdateAzureFlowLogsStorageAccount_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(UpdateAzureFlowLogsStorageAccountRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(ConfigServiceServer).UpdateAzureFlowLogsStorageAccount(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: ConfigService_UpdateAzureFlowLogsStorageAccount_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(ConfigServiceServer).UpdateAzureFlowLogsStorageAccount(ctx, req.(*UpdateAzureFlowLogsStorageAccountRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _ConfigService_DeleteAzureFlowLogsStorageAccount_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(DeleteAzureFlowLogsStorageAccountRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(ConfigServiceServer).DeleteAzureFlowLogsStorageAccount(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: ConfigService_DeleteAzureFlowLogsStorageAccount_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(ConfigServiceServer).DeleteAzureFlowLogsStorageAccount(ctx, req.(*DeleteAzureFlowLogsStorageAccountRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 func _ConfigService_CreateAzureSubscription_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(CreateAzureSubscriptionRequest)
 	if err := dec(in); err != nil {
@@ -656,6 +792,22 @@ var ConfigService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "DeleteAwsFlowLogsS3Bucket",
 			Handler:    _ConfigService_DeleteAwsFlowLogsS3Bucket_Handler,
+		},
+		{
+			MethodName: "CreateAzureFlowLogsStorageAccount",
+			Handler:    _ConfigService_CreateAzureFlowLogsStorageAccount_Handler,
+		},
+		{
+			MethodName: "ReadAzureFlowLogsStorageAccount",
+			Handler:    _ConfigService_ReadAzureFlowLogsStorageAccount_Handler,
+		},
+		{
+			MethodName: "UpdateAzureFlowLogsStorageAccount",
+			Handler:    _ConfigService_UpdateAzureFlowLogsStorageAccount_Handler,
+		},
+		{
+			MethodName: "DeleteAzureFlowLogsStorageAccount",
+			Handler:    _ConfigService_DeleteAzureFlowLogsStorageAccount_Handler,
 		},
 		{
 			MethodName: "CreateAzureSubscription",

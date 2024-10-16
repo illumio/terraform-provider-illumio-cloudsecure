@@ -14,6 +14,10 @@ service ConfigService {
   rpc ReadAwsFlowLogsS3Bucket(ReadAwsFlowLogsS3BucketRequest) returns (ReadAwsFlowLogsS3BucketResponse);
   rpc UpdateAwsFlowLogsS3Bucket(UpdateAwsFlowLogsS3BucketRequest) returns (UpdateAwsFlowLogsS3BucketResponse);
   rpc DeleteAwsFlowLogsS3Bucket(DeleteAwsFlowLogsS3BucketRequest) returns (google.protobuf.Empty);
+  rpc CreateAzureFlowLogsStorageAccount(CreateAzureFlowLogsStorageAccountRequest) returns (CreateAzureFlowLogsStorageAccountResponse);
+  rpc ReadAzureFlowLogsStorageAccount(ReadAzureFlowLogsStorageAccountRequest) returns (ReadAzureFlowLogsStorageAccountResponse);
+  rpc UpdateAzureFlowLogsStorageAccount(UpdateAzureFlowLogsStorageAccountRequest) returns (UpdateAzureFlowLogsStorageAccountResponse);
+  rpc DeleteAzureFlowLogsStorageAccount(DeleteAzureFlowLogsStorageAccountRequest) returns (google.protobuf.Empty);
   rpc CreateAzureSubscription(CreateAzureSubscriptionRequest) returns (CreateAzureSubscriptionResponse);
   rpc ReadAzureSubscription(ReadAzureSubscriptionRequest) returns (ReadAzureSubscriptionResponse);
   rpc UpdateAzureSubscription(UpdateAzureSubscriptionRequest) returns (UpdateAzureSubscriptionResponse);
@@ -93,6 +97,35 @@ message UpdateAwsFlowLogsS3BucketResponse {
   string s3_bucket_arn = 3;
 }
 message DeleteAwsFlowLogsS3BucketRequest {
+  string id = 1;
+}
+message CreateAzureFlowLogsStorageAccountRequest {
+  string storage_account_resource_id = 2;
+  string subscription_id = 3;
+}
+message CreateAzureFlowLogsStorageAccountResponse {
+  string id = 1;
+  string storage_account_resource_id = 2;
+  string subscription_id = 3;
+}
+message ReadAzureFlowLogsStorageAccountRequest {
+  string id = 1;
+}
+message ReadAzureFlowLogsStorageAccountResponse {
+  string id = 1;
+  string storage_account_resource_id = 2;
+  string subscription_id = 3;
+}
+message UpdateAzureFlowLogsStorageAccountRequest {
+  string id = 1;
+  google.protobuf.FieldMask update_mask = 4;
+}
+message UpdateAzureFlowLogsStorageAccountResponse {
+  string id = 1;
+  string storage_account_resource_id = 2;
+  string subscription_id = 3;
+}
+message DeleteAzureFlowLogsStorageAccountRequest {
   string id = 1;
 }
 message CreateAzureSubscriptionRequest {

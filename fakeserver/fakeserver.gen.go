@@ -24,6 +24,8 @@ type FakeConfigServer struct {
 	AwsAccountMutex                     sync.RWMutex
 	AwsFlowLogsS3BucketMap              map[string]*AwsFlowLogsS3Bucket
 	AwsFlowLogsS3BucketMutex            sync.RWMutex
+	AzureFlowLogsStorageAccountMap      map[string]*AzureFlowLogsStorageAccount
+	AzureFlowLogsStorageAccountMutex    sync.RWMutex
 	AzureSubscriptionMap                map[string]*AzureSubscription
 	AzureSubscriptionMutex              sync.RWMutex
 	K8SClusterOnboardingCredentialMap   map[string]*K8SClusterOnboardingCredential
@@ -38,6 +40,7 @@ func NewFakeConfigServer(logger *zap.Logger) configv1.ConfigServiceServer {
 		Logger:                            logger,
 		AwsAccountMap:                     make(map[string]*AwsAccount),
 		AwsFlowLogsS3BucketMap:            make(map[string]*AwsFlowLogsS3Bucket),
+		AzureFlowLogsStorageAccountMap:    make(map[string]*AzureFlowLogsStorageAccount),
 		AzureSubscriptionMap:              make(map[string]*AzureSubscription),
 		K8SClusterOnboardingCredentialMap: make(map[string]*K8SClusterOnboardingCredential),
 	}
@@ -57,6 +60,12 @@ type AwsFlowLogsS3Bucket struct {
 	Id          string
 	AccountId   string
 	S3BucketArn string
+}
+
+type AzureFlowLogsStorageAccount struct {
+	Id                       string
+	StorageAccountResourceId string
+	SubscriptionId           string
 }
 
 type AzureSubscription struct {
@@ -328,6 +337,125 @@ func (s *FakeConfigServer) DeleteAwsFlowLogsS3Bucket(ctx context.Context, req *c
 	s.Logger.Info("deleted resource",
 		zap.String("type", "aws_flow_logs_s3_bucket"),
 		zap.String("method", "DeleteAwsFlowLogsS3Bucket"),
+		zap.String("id", id),
+	)
+	return &emptypb.Empty{}, nil
+}
+func (s *FakeConfigServer) CreateAzureFlowLogsStorageAccount(ctx context.Context, req *configv1.CreateAzureFlowLogsStorageAccountRequest) (*configv1.CreateAzureFlowLogsStorageAccountResponse, error) {
+	id := uuid.New().String()
+	model := &AzureFlowLogsStorageAccount{
+		Id:                       id,
+		StorageAccountResourceId: req.StorageAccountResourceId,
+		SubscriptionId:           req.SubscriptionId,
+	}
+	resp := &configv1.CreateAzureFlowLogsStorageAccountResponse{
+		Id:                       id,
+		StorageAccountResourceId: model.StorageAccountResourceId,
+		SubscriptionId:           model.SubscriptionId,
+	}
+	s.AzureFlowLogsStorageAccountMutex.Lock()
+	s.AzureFlowLogsStorageAccountMap[id] = model
+	s.AzureFlowLogsStorageAccountMutex.Unlock()
+	s.Logger.Info("created resource",
+		zap.String("type", "azure_flow_logs_storage_account"),
+		zap.String("method", "CreateAzureFlowLogsStorageAccount"),
+		zap.String("id", id),
+	)
+	return resp, nil
+}
+
+func (s *FakeConfigServer) ReadAzureFlowLogsStorageAccount(ctx context.Context, req *configv1.ReadAzureFlowLogsStorageAccountRequest) (*configv1.ReadAzureFlowLogsStorageAccountResponse, error) {
+	id := req.Id
+	s.AzureFlowLogsStorageAccountMutex.RLock()
+	model, found := s.AzureFlowLogsStorageAccountMap[id]
+	if !found {
+		s.AzureFlowLogsStorageAccountMutex.RUnlock()
+		s.Logger.Error("attempted to read resource with unknown id",
+			zap.String("type", "azure_flow_logs_storage_account"),
+			zap.String("method", "ReadAzureFlowLogsStorageAccount"),
+			zap.String("id", id),
+		)
+		return nil, status.Errorf(codes.NotFound, "no azure_flow_logs_storage_account found with id %s", id)
+	}
+	resp := &configv1.ReadAzureFlowLogsStorageAccountResponse{
+		Id:                       id,
+		StorageAccountResourceId: model.StorageAccountResourceId,
+		SubscriptionId:           model.SubscriptionId,
+	}
+	s.AzureFlowLogsStorageAccountMutex.RUnlock()
+	s.Logger.Info("read resource",
+		zap.String("type", "azure_flow_logs_storage_account"),
+		zap.String("method", "ReadAzureFlowLogsStorageAccount"),
+		zap.String("id", id),
+	)
+	return resp, nil
+}
+
+func (s *FakeConfigServer) UpdateAzureFlowLogsStorageAccount(ctx context.Context, req *configv1.UpdateAzureFlowLogsStorageAccountRequest) (*configv1.UpdateAzureFlowLogsStorageAccountResponse, error) {
+	id := req.Id
+	s.AzureFlowLogsStorageAccountMutex.Lock()
+	model, found := s.AzureFlowLogsStorageAccountMap[id]
+	if !found {
+		s.AzureFlowLogsStorageAccountMutex.Unlock()
+		s.Logger.Error("attempted to update resource with unknown id",
+			zap.String("type", "azure_flow_logs_storage_account"),
+			zap.String("method", "UpdateAzureFlowLogsStorageAccount"),
+			zap.String("id", id),
+		)
+		return nil, status.Errorf(codes.NotFound, "no azure_flow_logs_storage_account found with id %s", id)
+	}
+	updateMask := req.UpdateMask
+	var updateMaskPaths []string
+	if updateMask != nil {
+		updateMaskPaths = updateMask.Paths
+	}
+	for _, path := range updateMaskPaths {
+		switch path {
+		default:
+			s.AwsAccountMutex.Unlock()
+			s.Logger.Error("attempted to update resource using invalid update_mask path",
+				zap.String("type", "azure_flow_logs_storage_account"),
+				zap.String("method", "UpdateAzureFlowLogsStorageAccount"),
+				zap.String("id", id),
+				zap.Strings("updateMaskPaths", updateMaskPaths),
+				zap.String("invalidUpdateMaskPath", path),
+			)
+			return nil, status.Errorf(codes.InvalidArgument, "invalid path in update_mask for aws_account: %s", path)
+		}
+	}
+	resp := &configv1.UpdateAzureFlowLogsStorageAccountResponse{
+		Id:                       id,
+		StorageAccountResourceId: model.StorageAccountResourceId,
+		SubscriptionId:           model.SubscriptionId,
+	}
+	s.AzureFlowLogsStorageAccountMutex.Unlock()
+	s.Logger.Info("updated resource",
+		zap.String("type", "azure_flow_logs_storage_account"),
+		zap.String("method", "UpdateAzureFlowLogsStorageAccount"),
+		zap.String("id", id),
+		zap.Strings("updateMaskPaths", updateMaskPaths),
+	)
+	return resp, nil
+}
+
+func (s *FakeConfigServer) DeleteAzureFlowLogsStorageAccount(ctx context.Context, req *configv1.DeleteAzureFlowLogsStorageAccountRequest) (*emptypb.Empty, error) {
+	id := req.Id
+	s.AzureFlowLogsStorageAccountMutex.Lock()
+	_, found := s.AzureFlowLogsStorageAccountMap[id]
+	if !found {
+		s.AzureFlowLogsStorageAccountMutex.Unlock()
+		s.Logger.Error("attempted to delete resource with unknown id",
+			zap.String("type", "azure_flow_logs_storage_account"),
+			zap.String("method", "DeleteAzureFlowLogsStorageAccount"),
+			zap.String("id", id),
+		)
+		return nil, status.Errorf(codes.NotFound, "no azure_flow_logs_storage_account found with id %s", id)
+	}
+	delete(s.AzureFlowLogsStorageAccountMap, id)
+	s.AzureFlowLogsStorageAccountMutex.Unlock()
+	s.Logger.Info("deleted resource",
+		zap.String("type", "azure_flow_logs_storage_account"),
+		zap.String("method", "DeleteAzureFlowLogsStorageAccount"),
 		zap.String("id", id),
 	)
 	return &emptypb.Empty{}, nil
