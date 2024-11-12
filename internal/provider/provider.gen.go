@@ -1248,6 +1248,7 @@ func NewUpdateAwsAccountRequest(beforeData, afterData *AwsAccountResourceModel) 
 			var protoValue string
 			protoValue = dataValue.(types.String).ValueString()
 			proto.Name = protoValue
+
 		}
 	}
 	return proto
@@ -1278,6 +1279,7 @@ func NewUpdateAzureSubscriptionRequest(beforeData, afterData *AzureSubscriptionR
 			var protoValue string
 			protoValue = dataValue.(types.String).ValueString()
 			proto.Name = protoValue
+
 		}
 	}
 	return proto
@@ -1294,6 +1296,7 @@ func NewUpdateK8SClusterOnboardingCredentialRequest(beforeData, afterData *K8SCl
 			var protoValue string
 			protoValue = dataValue.(types.String).ValueString()
 			proto.Description = &protoValue
+
 		}
 	}
 	if !afterData.Name.Equal(beforeData.Name) {
@@ -1303,6 +1306,7 @@ func NewUpdateK8SClusterOnboardingCredentialRequest(beforeData, afterData *K8SCl
 			var protoValue string
 			protoValue = dataValue.(types.String).ValueString()
 			proto.Name = protoValue
+
 		}
 	}
 	return proto
