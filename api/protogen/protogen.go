@@ -154,7 +154,7 @@ func GenerateGRPCAPISpec(dst io.Writer, src schema.Schema, tagger *apiSpecTagger
 		for _, attrName := range attrNames {
 			attrSchema := resource.Schema.Attributes[attrName]
 
-			repeated, t, msg, err := terraformAttributeTypeToProtoType(attrName, attrSchema.GetType())
+			repeated, t, msg, err := terraformAttributeTypeToProtoType(attrName, attrSchema.GetType(), resourceName)
 			if err != nil {
 				return fmt.Errorf("failed to parse field %s in resource %s: %w", attrName, resourceMessageName, err)
 			}
@@ -167,7 +167,7 @@ func GenerateGRPCAPISpec(dst io.Writer, src schema.Schema, tagger *apiSpecTagger
 				//
 				// Nesting each message (2.) would cause too much overhead as it would require generating duplicate code for handling those duplicate messages.
 				// Therefore, define it globally, but prefix the message name with the resource name to make it globally unique.
-				msg.Name = resourceMessageName + "_" + msg.Name
+				msg.Name = resourceMessageName + msg.Name
 				t = msg.Name
 
 				data.Messages = append(data.Messages, *msg)
@@ -256,7 +256,7 @@ func GenerateGRPCAPISpec(dst io.Writer, src schema.Schema, tagger *apiSpecTagger
 }
 
 // terraformAttributeTypeToProtoType converts a Terraform attribute type into the corresponding Protocol Buffer type, and optionally additional Protocol Buffer messages that represent nested types.
-func terraformAttributeTypeToProtoType(attrName string, attrType attr.Type) (repeated bool, protoType string, messages *message, err error) {
+func terraformAttributeTypeToProtoType(attrName string, attrType attr.Type, prefix string) (repeated bool, protoType string, messages *message, err error) {
 	switch v := attrType.(type) {
 	case basetypes.BoolType:
 		return false, "bool", nil, nil
@@ -267,17 +267,52 @@ func terraformAttributeTypeToProtoType(attrName string, attrType attr.Type) (rep
 	case basetypes.StringType:
 		return false, "string", nil, nil
 	case types.ListType:
-		return terraformRepeatedAttributeTypeToProtoType(attrName, v.ElementType())
+		return terraformRepeatedAttributeTypeToProtoType(attrName, v.ElementType(), prefix)
 	case types.SetType:
-		return terraformRepeatedAttributeTypeToProtoType(attrName, v.ElementType())
-	// TODO: Add support for nested objects.
+		return terraformRepeatedAttributeTypeToProtoType(attrName, v.ElementType(), prefix)
+	case types.ObjectType:
+		return terraformObjectAttributeTypeToProtoType(attrName, v.AttrTypes, prefix)
+
 	default:
 		return false, "", nil, fmt.Errorf("unsupported Terraform type: %s", attrType.String())
 	}
 }
 
-func terraformRepeatedAttributeTypeToProtoType(attrName string, elementType attr.Type) (repeated bool, protoType string, messages *message, err error) {
-	elemRepeated, elemProtoType, elemMessage, err := terraformAttributeTypeToProtoType(attrName, elementType)
+// Converts a Terraform object attribute to a Protocol Buffer message type
+func terraformObjectAttributeTypeToProtoType(attrName string, attrTypes map[string]attr.Type, prefix string) (repeated bool, protoType string, messages *message, err error) {
+
+	messageName := schema.ProtoMessageName(attrName)
+	newMessage := &message{
+		Name:   messageName,
+		Fields: []field{},
+	}
+
+	for name, attrType := range attrTypes {
+		repeated, t, msg, err := terraformAttributeTypeToProtoType(name, attrType, schema.ProtoMessageName(prefix)+schema.ProtoMessageName(messageName))
+		if err != nil {
+			return false, "", nil, fmt.Errorf("failed to parse field %s in object %s: %w", name, attrName, err)
+		}
+
+		newMessage.Fields = append(newMessage.Fields, field{
+			Repeated: repeated,
+			Type:     t,
+			Name:     name,
+			Tag:      len(newMessage.Fields) + 1,
+		})
+
+		if msg != nil {
+			if newMessage.Messages == nil {
+				newMessage.Messages = []message{}
+			}
+			newMessage.Messages = append(newMessage.Messages, *msg)
+		}
+	}
+
+	return false, messageName, newMessage, nil
+}
+
+func terraformRepeatedAttributeTypeToProtoType(attrName string, elementType attr.Type, prefix string) (repeated bool, protoType string, messages *message, err error) {
+	elemRepeated, elemProtoType, elemMessage, err := terraformAttributeTypeToProtoType(attrName, elementType, prefix)
 
 	switch {
 	case err != nil:

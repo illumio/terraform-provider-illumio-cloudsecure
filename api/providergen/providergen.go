@@ -26,11 +26,17 @@ import (
 	"context"
 	"fmt"
 	"time"
+	{{- if  eq .HasObjectElementType true}}
+	"log"
+	{{- end}}
 
 	"github.com/hashicorp/terraform-plugin-framework/attr"
 	"github.com/hashicorp/terraform-plugin-framework/datasource"
 	"github.com/hashicorp/terraform-plugin-framework/resource"
 	resource_schema "github.com/hashicorp/terraform-plugin-framework/resource/schema"
+	{{- if  eq .HasObjectElementType true}}
+	"github.com/hashicorp/terraform-plugin-framework/tfsdk"
+	{{- end}}
 	"github.com/hashicorp/terraform-plugin-framework/types"
 	"github.com/hashicorp/terraform-plugin-log/tflog"
 	"google.golang.org/grpc/codes"
@@ -67,6 +73,8 @@ func (p *{{.ProviderTypeName}}) DataSources(ctx context.Context) []func() dataso
 		// TODO: Add support for data sources.
 	}
 }
+
+
 {{- define "resource"}}
 
 // {{.TypeName}} implements the {{.Name}} resource.
@@ -247,9 +255,13 @@ func (r *{{.TypeName}}) ImportState(ctx context.Context, req resource.ImportStat
 	// TODO
 }
 {{- end}}
+
+
 {{- range $resource := .Resources}}
 {{- template "resource" $resource}}
 {{- end}}
+
+
 {{- define "model"}}
 
 type {{.Name}} struct {
@@ -257,12 +269,42 @@ type {{.Name}} struct {
 	{{$field.Name}} types.{{$field.Type.ModelTypeName}} ` + "`" + `tfsdk:"{{$field.AttributeName}}"` + "`" + `
 	{{- end}}
 }
+{{- range $model := .SubModels}}
+{{- template "model" $model}}
 {{- end}}
+{{- end}}
+
+
 {{- range $model := .Models}}
 {{- template "model" $model}}
 {{- end}}
+
+
 {{- define "convertDataValueToProto"}}
-	{{- if eq .CollectionElementType nil}}
+	{{- if eq .ObjectElementType true}} 
+		{{- if eq .CollectionElementType nil}}
+		diags := tfsdk.ValueAs(context.Background(), dataValue, &protoValue)
+		if len(diags) > 0 {
+			log.Fatalf("Unexpected diagnostics: %s", diags)
+		}
+		proto.Address = protoValue
+		{{- else}}
+		{
+			dataElements := dataValue.(types.{{.ModelTypeName}}).Elements()
+			protoValues := make([]*configv1.{{.ProtoTypeName}}, 0, len(dataElements))
+			for _, dataElement := range dataElements {
+				var dataValue attr.Value = dataElement
+				protoValue := &configv1.{{.ProtoTypeName}}{}
+				diags := tfsdk.ValueAs(context.Background(), dataValue, protoValue)
+				if len(diags) > 0 {
+					log.Fatalf("Unexpected diagnostics: %s", diags)
+				}
+				protoValues = append(protoValues, protoValue)
+			}
+			protoValue = protoValues
+		}
+		{{- end}}
+	{{- else if eq .CollectionElementType nil}}
 		protoValue = dataValue.(types.{{.ModelTypeName}}).Value{{.ModelTypeName}}()
 	{{- else}}
 		{
@@ -278,6 +320,8 @@ type {{.Name}} struct {
 		}
 	{{- end}}
 {{- end}}
+
+
 {{- define "newRequestFunc"}}
 
 func {{.Name}}(data *{{.ModelName}}) *configv1.{{.ProtoName}} {
@@ -285,8 +329,18 @@ func {{.Name}}(data *{{.ModelName}}) *configv1.{{.ProtoName}} {
 	{{- range $field := .Fields}}
 	if !data.{{$field.Name}}.IsUnknown() && !data.{{$field.Name}}.IsNull() {
 		var dataValue attr.Value = data.{{$field.Name}}
+		{{- if eq $field.Type.ObjectElementType true}}
+			{{- if eq $field.Type.CollectionElementType nil}}
+			protoValue := &configv1.{{$field.Type.ProtoTypeName}}{}
+			{{- else }}
+			var protoValue []*configv1.{{$field.Type.ProtoTypeName}}
+			{{- end}}
+		{{- else}}
 		var protoValue {{$field.Type.ProtoTypeName}}
+		{{- end}}
+
 		{{- template "convertDataValueToProto" $field.Type}}
+		
 		{{- if and ($field.Optional) (eq $field.Type.CollectionElementType nil)}}
 		proto.{{$field.Name}} = &protoValue
 		{{- else}}
@@ -297,9 +351,13 @@ func {{.Name}}(data *{{.ModelName}}) *configv1.{{.ProtoName}} {
 	return proto
 }
 {{- end}}
+
+
 {{- range $newRequestFunc := .NewRequestFuncs}}
 {{- template "newRequestFunc" $newRequestFunc}}
 {{- end}}
+
+
 {{- define "newUpdateRequestFunc"}}
 
 func {{.Name}}(beforeData, afterData *{{.ModelName}}) *configv1.{{.ProtoName}} {
@@ -312,13 +370,21 @@ func {{.Name}}(beforeData, afterData *{{.ModelName}}) *configv1.{{.ProtoName}} {
 		proto.UpdateMask.Append(proto, "{{$field.AttributeName}}")
 		if !afterData.{{$field.Name}}.IsUnknown() && !afterData.{{$field.Name}}.IsNull() {
 			var dataValue attr.Value = afterData.{{$field.Name}}
-			var protoValue {{$field.Type.ProtoTypeName}}
-			{{- template "convertDataValueToProto" $field.Type}}
-			{{- if and ($field.Optional) (eq $field.Type.CollectionElementType nil)}}
-			proto.{{$field.Name}} = &protoValue
+			{{- if eq $field.Type.ObjectElementType true}}
+				diags := tfsdk.ValueAs(context.Background(), dataValue, proto.{{$field.Name}})
+				if len(diags) > 0 {
+					log.Fatalf("Unexpected diagnostics: %s", diags)
+				}
+			{{- else}}
+				var protoValue {{$field.Type.ProtoTypeName}}
+				{{- template "convertDataValueToProto" $field.Type}}
+				{{- if and ($field.Optional) (eq $field.Type.CollectionElementType nil)}}
+				proto.{{$field.Name}} = &protoValue
 			{{- else}}
 			proto.{{$field.Name}} = protoValue
 			{{- end}}
+		{{- end}}
+			
 		}
 	}
 	{{- end}}
@@ -326,9 +392,13 @@ func {{.Name}}(beforeData, afterData *{{.ModelName}}) *configv1.{{.ProtoName}} {
 	return proto
 }
 {{- end}}
+
+
 {{- range $newUpdateRequestFunc := .NewUpdateRequestFuncs}}
 {{- template "newUpdateRequestFunc" $newUpdateRequestFunc}}
 {{- end}}
+
+
 {{- define "modelDataType"}}
 {{- if eq .CollectionElementType nil -}}
 types.{{.ModelTypeName}}Type
@@ -336,8 +406,17 @@ types.{{.ModelTypeName}}Type
 types.{{.ModelTypeName}}Type{ElemType: {{- template "modelDataType" .CollectionElementType -}}}
 {{- end}}
 {{- end}}
+
+
 {{- define "convertRepeatedProtoValueToData"}}
-	{{- if eq .CollectionElementType nil}}
+	{{- if eq .ObjectElementType true}}
+		{
+			diags := tfsdk.ValueAs(context.Background(), dataValue, proto.{{.ModelTypeName}})
+			if len(diags) > 0 {
+				log.Fatalf("Unexpected diagnostics repead: %s", diags)
+			}
+		}
+	{{- else if eq .CollectionElementType nil}}
 		dataValue = types.{{.ModelTypeName}}Value(protoValue)
 	{{- else}}
 		{
@@ -348,7 +427,11 @@ types.{{.ModelTypeName}}Type{ElemType: {{- template "modelDataType" .CollectionE
 			} else {
 				dataValues := make([]attr.Value, 0, len(protoElements))
 				for _, protoElement := range protoElements {
+					{{- if eq .CollectionElementType.ObjectElementType true}}
+					var protoValue *configv1.{{.CollectionElementType.ProtoTypeName}} = protoElement
+					{{- else}}
 					var protoValue {{.CollectionElementType.ProtoTypeName}} = {{if ne .UnwrapProtoValueElementExpr nil}}{{.UnwrapProtoValueElementExpr}}{{else}}protoElement{{end}}
+					{{- end}}
 					var dataValue attr.Value
 					{{- template "convertRepeatedProtoValueToData" .CollectionElementType}}
 					dataValues = append(dataValues, dataValue)
@@ -358,15 +441,24 @@ types.{{.ModelTypeName}}Type{ElemType: {{- template "modelDataType" .CollectionE
 		}
 	{{- end}}
 {{- end}}
+
 {{- define "copyResponseFunc"}}
 func {{.Name}}(dst *{{.ModelName}}, src *configv1.{{.ProtoName}}) {
 	{{- range $field := .Fields}}
-	{{- if eq $field.Type.CollectionElementType nil}}
-	{{- if .Optional}}
-	dst.{{$field.Name}} = types.{{$field.Type.ModelTypeName}}PointerValue(src.{{$field.Name}})
-	{{- else}}
-	dst.{{$field.Name}} = types.{{$field.Type.ModelTypeName}}Value(src.{{$field.Name}})
-	{{- end}}
+	{{- if eq $field.Type.ObjectElementType true}}
+	{
+		protoValue := src.{{$field.Name}}
+		diags := tfsdk.ValueFrom(context.Background(), protoValue, dst.{{$field.Name}}.Type(context.Background()), &dst.{{$field.Name}})
+		if len(diags) > 0 {
+			log.Fatalf("Unexpected diagnostics++: %s", diags)
+		}
+	}
+	{{- else if eq $field.Type.CollectionElementType nil}}
+		{{- if .Optional}}
+		dst.{{$field.Name}} = types.{{$field.Type.ModelTypeName}}PointerValue(src.{{$field.Name}})
+		{{- else}}
+		dst.{{$field.Name}} = types.{{$field.Type.ModelTypeName}}Value(src.{{$field.Name}})
+		{{- end}}
 	{{- else}}
 	{
 		protoValue := src.{{$field.Name}}
@@ -378,9 +470,12 @@ func {{.Name}}(dst *{{.ModelName}}, src *configv1.{{.ProtoName}}) {
 	{{- end}}
 }
 {{- end}}
+
 {{- range $copyResponseFunc := .CopyResponseFuncs}}
 {{- template "copyResponseFunc" $copyResponseFunc}}
 {{- end}}
+
+
 `))
 )
 
@@ -406,12 +501,17 @@ type providerTemplateData struct {
 
 	// Resources is the list of Terraform resources to define.
 	Resources []resourceData
+
+	// HasObjectElementType is true if the resource has a field with an object element type.
+	HasObjectElementType bool
 }
 
 // model defines the model of a Terraform resource or data source.
 type model struct {
 	// Name is the name of the model.
 	Name string
+
+	SubModels []model
 
 	// Fields defines the fields in the model.
 	Fields []field
@@ -453,6 +553,8 @@ type fieldType struct {
 	// UnwrapProtoValueElementExpr is the Golang expression that unwraps element value "protoElement" when a converting Protocol Buffer field into model data of this type.
 	// If not set, defaults to "protoElement".
 	UnwrapProtoValueElementExpr *string
+
+	ObjectElementType bool
 }
 
 // convertFunc defines a function that converts Terraform models into Protocol Buffer messages or vice-versa.
@@ -521,6 +623,23 @@ type resourceData struct {
 	RPCNameForDelete string
 }
 
+func (m *model) HasObjectField() bool {
+	for _, f := range m.Fields {
+		if f.Type.CollectionElementType != nil && f.Type.CollectionElementType.ObjectElementType {
+			return true
+		}
+		if f.Type.ObjectElementType {
+			return true
+		}
+	}
+	for _, subModel := range m.SubModels {
+		if subModel.HasObjectField() {
+			return true
+		}
+	}
+	return false
+}
+
 // GenerateProvider generates the implementation of the Terraform provider for the given schema.
 func GenerateProvider(dst io.Writer, pkg string, src schema.Schema) error {
 	data := providerTemplateData{
@@ -542,8 +661,9 @@ func GenerateProvider(dst io.Writer, pkg string, src schema.Schema) error {
 		numFields := len(resource.Schema.Attributes)
 
 		resourceModel := model{
-			Name:   resourceMessageName + "ResourceModel",
-			Fields: make([]field, 0, numFields),
+			Name:      resourceMessageName + "ResourceModel",
+			SubModels: make([]model, 0),
+			Fields:    make([]field, 0, numFields),
 		}
 
 		createRequestFunc := convertFunc{
@@ -599,9 +719,14 @@ func GenerateProvider(dst io.Writer, pkg string, src schema.Schema) error {
 		for _, attrName := range attrNames {
 			attrSchema := resource.Schema.Attributes[attrName]
 
-			t, err := TerraformAttributeTypeToProtoType("configv1."+resourceMessageName, attrName, attrSchema.GetType())
+			t, m, err := TerraformAttributeTypeToProtoType(resourceMessageName, attrName, attrSchema.GetType())
 			if err != nil {
 				return fmt.Errorf("failed to parse field %s in resource %s: %w", attrName, resourceMessageName, err)
+			} else if m != nil {
+				data.Models = append(data.Models, *m)
+				if m.HasObjectField() {
+					data.HasObjectElementType = true
+				}
 			}
 
 			f := field{
@@ -685,32 +810,32 @@ func GenerateProvider(dst io.Writer, pkg string, src schema.Schema) error {
 }
 
 // TerraformAttributeTypeToProtoType converts a Terraform attribute type into the corresponding Protocol Buffer Golang type.
-func TerraformAttributeTypeToProtoType(nestedMessageNamePrefix, attrName string, attrType attr.Type) (t fieldType, err error) {
+func TerraformAttributeTypeToProtoType(MessageName, attrName string, attrType attr.Type) (t fieldType, m *model, err error) {
 	switch v := attrType.(type) {
 	case basetypes.BoolType:
 		return fieldType{
 			ModelTypeName: "Bool",
 			ProtoTypeName: "bool",
-		}, nil
+		}, nil, nil
 	case basetypes.Float64Type:
 		return fieldType{
 			ModelTypeName: "Float64",
 			ProtoTypeName: "float64",
-		}, nil
+		}, nil, nil
 	case basetypes.Int64Type:
 		return fieldType{
 			ModelTypeName: "Int64",
 			ProtoTypeName: "int64",
-		}, nil
+		}, nil, nil
 	case basetypes.StringType:
 		return fieldType{
 			ModelTypeName: "String",
 			ProtoTypeName: "string",
-		}, nil
+		}, nil, nil
 	case types.ListType:
-		protoTypeName, wrapProtoValueElementExpr, unwrapProtoValueElementExpr, elementProtoType, err := TerraformRepeatedAttributeTypeToProtoType(nestedMessageNamePrefix, attrName, v.ElementType())
+		protoTypeName, wrapProtoValueElementExpr, unwrapProtoValueElementExpr, elementProtoType, objectElementType, err := TerraformRepeatedAttributeTypeToProtoType(MessageName, attrName, v.ElementType())
 		if err != nil {
-			return fieldType{}, err
+			return fieldType{}, nil, err
 		}
 
 		return fieldType{
@@ -719,11 +844,12 @@ func TerraformAttributeTypeToProtoType(nestedMessageNamePrefix, attrName string,
 			CollectionElementType:       &elementProtoType,
 			WrapProtoValueElementExpr:   wrapProtoValueElementExpr,
 			UnwrapProtoValueElementExpr: unwrapProtoValueElementExpr,
-		}, nil
+			ObjectElementType:           objectElementType,
+		}, nil, nil
 	case types.SetType:
-		protoTypeName, wrapProtoValueElementExpr, unwrapProtoValueElementExpr, elementProtoType, err := TerraformRepeatedAttributeTypeToProtoType(nestedMessageNamePrefix, attrName, v.ElementType())
+		protoTypeName, wrapProtoValueElementExpr, unwrapProtoValueElementExpr, elementProtoType, objectElementType, err := TerraformRepeatedAttributeTypeToProtoType(MessageName, attrName, v.ElementType())
 		if err != nil {
-			return fieldType{}, err
+			return fieldType{}, nil, err
 		}
 
 		return fieldType{
@@ -732,30 +858,71 @@ func TerraformAttributeTypeToProtoType(nestedMessageNamePrefix, attrName string,
 			CollectionElementType:       &elementProtoType,
 			WrapProtoValueElementExpr:   wrapProtoValueElementExpr,
 			UnwrapProtoValueElementExpr: unwrapProtoValueElementExpr,
-		}, nil
-	// TODO: Add support for nested objects.
+			ObjectElementType:           objectElementType,
+		}, nil, nil
+	case types.ObjectType:
+		objModel, err := convertObjectToModel(MessageName, attrName, attrType.(basetypes.ObjectType).AttrTypes)
+		if err != nil {
+			return fieldType{}, nil, err
+		}
+
+		return fieldType{
+			ModelTypeName:     "Object",
+			ProtoTypeName:     MessageName + schema.ProtoMessageName(attrName),
+			ObjectElementType: true,
+		}, objModel, nil
+
 	default:
-		return fieldType{}, fmt.Errorf("unsupported Terraform type: %s", attrType.String())
+		return fieldType{}, nil, fmt.Errorf("unsupported Terraform type: %s", attrType.String())
 	}
 }
 
-func TerraformRepeatedAttributeTypeToProtoType(nestedMessageNamePrefix, attrName string, elementType attr.Type) (protoTypeName string, wrapProtoValueElementExpr, unwrapProtoValueElementExpr *string, elemProtoType fieldType, err error) {
+// Converts a Terraform object attribute to a Protocol Buffer message type
+func convertObjectToModel(prefix string, attrName string, attrTypes map[string]attr.Type) (myModels *model, err error) {
+
+	messageName := prefix + schema.ProtoMessageName(attrName)
+	newMessage := &model{
+		Name:      messageName,
+		Fields:    []field{},
+		SubModels: []model{},
+	}
+
+	for name, attrType := range attrTypes {
+		protoType, m, err := TerraformAttributeTypeToProtoType(messageName, name, attrType)
+		if err != nil {
+			return nil, err
+		} else if m != nil {
+			newMessage.SubModels = append(newMessage.SubModels, *m)
+		}
+
+		newMessage.Fields = append(newMessage.Fields, field{
+			Name:          schema.ProtoMessageName(name),
+			AttributeName: name,
+			Type:          protoType,
+		})
+	}
+
+	return newMessage, nil
+}
+
+func TerraformRepeatedAttributeTypeToProtoType(nestedMessageNamePrefix, attrName string, elementType attr.Type) (protoTypeName string, wrapProtoValueElementExpr, unwrapProtoValueElementExpr *string, elemProtoType fieldType, ObjectElementType bool, err error) {
 	camelCasedAttrName := schema.ProtoMessageName(attrName)
 	wrapperMessageName := nestedMessageNamePrefix + "_" + camelCasedAttrName
 
-	elemType, err := TerraformAttributeTypeToProtoType(wrapperMessageName, attrName, elementType)
+	elemType, _, err := TerraformAttributeTypeToProtoType(wrapperMessageName, attrName, elementType)
 
 	switch {
 	case err != nil:
-		return "", nil, nil, fieldType{}, fmt.Errorf("unsupported element type %s: %w", elementType.String(), err)
-
+		return "", nil, nil, fieldType{}, false, fmt.Errorf("unsupported element type %s: %w", elementType.String(), err)
+	case elemType.ObjectElementType:
+		return nestedMessageNamePrefix + camelCasedAttrName, nil, nil, elemType, true, nil
 	case elemType.CollectionElementType != nil: // The element type itself is repeated. Every element is wrapped into a nested Protocol Buffer message.
 		wrapProtoValueElementExpr := fmt.Sprintf("&%s{%s:protoValue}", wrapperMessageName, camelCasedAttrName)
 		unwrapProtoValueElementExpr := "protoElement." + camelCasedAttrName
 
-		return "[]*" + wrapperMessageName, &wrapProtoValueElementExpr, &unwrapProtoValueElementExpr, elemType, nil
+		return "[]*" + wrapperMessageName, &wrapProtoValueElementExpr, &unwrapProtoValueElementExpr, elemType, false, nil
 
 	default: // The element type is not repeated. Normal case.
-		return "[]" + elemType.ProtoTypeName, nil, nil, elemType, nil
+		return "[]" + elemType.ProtoTypeName, nil, nil, elemType, false, nil
 	}
 }
