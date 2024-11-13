@@ -119,7 +119,7 @@ func (suite *GenerateTestSuite) TestTerraformAttributeTypeToProtoType() {
 
 	for name, tc := range tests {
 		suite.Run(name, func() {
-			gotRepeated, gotType, gotMessages, gotErr := terraformAttributeTypeToProtoType(fieldName, tc.tfType)
+			gotRepeated, gotType, gotMessages, gotErr := terraformAttributeTypeToProtoType(fieldName, tc.tfType, "")
 			suite.Equal(tc.expectedRepeated, gotRepeated, "Protocol Buffer repeated flag should match")
 			suite.Equal(tc.expectedType, gotType, "Protocol Buffer type should match")
 			suite.Equal(tc.expectedMessage, gotMessages, "Messages should match")
