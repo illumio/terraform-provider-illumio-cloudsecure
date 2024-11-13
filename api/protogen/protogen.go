@@ -160,13 +160,6 @@ func GenerateGRPCAPISpec(dst io.Writer, src schema.Schema, tagger *apiSpecTagger
 			}
 
 			if msg != nil {
-				// TODO: This should be nested into each message to prevent name collisions, or the message name must be prefixed to become unique.
-				// The message used as this field's type must either:
-				//   1. be defined globally, so it can be shared among the request/response messages for the resource, or
-				//   2. be defined as a nested messaged within each request/response message for the resource, which provides more encapsulation.
-				//
-				// Nesting each message (2.) would cause too much overhead as it would require generating duplicate code for handling those duplicate messages.
-				// Therefore, define it globally, but prefix the message name with the resource name to make it globally unique.
 				msg.Name = resourceMessageName + msg.Name
 				t = msg.Name
 
@@ -278,9 +271,8 @@ func terraformAttributeTypeToProtoType(attrName string, attrType attr.Type, pref
 	}
 }
 
-// Converts a Terraform object attribute to a Protocol Buffer message type
+// Converts a Terraform object attribute to a Protocol Buffer message type.
 func terraformObjectAttributeTypeToProtoType(attrName string, attrTypes map[string]attr.Type, prefix string) (repeated bool, protoType string, messages *message, err error) {
-
 	messageName := schema.ProtoMessageName(attrName)
 	newMessage := &message{
 		Name:   messageName,
@@ -304,6 +296,7 @@ func terraformObjectAttributeTypeToProtoType(attrName string, attrTypes map[stri
 			if newMessage.Messages == nil {
 				newMessage.Messages = []message{}
 			}
+
 			newMessage.Messages = append(newMessage.Messages, *msg)
 		}
 	}
