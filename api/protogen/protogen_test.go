@@ -115,6 +115,98 @@ func (suite *GenerateTestSuite) TestTerraformAttributeTypeToProtoType() {
 				},
 			},
 		},
+		"nested-message": {
+			tfType: types.ObjectType{
+				AttrTypes: map[string]attr.Type{
+					"nested": types.StringType,
+				},
+			},
+			expectedType: "TheField",
+			expectedMessage: &message{
+				Name: "TheField",
+				Fields: []field{
+					{
+						Type: "string",
+						Name: "nested",
+						Tag:  1,
+					},
+				},
+			},
+		},
+		"nested-message-with-nested-message": {
+			tfType: types.ObjectType{
+				AttrTypes: map[string]attr.Type{
+					"name": types.StringType,
+					"phone_numbers": types.ObjectType{
+						AttrTypes: map[string]attr.Type{
+							"office": types.StringType,
+							"mobile": types.StringType,
+						},
+					},
+				},
+			},
+			expectedType: "TheField",
+			expectedMessage: &message{
+				Name: "TheField",
+				Messages: []message{
+					{
+						Name: "PhoneNumbers",
+						Fields: []field{
+							{
+								Type: "string",
+								Name: "office",
+								Tag:  1,
+							},
+							{
+								Type: "string",
+								Name: "mobile",
+								Tag:  2,
+							},
+						},
+					},
+				},
+				Fields: []field{
+					{
+						Type: "string",
+						Name: "name",
+						Tag:  1,
+					},
+					{
+						Type: "PhoneNumbers",
+						Name: "phone_numbers",
+						Tag:  2,
+					},
+				},
+			},
+		},
+		"list-nested-messages": {
+			tfType: types.ListType{
+				ElemType: types.ObjectType{
+					AttrTypes: map[string]attr.Type{
+						"name":  types.StringType,
+						"email": types.StringType,
+					},
+				},
+			},
+			expectedRepeated: true,
+			expectedType:     "TheField",
+			expectedMessage: &message{
+				Name:     "TheField",
+				Messages: nil,
+				Fields: []field{
+					{
+						Type: "string",
+						Name: "name",
+						Tag:  1,
+					},
+					{
+						Type: "string",
+						Name: "email",
+						Tag:  2,
+					},
+				},
+			},
+		},
 	}
 
 	for name, tc := range tests {
