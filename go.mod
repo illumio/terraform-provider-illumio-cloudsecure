@@ -1,6 +1,6 @@
 module github.com/illumio/terraform-provider-illumio-cloudsecure
 
-go 1.22.0
+go 1.22.7
 
 toolchain go1.22.9
 
