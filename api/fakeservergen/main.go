@@ -44,4 +44,5 @@ func main() {
 		fmt.Fprintf(os.Stderr, "failed to close file %q: %s", outfile, err)
 		os.Exit(1)
 	}
+	fmt.Fprintf(os.Stdout, "Completed fake server implementation")
 }
