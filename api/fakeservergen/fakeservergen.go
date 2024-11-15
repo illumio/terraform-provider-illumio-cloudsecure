@@ -446,7 +446,8 @@ func TerraformAttributeTypeToProtoType(nestedMessageNamePrefix, attrName string,
 		return TerraformRepeatedAttributeTypeToProtoType(nestedMessageNamePrefix, attrName, value.ElementType())
 	case types.SetType:
 		return TerraformRepeatedAttributeTypeToProtoType(nestedMessageNamePrefix, attrName, value.ElementType())
-	// TODO: Add support for nested objects.
+	case types.ObjectType:
+		return "*" + nestedMessageNamePrefix + schema.ProtoMessageName(attrName), nil
 	default:
 		return "", fmt.Errorf("unsupported Terraform type: %s", attrType.String())
 	}
