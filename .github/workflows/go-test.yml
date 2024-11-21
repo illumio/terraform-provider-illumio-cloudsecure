@@ -1,18 +1,20 @@
 name: go-test
 on:
-    push:
-        branches:
-            - main
-        paths:
-            - '**.go'
-    pull_request:
-        branches:
-            - main
-        paths:
-            - '**.go'
+  push:
+    branches:
+      - main
+    paths:
+      - "**.go"
+      - "go.*"
+  pull_request:
+    branches:
+      - main
+    paths:
+      - "**.go"
+      - "go.*"
 
 permissions:
-    contents: read
+  contents: read
 jobs:
   go-test:
     runs-on: ubuntu-latest
