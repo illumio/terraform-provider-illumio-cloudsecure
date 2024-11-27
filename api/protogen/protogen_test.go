@@ -115,7 +115,7 @@ func (suite *GenerateTestSuite) TestTerraformAttributeTypeToProtoType() {
 				},
 			},
 		},
-		"nested-message": {
+		"object": {
 			tfType: types.ObjectType{
 				AttrTypes: map[string]attr.Type{
 					"nested": types.StringType,
@@ -133,7 +133,7 @@ func (suite *GenerateTestSuite) TestTerraformAttributeTypeToProtoType() {
 				},
 			},
 		},
-		"nested-message-with-nested-message": {
+		"object-with-nested-object": {
 			tfType: types.ObjectType{
 				AttrTypes: map[string]attr.Type{
 					"name": types.StringType,
@@ -179,7 +179,7 @@ func (suite *GenerateTestSuite) TestTerraformAttributeTypeToProtoType() {
 				},
 			},
 		},
-		"list-nested-messages": {
+		"list-nested-objects": {
 			tfType: types.ListType{
 				ElemType: types.ObjectType{
 					AttrTypes: map[string]attr.Type{
@@ -189,9 +189,9 @@ func (suite *GenerateTestSuite) TestTerraformAttributeTypeToProtoType() {
 				},
 			},
 			expectedRepeated: true,
-			expectedType:     "TheField",
+			expectedType:     "TheFieldInstance",
 			expectedMessage: &message{
-				Name:     "TheField",
+				Name:     "TheFieldInstance",
 				Messages: nil,
 				Fields: []field{
 					{
@@ -220,7 +220,7 @@ func (suite *GenerateTestSuite) TestTerraformAttributeTypeToProtoType() {
 	}
 }
 
-func (suite *GenerateTestSuite) TestGRPCAPISpecTemplateMessage() {
+func (suite *GenerateTestSuite) TestGRPCAPISpecTemplateMessage() { //nolint:maintidx
 	tests := map[string]struct {
 		message message
 		output  string
@@ -463,6 +463,105 @@ func (suite *GenerateTestSuite) TestGRPCAPISpecTemplateMessage() {
 					B b = 2;
 				}`,
 		},
+		"nested_message_with_repeated_field": {
+			message: message{
+				Name: "TopLevel",
+				Messages: []message{
+					{
+						Name: "Nested",
+						Messages: []message{
+							{
+								Name: "Address",
+								Fields: []field{
+									{
+										Type: "string",
+										Name: "street",
+										Tag:  1,
+									},
+									{
+										Type: "string",
+										Name: "city",
+										Tag:  2,
+									},
+									{
+										Type: "string",
+										Name: "state",
+										Tag:  3,
+									},
+								},
+							},
+						},
+						Fields: []field{
+							{
+								Repeated: false,
+								Type:     "string",
+								Name:     "address_name",
+								Tag:      1,
+							},
+							{
+								Repeated: true,
+								Name:     "addresses",
+								Type:     "Address",
+								Tag:      2,
+							},
+						},
+					},
+				},
+			},
+			output: `
+				message TopLevel {
+					message Nested {
+						message Address {
+							string street = 1;
+							string city = 2;
+							string state = 3;
+						}
+						string address_name = 1;
+						repeated Address addresses = 2;
+					}
+				}
+			`,
+		},
+		"list_of_nested_messages": {
+			message: message{
+				Name: "TopLevel",
+				Messages: []message{
+					{
+						Name: "Address",
+						Fields: []field{
+							{
+								Type: "string",
+								Name: "state",
+								Tag:  1,
+							},
+							{
+								Type: "string",
+								Name: "city",
+								Tag:  2,
+							},
+						},
+					},
+				},
+				Fields: []field{
+					{
+						Repeated: true,
+						Type:     "Address",
+						Optional: true,
+						Name:     "addresses",
+						Tag:      1,
+					},
+				},
+			},
+			output: `
+				message TopLevel {
+					message Address {
+						string state = 1;
+						string city = 2;
+					}
+					repeated Address addresses = 1;
+				}
+			`,
+		},
 	}
 
 	for name, tc := range tests {
@@ -600,6 +699,28 @@ func (suite *GenerateTestSuite) TestGRPCAPISpecTemplate() {
 							},
 						},
 					},
+					{
+						Name: "NestedMessageParent",
+						Messages: []message{
+							{
+								Name: "NestedMessageChild",
+								Fields: []field{
+									{
+										Type: "string",
+										Name: "child_id",
+										Tag:  1,
+									},
+								},
+							},
+						},
+						Fields: []field{
+							{
+								Type: "string",
+								Name: "id",
+								Tag:  1,
+							},
+						},
+					},
 				},
 			},
 			output: `
@@ -607,34 +728,34 @@ func (suite *GenerateTestSuite) TestGRPCAPISpecTemplate() {
 				// SPDX-License-Identifier: MPL-2.0
 				syntax = "proto3";
 				package illumio.cloud.config.1.2.3;
-
 				import "google/protobuf/empty.proto";
 				import "google/protobuf/field_mask.proto";
-
 				service ConfigService {
 					rpc DoSomething1(RequestMessage1) returns (ResponseMessage1);
 					rpc DoSomething2(RequestMessage2) returns (ResponseMessage2);
 				}
-				
 				message RequestMessage1 {
-					message Nested {
-						repeated string strings = 1;
-					}
+				message Nested {
+					repeated string strings = 1;
+				}
 					string id = 1;
 					repeated Nested list_of_list_of_strings = 2;
 				}
-
 				message ResponseMessage1 {
 					string id = 1;
 					optional string optional_string = 2;
 				}
-
 				message RequestMessage2 {
 					string id = 1;
 					repeated string list_of_strings = 2;
 				}
-
 				message ResponseMessage2 {
+					string id = 1;
+				}
+				message NestedMessageParent {
+					message NestedMessageChild {
+						string child_id = 1;
+					}
 					string id = 1;
 				}`,
 		},

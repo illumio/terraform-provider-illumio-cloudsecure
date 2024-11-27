@@ -36,6 +36,7 @@ import (
 	resource_schema "github.com/hashicorp/terraform-plugin-framework/resource/schema"
 	{{- if  eq .HasObjectElementType true}}
 	"github.com/hashicorp/terraform-plugin-framework/tfsdk"
+	"github.com/hashicorp/terraform-plugin-framework/types/basetypes"
 	{{- end}}
 	"github.com/hashicorp/terraform-plugin-framework/types"
 	"github.com/hashicorp/terraform-plugin-log/tflog"
@@ -262,7 +263,7 @@ func (r *{{.TypeName}}) ImportState(ctx context.Context, req resource.ImportStat
 {{- end}}
 
 
-{{- define "model"}}
+{{- define "typeModel"}}
 
 type {{.Name}} struct {
 	{{- range $field := .Fields}}
@@ -270,39 +271,83 @@ type {{.Name}} struct {
 	{{- end}}
 }
 {{- range $model := .SubModels}}
-{{- template "model" $model}}
+{{- template "typeModel" $model}}
 {{- end}}
 {{- end}}
 
 
 {{- range $model := .Models}}
-{{- template "model" $model}}
+{{- template "typeModel" $model}}
+{{- end}}
+
+{{- define "convertModelToProto"}}
+
+func GetTypeAttrsFor{{.Name}}() map[string]attr.Type {
+	return map[string]attr.Type{
+		{{- range $field := .Fields}}
+		"{{$field.AttributeName}}": types.{{$field.Type.ModelTypeName}}Type,
+		{{- end}}
+	}
+}
+
+func Convert{{.Name}}ToObjectValueFromProto(proto *configv1.{{.Name}}) basetypes.ObjectValue  {
+	return types.ObjectValueMust(
+		GetTypeAttrsFor{{.Name}}(),
+		map[string]attr.Value{
+			{{- range $field := .Fields}}
+			"{{$field.AttributeName}}": types.{{$field.Type.ModelTypeName}}Value(proto.{{$field.Name}}),
+			{{- end}}
+		},
+	)
+}
+
+func ConvertDataValueTo{{.Name}}Proto(dataValue attr.Value) *configv1.{{.Name}} {
+	pv := {{.Name}}{}
+	diags := tfsdk.ValueAs(context.Background(), dataValue, &pv)
+	if len(diags) > 0 {
+		log.Fatalf("Unexpected diagnostics: %s", diags)
+	}
+	proto := &configv1.{{.Name}}{}
+	{{- range $field := .Fields}}
+	proto.{{$field.Name}} = pv.{{$field.Name}}.Value{{$field.Type.ModelTypeName}}()
+	{{- end}}
+	return proto
+}
+
+{{- if eq .UsedInCollection true }}
+func ConvertDataValueToList{{.Name}}Proto(data attr.Value) []*configv1.{{.Name}} {
+	var protoValue []*configv1.AwsTagToLabelCloudTagsInstance
+	{
+		dataElements := data.(types.List).Elements()
+		listProtoValues := make([]*configv1.{{.Name}}, 0, len(dataElements))
+		for _, dataElement := range dataElements {
+			var dataValue attr.Value = dataElement
+			listProtoValues = append(listProtoValues, ConvertDataValueTo{{.Name}}Proto(dataValue))
+		}
+		protoValue = listProtoValues
+	}
+	return protoValue
+}
+{{- end}}
+
+{{- range $model := .SubModels}}
+{{- template "convertModelToProto" $model}}
+{{- end}}
+{{- end}}
+
+{{- range $model := .Models}}
+	{{- range $submodel := $model.SubModels}}
+	{{- template "convertModelToProto" $submodel}}
+	{{- end}}
 {{- end}}
 
 
 {{- define "convertDataValueToProto"}}
 	{{- if eq .ObjectElementType true}} 
 		{{- if eq .CollectionElementType nil}}
-		diags := tfsdk.ValueAs(context.Background(), dataValue, &protoValue)
-		if len(diags) > 0 {
-			log.Fatalf("Unexpected diagnostics: %s", diags)
-		}
-		proto.Address = protoValue
+		protoValue = ConvertDataValueTo{{.ProtoTypeName}}Proto(dataValue)
 		{{- else}}
-		{
-			dataElements := dataValue.(types.{{.ModelTypeName}}).Elements()
-			protoValues := make([]*configv1.{{.ProtoTypeName}}, 0, len(dataElements))
-			for _, dataElement := range dataElements {
-				var dataValue attr.Value = dataElement
-				protoValue := &configv1.{{.ProtoTypeName}}{}
-				diags := tfsdk.ValueAs(context.Background(), dataValue, protoValue)
-				if len(diags) > 0 {
-					log.Fatalf("Unexpected diagnostics: %s", diags)
-				}
-				protoValues = append(protoValues, protoValue)
-			}
-			protoValue = protoValues
-		}
+		protoValue = ConvertDataValueToList{{.ProtoTypeName}}InstanceProto(dataValue)
 		{{- end}}
 	{{- else if eq .CollectionElementType nil}}
 		protoValue = dataValue.(types.{{.ModelTypeName}}).Value{{.ModelTypeName}}()
@@ -333,7 +378,7 @@ func {{.Name}}(data *{{.ModelName}}) *configv1.{{.ProtoName}} {
 			{{- if eq $field.Type.CollectionElementType nil}}
 			protoValue := &configv1.{{$field.Type.ProtoTypeName}}{}
 			{{- else }}
-			var protoValue []*configv1.{{$field.Type.ProtoTypeName}}
+			var protoValue []*configv1.{{$field.Type.ProtoTypeName}}Instance
 			{{- end}}
 		{{- else}}
 		var protoValue {{$field.Type.ProtoTypeName}}
@@ -371,10 +416,11 @@ func {{.Name}}(beforeData, afterData *{{.ModelName}}) *configv1.{{.ProtoName}} {
 		if !afterData.{{$field.Name}}.IsUnknown() && !afterData.{{$field.Name}}.IsNull() {
 			var dataValue attr.Value = afterData.{{$field.Name}}
 			{{- if eq $field.Type.ObjectElementType true}}
-				diags := tfsdk.ValueAs(context.Background(), dataValue, proto.{{$field.Name}})
-				if len(diags) > 0 {
-					log.Fatalf("Unexpected diagnostics: %s", diags)
-				}
+				{{- if eq $field.Type.CollectionElementType nil}}
+				proto.{{$field.Name}} = ConvertDataValueTo{{$field.Type.ProtoTypeName}}Proto(dataValue)
+				{{- else }}
+				proto.{{$field.Name}} = ConvertDataValueToList{{$field.Type.ProtoTypeName}}InstanceProto(dataValue)
+				{{- end}}
 			{{- else}}
 				var protoValue {{$field.Type.ProtoTypeName}}
 				{{- template "convertDataValueToProto" $field.Type}}
@@ -446,13 +492,21 @@ types.{{.ModelTypeName}}Type{ElemType: {{- template "modelDataType" .CollectionE
 func {{.Name}}(dst *{{.ModelName}}, src *configv1.{{.ProtoName}}) {
 	{{- range $field := .Fields}}
 	{{- if eq $field.Type.ObjectElementType true}}
+	{{- if eq $field.Type.CollectionElementType nil}}
 	{
-		protoValue := src.{{$field.Name}}
-		diags := tfsdk.ValueFrom(context.Background(), protoValue, dst.{{$field.Name}}.Type(context.Background()), &dst.{{$field.Name}})
-		if len(diags) > 0 {
-			log.Fatalf("Unexpected diagnostics++: %s", diags)
-		}
+		dst.Icon = Convert{{$field.Type.ProtoTypeName}}ToObjectValueFromProto(src.Icon)
 	}
+	{{- else}}
+	{
+		vals := make([]attr.Value, 0, len(src.{{$field.Name}}))
+		for _, val := range src.{{$field.Name}} {
+			vals = append(vals, Convert{{$field.Type.ProtoTypeName}}InstanceToObjectValueFromProto(val))
+		}
+		dst.{{$field.Name}} = types.ListValueMust(types.ObjectType{
+			AttrTypes: GetTypeAttrsFor{{$field.Type.ProtoTypeName}}Instance(),
+		}, vals)
+	}
+	{{- end}}
 	{{- else if eq $field.Type.CollectionElementType nil}}
 		{{- if .Optional}}
 		dst.{{$field.Name}} = types.{{$field.Type.ModelTypeName}}PointerValue(src.{{$field.Name}})
@@ -515,6 +569,8 @@ type model struct {
 
 	// Fields defines the fields in the model.
 	Fields []field
+
+	UsedInCollection bool
 }
 
 // field defines a field in a model.
@@ -653,163 +709,170 @@ func GenerateProvider(dst io.Writer, pkg string, src schema.Schema) error {
 		Resources:             make([]resourceData, 0, len(src.Resources())),
 	}
 
-	camelCasedIdFieldName := schema.ProtoMessageName(schema.IDFieldName)
-	camelCasedUpdateMaskFieldName := schema.ProtoMessageName(schema.UpdateMaskFieldName)
-
 	for _, resource := range src.Resources() {
-		resourceName := resource.TypeName
-		resourceMessageName := schema.ProtoMessageName(resourceName)
-		numFields := len(resource.Schema.Attributes)
-
-		resourceModel := model{
-			Name:      resourceMessageName + "ResourceModel",
-			SubModels: make([]model, 0),
-			Fields:    make([]field, 0, numFields),
+		err := AddResourceToProviderTemplateData(&resource, &data)
+		if err != nil {
+			return err
 		}
-
-		createRequestFunc := convertFunc{
-			Name:      "New" + schema.ProtoMessageNameForCreateRequest(resourceMessageName),
-			ProtoName: schema.ProtoMessageNameForCreateRequest(resourceMessageName),
-			ModelName: resourceModel.Name,
-			Fields:    make([]field, 0, numFields-1),
-		}
-
-		readRequestFunc := convertFunc{
-			Name:      "New" + schema.ProtoMessageNameForReadRequest(resourceMessageName),
-			ProtoName: schema.ProtoMessageNameForReadRequest(resourceMessageName),
-			ModelName: resourceModel.Name,
-			Fields:    make([]field, 0, 1),
-		}
-
-		updateRequestFunc := convertFunc{
-			Name:      "New" + schema.ProtoMessageNameForUpdateRequest(resourceMessageName),
-			ProtoName: schema.ProtoMessageNameForUpdateRequest(resourceMessageName),
-			ModelName: resourceModel.Name,
-			Fields:    make([]field, 0, numFields+1),
-		}
-
-		deleteRequestFunc := convertFunc{
-			Name:      "New" + schema.ProtoMessageNameForDeleteRequest(resourceMessageName),
-			ProtoName: schema.ProtoMessageNameForDeleteRequest(resourceMessageName),
-			ModelName: resourceModel.Name,
-			Fields:    make([]field, 0, 1),
-		}
-
-		createResponseFunc := convertFunc{
-			Name:      "Copy" + schema.ProtoMessageNameForCreateResponse(resourceMessageName),
-			ProtoName: schema.ProtoMessageNameForCreateResponse(resourceMessageName),
-			ModelName: resourceModel.Name,
-			Fields:    make([]field, 0, numFields),
-		}
-
-		readResponseFunc := convertFunc{
-			Name:      "Copy" + schema.ProtoMessageNameForReadResponse(resourceMessageName),
-			ProtoName: schema.ProtoMessageNameForReadResponse(resourceMessageName),
-			ModelName: resourceModel.Name,
-			Fields:    make([]field, 0, numFields),
-		}
-
-		updateResponseFunc := convertFunc{
-			Name:      "Copy" + schema.ProtoMessageNameForUpdateResponse(resourceMessageName),
-			ProtoName: schema.ProtoMessageNameForUpdateResponse(resourceMessageName),
-			ModelName: resourceModel.Name,
-			Fields:    make([]field, 0, numFields),
-		}
-
-		attrNames := schema.SortResourceAttributes(resource.Schema.Attributes)
-		for _, attrName := range attrNames {
-			attrSchema := resource.Schema.Attributes[attrName]
-
-			t, m, err := terraformAttributeTypeToProtoType(resourceMessageName, attrName, attrSchema.GetType())
-			if err != nil {
-				return fmt.Errorf("failed to parse field %s in resource %s: %w", attrName, resourceMessageName, err)
-			}
-
-			if m != nil {
-				data.Models = append(data.Models, *m)
-				if m.HasObjectField() {
-					data.HasObjectElementType = true
-				}
-			}
-
-			f := field{
-				Name:          schema.ProtoMessageName(attrName),
-				AttributeName: attrName,
-				Type:          t,
-				Optional:      schema.AttributeIsOptional(attrSchema),
-			}
-
-			resourceModel.Fields = append(resourceModel.Fields, f)
-
-			mode := schema.GetResourceAttributeMode(attrSchema)
-
-			if mode.InCreateRequest {
-				createRequestFunc.Fields = append(createRequestFunc.Fields, f)
-			}
-
-			if mode.InCreateResponse {
-				createResponseFunc.Fields = append(createResponseFunc.Fields, f)
-			}
-
-			if mode.InReadRequest {
-				readRequestFunc.Fields = append(readRequestFunc.Fields, f)
-			}
-
-			if mode.InReadResponse {
-				readResponseFunc.Fields = append(readResponseFunc.Fields, f)
-			}
-
-			if mode.InUpdateRequest {
-				updateRequestFunc.Fields = append(updateRequestFunc.Fields, f)
-			}
-
-			if mode.InUpdateResponse {
-				updateResponseFunc.Fields = append(updateResponseFunc.Fields, f)
-			}
-
-			if mode.InDeleteRequest {
-				deleteRequestFunc.Fields = append(deleteRequestFunc.Fields, f)
-			}
-		}
-
-		data.Models = append(data.Models,
-			resourceModel,
-		)
-		data.NewRequestFuncs = append(data.NewRequestFuncs,
-			createRequestFunc,
-			readRequestFunc,
-			deleteRequestFunc,
-		)
-		data.NewUpdateRequestFuncs = append(data.NewUpdateRequestFuncs,
-			updateRequestFunc,
-		)
-		data.CopyResponseFuncs = append(data.CopyResponseFuncs,
-			createResponseFunc,
-			readResponseFunc,
-			updateResponseFunc,
-		)
-
-		data.Resources = append(data.Resources, resourceData{
-			Name:                       resourceName,
-			TypeName:                   resourceMessageName + "Resource",
-			ModelName:                  resourceModel.Name,
-			IdFieldName:                camelCasedIdFieldName,
-			UpdateMaskFieldName:        camelCasedUpdateMaskFieldName,
-			NewCreateRequestFuncName:   createRequestFunc.Name,
-			CopyCreateResponseFuncName: createResponseFunc.Name,
-			NewReadRequestFuncName:     readRequestFunc.Name,
-			CopyReadResponseFuncName:   readResponseFunc.Name,
-			NewUpdateRequestFuncName:   updateRequestFunc.Name,
-			CopyUpdateResponseFuncName: updateResponseFunc.Name,
-			NewDeleteRequestFuncName:   deleteRequestFunc.Name,
-			RPCNameForCreate:           schema.RPCNameForCreate(resourceMessageName),
-			RPCNameForRead:             schema.RPCNameForRead(resourceMessageName),
-			RPCNameForUpdate:           schema.RPCNameForUpdate(resourceMessageName),
-			RPCNameForDelete:           schema.RPCNameForDelete(resourceMessageName),
-		})
 	}
 
 	return providerTemplate.Execute(dst, &data)
+}
+
+func AddResourceToProviderTemplateData(resource *schema.Resource, data *providerTemplateData) error {
+	camelCasedIdFieldName := schema.ProtoMessageName(schema.IDFieldName)
+	camelCasedUpdateMaskFieldName := schema.ProtoMessageName(schema.UpdateMaskFieldName)
+	resourceName := resource.TypeName
+	resourceMessageName := schema.ProtoMessageName(resourceName)
+	numFields := len(resource.Schema.Attributes)
+
+	resourceModel := model{
+		Name:      resourceMessageName + "ResourceModel",
+		SubModels: make([]model, 0),
+		Fields:    make([]field, 0, numFields),
+	}
+
+	createRequestFunc := convertFunc{
+		Name:      "New" + schema.ProtoMessageNameForCreateRequest(resourceMessageName),
+		ProtoName: schema.ProtoMessageNameForCreateRequest(resourceMessageName),
+		ModelName: resourceModel.Name,
+		Fields:    make([]field, 0, numFields-1),
+	}
+
+	readRequestFunc := convertFunc{
+		Name:      "New" + schema.ProtoMessageNameForReadRequest(resourceMessageName),
+		ProtoName: schema.ProtoMessageNameForReadRequest(resourceMessageName),
+		ModelName: resourceModel.Name,
+		Fields:    make([]field, 0, 1),
+	}
+
+	updateRequestFunc := convertFunc{
+		Name:      "New" + schema.ProtoMessageNameForUpdateRequest(resourceMessageName),
+		ProtoName: schema.ProtoMessageNameForUpdateRequest(resourceMessageName),
+		ModelName: resourceModel.Name,
+		Fields:    make([]field, 0, numFields+1),
+	}
+
+	deleteRequestFunc := convertFunc{
+		Name:      "New" + schema.ProtoMessageNameForDeleteRequest(resourceMessageName),
+		ProtoName: schema.ProtoMessageNameForDeleteRequest(resourceMessageName),
+		ModelName: resourceModel.Name,
+		Fields:    make([]field, 0, 1),
+	}
+
+	createResponseFunc := convertFunc{
+		Name:      "Copy" + schema.ProtoMessageNameForCreateResponse(resourceMessageName),
+		ProtoName: schema.ProtoMessageNameForCreateResponse(resourceMessageName),
+		ModelName: resourceModel.Name,
+		Fields:    make([]field, 0, numFields),
+	}
+
+	readResponseFunc := convertFunc{
+		Name:      "Copy" + schema.ProtoMessageNameForReadResponse(resourceMessageName),
+		ProtoName: schema.ProtoMessageNameForReadResponse(resourceMessageName),
+		ModelName: resourceModel.Name,
+		Fields:    make([]field, 0, numFields),
+	}
+
+	updateResponseFunc := convertFunc{
+		Name:      "Copy" + schema.ProtoMessageNameForUpdateResponse(resourceMessageName),
+		ProtoName: schema.ProtoMessageNameForUpdateResponse(resourceMessageName),
+		ModelName: resourceModel.Name,
+		Fields:    make([]field, 0, numFields),
+	}
+
+	attrNames := schema.SortResourceAttributes(resource.Schema.Attributes)
+	for _, attrName := range attrNames {
+		attrSchema := resource.Schema.Attributes[attrName]
+
+		t, m, err := terraformAttributeTypeToProtoType(resourceMessageName, attrName, attrSchema.GetType())
+		if err != nil {
+			return fmt.Errorf("failed to parse field %s in resource %s: %w", attrName, resourceMessageName, err)
+		}
+
+		if m != nil {
+			resourceModel.SubModels = append(resourceModel.SubModels, *m)
+		}
+
+		f := field{
+			Name:          schema.ProtoMessageName(attrName),
+			AttributeName: attrName,
+			Type:          t,
+			Optional:      schema.AttributeIsOptional(attrSchema),
+		}
+
+		resourceModel.Fields = append(resourceModel.Fields, f)
+
+		mode := schema.GetResourceAttributeMode(attrSchema)
+
+		if mode.InCreateRequest {
+			createRequestFunc.Fields = append(createRequestFunc.Fields, f)
+		}
+
+		if mode.InCreateResponse {
+			createResponseFunc.Fields = append(createResponseFunc.Fields, f)
+		}
+
+		if mode.InReadRequest {
+			readRequestFunc.Fields = append(readRequestFunc.Fields, f)
+		}
+
+		if mode.InReadResponse {
+			readResponseFunc.Fields = append(readResponseFunc.Fields, f)
+		}
+
+		if mode.InUpdateRequest {
+			updateRequestFunc.Fields = append(updateRequestFunc.Fields, f)
+		}
+
+		if mode.InUpdateResponse {
+			updateResponseFunc.Fields = append(updateResponseFunc.Fields, f)
+		}
+
+		if mode.InDeleteRequest {
+			deleteRequestFunc.Fields = append(deleteRequestFunc.Fields, f)
+		}
+	}
+
+	data.Models = append(data.Models,
+		resourceModel,
+	)
+	data.NewRequestFuncs = append(data.NewRequestFuncs,
+		createRequestFunc,
+		readRequestFunc,
+		deleteRequestFunc,
+	)
+	data.NewUpdateRequestFuncs = append(data.NewUpdateRequestFuncs,
+		updateRequestFunc,
+	)
+	data.CopyResponseFuncs = append(data.CopyResponseFuncs,
+		createResponseFunc,
+		readResponseFunc,
+		updateResponseFunc,
+	)
+	if resourceModel.HasObjectField() {
+		data.HasObjectElementType = true
+	}
+
+	data.Resources = append(data.Resources, resourceData{
+		Name:                       resourceName,
+		TypeName:                   resourceMessageName + "Resource",
+		ModelName:                  resourceModel.Name,
+		IdFieldName:                camelCasedIdFieldName,
+		UpdateMaskFieldName:        camelCasedUpdateMaskFieldName,
+		NewCreateRequestFuncName:   createRequestFunc.Name,
+		CopyCreateResponseFuncName: createResponseFunc.Name,
+		NewReadRequestFuncName:     readRequestFunc.Name,
+		CopyReadResponseFuncName:   readResponseFunc.Name,
+		NewUpdateRequestFuncName:   updateRequestFunc.Name,
+		CopyUpdateResponseFuncName: updateResponseFunc.Name,
+		NewDeleteRequestFuncName:   deleteRequestFunc.Name,
+		RPCNameForCreate:           schema.RPCNameForCreate(resourceMessageName),
+		RPCNameForRead:             schema.RPCNameForRead(resourceMessageName),
+		RPCNameForUpdate:           schema.RPCNameForUpdate(resourceMessageName),
+		RPCNameForDelete:           schema.RPCNameForDelete(resourceMessageName),
+	})
+	return nil
 }
 
 // terraformAttributeTypeToProtoType converts a Terraform attribute type into the corresponding Protocol Buffer Golang type.
@@ -841,6 +904,15 @@ func terraformAttributeTypeToProtoType(messageName, attrName string, attrType at
 			return fieldType{}, nil, err
 		}
 
+		var objModel *model
+
+		if objectElementType {
+			objModel, err = convertObjectToModel(messageName, attrName+"_instance", attrType.(basetypes.ListType).ElemType.(basetypes.ObjectType).AttrTypes, true)
+			if err != nil {
+				return fieldType{}, nil, err
+			}
+		}
+
 		return fieldType{
 			ModelTypeName:               "List",
 			ProtoTypeName:               protoTypeName,
@@ -848,7 +920,7 @@ func terraformAttributeTypeToProtoType(messageName, attrName string, attrType at
 			WrapProtoValueElementExpr:   wrapProtoValueElementExpr,
 			UnwrapProtoValueElementExpr: unwrapProtoValueElementExpr,
 			ObjectElementType:           objectElementType,
-		}, nil, nil
+		}, objModel, nil
 	case types.SetType:
 		protoTypeName, wrapProtoValueElementExpr, unwrapProtoValueElementExpr, elementProtoType, objectElementType, err := terraformRepeatedAttributeTypeToProtoType(messageName, attrName, v.ElementType())
 		if err != nil {
@@ -864,7 +936,7 @@ func terraformAttributeTypeToProtoType(messageName, attrName string, attrType at
 			ObjectElementType:           objectElementType,
 		}, nil, nil
 	case types.ObjectType:
-		objModel, err := convertObjectToModel(messageName, attrName, attrType.(basetypes.ObjectType).AttrTypes)
+		objModel, err := convertObjectToModel(messageName, attrName, attrType.(basetypes.ObjectType).AttrTypes, false)
 		if err != nil {
 			return fieldType{}, nil, err
 		}
@@ -881,12 +953,13 @@ func terraformAttributeTypeToProtoType(messageName, attrName string, attrType at
 }
 
 // Converts a Terraform object attribute to a Protocol Buffer message type.
-func convertObjectToModel(prefix string, attrName string, attrTypes map[string]attr.Type) (myModels *model, err error) {
+func convertObjectToModel(prefix string, attrName string, attrTypes map[string]attr.Type, usedInCollection bool) (myModels *model, err error) {
 	messageName := prefix + schema.ProtoMessageName(attrName)
 	newMessage := &model{
-		Name:      messageName,
-		Fields:    []field{},
-		SubModels: []model{},
+		Name:             messageName,
+		Fields:           []field{},
+		SubModels:        []model{},
+		UsedInCollection: usedInCollection,
 	}
 
 	for name, attrType := range attrTypes {
