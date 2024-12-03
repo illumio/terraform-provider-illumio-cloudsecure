@@ -443,7 +443,15 @@ func TerraformAttributeTypeToProtoType(nestedMessageNamePrefix, attrName string,
 			return "string", nil
 		}
 	case types.ListType:
-		return TerraformRepeatedAttributeTypeToProtoType(nestedMessageNamePrefix, attrName, value.ElementType())
+		protoType, err := TerraformRepeatedAttributeTypeToProtoType(nestedMessageNamePrefix, attrName, value.ElementType())
+		if err != nil {
+			return "", err
+		}
+		switch value.ElementType().(type) {
+		case basetypes.ObjectType:
+			return protoType + "Instance", nil
+		}
+		return protoType, nil
 	case types.SetType:
 		return TerraformRepeatedAttributeTypeToProtoType(nestedMessageNamePrefix, attrName, value.ElementType())
 	case types.ObjectType:
