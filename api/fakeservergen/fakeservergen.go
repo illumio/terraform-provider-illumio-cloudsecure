@@ -364,10 +364,7 @@ func GenerateFakeServer(dst io.Writer, pkg string, src schema.Schema) error {
 		for _, attrName := range attrNames {
 			attrSchema := resource.Schema.Attributes[attrName]
 
-			fmt.Printf("------------------------\n")
 			typ, err := TerraformAttributeTypeToProtoType("configv1."+resourceMessageName, attrName, attrSchema.GetType(), schema.AttributeIsOptional(attrSchema))
-			fmt.Println(attrName, typ)
-			fmt.Println("--------------------------")
 			if err != nil {
 				return fmt.Errorf("failed to parse field %s in resource %s: %w", attrName, resourceMessageName, err)
 			}
