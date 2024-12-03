@@ -316,7 +316,7 @@ func ConvertDataValueTo{{.Name}}Proto(dataValue attr.Value) *configv1.{{.Name}} 
 
 {{- if eq .UsedInCollection true }}
 func ConvertDataValueToList{{.Name}}Proto(data attr.Value) []*configv1.{{.Name}} {
-	var protoValue []*configv1.{{.Name}}Instance
+	var protoValue []*configv1.{{.Name}}
 	{
 		dataElements := data.(types.List).Elements()
 		listProtoValues := make([]*configv1.{{.Name}}, 0, len(dataElements))
