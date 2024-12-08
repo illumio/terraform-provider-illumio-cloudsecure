@@ -22,6 +22,10 @@ service ConfigService {
   rpc ReadAzureSubscription(ReadAzureSubscriptionRequest) returns (ReadAzureSubscriptionResponse);
   rpc UpdateAzureSubscription(UpdateAzureSubscriptionRequest) returns (UpdateAzureSubscriptionResponse);
   rpc DeleteAzureSubscription(DeleteAzureSubscriptionRequest) returns (google.protobuf.Empty);
+  rpc CreateDeployment(CreateDeploymentRequest) returns (CreateDeploymentResponse);
+  rpc ReadDeployment(ReadDeploymentRequest) returns (ReadDeploymentResponse);
+  rpc UpdateDeployment(UpdateDeploymentRequest) returns (UpdateDeploymentResponse);
+  rpc DeleteDeployment(DeleteDeploymentRequest) returns (google.protobuf.Empty);
   rpc CreateK8SClusterOnboardingCredential(CreateK8SClusterOnboardingCredentialRequest) returns (CreateK8SClusterOnboardingCredentialResponse);
   rpc ReadK8SClusterOnboardingCredential(ReadK8SClusterOnboardingCredentialRequest) returns (ReadK8SClusterOnboardingCredentialResponse);
   rpc UpdateK8SClusterOnboardingCredential(UpdateK8SClusterOnboardingCredentialRequest) returns (UpdateK8SClusterOnboardingCredentialResponse);
@@ -169,6 +173,83 @@ message UpdateAzureSubscriptionResponse {
   string tenant_id = 7;
 }
 message DeleteAzureSubscriptionRequest {
+  string id = 1;
+}
+message DeploymentAccountsInstance {
+  string cloud = 1;
+  string id = 2;
+}
+message DeploymentRegionsInstance {
+  string cloud = 1;
+  string id = 2;
+}
+message DeploymentSubnetsInstance {
+  string cloud = 1;
+  string id = 2;
+}
+message DeploymentTagsInstance {
+  string key = 1;
+  string value = 2;
+  string cloud = 3;
+}
+message DeploymentVnetsInstance {
+  string cloud = 1;
+  string id = 2;
+}
+message CreateDeploymentRequest {
+  repeated DeploymentAccountsInstance accounts = 2;
+  optional string description = 3;
+  string environment = 4;
+  repeated DeploymentRegionsInstance regions = 5;
+  repeated DeploymentSubnetsInstance subnets = 6;
+  repeated DeploymentTagsInstance tags = 7;
+  repeated DeploymentVnetsInstance vnets = 8;
+}
+message CreateDeploymentResponse {
+  string id = 1;
+  repeated DeploymentAccountsInstance accounts = 2;
+  optional string description = 3;
+  string environment = 4;
+  repeated DeploymentRegionsInstance regions = 5;
+  repeated DeploymentSubnetsInstance subnets = 6;
+  repeated DeploymentTagsInstance tags = 7;
+  repeated DeploymentVnetsInstance vnets = 8;
+}
+message ReadDeploymentRequest {
+  string id = 1;
+}
+message ReadDeploymentResponse {
+  string id = 1;
+  repeated DeploymentAccountsInstance accounts = 2;
+  optional string description = 3;
+  string environment = 4;
+  repeated DeploymentRegionsInstance regions = 5;
+  repeated DeploymentSubnetsInstance subnets = 6;
+  repeated DeploymentTagsInstance tags = 7;
+  repeated DeploymentVnetsInstance vnets = 8;
+}
+message UpdateDeploymentRequest {
+  string id = 1;
+  repeated DeploymentAccountsInstance accounts = 2;
+  optional string description = 3;
+  string environment = 4;
+  repeated DeploymentRegionsInstance regions = 5;
+  repeated DeploymentSubnetsInstance subnets = 6;
+  repeated DeploymentTagsInstance tags = 7;
+  repeated DeploymentVnetsInstance vnets = 8;
+  google.protobuf.FieldMask update_mask = 9;
+}
+message UpdateDeploymentResponse {
+  string id = 1;
+  repeated DeploymentAccountsInstance accounts = 2;
+  optional string description = 3;
+  string environment = 4;
+  repeated DeploymentRegionsInstance regions = 5;
+  repeated DeploymentSubnetsInstance subnets = 6;
+  repeated DeploymentTagsInstance tags = 7;
+  repeated DeploymentVnetsInstance vnets = 8;
+}
+message DeleteDeploymentRequest {
   string id = 1;
 }
 message CreateK8SClusterOnboardingCredentialRequest {
