@@ -7,13 +7,16 @@ package provider
 import (
 	"context"
 	"fmt"
+	"log"
 	"time"
 
 	"github.com/hashicorp/terraform-plugin-framework/attr"
 	"github.com/hashicorp/terraform-plugin-framework/datasource"
 	"github.com/hashicorp/terraform-plugin-framework/resource"
 	resource_schema "github.com/hashicorp/terraform-plugin-framework/resource/schema"
+	"github.com/hashicorp/terraform-plugin-framework/tfsdk"
 	"github.com/hashicorp/terraform-plugin-framework/types"
+	"github.com/hashicorp/terraform-plugin-framework/types/basetypes"
 	"github.com/hashicorp/terraform-plugin-log/tflog"
 	configv1 "github.com/illumio/terraform-provider-illumio-cloudsecure/api/illumio/cloud/config/v1"
 	"google.golang.org/grpc/codes"
@@ -43,6 +46,8 @@ func (p *Provider) Resources(ctx context.Context) []func() resource.Resource {
 			resp = append(resp, func() resource.Resource { return NewAzureFlowLogsStorageAccountResource(r.Schema) })
 		case "azure_subscription":
 			resp = append(resp, func() resource.Resource { return NewAzureSubscriptionResource(r.Schema) })
+		case "deployment":
+			resp = append(resp, func() resource.Resource { return NewDeploymentResource(r.Schema) })
 		case "k8s_cluster_onboarding_credential":
 			resp = append(resp, func() resource.Resource { return NewK8SClusterOnboardingCredentialResource(r.Schema) })
 		}
@@ -768,6 +773,184 @@ func (r *AzureSubscriptionResource) ImportState(ctx context.Context, req resourc
 	// TODO
 }
 
+// DeploymentResource implements the deployment resource.
+type DeploymentResource struct {
+	// schema is the schema of the deployment resource.
+	schema resource_schema.Schema
+
+	// providerData is the provider configuration.
+	config ProviderData
+}
+
+var _ resource.ResourceWithConfigure = &DeploymentResource{}
+var _ resource.ResourceWithImportState = &DeploymentResource{}
+
+// NewDeploymentResource returns a new deployment resource.
+func NewDeploymentResource(schema resource_schema.Schema) resource.Resource {
+	return &DeploymentResource{
+		schema: schema,
+	}
+}
+
+func (r *DeploymentResource) Metadata(ctx context.Context, req resource.MetadataRequest, resp *resource.MetadataResponse) {
+	resp.TypeName = req.ProviderTypeName + "_deployment"
+}
+
+func (r *DeploymentResource) Schema(ctx context.Context, req resource.SchemaRequest, resp *resource.SchemaResponse) {
+	resp.Schema = r.schema
+}
+
+func (r *DeploymentResource) Configure(ctx context.Context, req resource.ConfigureRequest, resp *resource.ConfigureResponse) {
+	if req.ProviderData == nil {
+		return
+	}
+
+	providerData, ok := req.ProviderData.(ProviderData)
+	if !ok {
+		resp.Diagnostics.AddError(
+			"Unexpected Resource Configure Type",
+			fmt.Sprintf("Expected ProviderData, got: %T. Please report this issue to the provider developers.", req.ProviderData),
+		)
+
+		return
+	}
+
+	r.config = providerData
+}
+
+func (r *DeploymentResource) Create(ctx context.Context, req resource.CreateRequest, resp *resource.CreateResponse) {
+	var data DeploymentResourceModel
+
+	resp.Diagnostics.Append(req.Plan.Get(ctx, &data)...)
+	if resp.Diagnostics.HasError() {
+		return
+	}
+
+	protoReq := NewCreateDeploymentRequest(&data)
+
+	tflog.Trace(ctx, "creating a resource", map[string]any{"type": "deployment"})
+
+	rpcCtx, rpcCancel := context.WithTimeout(ctx, r.config.RequestTimeout())
+	protoResp, err := r.config.Client().CreateDeployment(rpcCtx, protoReq)
+	rpcCancel()
+	if err != nil {
+		resp.Diagnostics.AddError("Config API Error", fmt.Sprintf("Unable to create deployment, got error: %s", err))
+		return
+	}
+
+	CopyCreateDeploymentResponse(&data, protoResp)
+
+	tflog.Trace(ctx, "created a resource", map[string]any{"type": "deployment", "id": protoResp.Id})
+
+	resp.Diagnostics.Append(resp.State.Set(ctx, &data)...)
+}
+
+func (r *DeploymentResource) Read(ctx context.Context, req resource.ReadRequest, resp *resource.ReadResponse) {
+	var data DeploymentResourceModel
+
+	resp.Diagnostics.Append(req.State.Get(ctx, &data)...)
+	if resp.Diagnostics.HasError() {
+		return
+	}
+
+	protoReq := NewReadDeploymentRequest(&data)
+
+	tflog.Trace(ctx, "reading a resource", map[string]any{"type": "deployment", "id": protoReq.Id})
+
+	rpcCtx, rpcCancel := context.WithTimeout(ctx, r.config.RequestTimeout())
+	protoResp, err := r.config.Client().ReadDeployment(rpcCtx, protoReq)
+	rpcCancel()
+	if err != nil {
+		switch status.Code(err) {
+		case codes.NotFound:
+			resp.Diagnostics.AddWarning("Resource Not Found", fmt.Sprintf("No deployment found with id %s", protoReq.Id))
+			resp.State.RemoveResource(ctx)
+			return
+		default:
+			resp.Diagnostics.AddError("Config API Error", fmt.Sprintf("Unable to read deployment, got error: %s", err))
+			return
+		}
+	}
+
+	CopyReadDeploymentResponse(&data, protoResp)
+
+	tflog.Trace(ctx, "read a resource", map[string]any{"type": "deployment", "id": protoResp.Id})
+
+	resp.Diagnostics.Append(resp.State.Set(ctx, &data)...)
+}
+
+func (r *DeploymentResource) Update(ctx context.Context, req resource.UpdateRequest, resp *resource.UpdateResponse) {
+	var beforeData DeploymentResourceModel
+	var afterData DeploymentResourceModel
+
+	resp.Diagnostics.Append(req.State.Get(ctx, &beforeData)...)
+	if resp.Diagnostics.HasError() {
+		return
+	}
+
+	resp.Diagnostics.Append(req.Plan.Get(ctx, &afterData)...)
+	if resp.Diagnostics.HasError() {
+		return
+	}
+
+	protoReq := NewUpdateDeploymentRequest(&beforeData, &afterData)
+
+	tflog.Trace(ctx, "updating a resource", map[string]any{"type": "deployment", "id": protoReq.Id, "update_mask": protoReq.UpdateMask.Paths})
+
+	rpcCtx, rpcCancel := context.WithTimeout(ctx, r.config.RequestTimeout())
+	protoResp, err := r.config.Client().UpdateDeployment(rpcCtx, protoReq)
+	rpcCancel()
+	if err != nil {
+		switch status.Code(err) {
+		case codes.NotFound:
+			resp.Diagnostics.AddError("Resource Not Found", fmt.Sprintf("No deployment found with id %s", protoReq.Id))
+			resp.State.RemoveResource(ctx)
+			return
+		default:
+			resp.Diagnostics.AddError("Config API Error", fmt.Sprintf("Unable to update deployment, got error: %s", err))
+			return
+		}
+	}
+
+	CopyUpdateDeploymentResponse(&afterData, protoResp)
+
+	tflog.Trace(ctx, "updated a resource", map[string]any{"type": "deployment", "id": protoResp.Id})
+
+	resp.Diagnostics.Append(resp.State.Set(ctx, &afterData)...)
+}
+
+func (r *DeploymentResource) Delete(ctx context.Context, req resource.DeleteRequest, resp *resource.DeleteResponse) {
+	var data DeploymentResourceModel
+
+	resp.Diagnostics.Append(req.State.Get(ctx, &data)...)
+	if resp.Diagnostics.HasError() {
+		return
+	}
+
+	protoReq := NewDeleteDeploymentRequest(&data)
+
+	tflog.Trace(ctx, "deleting a resource", map[string]any{"type": "deployment", "id": protoReq.Id})
+
+	rpcCtx, rpcCancel := context.WithTimeout(ctx, r.config.RequestTimeout())
+	_, err := r.config.Client().DeleteDeployment(rpcCtx, protoReq)
+	rpcCancel()
+	if err != nil {
+		switch status.Code(err) {
+		case codes.NotFound:
+			tflog.Trace(ctx, "resource was already deleted", map[string]any{"type": "deployment", "id": protoReq.Id})
+		default:
+			resp.Diagnostics.AddError("Config API Error", fmt.Sprintf("Unable to delete deployment, got error: %s", err))
+			return
+		}
+	}
+
+	tflog.Trace(ctx, "deleted a resource", map[string]any{"type": "deployment", "id": protoReq.Id})
+}
+
+func (r *DeploymentResource) ImportState(ctx context.Context, req resource.ImportStateRequest, resp *resource.ImportStateResponse) {
+	// TODO
+}
+
 // K8SClusterOnboardingCredentialResource implements the k8s_cluster_onboarding_credential resource.
 type K8SClusterOnboardingCredentialResource struct {
 	// schema is the schema of the k8s_cluster_onboarding_credential resource.
@@ -978,6 +1161,43 @@ type AzureSubscriptionResourceModel struct {
 	TenantId       types.String `tfsdk:"tenant_id"`
 }
 
+type DeploymentResourceModel struct {
+	Id          types.String `tfsdk:"id"`
+	Accounts    types.List   `tfsdk:"accounts"`
+	Description types.String `tfsdk:"description"`
+	Environment types.String `tfsdk:"environment"`
+	Regions     types.List   `tfsdk:"regions"`
+	Subnets     types.List   `tfsdk:"subnets"`
+	Tags        types.List   `tfsdk:"tags"`
+	Vnets       types.List   `tfsdk:"vnets"`
+}
+
+type DeploymentAccountsInstance struct {
+	Cloud types.String `tfsdk:"cloud"`
+	Id    types.String `tfsdk:"id"`
+}
+
+type DeploymentRegionsInstance struct {
+	Cloud types.String `tfsdk:"cloud"`
+	Id    types.String `tfsdk:"id"`
+}
+
+type DeploymentSubnetsInstance struct {
+	Cloud types.String `tfsdk:"cloud"`
+	Id    types.String `tfsdk:"id"`
+}
+
+type DeploymentTagsInstance struct {
+	Key   types.String `tfsdk:"key"`
+	Value types.String `tfsdk:"value"`
+	Cloud types.String `tfsdk:"cloud"`
+}
+
+type DeploymentVnetsInstance struct {
+	Cloud types.String `tfsdk:"cloud"`
+	Id    types.String `tfsdk:"id"`
+}
+
 type K8SClusterOnboardingCredentialResourceModel struct {
 	Id            types.String `tfsdk:"id"`
 	ClientId      types.String `tfsdk:"client_id"`
@@ -986,6 +1206,219 @@ type K8SClusterOnboardingCredentialResourceModel struct {
 	Description   types.String `tfsdk:"description"`
 	IllumioRegion types.String `tfsdk:"illumio_region"`
 	Name          types.String `tfsdk:"name"`
+}
+
+func GetTypeAttrsForDeploymentAccountsInstance() map[string]attr.Type {
+	return map[string]attr.Type{
+		"cloud": types.StringType,
+		"id":    types.StringType,
+	}
+}
+
+func ConvertDeploymentAccountsInstanceToObjectValueFromProto(proto *configv1.DeploymentAccountsInstance) basetypes.ObjectValue {
+	return types.ObjectValueMust(
+		GetTypeAttrsForDeploymentAccountsInstance(),
+		map[string]attr.Value{
+			"cloud": types.StringValue(proto.Cloud),
+			"id":    types.StringValue(proto.Id),
+		},
+	)
+}
+
+func ConvertDataValueToDeploymentAccountsInstanceProto(dataValue attr.Value) *configv1.DeploymentAccountsInstance {
+	pv := DeploymentAccountsInstance{}
+	diags := tfsdk.ValueAs(context.Background(), dataValue, &pv)
+	if len(diags) > 0 {
+		log.Fatalf("Unexpected diagnostics: %s", diags)
+	}
+	proto := &configv1.DeploymentAccountsInstance{}
+	proto.Cloud = pv.Cloud.ValueString()
+	proto.Id = pv.Id.ValueString()
+	return proto
+}
+func ConvertDataValueToListDeploymentAccountsInstanceProto(data attr.Value) []*configv1.DeploymentAccountsInstance {
+	var protoValue []*configv1.DeploymentAccountsInstance
+	{
+		dataElements := data.(types.List).Elements()
+		listProtoValues := make([]*configv1.DeploymentAccountsInstance, 0, len(dataElements))
+		for _, dataElement := range dataElements {
+			var dataValue attr.Value = dataElement
+			listProtoValues = append(listProtoValues, ConvertDataValueToDeploymentAccountsInstanceProto(dataValue))
+		}
+		protoValue = listProtoValues
+	}
+	return protoValue
+}
+
+func GetTypeAttrsForDeploymentRegionsInstance() map[string]attr.Type {
+	return map[string]attr.Type{
+		"cloud": types.StringType,
+		"id":    types.StringType,
+	}
+}
+
+func ConvertDeploymentRegionsInstanceToObjectValueFromProto(proto *configv1.DeploymentRegionsInstance) basetypes.ObjectValue {
+	return types.ObjectValueMust(
+		GetTypeAttrsForDeploymentRegionsInstance(),
+		map[string]attr.Value{
+			"cloud": types.StringValue(proto.Cloud),
+			"id":    types.StringValue(proto.Id),
+		},
+	)
+}
+
+func ConvertDataValueToDeploymentRegionsInstanceProto(dataValue attr.Value) *configv1.DeploymentRegionsInstance {
+	pv := DeploymentRegionsInstance{}
+	diags := tfsdk.ValueAs(context.Background(), dataValue, &pv)
+	if len(diags) > 0 {
+		log.Fatalf("Unexpected diagnostics: %s", diags)
+	}
+	proto := &configv1.DeploymentRegionsInstance{}
+	proto.Cloud = pv.Cloud.ValueString()
+	proto.Id = pv.Id.ValueString()
+	return proto
+}
+func ConvertDataValueToListDeploymentRegionsInstanceProto(data attr.Value) []*configv1.DeploymentRegionsInstance {
+	var protoValue []*configv1.DeploymentRegionsInstance
+	{
+		dataElements := data.(types.List).Elements()
+		listProtoValues := make([]*configv1.DeploymentRegionsInstance, 0, len(dataElements))
+		for _, dataElement := range dataElements {
+			var dataValue attr.Value = dataElement
+			listProtoValues = append(listProtoValues, ConvertDataValueToDeploymentRegionsInstanceProto(dataValue))
+		}
+		protoValue = listProtoValues
+	}
+	return protoValue
+}
+
+func GetTypeAttrsForDeploymentSubnetsInstance() map[string]attr.Type {
+	return map[string]attr.Type{
+		"cloud": types.StringType,
+		"id":    types.StringType,
+	}
+}
+
+func ConvertDeploymentSubnetsInstanceToObjectValueFromProto(proto *configv1.DeploymentSubnetsInstance) basetypes.ObjectValue {
+	return types.ObjectValueMust(
+		GetTypeAttrsForDeploymentSubnetsInstance(),
+		map[string]attr.Value{
+			"cloud": types.StringValue(proto.Cloud),
+			"id":    types.StringValue(proto.Id),
+		},
+	)
+}
+
+func ConvertDataValueToDeploymentSubnetsInstanceProto(dataValue attr.Value) *configv1.DeploymentSubnetsInstance {
+	pv := DeploymentSubnetsInstance{}
+	diags := tfsdk.ValueAs(context.Background(), dataValue, &pv)
+	if len(diags) > 0 {
+		log.Fatalf("Unexpected diagnostics: %s", diags)
+	}
+	proto := &configv1.DeploymentSubnetsInstance{}
+	proto.Cloud = pv.Cloud.ValueString()
+	proto.Id = pv.Id.ValueString()
+	return proto
+}
+func ConvertDataValueToListDeploymentSubnetsInstanceProto(data attr.Value) []*configv1.DeploymentSubnetsInstance {
+	var protoValue []*configv1.DeploymentSubnetsInstance
+	{
+		dataElements := data.(types.List).Elements()
+		listProtoValues := make([]*configv1.DeploymentSubnetsInstance, 0, len(dataElements))
+		for _, dataElement := range dataElements {
+			var dataValue attr.Value = dataElement
+			listProtoValues = append(listProtoValues, ConvertDataValueToDeploymentSubnetsInstanceProto(dataValue))
+		}
+		protoValue = listProtoValues
+	}
+	return protoValue
+}
+
+func GetTypeAttrsForDeploymentTagsInstance() map[string]attr.Type {
+	return map[string]attr.Type{
+		"key":   types.StringType,
+		"value": types.StringType,
+		"cloud": types.StringType,
+	}
+}
+
+func ConvertDeploymentTagsInstanceToObjectValueFromProto(proto *configv1.DeploymentTagsInstance) basetypes.ObjectValue {
+	return types.ObjectValueMust(
+		GetTypeAttrsForDeploymentTagsInstance(),
+		map[string]attr.Value{
+			"key":   types.StringValue(proto.Key),
+			"value": types.StringValue(proto.Value),
+			"cloud": types.StringValue(proto.Cloud),
+		},
+	)
+}
+
+func ConvertDataValueToDeploymentTagsInstanceProto(dataValue attr.Value) *configv1.DeploymentTagsInstance {
+	pv := DeploymentTagsInstance{}
+	diags := tfsdk.ValueAs(context.Background(), dataValue, &pv)
+	if len(diags) > 0 {
+		log.Fatalf("Unexpected diagnostics: %s", diags)
+	}
+	proto := &configv1.DeploymentTagsInstance{}
+	proto.Key = pv.Key.ValueString()
+	proto.Value = pv.Value.ValueString()
+	proto.Cloud = pv.Cloud.ValueString()
+	return proto
+}
+func ConvertDataValueToListDeploymentTagsInstanceProto(data attr.Value) []*configv1.DeploymentTagsInstance {
+	var protoValue []*configv1.DeploymentTagsInstance
+	{
+		dataElements := data.(types.List).Elements()
+		listProtoValues := make([]*configv1.DeploymentTagsInstance, 0, len(dataElements))
+		for _, dataElement := range dataElements {
+			var dataValue attr.Value = dataElement
+			listProtoValues = append(listProtoValues, ConvertDataValueToDeploymentTagsInstanceProto(dataValue))
+		}
+		protoValue = listProtoValues
+	}
+	return protoValue
+}
+
+func GetTypeAttrsForDeploymentVnetsInstance() map[string]attr.Type {
+	return map[string]attr.Type{
+		"cloud": types.StringType,
+		"id":    types.StringType,
+	}
+}
+
+func ConvertDeploymentVnetsInstanceToObjectValueFromProto(proto *configv1.DeploymentVnetsInstance) basetypes.ObjectValue {
+	return types.ObjectValueMust(
+		GetTypeAttrsForDeploymentVnetsInstance(),
+		map[string]attr.Value{
+			"cloud": types.StringValue(proto.Cloud),
+			"id":    types.StringValue(proto.Id),
+		},
+	)
+}
+
+func ConvertDataValueToDeploymentVnetsInstanceProto(dataValue attr.Value) *configv1.DeploymentVnetsInstance {
+	pv := DeploymentVnetsInstance{}
+	diags := tfsdk.ValueAs(context.Background(), dataValue, &pv)
+	if len(diags) > 0 {
+		log.Fatalf("Unexpected diagnostics: %s", diags)
+	}
+	proto := &configv1.DeploymentVnetsInstance{}
+	proto.Cloud = pv.Cloud.ValueString()
+	proto.Id = pv.Id.ValueString()
+	return proto
+}
+func ConvertDataValueToListDeploymentVnetsInstanceProto(data attr.Value) []*configv1.DeploymentVnetsInstance {
+	var protoValue []*configv1.DeploymentVnetsInstance
+	{
+		dataElements := data.(types.List).Elements()
+		listProtoValues := make([]*configv1.DeploymentVnetsInstance, 0, len(dataElements))
+		for _, dataElement := range dataElements {
+			var dataValue attr.Value = dataElement
+			listProtoValues = append(listProtoValues, ConvertDataValueToDeploymentVnetsInstanceProto(dataValue))
+		}
+		protoValue = listProtoValues
+	}
+	return protoValue
 }
 
 func NewCreateAwsAccountRequest(data *AwsAccountResourceModel) *configv1.CreateAwsAccountRequest {
@@ -1192,6 +1625,75 @@ func NewDeleteAzureSubscriptionRequest(data *AzureSubscriptionResourceModel) *co
 	return proto
 }
 
+func NewCreateDeploymentRequest(data *DeploymentResourceModel) *configv1.CreateDeploymentRequest {
+	proto := &configv1.CreateDeploymentRequest{}
+	if !data.Accounts.IsUnknown() && !data.Accounts.IsNull() {
+		var dataValue attr.Value = data.Accounts
+		var protoValue []*configv1.DeploymentAccountsInstance
+		protoValue = ConvertDataValueToListDeploymentAccountsInstanceProto(dataValue)
+		proto.Accounts = protoValue
+	}
+	if !data.Description.IsUnknown() && !data.Description.IsNull() {
+		var dataValue attr.Value = data.Description
+		var protoValue string
+		protoValue = dataValue.(types.String).ValueString()
+		proto.Description = &protoValue
+	}
+	if !data.Environment.IsUnknown() && !data.Environment.IsNull() {
+		var dataValue attr.Value = data.Environment
+		var protoValue string
+		protoValue = dataValue.(types.String).ValueString()
+		proto.Environment = protoValue
+	}
+	if !data.Regions.IsUnknown() && !data.Regions.IsNull() {
+		var dataValue attr.Value = data.Regions
+		var protoValue []*configv1.DeploymentRegionsInstance
+		protoValue = ConvertDataValueToListDeploymentRegionsInstanceProto(dataValue)
+		proto.Regions = protoValue
+	}
+	if !data.Subnets.IsUnknown() && !data.Subnets.IsNull() {
+		var dataValue attr.Value = data.Subnets
+		var protoValue []*configv1.DeploymentSubnetsInstance
+		protoValue = ConvertDataValueToListDeploymentSubnetsInstanceProto(dataValue)
+		proto.Subnets = protoValue
+	}
+	if !data.Tags.IsUnknown() && !data.Tags.IsNull() {
+		var dataValue attr.Value = data.Tags
+		var protoValue []*configv1.DeploymentTagsInstance
+		protoValue = ConvertDataValueToListDeploymentTagsInstanceProto(dataValue)
+		proto.Tags = protoValue
+	}
+	if !data.Vnets.IsUnknown() && !data.Vnets.IsNull() {
+		var dataValue attr.Value = data.Vnets
+		var protoValue []*configv1.DeploymentVnetsInstance
+		protoValue = ConvertDataValueToListDeploymentVnetsInstanceProto(dataValue)
+		proto.Vnets = protoValue
+	}
+	return proto
+}
+
+func NewReadDeploymentRequest(data *DeploymentResourceModel) *configv1.ReadDeploymentRequest {
+	proto := &configv1.ReadDeploymentRequest{}
+	if !data.Id.IsUnknown() && !data.Id.IsNull() {
+		var dataValue attr.Value = data.Id
+		var protoValue string
+		protoValue = dataValue.(types.String).ValueString()
+		proto.Id = protoValue
+	}
+	return proto
+}
+
+func NewDeleteDeploymentRequest(data *DeploymentResourceModel) *configv1.DeleteDeploymentRequest {
+	proto := &configv1.DeleteDeploymentRequest{}
+	if !data.Id.IsUnknown() && !data.Id.IsNull() {
+		var dataValue attr.Value = data.Id
+		var protoValue string
+		protoValue = dataValue.(types.String).ValueString()
+		proto.Id = protoValue
+	}
+	return proto
+}
+
 func NewCreateK8SClusterOnboardingCredentialRequest(data *K8SClusterOnboardingCredentialResourceModel) *configv1.CreateK8SClusterOnboardingCredentialRequest {
 	proto := &configv1.CreateK8SClusterOnboardingCredentialRequest{}
 	if !data.Description.IsUnknown() && !data.Description.IsNull() {
@@ -1279,6 +1781,63 @@ func NewUpdateAzureSubscriptionRequest(beforeData, afterData *AzureSubscriptionR
 			var protoValue string
 			protoValue = dataValue.(types.String).ValueString()
 			proto.Name = protoValue
+
+		}
+	}
+	return proto
+}
+
+func NewUpdateDeploymentRequest(beforeData, afterData *DeploymentResourceModel) *configv1.UpdateDeploymentRequest {
+	proto := &configv1.UpdateDeploymentRequest{}
+	proto.UpdateMask, _ = fieldmaskpb.New(proto)
+	proto.Id = beforeData.Id.ValueString()
+	if !afterData.Accounts.Equal(beforeData.Accounts) {
+		proto.UpdateMask.Append(proto, "accounts")
+		if !afterData.Accounts.IsUnknown() && !afterData.Accounts.IsNull() {
+			var dataValue attr.Value = afterData.Accounts
+			proto.Accounts = ConvertDataValueToListDeploymentAccountsInstanceProto(dataValue)
+
+		}
+	}
+	if !afterData.Description.Equal(beforeData.Description) {
+		proto.UpdateMask.Append(proto, "description")
+		if !afterData.Description.IsUnknown() && !afterData.Description.IsNull() {
+			var dataValue attr.Value = afterData.Description
+			var protoValue string
+			protoValue = dataValue.(types.String).ValueString()
+			proto.Description = &protoValue
+
+		}
+	}
+	if !afterData.Regions.Equal(beforeData.Regions) {
+		proto.UpdateMask.Append(proto, "regions")
+		if !afterData.Regions.IsUnknown() && !afterData.Regions.IsNull() {
+			var dataValue attr.Value = afterData.Regions
+			proto.Regions = ConvertDataValueToListDeploymentRegionsInstanceProto(dataValue)
+
+		}
+	}
+	if !afterData.Subnets.Equal(beforeData.Subnets) {
+		proto.UpdateMask.Append(proto, "subnets")
+		if !afterData.Subnets.IsUnknown() && !afterData.Subnets.IsNull() {
+			var dataValue attr.Value = afterData.Subnets
+			proto.Subnets = ConvertDataValueToListDeploymentSubnetsInstanceProto(dataValue)
+
+		}
+	}
+	if !afterData.Tags.Equal(beforeData.Tags) {
+		proto.UpdateMask.Append(proto, "tags")
+		if !afterData.Tags.IsUnknown() && !afterData.Tags.IsNull() {
+			var dataValue attr.Value = afterData.Tags
+			proto.Tags = ConvertDataValueToListDeploymentTagsInstanceProto(dataValue)
+
+		}
+	}
+	if !afterData.Vnets.Equal(beforeData.Vnets) {
+		proto.UpdateMask.Append(proto, "vnets")
+		if !afterData.Vnets.IsUnknown() && !afterData.Vnets.IsNull() {
+			var dataValue attr.Value = afterData.Vnets
+			proto.Vnets = ConvertDataValueToListDeploymentVnetsInstanceProto(dataValue)
 
 		}
 	}
@@ -1388,6 +1947,153 @@ func CopyUpdateAzureSubscriptionResponse(dst *AzureSubscriptionResourceModel, sr
 	dst.Name = types.StringValue(src.Name)
 	dst.SubscriptionId = types.StringValue(src.SubscriptionId)
 	dst.TenantId = types.StringValue(src.TenantId)
+}
+func CopyCreateDeploymentResponse(dst *DeploymentResourceModel, src *configv1.CreateDeploymentResponse) {
+	dst.Id = types.StringValue(src.Id)
+	{
+		vals := make([]attr.Value, 0, len(src.Accounts))
+		for _, val := range src.Accounts {
+			vals = append(vals, ConvertDeploymentAccountsInstanceToObjectValueFromProto(val))
+		}
+		dst.Accounts = types.ListValueMust(types.ObjectType{
+			AttrTypes: GetTypeAttrsForDeploymentAccountsInstance(),
+		}, vals)
+	}
+	dst.Description = types.StringPointerValue(src.Description)
+	{
+		vals := make([]attr.Value, 0, len(src.Regions))
+		for _, val := range src.Regions {
+			vals = append(vals, ConvertDeploymentRegionsInstanceToObjectValueFromProto(val))
+		}
+		dst.Regions = types.ListValueMust(types.ObjectType{
+			AttrTypes: GetTypeAttrsForDeploymentRegionsInstance(),
+		}, vals)
+	}
+	{
+		vals := make([]attr.Value, 0, len(src.Subnets))
+		for _, val := range src.Subnets {
+			vals = append(vals, ConvertDeploymentSubnetsInstanceToObjectValueFromProto(val))
+		}
+		dst.Subnets = types.ListValueMust(types.ObjectType{
+			AttrTypes: GetTypeAttrsForDeploymentSubnetsInstance(),
+		}, vals)
+	}
+	{
+		vals := make([]attr.Value, 0, len(src.Tags))
+		for _, val := range src.Tags {
+			vals = append(vals, ConvertDeploymentTagsInstanceToObjectValueFromProto(val))
+		}
+		dst.Tags = types.ListValueMust(types.ObjectType{
+			AttrTypes: GetTypeAttrsForDeploymentTagsInstance(),
+		}, vals)
+	}
+	{
+		vals := make([]attr.Value, 0, len(src.Vnets))
+		for _, val := range src.Vnets {
+			vals = append(vals, ConvertDeploymentVnetsInstanceToObjectValueFromProto(val))
+		}
+		dst.Vnets = types.ListValueMust(types.ObjectType{
+			AttrTypes: GetTypeAttrsForDeploymentVnetsInstance(),
+		}, vals)
+	}
+}
+func CopyReadDeploymentResponse(dst *DeploymentResourceModel, src *configv1.ReadDeploymentResponse) {
+	dst.Id = types.StringValue(src.Id)
+	{
+		vals := make([]attr.Value, 0, len(src.Accounts))
+		for _, val := range src.Accounts {
+			vals = append(vals, ConvertDeploymentAccountsInstanceToObjectValueFromProto(val))
+		}
+		dst.Accounts = types.ListValueMust(types.ObjectType{
+			AttrTypes: GetTypeAttrsForDeploymentAccountsInstance(),
+		}, vals)
+	}
+	dst.Description = types.StringPointerValue(src.Description)
+	{
+		vals := make([]attr.Value, 0, len(src.Regions))
+		for _, val := range src.Regions {
+			vals = append(vals, ConvertDeploymentRegionsInstanceToObjectValueFromProto(val))
+		}
+		dst.Regions = types.ListValueMust(types.ObjectType{
+			AttrTypes: GetTypeAttrsForDeploymentRegionsInstance(),
+		}, vals)
+	}
+	{
+		vals := make([]attr.Value, 0, len(src.Subnets))
+		for _, val := range src.Subnets {
+			vals = append(vals, ConvertDeploymentSubnetsInstanceToObjectValueFromProto(val))
+		}
+		dst.Subnets = types.ListValueMust(types.ObjectType{
+			AttrTypes: GetTypeAttrsForDeploymentSubnetsInstance(),
+		}, vals)
+	}
+	{
+		vals := make([]attr.Value, 0, len(src.Tags))
+		for _, val := range src.Tags {
+			vals = append(vals, ConvertDeploymentTagsInstanceToObjectValueFromProto(val))
+		}
+		dst.Tags = types.ListValueMust(types.ObjectType{
+			AttrTypes: GetTypeAttrsForDeploymentTagsInstance(),
+		}, vals)
+	}
+	{
+		vals := make([]attr.Value, 0, len(src.Vnets))
+		for _, val := range src.Vnets {
+			vals = append(vals, ConvertDeploymentVnetsInstanceToObjectValueFromProto(val))
+		}
+		dst.Vnets = types.ListValueMust(types.ObjectType{
+			AttrTypes: GetTypeAttrsForDeploymentVnetsInstance(),
+		}, vals)
+	}
+}
+func CopyUpdateDeploymentResponse(dst *DeploymentResourceModel, src *configv1.UpdateDeploymentResponse) {
+	dst.Id = types.StringValue(src.Id)
+	{
+		vals := make([]attr.Value, 0, len(src.Accounts))
+		for _, val := range src.Accounts {
+			vals = append(vals, ConvertDeploymentAccountsInstanceToObjectValueFromProto(val))
+		}
+		dst.Accounts = types.ListValueMust(types.ObjectType{
+			AttrTypes: GetTypeAttrsForDeploymentAccountsInstance(),
+		}, vals)
+	}
+	dst.Description = types.StringPointerValue(src.Description)
+	{
+		vals := make([]attr.Value, 0, len(src.Regions))
+		for _, val := range src.Regions {
+			vals = append(vals, ConvertDeploymentRegionsInstanceToObjectValueFromProto(val))
+		}
+		dst.Regions = types.ListValueMust(types.ObjectType{
+			AttrTypes: GetTypeAttrsForDeploymentRegionsInstance(),
+		}, vals)
+	}
+	{
+		vals := make([]attr.Value, 0, len(src.Subnets))
+		for _, val := range src.Subnets {
+			vals = append(vals, ConvertDeploymentSubnetsInstanceToObjectValueFromProto(val))
+		}
+		dst.Subnets = types.ListValueMust(types.ObjectType{
+			AttrTypes: GetTypeAttrsForDeploymentSubnetsInstance(),
+		}, vals)
+	}
+	{
+		vals := make([]attr.Value, 0, len(src.Tags))
+		for _, val := range src.Tags {
+			vals = append(vals, ConvertDeploymentTagsInstanceToObjectValueFromProto(val))
+		}
+		dst.Tags = types.ListValueMust(types.ObjectType{
+			AttrTypes: GetTypeAttrsForDeploymentTagsInstance(),
+		}, vals)
+	}
+	{
+		vals := make([]attr.Value, 0, len(src.Vnets))
+		for _, val := range src.Vnets {
+			vals = append(vals, ConvertDeploymentVnetsInstanceToObjectValueFromProto(val))
+		}
+		dst.Vnets = types.ListValueMust(types.ObjectType{
+			AttrTypes: GetTypeAttrsForDeploymentVnetsInstance(),
+		}, vals)
+	}
 }
 func CopyCreateK8SClusterOnboardingCredentialResponse(dst *K8SClusterOnboardingCredentialResourceModel, src *configv1.CreateK8SClusterOnboardingCredentialResponse) {
 	dst.Id = types.StringValue(src.Id)

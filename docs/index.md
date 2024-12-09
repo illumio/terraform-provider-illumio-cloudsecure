@@ -26,6 +26,7 @@ terraform {
 provider "illumio-cloudsecure" {
   client_id     = "my-client-id"
   client_secret = "my-secret-id"
+
 }
 ```
 

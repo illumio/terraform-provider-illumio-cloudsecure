@@ -417,6 +417,7 @@ func GenerateFakeServer(dst io.Writer, pkg string, src schema.Schema) error {
 
 // TerraformAttributeTypeToProtoType converts a Terraform attribute type into the corresponding Protocol Buffer Golang type.
 func TerraformAttributeTypeToProtoType(nestedMessageNamePrefix, attrName string, attrType attr.Type, optional bool) (t string, err error) {
+
 	switch value := attrType.(type) {
 	case basetypes.BoolType:
 		if optional {

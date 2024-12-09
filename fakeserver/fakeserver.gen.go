@@ -28,6 +28,8 @@ type FakeConfigServer struct {
 	AzureFlowLogsStorageAccountMutex    sync.RWMutex
 	AzureSubscriptionMap                map[string]*AzureSubscription
 	AzureSubscriptionMutex              sync.RWMutex
+	DeploymentMap                       map[string]*Deployment
+	DeploymentMutex                     sync.RWMutex
 	K8SClusterOnboardingCredentialMap   map[string]*K8SClusterOnboardingCredential
 	K8SClusterOnboardingCredentialMutex sync.RWMutex
 }
@@ -42,6 +44,7 @@ func NewFakeConfigServer(logger *zap.Logger) configv1.ConfigServiceServer {
 		AwsFlowLogsS3BucketMap:            make(map[string]*AwsFlowLogsS3Bucket),
 		AzureFlowLogsStorageAccountMap:    make(map[string]*AzureFlowLogsStorageAccount),
 		AzureSubscriptionMap:              make(map[string]*AzureSubscription),
+		DeploymentMap:                     make(map[string]*Deployment),
 		K8SClusterOnboardingCredentialMap: make(map[string]*K8SClusterOnboardingCredential),
 	}
 }
@@ -76,6 +79,17 @@ type AzureSubscription struct {
 	Name           string
 	SubscriptionId string
 	TenantId       string
+}
+
+type Deployment struct {
+	Id          string
+	Accounts    []*configv1.DeploymentAccountsInstance
+	Description *string
+	Environment string
+	Regions     []*configv1.DeploymentRegionsInstance
+	Subnets     []*configv1.DeploymentSubnetsInstance
+	Tags        []*configv1.DeploymentTagsInstance
+	Vnets       []*configv1.DeploymentVnetsInstance
 }
 
 type K8SClusterOnboardingCredential struct {
@@ -590,6 +604,154 @@ func (s *FakeConfigServer) DeleteAzureSubscription(ctx context.Context, req *con
 	s.Logger.Info("deleted resource",
 		zap.String("type", "azure_subscription"),
 		zap.String("method", "DeleteAzureSubscription"),
+		zap.String("id", id),
+	)
+	return &emptypb.Empty{}, nil
+}
+func (s *FakeConfigServer) CreateDeployment(ctx context.Context, req *configv1.CreateDeploymentRequest) (*configv1.CreateDeploymentResponse, error) {
+	id := uuid.New().String()
+	model := &Deployment{
+		Id:          id,
+		Accounts:    req.Accounts,
+		Description: req.Description,
+		Environment: req.Environment,
+		Regions:     req.Regions,
+		Subnets:     req.Subnets,
+		Tags:        req.Tags,
+		Vnets:       req.Vnets,
+	}
+	resp := &configv1.CreateDeploymentResponse{
+		Id:          id,
+		Accounts:    model.Accounts,
+		Description: model.Description,
+		Regions:     model.Regions,
+		Subnets:     model.Subnets,
+		Tags:        model.Tags,
+		Vnets:       model.Vnets,
+	}
+	s.DeploymentMutex.Lock()
+	s.DeploymentMap[id] = model
+	s.DeploymentMutex.Unlock()
+	s.Logger.Info("created resource",
+		zap.String("type", "deployment"),
+		zap.String("method", "CreateDeployment"),
+		zap.String("id", id),
+	)
+	return resp, nil
+}
+
+func (s *FakeConfigServer) ReadDeployment(ctx context.Context, req *configv1.ReadDeploymentRequest) (*configv1.ReadDeploymentResponse, error) {
+	id := req.Id
+	s.DeploymentMutex.RLock()
+	model, found := s.DeploymentMap[id]
+	if !found {
+		s.DeploymentMutex.RUnlock()
+		s.Logger.Error("attempted to read resource with unknown id",
+			zap.String("type", "deployment"),
+			zap.String("method", "ReadDeployment"),
+			zap.String("id", id),
+		)
+		return nil, status.Errorf(codes.NotFound, "no deployment found with id %s", id)
+	}
+	resp := &configv1.ReadDeploymentResponse{
+		Id:          id,
+		Accounts:    model.Accounts,
+		Description: model.Description,
+		Regions:     model.Regions,
+		Subnets:     model.Subnets,
+		Tags:        model.Tags,
+		Vnets:       model.Vnets,
+	}
+	s.DeploymentMutex.RUnlock()
+	s.Logger.Info("read resource",
+		zap.String("type", "deployment"),
+		zap.String("method", "ReadDeployment"),
+		zap.String("id", id),
+	)
+	return resp, nil
+}
+
+func (s *FakeConfigServer) UpdateDeployment(ctx context.Context, req *configv1.UpdateDeploymentRequest) (*configv1.UpdateDeploymentResponse, error) {
+	id := req.Id
+	s.DeploymentMutex.Lock()
+	model, found := s.DeploymentMap[id]
+	if !found {
+		s.DeploymentMutex.Unlock()
+		s.Logger.Error("attempted to update resource with unknown id",
+			zap.String("type", "deployment"),
+			zap.String("method", "UpdateDeployment"),
+			zap.String("id", id),
+		)
+		return nil, status.Errorf(codes.NotFound, "no deployment found with id %s", id)
+	}
+	updateMask := req.UpdateMask
+	var updateMaskPaths []string
+	if updateMask != nil {
+		updateMaskPaths = updateMask.Paths
+	}
+	for _, path := range updateMaskPaths {
+		switch path {
+		case "accounts":
+			model.Accounts = req.Accounts
+		case "description":
+			model.Description = req.Description
+		case "regions":
+			model.Regions = req.Regions
+		case "subnets":
+			model.Subnets = req.Subnets
+		case "tags":
+			model.Tags = req.Tags
+		case "vnets":
+			model.Vnets = req.Vnets
+		default:
+			s.AwsAccountMutex.Unlock()
+			s.Logger.Error("attempted to update resource using invalid update_mask path",
+				zap.String("type", "deployment"),
+				zap.String("method", "UpdateDeployment"),
+				zap.String("id", id),
+				zap.Strings("updateMaskPaths", updateMaskPaths),
+				zap.String("invalidUpdateMaskPath", path),
+			)
+			return nil, status.Errorf(codes.InvalidArgument, "invalid path in update_mask for aws_account: %s", path)
+		}
+	}
+	resp := &configv1.UpdateDeploymentResponse{
+		Id:          id,
+		Accounts:    model.Accounts,
+		Description: model.Description,
+		Regions:     model.Regions,
+		Subnets:     model.Subnets,
+		Tags:        model.Tags,
+		Vnets:       model.Vnets,
+	}
+	s.DeploymentMutex.Unlock()
+	s.Logger.Info("updated resource",
+		zap.String("type", "deployment"),
+		zap.String("method", "UpdateDeployment"),
+		zap.String("id", id),
+		zap.Strings("updateMaskPaths", updateMaskPaths),
+	)
+	return resp, nil
+}
+
+func (s *FakeConfigServer) DeleteDeployment(ctx context.Context, req *configv1.DeleteDeploymentRequest) (*emptypb.Empty, error) {
+	id := req.Id
+	s.DeploymentMutex.Lock()
+	_, found := s.DeploymentMap[id]
+	if !found {
+		s.DeploymentMutex.Unlock()
+		s.Logger.Error("attempted to delete resource with unknown id",
+			zap.String("type", "deployment"),
+			zap.String("method", "DeleteDeployment"),
+			zap.String("id", id),
+		)
+		return nil, status.Errorf(codes.NotFound, "no deployment found with id %s", id)
+	}
+	delete(s.DeploymentMap, id)
+	s.DeploymentMutex.Unlock()
+	s.Logger.Info("deleted resource",
+		zap.String("type", "deployment"),
+		zap.String("method", "DeleteDeployment"),
 		zap.String("id", id),
 	)
 	return &emptypb.Empty{}, nil

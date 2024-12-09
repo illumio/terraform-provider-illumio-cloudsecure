@@ -21,6 +21,7 @@ func (c *cloudSecureSchema) Resources() Resources {
 		awsFlowLogsS3Bucket,
 		azureFlowLogsStorageAccount,
 		azureSubscriptionResource,
+		deploymentResource,
 		k8sClusterOnboardingCredential,
 	}
 	sort.Sort(resources)
