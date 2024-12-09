@@ -30,7 +30,7 @@ var (
 			Description: "Groups resources under Cloudsecure deployments",
 			Attributes: map[string]resource_schema.Attribute{
 				IDFieldName: idAttribute,
-				"envionment": StringResourceAttributeWithMode{
+				"environment": StringResourceAttributeWithMode{
 					StringAttribute: resource_schema.StringAttribute{
 						Description: "Deployment Name",
 						Required:    true,

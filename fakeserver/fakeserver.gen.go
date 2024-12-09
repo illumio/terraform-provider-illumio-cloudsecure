@@ -85,7 +85,7 @@ type Deployment struct {
 	Id          string
 	Accounts    []*configv1.DeploymentAccountsInstance
 	Description *string
-	Envionment  string
+	Environment string
 	Regions     []*configv1.DeploymentRegionsInstance
 	Subnets     []*configv1.DeploymentSubnetsInstance
 	Tags        []*configv1.DeploymentTagsInstance
@@ -614,7 +614,7 @@ func (s *FakeConfigServer) CreateDeployment(ctx context.Context, req *configv1.C
 		Id:          id,
 		Accounts:    req.Accounts,
 		Description: req.Description,
-		Envionment:  req.Envionment,
+		Environment: req.Environment,
 		Regions:     req.Regions,
 		Subnets:     req.Subnets,
 		Tags:        req.Tags,

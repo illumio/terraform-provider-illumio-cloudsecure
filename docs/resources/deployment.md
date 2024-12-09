@@ -17,7 +17,7 @@ Groups resources under Cloudsecure deployments
 
 ### Required
 
-- `envionment` (String, Sensitive) Deployment Name
+- `environment` (String, Sensitive) Deployment Name
 
 ### Optional
 

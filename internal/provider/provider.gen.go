@@ -1165,7 +1165,7 @@ type DeploymentResourceModel struct {
 	Id          types.String `tfsdk:"id"`
 	Accounts    types.List   `tfsdk:"accounts"`
 	Description types.String `tfsdk:"description"`
-	Envionment  types.String `tfsdk:"envionment"`
+	Environment types.String `tfsdk:"environment"`
 	Regions     types.List   `tfsdk:"regions"`
 	Subnets     types.List   `tfsdk:"subnets"`
 	Tags        types.List   `tfsdk:"tags"`
@@ -1173,13 +1173,13 @@ type DeploymentResourceModel struct {
 }
 
 type DeploymentAccountsInstance struct {
-	Id    types.String `tfsdk:"id"`
 	Cloud types.String `tfsdk:"cloud"`
+	Id    types.String `tfsdk:"id"`
 }
 
 type DeploymentRegionsInstance struct {
-	Id    types.String `tfsdk:"id"`
 	Cloud types.String `tfsdk:"cloud"`
+	Id    types.String `tfsdk:"id"`
 }
 
 type DeploymentSubnetsInstance struct {
@@ -1210,8 +1210,8 @@ type K8SClusterOnboardingCredentialResourceModel struct {
 
 func GetTypeAttrsForDeploymentAccountsInstance() map[string]attr.Type {
 	return map[string]attr.Type{
-		"id":    types.StringType,
 		"cloud": types.StringType,
+		"id":    types.StringType,
 	}
 }
 
@@ -1219,8 +1219,8 @@ func ConvertDeploymentAccountsInstanceToObjectValueFromProto(proto *configv1.Dep
 	return types.ObjectValueMust(
 		GetTypeAttrsForDeploymentAccountsInstance(),
 		map[string]attr.Value{
-			"id":    types.StringValue(proto.Id),
 			"cloud": types.StringValue(proto.Cloud),
+			"id":    types.StringValue(proto.Id),
 		},
 	)
 }
@@ -1232,8 +1232,8 @@ func ConvertDataValueToDeploymentAccountsInstanceProto(dataValue attr.Value) *co
 		log.Fatalf("Unexpected diagnostics: %s", diags)
 	}
 	proto := &configv1.DeploymentAccountsInstance{}
-	proto.Id = pv.Id.ValueString()
 	proto.Cloud = pv.Cloud.ValueString()
+	proto.Id = pv.Id.ValueString()
 	return proto
 }
 func ConvertDataValueToListDeploymentAccountsInstanceProto(data attr.Value) []*configv1.DeploymentAccountsInstance {
@@ -1252,8 +1252,8 @@ func ConvertDataValueToListDeploymentAccountsInstanceProto(data attr.Value) []*c
 
 func GetTypeAttrsForDeploymentRegionsInstance() map[string]attr.Type {
 	return map[string]attr.Type{
-		"id":    types.StringType,
 		"cloud": types.StringType,
+		"id":    types.StringType,
 	}
 }
 
@@ -1261,8 +1261,8 @@ func ConvertDeploymentRegionsInstanceToObjectValueFromProto(proto *configv1.Depl
 	return types.ObjectValueMust(
 		GetTypeAttrsForDeploymentRegionsInstance(),
 		map[string]attr.Value{
-			"id":    types.StringValue(proto.Id),
 			"cloud": types.StringValue(proto.Cloud),
+			"id":    types.StringValue(proto.Id),
 		},
 	)
 }
@@ -1274,8 +1274,8 @@ func ConvertDataValueToDeploymentRegionsInstanceProto(dataValue attr.Value) *con
 		log.Fatalf("Unexpected diagnostics: %s", diags)
 	}
 	proto := &configv1.DeploymentRegionsInstance{}
-	proto.Id = pv.Id.ValueString()
 	proto.Cloud = pv.Cloud.ValueString()
+	proto.Id = pv.Id.ValueString()
 	return proto
 }
 func ConvertDataValueToListDeploymentRegionsInstanceProto(data attr.Value) []*configv1.DeploymentRegionsInstance {
@@ -1639,11 +1639,11 @@ func NewCreateDeploymentRequest(data *DeploymentResourceModel) *configv1.CreateD
 		protoValue = dataValue.(types.String).ValueString()
 		proto.Description = &protoValue
 	}
-	if !data.Envionment.IsUnknown() && !data.Envionment.IsNull() {
-		var dataValue attr.Value = data.Envionment
+	if !data.Environment.IsUnknown() && !data.Environment.IsNull() {
+		var dataValue attr.Value = data.Environment
 		var protoValue string
 		protoValue = dataValue.(types.String).ValueString()
-		proto.Envionment = protoValue
+		proto.Environment = protoValue
 	}
 	if !data.Regions.IsUnknown() && !data.Regions.IsNull() {
 		var dataValue attr.Value = data.Regions
