@@ -3,6 +3,8 @@ package schema
 import (
 	"github.com/hashicorp/terraform-plugin-framework/attr"
 	resource_schema "github.com/hashicorp/terraform-plugin-framework/resource/schema"
+	"github.com/hashicorp/terraform-plugin-framework/resource/schema/planmodifier"
+	"github.com/hashicorp/terraform-plugin-framework/resource/schema/stringplanmodifier"
 	"github.com/hashicorp/terraform-plugin-framework/types"
 )
 
@@ -28,9 +30,18 @@ var (
 			Description: "Groups resources under Cloudsecure deployments",
 			Attributes: map[string]resource_schema.Attribute{
 				IDFieldName: idAttribute,
-				"environment": resource_schema.StringAttribute{
-					MarkdownDescription: "Deployment Name",
-					Required:            true,
+				"envionment": StringResourceAttributeWithMode{
+					StringAttribute: resource_schema.StringAttribute{
+						Description: "Deployment Name",
+						Required:    true,
+						Sensitive:   true,
+						PlanModifiers: []planmodifier.String{
+							stringplanmodifier.RequiresReplace(),
+						},
+					},
+					attributeWithMode: attributeWithMode{
+						Mode: WriteOnlyOnceAttributeMode,
+					},
 				},
 				"description": resource_schema.StringAttribute{
 					MarkdownDescription: "Description of Cloudsecure deployment",

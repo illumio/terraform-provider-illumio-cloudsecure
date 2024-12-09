@@ -85,7 +85,7 @@ type Deployment struct {
 	Id          string
 	Accounts    []*configv1.DeploymentAccountsInstance
 	Description *string
-	Environment string
+	Envionment  string
 	Regions     []*configv1.DeploymentRegionsInstance
 	Subnets     []*configv1.DeploymentSubnetsInstance
 	Tags        []*configv1.DeploymentTagsInstance
@@ -614,7 +614,7 @@ func (s *FakeConfigServer) CreateDeployment(ctx context.Context, req *configv1.C
 		Id:          id,
 		Accounts:    req.Accounts,
 		Description: req.Description,
-		Environment: req.Environment,
+		Envionment:  req.Envionment,
 		Regions:     req.Regions,
 		Subnets:     req.Subnets,
 		Tags:        req.Tags,
@@ -624,7 +624,6 @@ func (s *FakeConfigServer) CreateDeployment(ctx context.Context, req *configv1.C
 		Id:          id,
 		Accounts:    model.Accounts,
 		Description: model.Description,
-		Environment: model.Environment,
 		Regions:     model.Regions,
 		Subnets:     model.Subnets,
 		Tags:        model.Tags,
@@ -658,7 +657,6 @@ func (s *FakeConfigServer) ReadDeployment(ctx context.Context, req *configv1.Rea
 		Id:          id,
 		Accounts:    model.Accounts,
 		Description: model.Description,
-		Environment: model.Environment,
 		Regions:     model.Regions,
 		Subnets:     model.Subnets,
 		Tags:        model.Tags,
@@ -697,8 +695,6 @@ func (s *FakeConfigServer) UpdateDeployment(ctx context.Context, req *configv1.U
 			model.Accounts = req.Accounts
 		case "description":
 			model.Description = req.Description
-		case "environment":
-			model.Environment = req.Environment
 		case "regions":
 			model.Regions = req.Regions
 		case "subnets":
@@ -723,7 +719,6 @@ func (s *FakeConfigServer) UpdateDeployment(ctx context.Context, req *configv1.U
 		Id:          id,
 		Accounts:    model.Accounts,
 		Description: model.Description,
-		Environment: model.Environment,
 		Regions:     model.Regions,
 		Subnets:     model.Subnets,
 		Tags:        model.Tags,

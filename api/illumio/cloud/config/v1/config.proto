@@ -180,12 +180,12 @@ message DeploymentAccountsInstance {
   string id = 2;
 }
 message DeploymentRegionsInstance {
-  string cloud = 1;
-  string id = 2;
+  string id = 1;
+  string cloud = 2;
 }
 message DeploymentSubnetsInstance {
-  string cloud = 1;
-  string id = 2;
+  string id = 1;
+  string cloud = 2;
 }
 message DeploymentTagsInstance {
   string key = 1;
@@ -199,7 +199,7 @@ message DeploymentVnetsInstance {
 message CreateDeploymentRequest {
   repeated DeploymentAccountsInstance accounts = 2;
   optional string description = 3;
-  string environment = 4;
+  string envionment = 10;
   repeated DeploymentRegionsInstance regions = 5;
   repeated DeploymentSubnetsInstance subnets = 6;
   repeated DeploymentTagsInstance tags = 7;
@@ -209,7 +209,6 @@ message CreateDeploymentResponse {
   string id = 1;
   repeated DeploymentAccountsInstance accounts = 2;
   optional string description = 3;
-  string environment = 4;
   repeated DeploymentRegionsInstance regions = 5;
   repeated DeploymentSubnetsInstance subnets = 6;
   repeated DeploymentTagsInstance tags = 7;
@@ -222,7 +221,6 @@ message ReadDeploymentResponse {
   string id = 1;
   repeated DeploymentAccountsInstance accounts = 2;
   optional string description = 3;
-  string environment = 4;
   repeated DeploymentRegionsInstance regions = 5;
   repeated DeploymentSubnetsInstance subnets = 6;
   repeated DeploymentTagsInstance tags = 7;
@@ -232,7 +230,6 @@ message UpdateDeploymentRequest {
   string id = 1;
   repeated DeploymentAccountsInstance accounts = 2;
   optional string description = 3;
-  string environment = 4;
   repeated DeploymentRegionsInstance regions = 5;
   repeated DeploymentSubnetsInstance subnets = 6;
   repeated DeploymentTagsInstance tags = 7;
@@ -243,7 +240,6 @@ message UpdateDeploymentResponse {
   string id = 1;
   repeated DeploymentAccountsInstance accounts = 2;
   optional string description = 3;
-  string environment = 4;
   repeated DeploymentRegionsInstance regions = 5;
   repeated DeploymentSubnetsInstance subnets = 6;
   repeated DeploymentTagsInstance tags = 7;
