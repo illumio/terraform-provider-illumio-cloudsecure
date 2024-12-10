@@ -103,10 +103,10 @@ func (suite *GenerateProviderSuite) TestGenerateProvider() {
 	suite.Contains(output, "github.com/hashicorp/terraform-plugin-log/tflog", "Generated provider should include the resource creation function")
 
 	// Check for the generated resource models
-	suite.Len(data.Models, 2, "Number of models should match the number of resources")
-	modelNames := []string{data.Models[0].Name, data.Models[1].Name}
-	suite.Contains(modelNames, "TestObjectAddress", "Generated provider should include the correct resource model name")
-	suite.Contains(modelNames, "TestObjectResourceModel", "Generated provider should include the correct resource model name")
+	suite.Len(data.Models, 1, "Number of models should match the number of resources")
+	suite.Contains(data.Models[0].Name, "TestObjectResourceModel", "Generated provider should include the correct resource model name")
+	suite.Contains(data.Models[0].SubModels[0].Name, "TestObjectAddress", "Generated provider should include the correct resource model name")
+	suite.Contains(data.Models[0].SubModels[1].Name, "TestObjectRulesInstance", "Generated provider should include the correct resource model name")
 }
 
 func (suite *GenerateProviderSuite) TestListOfObjects() {

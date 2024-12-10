@@ -95,14 +95,14 @@ func (suite *GenerateTestSuite) TestTerraformAttributeTypeToProtoType() {
 				Fields: []field{
 					{
 						Repeated: true,
-						Type:     "TheField",
+						Type:     "TheFieldInstance",
 						Name:     "the_field",
 						Tag:      1,
 					},
 				},
 				Messages: []message{
 					{
-						Name: "TheField",
+						Name: "TheFieldInstance",
 						Fields: []field{
 							{
 								Repeated: true,
