@@ -156,5 +156,4 @@ func (suite *GenerateProviderSuite) TestListOfObjects() {
 	err := AddResourceToProviderTemplateData(&testResource, &data)
 	// Assert no error
 	suite.Require().NoError(err, "AddResourceToProviderTemplateData should not return an error")
-
 }

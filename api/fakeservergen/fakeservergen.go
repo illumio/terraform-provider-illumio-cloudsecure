@@ -447,10 +447,11 @@ func TerraformAttributeTypeToProtoType(nestedMessageNamePrefix, attrName string,
 		if err != nil {
 			return "", err
 		}
-		switch value.ElementType().(type) {
-		case basetypes.ObjectType:
+
+		if _, ok := value.ElementType().(basetypes.ObjectType); ok {
 			return protoType + "Instance", nil
 		}
+
 		return protoType, nil
 	case types.SetType:
 		return TerraformRepeatedAttributeTypeToProtoType(nestedMessageNamePrefix, attrName, value.ElementType())

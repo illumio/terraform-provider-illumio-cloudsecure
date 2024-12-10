@@ -269,6 +269,7 @@ func terraformAttributeTypeToProtoType(attrName string, attrType attr.Type, pref
 			m.Name += "Instance"
 			s += "Instance"
 		}
+
 		return toProtoType, s, m, nil
 	case types.SetType:
 		return terraformRepeatedAttributeTypeToProtoType(attrName, v.ElementType(), prefix)

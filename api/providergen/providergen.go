@@ -696,8 +696,6 @@ func (m *model) HasObjectField() bool {
 }
 
 // GenerateProvider generates the implementation of the Terraform provider for the given schema.
-//
-//nolint:gocognit
 func GenerateProvider(dst io.Writer, pkg string, src schema.Schema) error {
 	data := providerTemplateData{
 		Package:               pkg,
@@ -850,6 +848,7 @@ func AddResourceToProviderTemplateData(resource *schema.Resource, data *provider
 		readResponseFunc,
 		updateResponseFunc,
 	)
+
 	if resourceModel.HasObjectField() {
 		data.HasObjectElementType = true
 	}
@@ -872,6 +871,7 @@ func AddResourceToProviderTemplateData(resource *schema.Resource, data *provider
 		RPCNameForUpdate:           schema.RPCNameForUpdate(resourceMessageName),
 		RPCNameForDelete:           schema.RPCNameForDelete(resourceMessageName),
 	})
+
 	return nil
 }
 
