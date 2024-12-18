@@ -5,9 +5,7 @@ import "text/template"
 var (
 	// ProviderConvertersTemplate is the template of the Terraform provider implementation for the Illumio CloudSecure Config API.
 	ProviderConvertersTemplate = template.Must(template.New("providermodel").Parse(`
-
 {{- define "convertersForModel"}}
-
 type {{.Name}} struct {
 	{{- range $field := .Fields}}
 	{{$field.Name}} types.{{$field.Type.ModelTypeName}} ` + "`" + `tfsdk:"{{$field.AttributeName}}"` + "`" + `
@@ -86,7 +84,5 @@ func ConvertDataValueTo{{.Name}}Proto(ctx context.Context, dataValue attr.Value)
 		{{- end}}
 	{{- end}}
 {{- end}}
-
-
 `))
 )
