@@ -207,6 +207,76 @@ func (suite *GenerateTestSuite) TestTerraformAttributeTypeToProtoType() {
 				},
 			},
 		},
+		"set-object": {
+			tfType: types.SetType{
+				ElemType: types.ObjectType{
+					AttrTypes: map[string]attr.Type{
+						"email": types.StringType,
+						"name":  types.StringType,
+					},
+				},
+			},
+			expectedRepeated: true,
+			expectedType:     "TheField",
+			expectedMessage: &message{
+				Name:     "TheField",
+				Messages: nil,
+				Fields: []field{
+					{
+						Type: "string",
+						Name: "email",
+						Tag:  1,
+					},
+					{
+						Type: "string",
+						Name: "name",
+						Tag:  2,
+					},
+				},
+			},
+		},
+		"set-of-set-of-objects": {
+			tfType: types.SetType{
+				ElemType: types.SetType{
+					ElemType: types.ObjectType{
+						AttrTypes: map[string]attr.Type{
+							"key": types.StringType,
+							"val": types.StringType,
+						},
+					},
+				},
+			},
+			expectedRepeated: true,
+			expectedType:     "TheField",
+			expectedMessage: &message{
+				Name: "TheField",
+				Messages: []message{
+					{
+						Name:     "TheField",
+						Messages: nil,
+						Fields: []field{
+							{
+								Type: "string",
+								Name: "key",
+								Tag:  1,
+							},
+							{
+								Type: "string",
+								Name: "val",
+								Tag:  2,
+							},
+						},
+					},
+				},
+				Fields: []field{
+					{
+						Type: "TheField",
+						Name: "the_field",
+						Tag:  1,
+					},
+				},
+			},
+		},
 	}
 
 	for name, tc := range tests {

@@ -40,16 +40,14 @@ func Convert{{.Name}}ToObjectValueFromProto(proto *configv1.{{.Name}}) basetypes
 		},
 	)
 }
-func ConvertDataValueTo{{.Name}}Proto(ctx context.Context, dataValue attr.Value) *configv1.{{.Name}} {
+func ConvertDataValueTo{{.Name}}Proto(diags *diag.Diagnostics, dataValue attr.Value) *configv1.{{.Name}} {
 	pv := {{.Name}}{}
-	diags := tfsdk.ValueAs(context.Background(), dataValue, &pv)
-	if len(diags) > 0 {
-		tflog.Error(ctx, "Unexpected diagnostics", map[string]any{"diags": diags})
-	}
+	diagsCurrent := tfsdk.ValueAs(context.Background(), dataValue, &pv)
+	diags.Append(diagsCurrent...)
 	proto := &configv1.{{.Name}}{}
 	{{- range $field := .Fields}}
 	{{- if ne $field.Type.NestedModel nil}}
-	proto.{{$field.Name}} = ConvertDataValueTo{{$field.Type.NestedModel.Name}}Proto(ctx, pv.{{$field.Name}})
+	proto.{{$field.Name}} = ConvertDataValueTo{{$field.Type.NestedModel.Name}}Proto(diags, pv.{{$field.Name}})
 	{{- else}}
 	proto.{{$field.Name}} = pv.{{$field.Name}}.Value{{$field.Type.ModelTypeName}}()
 	{{- end}}
