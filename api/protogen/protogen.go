@@ -6,6 +6,7 @@ package main
 import (
 	"fmt"
 	"io"
+	"sort"
 	"text/template" // nosemgrep: go.lang.security.audit.xss.import-text-template.import-text-template
 
 	"github.com/hashicorp/terraform-plugin-framework/attr"
@@ -100,6 +101,8 @@ type field struct {
 	Tag int
 }
 
+const MessageSeperator = "_"
+
 // GenerateGRPCAPISpec generates the Protocol Buffer and gRPC spec for the Illumio CloudSecure Config API, and outputs it into the given Writer.
 func GenerateGRPCAPISpec(dst io.Writer, src schema.Schema, tagger *apiSpecTagger) error {
 	data := grpcAPISpecTemplateData{
@@ -167,7 +170,7 @@ func GenerateGRPCAPISpec(dst io.Writer, src schema.Schema, tagger *apiSpecTagger
 				//
 				// Nesting each message (2.) would cause too much overhead as it would require generating duplicate code for handling those duplicate messages.
 				// Therefore, define it globally, but prefix the message name with the resource name to make it globally unique.
-				msg.Name = resourceMessageName + "_" + msg.Name
+				msg.Name = resourceMessageName + MessageSeperator + msg.Name
 				t = msg.Name
 
 				data.Messages = append(data.Messages, *msg)
@@ -270,12 +273,55 @@ func terraformAttributeTypeToProtoType(attrName string, attrType attr.Type) (rep
 		return terraformRepeatedAttributeTypeToProtoType(attrName, v.ElementType())
 	case types.SetType:
 		return terraformRepeatedAttributeTypeToProtoType(attrName, v.ElementType())
-	// TODO: Add support for nested objects.
+	case types.ObjectType:
+		return terraformObjectAttributeTypeToProtoType(attrName, v)
+
 	default:
 		return false, "", nil, fmt.Errorf("unsupported Terraform type: %s", attrType.String())
 	}
 }
 
+// terraformObjectAttributeTypeToProtoType converts a Terraform object attribute to a Protocol Buffer message type.
+func terraformObjectAttributeTypeToProtoType(attrName string, obj types.ObjectType) (repeated bool, protoType string, messages *message, err error) {
+	messageName := schema.ProtoMessageName(attrName)
+	newMessage := &message{
+		Name:   messageName,
+		Fields: []field{},
+	}
+
+	for name, attrType := range obj.AttrTypes {
+		isRepeated, t, msg, err := terraformAttributeTypeToProtoType(name, attrType)
+		if err != nil {
+			return false, "", nil, fmt.Errorf("failed to parse field %s in object %s: %w", name, attrName, err)
+		}
+
+		newMessage.Fields = append(newMessage.Fields, field{
+			Repeated: isRepeated,
+			Type:     t,
+			Name:     name,
+			Tag:      len(newMessage.Fields) + 1,
+		})
+
+		if msg != nil {
+			newMessage.Messages = append(newMessage.Messages, *msg)
+		}
+	}
+
+	// Reorder fields Sort by Name
+	sort.Slice(newMessage.Fields, func(i, j int) bool {
+		if newMessage.Fields[i].Name < newMessage.Fields[j].Name {
+			newMessage.Fields[i].Tag, newMessage.Fields[j].Tag = newMessage.Fields[j].Tag, newMessage.Fields[i].Tag
+
+			return true
+		}
+
+		return false
+	})
+
+	return false, messageName, newMessage, nil
+}
+
+// terraformRepeatedAttributeTypeToProtoType converts a Terraform repeated attribute type into the corresponding Protocol Buffer type, and optionally additional Protocol Buffer messages that represent nested types.
 func terraformRepeatedAttributeTypeToProtoType(attrName string, elementType attr.Type) (repeated bool, protoType string, messages *message, err error) {
 	elemRepeated, elemProtoType, elemMessage, err := terraformAttributeTypeToProtoType(attrName, elementType)
 
