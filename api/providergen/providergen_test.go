@@ -462,5 +462,4 @@ func ConvertDataValueToNestedObjectTester_SetObjProto(ctx context.Context, dataV
 }
 `
 	suite.Equal(expectedVal, dst.String(), "Generated provider output should match the expected output")
-
 }
