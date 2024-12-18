@@ -6,6 +6,7 @@ package main
 import (
 	"fmt"
 	"io"
+	"sort"
 	"text/template" // nosemgrep: go.lang.security.audit.xss.import-text-template.import-text-template
 
 	"github.com/hashicorp/terraform-plugin-framework/attr"
@@ -31,6 +32,10 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework/datasource"
 	"github.com/hashicorp/terraform-plugin-framework/resource"
 	resource_schema "github.com/hashicorp/terraform-plugin-framework/resource/schema"
+	{{- if  eq .HasObjectElementType true}}
+	"github.com/hashicorp/terraform-plugin-framework/tfsdk"
+	"github.com/hashicorp/terraform-plugin-framework/types/basetypes"
+	{{- end}}
 	"github.com/hashicorp/terraform-plugin-framework/types"
 	"github.com/hashicorp/terraform-plugin-log/tflog"
 	"google.golang.org/grpc/codes"
@@ -122,7 +127,7 @@ func (r *{{.TypeName}}) Create(ctx context.Context, req resource.CreateRequest, 
 		return
 	}
 
-	protoReq := {{.NewCreateRequestFuncName}}(&data)
+	protoReq := {{.NewCreateRequestFuncName}}(ctx, &data)
 
 	tflog.Trace(ctx, "creating a resource", map[string]any{"type": "{{.Name}}"})
 
@@ -149,7 +154,7 @@ func (r *{{.TypeName}}) Read(ctx context.Context, req resource.ReadRequest, resp
 		return
 	}
 
-	protoReq := {{.NewReadRequestFuncName}}(&data)
+	protoReq := {{.NewReadRequestFuncName}}(ctx, &data)
 
 	tflog.Trace(ctx, "reading a resource", map[string]any{"type": "{{.Name}}", "id": protoReq.{{.IdFieldName}}})
 
@@ -189,7 +194,7 @@ func (r *{{.TypeName}}) Update(ctx context.Context, req resource.UpdateRequest, 
 		return
 	}
 
-	protoReq := {{.NewUpdateRequestFuncName}}(&beforeData, &afterData)
+	protoReq := {{.NewUpdateRequestFuncName}}(ctx, &beforeData, &afterData)
 
 	tflog.Trace(ctx, "updating a resource", map[string]any{"type": "{{.Name}}", "id": protoReq.{{.IdFieldName}}, "update_mask": protoReq.{{.UpdateMaskFieldName}}.Paths})
 
@@ -223,7 +228,7 @@ func (r *{{.TypeName}}) Delete(ctx context.Context, req resource.DeleteRequest, 
 		return
 	}
 
-	protoReq := {{.NewDeleteRequestFuncName}}(&data)
+	protoReq := {{.NewDeleteRequestFuncName}}(ctx, &data)
 
 	tflog.Trace(ctx, "deleting a resource", map[string]any{"type": "{{.Name}}", "id": protoReq.{{.IdFieldName}}})
 
@@ -262,7 +267,9 @@ type {{.Name}} struct {
 {{- template "model" $model}}
 {{- end}}
 {{- define "convertDataValueToProto"}}
-	{{- if eq .CollectionElementType nil}}
+	{{- if ne .NestedModel nil}}
+		protoValue = ConvertDataValueTo{{.NestedModel.Name}}Proto(ctx, dataValue)
+	{{- else if eq .CollectionElementType nil}}
 		protoValue = dataValue.(types.{{.ModelTypeName}}).Value{{.ModelTypeName}}()
 	{{- else}}
 		{
@@ -270,7 +277,11 @@ type {{.Name}} struct {
 			protoValues := make({{.ProtoTypeName}}, 0, len(dataElements))
 			for _, dataElement := range dataElements {
 				var dataValue attr.Value = dataElement
+				{{- if eq .CollectionElementType.NestedModel nil}}
 				var protoValue {{.CollectionElementType.ProtoTypeName}}
+				{{- else}}
+				var protoValue *{{.CollectionElementType.ProtoTypeName}}
+				{{- end}}
 				{{- template "convertDataValueToProto" .CollectionElementType}}
 				protoValues = append(protoValues, {{if ne .WrapProtoValueElementExpr nil}}{{.WrapProtoValueElementExpr}}{{else}}protoValue{{end}})
 			}
@@ -280,12 +291,16 @@ type {{.Name}} struct {
 {{- end}}
 {{- define "newRequestFunc"}}
 
-func {{.Name}}(data *{{.ModelName}}) *configv1.{{.ProtoName}} {
+func {{.Name}}(ctx context.Context, data *{{.ModelName}}) *configv1.{{.ProtoName}} {
 	proto := &configv1.{{.ProtoName}}{}
 	{{- range $field := .Fields}}
 	if !data.{{$field.Name}}.IsUnknown() && !data.{{$field.Name}}.IsNull() {
 		var dataValue attr.Value = data.{{$field.Name}}
+		{{- if eq $field.Type.NestedModel nil}}
 		var protoValue {{$field.Type.ProtoTypeName}}
+		{{- else}}
+		var protoValue *{{$field.Type.ProtoTypeName}}
+		{{- end}}
 		{{- template "convertDataValueToProto" $field.Type}}
 		{{- if and ($field.Optional) (eq $field.Type.CollectionElementType nil)}}
 		proto.{{$field.Name}} = &protoValue
@@ -302,7 +317,7 @@ func {{.Name}}(data *{{.ModelName}}) *configv1.{{.ProtoName}} {
 {{- end}}
 {{- define "newUpdateRequestFunc"}}
 
-func {{.Name}}(beforeData, afterData *{{.ModelName}}) *configv1.{{.ProtoName}} {
+func {{.Name}}(ctx context.Context, beforeData, afterData *{{.ModelName}}) *configv1.{{.ProtoName}} {
 	proto := &configv1.{{.ProtoName}}{}
 	proto.UpdateMask, _ = fieldmaskpb.New(proto)
 	proto.Id = beforeData.Id.ValueString()
@@ -312,7 +327,11 @@ func {{.Name}}(beforeData, afterData *{{.ModelName}}) *configv1.{{.ProtoName}} {
 		proto.UpdateMask.Append(proto, "{{$field.AttributeName}}")
 		if !afterData.{{$field.Name}}.IsUnknown() && !afterData.{{$field.Name}}.IsNull() {
 			var dataValue attr.Value = afterData.{{$field.Name}}
+			{{- if eq $field.Type.NestedModel nil}}
 			var protoValue {{$field.Type.ProtoTypeName}}
+			{{- else}}
+			var protoValue *{{$field.Type.ProtoTypeName}}
+			{{- end}}
 			{{- template "convertDataValueToProto" $field.Type}}
 			{{- if and ($field.Optional) (eq $field.Type.CollectionElementType nil)}}
 			proto.{{$field.Name}} = &protoValue
@@ -330,14 +349,20 @@ func {{.Name}}(beforeData, afterData *{{.ModelName}}) *configv1.{{.ProtoName}} {
 {{- template "newUpdateRequestFunc" $newUpdateRequestFunc}}
 {{- end}}
 {{- define "modelDataType"}}
-{{- if eq .CollectionElementType nil -}}
+{{- if ne .NestedModel nil -}}
+types.ObjectType{
+	AttrTypes: GetTypeAttrsFor{{.NestedModel.Name}}(),
+}
+{{- else if eq .CollectionElementType nil -}}
 types.{{.ModelTypeName}}Type
 {{- else -}}
 types.{{.ModelTypeName}}Type{ElemType: {{- template "modelDataType" .CollectionElementType -}}}
 {{- end}}
 {{- end}}
 {{- define "convertRepeatedProtoValueToData"}}
-	{{- if eq .CollectionElementType nil}}
+	{{- if ne .NestedModel nil}}
+		dataValue = Convert{{.NestedModel.Name}}ToObjectValueFromProto(protoValue)
+	{{- else if eq .CollectionElementType nil}}
 		dataValue = types.{{.ModelTypeName}}Value(protoValue)
 	{{- else}}
 		{
@@ -348,7 +373,11 @@ types.{{.ModelTypeName}}Type{ElemType: {{- template "modelDataType" .CollectionE
 			} else {
 				dataValues := make([]attr.Value, 0, len(protoElements))
 				for _, protoElement := range protoElements {
+					{{- if ne .CollectionElementType.NestedModel nil}}
+					var protoValue *{{.CollectionElementType.ProtoTypeName}} = {{if ne .UnwrapProtoValueElementExpr nil}}{{.UnwrapProtoValueElementExpr}}{{else}}protoElement{{end}}
+					{{- else}}	
 					var protoValue {{.CollectionElementType.ProtoTypeName}} = {{if ne .UnwrapProtoValueElementExpr nil}}{{.UnwrapProtoValueElementExpr}}{{else}}protoElement{{end}}
+					{{- end}}	
 					var dataValue attr.Value
 					{{- template "convertRepeatedProtoValueToData" .CollectionElementType}}
 					dataValues = append(dataValues, dataValue)
@@ -361,12 +390,14 @@ types.{{.ModelTypeName}}Type{ElemType: {{- template "modelDataType" .CollectionE
 {{- define "copyResponseFunc"}}
 func {{.Name}}(dst *{{.ModelName}}, src *configv1.{{.ProtoName}}) {
 	{{- range $field := .Fields}}
-	{{- if eq $field.Type.CollectionElementType nil}}
-	{{- if .Optional}}
-	dst.{{$field.Name}} = types.{{$field.Type.ModelTypeName}}PointerValue(src.{{$field.Name}})
-	{{- else}}
-	dst.{{$field.Name}} = types.{{$field.Type.ModelTypeName}}Value(src.{{$field.Name}})
-	{{- end}}
+	{{- if ne $field.Type.NestedModel nil}}
+		dst.{{$field.Name}} = Convert{{.Type.NestedModel.Name}}ToObjectValueFromProto(src.{{$field.Name}})
+	{{- else if eq $field.Type.CollectionElementType nil}}
+		{{- if .Optional}}
+		dst.{{$field.Name}} = types.{{$field.Type.ModelTypeName}}PointerValue(src.{{$field.Name}})
+		{{- else}}
+		dst.{{$field.Name}} = types.{{$field.Type.ModelTypeName}}Value(src.{{$field.Name}})
+		{{- end}}
 	{{- else}}
 	{
 		protoValue := src.{{$field.Name}}
@@ -406,6 +437,9 @@ type providerTemplateData struct {
 
 	// Resources is the list of Terraform resources to define.
 	Resources []resourceData
+
+	// HasObjectElementType is true if the schema has an object element type.
+	HasObjectElementType bool
 }
 
 // model defines the model of a Terraform resource or data source.
@@ -453,6 +487,10 @@ type fieldType struct {
 	// UnwrapProtoValueElementExpr is the Golang expression that unwraps element value "protoElement" when a converting Protocol Buffer field into model data of this type.
 	// If not set, defaults to "protoElement".
 	UnwrapProtoValueElementExpr *string
+
+	// NestedModel is the  nested model.
+	// nil if the type is a primitive type.
+	NestedModel *model
 }
 
 // convertFunc defines a function that converts Terraform models into Protocol Buffer messages or vice-versa.
@@ -537,155 +575,173 @@ func GenerateProvider(dst io.Writer, pkg string, src schema.Schema) error {
 	camelCasedUpdateMaskFieldName := schema.ProtoMessageName(schema.UpdateMaskFieldName)
 
 	for _, resource := range src.Resources() {
-		resourceName := resource.TypeName
-		resourceMessageName := schema.ProtoMessageName(resourceName)
-		numFields := len(resource.Schema.Attributes)
-
-		resourceModel := model{
-			Name:   resourceMessageName + "ResourceModel",
-			Fields: make([]field, 0, numFields),
+		err := AddResourceToProviderTemplateData(&resource, &data, camelCasedIdFieldName, camelCasedUpdateMaskFieldName)
+		if err != nil {
+			return err
 		}
 
-		createRequestFunc := convertFunc{
-			Name:      "New" + schema.ProtoMessageNameForCreateRequest(resourceMessageName),
-			ProtoName: schema.ProtoMessageNameForCreateRequest(resourceMessageName),
-			ModelName: resourceModel.Name,
-			Fields:    make([]field, 0, numFields-1),
-		}
-
-		readRequestFunc := convertFunc{
-			Name:      "New" + schema.ProtoMessageNameForReadRequest(resourceMessageName),
-			ProtoName: schema.ProtoMessageNameForReadRequest(resourceMessageName),
-			ModelName: resourceModel.Name,
-			Fields:    make([]field, 0, 1),
-		}
-
-		updateRequestFunc := convertFunc{
-			Name:      "New" + schema.ProtoMessageNameForUpdateRequest(resourceMessageName),
-			ProtoName: schema.ProtoMessageNameForUpdateRequest(resourceMessageName),
-			ModelName: resourceModel.Name,
-			Fields:    make([]field, 0, numFields+1),
-		}
-
-		deleteRequestFunc := convertFunc{
-			Name:      "New" + schema.ProtoMessageNameForDeleteRequest(resourceMessageName),
-			ProtoName: schema.ProtoMessageNameForDeleteRequest(resourceMessageName),
-			ModelName: resourceModel.Name,
-			Fields:    make([]field, 0, 1),
-		}
-
-		createResponseFunc := convertFunc{
-			Name:      "Copy" + schema.ProtoMessageNameForCreateResponse(resourceMessageName),
-			ProtoName: schema.ProtoMessageNameForCreateResponse(resourceMessageName),
-			ModelName: resourceModel.Name,
-			Fields:    make([]field, 0, numFields),
-		}
-
-		readResponseFunc := convertFunc{
-			Name:      "Copy" + schema.ProtoMessageNameForReadResponse(resourceMessageName),
-			ProtoName: schema.ProtoMessageNameForReadResponse(resourceMessageName),
-			ModelName: resourceModel.Name,
-			Fields:    make([]field, 0, numFields),
-		}
-
-		updateResponseFunc := convertFunc{
-			Name:      "Copy" + schema.ProtoMessageNameForUpdateResponse(resourceMessageName),
-			ProtoName: schema.ProtoMessageNameForUpdateResponse(resourceMessageName),
-			ModelName: resourceModel.Name,
-			Fields:    make([]field, 0, numFields),
-		}
-
-		attrNames := schema.SortResourceAttributes(resource.Schema.Attributes)
-		for _, attrName := range attrNames {
-			attrSchema := resource.Schema.Attributes[attrName]
-
-			t, err := TerraformAttributeTypeToProtoType("configv1."+resourceMessageName, attrName, attrSchema.GetType())
-			if err != nil {
-				return fmt.Errorf("failed to parse field %s in resource %s: %w", attrName, resourceMessageName, err)
-			}
-
-			f := field{
-				Name:          schema.ProtoMessageName(attrName),
-				AttributeName: attrName,
-				Type:          t,
-				Optional:      schema.AttributeIsOptional(attrSchema),
-			}
-
-			resourceModel.Fields = append(resourceModel.Fields, f)
-
-			mode := schema.GetResourceAttributeMode(attrSchema)
-
-			if mode.InCreateRequest {
-				createRequestFunc.Fields = append(createRequestFunc.Fields, f)
-			}
-
-			if mode.InCreateResponse {
-				createResponseFunc.Fields = append(createResponseFunc.Fields, f)
-			}
-
-			if mode.InReadRequest {
-				readRequestFunc.Fields = append(readRequestFunc.Fields, f)
-			}
-
-			if mode.InReadResponse {
-				readResponseFunc.Fields = append(readResponseFunc.Fields, f)
-			}
-
-			if mode.InUpdateRequest {
-				updateRequestFunc.Fields = append(updateRequestFunc.Fields, f)
-			}
-
-			if mode.InUpdateResponse {
-				updateResponseFunc.Fields = append(updateResponseFunc.Fields, f)
-			}
-
-			if mode.InDeleteRequest {
-				deleteRequestFunc.Fields = append(deleteRequestFunc.Fields, f)
-			}
-		}
-
-		data.Models = append(data.Models,
-			resourceModel,
-		)
-		data.NewRequestFuncs = append(data.NewRequestFuncs,
-			createRequestFunc,
-			readRequestFunc,
-			deleteRequestFunc,
-		)
-		data.NewUpdateRequestFuncs = append(data.NewUpdateRequestFuncs,
-			updateRequestFunc,
-		)
-		data.CopyResponseFuncs = append(data.CopyResponseFuncs,
-			createResponseFunc,
-			readResponseFunc,
-			updateResponseFunc,
-		)
-
-		data.Resources = append(data.Resources, resourceData{
-			Name:                       resourceName,
-			TypeName:                   resourceMessageName + "Resource",
-			ModelName:                  resourceModel.Name,
-			IdFieldName:                camelCasedIdFieldName,
-			UpdateMaskFieldName:        camelCasedUpdateMaskFieldName,
-			NewCreateRequestFuncName:   createRequestFunc.Name,
-			CopyCreateResponseFuncName: createResponseFunc.Name,
-			NewReadRequestFuncName:     readRequestFunc.Name,
-			CopyReadResponseFuncName:   readResponseFunc.Name,
-			NewUpdateRequestFuncName:   updateRequestFunc.Name,
-			CopyUpdateResponseFuncName: updateResponseFunc.Name,
-			NewDeleteRequestFuncName:   deleteRequestFunc.Name,
-			RPCNameForCreate:           schema.RPCNameForCreate(resourceMessageName),
-			RPCNameForRead:             schema.RPCNameForRead(resourceMessageName),
-			RPCNameForUpdate:           schema.RPCNameForUpdate(resourceMessageName),
-			RPCNameForDelete:           schema.RPCNameForDelete(resourceMessageName),
-		})
 	}
 
-	return providerTemplate.Execute(dst, &data)
+	err := providerTemplate.Execute(dst, &data)
+	if err != nil {
+		return err
+	}
+
+	return ProviderConvertersTemplate.Execute(dst, &data)
+}
+
+func AddResourceToProviderTemplateData(resource *schema.Resource, data *providerTemplateData, camelCasedIdFieldName, camelCasedUpdateMaskFieldName string) error {
+	resourceName := resource.TypeName
+	resourceMessageName := schema.ProtoMessageName(resourceName)
+	numFields := len(resource.Schema.Attributes)
+
+	resourceModel := model{
+		Name:   resourceMessageName + "ResourceModel",
+		Fields: make([]field, 0, numFields),
+	}
+
+	createRequestFunc := convertFunc{
+		Name:      "New" + schema.ProtoMessageNameForCreateRequest(resourceMessageName),
+		ProtoName: schema.ProtoMessageNameForCreateRequest(resourceMessageName),
+		ModelName: resourceModel.Name,
+		Fields:    make([]field, 0, numFields-1),
+	}
+
+	readRequestFunc := convertFunc{
+		Name:      "New" + schema.ProtoMessageNameForReadRequest(resourceMessageName),
+		ProtoName: schema.ProtoMessageNameForReadRequest(resourceMessageName),
+		ModelName: resourceModel.Name,
+		Fields:    make([]field, 0, 1),
+	}
+
+	updateRequestFunc := convertFunc{
+		Name:      "New" + schema.ProtoMessageNameForUpdateRequest(resourceMessageName),
+		ProtoName: schema.ProtoMessageNameForUpdateRequest(resourceMessageName),
+		ModelName: resourceModel.Name,
+		Fields:    make([]field, 0, numFields+1),
+	}
+
+	deleteRequestFunc := convertFunc{
+		Name:      "New" + schema.ProtoMessageNameForDeleteRequest(resourceMessageName),
+		ProtoName: schema.ProtoMessageNameForDeleteRequest(resourceMessageName),
+		ModelName: resourceModel.Name,
+		Fields:    make([]field, 0, 1),
+	}
+
+	createResponseFunc := convertFunc{
+		Name:      "Copy" + schema.ProtoMessageNameForCreateResponse(resourceMessageName),
+		ProtoName: schema.ProtoMessageNameForCreateResponse(resourceMessageName),
+		ModelName: resourceModel.Name,
+		Fields:    make([]field, 0, numFields),
+	}
+
+	readResponseFunc := convertFunc{
+		Name:      "Copy" + schema.ProtoMessageNameForReadResponse(resourceMessageName),
+		ProtoName: schema.ProtoMessageNameForReadResponse(resourceMessageName),
+		ModelName: resourceModel.Name,
+		Fields:    make([]field, 0, numFields),
+	}
+
+	updateResponseFunc := convertFunc{
+		Name:      "Copy" + schema.ProtoMessageNameForUpdateResponse(resourceMessageName),
+		ProtoName: schema.ProtoMessageNameForUpdateResponse(resourceMessageName),
+		ModelName: resourceModel.Name,
+		Fields:    make([]field, 0, numFields),
+	}
+
+	attrNames := schema.SortResourceAttributes(resource.Schema.Attributes)
+	for _, attrName := range attrNames {
+		attrSchema := resource.Schema.Attributes[attrName]
+
+		t, err := TerraformAttributeTypeToProtoType("configv1."+resourceMessageName, attrName, attrSchema.GetType(), true)
+		if err != nil {
+			return fmt.Errorf("failed to parse field %s in resource %s: %w", attrName, resourceMessageName, err)
+		}
+
+		if t.NestedModel != nil {
+			data.HasObjectElementType = true
+		}
+
+		f := field{
+			Name:          schema.ProtoMessageName(attrName),
+			AttributeName: attrName,
+			Type:          t,
+			Optional:      schema.AttributeIsOptional(attrSchema),
+		}
+
+		resourceModel.Fields = append(resourceModel.Fields, f)
+
+		mode := schema.GetResourceAttributeMode(attrSchema)
+
+		if mode.InCreateRequest {
+			createRequestFunc.Fields = append(createRequestFunc.Fields, f)
+		}
+
+		if mode.InCreateResponse {
+			createResponseFunc.Fields = append(createResponseFunc.Fields, f)
+		}
+
+		if mode.InReadRequest {
+			readRequestFunc.Fields = append(readRequestFunc.Fields, f)
+		}
+
+		if mode.InReadResponse {
+			readResponseFunc.Fields = append(readResponseFunc.Fields, f)
+		}
+
+		if mode.InUpdateRequest {
+			updateRequestFunc.Fields = append(updateRequestFunc.Fields, f)
+		}
+
+		if mode.InUpdateResponse {
+			updateResponseFunc.Fields = append(updateResponseFunc.Fields, f)
+		}
+
+		if mode.InDeleteRequest {
+			deleteRequestFunc.Fields = append(deleteRequestFunc.Fields, f)
+		}
+	}
+
+	data.Models = append(data.Models,
+		resourceModel,
+	)
+	data.NewRequestFuncs = append(data.NewRequestFuncs,
+		createRequestFunc,
+		readRequestFunc,
+		deleteRequestFunc,
+	)
+	data.NewUpdateRequestFuncs = append(data.NewUpdateRequestFuncs,
+		updateRequestFunc,
+	)
+	data.CopyResponseFuncs = append(data.CopyResponseFuncs,
+		createResponseFunc,
+		readResponseFunc,
+		updateResponseFunc,
+	)
+
+	data.Resources = append(data.Resources, resourceData{
+		Name:                       resourceName,
+		TypeName:                   resourceMessageName + "Resource",
+		ModelName:                  resourceModel.Name,
+		IdFieldName:                camelCasedIdFieldName,
+		UpdateMaskFieldName:        camelCasedUpdateMaskFieldName,
+		NewCreateRequestFuncName:   createRequestFunc.Name,
+		CopyCreateResponseFuncName: createResponseFunc.Name,
+		NewReadRequestFuncName:     readRequestFunc.Name,
+		CopyReadResponseFuncName:   readResponseFunc.Name,
+		NewUpdateRequestFuncName:   updateRequestFunc.Name,
+		CopyUpdateResponseFuncName: updateResponseFunc.Name,
+		NewDeleteRequestFuncName:   deleteRequestFunc.Name,
+		RPCNameForCreate:           schema.RPCNameForCreate(resourceMessageName),
+		RPCNameForRead:             schema.RPCNameForRead(resourceMessageName),
+		RPCNameForUpdate:           schema.RPCNameForUpdate(resourceMessageName),
+		RPCNameForDelete:           schema.RPCNameForDelete(resourceMessageName),
+	})
+	return nil
 }
 
 // TerraformAttributeTypeToProtoType converts a Terraform attribute type into the corresponding Protocol Buffer Golang type.
-func TerraformAttributeTypeToProtoType(nestedMessageNamePrefix, attrName string, attrType attr.Type) (t fieldType, err error) {
+func TerraformAttributeTypeToProtoType(nestedMessageNamePrefix, attrName string, attrType attr.Type, isRoot bool) (t fieldType, err error) {
 	switch v := attrType.(type) {
 	case basetypes.BoolType:
 		return fieldType{
@@ -733,22 +789,69 @@ func TerraformAttributeTypeToProtoType(nestedMessageNamePrefix, attrName string,
 			WrapProtoValueElementExpr:   wrapProtoValueElementExpr,
 			UnwrapProtoValueElementExpr: unwrapProtoValueElementExpr,
 		}, nil
-	// TODO: Add support for nested objects.
+	case types.ObjectType:
+		protoTypeName, objModel, err := TerraformObjectAttributeTypeToProtoType(nestedMessageNamePrefix, attrName, v, isRoot)
+		if err != nil {
+			return fieldType{}, err
+		}
+
+		return fieldType{
+			ModelTypeName: "Object",
+			ProtoTypeName: protoTypeName,
+			NestedModel:   objModel,
+		}, nil
 	default:
 		return fieldType{}, fmt.Errorf("unsupported Terraform type: %s", attrType.String())
 	}
+}
+
+func TerraformObjectAttributeTypeToProtoType(nestedMessageNamePrefix, attrName string, object types.ObjectType, isRoot bool) (protoTypeName string, nestedModel *model, err error) {
+	protoAttrName := schema.ProtoMessageName(attrName)
+	fields := make([]field, 0, len(object.AttrTypes))
+	wrappedMessageName := nestedMessageNamePrefix + "_" + protoAttrName
+
+	for fieldName, fieldType := range object.AttrTypes {
+		t, err := TerraformAttributeTypeToProtoType(wrappedMessageName, fieldName, fieldType, true)
+		if err != nil {
+			return "", nil, fmt.Errorf("failed to parse field %s in object %s: %w", fieldName, nestedMessageNamePrefix, err)
+		}
+
+		fields = append(fields, field{
+			Name:          schema.ProtoMessageName(fieldName),
+			AttributeName: fieldName,
+			Type:          t,
+			Optional:      true,
+		})
+	}
+
+	// reorder fields Sort by Name
+	sort.Slice(fields, func(i, j int) bool {
+		return fields[i].Name < fields[j].Name
+	})
+
+	if isRoot {
+		nestedMessageNamePrefix += "_" + schema.ProtoMessageName(attrName)
+	}
+
+	dataModel := model{
+		Name:   nestedMessageNamePrefix[9:],
+		Fields: fields,
+	}
+
+	return nestedMessageNamePrefix, &dataModel, nil
 }
 
 func TerraformRepeatedAttributeTypeToProtoType(nestedMessageNamePrefix, attrName string, elementType attr.Type) (protoTypeName string, wrapProtoValueElementExpr, unwrapProtoValueElementExpr *string, elemProtoType fieldType, err error) {
 	camelCasedAttrName := schema.ProtoMessageName(attrName)
 	wrapperMessageName := nestedMessageNamePrefix + "_" + camelCasedAttrName
 
-	elemType, err := TerraformAttributeTypeToProtoType(wrapperMessageName, attrName, elementType)
+	elemType, err := TerraformAttributeTypeToProtoType(wrapperMessageName, attrName, elementType, false)
 
 	switch {
 	case err != nil:
 		return "", nil, nil, fieldType{}, fmt.Errorf("unsupported element type %s: %w", elementType.String(), err)
-
+	case elemType.NestedModel != nil: // The element type itself is a nested object. Every element is wrapped into a nested Protocol Buffer message.
+		return "[]*" + wrapperMessageName, nil, nil, elemType, nil
 	case elemType.CollectionElementType != nil: // The element type itself is repeated. Every element is wrapped into a nested Protocol Buffer message.
 		wrapProtoValueElementExpr := fmt.Sprintf("&%s{%s:protoValue}", wrapperMessageName, camelCasedAttrName)
 		unwrapProtoValueElementExpr := "protoElement." + camelCasedAttrName
