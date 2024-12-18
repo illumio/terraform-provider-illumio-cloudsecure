@@ -447,14 +447,15 @@ func TerraformAttributeTypeToProtoType(nestedMessageNamePrefix, attrName string,
 	case types.SetType:
 		return TerraformRepeatedAttributeTypeToProtoType(nestedMessageNamePrefix, attrName, value.ElementType())
 	case types.ObjectType:
-		return TerraformObjectAttributeTypeToProtoType(nestedMessageNamePrefix, attrName, value)
+		return TerraformObjectAttributeTypeToProtoType(nestedMessageNamePrefix, attrName)
 	default:
 		return "", fmt.Errorf("unsupported Terraform type: %s", attrType.String())
 	}
 }
 
-func TerraformObjectAttributeTypeToProtoType(nestedMessageNamePrefix, attrName string, elementType attr.Type) (t string, err error) {
+func TerraformObjectAttributeTypeToProtoType(nestedMessageNamePrefix, attrName string) (t string, err error) {
 	nestedMessageName := nestedMessageNamePrefix + "_" + schema.ProtoMessageName(attrName)
+
 	return "*" + nestedMessageName, nil
 }
 

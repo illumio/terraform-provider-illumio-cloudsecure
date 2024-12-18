@@ -579,7 +579,6 @@ func GenerateProvider(dst io.Writer, pkg string, src schema.Schema) error {
 		if err != nil {
 			return err
 		}
-
 	}
 
 	err := providerTemplate.Execute(dst, &data)
@@ -737,6 +736,7 @@ func AddResourceToProviderTemplateData(resource *schema.Resource, data *provider
 		RPCNameForUpdate:           schema.RPCNameForUpdate(resourceMessageName),
 		RPCNameForDelete:           schema.RPCNameForDelete(resourceMessageName),
 	})
+
 	return nil
 }
 
