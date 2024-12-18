@@ -11,9 +11,12 @@ import (
 
 	"github.com/hashicorp/terraform-plugin-framework/attr"
 	"github.com/hashicorp/terraform-plugin-framework/datasource"
+	"github.com/hashicorp/terraform-plugin-framework/diag"
 	"github.com/hashicorp/terraform-plugin-framework/resource"
 	resource_schema "github.com/hashicorp/terraform-plugin-framework/resource/schema"
+	"github.com/hashicorp/terraform-plugin-framework/tfsdk"
 	"github.com/hashicorp/terraform-plugin-framework/types"
+	"github.com/hashicorp/terraform-plugin-framework/types/basetypes"
 	"github.com/hashicorp/terraform-plugin-log/tflog"
 	configv1 "github.com/illumio/terraform-provider-illumio-cloudsecure/api/illumio/cloud/config/v1"
 	"google.golang.org/grpc/codes"
@@ -45,6 +48,8 @@ func (p *Provider) Resources(ctx context.Context) []func() resource.Resource {
 			resp = append(resp, func() resource.Resource { return NewAzureSubscriptionResource(r.Schema) })
 		case "k8s_cluster_onboarding_credential":
 			resp = append(resp, func() resource.Resource { return NewK8SClusterOnboardingCredentialResource(r.Schema) })
+		case "nested_object_tester":
+			resp = append(resp, func() resource.Resource { return NewNestedObjectTesterResource(r.Schema) })
 		}
 	}
 	return resp
@@ -109,7 +114,7 @@ func (r *AwsAccountResource) Create(ctx context.Context, req resource.CreateRequ
 		return
 	}
 
-	protoReq := NewCreateAwsAccountRequest(ctx, &data)
+	protoReq := NewCreateAwsAccountRequest(ctx, &resp.Diagnostics, &data)
 
 	tflog.Trace(ctx, "creating a resource", map[string]any{"type": "aws_account"})
 
@@ -136,7 +141,7 @@ func (r *AwsAccountResource) Read(ctx context.Context, req resource.ReadRequest,
 		return
 	}
 
-	protoReq := NewReadAwsAccountRequest(ctx, &data)
+	protoReq := NewReadAwsAccountRequest(ctx, &resp.Diagnostics, &data)
 
 	tflog.Trace(ctx, "reading a resource", map[string]any{"type": "aws_account", "id": protoReq.Id})
 
@@ -176,7 +181,7 @@ func (r *AwsAccountResource) Update(ctx context.Context, req resource.UpdateRequ
 		return
 	}
 
-	protoReq := NewUpdateAwsAccountRequest(ctx, &beforeData, &afterData)
+	protoReq := NewUpdateAwsAccountRequest(ctx, &resp.Diagnostics, &beforeData, &afterData)
 
 	tflog.Trace(ctx, "updating a resource", map[string]any{"type": "aws_account", "id": protoReq.Id, "update_mask": protoReq.UpdateMask.Paths})
 
@@ -210,7 +215,7 @@ func (r *AwsAccountResource) Delete(ctx context.Context, req resource.DeleteRequ
 		return
 	}
 
-	protoReq := NewDeleteAwsAccountRequest(ctx, &data)
+	protoReq := NewDeleteAwsAccountRequest(ctx, &resp.Diagnostics, &data)
 
 	tflog.Trace(ctx, "deleting a resource", map[string]any{"type": "aws_account", "id": protoReq.Id})
 
@@ -287,7 +292,7 @@ func (r *AwsFlowLogsS3BucketResource) Create(ctx context.Context, req resource.C
 		return
 	}
 
-	protoReq := NewCreateAwsFlowLogsS3BucketRequest(ctx, &data)
+	protoReq := NewCreateAwsFlowLogsS3BucketRequest(ctx, &resp.Diagnostics, &data)
 
 	tflog.Trace(ctx, "creating a resource", map[string]any{"type": "aws_flow_logs_s3_bucket"})
 
@@ -314,7 +319,7 @@ func (r *AwsFlowLogsS3BucketResource) Read(ctx context.Context, req resource.Rea
 		return
 	}
 
-	protoReq := NewReadAwsFlowLogsS3BucketRequest(ctx, &data)
+	protoReq := NewReadAwsFlowLogsS3BucketRequest(ctx, &resp.Diagnostics, &data)
 
 	tflog.Trace(ctx, "reading a resource", map[string]any{"type": "aws_flow_logs_s3_bucket", "id": protoReq.Id})
 
@@ -354,7 +359,7 @@ func (r *AwsFlowLogsS3BucketResource) Update(ctx context.Context, req resource.U
 		return
 	}
 
-	protoReq := NewUpdateAwsFlowLogsS3BucketRequest(ctx, &beforeData, &afterData)
+	protoReq := NewUpdateAwsFlowLogsS3BucketRequest(ctx, &resp.Diagnostics, &beforeData, &afterData)
 
 	tflog.Trace(ctx, "updating a resource", map[string]any{"type": "aws_flow_logs_s3_bucket", "id": protoReq.Id, "update_mask": protoReq.UpdateMask.Paths})
 
@@ -388,7 +393,7 @@ func (r *AwsFlowLogsS3BucketResource) Delete(ctx context.Context, req resource.D
 		return
 	}
 
-	protoReq := NewDeleteAwsFlowLogsS3BucketRequest(ctx, &data)
+	protoReq := NewDeleteAwsFlowLogsS3BucketRequest(ctx, &resp.Diagnostics, &data)
 
 	tflog.Trace(ctx, "deleting a resource", map[string]any{"type": "aws_flow_logs_s3_bucket", "id": protoReq.Id})
 
@@ -465,7 +470,7 @@ func (r *AzureFlowLogsStorageAccountResource) Create(ctx context.Context, req re
 		return
 	}
 
-	protoReq := NewCreateAzureFlowLogsStorageAccountRequest(ctx, &data)
+	protoReq := NewCreateAzureFlowLogsStorageAccountRequest(ctx, &resp.Diagnostics, &data)
 
 	tflog.Trace(ctx, "creating a resource", map[string]any{"type": "azure_flow_logs_storage_account"})
 
@@ -492,7 +497,7 @@ func (r *AzureFlowLogsStorageAccountResource) Read(ctx context.Context, req reso
 		return
 	}
 
-	protoReq := NewReadAzureFlowLogsStorageAccountRequest(ctx, &data)
+	protoReq := NewReadAzureFlowLogsStorageAccountRequest(ctx, &resp.Diagnostics, &data)
 
 	tflog.Trace(ctx, "reading a resource", map[string]any{"type": "azure_flow_logs_storage_account", "id": protoReq.Id})
 
@@ -532,7 +537,7 @@ func (r *AzureFlowLogsStorageAccountResource) Update(ctx context.Context, req re
 		return
 	}
 
-	protoReq := NewUpdateAzureFlowLogsStorageAccountRequest(ctx, &beforeData, &afterData)
+	protoReq := NewUpdateAzureFlowLogsStorageAccountRequest(ctx, &resp.Diagnostics, &beforeData, &afterData)
 
 	tflog.Trace(ctx, "updating a resource", map[string]any{"type": "azure_flow_logs_storage_account", "id": protoReq.Id, "update_mask": protoReq.UpdateMask.Paths})
 
@@ -566,7 +571,7 @@ func (r *AzureFlowLogsStorageAccountResource) Delete(ctx context.Context, req re
 		return
 	}
 
-	protoReq := NewDeleteAzureFlowLogsStorageAccountRequest(ctx, &data)
+	protoReq := NewDeleteAzureFlowLogsStorageAccountRequest(ctx, &resp.Diagnostics, &data)
 
 	tflog.Trace(ctx, "deleting a resource", map[string]any{"type": "azure_flow_logs_storage_account", "id": protoReq.Id})
 
@@ -643,7 +648,7 @@ func (r *AzureSubscriptionResource) Create(ctx context.Context, req resource.Cre
 		return
 	}
 
-	protoReq := NewCreateAzureSubscriptionRequest(ctx, &data)
+	protoReq := NewCreateAzureSubscriptionRequest(ctx, &resp.Diagnostics, &data)
 
 	tflog.Trace(ctx, "creating a resource", map[string]any{"type": "azure_subscription"})
 
@@ -670,7 +675,7 @@ func (r *AzureSubscriptionResource) Read(ctx context.Context, req resource.ReadR
 		return
 	}
 
-	protoReq := NewReadAzureSubscriptionRequest(ctx, &data)
+	protoReq := NewReadAzureSubscriptionRequest(ctx, &resp.Diagnostics, &data)
 
 	tflog.Trace(ctx, "reading a resource", map[string]any{"type": "azure_subscription", "id": protoReq.Id})
 
@@ -710,7 +715,7 @@ func (r *AzureSubscriptionResource) Update(ctx context.Context, req resource.Upd
 		return
 	}
 
-	protoReq := NewUpdateAzureSubscriptionRequest(ctx, &beforeData, &afterData)
+	protoReq := NewUpdateAzureSubscriptionRequest(ctx, &resp.Diagnostics, &beforeData, &afterData)
 
 	tflog.Trace(ctx, "updating a resource", map[string]any{"type": "azure_subscription", "id": protoReq.Id, "update_mask": protoReq.UpdateMask.Paths})
 
@@ -744,7 +749,7 @@ func (r *AzureSubscriptionResource) Delete(ctx context.Context, req resource.Del
 		return
 	}
 
-	protoReq := NewDeleteAzureSubscriptionRequest(ctx, &data)
+	protoReq := NewDeleteAzureSubscriptionRequest(ctx, &resp.Diagnostics, &data)
 
 	tflog.Trace(ctx, "deleting a resource", map[string]any{"type": "azure_subscription", "id": protoReq.Id})
 
@@ -821,7 +826,7 @@ func (r *K8SClusterOnboardingCredentialResource) Create(ctx context.Context, req
 		return
 	}
 
-	protoReq := NewCreateK8SClusterOnboardingCredentialRequest(ctx, &data)
+	protoReq := NewCreateK8SClusterOnboardingCredentialRequest(ctx, &resp.Diagnostics, &data)
 
 	tflog.Trace(ctx, "creating a resource", map[string]any{"type": "k8s_cluster_onboarding_credential"})
 
@@ -848,7 +853,7 @@ func (r *K8SClusterOnboardingCredentialResource) Read(ctx context.Context, req r
 		return
 	}
 
-	protoReq := NewReadK8SClusterOnboardingCredentialRequest(ctx, &data)
+	protoReq := NewReadK8SClusterOnboardingCredentialRequest(ctx, &resp.Diagnostics, &data)
 
 	tflog.Trace(ctx, "reading a resource", map[string]any{"type": "k8s_cluster_onboarding_credential", "id": protoReq.Id})
 
@@ -888,7 +893,7 @@ func (r *K8SClusterOnboardingCredentialResource) Update(ctx context.Context, req
 		return
 	}
 
-	protoReq := NewUpdateK8SClusterOnboardingCredentialRequest(ctx, &beforeData, &afterData)
+	protoReq := NewUpdateK8SClusterOnboardingCredentialRequest(ctx, &resp.Diagnostics, &beforeData, &afterData)
 
 	tflog.Trace(ctx, "updating a resource", map[string]any{"type": "k8s_cluster_onboarding_credential", "id": protoReq.Id, "update_mask": protoReq.UpdateMask.Paths})
 
@@ -922,7 +927,7 @@ func (r *K8SClusterOnboardingCredentialResource) Delete(ctx context.Context, req
 		return
 	}
 
-	protoReq := NewDeleteK8SClusterOnboardingCredentialRequest(ctx, &data)
+	protoReq := NewDeleteK8SClusterOnboardingCredentialRequest(ctx, &resp.Diagnostics, &data)
 
 	tflog.Trace(ctx, "deleting a resource", map[string]any{"type": "k8s_cluster_onboarding_credential", "id": protoReq.Id})
 
@@ -943,6 +948,184 @@ func (r *K8SClusterOnboardingCredentialResource) Delete(ctx context.Context, req
 }
 
 func (r *K8SClusterOnboardingCredentialResource) ImportState(ctx context.Context, req resource.ImportStateRequest, resp *resource.ImportStateResponse) {
+	// TODO
+}
+
+// NestedObjectTesterResource implements the nested_object_tester resource.
+type NestedObjectTesterResource struct {
+	// schema is the schema of the nested_object_tester resource.
+	schema resource_schema.Schema
+
+	// providerData is the provider configuration.
+	config ProviderData
+}
+
+var _ resource.ResourceWithConfigure = &NestedObjectTesterResource{}
+var _ resource.ResourceWithImportState = &NestedObjectTesterResource{}
+
+// NewNestedObjectTesterResource returns a new nested_object_tester resource.
+func NewNestedObjectTesterResource(schema resource_schema.Schema) resource.Resource {
+	return &NestedObjectTesterResource{
+		schema: schema,
+	}
+}
+
+func (r *NestedObjectTesterResource) Metadata(ctx context.Context, req resource.MetadataRequest, resp *resource.MetadataResponse) {
+	resp.TypeName = req.ProviderTypeName + "_nested_object_tester"
+}
+
+func (r *NestedObjectTesterResource) Schema(ctx context.Context, req resource.SchemaRequest, resp *resource.SchemaResponse) {
+	resp.Schema = r.schema
+}
+
+func (r *NestedObjectTesterResource) Configure(ctx context.Context, req resource.ConfigureRequest, resp *resource.ConfigureResponse) {
+	if req.ProviderData == nil {
+		return
+	}
+
+	providerData, ok := req.ProviderData.(ProviderData)
+	if !ok {
+		resp.Diagnostics.AddError(
+			"Unexpected Resource Configure Type",
+			fmt.Sprintf("Expected ProviderData, got: %T. Please report this issue to the provider developers.", req.ProviderData),
+		)
+
+		return
+	}
+
+	r.config = providerData
+}
+
+func (r *NestedObjectTesterResource) Create(ctx context.Context, req resource.CreateRequest, resp *resource.CreateResponse) {
+	var data NestedObjectTesterResourceModel
+
+	resp.Diagnostics.Append(req.Plan.Get(ctx, &data)...)
+	if resp.Diagnostics.HasError() {
+		return
+	}
+
+	protoReq := NewCreateNestedObjectTesterRequest(ctx, &resp.Diagnostics, &data)
+
+	tflog.Trace(ctx, "creating a resource", map[string]any{"type": "nested_object_tester"})
+
+	rpcCtx, rpcCancel := context.WithTimeout(ctx, r.config.RequestTimeout())
+	protoResp, err := r.config.Client().CreateNestedObjectTester(rpcCtx, protoReq)
+	rpcCancel()
+	if err != nil {
+		resp.Diagnostics.AddError("Config API Error", fmt.Sprintf("Unable to create nested_object_tester, got error: %s", err))
+		return
+	}
+
+	CopyCreateNestedObjectTesterResponse(&data, protoResp)
+
+	tflog.Trace(ctx, "created a resource", map[string]any{"type": "nested_object_tester", "id": protoResp.Id})
+
+	resp.Diagnostics.Append(resp.State.Set(ctx, &data)...)
+}
+
+func (r *NestedObjectTesterResource) Read(ctx context.Context, req resource.ReadRequest, resp *resource.ReadResponse) {
+	var data NestedObjectTesterResourceModel
+
+	resp.Diagnostics.Append(req.State.Get(ctx, &data)...)
+	if resp.Diagnostics.HasError() {
+		return
+	}
+
+	protoReq := NewReadNestedObjectTesterRequest(ctx, &resp.Diagnostics, &data)
+
+	tflog.Trace(ctx, "reading a resource", map[string]any{"type": "nested_object_tester", "id": protoReq.Id})
+
+	rpcCtx, rpcCancel := context.WithTimeout(ctx, r.config.RequestTimeout())
+	protoResp, err := r.config.Client().ReadNestedObjectTester(rpcCtx, protoReq)
+	rpcCancel()
+	if err != nil {
+		switch status.Code(err) {
+		case codes.NotFound:
+			resp.Diagnostics.AddWarning("Resource Not Found", fmt.Sprintf("No nested_object_tester found with id %s", protoReq.Id))
+			resp.State.RemoveResource(ctx)
+			return
+		default:
+			resp.Diagnostics.AddError("Config API Error", fmt.Sprintf("Unable to read nested_object_tester, got error: %s", err))
+			return
+		}
+	}
+
+	CopyReadNestedObjectTesterResponse(&data, protoResp)
+
+	tflog.Trace(ctx, "read a resource", map[string]any{"type": "nested_object_tester", "id": protoResp.Id})
+
+	resp.Diagnostics.Append(resp.State.Set(ctx, &data)...)
+}
+
+func (r *NestedObjectTesterResource) Update(ctx context.Context, req resource.UpdateRequest, resp *resource.UpdateResponse) {
+	var beforeData NestedObjectTesterResourceModel
+	var afterData NestedObjectTesterResourceModel
+
+	resp.Diagnostics.Append(req.State.Get(ctx, &beforeData)...)
+	if resp.Diagnostics.HasError() {
+		return
+	}
+
+	resp.Diagnostics.Append(req.Plan.Get(ctx, &afterData)...)
+	if resp.Diagnostics.HasError() {
+		return
+	}
+
+	protoReq := NewUpdateNestedObjectTesterRequest(ctx, &resp.Diagnostics, &beforeData, &afterData)
+
+	tflog.Trace(ctx, "updating a resource", map[string]any{"type": "nested_object_tester", "id": protoReq.Id, "update_mask": protoReq.UpdateMask.Paths})
+
+	rpcCtx, rpcCancel := context.WithTimeout(ctx, r.config.RequestTimeout())
+	protoResp, err := r.config.Client().UpdateNestedObjectTester(rpcCtx, protoReq)
+	rpcCancel()
+	if err != nil {
+		switch status.Code(err) {
+		case codes.NotFound:
+			resp.Diagnostics.AddError("Resource Not Found", fmt.Sprintf("No nested_object_tester found with id %s", protoReq.Id))
+			resp.State.RemoveResource(ctx)
+			return
+		default:
+			resp.Diagnostics.AddError("Config API Error", fmt.Sprintf("Unable to update nested_object_tester, got error: %s", err))
+			return
+		}
+	}
+
+	CopyUpdateNestedObjectTesterResponse(&afterData, protoResp)
+
+	tflog.Trace(ctx, "updated a resource", map[string]any{"type": "nested_object_tester", "id": protoResp.Id})
+
+	resp.Diagnostics.Append(resp.State.Set(ctx, &afterData)...)
+}
+
+func (r *NestedObjectTesterResource) Delete(ctx context.Context, req resource.DeleteRequest, resp *resource.DeleteResponse) {
+	var data NestedObjectTesterResourceModel
+
+	resp.Diagnostics.Append(req.State.Get(ctx, &data)...)
+	if resp.Diagnostics.HasError() {
+		return
+	}
+
+	protoReq := NewDeleteNestedObjectTesterRequest(ctx, &resp.Diagnostics, &data)
+
+	tflog.Trace(ctx, "deleting a resource", map[string]any{"type": "nested_object_tester", "id": protoReq.Id})
+
+	rpcCtx, rpcCancel := context.WithTimeout(ctx, r.config.RequestTimeout())
+	_, err := r.config.Client().DeleteNestedObjectTester(rpcCtx, protoReq)
+	rpcCancel()
+	if err != nil {
+		switch status.Code(err) {
+		case codes.NotFound:
+			tflog.Trace(ctx, "resource was already deleted", map[string]any{"type": "nested_object_tester", "id": protoReq.Id})
+		default:
+			resp.Diagnostics.AddError("Config API Error", fmt.Sprintf("Unable to delete nested_object_tester, got error: %s", err))
+			return
+		}
+	}
+
+	tflog.Trace(ctx, "deleted a resource", map[string]any{"type": "nested_object_tester", "id": protoReq.Id})
+}
+
+func (r *NestedObjectTesterResource) ImportState(ctx context.Context, req resource.ImportStateRequest, resp *resource.ImportStateResponse) {
 	// TODO
 }
 
@@ -988,7 +1171,19 @@ type K8SClusterOnboardingCredentialResourceModel struct {
 	Name          types.String `tfsdk:"name"`
 }
 
-func NewCreateAwsAccountRequest(ctx context.Context, data *AwsAccountResourceModel) *configv1.CreateAwsAccountRequest {
+type NestedObjectTesterResourceModel struct {
+	Id              types.String `tfsdk:"id"`
+	CloudTags       types.List   `tfsdk:"cloud_tags"`
+	Icon            types.Object `tfsdk:"icon"`
+	Key             types.String `tfsdk:"key"`
+	Name            types.String `tfsdk:"name"`
+	ObjInObj        types.Object `tfsdk:"obj_in_obj"`
+	SetObj          types.Set    `tfsdk:"set_obj"`
+	SetOfSetsString types.Set    `tfsdk:"set_of_sets_string"`
+	SetOfStrings    types.Set    `tfsdk:"set_of_strings"`
+}
+
+func NewCreateAwsAccountRequest(ctx context.Context, diags *diag.Diagnostics, data *AwsAccountResourceModel) *configv1.CreateAwsAccountRequest {
 	proto := &configv1.CreateAwsAccountRequest{}
 	if !data.AccountId.IsUnknown() && !data.AccountId.IsNull() {
 		var dataValue attr.Value = data.AccountId
@@ -1029,7 +1224,7 @@ func NewCreateAwsAccountRequest(ctx context.Context, data *AwsAccountResourceMod
 	return proto
 }
 
-func NewReadAwsAccountRequest(ctx context.Context, data *AwsAccountResourceModel) *configv1.ReadAwsAccountRequest {
+func NewReadAwsAccountRequest(ctx context.Context, diags *diag.Diagnostics, data *AwsAccountResourceModel) *configv1.ReadAwsAccountRequest {
 	proto := &configv1.ReadAwsAccountRequest{}
 	if !data.Id.IsUnknown() && !data.Id.IsNull() {
 		var dataValue attr.Value = data.Id
@@ -1040,7 +1235,7 @@ func NewReadAwsAccountRequest(ctx context.Context, data *AwsAccountResourceModel
 	return proto
 }
 
-func NewDeleteAwsAccountRequest(ctx context.Context, data *AwsAccountResourceModel) *configv1.DeleteAwsAccountRequest {
+func NewDeleteAwsAccountRequest(ctx context.Context, diags *diag.Diagnostics, data *AwsAccountResourceModel) *configv1.DeleteAwsAccountRequest {
 	proto := &configv1.DeleteAwsAccountRequest{}
 	if !data.Id.IsUnknown() && !data.Id.IsNull() {
 		var dataValue attr.Value = data.Id
@@ -1051,7 +1246,7 @@ func NewDeleteAwsAccountRequest(ctx context.Context, data *AwsAccountResourceMod
 	return proto
 }
 
-func NewCreateAwsFlowLogsS3BucketRequest(ctx context.Context, data *AwsFlowLogsS3BucketResourceModel) *configv1.CreateAwsFlowLogsS3BucketRequest {
+func NewCreateAwsFlowLogsS3BucketRequest(ctx context.Context, diags *diag.Diagnostics, data *AwsFlowLogsS3BucketResourceModel) *configv1.CreateAwsFlowLogsS3BucketRequest {
 	proto := &configv1.CreateAwsFlowLogsS3BucketRequest{}
 	if !data.AccountId.IsUnknown() && !data.AccountId.IsNull() {
 		var dataValue attr.Value = data.AccountId
@@ -1068,7 +1263,7 @@ func NewCreateAwsFlowLogsS3BucketRequest(ctx context.Context, data *AwsFlowLogsS
 	return proto
 }
 
-func NewReadAwsFlowLogsS3BucketRequest(ctx context.Context, data *AwsFlowLogsS3BucketResourceModel) *configv1.ReadAwsFlowLogsS3BucketRequest {
+func NewReadAwsFlowLogsS3BucketRequest(ctx context.Context, diags *diag.Diagnostics, data *AwsFlowLogsS3BucketResourceModel) *configv1.ReadAwsFlowLogsS3BucketRequest {
 	proto := &configv1.ReadAwsFlowLogsS3BucketRequest{}
 	if !data.Id.IsUnknown() && !data.Id.IsNull() {
 		var dataValue attr.Value = data.Id
@@ -1079,7 +1274,7 @@ func NewReadAwsFlowLogsS3BucketRequest(ctx context.Context, data *AwsFlowLogsS3B
 	return proto
 }
 
-func NewDeleteAwsFlowLogsS3BucketRequest(ctx context.Context, data *AwsFlowLogsS3BucketResourceModel) *configv1.DeleteAwsFlowLogsS3BucketRequest {
+func NewDeleteAwsFlowLogsS3BucketRequest(ctx context.Context, diags *diag.Diagnostics, data *AwsFlowLogsS3BucketResourceModel) *configv1.DeleteAwsFlowLogsS3BucketRequest {
 	proto := &configv1.DeleteAwsFlowLogsS3BucketRequest{}
 	if !data.Id.IsUnknown() && !data.Id.IsNull() {
 		var dataValue attr.Value = data.Id
@@ -1090,7 +1285,7 @@ func NewDeleteAwsFlowLogsS3BucketRequest(ctx context.Context, data *AwsFlowLogsS
 	return proto
 }
 
-func NewCreateAzureFlowLogsStorageAccountRequest(ctx context.Context, data *AzureFlowLogsStorageAccountResourceModel) *configv1.CreateAzureFlowLogsStorageAccountRequest {
+func NewCreateAzureFlowLogsStorageAccountRequest(ctx context.Context, diags *diag.Diagnostics, data *AzureFlowLogsStorageAccountResourceModel) *configv1.CreateAzureFlowLogsStorageAccountRequest {
 	proto := &configv1.CreateAzureFlowLogsStorageAccountRequest{}
 	if !data.StorageAccountResourceId.IsUnknown() && !data.StorageAccountResourceId.IsNull() {
 		var dataValue attr.Value = data.StorageAccountResourceId
@@ -1107,7 +1302,7 @@ func NewCreateAzureFlowLogsStorageAccountRequest(ctx context.Context, data *Azur
 	return proto
 }
 
-func NewReadAzureFlowLogsStorageAccountRequest(ctx context.Context, data *AzureFlowLogsStorageAccountResourceModel) *configv1.ReadAzureFlowLogsStorageAccountRequest {
+func NewReadAzureFlowLogsStorageAccountRequest(ctx context.Context, diags *diag.Diagnostics, data *AzureFlowLogsStorageAccountResourceModel) *configv1.ReadAzureFlowLogsStorageAccountRequest {
 	proto := &configv1.ReadAzureFlowLogsStorageAccountRequest{}
 	if !data.Id.IsUnknown() && !data.Id.IsNull() {
 		var dataValue attr.Value = data.Id
@@ -1118,7 +1313,7 @@ func NewReadAzureFlowLogsStorageAccountRequest(ctx context.Context, data *AzureF
 	return proto
 }
 
-func NewDeleteAzureFlowLogsStorageAccountRequest(ctx context.Context, data *AzureFlowLogsStorageAccountResourceModel) *configv1.DeleteAzureFlowLogsStorageAccountRequest {
+func NewDeleteAzureFlowLogsStorageAccountRequest(ctx context.Context, diags *diag.Diagnostics, data *AzureFlowLogsStorageAccountResourceModel) *configv1.DeleteAzureFlowLogsStorageAccountRequest {
 	proto := &configv1.DeleteAzureFlowLogsStorageAccountRequest{}
 	if !data.Id.IsUnknown() && !data.Id.IsNull() {
 		var dataValue attr.Value = data.Id
@@ -1129,7 +1324,7 @@ func NewDeleteAzureFlowLogsStorageAccountRequest(ctx context.Context, data *Azur
 	return proto
 }
 
-func NewCreateAzureSubscriptionRequest(ctx context.Context, data *AzureSubscriptionResourceModel) *configv1.CreateAzureSubscriptionRequest {
+func NewCreateAzureSubscriptionRequest(ctx context.Context, diags *diag.Diagnostics, data *AzureSubscriptionResourceModel) *configv1.CreateAzureSubscriptionRequest {
 	proto := &configv1.CreateAzureSubscriptionRequest{}
 	if !data.ClientId.IsUnknown() && !data.ClientId.IsNull() {
 		var dataValue attr.Value = data.ClientId
@@ -1170,7 +1365,7 @@ func NewCreateAzureSubscriptionRequest(ctx context.Context, data *AzureSubscript
 	return proto
 }
 
-func NewReadAzureSubscriptionRequest(ctx context.Context, data *AzureSubscriptionResourceModel) *configv1.ReadAzureSubscriptionRequest {
+func NewReadAzureSubscriptionRequest(ctx context.Context, diags *diag.Diagnostics, data *AzureSubscriptionResourceModel) *configv1.ReadAzureSubscriptionRequest {
 	proto := &configv1.ReadAzureSubscriptionRequest{}
 	if !data.Id.IsUnknown() && !data.Id.IsNull() {
 		var dataValue attr.Value = data.Id
@@ -1181,7 +1376,7 @@ func NewReadAzureSubscriptionRequest(ctx context.Context, data *AzureSubscriptio
 	return proto
 }
 
-func NewDeleteAzureSubscriptionRequest(ctx context.Context, data *AzureSubscriptionResourceModel) *configv1.DeleteAzureSubscriptionRequest {
+func NewDeleteAzureSubscriptionRequest(ctx context.Context, diags *diag.Diagnostics, data *AzureSubscriptionResourceModel) *configv1.DeleteAzureSubscriptionRequest {
 	proto := &configv1.DeleteAzureSubscriptionRequest{}
 	if !data.Id.IsUnknown() && !data.Id.IsNull() {
 		var dataValue attr.Value = data.Id
@@ -1192,7 +1387,7 @@ func NewDeleteAzureSubscriptionRequest(ctx context.Context, data *AzureSubscript
 	return proto
 }
 
-func NewCreateK8SClusterOnboardingCredentialRequest(ctx context.Context, data *K8SClusterOnboardingCredentialResourceModel) *configv1.CreateK8SClusterOnboardingCredentialRequest {
+func NewCreateK8SClusterOnboardingCredentialRequest(ctx context.Context, diags *diag.Diagnostics, data *K8SClusterOnboardingCredentialResourceModel) *configv1.CreateK8SClusterOnboardingCredentialRequest {
 	proto := &configv1.CreateK8SClusterOnboardingCredentialRequest{}
 	if !data.Description.IsUnknown() && !data.Description.IsNull() {
 		var dataValue attr.Value = data.Description
@@ -1215,7 +1410,7 @@ func NewCreateK8SClusterOnboardingCredentialRequest(ctx context.Context, data *K
 	return proto
 }
 
-func NewReadK8SClusterOnboardingCredentialRequest(ctx context.Context, data *K8SClusterOnboardingCredentialResourceModel) *configv1.ReadK8SClusterOnboardingCredentialRequest {
+func NewReadK8SClusterOnboardingCredentialRequest(ctx context.Context, diags *diag.Diagnostics, data *K8SClusterOnboardingCredentialResourceModel) *configv1.ReadK8SClusterOnboardingCredentialRequest {
 	proto := &configv1.ReadK8SClusterOnboardingCredentialRequest{}
 	if !data.Id.IsUnknown() && !data.Id.IsNull() {
 		var dataValue attr.Value = data.Id
@@ -1226,7 +1421,7 @@ func NewReadK8SClusterOnboardingCredentialRequest(ctx context.Context, data *K8S
 	return proto
 }
 
-func NewDeleteK8SClusterOnboardingCredentialRequest(ctx context.Context, data *K8SClusterOnboardingCredentialResourceModel) *configv1.DeleteK8SClusterOnboardingCredentialRequest {
+func NewDeleteK8SClusterOnboardingCredentialRequest(ctx context.Context, diags *diag.Diagnostics, data *K8SClusterOnboardingCredentialResourceModel) *configv1.DeleteK8SClusterOnboardingCredentialRequest {
 	proto := &configv1.DeleteK8SClusterOnboardingCredentialRequest{}
 	if !data.Id.IsUnknown() && !data.Id.IsNull() {
 		var dataValue attr.Value = data.Id
@@ -1237,7 +1432,142 @@ func NewDeleteK8SClusterOnboardingCredentialRequest(ctx context.Context, data *K
 	return proto
 }
 
-func NewUpdateAwsAccountRequest(ctx context.Context, beforeData, afterData *AwsAccountResourceModel) *configv1.UpdateAwsAccountRequest {
+func NewCreateNestedObjectTesterRequest(ctx context.Context, diags *diag.Diagnostics, data *NestedObjectTesterResourceModel) *configv1.CreateNestedObjectTesterRequest {
+	proto := &configv1.CreateNestedObjectTesterRequest{}
+	if !data.CloudTags.IsUnknown() && !data.CloudTags.IsNull() {
+		var dataValue attr.Value = data.CloudTags
+		var protoValue []*configv1.NestedObjectTester_CloudTags
+		{
+			dataElements := dataValue.(types.List).Elements()
+			protoValues := make([]*configv1.NestedObjectTester_CloudTags, 0, len(dataElements))
+			for _, dataElement := range dataElements {
+				var dataValue attr.Value = dataElement
+				var protoValue *configv1.NestedObjectTester_CloudTags
+				protoValue = ConvertDataValueToNestedObjectTester_CloudTagsProto(diags, dataValue)
+				protoValues = append(protoValues, protoValue)
+			}
+			protoValue = protoValues
+		}
+		proto.CloudTags = protoValue
+	}
+	if !data.Icon.IsUnknown() && !data.Icon.IsNull() {
+		var dataValue attr.Value = data.Icon
+		var protoValue *configv1.NestedObjectTester_Icon
+		protoValue = ConvertDataValueToNestedObjectTester_IconProto(diags, dataValue)
+		proto.Icon = protoValue
+	}
+	if !data.Key.IsUnknown() && !data.Key.IsNull() {
+		var dataValue attr.Value = data.Key
+		var protoValue string
+		protoValue = dataValue.(types.String).ValueString()
+		proto.Key = protoValue
+	}
+	if !data.Name.IsUnknown() && !data.Name.IsNull() {
+		var dataValue attr.Value = data.Name
+		var protoValue string
+		protoValue = dataValue.(types.String).ValueString()
+		proto.Name = protoValue
+	}
+	if !data.ObjInObj.IsUnknown() && !data.ObjInObj.IsNull() {
+		var dataValue attr.Value = data.ObjInObj
+		var protoValue *configv1.NestedObjectTester_ObjInObj
+		protoValue = ConvertDataValueToNestedObjectTester_ObjInObjProto(diags, dataValue)
+		proto.ObjInObj = protoValue
+	}
+	if !data.SetObj.IsUnknown() && !data.SetObj.IsNull() {
+		var dataValue attr.Value = data.SetObj
+		var protoValue []*configv1.NestedObjectTester_SetObj
+		{
+			dataElements := dataValue.(types.Set).Elements()
+			protoValues := make([]*configv1.NestedObjectTester_SetObj, 0, len(dataElements))
+			for _, dataElement := range dataElements {
+				var dataValue attr.Value = dataElement
+				var protoValue *configv1.NestedObjectTester_SetObj
+				protoValue = ConvertDataValueToNestedObjectTester_SetObjProto(diags, dataValue)
+				protoValues = append(protoValues, protoValue)
+			}
+			protoValue = protoValues
+		}
+		proto.SetObj = protoValue
+	}
+	if !data.SetOfSetsString.IsUnknown() && !data.SetOfSetsString.IsNull() {
+		var dataValue attr.Value = data.SetOfSetsString
+		var protoValue []*configv1.NestedObjectTester_SetOfSetsString
+		{
+			dataElements := dataValue.(types.Set).Elements()
+			protoValues := make([]*configv1.NestedObjectTester_SetOfSetsString, 0, len(dataElements))
+			for _, dataElement := range dataElements {
+				var dataValue attr.Value = dataElement
+				var protoValue []*configv1.NestedObjectTester_SetOfSetsString_SetOfSetsString
+				{
+					dataElements := dataValue.(types.Set).Elements()
+					protoValues := make([]*configv1.NestedObjectTester_SetOfSetsString_SetOfSetsString, 0, len(dataElements))
+					for _, dataElement := range dataElements {
+						var dataValue attr.Value = dataElement
+						var protoValue []string
+						{
+							dataElements := dataValue.(types.Set).Elements()
+							protoValues := make([]string, 0, len(dataElements))
+							for _, dataElement := range dataElements {
+								var dataValue attr.Value = dataElement
+								var protoValue string
+								protoValue = dataValue.(types.String).ValueString()
+								protoValues = append(protoValues, protoValue)
+							}
+							protoValue = protoValues
+						}
+						protoValues = append(protoValues, &configv1.NestedObjectTester_SetOfSetsString_SetOfSetsString{SetOfSetsString: protoValue})
+					}
+					protoValue = protoValues
+				}
+				protoValues = append(protoValues, &configv1.NestedObjectTester_SetOfSetsString{SetOfSetsString: protoValue})
+			}
+			protoValue = protoValues
+		}
+		proto.SetOfSetsString = protoValue
+	}
+	if !data.SetOfStrings.IsUnknown() && !data.SetOfStrings.IsNull() {
+		var dataValue attr.Value = data.SetOfStrings
+		var protoValue []string
+		{
+			dataElements := dataValue.(types.Set).Elements()
+			protoValues := make([]string, 0, len(dataElements))
+			for _, dataElement := range dataElements {
+				var dataValue attr.Value = dataElement
+				var protoValue string
+				protoValue = dataValue.(types.String).ValueString()
+				protoValues = append(protoValues, protoValue)
+			}
+			protoValue = protoValues
+		}
+		proto.SetOfStrings = protoValue
+	}
+	return proto
+}
+
+func NewReadNestedObjectTesterRequest(ctx context.Context, diags *diag.Diagnostics, data *NestedObjectTesterResourceModel) *configv1.ReadNestedObjectTesterRequest {
+	proto := &configv1.ReadNestedObjectTesterRequest{}
+	if !data.Id.IsUnknown() && !data.Id.IsNull() {
+		var dataValue attr.Value = data.Id
+		var protoValue string
+		protoValue = dataValue.(types.String).ValueString()
+		proto.Id = protoValue
+	}
+	return proto
+}
+
+func NewDeleteNestedObjectTesterRequest(ctx context.Context, diags *diag.Diagnostics, data *NestedObjectTesterResourceModel) *configv1.DeleteNestedObjectTesterRequest {
+	proto := &configv1.DeleteNestedObjectTesterRequest{}
+	if !data.Id.IsUnknown() && !data.Id.IsNull() {
+		var dataValue attr.Value = data.Id
+		var protoValue string
+		protoValue = dataValue.(types.String).ValueString()
+		proto.Id = protoValue
+	}
+	return proto
+}
+
+func NewUpdateAwsAccountRequest(ctx context.Context, diags *diag.Diagnostics, beforeData, afterData *AwsAccountResourceModel) *configv1.UpdateAwsAccountRequest {
 	proto := &configv1.UpdateAwsAccountRequest{}
 	proto.UpdateMask, _ = fieldmaskpb.New(proto)
 	proto.Id = beforeData.Id.ValueString()
@@ -1253,21 +1583,21 @@ func NewUpdateAwsAccountRequest(ctx context.Context, beforeData, afterData *AwsA
 	return proto
 }
 
-func NewUpdateAwsFlowLogsS3BucketRequest(ctx context.Context, beforeData, afterData *AwsFlowLogsS3BucketResourceModel) *configv1.UpdateAwsFlowLogsS3BucketRequest {
+func NewUpdateAwsFlowLogsS3BucketRequest(ctx context.Context, diags *diag.Diagnostics, beforeData, afterData *AwsFlowLogsS3BucketResourceModel) *configv1.UpdateAwsFlowLogsS3BucketRequest {
 	proto := &configv1.UpdateAwsFlowLogsS3BucketRequest{}
 	proto.UpdateMask, _ = fieldmaskpb.New(proto)
 	proto.Id = beforeData.Id.ValueString()
 	return proto
 }
 
-func NewUpdateAzureFlowLogsStorageAccountRequest(ctx context.Context, beforeData, afterData *AzureFlowLogsStorageAccountResourceModel) *configv1.UpdateAzureFlowLogsStorageAccountRequest {
+func NewUpdateAzureFlowLogsStorageAccountRequest(ctx context.Context, diags *diag.Diagnostics, beforeData, afterData *AzureFlowLogsStorageAccountResourceModel) *configv1.UpdateAzureFlowLogsStorageAccountRequest {
 	proto := &configv1.UpdateAzureFlowLogsStorageAccountRequest{}
 	proto.UpdateMask, _ = fieldmaskpb.New(proto)
 	proto.Id = beforeData.Id.ValueString()
 	return proto
 }
 
-func NewUpdateAzureSubscriptionRequest(ctx context.Context, beforeData, afterData *AzureSubscriptionResourceModel) *configv1.UpdateAzureSubscriptionRequest {
+func NewUpdateAzureSubscriptionRequest(ctx context.Context, diags *diag.Diagnostics, beforeData, afterData *AzureSubscriptionResourceModel) *configv1.UpdateAzureSubscriptionRequest {
 	proto := &configv1.UpdateAzureSubscriptionRequest{}
 	proto.UpdateMask, _ = fieldmaskpb.New(proto)
 	proto.Id = beforeData.Id.ValueString()
@@ -1283,7 +1613,7 @@ func NewUpdateAzureSubscriptionRequest(ctx context.Context, beforeData, afterDat
 	return proto
 }
 
-func NewUpdateK8SClusterOnboardingCredentialRequest(ctx context.Context, beforeData, afterData *K8SClusterOnboardingCredentialResourceModel) *configv1.UpdateK8SClusterOnboardingCredentialRequest {
+func NewUpdateK8SClusterOnboardingCredentialRequest(ctx context.Context, diags *diag.Diagnostics, beforeData, afterData *K8SClusterOnboardingCredentialResourceModel) *configv1.UpdateK8SClusterOnboardingCredentialRequest {
 	proto := &configv1.UpdateK8SClusterOnboardingCredentialRequest{}
 	proto.UpdateMask, _ = fieldmaskpb.New(proto)
 	proto.Id = beforeData.Id.ValueString()
@@ -1303,6 +1633,145 @@ func NewUpdateK8SClusterOnboardingCredentialRequest(ctx context.Context, beforeD
 			var protoValue string
 			protoValue = dataValue.(types.String).ValueString()
 			proto.Name = protoValue
+		}
+	}
+	return proto
+}
+
+func NewUpdateNestedObjectTesterRequest(ctx context.Context, diags *diag.Diagnostics, beforeData, afterData *NestedObjectTesterResourceModel) *configv1.UpdateNestedObjectTesterRequest {
+	proto := &configv1.UpdateNestedObjectTesterRequest{}
+	proto.UpdateMask, _ = fieldmaskpb.New(proto)
+	proto.Id = beforeData.Id.ValueString()
+	if !afterData.CloudTags.Equal(beforeData.CloudTags) {
+		proto.UpdateMask.Append(proto, "cloud_tags")
+		if !afterData.CloudTags.IsUnknown() && !afterData.CloudTags.IsNull() {
+			var dataValue attr.Value = afterData.CloudTags
+			var protoValue []*configv1.NestedObjectTester_CloudTags
+			{
+				dataElements := dataValue.(types.List).Elements()
+				protoValues := make([]*configv1.NestedObjectTester_CloudTags, 0, len(dataElements))
+				for _, dataElement := range dataElements {
+					var dataValue attr.Value = dataElement
+					var protoValue *configv1.NestedObjectTester_CloudTags
+					protoValue = ConvertDataValueToNestedObjectTester_CloudTagsProto(diags, dataValue)
+					protoValues = append(protoValues, protoValue)
+				}
+				protoValue = protoValues
+			}
+			proto.CloudTags = protoValue
+		}
+	}
+	if !afterData.Icon.Equal(beforeData.Icon) {
+		proto.UpdateMask.Append(proto, "icon")
+		if !afterData.Icon.IsUnknown() && !afterData.Icon.IsNull() {
+			var dataValue attr.Value = afterData.Icon
+			var protoValue *configv1.NestedObjectTester_Icon
+			protoValue = ConvertDataValueToNestedObjectTester_IconProto(diags, dataValue)
+			proto.Icon = protoValue
+		}
+	}
+	if !afterData.Key.Equal(beforeData.Key) {
+		proto.UpdateMask.Append(proto, "key")
+		if !afterData.Key.IsUnknown() && !afterData.Key.IsNull() {
+			var dataValue attr.Value = afterData.Key
+			var protoValue string
+			protoValue = dataValue.(types.String).ValueString()
+			proto.Key = protoValue
+		}
+	}
+	if !afterData.Name.Equal(beforeData.Name) {
+		proto.UpdateMask.Append(proto, "name")
+		if !afterData.Name.IsUnknown() && !afterData.Name.IsNull() {
+			var dataValue attr.Value = afterData.Name
+			var protoValue string
+			protoValue = dataValue.(types.String).ValueString()
+			proto.Name = protoValue
+		}
+	}
+	if !afterData.ObjInObj.Equal(beforeData.ObjInObj) {
+		proto.UpdateMask.Append(proto, "obj_in_obj")
+		if !afterData.ObjInObj.IsUnknown() && !afterData.ObjInObj.IsNull() {
+			var dataValue attr.Value = afterData.ObjInObj
+			var protoValue *configv1.NestedObjectTester_ObjInObj
+			protoValue = ConvertDataValueToNestedObjectTester_ObjInObjProto(diags, dataValue)
+			proto.ObjInObj = protoValue
+		}
+	}
+	if !afterData.SetObj.Equal(beforeData.SetObj) {
+		proto.UpdateMask.Append(proto, "set_obj")
+		if !afterData.SetObj.IsUnknown() && !afterData.SetObj.IsNull() {
+			var dataValue attr.Value = afterData.SetObj
+			var protoValue []*configv1.NestedObjectTester_SetObj
+			{
+				dataElements := dataValue.(types.Set).Elements()
+				protoValues := make([]*configv1.NestedObjectTester_SetObj, 0, len(dataElements))
+				for _, dataElement := range dataElements {
+					var dataValue attr.Value = dataElement
+					var protoValue *configv1.NestedObjectTester_SetObj
+					protoValue = ConvertDataValueToNestedObjectTester_SetObjProto(diags, dataValue)
+					protoValues = append(protoValues, protoValue)
+				}
+				protoValue = protoValues
+			}
+			proto.SetObj = protoValue
+		}
+	}
+	if !afterData.SetOfSetsString.Equal(beforeData.SetOfSetsString) {
+		proto.UpdateMask.Append(proto, "set_of_sets_string")
+		if !afterData.SetOfSetsString.IsUnknown() && !afterData.SetOfSetsString.IsNull() {
+			var dataValue attr.Value = afterData.SetOfSetsString
+			var protoValue []*configv1.NestedObjectTester_SetOfSetsString
+			{
+				dataElements := dataValue.(types.Set).Elements()
+				protoValues := make([]*configv1.NestedObjectTester_SetOfSetsString, 0, len(dataElements))
+				for _, dataElement := range dataElements {
+					var dataValue attr.Value = dataElement
+					var protoValue []*configv1.NestedObjectTester_SetOfSetsString_SetOfSetsString
+					{
+						dataElements := dataValue.(types.Set).Elements()
+						protoValues := make([]*configv1.NestedObjectTester_SetOfSetsString_SetOfSetsString, 0, len(dataElements))
+						for _, dataElement := range dataElements {
+							var dataValue attr.Value = dataElement
+							var protoValue []string
+							{
+								dataElements := dataValue.(types.Set).Elements()
+								protoValues := make([]string, 0, len(dataElements))
+								for _, dataElement := range dataElements {
+									var dataValue attr.Value = dataElement
+									var protoValue string
+									protoValue = dataValue.(types.String).ValueString()
+									protoValues = append(protoValues, protoValue)
+								}
+								protoValue = protoValues
+							}
+							protoValues = append(protoValues, &configv1.NestedObjectTester_SetOfSetsString_SetOfSetsString{SetOfSetsString: protoValue})
+						}
+						protoValue = protoValues
+					}
+					protoValues = append(protoValues, &configv1.NestedObjectTester_SetOfSetsString{SetOfSetsString: protoValue})
+				}
+				protoValue = protoValues
+			}
+			proto.SetOfSetsString = protoValue
+		}
+	}
+	if !afterData.SetOfStrings.Equal(beforeData.SetOfStrings) {
+		proto.UpdateMask.Append(proto, "set_of_strings")
+		if !afterData.SetOfStrings.IsUnknown() && !afterData.SetOfStrings.IsNull() {
+			var dataValue attr.Value = afterData.SetOfStrings
+			var protoValue []string
+			{
+				dataElements := dataValue.(types.Set).Elements()
+				protoValues := make([]string, 0, len(dataElements))
+				for _, dataElement := range dataElements {
+					var dataValue attr.Value = dataElement
+					var protoValue string
+					protoValue = dataValue.(types.String).ValueString()
+					protoValues = append(protoValues, protoValue)
+				}
+				protoValue = protoValues
+			}
+			proto.SetOfStrings = protoValue
 		}
 	}
 	return proto
@@ -1409,4 +1878,569 @@ func CopyUpdateK8SClusterOnboardingCredentialResponse(dst *K8SClusterOnboardingC
 	dst.Description = types.StringPointerValue(src.Description)
 	dst.IllumioRegion = types.StringValue(src.IllumioRegion)
 	dst.Name = types.StringValue(src.Name)
+}
+func CopyCreateNestedObjectTesterResponse(dst *NestedObjectTesterResourceModel, src *configv1.CreateNestedObjectTesterResponse) {
+	dst.Id = types.StringValue(src.Id)
+	{
+		protoValue := src.CloudTags
+		var dataValue types.List
+		{
+			dataElementType := types.ObjectType{
+				AttrTypes: GetTypeAttrsForNestedObjectTester_CloudTags(),
+			}
+			protoElements := protoValue
+			if protoElements == nil {
+				dataValue = types.ListNull(dataElementType)
+			} else {
+				dataValues := make([]attr.Value, 0, len(protoElements))
+				for _, protoElement := range protoElements {
+					var protoValue *configv1.NestedObjectTester_CloudTags = protoElement
+					var dataValue attr.Value
+					dataValue = ConvertNestedObjectTester_CloudTagsToObjectValueFromProto(protoValue)
+					dataValues = append(dataValues, dataValue)
+				}
+				dataValue = types.ListValueMust(dataElementType, dataValues)
+			}
+		}
+		dst.CloudTags = dataValue
+	}
+	dst.Icon = ConvertNestedObjectTester_IconToObjectValueFromProto(src.Icon)
+	dst.Key = types.StringValue(src.Key)
+	dst.Name = types.StringValue(src.Name)
+	dst.ObjInObj = ConvertNestedObjectTester_ObjInObjToObjectValueFromProto(src.ObjInObj)
+	{
+		protoValue := src.SetObj
+		var dataValue types.Set
+		{
+			dataElementType := types.ObjectType{
+				AttrTypes: GetTypeAttrsForNestedObjectTester_SetObj(),
+			}
+			protoElements := protoValue
+			if protoElements == nil {
+				dataValue = types.SetNull(dataElementType)
+			} else {
+				dataValues := make([]attr.Value, 0, len(protoElements))
+				for _, protoElement := range protoElements {
+					var protoValue *configv1.NestedObjectTester_SetObj = protoElement
+					var dataValue attr.Value
+					dataValue = ConvertNestedObjectTester_SetObjToObjectValueFromProto(protoValue)
+					dataValues = append(dataValues, dataValue)
+				}
+				dataValue = types.SetValueMust(dataElementType, dataValues)
+			}
+		}
+		dst.SetObj = dataValue
+	}
+	{
+		protoValue := src.SetOfSetsString
+		var dataValue types.Set
+		{
+			dataElementType := types.SetType{ElemType: types.SetType{ElemType: types.StringType}}
+			protoElements := protoValue
+			if protoElements == nil {
+				dataValue = types.SetNull(dataElementType)
+			} else {
+				dataValues := make([]attr.Value, 0, len(protoElements))
+				for _, protoElement := range protoElements {
+					var protoValue []*configv1.NestedObjectTester_SetOfSetsString_SetOfSetsString = protoElement.SetOfSetsString
+					var dataValue attr.Value
+					{
+						dataElementType := types.SetType{ElemType: types.StringType}
+						protoElements := protoValue
+						if protoElements == nil {
+							dataValue = types.SetNull(dataElementType)
+						} else {
+							dataValues := make([]attr.Value, 0, len(protoElements))
+							for _, protoElement := range protoElements {
+								var protoValue []string = protoElement.SetOfSetsString
+								var dataValue attr.Value
+								{
+									dataElementType := types.StringType
+									protoElements := protoValue
+									if protoElements == nil {
+										dataValue = types.SetNull(dataElementType)
+									} else {
+										dataValues := make([]attr.Value, 0, len(protoElements))
+										for _, protoElement := range protoElements {
+											var protoValue string = protoElement
+											var dataValue attr.Value
+											dataValue = types.StringValue(protoValue)
+											dataValues = append(dataValues, dataValue)
+										}
+										dataValue = types.SetValueMust(dataElementType, dataValues)
+									}
+								}
+								dataValues = append(dataValues, dataValue)
+							}
+							dataValue = types.SetValueMust(dataElementType, dataValues)
+						}
+					}
+					dataValues = append(dataValues, dataValue)
+				}
+				dataValue = types.SetValueMust(dataElementType, dataValues)
+			}
+		}
+		dst.SetOfSetsString = dataValue
+	}
+	{
+		protoValue := src.SetOfStrings
+		var dataValue types.Set
+		{
+			dataElementType := types.StringType
+			protoElements := protoValue
+			if protoElements == nil {
+				dataValue = types.SetNull(dataElementType)
+			} else {
+				dataValues := make([]attr.Value, 0, len(protoElements))
+				for _, protoElement := range protoElements {
+					var protoValue string = protoElement
+					var dataValue attr.Value
+					dataValue = types.StringValue(protoValue)
+					dataValues = append(dataValues, dataValue)
+				}
+				dataValue = types.SetValueMust(dataElementType, dataValues)
+			}
+		}
+		dst.SetOfStrings = dataValue
+	}
+}
+func CopyReadNestedObjectTesterResponse(dst *NestedObjectTesterResourceModel, src *configv1.ReadNestedObjectTesterResponse) {
+	dst.Id = types.StringValue(src.Id)
+	{
+		protoValue := src.CloudTags
+		var dataValue types.List
+		{
+			dataElementType := types.ObjectType{
+				AttrTypes: GetTypeAttrsForNestedObjectTester_CloudTags(),
+			}
+			protoElements := protoValue
+			if protoElements == nil {
+				dataValue = types.ListNull(dataElementType)
+			} else {
+				dataValues := make([]attr.Value, 0, len(protoElements))
+				for _, protoElement := range protoElements {
+					var protoValue *configv1.NestedObjectTester_CloudTags = protoElement
+					var dataValue attr.Value
+					dataValue = ConvertNestedObjectTester_CloudTagsToObjectValueFromProto(protoValue)
+					dataValues = append(dataValues, dataValue)
+				}
+				dataValue = types.ListValueMust(dataElementType, dataValues)
+			}
+		}
+		dst.CloudTags = dataValue
+	}
+	dst.Icon = ConvertNestedObjectTester_IconToObjectValueFromProto(src.Icon)
+	dst.Key = types.StringValue(src.Key)
+	dst.Name = types.StringValue(src.Name)
+	dst.ObjInObj = ConvertNestedObjectTester_ObjInObjToObjectValueFromProto(src.ObjInObj)
+	{
+		protoValue := src.SetObj
+		var dataValue types.Set
+		{
+			dataElementType := types.ObjectType{
+				AttrTypes: GetTypeAttrsForNestedObjectTester_SetObj(),
+			}
+			protoElements := protoValue
+			if protoElements == nil {
+				dataValue = types.SetNull(dataElementType)
+			} else {
+				dataValues := make([]attr.Value, 0, len(protoElements))
+				for _, protoElement := range protoElements {
+					var protoValue *configv1.NestedObjectTester_SetObj = protoElement
+					var dataValue attr.Value
+					dataValue = ConvertNestedObjectTester_SetObjToObjectValueFromProto(protoValue)
+					dataValues = append(dataValues, dataValue)
+				}
+				dataValue = types.SetValueMust(dataElementType, dataValues)
+			}
+		}
+		dst.SetObj = dataValue
+	}
+	{
+		protoValue := src.SetOfSetsString
+		var dataValue types.Set
+		{
+			dataElementType := types.SetType{ElemType: types.SetType{ElemType: types.StringType}}
+			protoElements := protoValue
+			if protoElements == nil {
+				dataValue = types.SetNull(dataElementType)
+			} else {
+				dataValues := make([]attr.Value, 0, len(protoElements))
+				for _, protoElement := range protoElements {
+					var protoValue []*configv1.NestedObjectTester_SetOfSetsString_SetOfSetsString = protoElement.SetOfSetsString
+					var dataValue attr.Value
+					{
+						dataElementType := types.SetType{ElemType: types.StringType}
+						protoElements := protoValue
+						if protoElements == nil {
+							dataValue = types.SetNull(dataElementType)
+						} else {
+							dataValues := make([]attr.Value, 0, len(protoElements))
+							for _, protoElement := range protoElements {
+								var protoValue []string = protoElement.SetOfSetsString
+								var dataValue attr.Value
+								{
+									dataElementType := types.StringType
+									protoElements := protoValue
+									if protoElements == nil {
+										dataValue = types.SetNull(dataElementType)
+									} else {
+										dataValues := make([]attr.Value, 0, len(protoElements))
+										for _, protoElement := range protoElements {
+											var protoValue string = protoElement
+											var dataValue attr.Value
+											dataValue = types.StringValue(protoValue)
+											dataValues = append(dataValues, dataValue)
+										}
+										dataValue = types.SetValueMust(dataElementType, dataValues)
+									}
+								}
+								dataValues = append(dataValues, dataValue)
+							}
+							dataValue = types.SetValueMust(dataElementType, dataValues)
+						}
+					}
+					dataValues = append(dataValues, dataValue)
+				}
+				dataValue = types.SetValueMust(dataElementType, dataValues)
+			}
+		}
+		dst.SetOfSetsString = dataValue
+	}
+	{
+		protoValue := src.SetOfStrings
+		var dataValue types.Set
+		{
+			dataElementType := types.StringType
+			protoElements := protoValue
+			if protoElements == nil {
+				dataValue = types.SetNull(dataElementType)
+			} else {
+				dataValues := make([]attr.Value, 0, len(protoElements))
+				for _, protoElement := range protoElements {
+					var protoValue string = protoElement
+					var dataValue attr.Value
+					dataValue = types.StringValue(protoValue)
+					dataValues = append(dataValues, dataValue)
+				}
+				dataValue = types.SetValueMust(dataElementType, dataValues)
+			}
+		}
+		dst.SetOfStrings = dataValue
+	}
+}
+func CopyUpdateNestedObjectTesterResponse(dst *NestedObjectTesterResourceModel, src *configv1.UpdateNestedObjectTesterResponse) {
+	dst.Id = types.StringValue(src.Id)
+	{
+		protoValue := src.CloudTags
+		var dataValue types.List
+		{
+			dataElementType := types.ObjectType{
+				AttrTypes: GetTypeAttrsForNestedObjectTester_CloudTags(),
+			}
+			protoElements := protoValue
+			if protoElements == nil {
+				dataValue = types.ListNull(dataElementType)
+			} else {
+				dataValues := make([]attr.Value, 0, len(protoElements))
+				for _, protoElement := range protoElements {
+					var protoValue *configv1.NestedObjectTester_CloudTags = protoElement
+					var dataValue attr.Value
+					dataValue = ConvertNestedObjectTester_CloudTagsToObjectValueFromProto(protoValue)
+					dataValues = append(dataValues, dataValue)
+				}
+				dataValue = types.ListValueMust(dataElementType, dataValues)
+			}
+		}
+		dst.CloudTags = dataValue
+	}
+	dst.Icon = ConvertNestedObjectTester_IconToObjectValueFromProto(src.Icon)
+	dst.Key = types.StringValue(src.Key)
+	dst.Name = types.StringValue(src.Name)
+	dst.ObjInObj = ConvertNestedObjectTester_ObjInObjToObjectValueFromProto(src.ObjInObj)
+	{
+		protoValue := src.SetObj
+		var dataValue types.Set
+		{
+			dataElementType := types.ObjectType{
+				AttrTypes: GetTypeAttrsForNestedObjectTester_SetObj(),
+			}
+			protoElements := protoValue
+			if protoElements == nil {
+				dataValue = types.SetNull(dataElementType)
+			} else {
+				dataValues := make([]attr.Value, 0, len(protoElements))
+				for _, protoElement := range protoElements {
+					var protoValue *configv1.NestedObjectTester_SetObj = protoElement
+					var dataValue attr.Value
+					dataValue = ConvertNestedObjectTester_SetObjToObjectValueFromProto(protoValue)
+					dataValues = append(dataValues, dataValue)
+				}
+				dataValue = types.SetValueMust(dataElementType, dataValues)
+			}
+		}
+		dst.SetObj = dataValue
+	}
+	{
+		protoValue := src.SetOfSetsString
+		var dataValue types.Set
+		{
+			dataElementType := types.SetType{ElemType: types.SetType{ElemType: types.StringType}}
+			protoElements := protoValue
+			if protoElements == nil {
+				dataValue = types.SetNull(dataElementType)
+			} else {
+				dataValues := make([]attr.Value, 0, len(protoElements))
+				for _, protoElement := range protoElements {
+					var protoValue []*configv1.NestedObjectTester_SetOfSetsString_SetOfSetsString = protoElement.SetOfSetsString
+					var dataValue attr.Value
+					{
+						dataElementType := types.SetType{ElemType: types.StringType}
+						protoElements := protoValue
+						if protoElements == nil {
+							dataValue = types.SetNull(dataElementType)
+						} else {
+							dataValues := make([]attr.Value, 0, len(protoElements))
+							for _, protoElement := range protoElements {
+								var protoValue []string = protoElement.SetOfSetsString
+								var dataValue attr.Value
+								{
+									dataElementType := types.StringType
+									protoElements := protoValue
+									if protoElements == nil {
+										dataValue = types.SetNull(dataElementType)
+									} else {
+										dataValues := make([]attr.Value, 0, len(protoElements))
+										for _, protoElement := range protoElements {
+											var protoValue string = protoElement
+											var dataValue attr.Value
+											dataValue = types.StringValue(protoValue)
+											dataValues = append(dataValues, dataValue)
+										}
+										dataValue = types.SetValueMust(dataElementType, dataValues)
+									}
+								}
+								dataValues = append(dataValues, dataValue)
+							}
+							dataValue = types.SetValueMust(dataElementType, dataValues)
+						}
+					}
+					dataValues = append(dataValues, dataValue)
+				}
+				dataValue = types.SetValueMust(dataElementType, dataValues)
+			}
+		}
+		dst.SetOfSetsString = dataValue
+	}
+	{
+		protoValue := src.SetOfStrings
+		var dataValue types.Set
+		{
+			dataElementType := types.StringType
+			protoElements := protoValue
+			if protoElements == nil {
+				dataValue = types.SetNull(dataElementType)
+			} else {
+				dataValues := make([]attr.Value, 0, len(protoElements))
+				for _, protoElement := range protoElements {
+					var protoValue string = protoElement
+					var dataValue attr.Value
+					dataValue = types.StringValue(protoValue)
+					dataValues = append(dataValues, dataValue)
+				}
+				dataValue = types.SetValueMust(dataElementType, dataValues)
+			}
+		}
+		dst.SetOfStrings = dataValue
+	}
+}
+
+type NestedObjectTester_CloudTags struct {
+	Cloud types.String `tfsdk:"cloud"`
+	Key   types.String `tfsdk:"key"`
+}
+
+func GetTypeAttrsForNestedObjectTester_CloudTags() map[string]attr.Type {
+	return map[string]attr.Type{
+		"cloud": types.StringType,
+		"key":   types.StringType,
+	}
+}
+
+func ConvertNestedObjectTester_CloudTagsToObjectValueFromProto(proto *configv1.NestedObjectTester_CloudTags) basetypes.ObjectValue {
+	return types.ObjectValueMust(
+		GetTypeAttrsForNestedObjectTester_CloudTags(),
+		map[string]attr.Value{
+			"cloud": types.StringValue(proto.Cloud),
+			"key":   types.StringValue(proto.Key),
+		},
+	)
+}
+func ConvertDataValueToNestedObjectTester_CloudTagsProto(diags *diag.Diagnostics, dataValue attr.Value) *configv1.NestedObjectTester_CloudTags {
+	pv := NestedObjectTester_CloudTags{}
+	diagsCurrent := tfsdk.ValueAs(context.Background(), dataValue, &pv)
+	diags.Append(diagsCurrent...)
+	proto := &configv1.NestedObjectTester_CloudTags{}
+	proto.Cloud = pv.Cloud.ValueString()
+	proto.Key = pv.Key.ValueString()
+	return proto
+}
+
+type NestedObjectTester_Icon struct {
+	BackgroundColor types.String `tfsdk:"background_color"`
+	ForegroundColor types.String `tfsdk:"foreground_color"`
+	Name            types.String `tfsdk:"name"`
+}
+
+func GetTypeAttrsForNestedObjectTester_Icon() map[string]attr.Type {
+	return map[string]attr.Type{
+		"background_color": types.StringType,
+		"foreground_color": types.StringType,
+		"name":             types.StringType,
+	}
+}
+
+func ConvertNestedObjectTester_IconToObjectValueFromProto(proto *configv1.NestedObjectTester_Icon) basetypes.ObjectValue {
+	return types.ObjectValueMust(
+		GetTypeAttrsForNestedObjectTester_Icon(),
+		map[string]attr.Value{
+			"background_color": types.StringValue(proto.BackgroundColor),
+			"foreground_color": types.StringValue(proto.ForegroundColor),
+			"name":             types.StringValue(proto.Name),
+		},
+	)
+}
+func ConvertDataValueToNestedObjectTester_IconProto(diags *diag.Diagnostics, dataValue attr.Value) *configv1.NestedObjectTester_Icon {
+	pv := NestedObjectTester_Icon{}
+	diagsCurrent := tfsdk.ValueAs(context.Background(), dataValue, &pv)
+	diags.Append(diagsCurrent...)
+	proto := &configv1.NestedObjectTester_Icon{}
+	proto.BackgroundColor = pv.BackgroundColor.ValueString()
+	proto.ForegroundColor = pv.ForegroundColor.ValueString()
+	proto.Name = pv.Name.ValueString()
+	return proto
+}
+
+type NestedObjectTester_ObjInObj struct {
+	Child types.Object `tfsdk:"child"`
+	Name  types.String `tfsdk:"name"`
+}
+
+func GetTypeAttrsForNestedObjectTester_ObjInObj() map[string]attr.Type {
+	return map[string]attr.Type{
+		"child": types.ObjectType{
+			AttrTypes: GetTypeAttrsForNestedObjectTester_ObjInObj_Child(),
+		},
+		"name": types.StringType,
+	}
+}
+
+func ConvertNestedObjectTester_ObjInObjToObjectValueFromProto(proto *configv1.NestedObjectTester_ObjInObj) basetypes.ObjectValue {
+	return types.ObjectValueMust(
+		GetTypeAttrsForNestedObjectTester_ObjInObj(),
+		map[string]attr.Value{
+			"child": ConvertNestedObjectTester_ObjInObj_ChildToObjectValueFromProto(proto.Child),
+			"name":  types.StringValue(proto.Name),
+		},
+	)
+}
+func ConvertDataValueToNestedObjectTester_ObjInObjProto(diags *diag.Diagnostics, dataValue attr.Value) *configv1.NestedObjectTester_ObjInObj {
+	pv := NestedObjectTester_ObjInObj{}
+	diagsCurrent := tfsdk.ValueAs(context.Background(), dataValue, &pv)
+	diags.Append(diagsCurrent...)
+	proto := &configv1.NestedObjectTester_ObjInObj{}
+	proto.Child = ConvertDataValueToNestedObjectTester_ObjInObj_ChildProto(diags, pv.Child)
+	proto.Name = pv.Name.ValueString()
+	return proto
+}
+
+type NestedObjectTester_ObjInObj_Child struct {
+	GrandChild types.Object `tfsdk:"grand_child"`
+	Name       types.String `tfsdk:"name"`
+}
+
+func GetTypeAttrsForNestedObjectTester_ObjInObj_Child() map[string]attr.Type {
+	return map[string]attr.Type{
+		"grand_child": types.ObjectType{
+			AttrTypes: GetTypeAttrsForNestedObjectTester_ObjInObj_Child_GrandChild(),
+		},
+		"name": types.StringType,
+	}
+}
+
+func ConvertNestedObjectTester_ObjInObj_ChildToObjectValueFromProto(proto *configv1.NestedObjectTester_ObjInObj_Child) basetypes.ObjectValue {
+	return types.ObjectValueMust(
+		GetTypeAttrsForNestedObjectTester_ObjInObj_Child(),
+		map[string]attr.Value{
+			"grand_child": ConvertNestedObjectTester_ObjInObj_Child_GrandChildToObjectValueFromProto(proto.GrandChild),
+			"name":        types.StringValue(proto.Name),
+		},
+	)
+}
+func ConvertDataValueToNestedObjectTester_ObjInObj_ChildProto(diags *diag.Diagnostics, dataValue attr.Value) *configv1.NestedObjectTester_ObjInObj_Child {
+	pv := NestedObjectTester_ObjInObj_Child{}
+	diagsCurrent := tfsdk.ValueAs(context.Background(), dataValue, &pv)
+	diags.Append(diagsCurrent...)
+	proto := &configv1.NestedObjectTester_ObjInObj_Child{}
+	proto.GrandChild = ConvertDataValueToNestedObjectTester_ObjInObj_Child_GrandChildProto(diags, pv.GrandChild)
+	proto.Name = pv.Name.ValueString()
+	return proto
+}
+
+type NestedObjectTester_ObjInObj_Child_GrandChild struct {
+	Name types.String `tfsdk:"name"`
+}
+
+func GetTypeAttrsForNestedObjectTester_ObjInObj_Child_GrandChild() map[string]attr.Type {
+	return map[string]attr.Type{
+		"name": types.StringType,
+	}
+}
+
+func ConvertNestedObjectTester_ObjInObj_Child_GrandChildToObjectValueFromProto(proto *configv1.NestedObjectTester_ObjInObj_Child_GrandChild) basetypes.ObjectValue {
+	return types.ObjectValueMust(
+		GetTypeAttrsForNestedObjectTester_ObjInObj_Child_GrandChild(),
+		map[string]attr.Value{
+			"name": types.StringValue(proto.Name),
+		},
+	)
+}
+func ConvertDataValueToNestedObjectTester_ObjInObj_Child_GrandChildProto(diags *diag.Diagnostics, dataValue attr.Value) *configv1.NestedObjectTester_ObjInObj_Child_GrandChild {
+	pv := NestedObjectTester_ObjInObj_Child_GrandChild{}
+	diagsCurrent := tfsdk.ValueAs(context.Background(), dataValue, &pv)
+	diags.Append(diagsCurrent...)
+	proto := &configv1.NestedObjectTester_ObjInObj_Child_GrandChild{}
+	proto.Name = pv.Name.ValueString()
+	return proto
+}
+
+type NestedObjectTester_SetObj struct {
+	SetKey types.String `tfsdk:"set_key"`
+	SetVal types.String `tfsdk:"set_val"`
+}
+
+func GetTypeAttrsForNestedObjectTester_SetObj() map[string]attr.Type {
+	return map[string]attr.Type{
+		"set_key": types.StringType,
+		"set_val": types.StringType,
+	}
+}
+
+func ConvertNestedObjectTester_SetObjToObjectValueFromProto(proto *configv1.NestedObjectTester_SetObj) basetypes.ObjectValue {
+	return types.ObjectValueMust(
+		GetTypeAttrsForNestedObjectTester_SetObj(),
+		map[string]attr.Value{
+			"set_key": types.StringValue(proto.SetKey),
+			"set_val": types.StringValue(proto.SetVal),
+		},
+	)
+}
+func ConvertDataValueToNestedObjectTester_SetObjProto(diags *diag.Diagnostics, dataValue attr.Value) *configv1.NestedObjectTester_SetObj {
+	pv := NestedObjectTester_SetObj{}
+	diagsCurrent := tfsdk.ValueAs(context.Background(), dataValue, &pv)
+	diags.Append(diagsCurrent...)
+	proto := &configv1.NestedObjectTester_SetObj{}
+	proto.SetKey = pv.SetKey.ValueString()
+	proto.SetVal = pv.SetVal.ValueString()
+	return proto
 }

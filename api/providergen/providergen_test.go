@@ -11,15 +11,15 @@ import (
 	"github.com/stretchr/testify/suite"
 )
 
-type GenerateProviderSuite struct {
+type GenerateProviderTestSuite struct {
 	suite.Suite
 }
 
 func TestGenerateProviderSuite(t *testing.T) {
-	suite.Run(t, new(GenerateProviderSuite))
+	suite.Run(t, new(GenerateProviderTestSuite))
 }
 
-func (suite *GenerateProviderSuite) TestGenerateProvider() {
+func (suite *GenerateProviderTestSuite) TestGenerateProviderDataGenerator() {
 	// Setup test schema
 	testResource := schema.Resource{
 		TypeName: "test_object",
@@ -107,7 +107,7 @@ func (suite *GenerateProviderSuite) TestGenerateProvider() {
 	suite.Contains(data.Models[0].Name, "TestObjectResourceModel", "Generated provider should include the correct resource model name")
 }
 
-func (suite *GenerateProviderSuite) TestListOfObjects() {
+func (suite *GenerateProviderTestSuite) TestListOfObjects() {
 	testResource := schema.Resource{
 		TypeName: "aws_tag_to_label",
 		Schema: resource_schema.Schema{
@@ -156,7 +156,7 @@ func (suite *GenerateProviderSuite) TestListOfObjects() {
 	suite.Require().NoError(err, "AddResourceToProviderTemplateData should not return an error")
 }
 
-func (suite *GenerateProviderSuite) TestSetsAndMore() {
+func (suite *GenerateProviderTestSuite) TestSetsAndMore() {
 	var cloudTagsAttribute = resource_schema.ListAttribute{
 		ElementType: types.ObjectType{
 			AttrTypes: map[string]attr.Type{

@@ -30,6 +30,7 @@ import (
 
 	"github.com/hashicorp/terraform-plugin-framework/attr"
 	"github.com/hashicorp/terraform-plugin-framework/datasource"
+	"github.com/hashicorp/terraform-plugin-framework/diag"
 	"github.com/hashicorp/terraform-plugin-framework/resource"
 	resource_schema "github.com/hashicorp/terraform-plugin-framework/resource/schema"
 	{{- if  eq .HasObjectElementType true}}
@@ -127,7 +128,7 @@ func (r *{{.TypeName}}) Create(ctx context.Context, req resource.CreateRequest, 
 		return
 	}
 
-	protoReq := {{.NewCreateRequestFuncName}}(ctx, &data)
+	protoReq := {{.NewCreateRequestFuncName}}(ctx, &resp.Diagnostics, &data)
 
 	tflog.Trace(ctx, "creating a resource", map[string]any{"type": "{{.Name}}"})
 
@@ -154,7 +155,7 @@ func (r *{{.TypeName}}) Read(ctx context.Context, req resource.ReadRequest, resp
 		return
 	}
 
-	protoReq := {{.NewReadRequestFuncName}}(ctx, &data)
+	protoReq := {{.NewReadRequestFuncName}}(ctx, &resp.Diagnostics, &data)
 
 	tflog.Trace(ctx, "reading a resource", map[string]any{"type": "{{.Name}}", "id": protoReq.{{.IdFieldName}}})
 
@@ -194,7 +195,7 @@ func (r *{{.TypeName}}) Update(ctx context.Context, req resource.UpdateRequest, 
 		return
 	}
 
-	protoReq := {{.NewUpdateRequestFuncName}}(ctx, &beforeData, &afterData)
+	protoReq := {{.NewUpdateRequestFuncName}}(ctx, &resp.Diagnostics, &beforeData, &afterData)
 
 	tflog.Trace(ctx, "updating a resource", map[string]any{"type": "{{.Name}}", "id": protoReq.{{.IdFieldName}}, "update_mask": protoReq.{{.UpdateMaskFieldName}}.Paths})
 
@@ -228,7 +229,7 @@ func (r *{{.TypeName}}) Delete(ctx context.Context, req resource.DeleteRequest, 
 		return
 	}
 
-	protoReq := {{.NewDeleteRequestFuncName}}(ctx, &data)
+	protoReq := {{.NewDeleteRequestFuncName}}(ctx, &resp.Diagnostics, &data)
 
 	tflog.Trace(ctx, "deleting a resource", map[string]any{"type": "{{.Name}}", "id": protoReq.{{.IdFieldName}}})
 
@@ -268,7 +269,7 @@ type {{.Name}} struct {
 {{- end}}
 {{- define "convertDataValueToProto"}}
 	{{- if ne .NestedModel nil}}
-		protoValue = ConvertDataValueTo{{.NestedModel.Name}}Proto(ctx, dataValue)
+		protoValue = ConvertDataValueTo{{.NestedModel.Name}}Proto(diags, dataValue)
 	{{- else if eq .CollectionElementType nil}}
 		protoValue = dataValue.(types.{{.ModelTypeName}}).Value{{.ModelTypeName}}()
 	{{- else}}
@@ -291,7 +292,7 @@ type {{.Name}} struct {
 {{- end}}
 {{- define "newRequestFunc"}}
 
-func {{.Name}}(ctx context.Context, data *{{.ModelName}}) *configv1.{{.ProtoName}} {
+func {{.Name}}(ctx context.Context, diags *diag.Diagnostics, data *{{.ModelName}}) *configv1.{{.ProtoName}} {
 	proto := &configv1.{{.ProtoName}}{}
 	{{- range $field := .Fields}}
 	if !data.{{$field.Name}}.IsUnknown() && !data.{{$field.Name}}.IsNull() {
@@ -317,7 +318,7 @@ func {{.Name}}(ctx context.Context, data *{{.ModelName}}) *configv1.{{.ProtoName
 {{- end}}
 {{- define "newUpdateRequestFunc"}}
 
-func {{.Name}}(ctx context.Context, beforeData, afterData *{{.ModelName}}) *configv1.{{.ProtoName}} {
+func {{.Name}}(ctx context.Context, diags *diag.Diagnostics, beforeData, afterData *{{.ModelName}}) *configv1.{{.ProtoName}} {
 	proto := &configv1.{{.ProtoName}}{}
 	proto.UpdateMask, _ = fieldmaskpb.New(proto)
 	proto.Id = beforeData.Id.ValueString()
