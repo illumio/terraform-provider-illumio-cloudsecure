@@ -100,7 +100,7 @@ type field struct {
 	Tag int
 }
 
-const MessageSeperator = "_"
+const MessageNameSeperator = "_"
 
 // GenerateGRPCAPISpec generates the Protocol Buffer and gRPC spec for the Illumio CloudSecure Config API, and outputs it into the given Writer.
 func GenerateGRPCAPISpec(dst io.Writer, src schema.Schema, tagger *apiSpecTagger) error {
@@ -169,7 +169,7 @@ func GenerateGRPCAPISpec(dst io.Writer, src schema.Schema, tagger *apiSpecTagger
 				//
 				// Nesting each message (2.) would cause too much overhead as it would require generating duplicate code for handling those duplicate messages.
 				// Therefore, define it globally, but prefix the message name with the resource name to make it globally unique.
-				msg.Name = resourceMessageName + MessageSeperator + msg.Name
+				msg.Name = resourceMessageName + MessageNameSeperator + msg.Name
 				t = msg.Name
 
 				data.Messages = append(data.Messages, *msg)
@@ -258,7 +258,7 @@ func GenerateGRPCAPISpec(dst io.Writer, src schema.Schema, tagger *apiSpecTagger
 }
 
 // terraformAttributeTypeToProtoType converts a Terraform attribute type into the corresponding Protocol Buffer type, and optionally additional Protocol Buffer messages that represent nested types.
-func terraformAttributeTypeToProtoType(resourceName, attrName string, attrType attr.Type, tagger *apiSpecTagger) (repeated bool, protoType string, message *message, err error) {
+func terraformAttributeTypeToProtoType(resourceName, attrName string, attrType attr.Type, tagger *apiSpecTagger) (repeated bool, protoType string, nestedMessage *message, err error) {
 	switch v := attrType.(type) {
 	case basetypes.BoolType:
 		return false, "bool", nil, nil
@@ -281,13 +281,13 @@ func terraformAttributeTypeToProtoType(resourceName, attrName string, attrType a
 }
 
 // terraformObjectAttributeTypeToProtoType converts a Terraform object attribute into a Protocol Buffer message type.
-func terraformObjectAttributeTypeToProtoType(resourceName, attrName string, obj types.ObjectType, tagger *apiSpecTagger) (repeated bool, protoType string, messages *message, err error) {
+func terraformObjectAttributeTypeToProtoType(resourceName, attrName string, obj types.ObjectType, tagger *apiSpecTagger) (repeated bool, protoType string, nestedMessage *message, err error) {
 	messageName := schema.ProtoMessageName(attrName)
 	newMessage := &message{
 		Name:   messageName,
 		Fields: []field{},
 	}
-	wrappedMessageName := resourceName + MessageSeperator + messageName
+	wrappedMessageName := resourceName + MessageNameSeperator + messageName
 
 	attrs := schema.SortObjectAttributes(obj.AttrTypes)
 
@@ -315,7 +315,7 @@ func terraformObjectAttributeTypeToProtoType(resourceName, attrName string, obj 
 }
 
 // terraformRepeatedAttributeTypeToProtoType converts a Terraform repeated attribute type into the corresponding Protocol Buffer type, and optionally additional Protocol Buffer messages that represent nested types.
-func terraformRepeatedAttributeTypeToProtoType(resourceName, attrName string, elementType attr.Type, tagger *apiSpecTagger) (repeated bool, protoType string, messages *message, err error) {
+func terraformRepeatedAttributeTypeToProtoType(resourceName, attrName string, elementType attr.Type, tagger *apiSpecTagger) (repeated bool, protoType string, nestedMessage *message, err error) {
 	elemRepeated, elemProtoType, elemMessage, err := terraformAttributeTypeToProtoType(resourceName, attrName, elementType, tagger)
 
 	switch {
