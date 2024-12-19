@@ -270,9 +270,10 @@ func (suite *GenerateTestSuite) TestTerraformAttributeTypeToProtoType() {
 				},
 				Fields: []field{
 					{
-						Type: "TheField",
-						Name: "the_field",
-						Tag:  1,
+						Type:     "TheField",
+						Name:     "the_field",
+						Tag:      1,
+						Repeated: true,
 					},
 				},
 			},
@@ -280,8 +281,10 @@ func (suite *GenerateTestSuite) TestTerraformAttributeTypeToProtoType() {
 	}
 
 	for name, tc := range tests {
+		tagger := newAPISpecTagger()
+
 		suite.Run(name, func() {
-			gotRepeated, gotType, gotMessages, gotErr := terraformAttributeTypeToProtoType(fieldName, tc.tfType)
+			gotRepeated, gotType, gotMessages, gotErr := terraformAttributeTypeToProtoType("Dummy", fieldName, tc.tfType, tagger)
 			suite.Equal(tc.expectedRepeated, gotRepeated, "Protocol Buffer repeated flag should match")
 			suite.Equal(tc.expectedType, gotType, "Protocol Buffer type should match")
 			suite.Equal(tc.expectedMessage, gotMessages, "Messages should match")

@@ -6,7 +6,6 @@ package main
 import (
 	"fmt"
 	"io"
-	"sort"
 	"text/template" // nosemgrep: go.lang.security.audit.xss.import-text-template.import-text-template
 
 	"github.com/hashicorp/terraform-plugin-framework/attr"
@@ -157,7 +156,7 @@ func GenerateGRPCAPISpec(dst io.Writer, src schema.Schema, tagger *apiSpecTagger
 		for _, attrName := range attrNames {
 			attrSchema := resource.Schema.Attributes[attrName]
 
-			repeated, t, msg, err := terraformAttributeTypeToProtoType(attrName, attrSchema.GetType())
+			repeated, t, msg, err := terraformAttributeTypeToProtoType(resourceName, attrName, attrSchema.GetType(), tagger)
 			if err != nil {
 				return fmt.Errorf("failed to parse field %s in resource %s: %w", attrName, resourceMessageName, err)
 			}
@@ -259,7 +258,7 @@ func GenerateGRPCAPISpec(dst io.Writer, src schema.Schema, tagger *apiSpecTagger
 }
 
 // terraformAttributeTypeToProtoType converts a Terraform attribute type into the corresponding Protocol Buffer type, and optionally additional Protocol Buffer messages that represent nested types.
-func terraformAttributeTypeToProtoType(attrName string, attrType attr.Type) (repeated bool, protoType string, messages *message, err error) {
+func terraformAttributeTypeToProtoType(resourceName, attrName string, attrType attr.Type, tagger *apiSpecTagger) (repeated bool, protoType string, message *message, err error) {
 	switch v := attrType.(type) {
 	case basetypes.BoolType:
 		return false, "bool", nil, nil
@@ -270,27 +269,32 @@ func terraformAttributeTypeToProtoType(attrName string, attrType attr.Type) (rep
 	case basetypes.StringType:
 		return false, "string", nil, nil
 	case types.ListType:
-		return terraformRepeatedAttributeTypeToProtoType(attrName, v.ElementType())
+		return terraformRepeatedAttributeTypeToProtoType(resourceName, attrName, v.ElementType(), tagger)
 	case types.SetType:
-		return terraformRepeatedAttributeTypeToProtoType(attrName, v.ElementType())
+		return terraformRepeatedAttributeTypeToProtoType(resourceName, attrName, v.ElementType(), tagger)
 	case types.ObjectType:
-		return terraformObjectAttributeTypeToProtoType(attrName, v)
+		return terraformObjectAttributeTypeToProtoType(resourceName, attrName, v, tagger)
 
 	default:
 		return false, "", nil, fmt.Errorf("unsupported Terraform type: %s", attrType.String())
 	}
 }
 
-// terraformObjectAttributeTypeToProtoType converts a Terraform object attribute to a Protocol Buffer message type.
-func terraformObjectAttributeTypeToProtoType(attrName string, obj types.ObjectType) (repeated bool, protoType string, messages *message, err error) {
+// terraformObjectAttributeTypeToProtoType converts a Terraform object attribute into a Protocol Buffer message type.
+func terraformObjectAttributeTypeToProtoType(resourceName, attrName string, obj types.ObjectType, tagger *apiSpecTagger) (repeated bool, protoType string, messages *message, err error) {
 	messageName := schema.ProtoMessageName(attrName)
 	newMessage := &message{
 		Name:   messageName,
 		Fields: []field{},
 	}
+	wrappedMessageName := resourceName + MessageSeperator + messageName
 
-	for name, attrType := range obj.AttrTypes {
-		isRepeated, t, msg, err := terraformAttributeTypeToProtoType(name, attrType)
+	attrs := schema.SortObjectAttributes(obj.AttrTypes)
+
+	for _, name := range attrs {
+		attrType := obj.AttrTypes[name]
+		isRepeated, t, msg, err := terraformAttributeTypeToProtoType(wrappedMessageName, name, attrType, tagger)
+
 		if err != nil {
 			return false, "", nil, fmt.Errorf("failed to parse field %s in object %s: %w", name, attrName, err)
 		}
@@ -299,7 +303,7 @@ func terraformObjectAttributeTypeToProtoType(attrName string, obj types.ObjectTy
 			Repeated: isRepeated,
 			Type:     t,
 			Name:     name,
-			Tag:      len(newMessage.Fields) + 1,
+			Tag:      tagger.AssignTag("resource/"+wrappedMessageName, name),
 		})
 
 		if msg != nil {
@@ -307,23 +311,12 @@ func terraformObjectAttributeTypeToProtoType(attrName string, obj types.ObjectTy
 		}
 	}
 
-	// Reorder fields Sort by Name
-	sort.Slice(newMessage.Fields, func(i, j int) bool {
-		if newMessage.Fields[i].Name < newMessage.Fields[j].Name {
-			newMessage.Fields[i].Tag, newMessage.Fields[j].Tag = newMessage.Fields[j].Tag, newMessage.Fields[i].Tag
-
-			return true
-		}
-
-		return false
-	})
-
 	return false, messageName, newMessage, nil
 }
 
 // terraformRepeatedAttributeTypeToProtoType converts a Terraform repeated attribute type into the corresponding Protocol Buffer type, and optionally additional Protocol Buffer messages that represent nested types.
-func terraformRepeatedAttributeTypeToProtoType(attrName string, elementType attr.Type) (repeated bool, protoType string, messages *message, err error) {
-	elemRepeated, elemProtoType, elemMessage, err := terraformAttributeTypeToProtoType(attrName, elementType)
+func terraformRepeatedAttributeTypeToProtoType(resourceName, attrName string, elementType attr.Type, tagger *apiSpecTagger) (repeated bool, protoType string, messages *message, err error) {
+	elemRepeated, elemProtoType, elemMessage, err := terraformAttributeTypeToProtoType(resourceName, attrName, elementType, tagger)
 
 	switch {
 	case err != nil:
