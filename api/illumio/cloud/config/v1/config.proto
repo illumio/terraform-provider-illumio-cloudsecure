@@ -218,28 +218,28 @@ message DeleteK8SClusterOnboardingCredentialRequest {
   string id = 1;
 }
 message NestedObjectTester_CloudTags {
-  string cloud = 1;
-  string key = 2;
+  optional string cloud = 1;
+  optional string key = 2;
 }
 message NestedObjectTester_Icon {
-  string background_color = 1;
-  string foreground_color = 2;
-  string name = 3;
+  optional string background_color = 1;
+  optional string foreground_color = 2;
+  optional string name = 3;
 }
 message NestedObjectTester_ObjInObj {
   message Child {
     message GrandChild {
-      string name = 1;
+      optional string name = 1;
     }
-    GrandChild grand_child = 1;
-    string name = 2;
+    optional GrandChild grand_child = 1;
+    optional string name = 2;
   }
-  Child child = 1;
-  string name = 2;
+  optional Child child = 1;
+  optional string name = 2;
 }
 message NestedObjectTester_SetObj {
-  string set_key = 1;
-  string set_val = 2;
+  optional string set_key = 1;
+  optional string set_val = 2;
 }
 message NestedObjectTester_SetOfSetsString {
   message SetOfSetsString {

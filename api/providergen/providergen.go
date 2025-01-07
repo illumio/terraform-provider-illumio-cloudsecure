@@ -269,7 +269,8 @@ type {{.Name}} struct {
 {{- end}}
 {{- define "convertDataValueToProto"}}
 	{{- if ne .NestedModel nil}}
-		protoValue = ConvertDataValueTo{{.NestedModel.Name}}Proto(diags, dataValue)
+		protoValue, newDiags := ConvertDataValueTo{{.NestedModel.Name}}Proto(dataValue)
+		diags.Append(newDiags...)
 	{{- else if eq .CollectionElementType nil}}
 		protoValue = dataValue.(types.{{.ModelTypeName}}).Value{{.ModelTypeName}}()
 	{{- else}}

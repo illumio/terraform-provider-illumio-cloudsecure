@@ -1443,7 +1443,8 @@ func NewCreateNestedObjectTesterRequest(ctx context.Context, diags *diag.Diagnos
 			for _, dataElement := range dataElements {
 				var dataValue attr.Value = dataElement
 				var protoValue *configv1.NestedObjectTester_CloudTags
-				protoValue = ConvertDataValueToNestedObjectTester_CloudTagsProto(diags, dataValue)
+				protoValue, newDiags := ConvertDataValueToNestedObjectTester_CloudTagsProto(dataValue)
+				diags.Append(newDiags...)
 				protoValues = append(protoValues, protoValue)
 			}
 			protoValue = protoValues
@@ -1453,7 +1454,8 @@ func NewCreateNestedObjectTesterRequest(ctx context.Context, diags *diag.Diagnos
 	if !data.Icon.IsUnknown() && !data.Icon.IsNull() {
 		var dataValue attr.Value = data.Icon
 		var protoValue *configv1.NestedObjectTester_Icon
-		protoValue = ConvertDataValueToNestedObjectTester_IconProto(diags, dataValue)
+		protoValue, newDiags := ConvertDataValueToNestedObjectTester_IconProto(dataValue)
+		diags.Append(newDiags...)
 		proto.Icon = protoValue
 	}
 	if !data.Key.IsUnknown() && !data.Key.IsNull() {
@@ -1471,7 +1473,8 @@ func NewCreateNestedObjectTesterRequest(ctx context.Context, diags *diag.Diagnos
 	if !data.ObjInObj.IsUnknown() && !data.ObjInObj.IsNull() {
 		var dataValue attr.Value = data.ObjInObj
 		var protoValue *configv1.NestedObjectTester_ObjInObj
-		protoValue = ConvertDataValueToNestedObjectTester_ObjInObjProto(diags, dataValue)
+		protoValue, newDiags := ConvertDataValueToNestedObjectTester_ObjInObjProto(dataValue)
+		diags.Append(newDiags...)
 		proto.ObjInObj = protoValue
 	}
 	if !data.SetObj.IsUnknown() && !data.SetObj.IsNull() {
@@ -1483,7 +1486,8 @@ func NewCreateNestedObjectTesterRequest(ctx context.Context, diags *diag.Diagnos
 			for _, dataElement := range dataElements {
 				var dataValue attr.Value = dataElement
 				var protoValue *configv1.NestedObjectTester_SetObj
-				protoValue = ConvertDataValueToNestedObjectTester_SetObjProto(diags, dataValue)
+				protoValue, newDiags := ConvertDataValueToNestedObjectTester_SetObjProto(dataValue)
+				diags.Append(newDiags...)
 				protoValues = append(protoValues, protoValue)
 			}
 			protoValue = protoValues
@@ -1653,7 +1657,8 @@ func NewUpdateNestedObjectTesterRequest(ctx context.Context, diags *diag.Diagnos
 				for _, dataElement := range dataElements {
 					var dataValue attr.Value = dataElement
 					var protoValue *configv1.NestedObjectTester_CloudTags
-					protoValue = ConvertDataValueToNestedObjectTester_CloudTagsProto(diags, dataValue)
+					protoValue, newDiags := ConvertDataValueToNestedObjectTester_CloudTagsProto(dataValue)
+					diags.Append(newDiags...)
 					protoValues = append(protoValues, protoValue)
 				}
 				protoValue = protoValues
@@ -1666,7 +1671,8 @@ func NewUpdateNestedObjectTesterRequest(ctx context.Context, diags *diag.Diagnos
 		if !afterData.Icon.IsUnknown() && !afterData.Icon.IsNull() {
 			var dataValue attr.Value = afterData.Icon
 			var protoValue *configv1.NestedObjectTester_Icon
-			protoValue = ConvertDataValueToNestedObjectTester_IconProto(diags, dataValue)
+			protoValue, newDiags := ConvertDataValueToNestedObjectTester_IconProto(dataValue)
+			diags.Append(newDiags...)
 			proto.Icon = protoValue
 		}
 	}
@@ -1693,7 +1699,8 @@ func NewUpdateNestedObjectTesterRequest(ctx context.Context, diags *diag.Diagnos
 		if !afterData.ObjInObj.IsUnknown() && !afterData.ObjInObj.IsNull() {
 			var dataValue attr.Value = afterData.ObjInObj
 			var protoValue *configv1.NestedObjectTester_ObjInObj
-			protoValue = ConvertDataValueToNestedObjectTester_ObjInObjProto(diags, dataValue)
+			protoValue, newDiags := ConvertDataValueToNestedObjectTester_ObjInObjProto(dataValue)
+			diags.Append(newDiags...)
 			proto.ObjInObj = protoValue
 		}
 	}
@@ -1708,7 +1715,8 @@ func NewUpdateNestedObjectTesterRequest(ctx context.Context, diags *diag.Diagnos
 				for _, dataElement := range dataElements {
 					var dataValue attr.Value = dataElement
 					var protoValue *configv1.NestedObjectTester_SetObj
-					protoValue = ConvertDataValueToNestedObjectTester_SetObjProto(diags, dataValue)
+					protoValue, newDiags := ConvertDataValueToNestedObjectTester_SetObjProto(dataValue)
+					diags.Append(newDiags...)
 					protoValues = append(protoValues, protoValue)
 				}
 				protoValue = protoValues
@@ -2255,6 +2263,10 @@ func CopyUpdateNestedObjectTesterResponse(dst *NestedObjectTesterResourceModel, 
 	}
 }
 
+func ptr[T any](v T) *T {
+	return &v
+}
+
 type NestedObjectTester_CloudTags struct {
 	Cloud types.String `tfsdk:"cloud"`
 	Key   types.String `tfsdk:"key"`
@@ -2271,19 +2283,18 @@ func ConvertNestedObjectTester_CloudTagsToObjectValueFromProto(proto *configv1.N
 	return types.ObjectValueMust(
 		GetTypeAttrsForNestedObjectTester_CloudTags(),
 		map[string]attr.Value{
-			"cloud": types.StringValue(proto.Cloud),
-			"key":   types.StringValue(proto.Key),
+			"cloud": types.StringValue(proto.GetCloud()),
+			"key":   types.StringValue(proto.GetKey()),
 		},
 	)
 }
-func ConvertDataValueToNestedObjectTester_CloudTagsProto(diags *diag.Diagnostics, dataValue attr.Value) *configv1.NestedObjectTester_CloudTags {
+func ConvertDataValueToNestedObjectTester_CloudTagsProto(dataValue attr.Value) (*configv1.NestedObjectTester_CloudTags, diag.Diagnostics) {
 	pv := NestedObjectTester_CloudTags{}
-	diagsCurrent := tfsdk.ValueAs(context.Background(), dataValue, &pv)
-	diags.Append(diagsCurrent...)
+	diags := tfsdk.ValueAs(context.Background(), dataValue, &pv)
 	proto := &configv1.NestedObjectTester_CloudTags{}
-	proto.Cloud = pv.Cloud.ValueString()
-	proto.Key = pv.Key.ValueString()
-	return proto
+	proto.Cloud = ptr(pv.Cloud.ValueString())
+	proto.Key = ptr(pv.Key.ValueString())
+	return proto, diags
 }
 
 type NestedObjectTester_Icon struct {
@@ -2304,21 +2315,20 @@ func ConvertNestedObjectTester_IconToObjectValueFromProto(proto *configv1.Nested
 	return types.ObjectValueMust(
 		GetTypeAttrsForNestedObjectTester_Icon(),
 		map[string]attr.Value{
-			"background_color": types.StringValue(proto.BackgroundColor),
-			"foreground_color": types.StringValue(proto.ForegroundColor),
-			"name":             types.StringValue(proto.Name),
+			"background_color": types.StringValue(proto.GetBackgroundColor()),
+			"foreground_color": types.StringValue(proto.GetForegroundColor()),
+			"name":             types.StringValue(proto.GetName()),
 		},
 	)
 }
-func ConvertDataValueToNestedObjectTester_IconProto(diags *diag.Diagnostics, dataValue attr.Value) *configv1.NestedObjectTester_Icon {
+func ConvertDataValueToNestedObjectTester_IconProto(dataValue attr.Value) (*configv1.NestedObjectTester_Icon, diag.Diagnostics) {
 	pv := NestedObjectTester_Icon{}
-	diagsCurrent := tfsdk.ValueAs(context.Background(), dataValue, &pv)
-	diags.Append(diagsCurrent...)
+	diags := tfsdk.ValueAs(context.Background(), dataValue, &pv)
 	proto := &configv1.NestedObjectTester_Icon{}
-	proto.BackgroundColor = pv.BackgroundColor.ValueString()
-	proto.ForegroundColor = pv.ForegroundColor.ValueString()
-	proto.Name = pv.Name.ValueString()
-	return proto
+	proto.BackgroundColor = ptr(pv.BackgroundColor.ValueString())
+	proto.ForegroundColor = ptr(pv.ForegroundColor.ValueString())
+	proto.Name = ptr(pv.Name.ValueString())
+	return proto, diags
 }
 
 type NestedObjectTester_ObjInObj struct {
@@ -2340,18 +2350,19 @@ func ConvertNestedObjectTester_ObjInObjToObjectValueFromProto(proto *configv1.Ne
 		GetTypeAttrsForNestedObjectTester_ObjInObj(),
 		map[string]attr.Value{
 			"child": ConvertNestedObjectTester_ObjInObj_ChildToObjectValueFromProto(proto.Child),
-			"name":  types.StringValue(proto.Name),
+			"name":  types.StringValue(proto.GetName()),
 		},
 	)
 }
-func ConvertDataValueToNestedObjectTester_ObjInObjProto(diags *diag.Diagnostics, dataValue attr.Value) *configv1.NestedObjectTester_ObjInObj {
+func ConvertDataValueToNestedObjectTester_ObjInObjProto(dataValue attr.Value) (*configv1.NestedObjectTester_ObjInObj, diag.Diagnostics) {
 	pv := NestedObjectTester_ObjInObj{}
-	diagsCurrent := tfsdk.ValueAs(context.Background(), dataValue, &pv)
-	diags.Append(diagsCurrent...)
+	diags := tfsdk.ValueAs(context.Background(), dataValue, &pv)
 	proto := &configv1.NestedObjectTester_ObjInObj{}
-	proto.Child = ConvertDataValueToNestedObjectTester_ObjInObj_ChildProto(diags, pv.Child)
-	proto.Name = pv.Name.ValueString()
-	return proto
+	pvModel, dvDiags := ConvertDataValueToNestedObjectTester_ObjInObj_ChildProto(pv.Child)
+	diags = append(diags, dvDiags...)
+	proto.Child = pvModel
+	proto.Name = ptr(pv.Name.ValueString())
+	return proto, diags
 }
 
 type NestedObjectTester_ObjInObj_Child struct {
@@ -2373,18 +2384,19 @@ func ConvertNestedObjectTester_ObjInObj_ChildToObjectValueFromProto(proto *confi
 		GetTypeAttrsForNestedObjectTester_ObjInObj_Child(),
 		map[string]attr.Value{
 			"grand_child": ConvertNestedObjectTester_ObjInObj_Child_GrandChildToObjectValueFromProto(proto.GrandChild),
-			"name":        types.StringValue(proto.Name),
+			"name":        types.StringValue(proto.GetName()),
 		},
 	)
 }
-func ConvertDataValueToNestedObjectTester_ObjInObj_ChildProto(diags *diag.Diagnostics, dataValue attr.Value) *configv1.NestedObjectTester_ObjInObj_Child {
+func ConvertDataValueToNestedObjectTester_ObjInObj_ChildProto(dataValue attr.Value) (*configv1.NestedObjectTester_ObjInObj_Child, diag.Diagnostics) {
 	pv := NestedObjectTester_ObjInObj_Child{}
-	diagsCurrent := tfsdk.ValueAs(context.Background(), dataValue, &pv)
-	diags.Append(diagsCurrent...)
+	diags := tfsdk.ValueAs(context.Background(), dataValue, &pv)
 	proto := &configv1.NestedObjectTester_ObjInObj_Child{}
-	proto.GrandChild = ConvertDataValueToNestedObjectTester_ObjInObj_Child_GrandChildProto(diags, pv.GrandChild)
-	proto.Name = pv.Name.ValueString()
-	return proto
+	pvModel, dvDiags := ConvertDataValueToNestedObjectTester_ObjInObj_Child_GrandChildProto(pv.GrandChild)
+	diags = append(diags, dvDiags...)
+	proto.GrandChild = pvModel
+	proto.Name = ptr(pv.Name.ValueString())
+	return proto, diags
 }
 
 type NestedObjectTester_ObjInObj_Child_GrandChild struct {
@@ -2401,17 +2413,16 @@ func ConvertNestedObjectTester_ObjInObj_Child_GrandChildToObjectValueFromProto(p
 	return types.ObjectValueMust(
 		GetTypeAttrsForNestedObjectTester_ObjInObj_Child_GrandChild(),
 		map[string]attr.Value{
-			"name": types.StringValue(proto.Name),
+			"name": types.StringValue(proto.GetName()),
 		},
 	)
 }
-func ConvertDataValueToNestedObjectTester_ObjInObj_Child_GrandChildProto(diags *diag.Diagnostics, dataValue attr.Value) *configv1.NestedObjectTester_ObjInObj_Child_GrandChild {
+func ConvertDataValueToNestedObjectTester_ObjInObj_Child_GrandChildProto(dataValue attr.Value) (*configv1.NestedObjectTester_ObjInObj_Child_GrandChild, diag.Diagnostics) {
 	pv := NestedObjectTester_ObjInObj_Child_GrandChild{}
-	diagsCurrent := tfsdk.ValueAs(context.Background(), dataValue, &pv)
-	diags.Append(diagsCurrent...)
+	diags := tfsdk.ValueAs(context.Background(), dataValue, &pv)
 	proto := &configv1.NestedObjectTester_ObjInObj_Child_GrandChild{}
-	proto.Name = pv.Name.ValueString()
-	return proto
+	proto.Name = ptr(pv.Name.ValueString())
+	return proto, diags
 }
 
 type NestedObjectTester_SetObj struct {
@@ -2430,17 +2441,16 @@ func ConvertNestedObjectTester_SetObjToObjectValueFromProto(proto *configv1.Nest
 	return types.ObjectValueMust(
 		GetTypeAttrsForNestedObjectTester_SetObj(),
 		map[string]attr.Value{
-			"set_key": types.StringValue(proto.SetKey),
-			"set_val": types.StringValue(proto.SetVal),
+			"set_key": types.StringValue(proto.GetSetKey()),
+			"set_val": types.StringValue(proto.GetSetVal()),
 		},
 	)
 }
-func ConvertDataValueToNestedObjectTester_SetObjProto(diags *diag.Diagnostics, dataValue attr.Value) *configv1.NestedObjectTester_SetObj {
+func ConvertDataValueToNestedObjectTester_SetObjProto(dataValue attr.Value) (*configv1.NestedObjectTester_SetObj, diag.Diagnostics) {
 	pv := NestedObjectTester_SetObj{}
-	diagsCurrent := tfsdk.ValueAs(context.Background(), dataValue, &pv)
-	diags.Append(diagsCurrent...)
+	diags := tfsdk.ValueAs(context.Background(), dataValue, &pv)
 	proto := &configv1.NestedObjectTester_SetObj{}
-	proto.SetKey = pv.SetKey.ValueString()
-	proto.SetVal = pv.SetVal.ValueString()
-	return proto
+	proto.SetKey = ptr(pv.SetKey.ValueString())
+	proto.SetVal = ptr(pv.SetVal.ValueString())
+	return proto, diags
 }

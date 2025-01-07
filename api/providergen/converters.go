@@ -5,12 +5,16 @@ import "text/template"
 var (
 	// ProviderConvertersTemplate is the template of the Terraform provider implementation for the Illumio CloudSecure Config API.
 	ProviderConvertersTemplate = template.Must(template.New("providermodel").Parse(`
+func ptr[T any](v T) *T {
+    return &v
+}
 {{- define "convertersForModel"}}
 type {{.Name}} struct {
 	{{- range $field := .Fields}}
 	{{$field.Name}} types.{{$field.Type.ModelTypeName}} ` + "`" + `tfsdk:"{{$field.AttributeName}}"` + "`" + `
 	{{- end}}
 }
+
 func GetTypeAttrsFor{{.Name}}() map[string]attr.Type {
 	return map[string]attr.Type{
 		{{- range $field := .Fields}}
@@ -25,7 +29,6 @@ func GetTypeAttrsFor{{.Name}}() map[string]attr.Type {
 	}
 }
 
-
 func Convert{{.Name}}ToObjectValueFromProto(proto *configv1.{{.Name}}) basetypes.ObjectValue  {
 	return types.ObjectValueMust(
 		GetTypeAttrsFor{{.Name}}(),
@@ -34,25 +37,26 @@ func Convert{{.Name}}ToObjectValueFromProto(proto *configv1.{{.Name}}) basetypes
 			{{- if ne $field.Type.NestedModel nil}}
 			"{{$field.AttributeName}}": Convert{{$field.Type.NestedModel.Name}}ToObjectValueFromProto(proto.{{$field.Name}}),
 			{{- else}}
-			"{{$field.AttributeName}}": types.{{$field.Type.ModelTypeName}}Value(proto.{{$field.Name}}),
+			"{{$field.AttributeName}}": types.{{$field.Type.ModelTypeName}}Value(proto.Get{{$field.Name}}()),
 			{{- end}}
 			{{- end}}
 		},
 	)
 }
-func ConvertDataValueTo{{.Name}}Proto(diags *diag.Diagnostics, dataValue attr.Value) *configv1.{{.Name}} {
+func ConvertDataValueTo{{.Name}}Proto(dataValue attr.Value) (*configv1.{{.Name}}, diag.Diagnostics) {
 	pv := {{.Name}}{}
-	diagsCurrent := tfsdk.ValueAs(context.Background(), dataValue, &pv)
-	diags.Append(diagsCurrent...)
+	diags := tfsdk.ValueAs(context.Background(), dataValue, &pv)
 	proto := &configv1.{{.Name}}{}
 	{{- range $field := .Fields}}
 	{{- if ne $field.Type.NestedModel nil}}
-	proto.{{$field.Name}} = ConvertDataValueTo{{$field.Type.NestedModel.Name}}Proto(diags, pv.{{$field.Name}})
+	pvModel, dvDiags := ConvertDataValueTo{{$field.Type.NestedModel.Name}}Proto(pv.{{$field.Name}})
+	diags = append(diags, dvDiags...)
+	proto.{{$field.Name}} = pvModel
 	{{- else}}
-	proto.{{$field.Name}} = pv.{{$field.Name}}.Value{{$field.Type.ModelTypeName}}()
+	proto.{{$field.Name}} = ptr(pv.{{$field.Name}}.Value{{$field.Type.ModelTypeName}}()) 
 	{{- end}}
 	{{- end}}
-	return proto
+	return proto, diags
 }
 
 {{- range $fields := .Fields}}
