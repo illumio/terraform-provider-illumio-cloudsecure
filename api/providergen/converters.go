@@ -8,6 +8,7 @@ var (
 func ptr[T any](v T) *T {
     return &v
 }
+
 {{- define "convertersForModel"}}
 type {{.Name}} struct {
 	{{- range $field := .Fields}}
@@ -43,6 +44,7 @@ func Convert{{.Name}}ToObjectValueFromProto(proto *configv1.{{.Name}}) basetypes
 		},
 	)
 }
+
 func ConvertDataValueTo{{.Name}}Proto(dataValue attr.Value) (*configv1.{{.Name}}, diag.Diagnostics) {
 	pv := {{.Name}}{}
 	diags := tfsdk.ValueAs(context.Background(), dataValue, &pv)
@@ -75,9 +77,7 @@ func ConvertDataValueTo{{.Name}}Proto(dataValue attr.Value) (*configv1.{{.Name}}
 {{- end}}
 {{- end}}
 
-
 {{- end}}
-
 
 {{- range $model := .Models}}
 	{{- range $fields := $model.Fields}}

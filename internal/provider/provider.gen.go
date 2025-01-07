@@ -2288,6 +2288,7 @@ func ConvertNestedObjectTester_CloudTagsToObjectValueFromProto(proto *configv1.N
 		},
 	)
 }
+
 func ConvertDataValueToNestedObjectTester_CloudTagsProto(dataValue attr.Value) (*configv1.NestedObjectTester_CloudTags, diag.Diagnostics) {
 	pv := NestedObjectTester_CloudTags{}
 	diags := tfsdk.ValueAs(context.Background(), dataValue, &pv)
@@ -2324,6 +2325,7 @@ func ConvertNestedObjectTester_IconToObjectValueFromProto(proto *configv1.Nested
 		},
 	)
 }
+
 func ConvertDataValueToNestedObjectTester_IconProto(dataValue attr.Value) (*configv1.NestedObjectTester_Icon, diag.Diagnostics) {
 	pv := NestedObjectTester_Icon{}
 	diags := tfsdk.ValueAs(context.Background(), dataValue, &pv)
@@ -2360,6 +2362,7 @@ func ConvertNestedObjectTester_ObjInObjToObjectValueFromProto(proto *configv1.Ne
 		},
 	)
 }
+
 func ConvertDataValueToNestedObjectTester_ObjInObjProto(dataValue attr.Value) (*configv1.NestedObjectTester_ObjInObj, diag.Diagnostics) {
 	pv := NestedObjectTester_ObjInObj{}
 	diags := tfsdk.ValueAs(context.Background(), dataValue, &pv)
@@ -2399,6 +2402,7 @@ func ConvertNestedObjectTester_ObjInObj_ChildToObjectValueFromProto(proto *confi
 		},
 	)
 }
+
 func ConvertDataValueToNestedObjectTester_ObjInObj_ChildProto(dataValue attr.Value) (*configv1.NestedObjectTester_ObjInObj_Child, diag.Diagnostics) {
 	pv := NestedObjectTester_ObjInObj_Child{}
 	diags := tfsdk.ValueAs(context.Background(), dataValue, &pv)
@@ -2433,6 +2437,7 @@ func ConvertNestedObjectTester_ObjInObj_Child_GrandChildToObjectValueFromProto(p
 		},
 	)
 }
+
 func ConvertDataValueToNestedObjectTester_ObjInObj_Child_GrandChildProto(dataValue attr.Value) (*configv1.NestedObjectTester_ObjInObj_Child_GrandChild, diag.Diagnostics) {
 	pv := NestedObjectTester_ObjInObj_Child_GrandChild{}
 	diags := tfsdk.ValueAs(context.Background(), dataValue, &pv)
@@ -2465,6 +2470,7 @@ func ConvertNestedObjectTester_SetObjToObjectValueFromProto(proto *configv1.Nest
 		},
 	)
 }
+
 func ConvertDataValueToNestedObjectTester_SetObjProto(dataValue attr.Value) (*configv1.NestedObjectTester_SetObj, diag.Diagnostics) {
 	pv := NestedObjectTester_SetObj{}
 	diags := tfsdk.ValueAs(context.Background(), dataValue, &pv)
