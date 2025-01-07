@@ -46,17 +46,22 @@ func Convert{{.Name}}ToObjectValueFromProto(proto *configv1.{{.Name}}) basetypes
 func ConvertDataValueTo{{.Name}}Proto(dataValue attr.Value) (*configv1.{{.Name}}, diag.Diagnostics) {
 	pv := {{.Name}}{}
 	diags := tfsdk.ValueAs(context.Background(), dataValue, &pv)
+	if diags.HasError() {
+		return nil, diags
+	}
 	proto := &configv1.{{.Name}}{}
 	{{- range $field := .Fields}}
 	{{- if ne $field.Type.NestedModel nil}}
 	pvModel, dvDiags := ConvertDataValueTo{{$field.Type.NestedModel.Name}}Proto(pv.{{$field.Name}})
-	diags = append(diags, dvDiags...)
+	if dvDiags.HasError() {
+		return nil, diags
+	}
 	proto.{{$field.Name}} = pvModel
 	{{- else}}
 	proto.{{$field.Name}} = ptr(pv.{{$field.Name}}.Value{{$field.Type.ModelTypeName}}()) 
 	{{- end}}
 	{{- end}}
-	return proto, diags
+	return proto, nil
 }
 
 {{- range $fields := .Fields}}

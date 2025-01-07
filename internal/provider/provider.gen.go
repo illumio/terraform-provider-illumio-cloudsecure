@@ -2291,10 +2291,13 @@ func ConvertNestedObjectTester_CloudTagsToObjectValueFromProto(proto *configv1.N
 func ConvertDataValueToNestedObjectTester_CloudTagsProto(dataValue attr.Value) (*configv1.NestedObjectTester_CloudTags, diag.Diagnostics) {
 	pv := NestedObjectTester_CloudTags{}
 	diags := tfsdk.ValueAs(context.Background(), dataValue, &pv)
+	if diags.HasError() {
+		return nil, diags
+	}
 	proto := &configv1.NestedObjectTester_CloudTags{}
 	proto.Cloud = ptr(pv.Cloud.ValueString())
 	proto.Key = ptr(pv.Key.ValueString())
-	return proto, diags
+	return proto, nil
 }
 
 type NestedObjectTester_Icon struct {
@@ -2324,11 +2327,14 @@ func ConvertNestedObjectTester_IconToObjectValueFromProto(proto *configv1.Nested
 func ConvertDataValueToNestedObjectTester_IconProto(dataValue attr.Value) (*configv1.NestedObjectTester_Icon, diag.Diagnostics) {
 	pv := NestedObjectTester_Icon{}
 	diags := tfsdk.ValueAs(context.Background(), dataValue, &pv)
+	if diags.HasError() {
+		return nil, diags
+	}
 	proto := &configv1.NestedObjectTester_Icon{}
 	proto.BackgroundColor = ptr(pv.BackgroundColor.ValueString())
 	proto.ForegroundColor = ptr(pv.ForegroundColor.ValueString())
 	proto.Name = ptr(pv.Name.ValueString())
-	return proto, diags
+	return proto, nil
 }
 
 type NestedObjectTester_ObjInObj struct {
@@ -2357,12 +2363,17 @@ func ConvertNestedObjectTester_ObjInObjToObjectValueFromProto(proto *configv1.Ne
 func ConvertDataValueToNestedObjectTester_ObjInObjProto(dataValue attr.Value) (*configv1.NestedObjectTester_ObjInObj, diag.Diagnostics) {
 	pv := NestedObjectTester_ObjInObj{}
 	diags := tfsdk.ValueAs(context.Background(), dataValue, &pv)
+	if diags.HasError() {
+		return nil, diags
+	}
 	proto := &configv1.NestedObjectTester_ObjInObj{}
 	pvModel, dvDiags := ConvertDataValueToNestedObjectTester_ObjInObj_ChildProto(pv.Child)
-	diags = append(diags, dvDiags...)
+	if dvDiags.HasError() {
+		return nil, diags
+	}
 	proto.Child = pvModel
 	proto.Name = ptr(pv.Name.ValueString())
-	return proto, diags
+	return proto, nil
 }
 
 type NestedObjectTester_ObjInObj_Child struct {
@@ -2391,12 +2402,17 @@ func ConvertNestedObjectTester_ObjInObj_ChildToObjectValueFromProto(proto *confi
 func ConvertDataValueToNestedObjectTester_ObjInObj_ChildProto(dataValue attr.Value) (*configv1.NestedObjectTester_ObjInObj_Child, diag.Diagnostics) {
 	pv := NestedObjectTester_ObjInObj_Child{}
 	diags := tfsdk.ValueAs(context.Background(), dataValue, &pv)
+	if diags.HasError() {
+		return nil, diags
+	}
 	proto := &configv1.NestedObjectTester_ObjInObj_Child{}
 	pvModel, dvDiags := ConvertDataValueToNestedObjectTester_ObjInObj_Child_GrandChildProto(pv.GrandChild)
-	diags = append(diags, dvDiags...)
+	if dvDiags.HasError() {
+		return nil, diags
+	}
 	proto.GrandChild = pvModel
 	proto.Name = ptr(pv.Name.ValueString())
-	return proto, diags
+	return proto, nil
 }
 
 type NestedObjectTester_ObjInObj_Child_GrandChild struct {
@@ -2420,9 +2436,12 @@ func ConvertNestedObjectTester_ObjInObj_Child_GrandChildToObjectValueFromProto(p
 func ConvertDataValueToNestedObjectTester_ObjInObj_Child_GrandChildProto(dataValue attr.Value) (*configv1.NestedObjectTester_ObjInObj_Child_GrandChild, diag.Diagnostics) {
 	pv := NestedObjectTester_ObjInObj_Child_GrandChild{}
 	diags := tfsdk.ValueAs(context.Background(), dataValue, &pv)
+	if diags.HasError() {
+		return nil, diags
+	}
 	proto := &configv1.NestedObjectTester_ObjInObj_Child_GrandChild{}
 	proto.Name = ptr(pv.Name.ValueString())
-	return proto, diags
+	return proto, nil
 }
 
 type NestedObjectTester_SetObj struct {
@@ -2449,8 +2468,11 @@ func ConvertNestedObjectTester_SetObjToObjectValueFromProto(proto *configv1.Nest
 func ConvertDataValueToNestedObjectTester_SetObjProto(dataValue attr.Value) (*configv1.NestedObjectTester_SetObj, diag.Diagnostics) {
 	pv := NestedObjectTester_SetObj{}
 	diags := tfsdk.ValueAs(context.Background(), dataValue, &pv)
+	if diags.HasError() {
+		return nil, diags
+	}
 	proto := &configv1.NestedObjectTester_SetObj{}
 	proto.SetKey = ptr(pv.SetKey.ValueString())
 	proto.SetVal = ptr(pv.SetVal.ValueString())
-	return proto, diags
+	return proto, nil
 }
