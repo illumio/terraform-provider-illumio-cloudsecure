@@ -258,7 +258,7 @@ func GenerateGRPCAPISpec(dst io.Writer, src schema.Schema, tagger *apiSpecTagger
 }
 
 // terraformAttributeTypeToProtoType converts a Terraform attribute type into the corresponding Protocol Buffer type, and optionally additional Protocol Buffer messages that represent nested types.
-func terraformAttributeTypeToProtoType(resourceName, attrName string, attrType attr.Type, tagger *apiSpecTagger) (repeated bool, protoType string, nestedMessage *message, err error) {
+func terraformAttributeTypeToProtoType(messageNamePrefix, attrName string, attrType attr.Type, tagger *apiSpecTagger) (repeated bool, protoType string, nestedMessage *message, err error) {
 	switch v := attrType.(type) {
 	case basetypes.BoolType:
 		return false, "bool", nil, nil
@@ -269,11 +269,11 @@ func terraformAttributeTypeToProtoType(resourceName, attrName string, attrType a
 	case basetypes.StringType:
 		return false, "string", nil, nil
 	case types.ListType:
-		return terraformRepeatedAttributeTypeToProtoType(resourceName, attrName, v.ElementType(), tagger)
+		return terraformRepeatedAttributeTypeToProtoType(messageNamePrefix, attrName, v.ElementType(), tagger)
 	case types.SetType:
-		return terraformRepeatedAttributeTypeToProtoType(resourceName, attrName, v.ElementType(), tagger)
+		return terraformRepeatedAttributeTypeToProtoType(messageNamePrefix, attrName, v.ElementType(), tagger)
 	case types.ObjectType:
-		return terraformObjectAttributeTypeToProtoType(resourceName, attrName, v, tagger)
+		return terraformObjectAttributeTypeToProtoType(messageNamePrefix, attrName, v, tagger)
 
 	default:
 		return false, "", nil, fmt.Errorf("unsupported Terraform type: %s", attrType.String())
@@ -281,13 +281,13 @@ func terraformAttributeTypeToProtoType(resourceName, attrName string, attrType a
 }
 
 // terraformObjectAttributeTypeToProtoType converts a Terraform object attribute into a Protocol Buffer message type.
-func terraformObjectAttributeTypeToProtoType(resourceName, attrName string, obj types.ObjectType, tagger *apiSpecTagger) (repeated bool, protoType string, nestedMessage *message, err error) {
+func terraformObjectAttributeTypeToProtoType(messageNamePrefix, attrName string, obj types.ObjectType, tagger *apiSpecTagger) (repeated bool, protoType string, nestedMessage *message, err error) {
 	messageName := schema.ProtoMessageName(attrName)
 	newMessage := &message{
 		Name:   messageName,
 		Fields: []field{},
 	}
-	wrappedMessageName := resourceName + MessageNameSeperator + messageName
+	wrappedMessageName := messageNamePrefix + MessageNameSeperator + messageName
 
 	attrs := schema.SortObjectAttributes(obj.AttrTypes)
 
@@ -296,7 +296,7 @@ func terraformObjectAttributeTypeToProtoType(resourceName, attrName string, obj 
 		isRepeated, t, msg, err := terraformAttributeTypeToProtoType(wrappedMessageName, name, attrType, tagger)
 
 		if err != nil {
-			return false, "", nil, fmt.Errorf("failed to parse field %s in object %s: %w", name, attrName, err)
+			return false, "", nil, fmt.Errorf("failed to convert field %s in object %s: %w", name, attrName, err)
 		}
 
 		newMessage.Fields = append(newMessage.Fields, field{
@@ -316,8 +316,8 @@ func terraformObjectAttributeTypeToProtoType(resourceName, attrName string, obj 
 }
 
 // terraformRepeatedAttributeTypeToProtoType converts a Terraform repeated attribute type into the corresponding Protocol Buffer type, and optionally additional Protocol Buffer messages that represent nested types.
-func terraformRepeatedAttributeTypeToProtoType(resourceName, attrName string, elementType attr.Type, tagger *apiSpecTagger) (repeated bool, protoType string, nestedMessage *message, err error) {
-	elemRepeated, elemProtoType, elemMessage, err := terraformAttributeTypeToProtoType(resourceName, attrName, elementType, tagger)
+func terraformRepeatedAttributeTypeToProtoType(messageNamePrefix, attrName string, elementType attr.Type, tagger *apiSpecTagger) (repeated bool, protoType string, nestedMessage *message, err error) {
+	elemRepeated, elemProtoType, elemMessage, err := terraformAttributeTypeToProtoType(messageNamePrefix, attrName, elementType, tagger)
 
 	switch {
 	case err != nil:
