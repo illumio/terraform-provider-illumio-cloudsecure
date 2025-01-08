@@ -30,8 +30,8 @@ type FakeConfigServer struct {
 	AzureSubscriptionMutex              sync.RWMutex
 	K8SClusterOnboardingCredentialMap   map[string]*K8SClusterOnboardingCredential
 	K8SClusterOnboardingCredentialMutex sync.RWMutex
-	NestedObjectTesterMap               map[string]*NestedObjectTester
-	NestedObjectTesterMutex             sync.RWMutex
+	ObjectTesterMap                     map[string]*ObjectTester
+	ObjectTesterMutex                   sync.RWMutex
 }
 
 var _ configv1.ConfigServiceServer = &FakeConfigServer{}
@@ -45,7 +45,7 @@ func NewFakeConfigServer(logger *zap.Logger) configv1.ConfigServiceServer {
 		AzureFlowLogsStorageAccountMap:    make(map[string]*AzureFlowLogsStorageAccount),
 		AzureSubscriptionMap:              make(map[string]*AzureSubscription),
 		K8SClusterOnboardingCredentialMap: make(map[string]*K8SClusterOnboardingCredential),
-		NestedObjectTesterMap:             make(map[string]*NestedObjectTester),
+		ObjectTesterMap:                   make(map[string]*ObjectTester),
 	}
 }
 
@@ -91,15 +91,15 @@ type K8SClusterOnboardingCredential struct {
 	Name          string
 }
 
-type NestedObjectTester struct {
+type ObjectTester struct {
 	Id              string
-	CloudTags       []*configv1.NestedObjectTester_CloudTags
-	Icon            *configv1.NestedObjectTester_Icon
+	CloudTags       []*configv1.ObjectTester_CloudTags
+	Icon            *configv1.ObjectTester_Icon
 	Key             string
 	Name            string
-	ObjInObj        *configv1.NestedObjectTester_ObjInObj
-	SetObj          []*configv1.NestedObjectTester_SetObj
-	SetOfSetsString []*configv1.NestedObjectTester_SetOfSetsString
+	ObjInObj        *configv1.ObjectTester_ObjInObj
+	SetObj          []*configv1.ObjectTester_SetObj
+	SetOfSetsString []*configv1.ObjectTester_SetOfSetsString
 	SetOfStrings    []string
 }
 
@@ -743,9 +743,9 @@ func (s *FakeConfigServer) DeleteK8SClusterOnboardingCredential(ctx context.Cont
 	)
 	return &emptypb.Empty{}, nil
 }
-func (s *FakeConfigServer) CreateNestedObjectTester(ctx context.Context, req *configv1.CreateNestedObjectTesterRequest) (*configv1.CreateNestedObjectTesterResponse, error) {
+func (s *FakeConfigServer) CreateObjectTester(ctx context.Context, req *configv1.CreateObjectTesterRequest) (*configv1.CreateObjectTesterResponse, error) {
 	id := uuid.New().String()
-	model := &NestedObjectTester{
+	model := &ObjectTester{
 		Id:              id,
 		CloudTags:       req.CloudTags,
 		Icon:            req.Icon,
@@ -756,7 +756,7 @@ func (s *FakeConfigServer) CreateNestedObjectTester(ctx context.Context, req *co
 		SetOfSetsString: req.SetOfSetsString,
 		SetOfStrings:    req.SetOfStrings,
 	}
-	resp := &configv1.CreateNestedObjectTesterResponse{
+	resp := &configv1.CreateObjectTesterResponse{
 		Id:              id,
 		CloudTags:       model.CloudTags,
 		Icon:            model.Icon,
@@ -767,31 +767,31 @@ func (s *FakeConfigServer) CreateNestedObjectTester(ctx context.Context, req *co
 		SetOfSetsString: model.SetOfSetsString,
 		SetOfStrings:    model.SetOfStrings,
 	}
-	s.NestedObjectTesterMutex.Lock()
-	s.NestedObjectTesterMap[id] = model
-	s.NestedObjectTesterMutex.Unlock()
+	s.ObjectTesterMutex.Lock()
+	s.ObjectTesterMap[id] = model
+	s.ObjectTesterMutex.Unlock()
 	s.Logger.Info("created resource",
-		zap.String("type", "nested_object_tester"),
-		zap.String("method", "CreateNestedObjectTester"),
+		zap.String("type", "object_tester"),
+		zap.String("method", "CreateObjectTester"),
 		zap.String("id", id),
 	)
 	return resp, nil
 }
 
-func (s *FakeConfigServer) ReadNestedObjectTester(ctx context.Context, req *configv1.ReadNestedObjectTesterRequest) (*configv1.ReadNestedObjectTesterResponse, error) {
+func (s *FakeConfigServer) ReadObjectTester(ctx context.Context, req *configv1.ReadObjectTesterRequest) (*configv1.ReadObjectTesterResponse, error) {
 	id := req.Id
-	s.NestedObjectTesterMutex.RLock()
-	model, found := s.NestedObjectTesterMap[id]
+	s.ObjectTesterMutex.RLock()
+	model, found := s.ObjectTesterMap[id]
 	if !found {
-		s.NestedObjectTesterMutex.RUnlock()
+		s.ObjectTesterMutex.RUnlock()
 		s.Logger.Error("attempted to read resource with unknown id",
-			zap.String("type", "nested_object_tester"),
-			zap.String("method", "ReadNestedObjectTester"),
+			zap.String("type", "object_tester"),
+			zap.String("method", "ReadObjectTester"),
 			zap.String("id", id),
 		)
-		return nil, status.Errorf(codes.NotFound, "no nested_object_tester found with id %s", id)
+		return nil, status.Errorf(codes.NotFound, "no object_tester found with id %s", id)
 	}
-	resp := &configv1.ReadNestedObjectTesterResponse{
+	resp := &configv1.ReadObjectTesterResponse{
 		Id:              id,
 		CloudTags:       model.CloudTags,
 		Icon:            model.Icon,
@@ -802,27 +802,27 @@ func (s *FakeConfigServer) ReadNestedObjectTester(ctx context.Context, req *conf
 		SetOfSetsString: model.SetOfSetsString,
 		SetOfStrings:    model.SetOfStrings,
 	}
-	s.NestedObjectTesterMutex.RUnlock()
+	s.ObjectTesterMutex.RUnlock()
 	s.Logger.Info("read resource",
-		zap.String("type", "nested_object_tester"),
-		zap.String("method", "ReadNestedObjectTester"),
+		zap.String("type", "object_tester"),
+		zap.String("method", "ReadObjectTester"),
 		zap.String("id", id),
 	)
 	return resp, nil
 }
 
-func (s *FakeConfigServer) UpdateNestedObjectTester(ctx context.Context, req *configv1.UpdateNestedObjectTesterRequest) (*configv1.UpdateNestedObjectTesterResponse, error) {
+func (s *FakeConfigServer) UpdateObjectTester(ctx context.Context, req *configv1.UpdateObjectTesterRequest) (*configv1.UpdateObjectTesterResponse, error) {
 	id := req.Id
-	s.NestedObjectTesterMutex.Lock()
-	model, found := s.NestedObjectTesterMap[id]
+	s.ObjectTesterMutex.Lock()
+	model, found := s.ObjectTesterMap[id]
 	if !found {
-		s.NestedObjectTesterMutex.Unlock()
+		s.ObjectTesterMutex.Unlock()
 		s.Logger.Error("attempted to update resource with unknown id",
-			zap.String("type", "nested_object_tester"),
-			zap.String("method", "UpdateNestedObjectTester"),
+			zap.String("type", "object_tester"),
+			zap.String("method", "UpdateObjectTester"),
 			zap.String("id", id),
 		)
-		return nil, status.Errorf(codes.NotFound, "no nested_object_tester found with id %s", id)
+		return nil, status.Errorf(codes.NotFound, "no object_tester found with id %s", id)
 	}
 	updateMask := req.UpdateMask
 	var updateMaskPaths []string
@@ -850,8 +850,8 @@ func (s *FakeConfigServer) UpdateNestedObjectTester(ctx context.Context, req *co
 		default:
 			s.AwsAccountMutex.Unlock()
 			s.Logger.Error("attempted to update resource using invalid update_mask path",
-				zap.String("type", "nested_object_tester"),
-				zap.String("method", "UpdateNestedObjectTester"),
+				zap.String("type", "object_tester"),
+				zap.String("method", "UpdateObjectTester"),
 				zap.String("id", id),
 				zap.Strings("updateMaskPaths", updateMaskPaths),
 				zap.String("invalidUpdateMaskPath", path),
@@ -859,7 +859,7 @@ func (s *FakeConfigServer) UpdateNestedObjectTester(ctx context.Context, req *co
 			return nil, status.Errorf(codes.InvalidArgument, "invalid path in update_mask for aws_account: %s", path)
 		}
 	}
-	resp := &configv1.UpdateNestedObjectTesterResponse{
+	resp := &configv1.UpdateObjectTesterResponse{
 		Id:              id,
 		CloudTags:       model.CloudTags,
 		Icon:            model.Icon,
@@ -870,34 +870,34 @@ func (s *FakeConfigServer) UpdateNestedObjectTester(ctx context.Context, req *co
 		SetOfSetsString: model.SetOfSetsString,
 		SetOfStrings:    model.SetOfStrings,
 	}
-	s.NestedObjectTesterMutex.Unlock()
+	s.ObjectTesterMutex.Unlock()
 	s.Logger.Info("updated resource",
-		zap.String("type", "nested_object_tester"),
-		zap.String("method", "UpdateNestedObjectTester"),
+		zap.String("type", "object_tester"),
+		zap.String("method", "UpdateObjectTester"),
 		zap.String("id", id),
 		zap.Strings("updateMaskPaths", updateMaskPaths),
 	)
 	return resp, nil
 }
 
-func (s *FakeConfigServer) DeleteNestedObjectTester(ctx context.Context, req *configv1.DeleteNestedObjectTesterRequest) (*emptypb.Empty, error) {
+func (s *FakeConfigServer) DeleteObjectTester(ctx context.Context, req *configv1.DeleteObjectTesterRequest) (*emptypb.Empty, error) {
 	id := req.Id
-	s.NestedObjectTesterMutex.Lock()
-	_, found := s.NestedObjectTesterMap[id]
+	s.ObjectTesterMutex.Lock()
+	_, found := s.ObjectTesterMap[id]
 	if !found {
-		s.NestedObjectTesterMutex.Unlock()
+		s.ObjectTesterMutex.Unlock()
 		s.Logger.Error("attempted to delete resource with unknown id",
-			zap.String("type", "nested_object_tester"),
-			zap.String("method", "DeleteNestedObjectTester"),
+			zap.String("type", "object_tester"),
+			zap.String("method", "DeleteObjectTester"),
 			zap.String("id", id),
 		)
-		return nil, status.Errorf(codes.NotFound, "no nested_object_tester found with id %s", id)
+		return nil, status.Errorf(codes.NotFound, "no object_tester found with id %s", id)
 	}
-	delete(s.NestedObjectTesterMap, id)
-	s.NestedObjectTesterMutex.Unlock()
+	delete(s.ObjectTesterMap, id)
+	s.ObjectTesterMutex.Unlock()
 	s.Logger.Info("deleted resource",
-		zap.String("type", "nested_object_tester"),
-		zap.String("method", "DeleteNestedObjectTester"),
+		zap.String("type", "object_tester"),
+		zap.String("method", "DeleteObjectTester"),
 		zap.String("id", id),
 	)
 	return &emptypb.Empty{}, nil

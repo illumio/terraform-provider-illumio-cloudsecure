@@ -22,7 +22,7 @@ func (c *cloudSecureSchema) Resources() Resources {
 		azureFlowLogsStorageAccount,
 		azureSubscriptionResource,
 		k8sClusterOnboardingCredential,
-		awsTagToLabelResource,
+		objectTestResource,
 	}
 	sort.Sort(resources)
 

@@ -304,7 +304,7 @@ func terraformObjectAttributeTypeToProtoType(resourceName, attrName string, obj 
 			Type:     t,
 			Name:     name,
 			Tag:      tagger.AssignTag("resource/"+wrappedMessageName, name),
-			Optional: true,
+			Optional: false,
 		})
 
 		if msg != nil {

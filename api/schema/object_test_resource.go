@@ -60,8 +60,8 @@ var objInObjAttribute = resource_schema.ObjectAttribute{
 }
 
 var (
-	awsTagToLabelResource = Resource{
-		TypeName: "nested_object_tester",
+	objectTestResource = Resource{
+		TypeName: "object_tester",
 		Schema: resource_schema.Schema{
 			Version:     1,
 			Description: "Maps AWS account tags to CloudSecure labels.",

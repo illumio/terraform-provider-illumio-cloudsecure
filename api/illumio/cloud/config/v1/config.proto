@@ -26,10 +26,10 @@ service ConfigService {
   rpc ReadK8SClusterOnboardingCredential(ReadK8SClusterOnboardingCredentialRequest) returns (ReadK8SClusterOnboardingCredentialResponse);
   rpc UpdateK8SClusterOnboardingCredential(UpdateK8SClusterOnboardingCredentialRequest) returns (UpdateK8SClusterOnboardingCredentialResponse);
   rpc DeleteK8SClusterOnboardingCredential(DeleteK8SClusterOnboardingCredentialRequest) returns (google.protobuf.Empty);
-  rpc CreateNestedObjectTester(CreateNestedObjectTesterRequest) returns (CreateNestedObjectTesterResponse);
-  rpc ReadNestedObjectTester(ReadNestedObjectTesterRequest) returns (ReadNestedObjectTesterResponse);
-  rpc UpdateNestedObjectTester(UpdateNestedObjectTesterRequest) returns (UpdateNestedObjectTesterResponse);
-  rpc DeleteNestedObjectTester(DeleteNestedObjectTesterRequest) returns (google.protobuf.Empty);
+  rpc CreateObjectTester(CreateObjectTesterRequest) returns (CreateObjectTesterResponse);
+  rpc ReadObjectTester(ReadObjectTesterRequest) returns (ReadObjectTesterResponse);
+  rpc UpdateObjectTester(UpdateObjectTesterRequest) returns (UpdateObjectTesterResponse);
+  rpc DeleteObjectTester(DeleteObjectTesterRequest) returns (google.protobuf.Empty);
 }
 message CreateAwsAccountRequest {
   string account_id = 2;
@@ -217,94 +217,94 @@ message UpdateK8SClusterOnboardingCredentialResponse {
 message DeleteK8SClusterOnboardingCredentialRequest {
   string id = 1;
 }
-message NestedObjectTester_CloudTags {
-  optional string cloud = 1;
-  optional string key = 2;
+message ObjectTester_CloudTags {
+  string cloud = 1;
+  string key = 2;
 }
-message NestedObjectTester_Icon {
-  optional string background_color = 1;
-  optional string foreground_color = 2;
-  optional string name = 3;
+message ObjectTester_Icon {
+  string background_color = 1;
+  string foreground_color = 2;
+  string name = 3;
 }
-message NestedObjectTester_ObjInObj {
+message ObjectTester_ObjInObj {
   message Child {
     message GrandChild {
-      optional string name = 1;
+      string name = 1;
     }
-    optional GrandChild grand_child = 1;
-    optional string name = 2;
+    GrandChild grand_child = 1;
+    string name = 2;
   }
-  optional Child child = 1;
-  optional string name = 2;
+  Child child = 1;
+  string name = 2;
 }
-message NestedObjectTester_SetObj {
-  optional string set_key = 1;
-  optional string set_val = 2;
+message ObjectTester_SetObj {
+  string set_key = 1;
+  string set_val = 2;
 }
-message NestedObjectTester_SetOfSetsString {
+message ObjectTester_SetOfSetsString {
   message SetOfSetsString {
     repeated string set_of_sets_string = 1;
   }
   repeated SetOfSetsString set_of_sets_string = 1;
 }
-message CreateNestedObjectTesterRequest {
-  repeated NestedObjectTester_CloudTags cloud_tags = 2;
-  NestedObjectTester_Icon icon = 3;
+message CreateObjectTesterRequest {
+  repeated ObjectTester_CloudTags cloud_tags = 2;
+  ObjectTester_Icon icon = 3;
   string key = 4;
   string name = 5;
-  NestedObjectTester_ObjInObj obj_in_obj = 6;
-  repeated NestedObjectTester_SetObj set_obj = 7;
-  repeated NestedObjectTester_SetOfSetsString set_of_sets_string = 8;
+  ObjectTester_ObjInObj obj_in_obj = 6;
+  repeated ObjectTester_SetObj set_obj = 7;
+  repeated ObjectTester_SetOfSetsString set_of_sets_string = 8;
   repeated string set_of_strings = 9;
 }
-message CreateNestedObjectTesterResponse {
+message CreateObjectTesterResponse {
   string id = 1;
-  repeated NestedObjectTester_CloudTags cloud_tags = 2;
-  NestedObjectTester_Icon icon = 3;
+  repeated ObjectTester_CloudTags cloud_tags = 2;
+  ObjectTester_Icon icon = 3;
   string key = 4;
   string name = 5;
-  NestedObjectTester_ObjInObj obj_in_obj = 6;
-  repeated NestedObjectTester_SetObj set_obj = 7;
-  repeated NestedObjectTester_SetOfSetsString set_of_sets_string = 8;
+  ObjectTester_ObjInObj obj_in_obj = 6;
+  repeated ObjectTester_SetObj set_obj = 7;
+  repeated ObjectTester_SetOfSetsString set_of_sets_string = 8;
   repeated string set_of_strings = 9;
 }
-message ReadNestedObjectTesterRequest {
+message ReadObjectTesterRequest {
   string id = 1;
 }
-message ReadNestedObjectTesterResponse {
+message ReadObjectTesterResponse {
   string id = 1;
-  repeated NestedObjectTester_CloudTags cloud_tags = 2;
-  NestedObjectTester_Icon icon = 3;
+  repeated ObjectTester_CloudTags cloud_tags = 2;
+  ObjectTester_Icon icon = 3;
   string key = 4;
   string name = 5;
-  NestedObjectTester_ObjInObj obj_in_obj = 6;
-  repeated NestedObjectTester_SetObj set_obj = 7;
-  repeated NestedObjectTester_SetOfSetsString set_of_sets_string = 8;
+  ObjectTester_ObjInObj obj_in_obj = 6;
+  repeated ObjectTester_SetObj set_obj = 7;
+  repeated ObjectTester_SetOfSetsString set_of_sets_string = 8;
   repeated string set_of_strings = 9;
 }
-message UpdateNestedObjectTesterRequest {
+message UpdateObjectTesterRequest {
   string id = 1;
-  repeated NestedObjectTester_CloudTags cloud_tags = 2;
-  NestedObjectTester_Icon icon = 3;
+  repeated ObjectTester_CloudTags cloud_tags = 2;
+  ObjectTester_Icon icon = 3;
   string key = 4;
   string name = 5;
-  NestedObjectTester_ObjInObj obj_in_obj = 6;
-  repeated NestedObjectTester_SetObj set_obj = 7;
-  repeated NestedObjectTester_SetOfSetsString set_of_sets_string = 8;
+  ObjectTester_ObjInObj obj_in_obj = 6;
+  repeated ObjectTester_SetObj set_obj = 7;
+  repeated ObjectTester_SetOfSetsString set_of_sets_string = 8;
   repeated string set_of_strings = 9;
   google.protobuf.FieldMask update_mask = 10;
 }
-message UpdateNestedObjectTesterResponse {
+message UpdateObjectTesterResponse {
   string id = 1;
-  repeated NestedObjectTester_CloudTags cloud_tags = 2;
-  NestedObjectTester_Icon icon = 3;
+  repeated ObjectTester_CloudTags cloud_tags = 2;
+  ObjectTester_Icon icon = 3;
   string key = 4;
   string name = 5;
-  NestedObjectTester_ObjInObj obj_in_obj = 6;
-  repeated NestedObjectTester_SetObj set_obj = 7;
-  repeated NestedObjectTester_SetOfSetsString set_of_sets_string = 8;
+  ObjectTester_ObjInObj obj_in_obj = 6;
+  repeated ObjectTester_SetObj set_obj = 7;
+  repeated ObjectTester_SetOfSetsString set_of_sets_string = 8;
   repeated string set_of_strings = 9;
 }
-message DeleteNestedObjectTesterRequest {
+message DeleteObjectTesterRequest {
   string id = 1;
 }

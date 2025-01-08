@@ -5,10 +5,6 @@ import "text/template"
 var (
 	// ProviderConvertersTemplate is the template of the Terraform provider implementation for the Illumio CloudSecure Config API.
 	ProviderConvertersTemplate = template.Must(template.New("providermodel").Parse(`
-func ptr[T any](v T) *T {
-    return &v
-}
-
 {{- define "convertersForModel"}}
 type {{.Name}} struct {
 	{{- range $field := .Fields}}
@@ -38,7 +34,7 @@ func Convert{{.Name}}ToObjectValueFromProto(proto *configv1.{{.Name}}) basetypes
 			{{- if ne $field.Type.NestedModel nil}}
 			"{{$field.AttributeName}}": Convert{{$field.Type.NestedModel.Name}}ToObjectValueFromProto(proto.{{$field.Name}}),
 			{{- else}}
-			"{{$field.AttributeName}}": types.{{$field.Type.ModelTypeName}}Value(proto.Get{{$field.Name}}()),
+			"{{$field.AttributeName}}": types.{{$field.Type.ModelTypeName}}Value(proto.{{$field.Name}}),
 			{{- end}}
 			{{- end}}
 		},
@@ -60,7 +56,7 @@ func ConvertDataValueTo{{.Name}}Proto(dataValue attr.Value) (*configv1.{{.Name}}
 	}
 	proto.{{$field.Name}} = pvModel
 	{{- else}}
-	proto.{{$field.Name}} = ptr(pv.{{$field.Name}}.Value{{$field.Type.ModelTypeName}}()) 
+	proto.{{$field.Name}} = pv.{{$field.Name}}.Value{{$field.Type.ModelTypeName}}()
 	{{- end}}
 	{{- end}}
 	return proto, nil
