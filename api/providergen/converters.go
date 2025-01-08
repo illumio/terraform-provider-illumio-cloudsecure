@@ -41,9 +41,9 @@ func Convert{{.Name}}ToObjectValueFromProto(proto *configv1.{{.Name}}) basetypes
 	)
 }
 
-func ConvertDataValueTo{{.Name}}Proto(dataValue attr.Value) (context.Context, *configv1.{{.Name}}, diag.Diagnostics) {
+func ConvertDataValueTo{{.Name}}Proto(ctx context.Context, dataValue attr.Value) (*configv1.{{.Name}}, diag.Diagnostics) {
 	pv := {{.Name}}{}
-	diags := tfsdk.ValueAs(context.Background(), dataValue, &pv)
+	diags := tfsdk.ValueAs(ctx, dataValue, &pv)
 	if diags.HasError() {
 		return nil, diags
 	}
