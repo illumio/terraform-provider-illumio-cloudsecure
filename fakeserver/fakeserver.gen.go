@@ -30,8 +30,6 @@ type FakeConfigServer struct {
 	AzureSubscriptionMutex              sync.RWMutex
 	K8SClusterOnboardingCredentialMap   map[string]*K8SClusterOnboardingCredential
 	K8SClusterOnboardingCredentialMutex sync.RWMutex
-	ObjectTesterMap                     map[string]*ObjectTester
-	ObjectTesterMutex                   sync.RWMutex
 }
 
 var _ configv1.ConfigServiceServer = &FakeConfigServer{}
@@ -45,7 +43,6 @@ func NewFakeConfigServer(logger *zap.Logger) configv1.ConfigServiceServer {
 		AzureFlowLogsStorageAccountMap:    make(map[string]*AzureFlowLogsStorageAccount),
 		AzureSubscriptionMap:              make(map[string]*AzureSubscription),
 		K8SClusterOnboardingCredentialMap: make(map[string]*K8SClusterOnboardingCredential),
-		ObjectTesterMap:                   make(map[string]*ObjectTester),
 	}
 }
 
@@ -89,18 +86,6 @@ type K8SClusterOnboardingCredential struct {
 	Description   *string
 	IllumioRegion string
 	Name          string
-}
-
-type ObjectTester struct {
-	Id              string
-	CloudTags       []*configv1.ObjectTester_CloudTags
-	Icon            *configv1.ObjectTester_Icon
-	Key             string
-	Name            string
-	ObjInObj        *configv1.ObjectTester_ObjInObj
-	SetObj          []*configv1.ObjectTester_SetObj
-	SetOfSetsString []*configv1.ObjectTester_SetOfSetsString
-	SetOfStrings    []string
 }
 
 func (s *FakeConfigServer) CreateAwsAccount(ctx context.Context, req *configv1.CreateAwsAccountRequest) (*configv1.CreateAwsAccountResponse, error) {
@@ -739,165 +724,6 @@ func (s *FakeConfigServer) DeleteK8SClusterOnboardingCredential(ctx context.Cont
 	s.Logger.Info("deleted resource",
 		zap.String("type", "k8s_cluster_onboarding_credential"),
 		zap.String("method", "DeleteK8SClusterOnboardingCredential"),
-		zap.String("id", id),
-	)
-	return &emptypb.Empty{}, nil
-}
-func (s *FakeConfigServer) CreateObjectTester(ctx context.Context, req *configv1.CreateObjectTesterRequest) (*configv1.CreateObjectTesterResponse, error) {
-	id := uuid.New().String()
-	model := &ObjectTester{
-		Id:              id,
-		CloudTags:       req.CloudTags,
-		Icon:            req.Icon,
-		Key:             req.Key,
-		Name:            req.Name,
-		ObjInObj:        req.ObjInObj,
-		SetObj:          req.SetObj,
-		SetOfSetsString: req.SetOfSetsString,
-		SetOfStrings:    req.SetOfStrings,
-	}
-	resp := &configv1.CreateObjectTesterResponse{
-		Id:              id,
-		CloudTags:       model.CloudTags,
-		Icon:            model.Icon,
-		Key:             model.Key,
-		Name:            model.Name,
-		ObjInObj:        model.ObjInObj,
-		SetObj:          model.SetObj,
-		SetOfSetsString: model.SetOfSetsString,
-		SetOfStrings:    model.SetOfStrings,
-	}
-	s.ObjectTesterMutex.Lock()
-	s.ObjectTesterMap[id] = model
-	s.ObjectTesterMutex.Unlock()
-	s.Logger.Info("created resource",
-		zap.String("type", "object_tester"),
-		zap.String("method", "CreateObjectTester"),
-		zap.String("id", id),
-	)
-	return resp, nil
-}
-
-func (s *FakeConfigServer) ReadObjectTester(ctx context.Context, req *configv1.ReadObjectTesterRequest) (*configv1.ReadObjectTesterResponse, error) {
-	id := req.Id
-	s.ObjectTesterMutex.RLock()
-	model, found := s.ObjectTesterMap[id]
-	if !found {
-		s.ObjectTesterMutex.RUnlock()
-		s.Logger.Error("attempted to read resource with unknown id",
-			zap.String("type", "object_tester"),
-			zap.String("method", "ReadObjectTester"),
-			zap.String("id", id),
-		)
-		return nil, status.Errorf(codes.NotFound, "no object_tester found with id %s", id)
-	}
-	resp := &configv1.ReadObjectTesterResponse{
-		Id:              id,
-		CloudTags:       model.CloudTags,
-		Icon:            model.Icon,
-		Key:             model.Key,
-		Name:            model.Name,
-		ObjInObj:        model.ObjInObj,
-		SetObj:          model.SetObj,
-		SetOfSetsString: model.SetOfSetsString,
-		SetOfStrings:    model.SetOfStrings,
-	}
-	s.ObjectTesterMutex.RUnlock()
-	s.Logger.Info("read resource",
-		zap.String("type", "object_tester"),
-		zap.String("method", "ReadObjectTester"),
-		zap.String("id", id),
-	)
-	return resp, nil
-}
-
-func (s *FakeConfigServer) UpdateObjectTester(ctx context.Context, req *configv1.UpdateObjectTesterRequest) (*configv1.UpdateObjectTesterResponse, error) {
-	id := req.Id
-	s.ObjectTesterMutex.Lock()
-	model, found := s.ObjectTesterMap[id]
-	if !found {
-		s.ObjectTesterMutex.Unlock()
-		s.Logger.Error("attempted to update resource with unknown id",
-			zap.String("type", "object_tester"),
-			zap.String("method", "UpdateObjectTester"),
-			zap.String("id", id),
-		)
-		return nil, status.Errorf(codes.NotFound, "no object_tester found with id %s", id)
-	}
-	updateMask := req.UpdateMask
-	var updateMaskPaths []string
-	if updateMask != nil {
-		updateMaskPaths = updateMask.Paths
-	}
-	for _, path := range updateMaskPaths {
-		switch path {
-		case "cloud_tags":
-			model.CloudTags = req.CloudTags
-		case "icon":
-			model.Icon = req.Icon
-		case "key":
-			model.Key = req.Key
-		case "name":
-			model.Name = req.Name
-		case "obj_in_obj":
-			model.ObjInObj = req.ObjInObj
-		case "set_obj":
-			model.SetObj = req.SetObj
-		case "set_of_sets_string":
-			model.SetOfSetsString = req.SetOfSetsString
-		case "set_of_strings":
-			model.SetOfStrings = req.SetOfStrings
-		default:
-			s.AwsAccountMutex.Unlock()
-			s.Logger.Error("attempted to update resource using invalid update_mask path",
-				zap.String("type", "object_tester"),
-				zap.String("method", "UpdateObjectTester"),
-				zap.String("id", id),
-				zap.Strings("updateMaskPaths", updateMaskPaths),
-				zap.String("invalidUpdateMaskPath", path),
-			)
-			return nil, status.Errorf(codes.InvalidArgument, "invalid path in update_mask for aws_account: %s", path)
-		}
-	}
-	resp := &configv1.UpdateObjectTesterResponse{
-		Id:              id,
-		CloudTags:       model.CloudTags,
-		Icon:            model.Icon,
-		Key:             model.Key,
-		Name:            model.Name,
-		ObjInObj:        model.ObjInObj,
-		SetObj:          model.SetObj,
-		SetOfSetsString: model.SetOfSetsString,
-		SetOfStrings:    model.SetOfStrings,
-	}
-	s.ObjectTesterMutex.Unlock()
-	s.Logger.Info("updated resource",
-		zap.String("type", "object_tester"),
-		zap.String("method", "UpdateObjectTester"),
-		zap.String("id", id),
-		zap.Strings("updateMaskPaths", updateMaskPaths),
-	)
-	return resp, nil
-}
-
-func (s *FakeConfigServer) DeleteObjectTester(ctx context.Context, req *configv1.DeleteObjectTesterRequest) (*emptypb.Empty, error) {
-	id := req.Id
-	s.ObjectTesterMutex.Lock()
-	_, found := s.ObjectTesterMap[id]
-	if !found {
-		s.ObjectTesterMutex.Unlock()
-		s.Logger.Error("attempted to delete resource with unknown id",
-			zap.String("type", "object_tester"),
-			zap.String("method", "DeleteObjectTester"),
-			zap.String("id", id),
-		)
-		return nil, status.Errorf(codes.NotFound, "no object_tester found with id %s", id)
-	}
-	delete(s.ObjectTesterMap, id)
-	s.ObjectTesterMutex.Unlock()
-	s.Logger.Info("deleted resource",
-		zap.String("type", "object_tester"),
-		zap.String("method", "DeleteObjectTester"),
 		zap.String("id", id),
 	)
 	return &emptypb.Empty{}, nil

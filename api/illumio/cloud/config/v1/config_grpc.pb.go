@@ -43,10 +43,6 @@ const (
 	ConfigService_ReadK8SClusterOnboardingCredential_FullMethodName   = "/illumio.cloud.config.v1.ConfigService/ReadK8SClusterOnboardingCredential"
 	ConfigService_UpdateK8SClusterOnboardingCredential_FullMethodName = "/illumio.cloud.config.v1.ConfigService/UpdateK8SClusterOnboardingCredential"
 	ConfigService_DeleteK8SClusterOnboardingCredential_FullMethodName = "/illumio.cloud.config.v1.ConfigService/DeleteK8SClusterOnboardingCredential"
-	ConfigService_CreateObjectTester_FullMethodName                   = "/illumio.cloud.config.v1.ConfigService/CreateObjectTester"
-	ConfigService_ReadObjectTester_FullMethodName                     = "/illumio.cloud.config.v1.ConfigService/ReadObjectTester"
-	ConfigService_UpdateObjectTester_FullMethodName                   = "/illumio.cloud.config.v1.ConfigService/UpdateObjectTester"
-	ConfigService_DeleteObjectTester_FullMethodName                   = "/illumio.cloud.config.v1.ConfigService/DeleteObjectTester"
 )
 
 // ConfigServiceClient is the client API for ConfigService service.
@@ -73,10 +69,6 @@ type ConfigServiceClient interface {
 	ReadK8SClusterOnboardingCredential(ctx context.Context, in *ReadK8SClusterOnboardingCredentialRequest, opts ...grpc.CallOption) (*ReadK8SClusterOnboardingCredentialResponse, error)
 	UpdateK8SClusterOnboardingCredential(ctx context.Context, in *UpdateK8SClusterOnboardingCredentialRequest, opts ...grpc.CallOption) (*UpdateK8SClusterOnboardingCredentialResponse, error)
 	DeleteK8SClusterOnboardingCredential(ctx context.Context, in *DeleteK8SClusterOnboardingCredentialRequest, opts ...grpc.CallOption) (*emptypb.Empty, error)
-	CreateObjectTester(ctx context.Context, in *CreateObjectTesterRequest, opts ...grpc.CallOption) (*CreateObjectTesterResponse, error)
-	ReadObjectTester(ctx context.Context, in *ReadObjectTesterRequest, opts ...grpc.CallOption) (*ReadObjectTesterResponse, error)
-	UpdateObjectTester(ctx context.Context, in *UpdateObjectTesterRequest, opts ...grpc.CallOption) (*UpdateObjectTesterResponse, error)
-	DeleteObjectTester(ctx context.Context, in *DeleteObjectTesterRequest, opts ...grpc.CallOption) (*emptypb.Empty, error)
 }
 
 type configServiceClient struct {
@@ -287,46 +279,6 @@ func (c *configServiceClient) DeleteK8SClusterOnboardingCredential(ctx context.C
 	return out, nil
 }
 
-func (c *configServiceClient) CreateObjectTester(ctx context.Context, in *CreateObjectTesterRequest, opts ...grpc.CallOption) (*CreateObjectTesterResponse, error) {
-	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
-	out := new(CreateObjectTesterResponse)
-	err := c.cc.Invoke(ctx, ConfigService_CreateObjectTester_FullMethodName, in, out, cOpts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
-}
-
-func (c *configServiceClient) ReadObjectTester(ctx context.Context, in *ReadObjectTesterRequest, opts ...grpc.CallOption) (*ReadObjectTesterResponse, error) {
-	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
-	out := new(ReadObjectTesterResponse)
-	err := c.cc.Invoke(ctx, ConfigService_ReadObjectTester_FullMethodName, in, out, cOpts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
-}
-
-func (c *configServiceClient) UpdateObjectTester(ctx context.Context, in *UpdateObjectTesterRequest, opts ...grpc.CallOption) (*UpdateObjectTesterResponse, error) {
-	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
-	out := new(UpdateObjectTesterResponse)
-	err := c.cc.Invoke(ctx, ConfigService_UpdateObjectTester_FullMethodName, in, out, cOpts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
-}
-
-func (c *configServiceClient) DeleteObjectTester(ctx context.Context, in *DeleteObjectTesterRequest, opts ...grpc.CallOption) (*emptypb.Empty, error) {
-	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
-	out := new(emptypb.Empty)
-	err := c.cc.Invoke(ctx, ConfigService_DeleteObjectTester_FullMethodName, in, out, cOpts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
-}
-
 // ConfigServiceServer is the server API for ConfigService service.
 // All implementations must embed UnimplementedConfigServiceServer
 // for forward compatibility.
@@ -351,10 +303,6 @@ type ConfigServiceServer interface {
 	ReadK8SClusterOnboardingCredential(context.Context, *ReadK8SClusterOnboardingCredentialRequest) (*ReadK8SClusterOnboardingCredentialResponse, error)
 	UpdateK8SClusterOnboardingCredential(context.Context, *UpdateK8SClusterOnboardingCredentialRequest) (*UpdateK8SClusterOnboardingCredentialResponse, error)
 	DeleteK8SClusterOnboardingCredential(context.Context, *DeleteK8SClusterOnboardingCredentialRequest) (*emptypb.Empty, error)
-	CreateObjectTester(context.Context, *CreateObjectTesterRequest) (*CreateObjectTesterResponse, error)
-	ReadObjectTester(context.Context, *ReadObjectTesterRequest) (*ReadObjectTesterResponse, error)
-	UpdateObjectTester(context.Context, *UpdateObjectTesterRequest) (*UpdateObjectTesterResponse, error)
-	DeleteObjectTester(context.Context, *DeleteObjectTesterRequest) (*emptypb.Empty, error)
 	mustEmbedUnimplementedConfigServiceServer()
 }
 
@@ -424,18 +372,6 @@ func (UnimplementedConfigServiceServer) UpdateK8SClusterOnboardingCredential(con
 }
 func (UnimplementedConfigServiceServer) DeleteK8SClusterOnboardingCredential(context.Context, *DeleteK8SClusterOnboardingCredentialRequest) (*emptypb.Empty, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method DeleteK8SClusterOnboardingCredential not implemented")
-}
-func (UnimplementedConfigServiceServer) CreateObjectTester(context.Context, *CreateObjectTesterRequest) (*CreateObjectTesterResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method CreateObjectTester not implemented")
-}
-func (UnimplementedConfigServiceServer) ReadObjectTester(context.Context, *ReadObjectTesterRequest) (*ReadObjectTesterResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method ReadObjectTester not implemented")
-}
-func (UnimplementedConfigServiceServer) UpdateObjectTester(context.Context, *UpdateObjectTesterRequest) (*UpdateObjectTesterResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method UpdateObjectTester not implemented")
-}
-func (UnimplementedConfigServiceServer) DeleteObjectTester(context.Context, *DeleteObjectTesterRequest) (*emptypb.Empty, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method DeleteObjectTester not implemented")
 }
 func (UnimplementedConfigServiceServer) mustEmbedUnimplementedConfigServiceServer() {}
 func (UnimplementedConfigServiceServer) testEmbeddedByValue()                       {}
@@ -818,78 +754,6 @@ func _ConfigService_DeleteK8SClusterOnboardingCredential_Handler(srv interface{}
 	return interceptor(ctx, in, info, handler)
 }
 
-func _ConfigService_CreateObjectTester_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(CreateObjectTesterRequest)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	if interceptor == nil {
-		return srv.(ConfigServiceServer).CreateObjectTester(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: ConfigService_CreateObjectTester_FullMethodName,
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(ConfigServiceServer).CreateObjectTester(ctx, req.(*CreateObjectTesterRequest))
-	}
-	return interceptor(ctx, in, info, handler)
-}
-
-func _ConfigService_ReadObjectTester_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(ReadObjectTesterRequest)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	if interceptor == nil {
-		return srv.(ConfigServiceServer).ReadObjectTester(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: ConfigService_ReadObjectTester_FullMethodName,
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(ConfigServiceServer).ReadObjectTester(ctx, req.(*ReadObjectTesterRequest))
-	}
-	return interceptor(ctx, in, info, handler)
-}
-
-func _ConfigService_UpdateObjectTester_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(UpdateObjectTesterRequest)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	if interceptor == nil {
-		return srv.(ConfigServiceServer).UpdateObjectTester(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: ConfigService_UpdateObjectTester_FullMethodName,
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(ConfigServiceServer).UpdateObjectTester(ctx, req.(*UpdateObjectTesterRequest))
-	}
-	return interceptor(ctx, in, info, handler)
-}
-
-func _ConfigService_DeleteObjectTester_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(DeleteObjectTesterRequest)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	if interceptor == nil {
-		return srv.(ConfigServiceServer).DeleteObjectTester(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: ConfigService_DeleteObjectTester_FullMethodName,
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(ConfigServiceServer).DeleteObjectTester(ctx, req.(*DeleteObjectTesterRequest))
-	}
-	return interceptor(ctx, in, info, handler)
-}
-
 // ConfigService_ServiceDesc is the grpc.ServiceDesc for ConfigService service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -976,22 +840,6 @@ var ConfigService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "DeleteK8SClusterOnboardingCredential",
 			Handler:    _ConfigService_DeleteK8SClusterOnboardingCredential_Handler,
-		},
-		{
-			MethodName: "CreateObjectTester",
-			Handler:    _ConfigService_CreateObjectTester_Handler,
-		},
-		{
-			MethodName: "ReadObjectTester",
-			Handler:    _ConfigService_ReadObjectTester_Handler,
-		},
-		{
-			MethodName: "UpdateObjectTester",
-			Handler:    _ConfigService_UpdateObjectTester_Handler,
-		},
-		{
-			MethodName: "DeleteObjectTester",
-			Handler:    _ConfigService_DeleteObjectTester_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},
