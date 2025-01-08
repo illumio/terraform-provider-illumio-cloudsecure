@@ -158,7 +158,7 @@ func (s *{{.ServerTypeName}}) {{$resource.UpdateRPC.Name}}(ctx context.Context, 
 				zap.Strings("updateMaskPaths", updateMaskPaths),
 				zap.String("invalidUpdateMaskPath", path),
 			)
-			return nil, status.Errorf(codes.InvalidArgument, "invalid path in update_mask for aws_account: %s", path)
+			return nil, status.Errorf(codes.InvalidArgument, "invalid path in update_mask for {{$resource.Name}}: %s", path)
 		}
 	}
 	resp := &configv1.{{$resource.UpdateRPC.ResponseMessage.Name}}{
