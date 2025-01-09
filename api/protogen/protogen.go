@@ -283,8 +283,9 @@ func terraformAttributeTypeToProtoType(messageNamePrefix, attrName string, attrT
 // terraformObjectAttributeTypeToProtoType converts a Terraform object attribute into a Protocol Buffer message type.
 func terraformObjectAttributeTypeToProtoType(messageNamePrefix, attrName string, obj types.ObjectType, tagger *apiSpecTagger) (repeated bool, protoType string, nestedMessage *message, err error) {
 	messageName := schema.ProtoMessageName(attrName)
+
 	newMessage := &message{
-		Name:   messageName,
+		Name: messageName,
 	}
 	newMessage.Fields = make([]field, 0, len(obj.AttrTypes))
 	wrappedMessageName := messageNamePrefix + MessageNameSeperator + messageName
