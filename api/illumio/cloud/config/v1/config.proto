@@ -14,6 +14,10 @@ service ConfigService {
   rpc ReadAwsFlowLogsS3Bucket(ReadAwsFlowLogsS3BucketRequest) returns (ReadAwsFlowLogsS3BucketResponse);
   rpc UpdateAwsFlowLogsS3Bucket(UpdateAwsFlowLogsS3BucketRequest) returns (UpdateAwsFlowLogsS3BucketResponse);
   rpc DeleteAwsFlowLogsS3Bucket(DeleteAwsFlowLogsS3BucketRequest) returns (google.protobuf.Empty);
+  rpc CreateAwsTagToLabel(CreateAwsTagToLabelRequest) returns (CreateAwsTagToLabelResponse);
+  rpc ReadAwsTagToLabel(ReadAwsTagToLabelRequest) returns (ReadAwsTagToLabelResponse);
+  rpc UpdateAwsTagToLabel(UpdateAwsTagToLabelRequest) returns (UpdateAwsTagToLabelResponse);
+  rpc DeleteAwsTagToLabel(DeleteAwsTagToLabelRequest) returns (google.protobuf.Empty);
   rpc CreateAzureFlowLogsStorageAccount(CreateAzureFlowLogsStorageAccountRequest) returns (CreateAzureFlowLogsStorageAccountResponse);
   rpc ReadAzureFlowLogsStorageAccount(ReadAzureFlowLogsStorageAccountRequest) returns (ReadAzureFlowLogsStorageAccountResponse);
   rpc UpdateAzureFlowLogsStorageAccount(UpdateAzureFlowLogsStorageAccountRequest) returns (UpdateAzureFlowLogsStorageAccountResponse);
@@ -97,6 +101,56 @@ message UpdateAwsFlowLogsS3BucketResponse {
   string s3_bucket_arn = 3;
 }
 message DeleteAwsFlowLogsS3BucketRequest {
+  string id = 1;
+}
+message AwsTagToLabel_CloudTags {
+  string cloud = 1;
+  string key = 2;
+}
+message AwsTagToLabel_Icon {
+  string background_color = 1;
+  string foreground_color = 2;
+  string name = 3;
+}
+message CreateAwsTagToLabelRequest {
+  repeated AwsTagToLabel_CloudTags cloud_tags = 2;
+  AwsTagToLabel_Icon icon = 3;
+  string key = 4;
+  string name = 5;
+}
+message CreateAwsTagToLabelResponse {
+  string id = 1;
+  repeated AwsTagToLabel_CloudTags cloud_tags = 2;
+  AwsTagToLabel_Icon icon = 3;
+  string key = 4;
+  string name = 5;
+}
+message ReadAwsTagToLabelRequest {
+  string id = 1;
+}
+message ReadAwsTagToLabelResponse {
+  string id = 1;
+  repeated AwsTagToLabel_CloudTags cloud_tags = 2;
+  AwsTagToLabel_Icon icon = 3;
+  string key = 4;
+  string name = 5;
+}
+message UpdateAwsTagToLabelRequest {
+  string id = 1;
+  repeated AwsTagToLabel_CloudTags cloud_tags = 2;
+  AwsTagToLabel_Icon icon = 3;
+  string key = 4;
+  string name = 5;
+  google.protobuf.FieldMask update_mask = 6;
+}
+message UpdateAwsTagToLabelResponse {
+  string id = 1;
+  repeated AwsTagToLabel_CloudTags cloud_tags = 2;
+  AwsTagToLabel_Icon icon = 3;
+  string key = 4;
+  string name = 5;
+}
+message DeleteAwsTagToLabelRequest {
   string id = 1;
 }
 message CreateAzureFlowLogsStorageAccountRequest {

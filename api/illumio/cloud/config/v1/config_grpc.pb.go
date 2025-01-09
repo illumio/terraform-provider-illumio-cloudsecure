@@ -31,6 +31,10 @@ const (
 	ConfigService_ReadAwsFlowLogsS3Bucket_FullMethodName              = "/illumio.cloud.config.v1.ConfigService/ReadAwsFlowLogsS3Bucket"
 	ConfigService_UpdateAwsFlowLogsS3Bucket_FullMethodName            = "/illumio.cloud.config.v1.ConfigService/UpdateAwsFlowLogsS3Bucket"
 	ConfigService_DeleteAwsFlowLogsS3Bucket_FullMethodName            = "/illumio.cloud.config.v1.ConfigService/DeleteAwsFlowLogsS3Bucket"
+	ConfigService_CreateAwsTagToLabel_FullMethodName                  = "/illumio.cloud.config.v1.ConfigService/CreateAwsTagToLabel"
+	ConfigService_ReadAwsTagToLabel_FullMethodName                    = "/illumio.cloud.config.v1.ConfigService/ReadAwsTagToLabel"
+	ConfigService_UpdateAwsTagToLabel_FullMethodName                  = "/illumio.cloud.config.v1.ConfigService/UpdateAwsTagToLabel"
+	ConfigService_DeleteAwsTagToLabel_FullMethodName                  = "/illumio.cloud.config.v1.ConfigService/DeleteAwsTagToLabel"
 	ConfigService_CreateAzureFlowLogsStorageAccount_FullMethodName    = "/illumio.cloud.config.v1.ConfigService/CreateAzureFlowLogsStorageAccount"
 	ConfigService_ReadAzureFlowLogsStorageAccount_FullMethodName      = "/illumio.cloud.config.v1.ConfigService/ReadAzureFlowLogsStorageAccount"
 	ConfigService_UpdateAzureFlowLogsStorageAccount_FullMethodName    = "/illumio.cloud.config.v1.ConfigService/UpdateAzureFlowLogsStorageAccount"
@@ -57,6 +61,10 @@ type ConfigServiceClient interface {
 	ReadAwsFlowLogsS3Bucket(ctx context.Context, in *ReadAwsFlowLogsS3BucketRequest, opts ...grpc.CallOption) (*ReadAwsFlowLogsS3BucketResponse, error)
 	UpdateAwsFlowLogsS3Bucket(ctx context.Context, in *UpdateAwsFlowLogsS3BucketRequest, opts ...grpc.CallOption) (*UpdateAwsFlowLogsS3BucketResponse, error)
 	DeleteAwsFlowLogsS3Bucket(ctx context.Context, in *DeleteAwsFlowLogsS3BucketRequest, opts ...grpc.CallOption) (*emptypb.Empty, error)
+	CreateAwsTagToLabel(ctx context.Context, in *CreateAwsTagToLabelRequest, opts ...grpc.CallOption) (*CreateAwsTagToLabelResponse, error)
+	ReadAwsTagToLabel(ctx context.Context, in *ReadAwsTagToLabelRequest, opts ...grpc.CallOption) (*ReadAwsTagToLabelResponse, error)
+	UpdateAwsTagToLabel(ctx context.Context, in *UpdateAwsTagToLabelRequest, opts ...grpc.CallOption) (*UpdateAwsTagToLabelResponse, error)
+	DeleteAwsTagToLabel(ctx context.Context, in *DeleteAwsTagToLabelRequest, opts ...grpc.CallOption) (*emptypb.Empty, error)
 	CreateAzureFlowLogsStorageAccount(ctx context.Context, in *CreateAzureFlowLogsStorageAccountRequest, opts ...grpc.CallOption) (*CreateAzureFlowLogsStorageAccountResponse, error)
 	ReadAzureFlowLogsStorageAccount(ctx context.Context, in *ReadAzureFlowLogsStorageAccountRequest, opts ...grpc.CallOption) (*ReadAzureFlowLogsStorageAccountResponse, error)
 	UpdateAzureFlowLogsStorageAccount(ctx context.Context, in *UpdateAzureFlowLogsStorageAccountRequest, opts ...grpc.CallOption) (*UpdateAzureFlowLogsStorageAccountResponse, error)
@@ -153,6 +161,46 @@ func (c *configServiceClient) DeleteAwsFlowLogsS3Bucket(ctx context.Context, in 
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
 	out := new(emptypb.Empty)
 	err := c.cc.Invoke(ctx, ConfigService_DeleteAwsFlowLogsS3Bucket_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *configServiceClient) CreateAwsTagToLabel(ctx context.Context, in *CreateAwsTagToLabelRequest, opts ...grpc.CallOption) (*CreateAwsTagToLabelResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(CreateAwsTagToLabelResponse)
+	err := c.cc.Invoke(ctx, ConfigService_CreateAwsTagToLabel_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *configServiceClient) ReadAwsTagToLabel(ctx context.Context, in *ReadAwsTagToLabelRequest, opts ...grpc.CallOption) (*ReadAwsTagToLabelResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(ReadAwsTagToLabelResponse)
+	err := c.cc.Invoke(ctx, ConfigService_ReadAwsTagToLabel_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *configServiceClient) UpdateAwsTagToLabel(ctx context.Context, in *UpdateAwsTagToLabelRequest, opts ...grpc.CallOption) (*UpdateAwsTagToLabelResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(UpdateAwsTagToLabelResponse)
+	err := c.cc.Invoke(ctx, ConfigService_UpdateAwsTagToLabel_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *configServiceClient) DeleteAwsTagToLabel(ctx context.Context, in *DeleteAwsTagToLabelRequest, opts ...grpc.CallOption) (*emptypb.Empty, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(emptypb.Empty)
+	err := c.cc.Invoke(ctx, ConfigService_DeleteAwsTagToLabel_FullMethodName, in, out, cOpts...)
 	if err != nil {
 		return nil, err
 	}
@@ -291,6 +339,10 @@ type ConfigServiceServer interface {
 	ReadAwsFlowLogsS3Bucket(context.Context, *ReadAwsFlowLogsS3BucketRequest) (*ReadAwsFlowLogsS3BucketResponse, error)
 	UpdateAwsFlowLogsS3Bucket(context.Context, *UpdateAwsFlowLogsS3BucketRequest) (*UpdateAwsFlowLogsS3BucketResponse, error)
 	DeleteAwsFlowLogsS3Bucket(context.Context, *DeleteAwsFlowLogsS3BucketRequest) (*emptypb.Empty, error)
+	CreateAwsTagToLabel(context.Context, *CreateAwsTagToLabelRequest) (*CreateAwsTagToLabelResponse, error)
+	ReadAwsTagToLabel(context.Context, *ReadAwsTagToLabelRequest) (*ReadAwsTagToLabelResponse, error)
+	UpdateAwsTagToLabel(context.Context, *UpdateAwsTagToLabelRequest) (*UpdateAwsTagToLabelResponse, error)
+	DeleteAwsTagToLabel(context.Context, *DeleteAwsTagToLabelRequest) (*emptypb.Empty, error)
 	CreateAzureFlowLogsStorageAccount(context.Context, *CreateAzureFlowLogsStorageAccountRequest) (*CreateAzureFlowLogsStorageAccountResponse, error)
 	ReadAzureFlowLogsStorageAccount(context.Context, *ReadAzureFlowLogsStorageAccountRequest) (*ReadAzureFlowLogsStorageAccountResponse, error)
 	UpdateAzureFlowLogsStorageAccount(context.Context, *UpdateAzureFlowLogsStorageAccountRequest) (*UpdateAzureFlowLogsStorageAccountResponse, error)
@@ -336,6 +388,18 @@ func (UnimplementedConfigServiceServer) UpdateAwsFlowLogsS3Bucket(context.Contex
 }
 func (UnimplementedConfigServiceServer) DeleteAwsFlowLogsS3Bucket(context.Context, *DeleteAwsFlowLogsS3BucketRequest) (*emptypb.Empty, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method DeleteAwsFlowLogsS3Bucket not implemented")
+}
+func (UnimplementedConfigServiceServer) CreateAwsTagToLabel(context.Context, *CreateAwsTagToLabelRequest) (*CreateAwsTagToLabelResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method CreateAwsTagToLabel not implemented")
+}
+func (UnimplementedConfigServiceServer) ReadAwsTagToLabel(context.Context, *ReadAwsTagToLabelRequest) (*ReadAwsTagToLabelResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method ReadAwsTagToLabel not implemented")
+}
+func (UnimplementedConfigServiceServer) UpdateAwsTagToLabel(context.Context, *UpdateAwsTagToLabelRequest) (*UpdateAwsTagToLabelResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method UpdateAwsTagToLabel not implemented")
+}
+func (UnimplementedConfigServiceServer) DeleteAwsTagToLabel(context.Context, *DeleteAwsTagToLabelRequest) (*emptypb.Empty, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method DeleteAwsTagToLabel not implemented")
 }
 func (UnimplementedConfigServiceServer) CreateAzureFlowLogsStorageAccount(context.Context, *CreateAzureFlowLogsStorageAccountRequest) (*CreateAzureFlowLogsStorageAccountResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method CreateAzureFlowLogsStorageAccount not implemented")
@@ -534,6 +598,78 @@ func _ConfigService_DeleteAwsFlowLogsS3Bucket_Handler(srv interface{}, ctx conte
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(ConfigServiceServer).DeleteAwsFlowLogsS3Bucket(ctx, req.(*DeleteAwsFlowLogsS3BucketRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _ConfigService_CreateAwsTagToLabel_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(CreateAwsTagToLabelRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(ConfigServiceServer).CreateAwsTagToLabel(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: ConfigService_CreateAwsTagToLabel_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(ConfigServiceServer).CreateAwsTagToLabel(ctx, req.(*CreateAwsTagToLabelRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _ConfigService_ReadAwsTagToLabel_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(ReadAwsTagToLabelRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(ConfigServiceServer).ReadAwsTagToLabel(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: ConfigService_ReadAwsTagToLabel_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(ConfigServiceServer).ReadAwsTagToLabel(ctx, req.(*ReadAwsTagToLabelRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _ConfigService_UpdateAwsTagToLabel_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(UpdateAwsTagToLabelRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(ConfigServiceServer).UpdateAwsTagToLabel(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: ConfigService_UpdateAwsTagToLabel_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(ConfigServiceServer).UpdateAwsTagToLabel(ctx, req.(*UpdateAwsTagToLabelRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _ConfigService_DeleteAwsTagToLabel_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(DeleteAwsTagToLabelRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(ConfigServiceServer).DeleteAwsTagToLabel(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: ConfigService_DeleteAwsTagToLabel_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(ConfigServiceServer).DeleteAwsTagToLabel(ctx, req.(*DeleteAwsTagToLabelRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -792,6 +928,22 @@ var ConfigService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "DeleteAwsFlowLogsS3Bucket",
 			Handler:    _ConfigService_DeleteAwsFlowLogsS3Bucket_Handler,
+		},
+		{
+			MethodName: "CreateAwsTagToLabel",
+			Handler:    _ConfigService_CreateAwsTagToLabel_Handler,
+		},
+		{
+			MethodName: "ReadAwsTagToLabel",
+			Handler:    _ConfigService_ReadAwsTagToLabel_Handler,
+		},
+		{
+			MethodName: "UpdateAwsTagToLabel",
+			Handler:    _ConfigService_UpdateAwsTagToLabel_Handler,
+		},
+		{
+			MethodName: "DeleteAwsTagToLabel",
+			Handler:    _ConfigService_DeleteAwsTagToLabel_Handler,
 		},
 		{
 			MethodName: "CreateAzureFlowLogsStorageAccount",
