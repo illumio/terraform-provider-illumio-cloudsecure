@@ -128,7 +128,11 @@ func (r *{{.TypeName}}) Create(ctx context.Context, req resource.CreateRequest, 
 		return
 	}
 
-	protoReq := {{.NewCreateRequestFuncName}}(ctx, &resp.Diagnostics, &data)
+	protoReq, diags := {{.NewCreateRequestFuncName}}(ctx, &data)
+	resp.Diagnostics.Append(diags...)
+	if resp.Diagnostics.HasError() {
+		return
+	}
 
 	tflog.Trace(ctx, "creating a resource", map[string]any{"type": "{{.Name}}"})
 
