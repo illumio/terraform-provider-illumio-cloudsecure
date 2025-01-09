@@ -20,7 +20,7 @@ var (
 			Attributes: map[string]resource_schema.Attribute{
 				IDFieldName: idAttribute,
 				"cloud_tags": resource_schema.ListAttribute{
-					MarkdownDescription: "List of tags to map to CloudSecure labels with the specified key. The values of the created labels correspond to the values of the tags. The cloud field for each tag must be \"aws\" or \"azure\".",
+					MarkdownDescription: "List of tags to map to CloudSecure labels with the specified key. The values of the created labels correspond to the values of the tags. The cloud field for each tag must be \"aws\" or \"azure\" or \"oci\".",
 					Required:            true,
 					ElementType: types.ObjectType{
 						AttrTypes: map[string]attr.Type{
