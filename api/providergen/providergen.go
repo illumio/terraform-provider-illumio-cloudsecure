@@ -6,7 +6,6 @@ package main
 import (
 	"fmt"
 	"io"
-	"sort"
 	"text/template" // nosemgrep: go.lang.security.audit.xss.import-text-template.import-text-template
 
 	"github.com/hashicorp/terraform-plugin-framework/attr"
@@ -850,7 +849,6 @@ func TerraformObjectAttributeTypeToProtoType(nestedMessageNamePrefix, attrName s
 			Optional:      false,
 		})
 	}
-
 
 	if isRoot {
 		nestedMessageNamePrefix += "_" + schema.ProtoMessageName(attrName)
