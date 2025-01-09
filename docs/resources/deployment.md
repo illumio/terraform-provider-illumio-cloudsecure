@@ -32,11 +32,6 @@ Groups resources under Cloudsecure deployments.
 - `azure_tags` (List of Object) Azure tags included in this deployment. (see [below for nested schema](#nestedatt--azure_tags))
 - `azure_vnet_ids` (List of String) IDs of Azure VNets included in this deployment.
 - `description` (String) Description of Cloudsecure deployment.
-- `oci_regions` (List of String) OCI regions included in this deployment.
-- `oci_subnet_ids` (List of String) IDs of OCI subnets included in this deployment.
-- `oci_tags` (List of Object) OCI tags included in this deployment. (see [below for nested schema](#nestedatt--oci_tags))
-- `oci_tenant_ids` (List of String) IDs of OCI tenants included in this deployment.
-- `oci_vcn_ids` (List of String) IDs of OCI VCNs included in this deployment.
 
 ### Read-Only
 
@@ -53,15 +48,6 @@ Optional:
 
 <a id="nestedatt--azure_tags"></a>
 ### Nested Schema for `azure_tags`
-
-Optional:
-
-- `key` (String)
-- `value` (String)
-
-
-<a id="nestedatt--oci_tags"></a>
-### Nested Schema for `oci_tags`
 
 Optional:
 

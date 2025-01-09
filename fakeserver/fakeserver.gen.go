@@ -98,11 +98,6 @@ type Deployment struct {
 	AzureVnetIds         []string
 	Description          *string
 	Name                 string
-	OciRegions           []string
-	OciSubnetIds         []string
-	OciTags              []*configv1.Deployment_OciTags
-	OciTenantIds         []string
-	OciVcnIds            []string
 }
 
 type K8SClusterOnboardingCredential struct {
@@ -646,11 +641,6 @@ func (s *FakeConfigServer) CreateDeployment(ctx context.Context, req *configv1.C
 		AzureVnetIds:         req.AzureVnetIds,
 		Description:          req.Description,
 		Name:                 req.Name,
-		OciRegions:           req.OciRegions,
-		OciSubnetIds:         req.OciSubnetIds,
-		OciTags:              req.OciTags,
-		OciTenantIds:         req.OciTenantIds,
-		OciVcnIds:            req.OciVcnIds,
 	}
 	resp := &configv1.CreateDeploymentResponse{
 		Id:                   id,
@@ -666,11 +656,6 @@ func (s *FakeConfigServer) CreateDeployment(ctx context.Context, req *configv1.C
 		AzureVnetIds:         model.AzureVnetIds,
 		Description:          model.Description,
 		Name:                 model.Name,
-		OciRegions:           model.OciRegions,
-		OciSubnetIds:         model.OciSubnetIds,
-		OciTags:              model.OciTags,
-		OciTenantIds:         model.OciTenantIds,
-		OciVcnIds:            model.OciVcnIds,
 	}
 	s.DeploymentMutex.Lock()
 	s.DeploymentMap[id] = model
@@ -710,11 +695,6 @@ func (s *FakeConfigServer) ReadDeployment(ctx context.Context, req *configv1.Rea
 		AzureVnetIds:         model.AzureVnetIds,
 		Description:          model.Description,
 		Name:                 model.Name,
-		OciRegions:           model.OciRegions,
-		OciSubnetIds:         model.OciSubnetIds,
-		OciTags:              model.OciTags,
-		OciTenantIds:         model.OciTenantIds,
-		OciVcnIds:            model.OciVcnIds,
 	}
 	s.DeploymentMutex.RUnlock()
 	s.Logger.Info("read resource",
@@ -769,16 +749,6 @@ func (s *FakeConfigServer) UpdateDeployment(ctx context.Context, req *configv1.U
 			model.Description = req.Description
 		case "name":
 			model.Name = req.Name
-		case "oci_regions":
-			model.OciRegions = req.OciRegions
-		case "oci_subnet_ids":
-			model.OciSubnetIds = req.OciSubnetIds
-		case "oci_tags":
-			model.OciTags = req.OciTags
-		case "oci_tenant_ids":
-			model.OciTenantIds = req.OciTenantIds
-		case "oci_vcn_ids":
-			model.OciVcnIds = req.OciVcnIds
 		default:
 			s.AwsAccountMutex.Unlock()
 			s.Logger.Error("attempted to update resource using invalid update_mask path",
@@ -805,11 +775,6 @@ func (s *FakeConfigServer) UpdateDeployment(ctx context.Context, req *configv1.U
 		AzureVnetIds:         model.AzureVnetIds,
 		Description:          model.Description,
 		Name:                 model.Name,
-		OciRegions:           model.OciRegions,
-		OciSubnetIds:         model.OciSubnetIds,
-		OciTags:              model.OciTags,
-		OciTenantIds:         model.OciTenantIds,
-		OciVcnIds:            model.OciVcnIds,
 	}
 	s.DeploymentMutex.Unlock()
 	s.Logger.Info("updated resource",
