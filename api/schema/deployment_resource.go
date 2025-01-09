@@ -79,31 +79,6 @@ var (
 					Description: "Name of the CloudSecure deployment.",
 					Required:    true,
 				},
-				"oci_regions": resource_schema.ListAttribute{
-					Optional:    true,
-					Description: "OCI regions included in this deployment.",
-					ElementType: types.StringType,
-				},
-				"oci_subnet_ids": resource_schema.ListAttribute{
-					Optional:    true,
-					Description: "IDs of OCI subnets included in this deployment.",
-					ElementType: types.StringType,
-				},
-				"oci_tags": resource_schema.ListAttribute{
-					Optional:    true,
-					Description: "OCI tags included in this deployment.",
-					ElementType: TagType,
-				},
-				"oci_tenant_ids": resource_schema.ListAttribute{
-					Optional:    true,
-					Description: "IDs of OCI tenants included in this deployment.",
-					ElementType: types.StringType,
-				},
-				"oci_vcn_ids": resource_schema.ListAttribute{
-					Optional:    true,
-					Description: "IDs of OCI VCNs included in this deployment.",
-					ElementType: types.StringType,
-				},
 			},
 		},
 	}
