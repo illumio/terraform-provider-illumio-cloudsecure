@@ -128,8 +128,8 @@ func (r *{{.TypeName}}) Create(ctx context.Context, req resource.CreateRequest, 
 		return
 	}
 
-	protoReq, diags := {{.NewCreateRequestFuncName}}(ctx, &data)
-	resp.Diagnostics.Append(diags...)
+	protoReq, diagReq := {{.NewCreateRequestFuncName}}(ctx, &data)
+	resp.Diagnostics.Append(diagReq...)
 	if resp.Diagnostics.HasError() {
 		return
 	}
@@ -159,8 +159,8 @@ func (r *{{.TypeName}}) Read(ctx context.Context, req resource.ReadRequest, resp
 		return
 	}
 
-	protoReq, diags := {{.NewReadRequestFuncName}}(ctx, &data)
-	resp.Diagnostics.Append(diags...)
+	protoReq, diagsReq := {{.NewReadRequestFuncName}}(ctx, &data)
+	resp.Diagnostics.Append(diagsReq...)
 	if resp.Diagnostics.HasError() {
 		return
 	}
@@ -287,6 +287,9 @@ type {{.Name}} struct {
 	{{- if ne .NestedModel nil}}
 		protoValue, newDiags := ConvertDataValueTo{{.NestedModel.Name}}Proto(ctx, dataValue)
 		diags.Append(newDiags...)
+		if diags.HasError() {
+			return nil, diags
+		}
 	{{- else if eq .CollectionElementType nil}}
 		protoValue = dataValue.(types.{{.ModelTypeName}}).Value{{.ModelTypeName}}()
 	{{- else}}
@@ -309,7 +312,7 @@ type {{.Name}} struct {
 {{- end}}
 {{- define "newRequestFunc"}}
 
-func {{.Name}}(ctx context.Context, data *{{.ModelName}}) (*configv1.{{.ProtoName}}, *diag.Diagnostics) {
+func {{.Name}}(ctx context.Context, data *{{.ModelName}}) (*configv1.{{.ProtoName}}, diag.Diagnostics) {
 	var diags diag.Diagnostics
 	proto := &configv1.{{.ProtoName}}{}
 	{{- range $field := .Fields}}
@@ -328,7 +331,7 @@ func {{.Name}}(ctx context.Context, data *{{.ModelName}}) (*configv1.{{.ProtoNam
 		{{- end}}
 	}
 	{{- end}}
-	return proto
+	return proto, diags
 }
 {{- end}}
 {{- range $newRequestFunc := .NewRequestFuncs}}
@@ -336,7 +339,8 @@ func {{.Name}}(ctx context.Context, data *{{.ModelName}}) (*configv1.{{.ProtoNam
 {{- end}}
 {{- define "newUpdateRequestFunc"}}
 
-func {{.Name}}(ctx context.Context, diags *diag.Diagnostics, beforeData, afterData *{{.ModelName}}) *configv1.{{.ProtoName}} {
+func {{.Name}}(ctx context.Context, beforeData, afterData *{{.ModelName}}) (*configv1.{{.ProtoName}}, diag.Diagnostics) {
+	var diags diag.Diagnostics
 	proto := &configv1.{{.ProtoName}}{}
 	proto.UpdateMask, _ = fieldmaskpb.New(proto)
 	proto.Id = beforeData.Id.ValueString()
@@ -361,7 +365,7 @@ func {{.Name}}(ctx context.Context, diags *diag.Diagnostics, beforeData, afterDa
 	}
 	{{- end}}
 	{{- end}}
-	return proto
+	return proto, diags
 }
 {{- end}}
 {{- range $newUpdateRequestFunc := .NewUpdateRequestFuncs}}
@@ -607,6 +611,7 @@ func GenerateProvider(dst io.Writer, pkg string, src schema.Schema) error {
 	return ProviderConvertersTemplate.Execute(dst, &data)
 }
 
+// AddResourceToProviderTemplateData adds a resource to the provider template data.
 func AddResourceToProviderTemplateData(resource *schema.Resource, data *providerTemplateData, camelCasedIdFieldName, camelCasedUpdateMaskFieldName string) error {
 	resourceName := resource.TypeName
 	resourceMessageName := schema.ProtoMessageName(resourceName)
@@ -823,15 +828,16 @@ func TerraformAttributeTypeToProtoType(nestedMessageNamePrefix, attrName string,
 	}
 }
 
+// TerraformObjectAttributeTypeToProtoType converts a Terraform object attribute type into the corresponding Protocol Buffer Golang type.
 func TerraformObjectAttributeTypeToProtoType(nestedMessageNamePrefix, attrName string, object types.ObjectType, isRoot bool) (protoTypeName string, nestedModel *model, err error) {
 	protoAttrName := schema.ProtoMessageName(attrName)
 	fields := make([]field, 0, len(object.AttrTypes))
 	wrappedMessageName := nestedMessageNamePrefix + "_" + protoAttrName
 
-	attrs := schema.SortObjectAttributes(obj.AttrTypes)
+	attrs := schema.SortObjectAttributes(object.AttrTypes)
 
 	for _, fieldName := range attrs {
-		fieldType := obj.AttrTypes[name]
+		fieldType := object.AttrTypes[fieldName]
 		t, err := TerraformAttributeTypeToProtoType(wrappedMessageName, fieldName, fieldType, true)
 		if err != nil {
 			return "", nil, fmt.Errorf("failed to transform field %s in object %s: %w", fieldName, nestedMessageNamePrefix, err)
@@ -841,7 +847,7 @@ func TerraformObjectAttributeTypeToProtoType(nestedMessageNamePrefix, attrName s
 			Name:          schema.ProtoMessageName(fieldName),
 			AttributeName: fieldName,
 			Type:          t,
-			Optional:      true,
+			Optional:      false,
 		})
 	}
 
