@@ -285,8 +285,8 @@ func terraformObjectAttributeTypeToProtoType(messageNamePrefix, attrName string,
 	messageName := schema.ProtoMessageName(attrName)
 	newMessage := &message{
 		Name:   messageName,
-		Fields: []field{},
 	}
+	newMessage.Fields = make([]field, 0, len(obj.AttrTypes))
 	wrappedMessageName := messageNamePrefix + MessageNameSeperator + messageName
 
 	attrs := schema.SortObjectAttributes(obj.AttrTypes)
