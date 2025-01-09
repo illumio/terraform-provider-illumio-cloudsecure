@@ -856,7 +856,7 @@ func TerraformObjectAttributeTypeToProtoType(nestedMessageNamePrefix, attrName s
 	}
 
 	dataModel := model{
-		Name:   nestedMessageNamePrefix[9:],
+		Name:   nestedMessageNamePrefix[9:], // remove "configv1."
 		Fields: fields,
 	}
 
