@@ -11,6 +11,7 @@ import (
 
 	"github.com/hashicorp/terraform-plugin-framework/attr"
 	"github.com/hashicorp/terraform-plugin-framework/datasource"
+	"github.com/hashicorp/terraform-plugin-framework/diag"
 	"github.com/hashicorp/terraform-plugin-framework/resource"
 	resource_schema "github.com/hashicorp/terraform-plugin-framework/resource/schema"
 	"github.com/hashicorp/terraform-plugin-framework/types"
@@ -109,7 +110,11 @@ func (r *AwsAccountResource) Create(ctx context.Context, req resource.CreateRequ
 		return
 	}
 
-	protoReq := NewCreateAwsAccountRequest(&data)
+	protoReq, diagReq := NewCreateAwsAccountRequest(ctx, &data)
+	resp.Diagnostics.Append(diagReq...)
+	if resp.Diagnostics.HasError() {
+		return
+	}
 
 	tflog.Trace(ctx, "creating a resource", map[string]any{"type": "aws_account"})
 
@@ -136,7 +141,11 @@ func (r *AwsAccountResource) Read(ctx context.Context, req resource.ReadRequest,
 		return
 	}
 
-	protoReq := NewReadAwsAccountRequest(&data)
+	protoReq, diagsReq := NewReadAwsAccountRequest(ctx, &data)
+	resp.Diagnostics.Append(diagsReq...)
+	if resp.Diagnostics.HasError() {
+		return
+	}
 
 	tflog.Trace(ctx, "reading a resource", map[string]any{"type": "aws_account", "id": protoReq.Id})
 
@@ -176,7 +185,11 @@ func (r *AwsAccountResource) Update(ctx context.Context, req resource.UpdateRequ
 		return
 	}
 
-	protoReq := NewUpdateAwsAccountRequest(&beforeData, &afterData)
+	protoReq, diags := NewUpdateAwsAccountRequest(ctx, &beforeData, &afterData)
+	resp.Diagnostics.Append(diags...)
+	if resp.Diagnostics.HasError() {
+		return
+	}
 
 	tflog.Trace(ctx, "updating a resource", map[string]any{"type": "aws_account", "id": protoReq.Id, "update_mask": protoReq.UpdateMask.Paths})
 
@@ -210,7 +223,11 @@ func (r *AwsAccountResource) Delete(ctx context.Context, req resource.DeleteRequ
 		return
 	}
 
-	protoReq := NewDeleteAwsAccountRequest(&data)
+	protoReq, diags := NewDeleteAwsAccountRequest(ctx, &data)
+	resp.Diagnostics.Append(diags...)
+	if resp.Diagnostics.HasError() {
+		return
+	}
 
 	tflog.Trace(ctx, "deleting a resource", map[string]any{"type": "aws_account", "id": protoReq.Id})
 
@@ -287,7 +304,11 @@ func (r *AwsFlowLogsS3BucketResource) Create(ctx context.Context, req resource.C
 		return
 	}
 
-	protoReq := NewCreateAwsFlowLogsS3BucketRequest(&data)
+	protoReq, diagReq := NewCreateAwsFlowLogsS3BucketRequest(ctx, &data)
+	resp.Diagnostics.Append(diagReq...)
+	if resp.Diagnostics.HasError() {
+		return
+	}
 
 	tflog.Trace(ctx, "creating a resource", map[string]any{"type": "aws_flow_logs_s3_bucket"})
 
@@ -314,7 +335,11 @@ func (r *AwsFlowLogsS3BucketResource) Read(ctx context.Context, req resource.Rea
 		return
 	}
 
-	protoReq := NewReadAwsFlowLogsS3BucketRequest(&data)
+	protoReq, diagsReq := NewReadAwsFlowLogsS3BucketRequest(ctx, &data)
+	resp.Diagnostics.Append(diagsReq...)
+	if resp.Diagnostics.HasError() {
+		return
+	}
 
 	tflog.Trace(ctx, "reading a resource", map[string]any{"type": "aws_flow_logs_s3_bucket", "id": protoReq.Id})
 
@@ -354,7 +379,11 @@ func (r *AwsFlowLogsS3BucketResource) Update(ctx context.Context, req resource.U
 		return
 	}
 
-	protoReq := NewUpdateAwsFlowLogsS3BucketRequest(&beforeData, &afterData)
+	protoReq, diags := NewUpdateAwsFlowLogsS3BucketRequest(ctx, &beforeData, &afterData)
+	resp.Diagnostics.Append(diags...)
+	if resp.Diagnostics.HasError() {
+		return
+	}
 
 	tflog.Trace(ctx, "updating a resource", map[string]any{"type": "aws_flow_logs_s3_bucket", "id": protoReq.Id, "update_mask": protoReq.UpdateMask.Paths})
 
@@ -388,7 +417,11 @@ func (r *AwsFlowLogsS3BucketResource) Delete(ctx context.Context, req resource.D
 		return
 	}
 
-	protoReq := NewDeleteAwsFlowLogsS3BucketRequest(&data)
+	protoReq, diags := NewDeleteAwsFlowLogsS3BucketRequest(ctx, &data)
+	resp.Diagnostics.Append(diags...)
+	if resp.Diagnostics.HasError() {
+		return
+	}
 
 	tflog.Trace(ctx, "deleting a resource", map[string]any{"type": "aws_flow_logs_s3_bucket", "id": protoReq.Id})
 
@@ -465,7 +498,11 @@ func (r *AzureFlowLogsStorageAccountResource) Create(ctx context.Context, req re
 		return
 	}
 
-	protoReq := NewCreateAzureFlowLogsStorageAccountRequest(&data)
+	protoReq, diagReq := NewCreateAzureFlowLogsStorageAccountRequest(ctx, &data)
+	resp.Diagnostics.Append(diagReq...)
+	if resp.Diagnostics.HasError() {
+		return
+	}
 
 	tflog.Trace(ctx, "creating a resource", map[string]any{"type": "azure_flow_logs_storage_account"})
 
@@ -492,7 +529,11 @@ func (r *AzureFlowLogsStorageAccountResource) Read(ctx context.Context, req reso
 		return
 	}
 
-	protoReq := NewReadAzureFlowLogsStorageAccountRequest(&data)
+	protoReq, diagsReq := NewReadAzureFlowLogsStorageAccountRequest(ctx, &data)
+	resp.Diagnostics.Append(diagsReq...)
+	if resp.Diagnostics.HasError() {
+		return
+	}
 
 	tflog.Trace(ctx, "reading a resource", map[string]any{"type": "azure_flow_logs_storage_account", "id": protoReq.Id})
 
@@ -532,7 +573,11 @@ func (r *AzureFlowLogsStorageAccountResource) Update(ctx context.Context, req re
 		return
 	}
 
-	protoReq := NewUpdateAzureFlowLogsStorageAccountRequest(&beforeData, &afterData)
+	protoReq, diags := NewUpdateAzureFlowLogsStorageAccountRequest(ctx, &beforeData, &afterData)
+	resp.Diagnostics.Append(diags...)
+	if resp.Diagnostics.HasError() {
+		return
+	}
 
 	tflog.Trace(ctx, "updating a resource", map[string]any{"type": "azure_flow_logs_storage_account", "id": protoReq.Id, "update_mask": protoReq.UpdateMask.Paths})
 
@@ -566,7 +611,11 @@ func (r *AzureFlowLogsStorageAccountResource) Delete(ctx context.Context, req re
 		return
 	}
 
-	protoReq := NewDeleteAzureFlowLogsStorageAccountRequest(&data)
+	protoReq, diags := NewDeleteAzureFlowLogsStorageAccountRequest(ctx, &data)
+	resp.Diagnostics.Append(diags...)
+	if resp.Diagnostics.HasError() {
+		return
+	}
 
 	tflog.Trace(ctx, "deleting a resource", map[string]any{"type": "azure_flow_logs_storage_account", "id": protoReq.Id})
 
@@ -643,7 +692,11 @@ func (r *AzureSubscriptionResource) Create(ctx context.Context, req resource.Cre
 		return
 	}
 
-	protoReq := NewCreateAzureSubscriptionRequest(&data)
+	protoReq, diagReq := NewCreateAzureSubscriptionRequest(ctx, &data)
+	resp.Diagnostics.Append(diagReq...)
+	if resp.Diagnostics.HasError() {
+		return
+	}
 
 	tflog.Trace(ctx, "creating a resource", map[string]any{"type": "azure_subscription"})
 
@@ -670,7 +723,11 @@ func (r *AzureSubscriptionResource) Read(ctx context.Context, req resource.ReadR
 		return
 	}
 
-	protoReq := NewReadAzureSubscriptionRequest(&data)
+	protoReq, diagsReq := NewReadAzureSubscriptionRequest(ctx, &data)
+	resp.Diagnostics.Append(diagsReq...)
+	if resp.Diagnostics.HasError() {
+		return
+	}
 
 	tflog.Trace(ctx, "reading a resource", map[string]any{"type": "azure_subscription", "id": protoReq.Id})
 
@@ -710,7 +767,11 @@ func (r *AzureSubscriptionResource) Update(ctx context.Context, req resource.Upd
 		return
 	}
 
-	protoReq := NewUpdateAzureSubscriptionRequest(&beforeData, &afterData)
+	protoReq, diags := NewUpdateAzureSubscriptionRequest(ctx, &beforeData, &afterData)
+	resp.Diagnostics.Append(diags...)
+	if resp.Diagnostics.HasError() {
+		return
+	}
 
 	tflog.Trace(ctx, "updating a resource", map[string]any{"type": "azure_subscription", "id": protoReq.Id, "update_mask": protoReq.UpdateMask.Paths})
 
@@ -744,7 +805,11 @@ func (r *AzureSubscriptionResource) Delete(ctx context.Context, req resource.Del
 		return
 	}
 
-	protoReq := NewDeleteAzureSubscriptionRequest(&data)
+	protoReq, diags := NewDeleteAzureSubscriptionRequest(ctx, &data)
+	resp.Diagnostics.Append(diags...)
+	if resp.Diagnostics.HasError() {
+		return
+	}
 
 	tflog.Trace(ctx, "deleting a resource", map[string]any{"type": "azure_subscription", "id": protoReq.Id})
 
@@ -821,7 +886,11 @@ func (r *K8SClusterOnboardingCredentialResource) Create(ctx context.Context, req
 		return
 	}
 
-	protoReq := NewCreateK8SClusterOnboardingCredentialRequest(&data)
+	protoReq, diagReq := NewCreateK8SClusterOnboardingCredentialRequest(ctx, &data)
+	resp.Diagnostics.Append(diagReq...)
+	if resp.Diagnostics.HasError() {
+		return
+	}
 
 	tflog.Trace(ctx, "creating a resource", map[string]any{"type": "k8s_cluster_onboarding_credential"})
 
@@ -848,7 +917,11 @@ func (r *K8SClusterOnboardingCredentialResource) Read(ctx context.Context, req r
 		return
 	}
 
-	protoReq := NewReadK8SClusterOnboardingCredentialRequest(&data)
+	protoReq, diagsReq := NewReadK8SClusterOnboardingCredentialRequest(ctx, &data)
+	resp.Diagnostics.Append(diagsReq...)
+	if resp.Diagnostics.HasError() {
+		return
+	}
 
 	tflog.Trace(ctx, "reading a resource", map[string]any{"type": "k8s_cluster_onboarding_credential", "id": protoReq.Id})
 
@@ -888,7 +961,11 @@ func (r *K8SClusterOnboardingCredentialResource) Update(ctx context.Context, req
 		return
 	}
 
-	protoReq := NewUpdateK8SClusterOnboardingCredentialRequest(&beforeData, &afterData)
+	protoReq, diags := NewUpdateK8SClusterOnboardingCredentialRequest(ctx, &beforeData, &afterData)
+	resp.Diagnostics.Append(diags...)
+	if resp.Diagnostics.HasError() {
+		return
+	}
 
 	tflog.Trace(ctx, "updating a resource", map[string]any{"type": "k8s_cluster_onboarding_credential", "id": protoReq.Id, "update_mask": protoReq.UpdateMask.Paths})
 
@@ -922,7 +999,11 @@ func (r *K8SClusterOnboardingCredentialResource) Delete(ctx context.Context, req
 		return
 	}
 
-	protoReq := NewDeleteK8SClusterOnboardingCredentialRequest(&data)
+	protoReq, diags := NewDeleteK8SClusterOnboardingCredentialRequest(ctx, &data)
+	resp.Diagnostics.Append(diags...)
+	if resp.Diagnostics.HasError() {
+		return
+	}
 
 	tflog.Trace(ctx, "deleting a resource", map[string]any{"type": "k8s_cluster_onboarding_credential", "id": protoReq.Id})
 
@@ -988,7 +1069,8 @@ type K8SClusterOnboardingCredentialResourceModel struct {
 	Name          types.String `tfsdk:"name"`
 }
 
-func NewCreateAwsAccountRequest(data *AwsAccountResourceModel) *configv1.CreateAwsAccountRequest {
+func NewCreateAwsAccountRequest(ctx context.Context, data *AwsAccountResourceModel) (*configv1.CreateAwsAccountRequest, diag.Diagnostics) {
+	var diags diag.Diagnostics
 	proto := &configv1.CreateAwsAccountRequest{}
 	if !data.AccountId.IsUnknown() && !data.AccountId.IsNull() {
 		var dataValue attr.Value = data.AccountId
@@ -1026,10 +1108,11 @@ func NewCreateAwsAccountRequest(data *AwsAccountResourceModel) *configv1.CreateA
 		protoValue = dataValue.(types.String).ValueString()
 		proto.RoleExternalId = protoValue
 	}
-	return proto
+	return proto, diags
 }
 
-func NewReadAwsAccountRequest(data *AwsAccountResourceModel) *configv1.ReadAwsAccountRequest {
+func NewReadAwsAccountRequest(ctx context.Context, data *AwsAccountResourceModel) (*configv1.ReadAwsAccountRequest, diag.Diagnostics) {
+	var diags diag.Diagnostics
 	proto := &configv1.ReadAwsAccountRequest{}
 	if !data.Id.IsUnknown() && !data.Id.IsNull() {
 		var dataValue attr.Value = data.Id
@@ -1037,10 +1120,11 @@ func NewReadAwsAccountRequest(data *AwsAccountResourceModel) *configv1.ReadAwsAc
 		protoValue = dataValue.(types.String).ValueString()
 		proto.Id = protoValue
 	}
-	return proto
+	return proto, diags
 }
 
-func NewDeleteAwsAccountRequest(data *AwsAccountResourceModel) *configv1.DeleteAwsAccountRequest {
+func NewDeleteAwsAccountRequest(ctx context.Context, data *AwsAccountResourceModel) (*configv1.DeleteAwsAccountRequest, diag.Diagnostics) {
+	var diags diag.Diagnostics
 	proto := &configv1.DeleteAwsAccountRequest{}
 	if !data.Id.IsUnknown() && !data.Id.IsNull() {
 		var dataValue attr.Value = data.Id
@@ -1048,10 +1132,11 @@ func NewDeleteAwsAccountRequest(data *AwsAccountResourceModel) *configv1.DeleteA
 		protoValue = dataValue.(types.String).ValueString()
 		proto.Id = protoValue
 	}
-	return proto
+	return proto, diags
 }
 
-func NewCreateAwsFlowLogsS3BucketRequest(data *AwsFlowLogsS3BucketResourceModel) *configv1.CreateAwsFlowLogsS3BucketRequest {
+func NewCreateAwsFlowLogsS3BucketRequest(ctx context.Context, data *AwsFlowLogsS3BucketResourceModel) (*configv1.CreateAwsFlowLogsS3BucketRequest, diag.Diagnostics) {
+	var diags diag.Diagnostics
 	proto := &configv1.CreateAwsFlowLogsS3BucketRequest{}
 	if !data.AccountId.IsUnknown() && !data.AccountId.IsNull() {
 		var dataValue attr.Value = data.AccountId
@@ -1065,10 +1150,11 @@ func NewCreateAwsFlowLogsS3BucketRequest(data *AwsFlowLogsS3BucketResourceModel)
 		protoValue = dataValue.(types.String).ValueString()
 		proto.S3BucketArn = protoValue
 	}
-	return proto
+	return proto, diags
 }
 
-func NewReadAwsFlowLogsS3BucketRequest(data *AwsFlowLogsS3BucketResourceModel) *configv1.ReadAwsFlowLogsS3BucketRequest {
+func NewReadAwsFlowLogsS3BucketRequest(ctx context.Context, data *AwsFlowLogsS3BucketResourceModel) (*configv1.ReadAwsFlowLogsS3BucketRequest, diag.Diagnostics) {
+	var diags diag.Diagnostics
 	proto := &configv1.ReadAwsFlowLogsS3BucketRequest{}
 	if !data.Id.IsUnknown() && !data.Id.IsNull() {
 		var dataValue attr.Value = data.Id
@@ -1076,10 +1162,11 @@ func NewReadAwsFlowLogsS3BucketRequest(data *AwsFlowLogsS3BucketResourceModel) *
 		protoValue = dataValue.(types.String).ValueString()
 		proto.Id = protoValue
 	}
-	return proto
+	return proto, diags
 }
 
-func NewDeleteAwsFlowLogsS3BucketRequest(data *AwsFlowLogsS3BucketResourceModel) *configv1.DeleteAwsFlowLogsS3BucketRequest {
+func NewDeleteAwsFlowLogsS3BucketRequest(ctx context.Context, data *AwsFlowLogsS3BucketResourceModel) (*configv1.DeleteAwsFlowLogsS3BucketRequest, diag.Diagnostics) {
+	var diags diag.Diagnostics
 	proto := &configv1.DeleteAwsFlowLogsS3BucketRequest{}
 	if !data.Id.IsUnknown() && !data.Id.IsNull() {
 		var dataValue attr.Value = data.Id
@@ -1087,10 +1174,11 @@ func NewDeleteAwsFlowLogsS3BucketRequest(data *AwsFlowLogsS3BucketResourceModel)
 		protoValue = dataValue.(types.String).ValueString()
 		proto.Id = protoValue
 	}
-	return proto
+	return proto, diags
 }
 
-func NewCreateAzureFlowLogsStorageAccountRequest(data *AzureFlowLogsStorageAccountResourceModel) *configv1.CreateAzureFlowLogsStorageAccountRequest {
+func NewCreateAzureFlowLogsStorageAccountRequest(ctx context.Context, data *AzureFlowLogsStorageAccountResourceModel) (*configv1.CreateAzureFlowLogsStorageAccountRequest, diag.Diagnostics) {
+	var diags diag.Diagnostics
 	proto := &configv1.CreateAzureFlowLogsStorageAccountRequest{}
 	if !data.StorageAccountResourceId.IsUnknown() && !data.StorageAccountResourceId.IsNull() {
 		var dataValue attr.Value = data.StorageAccountResourceId
@@ -1104,10 +1192,11 @@ func NewCreateAzureFlowLogsStorageAccountRequest(data *AzureFlowLogsStorageAccou
 		protoValue = dataValue.(types.String).ValueString()
 		proto.SubscriptionId = protoValue
 	}
-	return proto
+	return proto, diags
 }
 
-func NewReadAzureFlowLogsStorageAccountRequest(data *AzureFlowLogsStorageAccountResourceModel) *configv1.ReadAzureFlowLogsStorageAccountRequest {
+func NewReadAzureFlowLogsStorageAccountRequest(ctx context.Context, data *AzureFlowLogsStorageAccountResourceModel) (*configv1.ReadAzureFlowLogsStorageAccountRequest, diag.Diagnostics) {
+	var diags diag.Diagnostics
 	proto := &configv1.ReadAzureFlowLogsStorageAccountRequest{}
 	if !data.Id.IsUnknown() && !data.Id.IsNull() {
 		var dataValue attr.Value = data.Id
@@ -1115,10 +1204,11 @@ func NewReadAzureFlowLogsStorageAccountRequest(data *AzureFlowLogsStorageAccount
 		protoValue = dataValue.(types.String).ValueString()
 		proto.Id = protoValue
 	}
-	return proto
+	return proto, diags
 }
 
-func NewDeleteAzureFlowLogsStorageAccountRequest(data *AzureFlowLogsStorageAccountResourceModel) *configv1.DeleteAzureFlowLogsStorageAccountRequest {
+func NewDeleteAzureFlowLogsStorageAccountRequest(ctx context.Context, data *AzureFlowLogsStorageAccountResourceModel) (*configv1.DeleteAzureFlowLogsStorageAccountRequest, diag.Diagnostics) {
+	var diags diag.Diagnostics
 	proto := &configv1.DeleteAzureFlowLogsStorageAccountRequest{}
 	if !data.Id.IsUnknown() && !data.Id.IsNull() {
 		var dataValue attr.Value = data.Id
@@ -1126,10 +1216,11 @@ func NewDeleteAzureFlowLogsStorageAccountRequest(data *AzureFlowLogsStorageAccou
 		protoValue = dataValue.(types.String).ValueString()
 		proto.Id = protoValue
 	}
-	return proto
+	return proto, diags
 }
 
-func NewCreateAzureSubscriptionRequest(data *AzureSubscriptionResourceModel) *configv1.CreateAzureSubscriptionRequest {
+func NewCreateAzureSubscriptionRequest(ctx context.Context, data *AzureSubscriptionResourceModel) (*configv1.CreateAzureSubscriptionRequest, diag.Diagnostics) {
+	var diags diag.Diagnostics
 	proto := &configv1.CreateAzureSubscriptionRequest{}
 	if !data.ClientId.IsUnknown() && !data.ClientId.IsNull() {
 		var dataValue attr.Value = data.ClientId
@@ -1167,10 +1258,11 @@ func NewCreateAzureSubscriptionRequest(data *AzureSubscriptionResourceModel) *co
 		protoValue = dataValue.(types.String).ValueString()
 		proto.TenantId = protoValue
 	}
-	return proto
+	return proto, diags
 }
 
-func NewReadAzureSubscriptionRequest(data *AzureSubscriptionResourceModel) *configv1.ReadAzureSubscriptionRequest {
+func NewReadAzureSubscriptionRequest(ctx context.Context, data *AzureSubscriptionResourceModel) (*configv1.ReadAzureSubscriptionRequest, diag.Diagnostics) {
+	var diags diag.Diagnostics
 	proto := &configv1.ReadAzureSubscriptionRequest{}
 	if !data.Id.IsUnknown() && !data.Id.IsNull() {
 		var dataValue attr.Value = data.Id
@@ -1178,10 +1270,11 @@ func NewReadAzureSubscriptionRequest(data *AzureSubscriptionResourceModel) *conf
 		protoValue = dataValue.(types.String).ValueString()
 		proto.Id = protoValue
 	}
-	return proto
+	return proto, diags
 }
 
-func NewDeleteAzureSubscriptionRequest(data *AzureSubscriptionResourceModel) *configv1.DeleteAzureSubscriptionRequest {
+func NewDeleteAzureSubscriptionRequest(ctx context.Context, data *AzureSubscriptionResourceModel) (*configv1.DeleteAzureSubscriptionRequest, diag.Diagnostics) {
+	var diags diag.Diagnostics
 	proto := &configv1.DeleteAzureSubscriptionRequest{}
 	if !data.Id.IsUnknown() && !data.Id.IsNull() {
 		var dataValue attr.Value = data.Id
@@ -1189,10 +1282,11 @@ func NewDeleteAzureSubscriptionRequest(data *AzureSubscriptionResourceModel) *co
 		protoValue = dataValue.(types.String).ValueString()
 		proto.Id = protoValue
 	}
-	return proto
+	return proto, diags
 }
 
-func NewCreateK8SClusterOnboardingCredentialRequest(data *K8SClusterOnboardingCredentialResourceModel) *configv1.CreateK8SClusterOnboardingCredentialRequest {
+func NewCreateK8SClusterOnboardingCredentialRequest(ctx context.Context, data *K8SClusterOnboardingCredentialResourceModel) (*configv1.CreateK8SClusterOnboardingCredentialRequest, diag.Diagnostics) {
+	var diags diag.Diagnostics
 	proto := &configv1.CreateK8SClusterOnboardingCredentialRequest{}
 	if !data.Description.IsUnknown() && !data.Description.IsNull() {
 		var dataValue attr.Value = data.Description
@@ -1212,10 +1306,11 @@ func NewCreateK8SClusterOnboardingCredentialRequest(data *K8SClusterOnboardingCr
 		protoValue = dataValue.(types.String).ValueString()
 		proto.Name = protoValue
 	}
-	return proto
+	return proto, diags
 }
 
-func NewReadK8SClusterOnboardingCredentialRequest(data *K8SClusterOnboardingCredentialResourceModel) *configv1.ReadK8SClusterOnboardingCredentialRequest {
+func NewReadK8SClusterOnboardingCredentialRequest(ctx context.Context, data *K8SClusterOnboardingCredentialResourceModel) (*configv1.ReadK8SClusterOnboardingCredentialRequest, diag.Diagnostics) {
+	var diags diag.Diagnostics
 	proto := &configv1.ReadK8SClusterOnboardingCredentialRequest{}
 	if !data.Id.IsUnknown() && !data.Id.IsNull() {
 		var dataValue attr.Value = data.Id
@@ -1223,10 +1318,11 @@ func NewReadK8SClusterOnboardingCredentialRequest(data *K8SClusterOnboardingCred
 		protoValue = dataValue.(types.String).ValueString()
 		proto.Id = protoValue
 	}
-	return proto
+	return proto, diags
 }
 
-func NewDeleteK8SClusterOnboardingCredentialRequest(data *K8SClusterOnboardingCredentialResourceModel) *configv1.DeleteK8SClusterOnboardingCredentialRequest {
+func NewDeleteK8SClusterOnboardingCredentialRequest(ctx context.Context, data *K8SClusterOnboardingCredentialResourceModel) (*configv1.DeleteK8SClusterOnboardingCredentialRequest, diag.Diagnostics) {
+	var diags diag.Diagnostics
 	proto := &configv1.DeleteK8SClusterOnboardingCredentialRequest{}
 	if !data.Id.IsUnknown() && !data.Id.IsNull() {
 		var dataValue attr.Value = data.Id
@@ -1234,10 +1330,11 @@ func NewDeleteK8SClusterOnboardingCredentialRequest(data *K8SClusterOnboardingCr
 		protoValue = dataValue.(types.String).ValueString()
 		proto.Id = protoValue
 	}
-	return proto
+	return proto, diags
 }
 
-func NewUpdateAwsAccountRequest(beforeData, afterData *AwsAccountResourceModel) *configv1.UpdateAwsAccountRequest {
+func NewUpdateAwsAccountRequest(ctx context.Context, beforeData, afterData *AwsAccountResourceModel) (*configv1.UpdateAwsAccountRequest, diag.Diagnostics) {
+	var diags diag.Diagnostics
 	proto := &configv1.UpdateAwsAccountRequest{}
 	proto.UpdateMask, _ = fieldmaskpb.New(proto)
 	proto.Id = beforeData.Id.ValueString()
@@ -1250,24 +1347,27 @@ func NewUpdateAwsAccountRequest(beforeData, afterData *AwsAccountResourceModel) 
 			proto.Name = protoValue
 		}
 	}
-	return proto
+	return proto, diags
 }
 
-func NewUpdateAwsFlowLogsS3BucketRequest(beforeData, afterData *AwsFlowLogsS3BucketResourceModel) *configv1.UpdateAwsFlowLogsS3BucketRequest {
+func NewUpdateAwsFlowLogsS3BucketRequest(ctx context.Context, beforeData, afterData *AwsFlowLogsS3BucketResourceModel) (*configv1.UpdateAwsFlowLogsS3BucketRequest, diag.Diagnostics) {
+	var diags diag.Diagnostics
 	proto := &configv1.UpdateAwsFlowLogsS3BucketRequest{}
 	proto.UpdateMask, _ = fieldmaskpb.New(proto)
 	proto.Id = beforeData.Id.ValueString()
-	return proto
+	return proto, diags
 }
 
-func NewUpdateAzureFlowLogsStorageAccountRequest(beforeData, afterData *AzureFlowLogsStorageAccountResourceModel) *configv1.UpdateAzureFlowLogsStorageAccountRequest {
+func NewUpdateAzureFlowLogsStorageAccountRequest(ctx context.Context, beforeData, afterData *AzureFlowLogsStorageAccountResourceModel) (*configv1.UpdateAzureFlowLogsStorageAccountRequest, diag.Diagnostics) {
+	var diags diag.Diagnostics
 	proto := &configv1.UpdateAzureFlowLogsStorageAccountRequest{}
 	proto.UpdateMask, _ = fieldmaskpb.New(proto)
 	proto.Id = beforeData.Id.ValueString()
-	return proto
+	return proto, diags
 }
 
-func NewUpdateAzureSubscriptionRequest(beforeData, afterData *AzureSubscriptionResourceModel) *configv1.UpdateAzureSubscriptionRequest {
+func NewUpdateAzureSubscriptionRequest(ctx context.Context, beforeData, afterData *AzureSubscriptionResourceModel) (*configv1.UpdateAzureSubscriptionRequest, diag.Diagnostics) {
+	var diags diag.Diagnostics
 	proto := &configv1.UpdateAzureSubscriptionRequest{}
 	proto.UpdateMask, _ = fieldmaskpb.New(proto)
 	proto.Id = beforeData.Id.ValueString()
@@ -1280,10 +1380,11 @@ func NewUpdateAzureSubscriptionRequest(beforeData, afterData *AzureSubscriptionR
 			proto.Name = protoValue
 		}
 	}
-	return proto
+	return proto, diags
 }
 
-func NewUpdateK8SClusterOnboardingCredentialRequest(beforeData, afterData *K8SClusterOnboardingCredentialResourceModel) *configv1.UpdateK8SClusterOnboardingCredentialRequest {
+func NewUpdateK8SClusterOnboardingCredentialRequest(ctx context.Context, beforeData, afterData *K8SClusterOnboardingCredentialResourceModel) (*configv1.UpdateK8SClusterOnboardingCredentialRequest, diag.Diagnostics) {
+	var diags diag.Diagnostics
 	proto := &configv1.UpdateK8SClusterOnboardingCredentialRequest{}
 	proto.UpdateMask, _ = fieldmaskpb.New(proto)
 	proto.Id = beforeData.Id.ValueString()
@@ -1305,7 +1406,7 @@ func NewUpdateK8SClusterOnboardingCredentialRequest(beforeData, afterData *K8SCl
 			proto.Name = protoValue
 		}
 	}
-	return proto
+	return proto, diags
 }
 func CopyCreateAwsAccountResponse(dst *AwsAccountResourceModel, src *configv1.CreateAwsAccountResponse) {
 	dst.Id = types.StringValue(src.Id)

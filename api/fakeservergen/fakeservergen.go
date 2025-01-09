@@ -158,7 +158,7 @@ func (s *{{.ServerTypeName}}) {{$resource.UpdateRPC.Name}}(ctx context.Context, 
 				zap.Strings("updateMaskPaths", updateMaskPaths),
 				zap.String("invalidUpdateMaskPath", path),
 			)
-			return nil, status.Errorf(codes.InvalidArgument, "invalid path in update_mask for aws_account: %s", path)
+			return nil, status.Errorf(codes.InvalidArgument, "invalid path in update_mask for {{$resource.Name}}: %s", path)
 		}
 	}
 	resp := &configv1.{{$resource.UpdateRPC.ResponseMessage.Name}}{
@@ -446,10 +446,17 @@ func TerraformAttributeTypeToProtoType(nestedMessageNamePrefix, attrName string,
 		return TerraformRepeatedAttributeTypeToProtoType(nestedMessageNamePrefix, attrName, value.ElementType())
 	case types.SetType:
 		return TerraformRepeatedAttributeTypeToProtoType(nestedMessageNamePrefix, attrName, value.ElementType())
-	// TODO: Add support for nested objects.
+	case types.ObjectType:
+		return TerraformObjectAttributeTypeToProtoType(nestedMessageNamePrefix, attrName)
 	default:
 		return "", fmt.Errorf("unsupported Terraform type: %s", attrType.String())
 	}
+}
+
+func TerraformObjectAttributeTypeToProtoType(nestedMessageNamePrefix, attrName string) (t string, err error) {
+	nestedMessageName := nestedMessageNamePrefix + "_" + schema.ProtoMessageName(attrName)
+
+	return "*" + nestedMessageName, nil
 }
 
 func TerraformRepeatedAttributeTypeToProtoType(nestedMessageNamePrefix, attrName string, elementType attr.Type) (t string, err error) {

@@ -7,6 +7,7 @@ import (
 	"slices"
 
 	"github.com/gogo/protobuf/protoc-gen-gogo/generator"
+	"github.com/hashicorp/terraform-plugin-framework/attr"
 	datasource_schema "github.com/hashicorp/terraform-plugin-framework/datasource/schema"
 	resource_schema "github.com/hashicorp/terraform-plugin-framework/resource/schema"
 	"golang.org/x/exp/maps"
@@ -27,6 +28,13 @@ func ProtoMessageName(tfName string) string {
 
 // SortResourceAttributes returns the sorted names of a set of resource attributes.
 func SortResourceAttributes(attrs map[string]resource_schema.Attribute) []string {
+	names := maps.Keys(attrs)
+	sortAttributeNames(names)
+
+	return names
+}
+
+func SortObjectAttributes(attrs map[string]attr.Type) []string {
 	names := maps.Keys(attrs)
 	sortAttributeNames(names)
 

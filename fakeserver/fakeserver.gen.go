@@ -301,7 +301,7 @@ func (s *FakeConfigServer) UpdateAwsFlowLogsS3Bucket(ctx context.Context, req *c
 				zap.Strings("updateMaskPaths", updateMaskPaths),
 				zap.String("invalidUpdateMaskPath", path),
 			)
-			return nil, status.Errorf(codes.InvalidArgument, "invalid path in update_mask for aws_account: %s", path)
+			return nil, status.Errorf(codes.InvalidArgument, "invalid path in update_mask for aws_flow_logs_s3_bucket: %s", path)
 		}
 	}
 	resp := &configv1.UpdateAwsFlowLogsS3BucketResponse{
@@ -420,7 +420,7 @@ func (s *FakeConfigServer) UpdateAzureFlowLogsStorageAccount(ctx context.Context
 				zap.Strings("updateMaskPaths", updateMaskPaths),
 				zap.String("invalidUpdateMaskPath", path),
 			)
-			return nil, status.Errorf(codes.InvalidArgument, "invalid path in update_mask for aws_account: %s", path)
+			return nil, status.Errorf(codes.InvalidArgument, "invalid path in update_mask for azure_flow_logs_storage_account: %s", path)
 		}
 	}
 	resp := &configv1.UpdateAzureFlowLogsStorageAccountResponse{
@@ -551,7 +551,7 @@ func (s *FakeConfigServer) UpdateAzureSubscription(ctx context.Context, req *con
 				zap.Strings("updateMaskPaths", updateMaskPaths),
 				zap.String("invalidUpdateMaskPath", path),
 			)
-			return nil, status.Errorf(codes.InvalidArgument, "invalid path in update_mask for aws_account: %s", path)
+			return nil, status.Errorf(codes.InvalidArgument, "invalid path in update_mask for azure_subscription: %s", path)
 		}
 	}
 	resp := &configv1.UpdateAzureSubscriptionResponse{
@@ -685,7 +685,7 @@ func (s *FakeConfigServer) UpdateK8SClusterOnboardingCredential(ctx context.Cont
 				zap.Strings("updateMaskPaths", updateMaskPaths),
 				zap.String("invalidUpdateMaskPath", path),
 			)
-			return nil, status.Errorf(codes.InvalidArgument, "invalid path in update_mask for aws_account: %s", path)
+			return nil, status.Errorf(codes.InvalidArgument, "invalid path in update_mask for k8s_cluster_onboarding_credential: %s", path)
 		}
 	}
 	resp := &configv1.UpdateK8SClusterOnboardingCredentialResponse{

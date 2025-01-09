@@ -67,6 +67,14 @@ func AttributeIsOptional(attribute any) bool { //nolint: gocyclo
 		return a.Default == nil
 	case resource_schema.DynamicAttribute:
 		return a.Default == nil
+	case resource_schema.ListNestedAttribute:
+		return a.Default == nil
+	case resource_schema.MapNestedAttribute:
+		return a.Default == nil
+	case resource_schema.SingleNestedAttribute:
+		return a.Default == nil
+	case resource_schema.SetNestedAttribute:
+		return a.Default == nil
 	case BoolResourceAttributeWithMode:
 		return a.Default == nil
 	case Float64ResourceAttributeWithMode:

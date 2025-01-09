@@ -54,3 +54,6 @@ reset: clean generate build
 
 lint: 
 	golangci-lint run
+
+tests:
+	go test -v ./...
