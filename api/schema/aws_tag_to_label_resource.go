@@ -17,13 +17,29 @@ var (
 			Description: "Maps AWS account tags to CloudSecure labels.",
 			Attributes: map[string]resource_schema.Attribute{
 				IDFieldName: idAttribute,
-				"key": resource_schema.StringAttribute{
-					MarkdownDescription: "CloudSecure label key.",
-					Required:            true,
+				"key": StringResourceAttributeWithMode{
+					StringAttribute: resource_schema.StringAttribute{
+						Description:   "Key of the created CloudSecure labels.",
+						Required:      true,
+						PlanModifiers: []planmodifier.String{
+							stringplanmodifier.RequiresReplace(),
+						},
+					},
+					attributeWithMode: attributeWithMode{
+						Mode: ImmutableAttributeMode,
+					},
 				},
-				"name": resource_schema.StringAttribute{
-					MarkdownDescription: "CloudSecure label display name.",
-					Required:            true,
+				"name": StringResourceAttributeWithMode{
+					StringAttribute: resource_schema.StringAttribute{
+						Description:   "Display name of the created CloudSecure labels.",
+						Required:      true,
+						PlanModifiers: []planmodifier.String{
+							stringplanmodifier.RequiresReplace(),
+						},
+					},
+					attributeWithMode: attributeWithMode{
+						Mode: ImmutableAttributeMode,
+					},
 				},
 				"icon": resource_schema.ObjectAttribute{
 					AttributeTypes: map[string]attr.Type{
@@ -36,7 +52,7 @@ var (
 				},
 				"cloud_tags": resource_schema.ListAttribute{
 					Required:    true,
-					Description: "List of AWS account tags to map to the CloudSecure label.",
+					Description: "List of AWS account tags to map to CloudSecure labels with the specified key. The values of the created labels correspond to the values of the tags.",
 					ElementType: types.ObjectType{
 						AttrTypes: map[string]attr.Type{
 							"key":   types.StringType,
