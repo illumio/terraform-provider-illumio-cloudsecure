@@ -22,6 +22,10 @@ service ConfigService {
   rpc ReadAzureSubscription(ReadAzureSubscriptionRequest) returns (ReadAzureSubscriptionResponse);
   rpc UpdateAzureSubscription(UpdateAzureSubscriptionRequest) returns (UpdateAzureSubscriptionResponse);
   rpc DeleteAzureSubscription(DeleteAzureSubscriptionRequest) returns (google.protobuf.Empty);
+  rpc CreateDeployment(CreateDeploymentRequest) returns (CreateDeploymentResponse);
+  rpc ReadDeployment(ReadDeploymentRequest) returns (ReadDeploymentResponse);
+  rpc UpdateDeployment(UpdateDeploymentRequest) returns (UpdateDeploymentResponse);
+  rpc DeleteDeployment(DeleteDeploymentRequest) returns (google.protobuf.Empty);
   rpc CreateK8SClusterOnboardingCredential(CreateK8SClusterOnboardingCredentialRequest) returns (CreateK8SClusterOnboardingCredentialResponse);
   rpc ReadK8SClusterOnboardingCredential(ReadK8SClusterOnboardingCredentialRequest) returns (ReadK8SClusterOnboardingCredentialResponse);
   rpc UpdateK8SClusterOnboardingCredential(UpdateK8SClusterOnboardingCredentialRequest) returns (UpdateK8SClusterOnboardingCredentialResponse);
@@ -173,6 +177,124 @@ message UpdateAzureSubscriptionResponse {
   string tenant_id = 7;
 }
 message DeleteAzureSubscriptionRequest {
+  string id = 1;
+}
+message Deployment_AwsTags {
+  string key = 1;
+  string value = 2;
+}
+message Deployment_AzureTags {
+  string key = 1;
+  string value = 2;
+}
+message Deployment_OciTags {
+  string key = 1;
+  string value = 2;
+}
+message CreateDeploymentRequest {
+  repeated string aws_account_ids = 2;
+  repeated string aws_regions = 3;
+  repeated string aws_subnet_ids = 4;
+  repeated Deployment_AwsTags aws_tags = 5;
+  repeated string aws_vpc_ids = 6;
+  repeated string azure_regions = 7;
+  repeated string azure_subnet_ids = 8;
+  repeated string azure_subscription_ids = 9;
+  repeated Deployment_AzureTags azure_tags = 10;
+  repeated string azure_vnet_ids = 11;
+  optional string description = 12;
+  string name = 13;
+  repeated string oci_regions = 14;
+  repeated string oci_subnet_ids = 15;
+  repeated Deployment_OciTags oci_tags = 16;
+  repeated string oci_tenant_ids = 17;
+  repeated string oci_vcn_ids = 18;
+}
+message CreateDeploymentResponse {
+  string id = 1;
+  repeated string aws_account_ids = 2;
+  repeated string aws_regions = 3;
+  repeated string aws_subnet_ids = 4;
+  repeated Deployment_AwsTags aws_tags = 5;
+  repeated string aws_vpc_ids = 6;
+  repeated string azure_regions = 7;
+  repeated string azure_subnet_ids = 8;
+  repeated string azure_subscription_ids = 9;
+  repeated Deployment_AzureTags azure_tags = 10;
+  repeated string azure_vnet_ids = 11;
+  optional string description = 12;
+  string name = 13;
+  repeated string oci_regions = 14;
+  repeated string oci_subnet_ids = 15;
+  repeated Deployment_OciTags oci_tags = 16;
+  repeated string oci_tenant_ids = 17;
+  repeated string oci_vcn_ids = 18;
+}
+message ReadDeploymentRequest {
+  string id = 1;
+}
+message ReadDeploymentResponse {
+  string id = 1;
+  repeated string aws_account_ids = 2;
+  repeated string aws_regions = 3;
+  repeated string aws_subnet_ids = 4;
+  repeated Deployment_AwsTags aws_tags = 5;
+  repeated string aws_vpc_ids = 6;
+  repeated string azure_regions = 7;
+  repeated string azure_subnet_ids = 8;
+  repeated string azure_subscription_ids = 9;
+  repeated Deployment_AzureTags azure_tags = 10;
+  repeated string azure_vnet_ids = 11;
+  optional string description = 12;
+  string name = 13;
+  repeated string oci_regions = 14;
+  repeated string oci_subnet_ids = 15;
+  repeated Deployment_OciTags oci_tags = 16;
+  repeated string oci_tenant_ids = 17;
+  repeated string oci_vcn_ids = 18;
+}
+message UpdateDeploymentRequest {
+  string id = 1;
+  repeated string aws_account_ids = 2;
+  repeated string aws_regions = 3;
+  repeated string aws_subnet_ids = 4;
+  repeated Deployment_AwsTags aws_tags = 5;
+  repeated string aws_vpc_ids = 6;
+  repeated string azure_regions = 7;
+  repeated string azure_subnet_ids = 8;
+  repeated string azure_subscription_ids = 9;
+  repeated Deployment_AzureTags azure_tags = 10;
+  repeated string azure_vnet_ids = 11;
+  optional string description = 12;
+  string name = 13;
+  repeated string oci_regions = 14;
+  repeated string oci_subnet_ids = 15;
+  repeated Deployment_OciTags oci_tags = 16;
+  repeated string oci_tenant_ids = 17;
+  repeated string oci_vcn_ids = 18;
+  google.protobuf.FieldMask update_mask = 19;
+}
+message UpdateDeploymentResponse {
+  string id = 1;
+  repeated string aws_account_ids = 2;
+  repeated string aws_regions = 3;
+  repeated string aws_subnet_ids = 4;
+  repeated Deployment_AwsTags aws_tags = 5;
+  repeated string aws_vpc_ids = 6;
+  repeated string azure_regions = 7;
+  repeated string azure_subnet_ids = 8;
+  repeated string azure_subscription_ids = 9;
+  repeated Deployment_AzureTags azure_tags = 10;
+  repeated string azure_vnet_ids = 11;
+  optional string description = 12;
+  string name = 13;
+  repeated string oci_regions = 14;
+  repeated string oci_subnet_ids = 15;
+  repeated Deployment_OciTags oci_tags = 16;
+  repeated string oci_tenant_ids = 17;
+  repeated string oci_vcn_ids = 18;
+}
+message DeleteDeploymentRequest {
   string id = 1;
 }
 message CreateK8SClusterOnboardingCredentialRequest {

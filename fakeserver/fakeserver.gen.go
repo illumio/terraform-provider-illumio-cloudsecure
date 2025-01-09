@@ -28,6 +28,8 @@ type FakeConfigServer struct {
 	AzureFlowLogsStorageAccountMutex    sync.RWMutex
 	AzureSubscriptionMap                map[string]*AzureSubscription
 	AzureSubscriptionMutex              sync.RWMutex
+	DeploymentMap                       map[string]*Deployment
+	DeploymentMutex                     sync.RWMutex
 	K8SClusterOnboardingCredentialMap   map[string]*K8SClusterOnboardingCredential
 	K8SClusterOnboardingCredentialMutex sync.RWMutex
 	TagToLabelMap                       map[string]*TagToLabel
@@ -44,6 +46,7 @@ func NewFakeConfigServer(logger *zap.Logger) configv1.ConfigServiceServer {
 		AwsFlowLogsS3BucketMap:            make(map[string]*AwsFlowLogsS3Bucket),
 		AzureFlowLogsStorageAccountMap:    make(map[string]*AzureFlowLogsStorageAccount),
 		AzureSubscriptionMap:              make(map[string]*AzureSubscription),
+		DeploymentMap:                     make(map[string]*Deployment),
 		K8SClusterOnboardingCredentialMap: make(map[string]*K8SClusterOnboardingCredential),
 		TagToLabelMap:                     make(map[string]*TagToLabel),
 	}
@@ -79,6 +82,27 @@ type AzureSubscription struct {
 	Name           string
 	SubscriptionId string
 	TenantId       string
+}
+
+type Deployment struct {
+	Id                   string
+	AwsAccountIds        []string
+	AwsRegions           []string
+	AwsSubnetIds         []string
+	AwsTags              []*configv1.Deployment_AwsTags
+	AwsVpcIds            []string
+	AzureRegions         []string
+	AzureSubnetIds       []string
+	AzureSubscriptionIds []string
+	AzureTags            []*configv1.Deployment_AzureTags
+	AzureVnetIds         []string
+	Description          *string
+	Name                 string
+	OciRegions           []string
+	OciSubnetIds         []string
+	OciTags              []*configv1.Deployment_OciTags
+	OciTenantIds         []string
+	OciVcnIds            []string
 }
 
 type K8SClusterOnboardingCredential struct {
@@ -602,6 +626,219 @@ func (s *FakeConfigServer) DeleteAzureSubscription(ctx context.Context, req *con
 	s.Logger.Info("deleted resource",
 		zap.String("type", "azure_subscription"),
 		zap.String("method", "DeleteAzureSubscription"),
+		zap.String("id", id),
+	)
+	return &emptypb.Empty{}, nil
+}
+func (s *FakeConfigServer) CreateDeployment(ctx context.Context, req *configv1.CreateDeploymentRequest) (*configv1.CreateDeploymentResponse, error) {
+	id := uuid.New().String()
+	model := &Deployment{
+		Id:                   id,
+		AwsAccountIds:        req.AwsAccountIds,
+		AwsRegions:           req.AwsRegions,
+		AwsSubnetIds:         req.AwsSubnetIds,
+		AwsTags:              req.AwsTags,
+		AwsVpcIds:            req.AwsVpcIds,
+		AzureRegions:         req.AzureRegions,
+		AzureSubnetIds:       req.AzureSubnetIds,
+		AzureSubscriptionIds: req.AzureSubscriptionIds,
+		AzureTags:            req.AzureTags,
+		AzureVnetIds:         req.AzureVnetIds,
+		Description:          req.Description,
+		Name:                 req.Name,
+		OciRegions:           req.OciRegions,
+		OciSubnetIds:         req.OciSubnetIds,
+		OciTags:              req.OciTags,
+		OciTenantIds:         req.OciTenantIds,
+		OciVcnIds:            req.OciVcnIds,
+	}
+	resp := &configv1.CreateDeploymentResponse{
+		Id:                   id,
+		AwsAccountIds:        model.AwsAccountIds,
+		AwsRegions:           model.AwsRegions,
+		AwsSubnetIds:         model.AwsSubnetIds,
+		AwsTags:              model.AwsTags,
+		AwsVpcIds:            model.AwsVpcIds,
+		AzureRegions:         model.AzureRegions,
+		AzureSubnetIds:       model.AzureSubnetIds,
+		AzureSubscriptionIds: model.AzureSubscriptionIds,
+		AzureTags:            model.AzureTags,
+		AzureVnetIds:         model.AzureVnetIds,
+		Description:          model.Description,
+		Name:                 model.Name,
+		OciRegions:           model.OciRegions,
+		OciSubnetIds:         model.OciSubnetIds,
+		OciTags:              model.OciTags,
+		OciTenantIds:         model.OciTenantIds,
+		OciVcnIds:            model.OciVcnIds,
+	}
+	s.DeploymentMutex.Lock()
+	s.DeploymentMap[id] = model
+	s.DeploymentMutex.Unlock()
+	s.Logger.Info("created resource",
+		zap.String("type", "deployment"),
+		zap.String("method", "CreateDeployment"),
+		zap.String("id", id),
+	)
+	return resp, nil
+}
+
+func (s *FakeConfigServer) ReadDeployment(ctx context.Context, req *configv1.ReadDeploymentRequest) (*configv1.ReadDeploymentResponse, error) {
+	id := req.Id
+	s.DeploymentMutex.RLock()
+	model, found := s.DeploymentMap[id]
+	if !found {
+		s.DeploymentMutex.RUnlock()
+		s.Logger.Error("attempted to read resource with unknown id",
+			zap.String("type", "deployment"),
+			zap.String("method", "ReadDeployment"),
+			zap.String("id", id),
+		)
+		return nil, status.Errorf(codes.NotFound, "no deployment found with id %s", id)
+	}
+	resp := &configv1.ReadDeploymentResponse{
+		Id:                   id,
+		AwsAccountIds:        model.AwsAccountIds,
+		AwsRegions:           model.AwsRegions,
+		AwsSubnetIds:         model.AwsSubnetIds,
+		AwsTags:              model.AwsTags,
+		AwsVpcIds:            model.AwsVpcIds,
+		AzureRegions:         model.AzureRegions,
+		AzureSubnetIds:       model.AzureSubnetIds,
+		AzureSubscriptionIds: model.AzureSubscriptionIds,
+		AzureTags:            model.AzureTags,
+		AzureVnetIds:         model.AzureVnetIds,
+		Description:          model.Description,
+		Name:                 model.Name,
+		OciRegions:           model.OciRegions,
+		OciSubnetIds:         model.OciSubnetIds,
+		OciTags:              model.OciTags,
+		OciTenantIds:         model.OciTenantIds,
+		OciVcnIds:            model.OciVcnIds,
+	}
+	s.DeploymentMutex.RUnlock()
+	s.Logger.Info("read resource",
+		zap.String("type", "deployment"),
+		zap.String("method", "ReadDeployment"),
+		zap.String("id", id),
+	)
+	return resp, nil
+}
+
+func (s *FakeConfigServer) UpdateDeployment(ctx context.Context, req *configv1.UpdateDeploymentRequest) (*configv1.UpdateDeploymentResponse, error) {
+	id := req.Id
+	s.DeploymentMutex.Lock()
+	model, found := s.DeploymentMap[id]
+	if !found {
+		s.DeploymentMutex.Unlock()
+		s.Logger.Error("attempted to update resource with unknown id",
+			zap.String("type", "deployment"),
+			zap.String("method", "UpdateDeployment"),
+			zap.String("id", id),
+		)
+		return nil, status.Errorf(codes.NotFound, "no deployment found with id %s", id)
+	}
+	updateMask := req.UpdateMask
+	var updateMaskPaths []string
+	if updateMask != nil {
+		updateMaskPaths = updateMask.Paths
+	}
+	for _, path := range updateMaskPaths {
+		switch path {
+		case "aws_account_ids":
+			model.AwsAccountIds = req.AwsAccountIds
+		case "aws_regions":
+			model.AwsRegions = req.AwsRegions
+		case "aws_subnet_ids":
+			model.AwsSubnetIds = req.AwsSubnetIds
+		case "aws_tags":
+			model.AwsTags = req.AwsTags
+		case "aws_vpc_ids":
+			model.AwsVpcIds = req.AwsVpcIds
+		case "azure_regions":
+			model.AzureRegions = req.AzureRegions
+		case "azure_subnet_ids":
+			model.AzureSubnetIds = req.AzureSubnetIds
+		case "azure_subscription_ids":
+			model.AzureSubscriptionIds = req.AzureSubscriptionIds
+		case "azure_tags":
+			model.AzureTags = req.AzureTags
+		case "azure_vnet_ids":
+			model.AzureVnetIds = req.AzureVnetIds
+		case "description":
+			model.Description = req.Description
+		case "name":
+			model.Name = req.Name
+		case "oci_regions":
+			model.OciRegions = req.OciRegions
+		case "oci_subnet_ids":
+			model.OciSubnetIds = req.OciSubnetIds
+		case "oci_tags":
+			model.OciTags = req.OciTags
+		case "oci_tenant_ids":
+			model.OciTenantIds = req.OciTenantIds
+		case "oci_vcn_ids":
+			model.OciVcnIds = req.OciVcnIds
+		default:
+			s.AwsAccountMutex.Unlock()
+			s.Logger.Error("attempted to update resource using invalid update_mask path",
+				zap.String("type", "deployment"),
+				zap.String("method", "UpdateDeployment"),
+				zap.String("id", id),
+				zap.Strings("updateMaskPaths", updateMaskPaths),
+				zap.String("invalidUpdateMaskPath", path),
+			)
+			return nil, status.Errorf(codes.InvalidArgument, "invalid path in update_mask for deployment: %s", path)
+		}
+	}
+	resp := &configv1.UpdateDeploymentResponse{
+		Id:                   id,
+		AwsAccountIds:        model.AwsAccountIds,
+		AwsRegions:           model.AwsRegions,
+		AwsSubnetIds:         model.AwsSubnetIds,
+		AwsTags:              model.AwsTags,
+		AwsVpcIds:            model.AwsVpcIds,
+		AzureRegions:         model.AzureRegions,
+		AzureSubnetIds:       model.AzureSubnetIds,
+		AzureSubscriptionIds: model.AzureSubscriptionIds,
+		AzureTags:            model.AzureTags,
+		AzureVnetIds:         model.AzureVnetIds,
+		Description:          model.Description,
+		Name:                 model.Name,
+		OciRegions:           model.OciRegions,
+		OciSubnetIds:         model.OciSubnetIds,
+		OciTags:              model.OciTags,
+		OciTenantIds:         model.OciTenantIds,
+		OciVcnIds:            model.OciVcnIds,
+	}
+	s.DeploymentMutex.Unlock()
+	s.Logger.Info("updated resource",
+		zap.String("type", "deployment"),
+		zap.String("method", "UpdateDeployment"),
+		zap.String("id", id),
+		zap.Strings("updateMaskPaths", updateMaskPaths),
+	)
+	return resp, nil
+}
+
+func (s *FakeConfigServer) DeleteDeployment(ctx context.Context, req *configv1.DeleteDeploymentRequest) (*emptypb.Empty, error) {
+	id := req.Id
+	s.DeploymentMutex.Lock()
+	_, found := s.DeploymentMap[id]
+	if !found {
+		s.DeploymentMutex.Unlock()
+		s.Logger.Error("attempted to delete resource with unknown id",
+			zap.String("type", "deployment"),
+			zap.String("method", "DeleteDeployment"),
+			zap.String("id", id),
+		)
+		return nil, status.Errorf(codes.NotFound, "no deployment found with id %s", id)
+	}
+	delete(s.DeploymentMap, id)
+	s.DeploymentMutex.Unlock()
+	s.Logger.Info("deleted resource",
+		zap.String("type", "deployment"),
+		zap.String("method", "DeleteDeployment"),
 		zap.String("id", id),
 	)
 	return &emptypb.Empty{}, nil
