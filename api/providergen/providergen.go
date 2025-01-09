@@ -159,7 +159,11 @@ func (r *{{.TypeName}}) Read(ctx context.Context, req resource.ReadRequest, resp
 		return
 	}
 
-	protoReq := {{.NewReadRequestFuncName}}(ctx, &resp.Diagnostics, &data)
+	protoReq, diags := {{.NewReadRequestFuncName}}(ctx, &data)
+	resp.Diagnostics.Append(diags...)
+	if resp.Diagnostics.HasError() {
+		return
+	}
 
 	tflog.Trace(ctx, "reading a resource", map[string]any{"type": "{{.Name}}", "id": protoReq.{{.IdFieldName}}})
 
@@ -199,7 +203,11 @@ func (r *{{.TypeName}}) Update(ctx context.Context, req resource.UpdateRequest, 
 		return
 	}
 
-	protoReq := {{.NewUpdateRequestFuncName}}(ctx, &resp.Diagnostics, &beforeData, &afterData)
+	protoReq, diags := {{.NewUpdateRequestFuncName}}(ctx, &beforeData, &afterData)
+	resp.Diagnostics.Append(diags...)
+	if resp.Diagnostics.HasError() {
+		return
+	}
 
 	tflog.Trace(ctx, "updating a resource", map[string]any{"type": "{{.Name}}", "id": protoReq.{{.IdFieldName}}, "update_mask": protoReq.{{.UpdateMaskFieldName}}.Paths})
 
@@ -233,7 +241,11 @@ func (r *{{.TypeName}}) Delete(ctx context.Context, req resource.DeleteRequest, 
 		return
 	}
 
-	protoReq := {{.NewDeleteRequestFuncName}}(ctx, &resp.Diagnostics, &data)
+	protoReq, diags := {{.NewDeleteRequestFuncName}}(ctx, &data)
+	resp.Diagnostics.Append(diags...)
+	if resp.Diagnostics.HasError() {
+		return
+	}
 
 	tflog.Trace(ctx, "deleting a resource", map[string]any{"type": "{{.Name}}", "id": protoReq.{{.IdFieldName}}})
 
@@ -297,7 +309,8 @@ type {{.Name}} struct {
 {{- end}}
 {{- define "newRequestFunc"}}
 
-func {{.Name}}(ctx context.Context, diags *diag.Diagnostics, data *{{.ModelName}}) *configv1.{{.ProtoName}} {
+func {{.Name}}(ctx context.Context, data *{{.ModelName}}) (*configv1.{{.ProtoName}}, *diag.Diagnostics) {
+	var diags diag.Diagnostics
 	proto := &configv1.{{.ProtoName}}{}
 	{{- range $field := .Fields}}
 	if !data.{{$field.Name}}.IsUnknown() && !data.{{$field.Name}}.IsNull() {
@@ -494,8 +507,7 @@ type fieldType struct {
 	// If not set, defaults to "protoElement".
 	UnwrapProtoValueElementExpr *string
 
-	// NestedModel is the  nested model.
-	// nil if the type is a primitive type.
+	// NestedModel is the model of the field's type if it is a single or repeated object, nil overwise.
 	NestedModel *model
 }
 
@@ -816,10 +828,13 @@ func TerraformObjectAttributeTypeToProtoType(nestedMessageNamePrefix, attrName s
 	fields := make([]field, 0, len(object.AttrTypes))
 	wrappedMessageName := nestedMessageNamePrefix + "_" + protoAttrName
 
-	for fieldName, fieldType := range object.AttrTypes {
+	attrs := schema.SortObjectAttributes(obj.AttrTypes)
+
+	for _, fieldName := range attrs {
+		fieldType := obj.AttrTypes[name]
 		t, err := TerraformAttributeTypeToProtoType(wrappedMessageName, fieldName, fieldType, true)
 		if err != nil {
-			return "", nil, fmt.Errorf("failed to parse field %s in object %s: %w", fieldName, nestedMessageNamePrefix, err)
+			return "", nil, fmt.Errorf("failed to transform field %s in object %s: %w", fieldName, nestedMessageNamePrefix, err)
 		}
 
 		fields = append(fields, field{
@@ -830,10 +845,6 @@ func TerraformObjectAttributeTypeToProtoType(nestedMessageNamePrefix, attrName s
 		})
 	}
 
-	// reorder fields Sort by Name
-	sort.Slice(fields, func(i, j int) bool {
-		return fields[i].Name < fields[j].Name
-	})
 
 	if isRoot {
 		nestedMessageNamePrefix += "_" + schema.ProtoMessageName(attrName)
