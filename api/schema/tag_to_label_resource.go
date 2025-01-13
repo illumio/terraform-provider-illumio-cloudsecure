@@ -19,15 +19,15 @@ var (
 			MarkdownDescription: "Maps cloud resource tags to CloudSecure labels.",
 			Attributes: map[string]resource_schema.Attribute{
 				IDFieldName: idAttribute,
-				"cloud_tags": resource_schema.ListAttribute{
-					MarkdownDescription: "List of tags to map to CloudSecure labels with the specified key. The values of the created labels correspond to the values of the tags. The cloud field for each tag must be \"aws\" or \"azure\".",
-					Required:            true,
-					ElementType: types.ObjectType{
-						AttrTypes: map[string]attr.Type{
-							"key":   types.StringType,
-							"cloud": types.StringType,
-						},
-					},
+				"aws_tag_keys": resource_schema.SetAttribute{
+					Description: "Sets of keys of AWS resource tags to map to CloudSecure labels with the same keys. The values of the created labels correspond to the values of the tags.",
+					Required:    true,
+					ElementType: types.StringType,
+				},
+				"azure_tag_keys": resource_schema.SetAttribute{
+					Description: "Set of keys of Azure resource tags to map to CloudSecure labels with the same keys. The values of the created labels correspond to the values of the tags.",
+					Required:    true,
+					ElementType: types.StringType,
 				},
 				"icon": resource_schema.ObjectAttribute{
 					MarkdownDescription: "Icon of the created CloudSecure labels.",
