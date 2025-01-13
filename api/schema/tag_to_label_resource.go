@@ -16,7 +16,7 @@ var (
 		TypeName: "tag_to_label",
 		Schema: resource_schema.Schema{
 			Version:             1,
-			MarkdownDescription: "Maps AWS account tags to CloudSecure labels.",
+			MarkdownDescription: "Maps cloud resource tags to CloudSecure labels.",
 			Attributes: map[string]resource_schema.Attribute{
 				IDFieldName: idAttribute,
 				"cloud_tags": resource_schema.ListAttribute{
