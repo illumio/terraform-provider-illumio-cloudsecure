@@ -42,14 +42,14 @@ func (p *Provider) Resources(ctx context.Context) []func() resource.Resource {
 			resp = append(resp, func() resource.Resource { return NewAwsAccountResource(r.Schema) })
 		case "aws_flow_logs_s3_bucket":
 			resp = append(resp, func() resource.Resource { return NewAwsFlowLogsS3BucketResource(r.Schema) })
-		case "aws_tag_to_label":
-			resp = append(resp, func() resource.Resource { return NewAwsTagToLabelResource(r.Schema) })
 		case "azure_flow_logs_storage_account":
 			resp = append(resp, func() resource.Resource { return NewAzureFlowLogsStorageAccountResource(r.Schema) })
 		case "azure_subscription":
 			resp = append(resp, func() resource.Resource { return NewAzureSubscriptionResource(r.Schema) })
 		case "k8s_cluster_onboarding_credential":
 			resp = append(resp, func() resource.Resource { return NewK8SClusterOnboardingCredentialResource(r.Schema) })
+		case "tag_to_label":
+			resp = append(resp, func() resource.Resource { return NewTagToLabelResource(r.Schema) })
 		}
 	}
 	return resp
@@ -446,200 +446,6 @@ func (r *AwsFlowLogsS3BucketResource) Delete(ctx context.Context, req resource.D
 }
 
 func (r *AwsFlowLogsS3BucketResource) ImportState(ctx context.Context, req resource.ImportStateRequest, resp *resource.ImportStateResponse) {
-	// TODO
-}
-
-// AwsTagToLabelResource implements the aws_tag_to_label resource.
-type AwsTagToLabelResource struct {
-	// schema is the schema of the aws_tag_to_label resource.
-	schema resource_schema.Schema
-
-	// providerData is the provider configuration.
-	config ProviderData
-}
-
-var _ resource.ResourceWithConfigure = &AwsTagToLabelResource{}
-var _ resource.ResourceWithImportState = &AwsTagToLabelResource{}
-
-// NewAwsTagToLabelResource returns a new aws_tag_to_label resource.
-func NewAwsTagToLabelResource(schema resource_schema.Schema) resource.Resource {
-	return &AwsTagToLabelResource{
-		schema: schema,
-	}
-}
-
-func (r *AwsTagToLabelResource) Metadata(ctx context.Context, req resource.MetadataRequest, resp *resource.MetadataResponse) {
-	resp.TypeName = req.ProviderTypeName + "_aws_tag_to_label"
-}
-
-func (r *AwsTagToLabelResource) Schema(ctx context.Context, req resource.SchemaRequest, resp *resource.SchemaResponse) {
-	resp.Schema = r.schema
-}
-
-func (r *AwsTagToLabelResource) Configure(ctx context.Context, req resource.ConfigureRequest, resp *resource.ConfigureResponse) {
-	if req.ProviderData == nil {
-		return
-	}
-
-	providerData, ok := req.ProviderData.(ProviderData)
-	if !ok {
-		resp.Diagnostics.AddError(
-			"Unexpected Resource Configure Type",
-			fmt.Sprintf("Expected ProviderData, got: %T. Please report this issue to the provider developers.", req.ProviderData),
-		)
-
-		return
-	}
-
-	r.config = providerData
-}
-
-func (r *AwsTagToLabelResource) Create(ctx context.Context, req resource.CreateRequest, resp *resource.CreateResponse) {
-	var data AwsTagToLabelResourceModel
-
-	resp.Diagnostics.Append(req.Plan.Get(ctx, &data)...)
-	if resp.Diagnostics.HasError() {
-		return
-	}
-
-	protoReq, diagReq := NewCreateAwsTagToLabelRequest(ctx, &data)
-	resp.Diagnostics.Append(diagReq...)
-	if resp.Diagnostics.HasError() {
-		return
-	}
-
-	tflog.Trace(ctx, "creating a resource", map[string]any{"type": "aws_tag_to_label"})
-
-	rpcCtx, rpcCancel := context.WithTimeout(ctx, r.config.RequestTimeout())
-	protoResp, err := r.config.Client().CreateAwsTagToLabel(rpcCtx, protoReq)
-	rpcCancel()
-	if err != nil {
-		resp.Diagnostics.AddError("Config API Error", fmt.Sprintf("Unable to create aws_tag_to_label, got error: %s", err))
-		return
-	}
-
-	CopyCreateAwsTagToLabelResponse(&data, protoResp)
-
-	tflog.Trace(ctx, "created a resource", map[string]any{"type": "aws_tag_to_label", "id": protoResp.Id})
-
-	resp.Diagnostics.Append(resp.State.Set(ctx, &data)...)
-}
-
-func (r *AwsTagToLabelResource) Read(ctx context.Context, req resource.ReadRequest, resp *resource.ReadResponse) {
-	var data AwsTagToLabelResourceModel
-
-	resp.Diagnostics.Append(req.State.Get(ctx, &data)...)
-	if resp.Diagnostics.HasError() {
-		return
-	}
-
-	protoReq, diagsReq := NewReadAwsTagToLabelRequest(ctx, &data)
-	resp.Diagnostics.Append(diagsReq...)
-	if resp.Diagnostics.HasError() {
-		return
-	}
-
-	tflog.Trace(ctx, "reading a resource", map[string]any{"type": "aws_tag_to_label", "id": protoReq.Id})
-
-	rpcCtx, rpcCancel := context.WithTimeout(ctx, r.config.RequestTimeout())
-	protoResp, err := r.config.Client().ReadAwsTagToLabel(rpcCtx, protoReq)
-	rpcCancel()
-	if err != nil {
-		switch status.Code(err) {
-		case codes.NotFound:
-			resp.Diagnostics.AddWarning("Resource Not Found", fmt.Sprintf("No aws_tag_to_label found with id %s", protoReq.Id))
-			resp.State.RemoveResource(ctx)
-			return
-		default:
-			resp.Diagnostics.AddError("Config API Error", fmt.Sprintf("Unable to read aws_tag_to_label, got error: %s", err))
-			return
-		}
-	}
-
-	CopyReadAwsTagToLabelResponse(&data, protoResp)
-
-	tflog.Trace(ctx, "read a resource", map[string]any{"type": "aws_tag_to_label", "id": protoResp.Id})
-
-	resp.Diagnostics.Append(resp.State.Set(ctx, &data)...)
-}
-
-func (r *AwsTagToLabelResource) Update(ctx context.Context, req resource.UpdateRequest, resp *resource.UpdateResponse) {
-	var beforeData AwsTagToLabelResourceModel
-	var afterData AwsTagToLabelResourceModel
-
-	resp.Diagnostics.Append(req.State.Get(ctx, &beforeData)...)
-	if resp.Diagnostics.HasError() {
-		return
-	}
-
-	resp.Diagnostics.Append(req.Plan.Get(ctx, &afterData)...)
-	if resp.Diagnostics.HasError() {
-		return
-	}
-
-	protoReq, diags := NewUpdateAwsTagToLabelRequest(ctx, &beforeData, &afterData)
-	resp.Diagnostics.Append(diags...)
-	if resp.Diagnostics.HasError() {
-		return
-	}
-
-	tflog.Trace(ctx, "updating a resource", map[string]any{"type": "aws_tag_to_label", "id": protoReq.Id, "update_mask": protoReq.UpdateMask.Paths})
-
-	rpcCtx, rpcCancel := context.WithTimeout(ctx, r.config.RequestTimeout())
-	protoResp, err := r.config.Client().UpdateAwsTagToLabel(rpcCtx, protoReq)
-	rpcCancel()
-	if err != nil {
-		switch status.Code(err) {
-		case codes.NotFound:
-			resp.Diagnostics.AddError("Resource Not Found", fmt.Sprintf("No aws_tag_to_label found with id %s", protoReq.Id))
-			resp.State.RemoveResource(ctx)
-			return
-		default:
-			resp.Diagnostics.AddError("Config API Error", fmt.Sprintf("Unable to update aws_tag_to_label, got error: %s", err))
-			return
-		}
-	}
-
-	CopyUpdateAwsTagToLabelResponse(&afterData, protoResp)
-
-	tflog.Trace(ctx, "updated a resource", map[string]any{"type": "aws_tag_to_label", "id": protoResp.Id})
-
-	resp.Diagnostics.Append(resp.State.Set(ctx, &afterData)...)
-}
-
-func (r *AwsTagToLabelResource) Delete(ctx context.Context, req resource.DeleteRequest, resp *resource.DeleteResponse) {
-	var data AwsTagToLabelResourceModel
-
-	resp.Diagnostics.Append(req.State.Get(ctx, &data)...)
-	if resp.Diagnostics.HasError() {
-		return
-	}
-
-	protoReq, diags := NewDeleteAwsTagToLabelRequest(ctx, &data)
-	resp.Diagnostics.Append(diags...)
-	if resp.Diagnostics.HasError() {
-		return
-	}
-
-	tflog.Trace(ctx, "deleting a resource", map[string]any{"type": "aws_tag_to_label", "id": protoReq.Id})
-
-	rpcCtx, rpcCancel := context.WithTimeout(ctx, r.config.RequestTimeout())
-	_, err := r.config.Client().DeleteAwsTagToLabel(rpcCtx, protoReq)
-	rpcCancel()
-	if err != nil {
-		switch status.Code(err) {
-		case codes.NotFound:
-			tflog.Trace(ctx, "resource was already deleted", map[string]any{"type": "aws_tag_to_label", "id": protoReq.Id})
-		default:
-			resp.Diagnostics.AddError("Config API Error", fmt.Sprintf("Unable to delete aws_tag_to_label, got error: %s", err))
-			return
-		}
-	}
-
-	tflog.Trace(ctx, "deleted a resource", map[string]any{"type": "aws_tag_to_label", "id": protoReq.Id})
-}
-
-func (r *AwsTagToLabelResource) ImportState(ctx context.Context, req resource.ImportStateRequest, resp *resource.ImportStateResponse) {
 	// TODO
 }
 
@@ -1225,6 +1031,200 @@ func (r *K8SClusterOnboardingCredentialResource) ImportState(ctx context.Context
 	// TODO
 }
 
+// TagToLabelResource implements the tag_to_label resource.
+type TagToLabelResource struct {
+	// schema is the schema of the tag_to_label resource.
+	schema resource_schema.Schema
+
+	// providerData is the provider configuration.
+	config ProviderData
+}
+
+var _ resource.ResourceWithConfigure = &TagToLabelResource{}
+var _ resource.ResourceWithImportState = &TagToLabelResource{}
+
+// NewTagToLabelResource returns a new tag_to_label resource.
+func NewTagToLabelResource(schema resource_schema.Schema) resource.Resource {
+	return &TagToLabelResource{
+		schema: schema,
+	}
+}
+
+func (r *TagToLabelResource) Metadata(ctx context.Context, req resource.MetadataRequest, resp *resource.MetadataResponse) {
+	resp.TypeName = req.ProviderTypeName + "_tag_to_label"
+}
+
+func (r *TagToLabelResource) Schema(ctx context.Context, req resource.SchemaRequest, resp *resource.SchemaResponse) {
+	resp.Schema = r.schema
+}
+
+func (r *TagToLabelResource) Configure(ctx context.Context, req resource.ConfigureRequest, resp *resource.ConfigureResponse) {
+	if req.ProviderData == nil {
+		return
+	}
+
+	providerData, ok := req.ProviderData.(ProviderData)
+	if !ok {
+		resp.Diagnostics.AddError(
+			"Unexpected Resource Configure Type",
+			fmt.Sprintf("Expected ProviderData, got: %T. Please report this issue to the provider developers.", req.ProviderData),
+		)
+
+		return
+	}
+
+	r.config = providerData
+}
+
+func (r *TagToLabelResource) Create(ctx context.Context, req resource.CreateRequest, resp *resource.CreateResponse) {
+	var data TagToLabelResourceModel
+
+	resp.Diagnostics.Append(req.Plan.Get(ctx, &data)...)
+	if resp.Diagnostics.HasError() {
+		return
+	}
+
+	protoReq, diagReq := NewCreateTagToLabelRequest(ctx, &data)
+	resp.Diagnostics.Append(diagReq...)
+	if resp.Diagnostics.HasError() {
+		return
+	}
+
+	tflog.Trace(ctx, "creating a resource", map[string]any{"type": "tag_to_label"})
+
+	rpcCtx, rpcCancel := context.WithTimeout(ctx, r.config.RequestTimeout())
+	protoResp, err := r.config.Client().CreateTagToLabel(rpcCtx, protoReq)
+	rpcCancel()
+	if err != nil {
+		resp.Diagnostics.AddError("Config API Error", fmt.Sprintf("Unable to create tag_to_label, got error: %s", err))
+		return
+	}
+
+	CopyCreateTagToLabelResponse(&data, protoResp)
+
+	tflog.Trace(ctx, "created a resource", map[string]any{"type": "tag_to_label", "id": protoResp.Id})
+
+	resp.Diagnostics.Append(resp.State.Set(ctx, &data)...)
+}
+
+func (r *TagToLabelResource) Read(ctx context.Context, req resource.ReadRequest, resp *resource.ReadResponse) {
+	var data TagToLabelResourceModel
+
+	resp.Diagnostics.Append(req.State.Get(ctx, &data)...)
+	if resp.Diagnostics.HasError() {
+		return
+	}
+
+	protoReq, diagsReq := NewReadTagToLabelRequest(ctx, &data)
+	resp.Diagnostics.Append(diagsReq...)
+	if resp.Diagnostics.HasError() {
+		return
+	}
+
+	tflog.Trace(ctx, "reading a resource", map[string]any{"type": "tag_to_label", "id": protoReq.Id})
+
+	rpcCtx, rpcCancel := context.WithTimeout(ctx, r.config.RequestTimeout())
+	protoResp, err := r.config.Client().ReadTagToLabel(rpcCtx, protoReq)
+	rpcCancel()
+	if err != nil {
+		switch status.Code(err) {
+		case codes.NotFound:
+			resp.Diagnostics.AddWarning("Resource Not Found", fmt.Sprintf("No tag_to_label found with id %s", protoReq.Id))
+			resp.State.RemoveResource(ctx)
+			return
+		default:
+			resp.Diagnostics.AddError("Config API Error", fmt.Sprintf("Unable to read tag_to_label, got error: %s", err))
+			return
+		}
+	}
+
+	CopyReadTagToLabelResponse(&data, protoResp)
+
+	tflog.Trace(ctx, "read a resource", map[string]any{"type": "tag_to_label", "id": protoResp.Id})
+
+	resp.Diagnostics.Append(resp.State.Set(ctx, &data)...)
+}
+
+func (r *TagToLabelResource) Update(ctx context.Context, req resource.UpdateRequest, resp *resource.UpdateResponse) {
+	var beforeData TagToLabelResourceModel
+	var afterData TagToLabelResourceModel
+
+	resp.Diagnostics.Append(req.State.Get(ctx, &beforeData)...)
+	if resp.Diagnostics.HasError() {
+		return
+	}
+
+	resp.Diagnostics.Append(req.Plan.Get(ctx, &afterData)...)
+	if resp.Diagnostics.HasError() {
+		return
+	}
+
+	protoReq, diags := NewUpdateTagToLabelRequest(ctx, &beforeData, &afterData)
+	resp.Diagnostics.Append(diags...)
+	if resp.Diagnostics.HasError() {
+		return
+	}
+
+	tflog.Trace(ctx, "updating a resource", map[string]any{"type": "tag_to_label", "id": protoReq.Id, "update_mask": protoReq.UpdateMask.Paths})
+
+	rpcCtx, rpcCancel := context.WithTimeout(ctx, r.config.RequestTimeout())
+	protoResp, err := r.config.Client().UpdateTagToLabel(rpcCtx, protoReq)
+	rpcCancel()
+	if err != nil {
+		switch status.Code(err) {
+		case codes.NotFound:
+			resp.Diagnostics.AddError("Resource Not Found", fmt.Sprintf("No tag_to_label found with id %s", protoReq.Id))
+			resp.State.RemoveResource(ctx)
+			return
+		default:
+			resp.Diagnostics.AddError("Config API Error", fmt.Sprintf("Unable to update tag_to_label, got error: %s", err))
+			return
+		}
+	}
+
+	CopyUpdateTagToLabelResponse(&afterData, protoResp)
+
+	tflog.Trace(ctx, "updated a resource", map[string]any{"type": "tag_to_label", "id": protoResp.Id})
+
+	resp.Diagnostics.Append(resp.State.Set(ctx, &afterData)...)
+}
+
+func (r *TagToLabelResource) Delete(ctx context.Context, req resource.DeleteRequest, resp *resource.DeleteResponse) {
+	var data TagToLabelResourceModel
+
+	resp.Diagnostics.Append(req.State.Get(ctx, &data)...)
+	if resp.Diagnostics.HasError() {
+		return
+	}
+
+	protoReq, diags := NewDeleteTagToLabelRequest(ctx, &data)
+	resp.Diagnostics.Append(diags...)
+	if resp.Diagnostics.HasError() {
+		return
+	}
+
+	tflog.Trace(ctx, "deleting a resource", map[string]any{"type": "tag_to_label", "id": protoReq.Id})
+
+	rpcCtx, rpcCancel := context.WithTimeout(ctx, r.config.RequestTimeout())
+	_, err := r.config.Client().DeleteTagToLabel(rpcCtx, protoReq)
+	rpcCancel()
+	if err != nil {
+		switch status.Code(err) {
+		case codes.NotFound:
+			tflog.Trace(ctx, "resource was already deleted", map[string]any{"type": "tag_to_label", "id": protoReq.Id})
+		default:
+			resp.Diagnostics.AddError("Config API Error", fmt.Sprintf("Unable to delete tag_to_label, got error: %s", err))
+			return
+		}
+	}
+
+	tflog.Trace(ctx, "deleted a resource", map[string]any{"type": "tag_to_label", "id": protoReq.Id})
+}
+
+func (r *TagToLabelResource) ImportState(ctx context.Context, req resource.ImportStateRequest, resp *resource.ImportStateResponse) {
+	// TODO
+}
+
 type AwsAccountResourceModel struct {
 	Id             types.String `tfsdk:"id"`
 	AccountId      types.String `tfsdk:"account_id"`
@@ -1239,14 +1239,6 @@ type AwsFlowLogsS3BucketResourceModel struct {
 	Id          types.String `tfsdk:"id"`
 	AccountId   types.String `tfsdk:"account_id"`
 	S3BucketArn types.String `tfsdk:"s3_bucket_arn"`
-}
-
-type AwsTagToLabelResourceModel struct {
-	Id        types.String `tfsdk:"id"`
-	CloudTags types.List   `tfsdk:"cloud_tags"`
-	Icon      types.Object `tfsdk:"icon"`
-	Key       types.String `tfsdk:"key"`
-	Name      types.String `tfsdk:"name"`
 }
 
 type AzureFlowLogsStorageAccountResourceModel struct {
@@ -1273,6 +1265,15 @@ type K8SClusterOnboardingCredentialResourceModel struct {
 	Description   types.String `tfsdk:"description"`
 	IllumioRegion types.String `tfsdk:"illumio_region"`
 	Name          types.String `tfsdk:"name"`
+}
+
+type TagToLabelResourceModel struct {
+	Id           types.String `tfsdk:"id"`
+	AwsTagKeys   types.Set    `tfsdk:"aws_tag_keys"`
+	AzureTagKeys types.Set    `tfsdk:"azure_tag_keys"`
+	Icon         types.Object `tfsdk:"icon"`
+	Key          types.String `tfsdk:"key"`
+	Name         types.String `tfsdk:"name"`
 }
 
 func NewCreateAwsAccountRequest(ctx context.Context, data *AwsAccountResourceModel) (*configv1.CreateAwsAccountRequest, diag.Diagnostics) {
@@ -1374,78 +1375,6 @@ func NewReadAwsFlowLogsS3BucketRequest(ctx context.Context, data *AwsFlowLogsS3B
 func NewDeleteAwsFlowLogsS3BucketRequest(ctx context.Context, data *AwsFlowLogsS3BucketResourceModel) (*configv1.DeleteAwsFlowLogsS3BucketRequest, diag.Diagnostics) {
 	var diags diag.Diagnostics
 	proto := &configv1.DeleteAwsFlowLogsS3BucketRequest{}
-	if !data.Id.IsUnknown() && !data.Id.IsNull() {
-		var dataValue attr.Value = data.Id
-		var protoValue string
-		protoValue = dataValue.(types.String).ValueString()
-		proto.Id = protoValue
-	}
-	return proto, diags
-}
-
-func NewCreateAwsTagToLabelRequest(ctx context.Context, data *AwsTagToLabelResourceModel) (*configv1.CreateAwsTagToLabelRequest, diag.Diagnostics) {
-	var diags diag.Diagnostics
-	proto := &configv1.CreateAwsTagToLabelRequest{}
-	if !data.CloudTags.IsUnknown() && !data.CloudTags.IsNull() {
-		var dataValue attr.Value = data.CloudTags
-		var protoValue []*configv1.AwsTagToLabel_CloudTags
-		{
-			dataElements := dataValue.(types.List).Elements()
-			protoValues := make([]*configv1.AwsTagToLabel_CloudTags, 0, len(dataElements))
-			for _, dataElement := range dataElements {
-				var dataValue attr.Value = dataElement
-				var protoValue *configv1.AwsTagToLabel_CloudTags
-				protoValue, newDiags := ConvertDataValueToAwsTagToLabel_CloudTagsProto(ctx, dataValue)
-				diags.Append(newDiags...)
-				if diags.HasError() {
-					return nil, diags
-				}
-				protoValues = append(protoValues, protoValue)
-			}
-			protoValue = protoValues
-		}
-		proto.CloudTags = protoValue
-	}
-	if !data.Icon.IsUnknown() && !data.Icon.IsNull() {
-		var dataValue attr.Value = data.Icon
-		var protoValue *configv1.AwsTagToLabel_Icon
-		protoValue, newDiags := ConvertDataValueToAwsTagToLabel_IconProto(ctx, dataValue)
-		diags.Append(newDiags...)
-		if diags.HasError() {
-			return nil, diags
-		}
-		proto.Icon = protoValue
-	}
-	if !data.Key.IsUnknown() && !data.Key.IsNull() {
-		var dataValue attr.Value = data.Key
-		var protoValue string
-		protoValue = dataValue.(types.String).ValueString()
-		proto.Key = protoValue
-	}
-	if !data.Name.IsUnknown() && !data.Name.IsNull() {
-		var dataValue attr.Value = data.Name
-		var protoValue string
-		protoValue = dataValue.(types.String).ValueString()
-		proto.Name = protoValue
-	}
-	return proto, diags
-}
-
-func NewReadAwsTagToLabelRequest(ctx context.Context, data *AwsTagToLabelResourceModel) (*configv1.ReadAwsTagToLabelRequest, diag.Diagnostics) {
-	var diags diag.Diagnostics
-	proto := &configv1.ReadAwsTagToLabelRequest{}
-	if !data.Id.IsUnknown() && !data.Id.IsNull() {
-		var dataValue attr.Value = data.Id
-		var protoValue string
-		protoValue = dataValue.(types.String).ValueString()
-		proto.Id = protoValue
-	}
-	return proto, diags
-}
-
-func NewDeleteAwsTagToLabelRequest(ctx context.Context, data *AwsTagToLabelResourceModel) (*configv1.DeleteAwsTagToLabelRequest, diag.Diagnostics) {
-	var diags diag.Diagnostics
-	proto := &configv1.DeleteAwsTagToLabelRequest{}
 	if !data.Id.IsUnknown() && !data.Id.IsNull() {
 		var dataValue attr.Value = data.Id
 		var protoValue string
@@ -1611,6 +1540,90 @@ func NewDeleteK8SClusterOnboardingCredentialRequest(ctx context.Context, data *K
 	return proto, diags
 }
 
+func NewCreateTagToLabelRequest(ctx context.Context, data *TagToLabelResourceModel) (*configv1.CreateTagToLabelRequest, diag.Diagnostics) {
+	var diags diag.Diagnostics
+	proto := &configv1.CreateTagToLabelRequest{}
+	if !data.AwsTagKeys.IsUnknown() && !data.AwsTagKeys.IsNull() {
+		var dataValue attr.Value = data.AwsTagKeys
+		var protoValue []string
+		{
+			dataElements := dataValue.(types.Set).Elements()
+			protoValues := make([]string, 0, len(dataElements))
+			for _, dataElement := range dataElements {
+				var dataValue attr.Value = dataElement
+				var protoValue string
+				protoValue = dataValue.(types.String).ValueString()
+				protoValues = append(protoValues, protoValue)
+			}
+			protoValue = protoValues
+		}
+		proto.AwsTagKeys = protoValue
+	}
+	if !data.AzureTagKeys.IsUnknown() && !data.AzureTagKeys.IsNull() {
+		var dataValue attr.Value = data.AzureTagKeys
+		var protoValue []string
+		{
+			dataElements := dataValue.(types.Set).Elements()
+			protoValues := make([]string, 0, len(dataElements))
+			for _, dataElement := range dataElements {
+				var dataValue attr.Value = dataElement
+				var protoValue string
+				protoValue = dataValue.(types.String).ValueString()
+				protoValues = append(protoValues, protoValue)
+			}
+			protoValue = protoValues
+		}
+		proto.AzureTagKeys = protoValue
+	}
+	if !data.Icon.IsUnknown() && !data.Icon.IsNull() {
+		var dataValue attr.Value = data.Icon
+		var protoValue *configv1.TagToLabel_Icon
+		protoValue, newDiags := ConvertDataValueToTagToLabel_IconProto(ctx, dataValue)
+		diags.Append(newDiags...)
+		if diags.HasError() {
+			return nil, diags
+		}
+		proto.Icon = protoValue
+	}
+	if !data.Key.IsUnknown() && !data.Key.IsNull() {
+		var dataValue attr.Value = data.Key
+		var protoValue string
+		protoValue = dataValue.(types.String).ValueString()
+		proto.Key = protoValue
+	}
+	if !data.Name.IsUnknown() && !data.Name.IsNull() {
+		var dataValue attr.Value = data.Name
+		var protoValue string
+		protoValue = dataValue.(types.String).ValueString()
+		proto.Name = protoValue
+	}
+	return proto, diags
+}
+
+func NewReadTagToLabelRequest(ctx context.Context, data *TagToLabelResourceModel) (*configv1.ReadTagToLabelRequest, diag.Diagnostics) {
+	var diags diag.Diagnostics
+	proto := &configv1.ReadTagToLabelRequest{}
+	if !data.Id.IsUnknown() && !data.Id.IsNull() {
+		var dataValue attr.Value = data.Id
+		var protoValue string
+		protoValue = dataValue.(types.String).ValueString()
+		proto.Id = protoValue
+	}
+	return proto, diags
+}
+
+func NewDeleteTagToLabelRequest(ctx context.Context, data *TagToLabelResourceModel) (*configv1.DeleteTagToLabelRequest, diag.Diagnostics) {
+	var diags diag.Diagnostics
+	proto := &configv1.DeleteTagToLabelRequest{}
+	if !data.Id.IsUnknown() && !data.Id.IsNull() {
+		var dataValue attr.Value = data.Id
+		var protoValue string
+		protoValue = dataValue.(types.String).ValueString()
+		proto.Id = protoValue
+	}
+	return proto, diags
+}
+
 func NewUpdateAwsAccountRequest(ctx context.Context, beforeData, afterData *AwsAccountResourceModel) (*configv1.UpdateAwsAccountRequest, diag.Diagnostics) {
 	var diags diag.Diagnostics
 	proto := &configv1.UpdateAwsAccountRequest{}
@@ -1633,68 +1646,6 @@ func NewUpdateAwsFlowLogsS3BucketRequest(ctx context.Context, beforeData, afterD
 	proto := &configv1.UpdateAwsFlowLogsS3BucketRequest{}
 	proto.UpdateMask, _ = fieldmaskpb.New(proto)
 	proto.Id = beforeData.Id.ValueString()
-	return proto, diags
-}
-
-func NewUpdateAwsTagToLabelRequest(ctx context.Context, beforeData, afterData *AwsTagToLabelResourceModel) (*configv1.UpdateAwsTagToLabelRequest, diag.Diagnostics) {
-	var diags diag.Diagnostics
-	proto := &configv1.UpdateAwsTagToLabelRequest{}
-	proto.UpdateMask, _ = fieldmaskpb.New(proto)
-	proto.Id = beforeData.Id.ValueString()
-	if !afterData.CloudTags.Equal(beforeData.CloudTags) {
-		proto.UpdateMask.Append(proto, "cloud_tags")
-		if !afterData.CloudTags.IsUnknown() && !afterData.CloudTags.IsNull() {
-			var dataValue attr.Value = afterData.CloudTags
-			var protoValue []*configv1.AwsTagToLabel_CloudTags
-			{
-				dataElements := dataValue.(types.List).Elements()
-				protoValues := make([]*configv1.AwsTagToLabel_CloudTags, 0, len(dataElements))
-				for _, dataElement := range dataElements {
-					var dataValue attr.Value = dataElement
-					var protoValue *configv1.AwsTagToLabel_CloudTags
-					protoValue, newDiags := ConvertDataValueToAwsTagToLabel_CloudTagsProto(ctx, dataValue)
-					diags.Append(newDiags...)
-					if diags.HasError() {
-						return nil, diags
-					}
-					protoValues = append(protoValues, protoValue)
-				}
-				protoValue = protoValues
-			}
-			proto.CloudTags = protoValue
-		}
-	}
-	if !afterData.Icon.Equal(beforeData.Icon) {
-		proto.UpdateMask.Append(proto, "icon")
-		if !afterData.Icon.IsUnknown() && !afterData.Icon.IsNull() {
-			var dataValue attr.Value = afterData.Icon
-			var protoValue *configv1.AwsTagToLabel_Icon
-			protoValue, newDiags := ConvertDataValueToAwsTagToLabel_IconProto(ctx, dataValue)
-			diags.Append(newDiags...)
-			if diags.HasError() {
-				return nil, diags
-			}
-			proto.Icon = protoValue
-		}
-	}
-	if !afterData.Key.Equal(beforeData.Key) {
-		proto.UpdateMask.Append(proto, "key")
-		if !afterData.Key.IsUnknown() && !afterData.Key.IsNull() {
-			var dataValue attr.Value = afterData.Key
-			var protoValue string
-			protoValue = dataValue.(types.String).ValueString()
-			proto.Key = protoValue
-		}
-	}
-	if !afterData.Name.Equal(beforeData.Name) {
-		proto.UpdateMask.Append(proto, "name")
-		if !afterData.Name.IsUnknown() && !afterData.Name.IsNull() {
-			var dataValue attr.Value = afterData.Name
-			var protoValue string
-			protoValue = dataValue.(types.String).ValueString()
-			proto.Name = protoValue
-		}
-	}
 	return proto, diags
 }
 
@@ -1748,6 +1699,83 @@ func NewUpdateK8SClusterOnboardingCredentialRequest(ctx context.Context, beforeD
 	}
 	return proto, diags
 }
+
+func NewUpdateTagToLabelRequest(ctx context.Context, beforeData, afterData *TagToLabelResourceModel) (*configv1.UpdateTagToLabelRequest, diag.Diagnostics) {
+	var diags diag.Diagnostics
+	proto := &configv1.UpdateTagToLabelRequest{}
+	proto.UpdateMask, _ = fieldmaskpb.New(proto)
+	proto.Id = beforeData.Id.ValueString()
+	if !afterData.AwsTagKeys.Equal(beforeData.AwsTagKeys) {
+		proto.UpdateMask.Append(proto, "aws_tag_keys")
+		if !afterData.AwsTagKeys.IsUnknown() && !afterData.AwsTagKeys.IsNull() {
+			var dataValue attr.Value = afterData.AwsTagKeys
+			var protoValue []string
+			{
+				dataElements := dataValue.(types.Set).Elements()
+				protoValues := make([]string, 0, len(dataElements))
+				for _, dataElement := range dataElements {
+					var dataValue attr.Value = dataElement
+					var protoValue string
+					protoValue = dataValue.(types.String).ValueString()
+					protoValues = append(protoValues, protoValue)
+				}
+				protoValue = protoValues
+			}
+			proto.AwsTagKeys = protoValue
+		}
+	}
+	if !afterData.AzureTagKeys.Equal(beforeData.AzureTagKeys) {
+		proto.UpdateMask.Append(proto, "azure_tag_keys")
+		if !afterData.AzureTagKeys.IsUnknown() && !afterData.AzureTagKeys.IsNull() {
+			var dataValue attr.Value = afterData.AzureTagKeys
+			var protoValue []string
+			{
+				dataElements := dataValue.(types.Set).Elements()
+				protoValues := make([]string, 0, len(dataElements))
+				for _, dataElement := range dataElements {
+					var dataValue attr.Value = dataElement
+					var protoValue string
+					protoValue = dataValue.(types.String).ValueString()
+					protoValues = append(protoValues, protoValue)
+				}
+				protoValue = protoValues
+			}
+			proto.AzureTagKeys = protoValue
+		}
+	}
+	if !afterData.Icon.Equal(beforeData.Icon) {
+		proto.UpdateMask.Append(proto, "icon")
+		if !afterData.Icon.IsUnknown() && !afterData.Icon.IsNull() {
+			var dataValue attr.Value = afterData.Icon
+			var protoValue *configv1.TagToLabel_Icon
+			protoValue, newDiags := ConvertDataValueToTagToLabel_IconProto(ctx, dataValue)
+			diags.Append(newDiags...)
+			if diags.HasError() {
+				return nil, diags
+			}
+			proto.Icon = protoValue
+		}
+	}
+	if !afterData.Key.Equal(beforeData.Key) {
+		proto.UpdateMask.Append(proto, "key")
+		if !afterData.Key.IsUnknown() && !afterData.Key.IsNull() {
+			var dataValue attr.Value = afterData.Key
+			var protoValue string
+			protoValue = dataValue.(types.String).ValueString()
+			proto.Key = protoValue
+		}
+	}
+	if !afterData.Name.Equal(beforeData.Name) {
+		proto.UpdateMask.Append(proto, "name")
+		if !afterData.Name.IsUnknown() && !afterData.Name.IsNull() {
+			var dataValue attr.Value = afterData.Name
+			var protoValue string
+			protoValue = dataValue.(types.String).ValueString()
+			proto.Name = protoValue
+		}
+	}
+	return proto, diags
+}
 func CopyCreateAwsAccountResponse(dst *AwsAccountResourceModel, src *configv1.CreateAwsAccountResponse) {
 	dst.Id = types.StringValue(src.Id)
 	dst.AccountId = types.StringValue(src.AccountId)
@@ -1786,93 +1814,6 @@ func CopyUpdateAwsFlowLogsS3BucketResponse(dst *AwsFlowLogsS3BucketResourceModel
 	dst.Id = types.StringValue(src.Id)
 	dst.AccountId = types.StringValue(src.AccountId)
 	dst.S3BucketArn = types.StringValue(src.S3BucketArn)
-}
-func CopyCreateAwsTagToLabelResponse(dst *AwsTagToLabelResourceModel, src *configv1.CreateAwsTagToLabelResponse) {
-	dst.Id = types.StringValue(src.Id)
-	{
-		protoValue := src.CloudTags
-		var dataValue types.List
-		{
-			dataElementType := types.ObjectType{
-				AttrTypes: GetTypeAttrsForAwsTagToLabel_CloudTags(),
-			}
-			protoElements := protoValue
-			if protoElements == nil {
-				dataValue = types.ListNull(dataElementType)
-			} else {
-				dataValues := make([]attr.Value, 0, len(protoElements))
-				for _, protoElement := range protoElements {
-					var protoValue *configv1.AwsTagToLabel_CloudTags = protoElement
-					var dataValue attr.Value
-					dataValue = ConvertAwsTagToLabel_CloudTagsToObjectValueFromProto(protoValue)
-					dataValues = append(dataValues, dataValue)
-				}
-				dataValue = types.ListValueMust(dataElementType, dataValues)
-			}
-		}
-		dst.CloudTags = dataValue
-	}
-	dst.Icon = ConvertAwsTagToLabel_IconToObjectValueFromProto(src.Icon)
-	dst.Key = types.StringValue(src.Key)
-	dst.Name = types.StringValue(src.Name)
-}
-func CopyReadAwsTagToLabelResponse(dst *AwsTagToLabelResourceModel, src *configv1.ReadAwsTagToLabelResponse) {
-	dst.Id = types.StringValue(src.Id)
-	{
-		protoValue := src.CloudTags
-		var dataValue types.List
-		{
-			dataElementType := types.ObjectType{
-				AttrTypes: GetTypeAttrsForAwsTagToLabel_CloudTags(),
-			}
-			protoElements := protoValue
-			if protoElements == nil {
-				dataValue = types.ListNull(dataElementType)
-			} else {
-				dataValues := make([]attr.Value, 0, len(protoElements))
-				for _, protoElement := range protoElements {
-					var protoValue *configv1.AwsTagToLabel_CloudTags = protoElement
-					var dataValue attr.Value
-					dataValue = ConvertAwsTagToLabel_CloudTagsToObjectValueFromProto(protoValue)
-					dataValues = append(dataValues, dataValue)
-				}
-				dataValue = types.ListValueMust(dataElementType, dataValues)
-			}
-		}
-		dst.CloudTags = dataValue
-	}
-	dst.Icon = ConvertAwsTagToLabel_IconToObjectValueFromProto(src.Icon)
-	dst.Key = types.StringValue(src.Key)
-	dst.Name = types.StringValue(src.Name)
-}
-func CopyUpdateAwsTagToLabelResponse(dst *AwsTagToLabelResourceModel, src *configv1.UpdateAwsTagToLabelResponse) {
-	dst.Id = types.StringValue(src.Id)
-	{
-		protoValue := src.CloudTags
-		var dataValue types.List
-		{
-			dataElementType := types.ObjectType{
-				AttrTypes: GetTypeAttrsForAwsTagToLabel_CloudTags(),
-			}
-			protoElements := protoValue
-			if protoElements == nil {
-				dataValue = types.ListNull(dataElementType)
-			} else {
-				dataValues := make([]attr.Value, 0, len(protoElements))
-				for _, protoElement := range protoElements {
-					var protoValue *configv1.AwsTagToLabel_CloudTags = protoElement
-					var dataValue attr.Value
-					dataValue = ConvertAwsTagToLabel_CloudTagsToObjectValueFromProto(protoValue)
-					dataValues = append(dataValues, dataValue)
-				}
-				dataValue = types.ListValueMust(dataElementType, dataValues)
-			}
-		}
-		dst.CloudTags = dataValue
-	}
-	dst.Icon = ConvertAwsTagToLabel_IconToObjectValueFromProto(src.Icon)
-	dst.Key = types.StringValue(src.Key)
-	dst.Name = types.StringValue(src.Name)
 }
 func CopyCreateAzureFlowLogsStorageAccountResponse(dst *AzureFlowLogsStorageAccountResourceModel, src *configv1.CreateAzureFlowLogsStorageAccountResponse) {
 	dst.Id = types.StringValue(src.Id)
@@ -1938,48 +1879,158 @@ func CopyUpdateK8SClusterOnboardingCredentialResponse(dst *K8SClusterOnboardingC
 	dst.IllumioRegion = types.StringValue(src.IllumioRegion)
 	dst.Name = types.StringValue(src.Name)
 }
-
-type AwsTagToLabel_CloudTags struct {
-	Cloud types.String `tfsdk:"cloud"`
-	Key   types.String `tfsdk:"key"`
-}
-
-func GetTypeAttrsForAwsTagToLabel_CloudTags() map[string]attr.Type {
-	return map[string]attr.Type{
-		"cloud": types.StringType,
-		"key":   types.StringType,
+func CopyCreateTagToLabelResponse(dst *TagToLabelResourceModel, src *configv1.CreateTagToLabelResponse) {
+	dst.Id = types.StringValue(src.Id)
+	{
+		protoValue := src.AwsTagKeys
+		var dataValue types.Set
+		{
+			dataElementType := types.StringType
+			protoElements := protoValue
+			if protoElements == nil {
+				dataValue = types.SetNull(dataElementType)
+			} else {
+				dataValues := make([]attr.Value, 0, len(protoElements))
+				for _, protoElement := range protoElements {
+					var protoValue string = protoElement
+					var dataValue attr.Value
+					dataValue = types.StringValue(protoValue)
+					dataValues = append(dataValues, dataValue)
+				}
+				dataValue = types.SetValueMust(dataElementType, dataValues)
+			}
+		}
+		dst.AwsTagKeys = dataValue
 	}
-}
-
-func ConvertAwsTagToLabel_CloudTagsToObjectValueFromProto(proto *configv1.AwsTagToLabel_CloudTags) basetypes.ObjectValue {
-	return types.ObjectValueMust(
-		GetTypeAttrsForAwsTagToLabel_CloudTags(),
-		map[string]attr.Value{
-			"cloud": types.StringValue(proto.Cloud),
-			"key":   types.StringValue(proto.Key),
-		},
-	)
-}
-
-func ConvertDataValueToAwsTagToLabel_CloudTagsProto(ctx context.Context, dataValue attr.Value) (*configv1.AwsTagToLabel_CloudTags, diag.Diagnostics) {
-	pv := AwsTagToLabel_CloudTags{}
-	diags := tfsdk.ValueAs(ctx, dataValue, &pv)
-	if diags.HasError() {
-		return nil, diags
+	{
+		protoValue := src.AzureTagKeys
+		var dataValue types.Set
+		{
+			dataElementType := types.StringType
+			protoElements := protoValue
+			if protoElements == nil {
+				dataValue = types.SetNull(dataElementType)
+			} else {
+				dataValues := make([]attr.Value, 0, len(protoElements))
+				for _, protoElement := range protoElements {
+					var protoValue string = protoElement
+					var dataValue attr.Value
+					dataValue = types.StringValue(protoValue)
+					dataValues = append(dataValues, dataValue)
+				}
+				dataValue = types.SetValueMust(dataElementType, dataValues)
+			}
+		}
+		dst.AzureTagKeys = dataValue
 	}
-	proto := &configv1.AwsTagToLabel_CloudTags{}
-	proto.Cloud = pv.Cloud.ValueString()
-	proto.Key = pv.Key.ValueString()
-	return proto, diags
+	dst.Icon = ConvertTagToLabel_IconToObjectValueFromProto(src.Icon)
+	dst.Key = types.StringValue(src.Key)
+	dst.Name = types.StringValue(src.Name)
+}
+func CopyReadTagToLabelResponse(dst *TagToLabelResourceModel, src *configv1.ReadTagToLabelResponse) {
+	dst.Id = types.StringValue(src.Id)
+	{
+		protoValue := src.AwsTagKeys
+		var dataValue types.Set
+		{
+			dataElementType := types.StringType
+			protoElements := protoValue
+			if protoElements == nil {
+				dataValue = types.SetNull(dataElementType)
+			} else {
+				dataValues := make([]attr.Value, 0, len(protoElements))
+				for _, protoElement := range protoElements {
+					var protoValue string = protoElement
+					var dataValue attr.Value
+					dataValue = types.StringValue(protoValue)
+					dataValues = append(dataValues, dataValue)
+				}
+				dataValue = types.SetValueMust(dataElementType, dataValues)
+			}
+		}
+		dst.AwsTagKeys = dataValue
+	}
+	{
+		protoValue := src.AzureTagKeys
+		var dataValue types.Set
+		{
+			dataElementType := types.StringType
+			protoElements := protoValue
+			if protoElements == nil {
+				dataValue = types.SetNull(dataElementType)
+			} else {
+				dataValues := make([]attr.Value, 0, len(protoElements))
+				for _, protoElement := range protoElements {
+					var protoValue string = protoElement
+					var dataValue attr.Value
+					dataValue = types.StringValue(protoValue)
+					dataValues = append(dataValues, dataValue)
+				}
+				dataValue = types.SetValueMust(dataElementType, dataValues)
+			}
+		}
+		dst.AzureTagKeys = dataValue
+	}
+	dst.Icon = ConvertTagToLabel_IconToObjectValueFromProto(src.Icon)
+	dst.Key = types.StringValue(src.Key)
+	dst.Name = types.StringValue(src.Name)
+}
+func CopyUpdateTagToLabelResponse(dst *TagToLabelResourceModel, src *configv1.UpdateTagToLabelResponse) {
+	dst.Id = types.StringValue(src.Id)
+	{
+		protoValue := src.AwsTagKeys
+		var dataValue types.Set
+		{
+			dataElementType := types.StringType
+			protoElements := protoValue
+			if protoElements == nil {
+				dataValue = types.SetNull(dataElementType)
+			} else {
+				dataValues := make([]attr.Value, 0, len(protoElements))
+				for _, protoElement := range protoElements {
+					var protoValue string = protoElement
+					var dataValue attr.Value
+					dataValue = types.StringValue(protoValue)
+					dataValues = append(dataValues, dataValue)
+				}
+				dataValue = types.SetValueMust(dataElementType, dataValues)
+			}
+		}
+		dst.AwsTagKeys = dataValue
+	}
+	{
+		protoValue := src.AzureTagKeys
+		var dataValue types.Set
+		{
+			dataElementType := types.StringType
+			protoElements := protoValue
+			if protoElements == nil {
+				dataValue = types.SetNull(dataElementType)
+			} else {
+				dataValues := make([]attr.Value, 0, len(protoElements))
+				for _, protoElement := range protoElements {
+					var protoValue string = protoElement
+					var dataValue attr.Value
+					dataValue = types.StringValue(protoValue)
+					dataValues = append(dataValues, dataValue)
+				}
+				dataValue = types.SetValueMust(dataElementType, dataValues)
+			}
+		}
+		dst.AzureTagKeys = dataValue
+	}
+	dst.Icon = ConvertTagToLabel_IconToObjectValueFromProto(src.Icon)
+	dst.Key = types.StringValue(src.Key)
+	dst.Name = types.StringValue(src.Name)
 }
 
-type AwsTagToLabel_Icon struct {
+type TagToLabel_Icon struct {
 	BackgroundColor types.String `tfsdk:"background_color"`
 	ForegroundColor types.String `tfsdk:"foreground_color"`
 	Name            types.String `tfsdk:"name"`
 }
 
-func GetTypeAttrsForAwsTagToLabel_Icon() map[string]attr.Type {
+func GetTypeAttrsForTagToLabel_Icon() map[string]attr.Type {
 	return map[string]attr.Type{
 		"background_color": types.StringType,
 		"foreground_color": types.StringType,
@@ -1987,9 +2038,9 @@ func GetTypeAttrsForAwsTagToLabel_Icon() map[string]attr.Type {
 	}
 }
 
-func ConvertAwsTagToLabel_IconToObjectValueFromProto(proto *configv1.AwsTagToLabel_Icon) basetypes.ObjectValue {
+func ConvertTagToLabel_IconToObjectValueFromProto(proto *configv1.TagToLabel_Icon) basetypes.ObjectValue {
 	return types.ObjectValueMust(
-		GetTypeAttrsForAwsTagToLabel_Icon(),
+		GetTypeAttrsForTagToLabel_Icon(),
 		map[string]attr.Value{
 			"background_color": types.StringValue(proto.BackgroundColor),
 			"foreground_color": types.StringValue(proto.ForegroundColor),
@@ -1998,13 +2049,13 @@ func ConvertAwsTagToLabel_IconToObjectValueFromProto(proto *configv1.AwsTagToLab
 	)
 }
 
-func ConvertDataValueToAwsTagToLabel_IconProto(ctx context.Context, dataValue attr.Value) (*configv1.AwsTagToLabel_Icon, diag.Diagnostics) {
-	pv := AwsTagToLabel_Icon{}
+func ConvertDataValueToTagToLabel_IconProto(ctx context.Context, dataValue attr.Value) (*configv1.TagToLabel_Icon, diag.Diagnostics) {
+	pv := TagToLabel_Icon{}
 	diags := tfsdk.ValueAs(ctx, dataValue, &pv)
 	if diags.HasError() {
 		return nil, diags
 	}
-	proto := &configv1.AwsTagToLabel_Icon{}
+	proto := &configv1.TagToLabel_Icon{}
 	proto.BackgroundColor = pv.BackgroundColor.ValueString()
 	proto.ForegroundColor = pv.ForegroundColor.ValueString()
 	proto.Name = pv.Name.ValueString()

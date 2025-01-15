@@ -14,10 +14,6 @@ service ConfigService {
   rpc ReadAwsFlowLogsS3Bucket(ReadAwsFlowLogsS3BucketRequest) returns (ReadAwsFlowLogsS3BucketResponse);
   rpc UpdateAwsFlowLogsS3Bucket(UpdateAwsFlowLogsS3BucketRequest) returns (UpdateAwsFlowLogsS3BucketResponse);
   rpc DeleteAwsFlowLogsS3Bucket(DeleteAwsFlowLogsS3BucketRequest) returns (google.protobuf.Empty);
-  rpc CreateAwsTagToLabel(CreateAwsTagToLabelRequest) returns (CreateAwsTagToLabelResponse);
-  rpc ReadAwsTagToLabel(ReadAwsTagToLabelRequest) returns (ReadAwsTagToLabelResponse);
-  rpc UpdateAwsTagToLabel(UpdateAwsTagToLabelRequest) returns (UpdateAwsTagToLabelResponse);
-  rpc DeleteAwsTagToLabel(DeleteAwsTagToLabelRequest) returns (google.protobuf.Empty);
   rpc CreateAzureFlowLogsStorageAccount(CreateAzureFlowLogsStorageAccountRequest) returns (CreateAzureFlowLogsStorageAccountResponse);
   rpc ReadAzureFlowLogsStorageAccount(ReadAzureFlowLogsStorageAccountRequest) returns (ReadAzureFlowLogsStorageAccountResponse);
   rpc UpdateAzureFlowLogsStorageAccount(UpdateAzureFlowLogsStorageAccountRequest) returns (UpdateAzureFlowLogsStorageAccountResponse);
@@ -30,6 +26,10 @@ service ConfigService {
   rpc ReadK8SClusterOnboardingCredential(ReadK8SClusterOnboardingCredentialRequest) returns (ReadK8SClusterOnboardingCredentialResponse);
   rpc UpdateK8SClusterOnboardingCredential(UpdateK8SClusterOnboardingCredentialRequest) returns (UpdateK8SClusterOnboardingCredentialResponse);
   rpc DeleteK8SClusterOnboardingCredential(DeleteK8SClusterOnboardingCredentialRequest) returns (google.protobuf.Empty);
+  rpc CreateTagToLabel(CreateTagToLabelRequest) returns (CreateTagToLabelResponse);
+  rpc ReadTagToLabel(ReadTagToLabelRequest) returns (ReadTagToLabelResponse);
+  rpc UpdateTagToLabel(UpdateTagToLabelRequest) returns (UpdateTagToLabelResponse);
+  rpc DeleteTagToLabel(DeleteTagToLabelRequest) returns (google.protobuf.Empty);
 }
 message CreateAwsAccountRequest {
   string account_id = 2;
@@ -101,56 +101,6 @@ message UpdateAwsFlowLogsS3BucketResponse {
   string s3_bucket_arn = 3;
 }
 message DeleteAwsFlowLogsS3BucketRequest {
-  string id = 1;
-}
-message AwsTagToLabel_CloudTags {
-  string cloud = 1;
-  string key = 2;
-}
-message AwsTagToLabel_Icon {
-  string background_color = 1;
-  string foreground_color = 2;
-  string name = 3;
-}
-message CreateAwsTagToLabelRequest {
-  repeated AwsTagToLabel_CloudTags cloud_tags = 2;
-  AwsTagToLabel_Icon icon = 3;
-  string key = 4;
-  string name = 5;
-}
-message CreateAwsTagToLabelResponse {
-  string id = 1;
-  repeated AwsTagToLabel_CloudTags cloud_tags = 2;
-  AwsTagToLabel_Icon icon = 3;
-  string key = 4;
-  string name = 5;
-}
-message ReadAwsTagToLabelRequest {
-  string id = 1;
-}
-message ReadAwsTagToLabelResponse {
-  string id = 1;
-  repeated AwsTagToLabel_CloudTags cloud_tags = 2;
-  AwsTagToLabel_Icon icon = 3;
-  string key = 4;
-  string name = 5;
-}
-message UpdateAwsTagToLabelRequest {
-  string id = 1;
-  repeated AwsTagToLabel_CloudTags cloud_tags = 2;
-  AwsTagToLabel_Icon icon = 3;
-  string key = 4;
-  string name = 5;
-  google.protobuf.FieldMask update_mask = 6;
-}
-message UpdateAwsTagToLabelResponse {
-  string id = 1;
-  repeated AwsTagToLabel_CloudTags cloud_tags = 2;
-  AwsTagToLabel_Icon icon = 3;
-  string key = 4;
-  string name = 5;
-}
-message DeleteAwsTagToLabelRequest {
   string id = 1;
 }
 message CreateAzureFlowLogsStorageAccountRequest {
@@ -265,5 +215,56 @@ message UpdateK8SClusterOnboardingCredentialResponse {
   string name = 7;
 }
 message DeleteK8SClusterOnboardingCredentialRequest {
+  string id = 1;
+}
+message TagToLabel_Icon {
+  string background_color = 1;
+  string foreground_color = 2;
+  string name = 3;
+}
+message CreateTagToLabelRequest {
+  repeated string aws_tag_keys = 2;
+  repeated string azure_tag_keys = 3;
+  TagToLabel_Icon icon = 4;
+  string key = 5;
+  string name = 6;
+}
+message CreateTagToLabelResponse {
+  string id = 1;
+  repeated string aws_tag_keys = 2;
+  repeated string azure_tag_keys = 3;
+  TagToLabel_Icon icon = 4;
+  string key = 5;
+  string name = 6;
+}
+message ReadTagToLabelRequest {
+  string id = 1;
+}
+message ReadTagToLabelResponse {
+  string id = 1;
+  repeated string aws_tag_keys = 2;
+  repeated string azure_tag_keys = 3;
+  TagToLabel_Icon icon = 4;
+  string key = 5;
+  string name = 6;
+}
+message UpdateTagToLabelRequest {
+  string id = 1;
+  repeated string aws_tag_keys = 2;
+  repeated string azure_tag_keys = 3;
+  TagToLabel_Icon icon = 4;
+  string key = 5;
+  string name = 6;
+  google.protobuf.FieldMask update_mask = 7;
+}
+message UpdateTagToLabelResponse {
+  string id = 1;
+  repeated string aws_tag_keys = 2;
+  repeated string azure_tag_keys = 3;
+  TagToLabel_Icon icon = 4;
+  string key = 5;
+  string name = 6;
+}
+message DeleteTagToLabelRequest {
   string id = 1;
 }

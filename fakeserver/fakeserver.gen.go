@@ -24,14 +24,14 @@ type FakeConfigServer struct {
 	AwsAccountMutex                     sync.RWMutex
 	AwsFlowLogsS3BucketMap              map[string]*AwsFlowLogsS3Bucket
 	AwsFlowLogsS3BucketMutex            sync.RWMutex
-	AwsTagToLabelMap                    map[string]*AwsTagToLabel
-	AwsTagToLabelMutex                  sync.RWMutex
 	AzureFlowLogsStorageAccountMap      map[string]*AzureFlowLogsStorageAccount
 	AzureFlowLogsStorageAccountMutex    sync.RWMutex
 	AzureSubscriptionMap                map[string]*AzureSubscription
 	AzureSubscriptionMutex              sync.RWMutex
 	K8SClusterOnboardingCredentialMap   map[string]*K8SClusterOnboardingCredential
 	K8SClusterOnboardingCredentialMutex sync.RWMutex
+	TagToLabelMap                       map[string]*TagToLabel
+	TagToLabelMutex                     sync.RWMutex
 }
 
 var _ configv1.ConfigServiceServer = &FakeConfigServer{}
@@ -42,10 +42,10 @@ func NewFakeConfigServer(logger *zap.Logger) configv1.ConfigServiceServer {
 		Logger:                            logger,
 		AwsAccountMap:                     make(map[string]*AwsAccount),
 		AwsFlowLogsS3BucketMap:            make(map[string]*AwsFlowLogsS3Bucket),
-		AwsTagToLabelMap:                  make(map[string]*AwsTagToLabel),
 		AzureFlowLogsStorageAccountMap:    make(map[string]*AzureFlowLogsStorageAccount),
 		AzureSubscriptionMap:              make(map[string]*AzureSubscription),
 		K8SClusterOnboardingCredentialMap: make(map[string]*K8SClusterOnboardingCredential),
+		TagToLabelMap:                     make(map[string]*TagToLabel),
 	}
 }
 
@@ -63,14 +63,6 @@ type AwsFlowLogsS3Bucket struct {
 	Id          string
 	AccountId   string
 	S3BucketArn string
-}
-
-type AwsTagToLabel struct {
-	Id        string
-	CloudTags []*configv1.AwsTagToLabel_CloudTags
-	Icon      *configv1.AwsTagToLabel_Icon
-	Key       string
-	Name      string
 }
 
 type AzureFlowLogsStorageAccount struct {
@@ -97,6 +89,15 @@ type K8SClusterOnboardingCredential struct {
 	Description   *string
 	IllumioRegion string
 	Name          string
+}
+
+type TagToLabel struct {
+	Id           string
+	AwsTagKeys   []string
+	AzureTagKeys []string
+	Icon         *configv1.TagToLabel_Icon
+	Key          string
+	Name         string
 }
 
 func (s *FakeConfigServer) CreateAwsAccount(ctx context.Context, req *configv1.CreateAwsAccountRequest) (*configv1.CreateAwsAccountResponse, error) {
@@ -348,141 +349,6 @@ func (s *FakeConfigServer) DeleteAwsFlowLogsS3Bucket(ctx context.Context, req *c
 	s.Logger.Info("deleted resource",
 		zap.String("type", "aws_flow_logs_s3_bucket"),
 		zap.String("method", "DeleteAwsFlowLogsS3Bucket"),
-		zap.String("id", id),
-	)
-	return &emptypb.Empty{}, nil
-}
-func (s *FakeConfigServer) CreateAwsTagToLabel(ctx context.Context, req *configv1.CreateAwsTagToLabelRequest) (*configv1.CreateAwsTagToLabelResponse, error) {
-	id := uuid.New().String()
-	model := &AwsTagToLabel{
-		Id:        id,
-		CloudTags: req.CloudTags,
-		Icon:      req.Icon,
-		Key:       req.Key,
-		Name:      req.Name,
-	}
-	resp := &configv1.CreateAwsTagToLabelResponse{
-		Id:        id,
-		CloudTags: model.CloudTags,
-		Icon:      model.Icon,
-		Key:       model.Key,
-		Name:      model.Name,
-	}
-	s.AwsTagToLabelMutex.Lock()
-	s.AwsTagToLabelMap[id] = model
-	s.AwsTagToLabelMutex.Unlock()
-	s.Logger.Info("created resource",
-		zap.String("type", "aws_tag_to_label"),
-		zap.String("method", "CreateAwsTagToLabel"),
-		zap.String("id", id),
-	)
-	return resp, nil
-}
-
-func (s *FakeConfigServer) ReadAwsTagToLabel(ctx context.Context, req *configv1.ReadAwsTagToLabelRequest) (*configv1.ReadAwsTagToLabelResponse, error) {
-	id := req.Id
-	s.AwsTagToLabelMutex.RLock()
-	model, found := s.AwsTagToLabelMap[id]
-	if !found {
-		s.AwsTagToLabelMutex.RUnlock()
-		s.Logger.Error("attempted to read resource with unknown id",
-			zap.String("type", "aws_tag_to_label"),
-			zap.String("method", "ReadAwsTagToLabel"),
-			zap.String("id", id),
-		)
-		return nil, status.Errorf(codes.NotFound, "no aws_tag_to_label found with id %s", id)
-	}
-	resp := &configv1.ReadAwsTagToLabelResponse{
-		Id:        id,
-		CloudTags: model.CloudTags,
-		Icon:      model.Icon,
-		Key:       model.Key,
-		Name:      model.Name,
-	}
-	s.AwsTagToLabelMutex.RUnlock()
-	s.Logger.Info("read resource",
-		zap.String("type", "aws_tag_to_label"),
-		zap.String("method", "ReadAwsTagToLabel"),
-		zap.String("id", id),
-	)
-	return resp, nil
-}
-
-func (s *FakeConfigServer) UpdateAwsTagToLabel(ctx context.Context, req *configv1.UpdateAwsTagToLabelRequest) (*configv1.UpdateAwsTagToLabelResponse, error) {
-	id := req.Id
-	s.AwsTagToLabelMutex.Lock()
-	model, found := s.AwsTagToLabelMap[id]
-	if !found {
-		s.AwsTagToLabelMutex.Unlock()
-		s.Logger.Error("attempted to update resource with unknown id",
-			zap.String("type", "aws_tag_to_label"),
-			zap.String("method", "UpdateAwsTagToLabel"),
-			zap.String("id", id),
-		)
-		return nil, status.Errorf(codes.NotFound, "no aws_tag_to_label found with id %s", id)
-	}
-	updateMask := req.UpdateMask
-	var updateMaskPaths []string
-	if updateMask != nil {
-		updateMaskPaths = updateMask.Paths
-	}
-	for _, path := range updateMaskPaths {
-		switch path {
-		case "cloud_tags":
-			model.CloudTags = req.CloudTags
-		case "icon":
-			model.Icon = req.Icon
-		case "key":
-			model.Key = req.Key
-		case "name":
-			model.Name = req.Name
-		default:
-			s.AwsAccountMutex.Unlock()
-			s.Logger.Error("attempted to update resource using invalid update_mask path",
-				zap.String("type", "aws_tag_to_label"),
-				zap.String("method", "UpdateAwsTagToLabel"),
-				zap.String("id", id),
-				zap.Strings("updateMaskPaths", updateMaskPaths),
-				zap.String("invalidUpdateMaskPath", path),
-			)
-			return nil, status.Errorf(codes.InvalidArgument, "invalid path in update_mask for aws_tag_to_label: %s", path)
-		}
-	}
-	resp := &configv1.UpdateAwsTagToLabelResponse{
-		Id:        id,
-		CloudTags: model.CloudTags,
-		Icon:      model.Icon,
-		Key:       model.Key,
-		Name:      model.Name,
-	}
-	s.AwsTagToLabelMutex.Unlock()
-	s.Logger.Info("updated resource",
-		zap.String("type", "aws_tag_to_label"),
-		zap.String("method", "UpdateAwsTagToLabel"),
-		zap.String("id", id),
-		zap.Strings("updateMaskPaths", updateMaskPaths),
-	)
-	return resp, nil
-}
-
-func (s *FakeConfigServer) DeleteAwsTagToLabel(ctx context.Context, req *configv1.DeleteAwsTagToLabelRequest) (*emptypb.Empty, error) {
-	id := req.Id
-	s.AwsTagToLabelMutex.Lock()
-	_, found := s.AwsTagToLabelMap[id]
-	if !found {
-		s.AwsTagToLabelMutex.Unlock()
-		s.Logger.Error("attempted to delete resource with unknown id",
-			zap.String("type", "aws_tag_to_label"),
-			zap.String("method", "DeleteAwsTagToLabel"),
-			zap.String("id", id),
-		)
-		return nil, status.Errorf(codes.NotFound, "no aws_tag_to_label found with id %s", id)
-	}
-	delete(s.AwsTagToLabelMap, id)
-	s.AwsTagToLabelMutex.Unlock()
-	s.Logger.Info("deleted resource",
-		zap.String("type", "aws_tag_to_label"),
-		zap.String("method", "DeleteAwsTagToLabel"),
 		zap.String("id", id),
 	)
 	return &emptypb.Empty{}, nil
@@ -870,6 +736,147 @@ func (s *FakeConfigServer) DeleteK8SClusterOnboardingCredential(ctx context.Cont
 	s.Logger.Info("deleted resource",
 		zap.String("type", "k8s_cluster_onboarding_credential"),
 		zap.String("method", "DeleteK8SClusterOnboardingCredential"),
+		zap.String("id", id),
+	)
+	return &emptypb.Empty{}, nil
+}
+func (s *FakeConfigServer) CreateTagToLabel(ctx context.Context, req *configv1.CreateTagToLabelRequest) (*configv1.CreateTagToLabelResponse, error) {
+	id := uuid.New().String()
+	model := &TagToLabel{
+		Id:           id,
+		AwsTagKeys:   req.AwsTagKeys,
+		AzureTagKeys: req.AzureTagKeys,
+		Icon:         req.Icon,
+		Key:          req.Key,
+		Name:         req.Name,
+	}
+	resp := &configv1.CreateTagToLabelResponse{
+		Id:           id,
+		AwsTagKeys:   model.AwsTagKeys,
+		AzureTagKeys: model.AzureTagKeys,
+		Icon:         model.Icon,
+		Key:          model.Key,
+		Name:         model.Name,
+	}
+	s.TagToLabelMutex.Lock()
+	s.TagToLabelMap[id] = model
+	s.TagToLabelMutex.Unlock()
+	s.Logger.Info("created resource",
+		zap.String("type", "tag_to_label"),
+		zap.String("method", "CreateTagToLabel"),
+		zap.String("id", id),
+	)
+	return resp, nil
+}
+
+func (s *FakeConfigServer) ReadTagToLabel(ctx context.Context, req *configv1.ReadTagToLabelRequest) (*configv1.ReadTagToLabelResponse, error) {
+	id := req.Id
+	s.TagToLabelMutex.RLock()
+	model, found := s.TagToLabelMap[id]
+	if !found {
+		s.TagToLabelMutex.RUnlock()
+		s.Logger.Error("attempted to read resource with unknown id",
+			zap.String("type", "tag_to_label"),
+			zap.String("method", "ReadTagToLabel"),
+			zap.String("id", id),
+		)
+		return nil, status.Errorf(codes.NotFound, "no tag_to_label found with id %s", id)
+	}
+	resp := &configv1.ReadTagToLabelResponse{
+		Id:           id,
+		AwsTagKeys:   model.AwsTagKeys,
+		AzureTagKeys: model.AzureTagKeys,
+		Icon:         model.Icon,
+		Key:          model.Key,
+		Name:         model.Name,
+	}
+	s.TagToLabelMutex.RUnlock()
+	s.Logger.Info("read resource",
+		zap.String("type", "tag_to_label"),
+		zap.String("method", "ReadTagToLabel"),
+		zap.String("id", id),
+	)
+	return resp, nil
+}
+
+func (s *FakeConfigServer) UpdateTagToLabel(ctx context.Context, req *configv1.UpdateTagToLabelRequest) (*configv1.UpdateTagToLabelResponse, error) {
+	id := req.Id
+	s.TagToLabelMutex.Lock()
+	model, found := s.TagToLabelMap[id]
+	if !found {
+		s.TagToLabelMutex.Unlock()
+		s.Logger.Error("attempted to update resource with unknown id",
+			zap.String("type", "tag_to_label"),
+			zap.String("method", "UpdateTagToLabel"),
+			zap.String("id", id),
+		)
+		return nil, status.Errorf(codes.NotFound, "no tag_to_label found with id %s", id)
+	}
+	updateMask := req.UpdateMask
+	var updateMaskPaths []string
+	if updateMask != nil {
+		updateMaskPaths = updateMask.Paths
+	}
+	for _, path := range updateMaskPaths {
+		switch path {
+		case "aws_tag_keys":
+			model.AwsTagKeys = req.AwsTagKeys
+		case "azure_tag_keys":
+			model.AzureTagKeys = req.AzureTagKeys
+		case "icon":
+			model.Icon = req.Icon
+		case "key":
+			model.Key = req.Key
+		case "name":
+			model.Name = req.Name
+		default:
+			s.AwsAccountMutex.Unlock()
+			s.Logger.Error("attempted to update resource using invalid update_mask path",
+				zap.String("type", "tag_to_label"),
+				zap.String("method", "UpdateTagToLabel"),
+				zap.String("id", id),
+				zap.Strings("updateMaskPaths", updateMaskPaths),
+				zap.String("invalidUpdateMaskPath", path),
+			)
+			return nil, status.Errorf(codes.InvalidArgument, "invalid path in update_mask for tag_to_label: %s", path)
+		}
+	}
+	resp := &configv1.UpdateTagToLabelResponse{
+		Id:           id,
+		AwsTagKeys:   model.AwsTagKeys,
+		AzureTagKeys: model.AzureTagKeys,
+		Icon:         model.Icon,
+		Key:          model.Key,
+		Name:         model.Name,
+	}
+	s.TagToLabelMutex.Unlock()
+	s.Logger.Info("updated resource",
+		zap.String("type", "tag_to_label"),
+		zap.String("method", "UpdateTagToLabel"),
+		zap.String("id", id),
+		zap.Strings("updateMaskPaths", updateMaskPaths),
+	)
+	return resp, nil
+}
+
+func (s *FakeConfigServer) DeleteTagToLabel(ctx context.Context, req *configv1.DeleteTagToLabelRequest) (*emptypb.Empty, error) {
+	id := req.Id
+	s.TagToLabelMutex.Lock()
+	_, found := s.TagToLabelMap[id]
+	if !found {
+		s.TagToLabelMutex.Unlock()
+		s.Logger.Error("attempted to delete resource with unknown id",
+			zap.String("type", "tag_to_label"),
+			zap.String("method", "DeleteTagToLabel"),
+			zap.String("id", id),
+		)
+		return nil, status.Errorf(codes.NotFound, "no tag_to_label found with id %s", id)
+	}
+	delete(s.TagToLabelMap, id)
+	s.TagToLabelMutex.Unlock()
+	s.Logger.Info("deleted resource",
+		zap.String("type", "tag_to_label"),
+		zap.String("method", "DeleteTagToLabel"),
 		zap.String("id", id),
 	)
 	return &emptypb.Empty{}, nil
