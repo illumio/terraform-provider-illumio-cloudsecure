@@ -30,6 +30,8 @@ type FakeConfigServer struct {
 	AzureSubscriptionMutex              sync.RWMutex
 	K8SClusterOnboardingCredentialMap   map[string]*K8SClusterOnboardingCredential
 	K8SClusterOnboardingCredentialMutex sync.RWMutex
+	TagToLabelMap                       map[string]*TagToLabel
+	TagToLabelMutex                     sync.RWMutex
 }
 
 var _ configv1.ConfigServiceServer = &FakeConfigServer{}
@@ -43,6 +45,7 @@ func NewFakeConfigServer(logger *zap.Logger) configv1.ConfigServiceServer {
 		AzureFlowLogsStorageAccountMap:    make(map[string]*AzureFlowLogsStorageAccount),
 		AzureSubscriptionMap:              make(map[string]*AzureSubscription),
 		K8SClusterOnboardingCredentialMap: make(map[string]*K8SClusterOnboardingCredential),
+		TagToLabelMap:                     make(map[string]*TagToLabel),
 	}
 }
 
@@ -86,6 +89,15 @@ type K8SClusterOnboardingCredential struct {
 	Description   *string
 	IllumioRegion string
 	Name          string
+}
+
+type TagToLabel struct {
+	Id           string
+	AwsTagKeys   []string
+	AzureTagKeys []string
+	Icon         *configv1.TagToLabel_Icon
+	Key          string
+	Name         string
 }
 
 func (s *FakeConfigServer) CreateAwsAccount(ctx context.Context, req *configv1.CreateAwsAccountRequest) (*configv1.CreateAwsAccountResponse, error) {
@@ -724,6 +736,147 @@ func (s *FakeConfigServer) DeleteK8SClusterOnboardingCredential(ctx context.Cont
 	s.Logger.Info("deleted resource",
 		zap.String("type", "k8s_cluster_onboarding_credential"),
 		zap.String("method", "DeleteK8SClusterOnboardingCredential"),
+		zap.String("id", id),
+	)
+	return &emptypb.Empty{}, nil
+}
+func (s *FakeConfigServer) CreateTagToLabel(ctx context.Context, req *configv1.CreateTagToLabelRequest) (*configv1.CreateTagToLabelResponse, error) {
+	id := uuid.New().String()
+	model := &TagToLabel{
+		Id:           id,
+		AwsTagKeys:   req.AwsTagKeys,
+		AzureTagKeys: req.AzureTagKeys,
+		Icon:         req.Icon,
+		Key:          req.Key,
+		Name:         req.Name,
+	}
+	resp := &configv1.CreateTagToLabelResponse{
+		Id:           id,
+		AwsTagKeys:   model.AwsTagKeys,
+		AzureTagKeys: model.AzureTagKeys,
+		Icon:         model.Icon,
+		Key:          model.Key,
+		Name:         model.Name,
+	}
+	s.TagToLabelMutex.Lock()
+	s.TagToLabelMap[id] = model
+	s.TagToLabelMutex.Unlock()
+	s.Logger.Info("created resource",
+		zap.String("type", "tag_to_label"),
+		zap.String("method", "CreateTagToLabel"),
+		zap.String("id", id),
+	)
+	return resp, nil
+}
+
+func (s *FakeConfigServer) ReadTagToLabel(ctx context.Context, req *configv1.ReadTagToLabelRequest) (*configv1.ReadTagToLabelResponse, error) {
+	id := req.Id
+	s.TagToLabelMutex.RLock()
+	model, found := s.TagToLabelMap[id]
+	if !found {
+		s.TagToLabelMutex.RUnlock()
+		s.Logger.Error("attempted to read resource with unknown id",
+			zap.String("type", "tag_to_label"),
+			zap.String("method", "ReadTagToLabel"),
+			zap.String("id", id),
+		)
+		return nil, status.Errorf(codes.NotFound, "no tag_to_label found with id %s", id)
+	}
+	resp := &configv1.ReadTagToLabelResponse{
+		Id:           id,
+		AwsTagKeys:   model.AwsTagKeys,
+		AzureTagKeys: model.AzureTagKeys,
+		Icon:         model.Icon,
+		Key:          model.Key,
+		Name:         model.Name,
+	}
+	s.TagToLabelMutex.RUnlock()
+	s.Logger.Info("read resource",
+		zap.String("type", "tag_to_label"),
+		zap.String("method", "ReadTagToLabel"),
+		zap.String("id", id),
+	)
+	return resp, nil
+}
+
+func (s *FakeConfigServer) UpdateTagToLabel(ctx context.Context, req *configv1.UpdateTagToLabelRequest) (*configv1.UpdateTagToLabelResponse, error) {
+	id := req.Id
+	s.TagToLabelMutex.Lock()
+	model, found := s.TagToLabelMap[id]
+	if !found {
+		s.TagToLabelMutex.Unlock()
+		s.Logger.Error("attempted to update resource with unknown id",
+			zap.String("type", "tag_to_label"),
+			zap.String("method", "UpdateTagToLabel"),
+			zap.String("id", id),
+		)
+		return nil, status.Errorf(codes.NotFound, "no tag_to_label found with id %s", id)
+	}
+	updateMask := req.UpdateMask
+	var updateMaskPaths []string
+	if updateMask != nil {
+		updateMaskPaths = updateMask.Paths
+	}
+	for _, path := range updateMaskPaths {
+		switch path {
+		case "aws_tag_keys":
+			model.AwsTagKeys = req.AwsTagKeys
+		case "azure_tag_keys":
+			model.AzureTagKeys = req.AzureTagKeys
+		case "icon":
+			model.Icon = req.Icon
+		case "key":
+			model.Key = req.Key
+		case "name":
+			model.Name = req.Name
+		default:
+			s.AwsAccountMutex.Unlock()
+			s.Logger.Error("attempted to update resource using invalid update_mask path",
+				zap.String("type", "tag_to_label"),
+				zap.String("method", "UpdateTagToLabel"),
+				zap.String("id", id),
+				zap.Strings("updateMaskPaths", updateMaskPaths),
+				zap.String("invalidUpdateMaskPath", path),
+			)
+			return nil, status.Errorf(codes.InvalidArgument, "invalid path in update_mask for tag_to_label: %s", path)
+		}
+	}
+	resp := &configv1.UpdateTagToLabelResponse{
+		Id:           id,
+		AwsTagKeys:   model.AwsTagKeys,
+		AzureTagKeys: model.AzureTagKeys,
+		Icon:         model.Icon,
+		Key:          model.Key,
+		Name:         model.Name,
+	}
+	s.TagToLabelMutex.Unlock()
+	s.Logger.Info("updated resource",
+		zap.String("type", "tag_to_label"),
+		zap.String("method", "UpdateTagToLabel"),
+		zap.String("id", id),
+		zap.Strings("updateMaskPaths", updateMaskPaths),
+	)
+	return resp, nil
+}
+
+func (s *FakeConfigServer) DeleteTagToLabel(ctx context.Context, req *configv1.DeleteTagToLabelRequest) (*emptypb.Empty, error) {
+	id := req.Id
+	s.TagToLabelMutex.Lock()
+	_, found := s.TagToLabelMap[id]
+	if !found {
+		s.TagToLabelMutex.Unlock()
+		s.Logger.Error("attempted to delete resource with unknown id",
+			zap.String("type", "tag_to_label"),
+			zap.String("method", "DeleteTagToLabel"),
+			zap.String("id", id),
+		)
+		return nil, status.Errorf(codes.NotFound, "no tag_to_label found with id %s", id)
+	}
+	delete(s.TagToLabelMap, id)
+	s.TagToLabelMutex.Unlock()
+	s.Logger.Info("deleted resource",
+		zap.String("type", "tag_to_label"),
+		zap.String("method", "DeleteTagToLabel"),
 		zap.String("id", id),
 	)
 	return &emptypb.Empty{}, nil

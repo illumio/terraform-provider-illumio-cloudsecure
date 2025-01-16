@@ -26,6 +26,10 @@ service ConfigService {
   rpc ReadK8SClusterOnboardingCredential(ReadK8SClusterOnboardingCredentialRequest) returns (ReadK8SClusterOnboardingCredentialResponse);
   rpc UpdateK8SClusterOnboardingCredential(UpdateK8SClusterOnboardingCredentialRequest) returns (UpdateK8SClusterOnboardingCredentialResponse);
   rpc DeleteK8SClusterOnboardingCredential(DeleteK8SClusterOnboardingCredentialRequest) returns (google.protobuf.Empty);
+  rpc CreateTagToLabel(CreateTagToLabelRequest) returns (CreateTagToLabelResponse);
+  rpc ReadTagToLabel(ReadTagToLabelRequest) returns (ReadTagToLabelResponse);
+  rpc UpdateTagToLabel(UpdateTagToLabelRequest) returns (UpdateTagToLabelResponse);
+  rpc DeleteTagToLabel(DeleteTagToLabelRequest) returns (google.protobuf.Empty);
 }
 message CreateAwsAccountRequest {
   string account_id = 2;
@@ -211,5 +215,56 @@ message UpdateK8SClusterOnboardingCredentialResponse {
   string name = 7;
 }
 message DeleteK8SClusterOnboardingCredentialRequest {
+  string id = 1;
+}
+message TagToLabel_Icon {
+  string background_color = 1;
+  string foreground_color = 2;
+  string name = 3;
+}
+message CreateTagToLabelRequest {
+  repeated string aws_tag_keys = 2;
+  repeated string azure_tag_keys = 3;
+  TagToLabel_Icon icon = 4;
+  string key = 5;
+  string name = 6;
+}
+message CreateTagToLabelResponse {
+  string id = 1;
+  repeated string aws_tag_keys = 2;
+  repeated string azure_tag_keys = 3;
+  TagToLabel_Icon icon = 4;
+  string key = 5;
+  string name = 6;
+}
+message ReadTagToLabelRequest {
+  string id = 1;
+}
+message ReadTagToLabelResponse {
+  string id = 1;
+  repeated string aws_tag_keys = 2;
+  repeated string azure_tag_keys = 3;
+  TagToLabel_Icon icon = 4;
+  string key = 5;
+  string name = 6;
+}
+message UpdateTagToLabelRequest {
+  string id = 1;
+  repeated string aws_tag_keys = 2;
+  repeated string azure_tag_keys = 3;
+  TagToLabel_Icon icon = 4;
+  string key = 5;
+  string name = 6;
+  google.protobuf.FieldMask update_mask = 7;
+}
+message UpdateTagToLabelResponse {
+  string id = 1;
+  repeated string aws_tag_keys = 2;
+  repeated string azure_tag_keys = 3;
+  TagToLabel_Icon icon = 4;
+  string key = 5;
+  string name = 6;
+}
+message DeleteTagToLabelRequest {
   string id = 1;
 }

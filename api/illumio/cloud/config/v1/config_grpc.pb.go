@@ -43,6 +43,10 @@ const (
 	ConfigService_ReadK8SClusterOnboardingCredential_FullMethodName   = "/illumio.cloud.config.v1.ConfigService/ReadK8SClusterOnboardingCredential"
 	ConfigService_UpdateK8SClusterOnboardingCredential_FullMethodName = "/illumio.cloud.config.v1.ConfigService/UpdateK8SClusterOnboardingCredential"
 	ConfigService_DeleteK8SClusterOnboardingCredential_FullMethodName = "/illumio.cloud.config.v1.ConfigService/DeleteK8SClusterOnboardingCredential"
+	ConfigService_CreateTagToLabel_FullMethodName                     = "/illumio.cloud.config.v1.ConfigService/CreateTagToLabel"
+	ConfigService_ReadTagToLabel_FullMethodName                       = "/illumio.cloud.config.v1.ConfigService/ReadTagToLabel"
+	ConfigService_UpdateTagToLabel_FullMethodName                     = "/illumio.cloud.config.v1.ConfigService/UpdateTagToLabel"
+	ConfigService_DeleteTagToLabel_FullMethodName                     = "/illumio.cloud.config.v1.ConfigService/DeleteTagToLabel"
 )
 
 // ConfigServiceClient is the client API for ConfigService service.
@@ -69,6 +73,10 @@ type ConfigServiceClient interface {
 	ReadK8SClusterOnboardingCredential(ctx context.Context, in *ReadK8SClusterOnboardingCredentialRequest, opts ...grpc.CallOption) (*ReadK8SClusterOnboardingCredentialResponse, error)
 	UpdateK8SClusterOnboardingCredential(ctx context.Context, in *UpdateK8SClusterOnboardingCredentialRequest, opts ...grpc.CallOption) (*UpdateK8SClusterOnboardingCredentialResponse, error)
 	DeleteK8SClusterOnboardingCredential(ctx context.Context, in *DeleteK8SClusterOnboardingCredentialRequest, opts ...grpc.CallOption) (*emptypb.Empty, error)
+	CreateTagToLabel(ctx context.Context, in *CreateTagToLabelRequest, opts ...grpc.CallOption) (*CreateTagToLabelResponse, error)
+	ReadTagToLabel(ctx context.Context, in *ReadTagToLabelRequest, opts ...grpc.CallOption) (*ReadTagToLabelResponse, error)
+	UpdateTagToLabel(ctx context.Context, in *UpdateTagToLabelRequest, opts ...grpc.CallOption) (*UpdateTagToLabelResponse, error)
+	DeleteTagToLabel(ctx context.Context, in *DeleteTagToLabelRequest, opts ...grpc.CallOption) (*emptypb.Empty, error)
 }
 
 type configServiceClient struct {
@@ -279,6 +287,46 @@ func (c *configServiceClient) DeleteK8SClusterOnboardingCredential(ctx context.C
 	return out, nil
 }
 
+func (c *configServiceClient) CreateTagToLabel(ctx context.Context, in *CreateTagToLabelRequest, opts ...grpc.CallOption) (*CreateTagToLabelResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(CreateTagToLabelResponse)
+	err := c.cc.Invoke(ctx, ConfigService_CreateTagToLabel_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *configServiceClient) ReadTagToLabel(ctx context.Context, in *ReadTagToLabelRequest, opts ...grpc.CallOption) (*ReadTagToLabelResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(ReadTagToLabelResponse)
+	err := c.cc.Invoke(ctx, ConfigService_ReadTagToLabel_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *configServiceClient) UpdateTagToLabel(ctx context.Context, in *UpdateTagToLabelRequest, opts ...grpc.CallOption) (*UpdateTagToLabelResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(UpdateTagToLabelResponse)
+	err := c.cc.Invoke(ctx, ConfigService_UpdateTagToLabel_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *configServiceClient) DeleteTagToLabel(ctx context.Context, in *DeleteTagToLabelRequest, opts ...grpc.CallOption) (*emptypb.Empty, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(emptypb.Empty)
+	err := c.cc.Invoke(ctx, ConfigService_DeleteTagToLabel_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // ConfigServiceServer is the server API for ConfigService service.
 // All implementations must embed UnimplementedConfigServiceServer
 // for forward compatibility.
@@ -303,6 +351,10 @@ type ConfigServiceServer interface {
 	ReadK8SClusterOnboardingCredential(context.Context, *ReadK8SClusterOnboardingCredentialRequest) (*ReadK8SClusterOnboardingCredentialResponse, error)
 	UpdateK8SClusterOnboardingCredential(context.Context, *UpdateK8SClusterOnboardingCredentialRequest) (*UpdateK8SClusterOnboardingCredentialResponse, error)
 	DeleteK8SClusterOnboardingCredential(context.Context, *DeleteK8SClusterOnboardingCredentialRequest) (*emptypb.Empty, error)
+	CreateTagToLabel(context.Context, *CreateTagToLabelRequest) (*CreateTagToLabelResponse, error)
+	ReadTagToLabel(context.Context, *ReadTagToLabelRequest) (*ReadTagToLabelResponse, error)
+	UpdateTagToLabel(context.Context, *UpdateTagToLabelRequest) (*UpdateTagToLabelResponse, error)
+	DeleteTagToLabel(context.Context, *DeleteTagToLabelRequest) (*emptypb.Empty, error)
 	mustEmbedUnimplementedConfigServiceServer()
 }
 
@@ -372,6 +424,18 @@ func (UnimplementedConfigServiceServer) UpdateK8SClusterOnboardingCredential(con
 }
 func (UnimplementedConfigServiceServer) DeleteK8SClusterOnboardingCredential(context.Context, *DeleteK8SClusterOnboardingCredentialRequest) (*emptypb.Empty, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method DeleteK8SClusterOnboardingCredential not implemented")
+}
+func (UnimplementedConfigServiceServer) CreateTagToLabel(context.Context, *CreateTagToLabelRequest) (*CreateTagToLabelResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method CreateTagToLabel not implemented")
+}
+func (UnimplementedConfigServiceServer) ReadTagToLabel(context.Context, *ReadTagToLabelRequest) (*ReadTagToLabelResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method ReadTagToLabel not implemented")
+}
+func (UnimplementedConfigServiceServer) UpdateTagToLabel(context.Context, *UpdateTagToLabelRequest) (*UpdateTagToLabelResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method UpdateTagToLabel not implemented")
+}
+func (UnimplementedConfigServiceServer) DeleteTagToLabel(context.Context, *DeleteTagToLabelRequest) (*emptypb.Empty, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method DeleteTagToLabel not implemented")
 }
 func (UnimplementedConfigServiceServer) mustEmbedUnimplementedConfigServiceServer() {}
 func (UnimplementedConfigServiceServer) testEmbeddedByValue()                       {}
@@ -754,6 +818,78 @@ func _ConfigService_DeleteK8SClusterOnboardingCredential_Handler(srv interface{}
 	return interceptor(ctx, in, info, handler)
 }
 
+func _ConfigService_CreateTagToLabel_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(CreateTagToLabelRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(ConfigServiceServer).CreateTagToLabel(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: ConfigService_CreateTagToLabel_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(ConfigServiceServer).CreateTagToLabel(ctx, req.(*CreateTagToLabelRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _ConfigService_ReadTagToLabel_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(ReadTagToLabelRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(ConfigServiceServer).ReadTagToLabel(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: ConfigService_ReadTagToLabel_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(ConfigServiceServer).ReadTagToLabel(ctx, req.(*ReadTagToLabelRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _ConfigService_UpdateTagToLabel_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(UpdateTagToLabelRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(ConfigServiceServer).UpdateTagToLabel(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: ConfigService_UpdateTagToLabel_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(ConfigServiceServer).UpdateTagToLabel(ctx, req.(*UpdateTagToLabelRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _ConfigService_DeleteTagToLabel_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(DeleteTagToLabelRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(ConfigServiceServer).DeleteTagToLabel(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: ConfigService_DeleteTagToLabel_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(ConfigServiceServer).DeleteTagToLabel(ctx, req.(*DeleteTagToLabelRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // ConfigService_ServiceDesc is the grpc.ServiceDesc for ConfigService service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -840,6 +976,22 @@ var ConfigService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "DeleteK8SClusterOnboardingCredential",
 			Handler:    _ConfigService_DeleteK8SClusterOnboardingCredential_Handler,
+		},
+		{
+			MethodName: "CreateTagToLabel",
+			Handler:    _ConfigService_CreateTagToLabel_Handler,
+		},
+		{
+			MethodName: "ReadTagToLabel",
+			Handler:    _ConfigService_ReadTagToLabel_Handler,
+		},
+		{
+			MethodName: "UpdateTagToLabel",
+			Handler:    _ConfigService_UpdateTagToLabel_Handler,
+		},
+		{
+			MethodName: "DeleteTagToLabel",
+			Handler:    _ConfigService_DeleteTagToLabel_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

@@ -610,6 +610,10 @@ func GenerateProvider(dst io.Writer, pkg string, src schema.Schema) error {
 	return ProviderConvertersTemplate.Execute(dst, &data)
 }
 
+func hasObjectElementType(t fieldType) bool {
+	return t.NestedModel != nil || (t.CollectionElementType != nil && hasObjectElementType(*t.CollectionElementType))
+}
+
 // AddResourceToProviderTemplateData adds a resource to the provider template data.
 func AddResourceToProviderTemplateData(resource *schema.Resource, data *providerTemplateData, camelCasedIdFieldName, camelCasedUpdateMaskFieldName string) error {
 	resourceName := resource.TypeName
@@ -679,7 +683,7 @@ func AddResourceToProviderTemplateData(resource *schema.Resource, data *provider
 			return fmt.Errorf("failed to parse field %s in resource %s: %w", attrName, resourceMessageName, err)
 		}
 
-		if t.NestedModel != nil {
+		if hasObjectElementType(t) {
 			data.HasObjectElementType = true
 		}
 
