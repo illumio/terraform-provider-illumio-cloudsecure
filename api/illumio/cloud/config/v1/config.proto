@@ -248,7 +248,7 @@ message UpdateDeploymentRequest {
   repeated string azure_vnet_ids = 11;
   optional string description = 12;
   string name = 13;
-  google.protobuf.FieldMask update_mask = 19;
+  google.protobuf.FieldMask update_mask = 14;
 }
 message UpdateDeploymentResponse {
   string id = 1;

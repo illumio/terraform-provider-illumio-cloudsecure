@@ -46,6 +46,8 @@ func (p *Provider) Resources(ctx context.Context) []func() resource.Resource {
 			resp = append(resp, func() resource.Resource { return NewAzureFlowLogsStorageAccountResource(r.Schema) })
 		case "azure_subscription":
 			resp = append(resp, func() resource.Resource { return NewAzureSubscriptionResource(r.Schema) })
+		case "deployment":
+			resp = append(resp, func() resource.Resource { return NewDeploymentResource(r.Schema) })
 		case "k8s_cluster_onboarding_credential":
 			resp = append(resp, func() resource.Resource { return NewK8SClusterOnboardingCredentialResource(r.Schema) })
 		case "tag_to_label":
@@ -837,6 +839,200 @@ func (r *AzureSubscriptionResource) ImportState(ctx context.Context, req resourc
 	// TODO
 }
 
+// DeploymentResource implements the deployment resource.
+type DeploymentResource struct {
+	// schema is the schema of the deployment resource.
+	schema resource_schema.Schema
+
+	// providerData is the provider configuration.
+	config ProviderData
+}
+
+var _ resource.ResourceWithConfigure = &DeploymentResource{}
+var _ resource.ResourceWithImportState = &DeploymentResource{}
+
+// NewDeploymentResource returns a new deployment resource.
+func NewDeploymentResource(schema resource_schema.Schema) resource.Resource {
+	return &DeploymentResource{
+		schema: schema,
+	}
+}
+
+func (r *DeploymentResource) Metadata(ctx context.Context, req resource.MetadataRequest, resp *resource.MetadataResponse) {
+	resp.TypeName = req.ProviderTypeName + "_deployment"
+}
+
+func (r *DeploymentResource) Schema(ctx context.Context, req resource.SchemaRequest, resp *resource.SchemaResponse) {
+	resp.Schema = r.schema
+}
+
+func (r *DeploymentResource) Configure(ctx context.Context, req resource.ConfigureRequest, resp *resource.ConfigureResponse) {
+	if req.ProviderData == nil {
+		return
+	}
+
+	providerData, ok := req.ProviderData.(ProviderData)
+	if !ok {
+		resp.Diagnostics.AddError(
+			"Unexpected Resource Configure Type",
+			fmt.Sprintf("Expected ProviderData, got: %T. Please report this issue to the provider developers.", req.ProviderData),
+		)
+
+		return
+	}
+
+	r.config = providerData
+}
+
+func (r *DeploymentResource) Create(ctx context.Context, req resource.CreateRequest, resp *resource.CreateResponse) {
+	var data DeploymentResourceModel
+
+	resp.Diagnostics.Append(req.Plan.Get(ctx, &data)...)
+	if resp.Diagnostics.HasError() {
+		return
+	}
+
+	protoReq, diagReq := NewCreateDeploymentRequest(ctx, &data)
+	resp.Diagnostics.Append(diagReq...)
+	if resp.Diagnostics.HasError() {
+		return
+	}
+
+	tflog.Trace(ctx, "creating a resource", map[string]any{"type": "deployment"})
+
+	rpcCtx, rpcCancel := context.WithTimeout(ctx, r.config.RequestTimeout())
+	protoResp, err := r.config.Client().CreateDeployment(rpcCtx, protoReq)
+	rpcCancel()
+	if err != nil {
+		resp.Diagnostics.AddError("Config API Error", fmt.Sprintf("Unable to create deployment, got error: %s", err))
+		return
+	}
+
+	CopyCreateDeploymentResponse(&data, protoResp)
+
+	tflog.Trace(ctx, "created a resource", map[string]any{"type": "deployment", "id": protoResp.Id})
+
+	resp.Diagnostics.Append(resp.State.Set(ctx, &data)...)
+}
+
+func (r *DeploymentResource) Read(ctx context.Context, req resource.ReadRequest, resp *resource.ReadResponse) {
+	var data DeploymentResourceModel
+
+	resp.Diagnostics.Append(req.State.Get(ctx, &data)...)
+	if resp.Diagnostics.HasError() {
+		return
+	}
+
+	protoReq, diagsReq := NewReadDeploymentRequest(ctx, &data)
+	resp.Diagnostics.Append(diagsReq...)
+	if resp.Diagnostics.HasError() {
+		return
+	}
+
+	tflog.Trace(ctx, "reading a resource", map[string]any{"type": "deployment", "id": protoReq.Id})
+
+	rpcCtx, rpcCancel := context.WithTimeout(ctx, r.config.RequestTimeout())
+	protoResp, err := r.config.Client().ReadDeployment(rpcCtx, protoReq)
+	rpcCancel()
+	if err != nil {
+		switch status.Code(err) {
+		case codes.NotFound:
+			resp.Diagnostics.AddWarning("Resource Not Found", fmt.Sprintf("No deployment found with id %s", protoReq.Id))
+			resp.State.RemoveResource(ctx)
+			return
+		default:
+			resp.Diagnostics.AddError("Config API Error", fmt.Sprintf("Unable to read deployment, got error: %s", err))
+			return
+		}
+	}
+
+	CopyReadDeploymentResponse(&data, protoResp)
+
+	tflog.Trace(ctx, "read a resource", map[string]any{"type": "deployment", "id": protoResp.Id})
+
+	resp.Diagnostics.Append(resp.State.Set(ctx, &data)...)
+}
+
+func (r *DeploymentResource) Update(ctx context.Context, req resource.UpdateRequest, resp *resource.UpdateResponse) {
+	var beforeData DeploymentResourceModel
+	var afterData DeploymentResourceModel
+
+	resp.Diagnostics.Append(req.State.Get(ctx, &beforeData)...)
+	if resp.Diagnostics.HasError() {
+		return
+	}
+
+	resp.Diagnostics.Append(req.Plan.Get(ctx, &afterData)...)
+	if resp.Diagnostics.HasError() {
+		return
+	}
+
+	protoReq, diags := NewUpdateDeploymentRequest(ctx, &beforeData, &afterData)
+	resp.Diagnostics.Append(diags...)
+	if resp.Diagnostics.HasError() {
+		return
+	}
+
+	tflog.Trace(ctx, "updating a resource", map[string]any{"type": "deployment", "id": protoReq.Id, "update_mask": protoReq.UpdateMask.Paths})
+
+	rpcCtx, rpcCancel := context.WithTimeout(ctx, r.config.RequestTimeout())
+	protoResp, err := r.config.Client().UpdateDeployment(rpcCtx, protoReq)
+	rpcCancel()
+	if err != nil {
+		switch status.Code(err) {
+		case codes.NotFound:
+			resp.Diagnostics.AddError("Resource Not Found", fmt.Sprintf("No deployment found with id %s", protoReq.Id))
+			resp.State.RemoveResource(ctx)
+			return
+		default:
+			resp.Diagnostics.AddError("Config API Error", fmt.Sprintf("Unable to update deployment, got error: %s", err))
+			return
+		}
+	}
+
+	CopyUpdateDeploymentResponse(&afterData, protoResp)
+
+	tflog.Trace(ctx, "updated a resource", map[string]any{"type": "deployment", "id": protoResp.Id})
+
+	resp.Diagnostics.Append(resp.State.Set(ctx, &afterData)...)
+}
+
+func (r *DeploymentResource) Delete(ctx context.Context, req resource.DeleteRequest, resp *resource.DeleteResponse) {
+	var data DeploymentResourceModel
+
+	resp.Diagnostics.Append(req.State.Get(ctx, &data)...)
+	if resp.Diagnostics.HasError() {
+		return
+	}
+
+	protoReq, diags := NewDeleteDeploymentRequest(ctx, &data)
+	resp.Diagnostics.Append(diags...)
+	if resp.Diagnostics.HasError() {
+		return
+	}
+
+	tflog.Trace(ctx, "deleting a resource", map[string]any{"type": "deployment", "id": protoReq.Id})
+
+	rpcCtx, rpcCancel := context.WithTimeout(ctx, r.config.RequestTimeout())
+	_, err := r.config.Client().DeleteDeployment(rpcCtx, protoReq)
+	rpcCancel()
+	if err != nil {
+		switch status.Code(err) {
+		case codes.NotFound:
+			tflog.Trace(ctx, "resource was already deleted", map[string]any{"type": "deployment", "id": protoReq.Id})
+		default:
+			resp.Diagnostics.AddError("Config API Error", fmt.Sprintf("Unable to delete deployment, got error: %s", err))
+			return
+		}
+	}
+
+	tflog.Trace(ctx, "deleted a resource", map[string]any{"type": "deployment", "id": protoReq.Id})
+}
+
+func (r *DeploymentResource) ImportState(ctx context.Context, req resource.ImportStateRequest, resp *resource.ImportStateResponse) {
+	// TODO
+}
+
 // K8SClusterOnboardingCredentialResource implements the k8s_cluster_onboarding_credential resource.
 type K8SClusterOnboardingCredentialResource struct {
 	// schema is the schema of the k8s_cluster_onboarding_credential resource.
@@ -1257,6 +1453,22 @@ type AzureSubscriptionResourceModel struct {
 	TenantId       types.String `tfsdk:"tenant_id"`
 }
 
+type DeploymentResourceModel struct {
+	Id                   types.String `tfsdk:"id"`
+	AwsAccountIds        types.List   `tfsdk:"aws_account_ids"`
+	AwsRegions           types.List   `tfsdk:"aws_regions"`
+	AwsSubnetIds         types.List   `tfsdk:"aws_subnet_ids"`
+	AwsTags              types.List   `tfsdk:"aws_tags"`
+	AwsVpcIds            types.List   `tfsdk:"aws_vpc_ids"`
+	AzureRegions         types.List   `tfsdk:"azure_regions"`
+	AzureSubnetIds       types.List   `tfsdk:"azure_subnet_ids"`
+	AzureSubscriptionIds types.List   `tfsdk:"azure_subscription_ids"`
+	AzureTags            types.List   `tfsdk:"azure_tags"`
+	AzureVnetIds         types.List   `tfsdk:"azure_vnet_ids"`
+	Description          types.String `tfsdk:"description"`
+	Name                 types.String `tfsdk:"name"`
+}
+
 type K8SClusterOnboardingCredentialResourceModel struct {
 	Id            types.String `tfsdk:"id"`
 	ClientId      types.String `tfsdk:"client_id"`
@@ -1492,6 +1704,216 @@ func NewDeleteAzureSubscriptionRequest(ctx context.Context, data *AzureSubscript
 	return proto, diags
 }
 
+func NewCreateDeploymentRequest(ctx context.Context, data *DeploymentResourceModel) (*configv1.CreateDeploymentRequest, diag.Diagnostics) {
+	var diags diag.Diagnostics
+	proto := &configv1.CreateDeploymentRequest{}
+	if !data.AwsAccountIds.IsUnknown() && !data.AwsAccountIds.IsNull() {
+		var dataValue attr.Value = data.AwsAccountIds
+		var protoValue []string
+		{
+			dataElements := dataValue.(types.List).Elements()
+			protoValues := make([]string, 0, len(dataElements))
+			for _, dataElement := range dataElements {
+				var dataValue attr.Value = dataElement
+				var protoValue string
+				protoValue = dataValue.(types.String).ValueString()
+				protoValues = append(protoValues, protoValue)
+			}
+			protoValue = protoValues
+		}
+		proto.AwsAccountIds = protoValue
+	}
+	if !data.AwsRegions.IsUnknown() && !data.AwsRegions.IsNull() {
+		var dataValue attr.Value = data.AwsRegions
+		var protoValue []string
+		{
+			dataElements := dataValue.(types.List).Elements()
+			protoValues := make([]string, 0, len(dataElements))
+			for _, dataElement := range dataElements {
+				var dataValue attr.Value = dataElement
+				var protoValue string
+				protoValue = dataValue.(types.String).ValueString()
+				protoValues = append(protoValues, protoValue)
+			}
+			protoValue = protoValues
+		}
+		proto.AwsRegions = protoValue
+	}
+	if !data.AwsSubnetIds.IsUnknown() && !data.AwsSubnetIds.IsNull() {
+		var dataValue attr.Value = data.AwsSubnetIds
+		var protoValue []string
+		{
+			dataElements := dataValue.(types.List).Elements()
+			protoValues := make([]string, 0, len(dataElements))
+			for _, dataElement := range dataElements {
+				var dataValue attr.Value = dataElement
+				var protoValue string
+				protoValue = dataValue.(types.String).ValueString()
+				protoValues = append(protoValues, protoValue)
+			}
+			protoValue = protoValues
+		}
+		proto.AwsSubnetIds = protoValue
+	}
+	if !data.AwsTags.IsUnknown() && !data.AwsTags.IsNull() {
+		var dataValue attr.Value = data.AwsTags
+		var protoValue []*configv1.Deployment_AwsTags
+		{
+			dataElements := dataValue.(types.List).Elements()
+			protoValues := make([]*configv1.Deployment_AwsTags, 0, len(dataElements))
+			for _, dataElement := range dataElements {
+				var dataValue attr.Value = dataElement
+				var protoValue *configv1.Deployment_AwsTags
+				protoValue, newDiags := ConvertDataValueToDeployment_AwsTagsProto(ctx, dataValue)
+				diags.Append(newDiags...)
+				if diags.HasError() {
+					return nil, diags
+				}
+				protoValues = append(protoValues, protoValue)
+			}
+			protoValue = protoValues
+		}
+		proto.AwsTags = protoValue
+	}
+	if !data.AwsVpcIds.IsUnknown() && !data.AwsVpcIds.IsNull() {
+		var dataValue attr.Value = data.AwsVpcIds
+		var protoValue []string
+		{
+			dataElements := dataValue.(types.List).Elements()
+			protoValues := make([]string, 0, len(dataElements))
+			for _, dataElement := range dataElements {
+				var dataValue attr.Value = dataElement
+				var protoValue string
+				protoValue = dataValue.(types.String).ValueString()
+				protoValues = append(protoValues, protoValue)
+			}
+			protoValue = protoValues
+		}
+		proto.AwsVpcIds = protoValue
+	}
+	if !data.AzureRegions.IsUnknown() && !data.AzureRegions.IsNull() {
+		var dataValue attr.Value = data.AzureRegions
+		var protoValue []string
+		{
+			dataElements := dataValue.(types.List).Elements()
+			protoValues := make([]string, 0, len(dataElements))
+			for _, dataElement := range dataElements {
+				var dataValue attr.Value = dataElement
+				var protoValue string
+				protoValue = dataValue.(types.String).ValueString()
+				protoValues = append(protoValues, protoValue)
+			}
+			protoValue = protoValues
+		}
+		proto.AzureRegions = protoValue
+	}
+	if !data.AzureSubnetIds.IsUnknown() && !data.AzureSubnetIds.IsNull() {
+		var dataValue attr.Value = data.AzureSubnetIds
+		var protoValue []string
+		{
+			dataElements := dataValue.(types.List).Elements()
+			protoValues := make([]string, 0, len(dataElements))
+			for _, dataElement := range dataElements {
+				var dataValue attr.Value = dataElement
+				var protoValue string
+				protoValue = dataValue.(types.String).ValueString()
+				protoValues = append(protoValues, protoValue)
+			}
+			protoValue = protoValues
+		}
+		proto.AzureSubnetIds = protoValue
+	}
+	if !data.AzureSubscriptionIds.IsUnknown() && !data.AzureSubscriptionIds.IsNull() {
+		var dataValue attr.Value = data.AzureSubscriptionIds
+		var protoValue []string
+		{
+			dataElements := dataValue.(types.List).Elements()
+			protoValues := make([]string, 0, len(dataElements))
+			for _, dataElement := range dataElements {
+				var dataValue attr.Value = dataElement
+				var protoValue string
+				protoValue = dataValue.(types.String).ValueString()
+				protoValues = append(protoValues, protoValue)
+			}
+			protoValue = protoValues
+		}
+		proto.AzureSubscriptionIds = protoValue
+	}
+	if !data.AzureTags.IsUnknown() && !data.AzureTags.IsNull() {
+		var dataValue attr.Value = data.AzureTags
+		var protoValue []*configv1.Deployment_AzureTags
+		{
+			dataElements := dataValue.(types.List).Elements()
+			protoValues := make([]*configv1.Deployment_AzureTags, 0, len(dataElements))
+			for _, dataElement := range dataElements {
+				var dataValue attr.Value = dataElement
+				var protoValue *configv1.Deployment_AzureTags
+				protoValue, newDiags := ConvertDataValueToDeployment_AzureTagsProto(ctx, dataValue)
+				diags.Append(newDiags...)
+				if diags.HasError() {
+					return nil, diags
+				}
+				protoValues = append(protoValues, protoValue)
+			}
+			protoValue = protoValues
+		}
+		proto.AzureTags = protoValue
+	}
+	if !data.AzureVnetIds.IsUnknown() && !data.AzureVnetIds.IsNull() {
+		var dataValue attr.Value = data.AzureVnetIds
+		var protoValue []string
+		{
+			dataElements := dataValue.(types.List).Elements()
+			protoValues := make([]string, 0, len(dataElements))
+			for _, dataElement := range dataElements {
+				var dataValue attr.Value = dataElement
+				var protoValue string
+				protoValue = dataValue.(types.String).ValueString()
+				protoValues = append(protoValues, protoValue)
+			}
+			protoValue = protoValues
+		}
+		proto.AzureVnetIds = protoValue
+	}
+	if !data.Description.IsUnknown() && !data.Description.IsNull() {
+		var dataValue attr.Value = data.Description
+		var protoValue string
+		protoValue = dataValue.(types.String).ValueString()
+		proto.Description = &protoValue
+	}
+	if !data.Name.IsUnknown() && !data.Name.IsNull() {
+		var dataValue attr.Value = data.Name
+		var protoValue string
+		protoValue = dataValue.(types.String).ValueString()
+		proto.Name = protoValue
+	}
+	return proto, diags
+}
+
+func NewReadDeploymentRequest(ctx context.Context, data *DeploymentResourceModel) (*configv1.ReadDeploymentRequest, diag.Diagnostics) {
+	var diags diag.Diagnostics
+	proto := &configv1.ReadDeploymentRequest{}
+	if !data.Id.IsUnknown() && !data.Id.IsNull() {
+		var dataValue attr.Value = data.Id
+		var protoValue string
+		protoValue = dataValue.(types.String).ValueString()
+		proto.Id = protoValue
+	}
+	return proto, diags
+}
+
+func NewDeleteDeploymentRequest(ctx context.Context, data *DeploymentResourceModel) (*configv1.DeleteDeploymentRequest, diag.Diagnostics) {
+	var diags diag.Diagnostics
+	proto := &configv1.DeleteDeploymentRequest{}
+	if !data.Id.IsUnknown() && !data.Id.IsNull() {
+		var dataValue attr.Value = data.Id
+		var protoValue string
+		protoValue = dataValue.(types.String).ValueString()
+		proto.Id = protoValue
+	}
+	return proto, diags
+}
+
 func NewCreateK8SClusterOnboardingCredentialRequest(ctx context.Context, data *K8SClusterOnboardingCredentialResourceModel) (*configv1.CreateK8SClusterOnboardingCredentialRequest, diag.Diagnostics) {
 	var diags diag.Diagnostics
 	proto := &configv1.CreateK8SClusterOnboardingCredentialRequest{}
@@ -1662,6 +2084,230 @@ func NewUpdateAzureSubscriptionRequest(ctx context.Context, beforeData, afterDat
 	proto := &configv1.UpdateAzureSubscriptionRequest{}
 	proto.UpdateMask, _ = fieldmaskpb.New(proto)
 	proto.Id = beforeData.Id.ValueString()
+	if !afterData.Name.Equal(beforeData.Name) {
+		proto.UpdateMask.Append(proto, "name")
+		if !afterData.Name.IsUnknown() && !afterData.Name.IsNull() {
+			var dataValue attr.Value = afterData.Name
+			var protoValue string
+			protoValue = dataValue.(types.String).ValueString()
+			proto.Name = protoValue
+		}
+	}
+	return proto, diags
+}
+
+func NewUpdateDeploymentRequest(ctx context.Context, beforeData, afterData *DeploymentResourceModel) (*configv1.UpdateDeploymentRequest, diag.Diagnostics) {
+	var diags diag.Diagnostics
+	proto := &configv1.UpdateDeploymentRequest{}
+	proto.UpdateMask, _ = fieldmaskpb.New(proto)
+	proto.Id = beforeData.Id.ValueString()
+	if !afterData.AwsAccountIds.Equal(beforeData.AwsAccountIds) {
+		proto.UpdateMask.Append(proto, "aws_account_ids")
+		if !afterData.AwsAccountIds.IsUnknown() && !afterData.AwsAccountIds.IsNull() {
+			var dataValue attr.Value = afterData.AwsAccountIds
+			var protoValue []string
+			{
+				dataElements := dataValue.(types.List).Elements()
+				protoValues := make([]string, 0, len(dataElements))
+				for _, dataElement := range dataElements {
+					var dataValue attr.Value = dataElement
+					var protoValue string
+					protoValue = dataValue.(types.String).ValueString()
+					protoValues = append(protoValues, protoValue)
+				}
+				protoValue = protoValues
+			}
+			proto.AwsAccountIds = protoValue
+		}
+	}
+	if !afterData.AwsRegions.Equal(beforeData.AwsRegions) {
+		proto.UpdateMask.Append(proto, "aws_regions")
+		if !afterData.AwsRegions.IsUnknown() && !afterData.AwsRegions.IsNull() {
+			var dataValue attr.Value = afterData.AwsRegions
+			var protoValue []string
+			{
+				dataElements := dataValue.(types.List).Elements()
+				protoValues := make([]string, 0, len(dataElements))
+				for _, dataElement := range dataElements {
+					var dataValue attr.Value = dataElement
+					var protoValue string
+					protoValue = dataValue.(types.String).ValueString()
+					protoValues = append(protoValues, protoValue)
+				}
+				protoValue = protoValues
+			}
+			proto.AwsRegions = protoValue
+		}
+	}
+	if !afterData.AwsSubnetIds.Equal(beforeData.AwsSubnetIds) {
+		proto.UpdateMask.Append(proto, "aws_subnet_ids")
+		if !afterData.AwsSubnetIds.IsUnknown() && !afterData.AwsSubnetIds.IsNull() {
+			var dataValue attr.Value = afterData.AwsSubnetIds
+			var protoValue []string
+			{
+				dataElements := dataValue.(types.List).Elements()
+				protoValues := make([]string, 0, len(dataElements))
+				for _, dataElement := range dataElements {
+					var dataValue attr.Value = dataElement
+					var protoValue string
+					protoValue = dataValue.(types.String).ValueString()
+					protoValues = append(protoValues, protoValue)
+				}
+				protoValue = protoValues
+			}
+			proto.AwsSubnetIds = protoValue
+		}
+	}
+	if !afterData.AwsTags.Equal(beforeData.AwsTags) {
+		proto.UpdateMask.Append(proto, "aws_tags")
+		if !afterData.AwsTags.IsUnknown() && !afterData.AwsTags.IsNull() {
+			var dataValue attr.Value = afterData.AwsTags
+			var protoValue []*configv1.Deployment_AwsTags
+			{
+				dataElements := dataValue.(types.List).Elements()
+				protoValues := make([]*configv1.Deployment_AwsTags, 0, len(dataElements))
+				for _, dataElement := range dataElements {
+					var dataValue attr.Value = dataElement
+					var protoValue *configv1.Deployment_AwsTags
+					protoValue, newDiags := ConvertDataValueToDeployment_AwsTagsProto(ctx, dataValue)
+					diags.Append(newDiags...)
+					if diags.HasError() {
+						return nil, diags
+					}
+					protoValues = append(protoValues, protoValue)
+				}
+				protoValue = protoValues
+			}
+			proto.AwsTags = protoValue
+		}
+	}
+	if !afterData.AwsVpcIds.Equal(beforeData.AwsVpcIds) {
+		proto.UpdateMask.Append(proto, "aws_vpc_ids")
+		if !afterData.AwsVpcIds.IsUnknown() && !afterData.AwsVpcIds.IsNull() {
+			var dataValue attr.Value = afterData.AwsVpcIds
+			var protoValue []string
+			{
+				dataElements := dataValue.(types.List).Elements()
+				protoValues := make([]string, 0, len(dataElements))
+				for _, dataElement := range dataElements {
+					var dataValue attr.Value = dataElement
+					var protoValue string
+					protoValue = dataValue.(types.String).ValueString()
+					protoValues = append(protoValues, protoValue)
+				}
+				protoValue = protoValues
+			}
+			proto.AwsVpcIds = protoValue
+		}
+	}
+	if !afterData.AzureRegions.Equal(beforeData.AzureRegions) {
+		proto.UpdateMask.Append(proto, "azure_regions")
+		if !afterData.AzureRegions.IsUnknown() && !afterData.AzureRegions.IsNull() {
+			var dataValue attr.Value = afterData.AzureRegions
+			var protoValue []string
+			{
+				dataElements := dataValue.(types.List).Elements()
+				protoValues := make([]string, 0, len(dataElements))
+				for _, dataElement := range dataElements {
+					var dataValue attr.Value = dataElement
+					var protoValue string
+					protoValue = dataValue.(types.String).ValueString()
+					protoValues = append(protoValues, protoValue)
+				}
+				protoValue = protoValues
+			}
+			proto.AzureRegions = protoValue
+		}
+	}
+	if !afterData.AzureSubnetIds.Equal(beforeData.AzureSubnetIds) {
+		proto.UpdateMask.Append(proto, "azure_subnet_ids")
+		if !afterData.AzureSubnetIds.IsUnknown() && !afterData.AzureSubnetIds.IsNull() {
+			var dataValue attr.Value = afterData.AzureSubnetIds
+			var protoValue []string
+			{
+				dataElements := dataValue.(types.List).Elements()
+				protoValues := make([]string, 0, len(dataElements))
+				for _, dataElement := range dataElements {
+					var dataValue attr.Value = dataElement
+					var protoValue string
+					protoValue = dataValue.(types.String).ValueString()
+					protoValues = append(protoValues, protoValue)
+				}
+				protoValue = protoValues
+			}
+			proto.AzureSubnetIds = protoValue
+		}
+	}
+	if !afterData.AzureSubscriptionIds.Equal(beforeData.AzureSubscriptionIds) {
+		proto.UpdateMask.Append(proto, "azure_subscription_ids")
+		if !afterData.AzureSubscriptionIds.IsUnknown() && !afterData.AzureSubscriptionIds.IsNull() {
+			var dataValue attr.Value = afterData.AzureSubscriptionIds
+			var protoValue []string
+			{
+				dataElements := dataValue.(types.List).Elements()
+				protoValues := make([]string, 0, len(dataElements))
+				for _, dataElement := range dataElements {
+					var dataValue attr.Value = dataElement
+					var protoValue string
+					protoValue = dataValue.(types.String).ValueString()
+					protoValues = append(protoValues, protoValue)
+				}
+				protoValue = protoValues
+			}
+			proto.AzureSubscriptionIds = protoValue
+		}
+	}
+	if !afterData.AzureTags.Equal(beforeData.AzureTags) {
+		proto.UpdateMask.Append(proto, "azure_tags")
+		if !afterData.AzureTags.IsUnknown() && !afterData.AzureTags.IsNull() {
+			var dataValue attr.Value = afterData.AzureTags
+			var protoValue []*configv1.Deployment_AzureTags
+			{
+				dataElements := dataValue.(types.List).Elements()
+				protoValues := make([]*configv1.Deployment_AzureTags, 0, len(dataElements))
+				for _, dataElement := range dataElements {
+					var dataValue attr.Value = dataElement
+					var protoValue *configv1.Deployment_AzureTags
+					protoValue, newDiags := ConvertDataValueToDeployment_AzureTagsProto(ctx, dataValue)
+					diags.Append(newDiags...)
+					if diags.HasError() {
+						return nil, diags
+					}
+					protoValues = append(protoValues, protoValue)
+				}
+				protoValue = protoValues
+			}
+			proto.AzureTags = protoValue
+		}
+	}
+	if !afterData.AzureVnetIds.Equal(beforeData.AzureVnetIds) {
+		proto.UpdateMask.Append(proto, "azure_vnet_ids")
+		if !afterData.AzureVnetIds.IsUnknown() && !afterData.AzureVnetIds.IsNull() {
+			var dataValue attr.Value = afterData.AzureVnetIds
+			var protoValue []string
+			{
+				dataElements := dataValue.(types.List).Elements()
+				protoValues := make([]string, 0, len(dataElements))
+				for _, dataElement := range dataElements {
+					var dataValue attr.Value = dataElement
+					var protoValue string
+					protoValue = dataValue.(types.String).ValueString()
+					protoValues = append(protoValues, protoValue)
+				}
+				protoValue = protoValues
+			}
+			proto.AzureVnetIds = protoValue
+		}
+	}
+	if !afterData.Description.Equal(beforeData.Description) {
+		proto.UpdateMask.Append(proto, "description")
+		if !afterData.Description.IsUnknown() && !afterData.Description.IsNull() {
+			var dataValue attr.Value = afterData.Description
+			var protoValue string
+			protoValue = dataValue.(types.String).ValueString()
+			proto.Description = &protoValue
+		}
+	}
 	if !afterData.Name.Equal(beforeData.Name) {
 		proto.UpdateMask.Append(proto, "name")
 		if !afterData.Name.IsUnknown() && !afterData.Name.IsNull() {
@@ -1854,6 +2500,663 @@ func CopyUpdateAzureSubscriptionResponse(dst *AzureSubscriptionResourceModel, sr
 	dst.SubscriptionId = types.StringValue(src.SubscriptionId)
 	dst.TenantId = types.StringValue(src.TenantId)
 }
+func CopyCreateDeploymentResponse(dst *DeploymentResourceModel, src *configv1.CreateDeploymentResponse) {
+	dst.Id = types.StringValue(src.Id)
+	{
+		protoValue := src.AwsAccountIds
+		var dataValue types.List
+		{
+			dataElementType := types.StringType
+			protoElements := protoValue
+			if protoElements == nil {
+				dataValue = types.ListNull(dataElementType)
+			} else {
+				dataValues := make([]attr.Value, 0, len(protoElements))
+				for _, protoElement := range protoElements {
+					var protoValue string = protoElement
+					var dataValue attr.Value
+					dataValue = types.StringValue(protoValue)
+					dataValues = append(dataValues, dataValue)
+				}
+				dataValue = types.ListValueMust(dataElementType, dataValues)
+			}
+		}
+		dst.AwsAccountIds = dataValue
+	}
+	{
+		protoValue := src.AwsRegions
+		var dataValue types.List
+		{
+			dataElementType := types.StringType
+			protoElements := protoValue
+			if protoElements == nil {
+				dataValue = types.ListNull(dataElementType)
+			} else {
+				dataValues := make([]attr.Value, 0, len(protoElements))
+				for _, protoElement := range protoElements {
+					var protoValue string = protoElement
+					var dataValue attr.Value
+					dataValue = types.StringValue(protoValue)
+					dataValues = append(dataValues, dataValue)
+				}
+				dataValue = types.ListValueMust(dataElementType, dataValues)
+			}
+		}
+		dst.AwsRegions = dataValue
+	}
+	{
+		protoValue := src.AwsSubnetIds
+		var dataValue types.List
+		{
+			dataElementType := types.StringType
+			protoElements := protoValue
+			if protoElements == nil {
+				dataValue = types.ListNull(dataElementType)
+			} else {
+				dataValues := make([]attr.Value, 0, len(protoElements))
+				for _, protoElement := range protoElements {
+					var protoValue string = protoElement
+					var dataValue attr.Value
+					dataValue = types.StringValue(protoValue)
+					dataValues = append(dataValues, dataValue)
+				}
+				dataValue = types.ListValueMust(dataElementType, dataValues)
+			}
+		}
+		dst.AwsSubnetIds = dataValue
+	}
+	{
+		protoValue := src.AwsTags
+		var dataValue types.List
+		{
+			dataElementType := types.ObjectType{
+				AttrTypes: GetTypeAttrsForDeployment_AwsTags(),
+			}
+			protoElements := protoValue
+			if protoElements == nil {
+				dataValue = types.ListNull(dataElementType)
+			} else {
+				dataValues := make([]attr.Value, 0, len(protoElements))
+				for _, protoElement := range protoElements {
+					var protoValue *configv1.Deployment_AwsTags = protoElement
+					var dataValue attr.Value
+					dataValue = ConvertDeployment_AwsTagsToObjectValueFromProto(protoValue)
+					dataValues = append(dataValues, dataValue)
+				}
+				dataValue = types.ListValueMust(dataElementType, dataValues)
+			}
+		}
+		dst.AwsTags = dataValue
+	}
+	{
+		protoValue := src.AwsVpcIds
+		var dataValue types.List
+		{
+			dataElementType := types.StringType
+			protoElements := protoValue
+			if protoElements == nil {
+				dataValue = types.ListNull(dataElementType)
+			} else {
+				dataValues := make([]attr.Value, 0, len(protoElements))
+				for _, protoElement := range protoElements {
+					var protoValue string = protoElement
+					var dataValue attr.Value
+					dataValue = types.StringValue(protoValue)
+					dataValues = append(dataValues, dataValue)
+				}
+				dataValue = types.ListValueMust(dataElementType, dataValues)
+			}
+		}
+		dst.AwsVpcIds = dataValue
+	}
+	{
+		protoValue := src.AzureRegions
+		var dataValue types.List
+		{
+			dataElementType := types.StringType
+			protoElements := protoValue
+			if protoElements == nil {
+				dataValue = types.ListNull(dataElementType)
+			} else {
+				dataValues := make([]attr.Value, 0, len(protoElements))
+				for _, protoElement := range protoElements {
+					var protoValue string = protoElement
+					var dataValue attr.Value
+					dataValue = types.StringValue(protoValue)
+					dataValues = append(dataValues, dataValue)
+				}
+				dataValue = types.ListValueMust(dataElementType, dataValues)
+			}
+		}
+		dst.AzureRegions = dataValue
+	}
+	{
+		protoValue := src.AzureSubnetIds
+		var dataValue types.List
+		{
+			dataElementType := types.StringType
+			protoElements := protoValue
+			if protoElements == nil {
+				dataValue = types.ListNull(dataElementType)
+			} else {
+				dataValues := make([]attr.Value, 0, len(protoElements))
+				for _, protoElement := range protoElements {
+					var protoValue string = protoElement
+					var dataValue attr.Value
+					dataValue = types.StringValue(protoValue)
+					dataValues = append(dataValues, dataValue)
+				}
+				dataValue = types.ListValueMust(dataElementType, dataValues)
+			}
+		}
+		dst.AzureSubnetIds = dataValue
+	}
+	{
+		protoValue := src.AzureSubscriptionIds
+		var dataValue types.List
+		{
+			dataElementType := types.StringType
+			protoElements := protoValue
+			if protoElements == nil {
+				dataValue = types.ListNull(dataElementType)
+			} else {
+				dataValues := make([]attr.Value, 0, len(protoElements))
+				for _, protoElement := range protoElements {
+					var protoValue string = protoElement
+					var dataValue attr.Value
+					dataValue = types.StringValue(protoValue)
+					dataValues = append(dataValues, dataValue)
+				}
+				dataValue = types.ListValueMust(dataElementType, dataValues)
+			}
+		}
+		dst.AzureSubscriptionIds = dataValue
+	}
+	{
+		protoValue := src.AzureTags
+		var dataValue types.List
+		{
+			dataElementType := types.ObjectType{
+				AttrTypes: GetTypeAttrsForDeployment_AzureTags(),
+			}
+			protoElements := protoValue
+			if protoElements == nil {
+				dataValue = types.ListNull(dataElementType)
+			} else {
+				dataValues := make([]attr.Value, 0, len(protoElements))
+				for _, protoElement := range protoElements {
+					var protoValue *configv1.Deployment_AzureTags = protoElement
+					var dataValue attr.Value
+					dataValue = ConvertDeployment_AzureTagsToObjectValueFromProto(protoValue)
+					dataValues = append(dataValues, dataValue)
+				}
+				dataValue = types.ListValueMust(dataElementType, dataValues)
+			}
+		}
+		dst.AzureTags = dataValue
+	}
+	{
+		protoValue := src.AzureVnetIds
+		var dataValue types.List
+		{
+			dataElementType := types.StringType
+			protoElements := protoValue
+			if protoElements == nil {
+				dataValue = types.ListNull(dataElementType)
+			} else {
+				dataValues := make([]attr.Value, 0, len(protoElements))
+				for _, protoElement := range protoElements {
+					var protoValue string = protoElement
+					var dataValue attr.Value
+					dataValue = types.StringValue(protoValue)
+					dataValues = append(dataValues, dataValue)
+				}
+				dataValue = types.ListValueMust(dataElementType, dataValues)
+			}
+		}
+		dst.AzureVnetIds = dataValue
+	}
+	dst.Description = types.StringPointerValue(src.Description)
+	dst.Name = types.StringValue(src.Name)
+}
+func CopyReadDeploymentResponse(dst *DeploymentResourceModel, src *configv1.ReadDeploymentResponse) {
+	dst.Id = types.StringValue(src.Id)
+	{
+		protoValue := src.AwsAccountIds
+		var dataValue types.List
+		{
+			dataElementType := types.StringType
+			protoElements := protoValue
+			if protoElements == nil {
+				dataValue = types.ListNull(dataElementType)
+			} else {
+				dataValues := make([]attr.Value, 0, len(protoElements))
+				for _, protoElement := range protoElements {
+					var protoValue string = protoElement
+					var dataValue attr.Value
+					dataValue = types.StringValue(protoValue)
+					dataValues = append(dataValues, dataValue)
+				}
+				dataValue = types.ListValueMust(dataElementType, dataValues)
+			}
+		}
+		dst.AwsAccountIds = dataValue
+	}
+	{
+		protoValue := src.AwsRegions
+		var dataValue types.List
+		{
+			dataElementType := types.StringType
+			protoElements := protoValue
+			if protoElements == nil {
+				dataValue = types.ListNull(dataElementType)
+			} else {
+				dataValues := make([]attr.Value, 0, len(protoElements))
+				for _, protoElement := range protoElements {
+					var protoValue string = protoElement
+					var dataValue attr.Value
+					dataValue = types.StringValue(protoValue)
+					dataValues = append(dataValues, dataValue)
+				}
+				dataValue = types.ListValueMust(dataElementType, dataValues)
+			}
+		}
+		dst.AwsRegions = dataValue
+	}
+	{
+		protoValue := src.AwsSubnetIds
+		var dataValue types.List
+		{
+			dataElementType := types.StringType
+			protoElements := protoValue
+			if protoElements == nil {
+				dataValue = types.ListNull(dataElementType)
+			} else {
+				dataValues := make([]attr.Value, 0, len(protoElements))
+				for _, protoElement := range protoElements {
+					var protoValue string = protoElement
+					var dataValue attr.Value
+					dataValue = types.StringValue(protoValue)
+					dataValues = append(dataValues, dataValue)
+				}
+				dataValue = types.ListValueMust(dataElementType, dataValues)
+			}
+		}
+		dst.AwsSubnetIds = dataValue
+	}
+	{
+		protoValue := src.AwsTags
+		var dataValue types.List
+		{
+			dataElementType := types.ObjectType{
+				AttrTypes: GetTypeAttrsForDeployment_AwsTags(),
+			}
+			protoElements := protoValue
+			if protoElements == nil {
+				dataValue = types.ListNull(dataElementType)
+			} else {
+				dataValues := make([]attr.Value, 0, len(protoElements))
+				for _, protoElement := range protoElements {
+					var protoValue *configv1.Deployment_AwsTags = protoElement
+					var dataValue attr.Value
+					dataValue = ConvertDeployment_AwsTagsToObjectValueFromProto(protoValue)
+					dataValues = append(dataValues, dataValue)
+				}
+				dataValue = types.ListValueMust(dataElementType, dataValues)
+			}
+		}
+		dst.AwsTags = dataValue
+	}
+	{
+		protoValue := src.AwsVpcIds
+		var dataValue types.List
+		{
+			dataElementType := types.StringType
+			protoElements := protoValue
+			if protoElements == nil {
+				dataValue = types.ListNull(dataElementType)
+			} else {
+				dataValues := make([]attr.Value, 0, len(protoElements))
+				for _, protoElement := range protoElements {
+					var protoValue string = protoElement
+					var dataValue attr.Value
+					dataValue = types.StringValue(protoValue)
+					dataValues = append(dataValues, dataValue)
+				}
+				dataValue = types.ListValueMust(dataElementType, dataValues)
+			}
+		}
+		dst.AwsVpcIds = dataValue
+	}
+	{
+		protoValue := src.AzureRegions
+		var dataValue types.List
+		{
+			dataElementType := types.StringType
+			protoElements := protoValue
+			if protoElements == nil {
+				dataValue = types.ListNull(dataElementType)
+			} else {
+				dataValues := make([]attr.Value, 0, len(protoElements))
+				for _, protoElement := range protoElements {
+					var protoValue string = protoElement
+					var dataValue attr.Value
+					dataValue = types.StringValue(protoValue)
+					dataValues = append(dataValues, dataValue)
+				}
+				dataValue = types.ListValueMust(dataElementType, dataValues)
+			}
+		}
+		dst.AzureRegions = dataValue
+	}
+	{
+		protoValue := src.AzureSubnetIds
+		var dataValue types.List
+		{
+			dataElementType := types.StringType
+			protoElements := protoValue
+			if protoElements == nil {
+				dataValue = types.ListNull(dataElementType)
+			} else {
+				dataValues := make([]attr.Value, 0, len(protoElements))
+				for _, protoElement := range protoElements {
+					var protoValue string = protoElement
+					var dataValue attr.Value
+					dataValue = types.StringValue(protoValue)
+					dataValues = append(dataValues, dataValue)
+				}
+				dataValue = types.ListValueMust(dataElementType, dataValues)
+			}
+		}
+		dst.AzureSubnetIds = dataValue
+	}
+	{
+		protoValue := src.AzureSubscriptionIds
+		var dataValue types.List
+		{
+			dataElementType := types.StringType
+			protoElements := protoValue
+			if protoElements == nil {
+				dataValue = types.ListNull(dataElementType)
+			} else {
+				dataValues := make([]attr.Value, 0, len(protoElements))
+				for _, protoElement := range protoElements {
+					var protoValue string = protoElement
+					var dataValue attr.Value
+					dataValue = types.StringValue(protoValue)
+					dataValues = append(dataValues, dataValue)
+				}
+				dataValue = types.ListValueMust(dataElementType, dataValues)
+			}
+		}
+		dst.AzureSubscriptionIds = dataValue
+	}
+	{
+		protoValue := src.AzureTags
+		var dataValue types.List
+		{
+			dataElementType := types.ObjectType{
+				AttrTypes: GetTypeAttrsForDeployment_AzureTags(),
+			}
+			protoElements := protoValue
+			if protoElements == nil {
+				dataValue = types.ListNull(dataElementType)
+			} else {
+				dataValues := make([]attr.Value, 0, len(protoElements))
+				for _, protoElement := range protoElements {
+					var protoValue *configv1.Deployment_AzureTags = protoElement
+					var dataValue attr.Value
+					dataValue = ConvertDeployment_AzureTagsToObjectValueFromProto(protoValue)
+					dataValues = append(dataValues, dataValue)
+				}
+				dataValue = types.ListValueMust(dataElementType, dataValues)
+			}
+		}
+		dst.AzureTags = dataValue
+	}
+	{
+		protoValue := src.AzureVnetIds
+		var dataValue types.List
+		{
+			dataElementType := types.StringType
+			protoElements := protoValue
+			if protoElements == nil {
+				dataValue = types.ListNull(dataElementType)
+			} else {
+				dataValues := make([]attr.Value, 0, len(protoElements))
+				for _, protoElement := range protoElements {
+					var protoValue string = protoElement
+					var dataValue attr.Value
+					dataValue = types.StringValue(protoValue)
+					dataValues = append(dataValues, dataValue)
+				}
+				dataValue = types.ListValueMust(dataElementType, dataValues)
+			}
+		}
+		dst.AzureVnetIds = dataValue
+	}
+	dst.Description = types.StringPointerValue(src.Description)
+	dst.Name = types.StringValue(src.Name)
+}
+func CopyUpdateDeploymentResponse(dst *DeploymentResourceModel, src *configv1.UpdateDeploymentResponse) {
+	dst.Id = types.StringValue(src.Id)
+	{
+		protoValue := src.AwsAccountIds
+		var dataValue types.List
+		{
+			dataElementType := types.StringType
+			protoElements := protoValue
+			if protoElements == nil {
+				dataValue = types.ListNull(dataElementType)
+			} else {
+				dataValues := make([]attr.Value, 0, len(protoElements))
+				for _, protoElement := range protoElements {
+					var protoValue string = protoElement
+					var dataValue attr.Value
+					dataValue = types.StringValue(protoValue)
+					dataValues = append(dataValues, dataValue)
+				}
+				dataValue = types.ListValueMust(dataElementType, dataValues)
+			}
+		}
+		dst.AwsAccountIds = dataValue
+	}
+	{
+		protoValue := src.AwsRegions
+		var dataValue types.List
+		{
+			dataElementType := types.StringType
+			protoElements := protoValue
+			if protoElements == nil {
+				dataValue = types.ListNull(dataElementType)
+			} else {
+				dataValues := make([]attr.Value, 0, len(protoElements))
+				for _, protoElement := range protoElements {
+					var protoValue string = protoElement
+					var dataValue attr.Value
+					dataValue = types.StringValue(protoValue)
+					dataValues = append(dataValues, dataValue)
+				}
+				dataValue = types.ListValueMust(dataElementType, dataValues)
+			}
+		}
+		dst.AwsRegions = dataValue
+	}
+	{
+		protoValue := src.AwsSubnetIds
+		var dataValue types.List
+		{
+			dataElementType := types.StringType
+			protoElements := protoValue
+			if protoElements == nil {
+				dataValue = types.ListNull(dataElementType)
+			} else {
+				dataValues := make([]attr.Value, 0, len(protoElements))
+				for _, protoElement := range protoElements {
+					var protoValue string = protoElement
+					var dataValue attr.Value
+					dataValue = types.StringValue(protoValue)
+					dataValues = append(dataValues, dataValue)
+				}
+				dataValue = types.ListValueMust(dataElementType, dataValues)
+			}
+		}
+		dst.AwsSubnetIds = dataValue
+	}
+	{
+		protoValue := src.AwsTags
+		var dataValue types.List
+		{
+			dataElementType := types.ObjectType{
+				AttrTypes: GetTypeAttrsForDeployment_AwsTags(),
+			}
+			protoElements := protoValue
+			if protoElements == nil {
+				dataValue = types.ListNull(dataElementType)
+			} else {
+				dataValues := make([]attr.Value, 0, len(protoElements))
+				for _, protoElement := range protoElements {
+					var protoValue *configv1.Deployment_AwsTags = protoElement
+					var dataValue attr.Value
+					dataValue = ConvertDeployment_AwsTagsToObjectValueFromProto(protoValue)
+					dataValues = append(dataValues, dataValue)
+				}
+				dataValue = types.ListValueMust(dataElementType, dataValues)
+			}
+		}
+		dst.AwsTags = dataValue
+	}
+	{
+		protoValue := src.AwsVpcIds
+		var dataValue types.List
+		{
+			dataElementType := types.StringType
+			protoElements := protoValue
+			if protoElements == nil {
+				dataValue = types.ListNull(dataElementType)
+			} else {
+				dataValues := make([]attr.Value, 0, len(protoElements))
+				for _, protoElement := range protoElements {
+					var protoValue string = protoElement
+					var dataValue attr.Value
+					dataValue = types.StringValue(protoValue)
+					dataValues = append(dataValues, dataValue)
+				}
+				dataValue = types.ListValueMust(dataElementType, dataValues)
+			}
+		}
+		dst.AwsVpcIds = dataValue
+	}
+	{
+		protoValue := src.AzureRegions
+		var dataValue types.List
+		{
+			dataElementType := types.StringType
+			protoElements := protoValue
+			if protoElements == nil {
+				dataValue = types.ListNull(dataElementType)
+			} else {
+				dataValues := make([]attr.Value, 0, len(protoElements))
+				for _, protoElement := range protoElements {
+					var protoValue string = protoElement
+					var dataValue attr.Value
+					dataValue = types.StringValue(protoValue)
+					dataValues = append(dataValues, dataValue)
+				}
+				dataValue = types.ListValueMust(dataElementType, dataValues)
+			}
+		}
+		dst.AzureRegions = dataValue
+	}
+	{
+		protoValue := src.AzureSubnetIds
+		var dataValue types.List
+		{
+			dataElementType := types.StringType
+			protoElements := protoValue
+			if protoElements == nil {
+				dataValue = types.ListNull(dataElementType)
+			} else {
+				dataValues := make([]attr.Value, 0, len(protoElements))
+				for _, protoElement := range protoElements {
+					var protoValue string = protoElement
+					var dataValue attr.Value
+					dataValue = types.StringValue(protoValue)
+					dataValues = append(dataValues, dataValue)
+				}
+				dataValue = types.ListValueMust(dataElementType, dataValues)
+			}
+		}
+		dst.AzureSubnetIds = dataValue
+	}
+	{
+		protoValue := src.AzureSubscriptionIds
+		var dataValue types.List
+		{
+			dataElementType := types.StringType
+			protoElements := protoValue
+			if protoElements == nil {
+				dataValue = types.ListNull(dataElementType)
+			} else {
+				dataValues := make([]attr.Value, 0, len(protoElements))
+				for _, protoElement := range protoElements {
+					var protoValue string = protoElement
+					var dataValue attr.Value
+					dataValue = types.StringValue(protoValue)
+					dataValues = append(dataValues, dataValue)
+				}
+				dataValue = types.ListValueMust(dataElementType, dataValues)
+			}
+		}
+		dst.AzureSubscriptionIds = dataValue
+	}
+	{
+		protoValue := src.AzureTags
+		var dataValue types.List
+		{
+			dataElementType := types.ObjectType{
+				AttrTypes: GetTypeAttrsForDeployment_AzureTags(),
+			}
+			protoElements := protoValue
+			if protoElements == nil {
+				dataValue = types.ListNull(dataElementType)
+			} else {
+				dataValues := make([]attr.Value, 0, len(protoElements))
+				for _, protoElement := range protoElements {
+					var protoValue *configv1.Deployment_AzureTags = protoElement
+					var dataValue attr.Value
+					dataValue = ConvertDeployment_AzureTagsToObjectValueFromProto(protoValue)
+					dataValues = append(dataValues, dataValue)
+				}
+				dataValue = types.ListValueMust(dataElementType, dataValues)
+			}
+		}
+		dst.AzureTags = dataValue
+	}
+	{
+		protoValue := src.AzureVnetIds
+		var dataValue types.List
+		{
+			dataElementType := types.StringType
+			protoElements := protoValue
+			if protoElements == nil {
+				dataValue = types.ListNull(dataElementType)
+			} else {
+				dataValues := make([]attr.Value, 0, len(protoElements))
+				for _, protoElement := range protoElements {
+					var protoValue string = protoElement
+					var dataValue attr.Value
+					dataValue = types.StringValue(protoValue)
+					dataValues = append(dataValues, dataValue)
+				}
+				dataValue = types.ListValueMust(dataElementType, dataValues)
+			}
+		}
+		dst.AzureVnetIds = dataValue
+	}
+	dst.Description = types.StringPointerValue(src.Description)
+	dst.Name = types.StringValue(src.Name)
+}
 func CopyCreateK8SClusterOnboardingCredentialResponse(dst *K8SClusterOnboardingCredentialResourceModel, src *configv1.CreateK8SClusterOnboardingCredentialResponse) {
 	dst.Id = types.StringValue(src.Id)
 	dst.ClientId = types.StringValue(src.ClientId)
@@ -2022,6 +3325,74 @@ func CopyUpdateTagToLabelResponse(dst *TagToLabelResourceModel, src *configv1.Up
 	dst.Icon = ConvertTagToLabel_IconToObjectValueFromProto(src.Icon)
 	dst.Key = types.StringValue(src.Key)
 	dst.Name = types.StringValue(src.Name)
+}
+
+type Deployment_AwsTags struct {
+	Key   types.String `tfsdk:"key"`
+	Value types.String `tfsdk:"value"`
+}
+
+func GetTypeAttrsForDeployment_AwsTags() map[string]attr.Type {
+	return map[string]attr.Type{
+		"key":   types.StringType,
+		"value": types.StringType,
+	}
+}
+
+func ConvertDeployment_AwsTagsToObjectValueFromProto(proto *configv1.Deployment_AwsTags) basetypes.ObjectValue {
+	return types.ObjectValueMust(
+		GetTypeAttrsForDeployment_AwsTags(),
+		map[string]attr.Value{
+			"key":   types.StringValue(proto.Key),
+			"value": types.StringValue(proto.Value),
+		},
+	)
+}
+
+func ConvertDataValueToDeployment_AwsTagsProto(ctx context.Context, dataValue attr.Value) (*configv1.Deployment_AwsTags, diag.Diagnostics) {
+	pv := Deployment_AwsTags{}
+	diags := tfsdk.ValueAs(ctx, dataValue, &pv)
+	if diags.HasError() {
+		return nil, diags
+	}
+	proto := &configv1.Deployment_AwsTags{}
+	proto.Key = pv.Key.ValueString()
+	proto.Value = pv.Value.ValueString()
+	return proto, diags
+}
+
+type Deployment_AzureTags struct {
+	Key   types.String `tfsdk:"key"`
+	Value types.String `tfsdk:"value"`
+}
+
+func GetTypeAttrsForDeployment_AzureTags() map[string]attr.Type {
+	return map[string]attr.Type{
+		"key":   types.StringType,
+		"value": types.StringType,
+	}
+}
+
+func ConvertDeployment_AzureTagsToObjectValueFromProto(proto *configv1.Deployment_AzureTags) basetypes.ObjectValue {
+	return types.ObjectValueMust(
+		GetTypeAttrsForDeployment_AzureTags(),
+		map[string]attr.Value{
+			"key":   types.StringValue(proto.Key),
+			"value": types.StringValue(proto.Value),
+		},
+	)
+}
+
+func ConvertDataValueToDeployment_AzureTagsProto(ctx context.Context, dataValue attr.Value) (*configv1.Deployment_AzureTags, diag.Diagnostics) {
+	pv := Deployment_AzureTags{}
+	diags := tfsdk.ValueAs(ctx, dataValue, &pv)
+	if diags.HasError() {
+		return nil, diags
+	}
+	proto := &configv1.Deployment_AzureTags{}
+	proto.Key = pv.Key.ValueString()
+	proto.Value = pv.Value.ValueString()
+	return proto, diags
 }
 
 type TagToLabel_Icon struct {
