@@ -48,6 +48,8 @@ func (p *Provider) Resources(ctx context.Context) []func() resource.Resource {
 			resp = append(resp, func() resource.Resource { return NewAzureSubscriptionResource(r.Schema) })
 		case "deployment":
 			resp = append(resp, func() resource.Resource { return NewDeploymentResource(r.Schema) })
+		case "ip_list":
+			resp = append(resp, func() resource.Resource { return NewIpListResource(r.Schema) })
 		case "k8s_cluster_onboarding_credential":
 			resp = append(resp, func() resource.Resource { return NewK8SClusterOnboardingCredentialResource(r.Schema) })
 		case "tag_to_label":
@@ -1033,6 +1035,200 @@ func (r *DeploymentResource) ImportState(ctx context.Context, req resource.Impor
 	// TODO
 }
 
+// IpListResource implements the ip_list resource.
+type IpListResource struct {
+	// schema is the schema of the ip_list resource.
+	schema resource_schema.Schema
+
+	// providerData is the provider configuration.
+	config ProviderData
+}
+
+var _ resource.ResourceWithConfigure = &IpListResource{}
+var _ resource.ResourceWithImportState = &IpListResource{}
+
+// NewIpListResource returns a new ip_list resource.
+func NewIpListResource(schema resource_schema.Schema) resource.Resource {
+	return &IpListResource{
+		schema: schema,
+	}
+}
+
+func (r *IpListResource) Metadata(ctx context.Context, req resource.MetadataRequest, resp *resource.MetadataResponse) {
+	resp.TypeName = req.ProviderTypeName + "_ip_list"
+}
+
+func (r *IpListResource) Schema(ctx context.Context, req resource.SchemaRequest, resp *resource.SchemaResponse) {
+	resp.Schema = r.schema
+}
+
+func (r *IpListResource) Configure(ctx context.Context, req resource.ConfigureRequest, resp *resource.ConfigureResponse) {
+	if req.ProviderData == nil {
+		return
+	}
+
+	providerData, ok := req.ProviderData.(ProviderData)
+	if !ok {
+		resp.Diagnostics.AddError(
+			"Unexpected Resource Configure Type",
+			fmt.Sprintf("Expected ProviderData, got: %T. Please report this issue to the provider developers.", req.ProviderData),
+		)
+
+		return
+	}
+
+	r.config = providerData
+}
+
+func (r *IpListResource) Create(ctx context.Context, req resource.CreateRequest, resp *resource.CreateResponse) {
+	var data IpListResourceModel
+
+	resp.Diagnostics.Append(req.Plan.Get(ctx, &data)...)
+	if resp.Diagnostics.HasError() {
+		return
+	}
+
+	protoReq, diagReq := NewCreateIpListRequest(ctx, &data)
+	resp.Diagnostics.Append(diagReq...)
+	if resp.Diagnostics.HasError() {
+		return
+	}
+
+	tflog.Trace(ctx, "creating a resource", map[string]any{"type": "ip_list"})
+
+	rpcCtx, rpcCancel := context.WithTimeout(ctx, r.config.RequestTimeout())
+	protoResp, err := r.config.Client().CreateIpList(rpcCtx, protoReq)
+	rpcCancel()
+	if err != nil {
+		resp.Diagnostics.AddError("Config API Error", fmt.Sprintf("Unable to create ip_list, got error: %s", err))
+		return
+	}
+
+	CopyCreateIpListResponse(&data, protoResp)
+
+	tflog.Trace(ctx, "created a resource", map[string]any{"type": "ip_list", "id": protoResp.Id})
+
+	resp.Diagnostics.Append(resp.State.Set(ctx, &data)...)
+}
+
+func (r *IpListResource) Read(ctx context.Context, req resource.ReadRequest, resp *resource.ReadResponse) {
+	var data IpListResourceModel
+
+	resp.Diagnostics.Append(req.State.Get(ctx, &data)...)
+	if resp.Diagnostics.HasError() {
+		return
+	}
+
+	protoReq, diagsReq := NewReadIpListRequest(ctx, &data)
+	resp.Diagnostics.Append(diagsReq...)
+	if resp.Diagnostics.HasError() {
+		return
+	}
+
+	tflog.Trace(ctx, "reading a resource", map[string]any{"type": "ip_list", "id": protoReq.Id})
+
+	rpcCtx, rpcCancel := context.WithTimeout(ctx, r.config.RequestTimeout())
+	protoResp, err := r.config.Client().ReadIpList(rpcCtx, protoReq)
+	rpcCancel()
+	if err != nil {
+		switch status.Code(err) {
+		case codes.NotFound:
+			resp.Diagnostics.AddWarning("Resource Not Found", fmt.Sprintf("No ip_list found with id %s", protoReq.Id))
+			resp.State.RemoveResource(ctx)
+			return
+		default:
+			resp.Diagnostics.AddError("Config API Error", fmt.Sprintf("Unable to read ip_list, got error: %s", err))
+			return
+		}
+	}
+
+	CopyReadIpListResponse(&data, protoResp)
+
+	tflog.Trace(ctx, "read a resource", map[string]any{"type": "ip_list", "id": protoResp.Id})
+
+	resp.Diagnostics.Append(resp.State.Set(ctx, &data)...)
+}
+
+func (r *IpListResource) Update(ctx context.Context, req resource.UpdateRequest, resp *resource.UpdateResponse) {
+	var beforeData IpListResourceModel
+	var afterData IpListResourceModel
+
+	resp.Diagnostics.Append(req.State.Get(ctx, &beforeData)...)
+	if resp.Diagnostics.HasError() {
+		return
+	}
+
+	resp.Diagnostics.Append(req.Plan.Get(ctx, &afterData)...)
+	if resp.Diagnostics.HasError() {
+		return
+	}
+
+	protoReq, diags := NewUpdateIpListRequest(ctx, &beforeData, &afterData)
+	resp.Diagnostics.Append(diags...)
+	if resp.Diagnostics.HasError() {
+		return
+	}
+
+	tflog.Trace(ctx, "updating a resource", map[string]any{"type": "ip_list", "id": protoReq.Id, "update_mask": protoReq.UpdateMask.Paths})
+
+	rpcCtx, rpcCancel := context.WithTimeout(ctx, r.config.RequestTimeout())
+	protoResp, err := r.config.Client().UpdateIpList(rpcCtx, protoReq)
+	rpcCancel()
+	if err != nil {
+		switch status.Code(err) {
+		case codes.NotFound:
+			resp.Diagnostics.AddError("Resource Not Found", fmt.Sprintf("No ip_list found with id %s", protoReq.Id))
+			resp.State.RemoveResource(ctx)
+			return
+		default:
+			resp.Diagnostics.AddError("Config API Error", fmt.Sprintf("Unable to update ip_list, got error: %s", err))
+			return
+		}
+	}
+
+	CopyUpdateIpListResponse(&afterData, protoResp)
+
+	tflog.Trace(ctx, "updated a resource", map[string]any{"type": "ip_list", "id": protoResp.Id})
+
+	resp.Diagnostics.Append(resp.State.Set(ctx, &afterData)...)
+}
+
+func (r *IpListResource) Delete(ctx context.Context, req resource.DeleteRequest, resp *resource.DeleteResponse) {
+	var data IpListResourceModel
+
+	resp.Diagnostics.Append(req.State.Get(ctx, &data)...)
+	if resp.Diagnostics.HasError() {
+		return
+	}
+
+	protoReq, diags := NewDeleteIpListRequest(ctx, &data)
+	resp.Diagnostics.Append(diags...)
+	if resp.Diagnostics.HasError() {
+		return
+	}
+
+	tflog.Trace(ctx, "deleting a resource", map[string]any{"type": "ip_list", "id": protoReq.Id})
+
+	rpcCtx, rpcCancel := context.WithTimeout(ctx, r.config.RequestTimeout())
+	_, err := r.config.Client().DeleteIpList(rpcCtx, protoReq)
+	rpcCancel()
+	if err != nil {
+		switch status.Code(err) {
+		case codes.NotFound:
+			tflog.Trace(ctx, "resource was already deleted", map[string]any{"type": "ip_list", "id": protoReq.Id})
+		default:
+			resp.Diagnostics.AddError("Config API Error", fmt.Sprintf("Unable to delete ip_list, got error: %s", err))
+			return
+		}
+	}
+
+	tflog.Trace(ctx, "deleted a resource", map[string]any{"type": "ip_list", "id": protoReq.Id})
+}
+
+func (r *IpListResource) ImportState(ctx context.Context, req resource.ImportStateRequest, resp *resource.ImportStateResponse) {
+	// TODO
+}
+
 // K8SClusterOnboardingCredentialResource implements the k8s_cluster_onboarding_credential resource.
 type K8SClusterOnboardingCredentialResource struct {
 	// schema is the schema of the k8s_cluster_onboarding_credential resource.
@@ -1467,6 +1663,13 @@ type DeploymentResourceModel struct {
 	AzureVnetIds         types.List   `tfsdk:"azure_vnet_ids"`
 	Description          types.String `tfsdk:"description"`
 	Name                 types.String `tfsdk:"name"`
+}
+
+type IpListResourceModel struct {
+	Id          types.String `tfsdk:"id"`
+	Description types.String `tfsdk:"description"`
+	IpRanges    types.List   `tfsdk:"ip_ranges"`
+	Name        types.String `tfsdk:"name"`
 }
 
 type K8SClusterOnboardingCredentialResourceModel struct {
@@ -1914,6 +2117,68 @@ func NewDeleteDeploymentRequest(ctx context.Context, data *DeploymentResourceMod
 	return proto, diags
 }
 
+func NewCreateIpListRequest(ctx context.Context, data *IpListResourceModel) (*configv1.CreateIpListRequest, diag.Diagnostics) {
+	var diags diag.Diagnostics
+	proto := &configv1.CreateIpListRequest{}
+	if !data.Description.IsUnknown() && !data.Description.IsNull() {
+		var dataValue attr.Value = data.Description
+		var protoValue string
+		protoValue = dataValue.(types.String).ValueString()
+		proto.Description = &protoValue
+	}
+	if !data.IpRanges.IsUnknown() && !data.IpRanges.IsNull() {
+		var dataValue attr.Value = data.IpRanges
+		var protoValue []*configv1.IpList_IpRanges
+		{
+			dataElements := dataValue.(types.List).Elements()
+			protoValues := make([]*configv1.IpList_IpRanges, 0, len(dataElements))
+			for _, dataElement := range dataElements {
+				var dataValue attr.Value = dataElement
+				var protoValue *configv1.IpList_IpRanges
+				protoValue, newDiags := ConvertDataValueToIpList_IpRangesProto(ctx, dataValue)
+				diags.Append(newDiags...)
+				if diags.HasError() {
+					return nil, diags
+				}
+				protoValues = append(protoValues, protoValue)
+			}
+			protoValue = protoValues
+		}
+		proto.IpRanges = protoValue
+	}
+	if !data.Name.IsUnknown() && !data.Name.IsNull() {
+		var dataValue attr.Value = data.Name
+		var protoValue string
+		protoValue = dataValue.(types.String).ValueString()
+		proto.Name = protoValue
+	}
+	return proto, diags
+}
+
+func NewReadIpListRequest(ctx context.Context, data *IpListResourceModel) (*configv1.ReadIpListRequest, diag.Diagnostics) {
+	var diags diag.Diagnostics
+	proto := &configv1.ReadIpListRequest{}
+	if !data.Id.IsUnknown() && !data.Id.IsNull() {
+		var dataValue attr.Value = data.Id
+		var protoValue string
+		protoValue = dataValue.(types.String).ValueString()
+		proto.Id = protoValue
+	}
+	return proto, diags
+}
+
+func NewDeleteIpListRequest(ctx context.Context, data *IpListResourceModel) (*configv1.DeleteIpListRequest, diag.Diagnostics) {
+	var diags diag.Diagnostics
+	proto := &configv1.DeleteIpListRequest{}
+	if !data.Id.IsUnknown() && !data.Id.IsNull() {
+		var dataValue attr.Value = data.Id
+		var protoValue string
+		protoValue = dataValue.(types.String).ValueString()
+		proto.Id = protoValue
+	}
+	return proto, diags
+}
+
 func NewCreateK8SClusterOnboardingCredentialRequest(ctx context.Context, data *K8SClusterOnboardingCredentialResourceModel) (*configv1.CreateK8SClusterOnboardingCredentialRequest, diag.Diagnostics) {
 	var diags diag.Diagnostics
 	proto := &configv1.CreateK8SClusterOnboardingCredentialRequest{}
@@ -2306,6 +2571,55 @@ func NewUpdateDeploymentRequest(ctx context.Context, beforeData, afterData *Depl
 			var protoValue string
 			protoValue = dataValue.(types.String).ValueString()
 			proto.Description = &protoValue
+		}
+	}
+	if !afterData.Name.Equal(beforeData.Name) {
+		proto.UpdateMask.Append(proto, "name")
+		if !afterData.Name.IsUnknown() && !afterData.Name.IsNull() {
+			var dataValue attr.Value = afterData.Name
+			var protoValue string
+			protoValue = dataValue.(types.String).ValueString()
+			proto.Name = protoValue
+		}
+	}
+	return proto, diags
+}
+
+func NewUpdateIpListRequest(ctx context.Context, beforeData, afterData *IpListResourceModel) (*configv1.UpdateIpListRequest, diag.Diagnostics) {
+	var diags diag.Diagnostics
+	proto := &configv1.UpdateIpListRequest{}
+	proto.UpdateMask, _ = fieldmaskpb.New(proto)
+	proto.Id = beforeData.Id.ValueString()
+	if !afterData.Description.Equal(beforeData.Description) {
+		proto.UpdateMask.Append(proto, "description")
+		if !afterData.Description.IsUnknown() && !afterData.Description.IsNull() {
+			var dataValue attr.Value = afterData.Description
+			var protoValue string
+			protoValue = dataValue.(types.String).ValueString()
+			proto.Description = &protoValue
+		}
+	}
+	if !afterData.IpRanges.Equal(beforeData.IpRanges) {
+		proto.UpdateMask.Append(proto, "ip_ranges")
+		if !afterData.IpRanges.IsUnknown() && !afterData.IpRanges.IsNull() {
+			var dataValue attr.Value = afterData.IpRanges
+			var protoValue []*configv1.IpList_IpRanges
+			{
+				dataElements := dataValue.(types.List).Elements()
+				protoValues := make([]*configv1.IpList_IpRanges, 0, len(dataElements))
+				for _, dataElement := range dataElements {
+					var dataValue attr.Value = dataElement
+					var protoValue *configv1.IpList_IpRanges
+					protoValue, newDiags := ConvertDataValueToIpList_IpRangesProto(ctx, dataValue)
+					diags.Append(newDiags...)
+					if diags.HasError() {
+						return nil, diags
+					}
+					protoValues = append(protoValues, protoValue)
+				}
+				protoValue = protoValues
+			}
+			proto.IpRanges = protoValue
 		}
 	}
 	if !afterData.Name.Equal(beforeData.Name) {
@@ -3157,6 +3471,90 @@ func CopyUpdateDeploymentResponse(dst *DeploymentResourceModel, src *configv1.Up
 	dst.Description = types.StringPointerValue(src.Description)
 	dst.Name = types.StringValue(src.Name)
 }
+func CopyCreateIpListResponse(dst *IpListResourceModel, src *configv1.CreateIpListResponse) {
+	dst.Id = types.StringValue(src.Id)
+	dst.Description = types.StringPointerValue(src.Description)
+	{
+		protoValue := src.IpRanges
+		var dataValue types.List
+		{
+			dataElementType := types.ObjectType{
+				AttrTypes: GetTypeAttrsForIpList_IpRanges(),
+			}
+			protoElements := protoValue
+			if protoElements == nil {
+				dataValue = types.ListNull(dataElementType)
+			} else {
+				dataValues := make([]attr.Value, 0, len(protoElements))
+				for _, protoElement := range protoElements {
+					var protoValue *configv1.IpList_IpRanges = protoElement
+					var dataValue attr.Value
+					dataValue = ConvertIpList_IpRangesToObjectValueFromProto(protoValue)
+					dataValues = append(dataValues, dataValue)
+				}
+				dataValue = types.ListValueMust(dataElementType, dataValues)
+			}
+		}
+		dst.IpRanges = dataValue
+	}
+	dst.Name = types.StringValue(src.Name)
+}
+func CopyReadIpListResponse(dst *IpListResourceModel, src *configv1.ReadIpListResponse) {
+	dst.Id = types.StringValue(src.Id)
+	dst.Description = types.StringPointerValue(src.Description)
+	{
+		protoValue := src.IpRanges
+		var dataValue types.List
+		{
+			dataElementType := types.ObjectType{
+				AttrTypes: GetTypeAttrsForIpList_IpRanges(),
+			}
+			protoElements := protoValue
+			if protoElements == nil {
+				dataValue = types.ListNull(dataElementType)
+			} else {
+				dataValues := make([]attr.Value, 0, len(protoElements))
+				for _, protoElement := range protoElements {
+					var protoValue *configv1.IpList_IpRanges = protoElement
+					var dataValue attr.Value
+					dataValue = ConvertIpList_IpRangesToObjectValueFromProto(protoValue)
+					dataValues = append(dataValues, dataValue)
+				}
+				dataValue = types.ListValueMust(dataElementType, dataValues)
+			}
+		}
+		dst.IpRanges = dataValue
+	}
+	dst.Name = types.StringValue(src.Name)
+}
+func CopyUpdateIpListResponse(dst *IpListResourceModel, src *configv1.UpdateIpListResponse) {
+	dst.Id = types.StringValue(src.Id)
+	dst.Description = types.StringPointerValue(src.Description)
+	{
+		protoValue := src.IpRanges
+		var dataValue types.List
+		{
+			dataElementType := types.ObjectType{
+				AttrTypes: GetTypeAttrsForIpList_IpRanges(),
+			}
+			protoElements := protoValue
+			if protoElements == nil {
+				dataValue = types.ListNull(dataElementType)
+			} else {
+				dataValues := make([]attr.Value, 0, len(protoElements))
+				for _, protoElement := range protoElements {
+					var protoValue *configv1.IpList_IpRanges = protoElement
+					var dataValue attr.Value
+					dataValue = ConvertIpList_IpRangesToObjectValueFromProto(protoValue)
+					dataValues = append(dataValues, dataValue)
+				}
+				dataValue = types.ListValueMust(dataElementType, dataValues)
+			}
+		}
+		dst.IpRanges = dataValue
+	}
+	dst.Name = types.StringValue(src.Name)
+}
 func CopyCreateK8SClusterOnboardingCredentialResponse(dst *K8SClusterOnboardingCredentialResourceModel, src *configv1.CreateK8SClusterOnboardingCredentialResponse) {
 	dst.Id = types.StringValue(src.Id)
 	dst.ClientId = types.StringValue(src.ClientId)
@@ -3392,6 +3790,48 @@ func ConvertDataValueToDeployment_AzureTagsProto(ctx context.Context, dataValue 
 	proto := &configv1.Deployment_AzureTags{}
 	proto.Key = pv.Key.ValueString()
 	proto.Value = pv.Value.ValueString()
+	return proto, diags
+}
+
+type IpList_IpRanges struct {
+	Description types.String `tfsdk:"description"`
+	Exclusion   types.Bool   `tfsdk:"exclusion"`
+	FromIp      types.String `tfsdk:"from_ip"`
+	ToIp        types.String `tfsdk:"to_ip"`
+}
+
+func GetTypeAttrsForIpList_IpRanges() map[string]attr.Type {
+	return map[string]attr.Type{
+		"description": types.StringType,
+		"exclusion":   types.BoolType,
+		"from_ip":     types.StringType,
+		"to_ip":       types.StringType,
+	}
+}
+
+func ConvertIpList_IpRangesToObjectValueFromProto(proto *configv1.IpList_IpRanges) basetypes.ObjectValue {
+	return types.ObjectValueMust(
+		GetTypeAttrsForIpList_IpRanges(),
+		map[string]attr.Value{
+			"description": types.StringValue(proto.Description),
+			"exclusion":   types.BoolValue(proto.Exclusion),
+			"from_ip":     types.StringValue(proto.FromIp),
+			"to_ip":       types.StringValue(proto.ToIp),
+		},
+	)
+}
+
+func ConvertDataValueToIpList_IpRangesProto(ctx context.Context, dataValue attr.Value) (*configv1.IpList_IpRanges, diag.Diagnostics) {
+	pv := IpList_IpRanges{}
+	diags := tfsdk.ValueAs(ctx, dataValue, &pv)
+	if diags.HasError() {
+		return nil, diags
+	}
+	proto := &configv1.IpList_IpRanges{}
+	proto.Description = pv.Description.ValueString()
+	proto.Exclusion = pv.Exclusion.ValueBool()
+	proto.FromIp = pv.FromIp.ValueString()
+	proto.ToIp = pv.ToIp.ValueString()
 	return proto, diags
 }
 

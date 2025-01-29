@@ -43,6 +43,10 @@ const (
 	ConfigService_ReadDeployment_FullMethodName                       = "/illumio.cloud.config.v1.ConfigService/ReadDeployment"
 	ConfigService_UpdateDeployment_FullMethodName                     = "/illumio.cloud.config.v1.ConfigService/UpdateDeployment"
 	ConfigService_DeleteDeployment_FullMethodName                     = "/illumio.cloud.config.v1.ConfigService/DeleteDeployment"
+	ConfigService_CreateIpList_FullMethodName                         = "/illumio.cloud.config.v1.ConfigService/CreateIpList"
+	ConfigService_ReadIpList_FullMethodName                           = "/illumio.cloud.config.v1.ConfigService/ReadIpList"
+	ConfigService_UpdateIpList_FullMethodName                         = "/illumio.cloud.config.v1.ConfigService/UpdateIpList"
+	ConfigService_DeleteIpList_FullMethodName                         = "/illumio.cloud.config.v1.ConfigService/DeleteIpList"
 	ConfigService_CreateK8SClusterOnboardingCredential_FullMethodName = "/illumio.cloud.config.v1.ConfigService/CreateK8SClusterOnboardingCredential"
 	ConfigService_ReadK8SClusterOnboardingCredential_FullMethodName   = "/illumio.cloud.config.v1.ConfigService/ReadK8SClusterOnboardingCredential"
 	ConfigService_UpdateK8SClusterOnboardingCredential_FullMethodName = "/illumio.cloud.config.v1.ConfigService/UpdateK8SClusterOnboardingCredential"
@@ -77,6 +81,10 @@ type ConfigServiceClient interface {
 	ReadDeployment(ctx context.Context, in *ReadDeploymentRequest, opts ...grpc.CallOption) (*ReadDeploymentResponse, error)
 	UpdateDeployment(ctx context.Context, in *UpdateDeploymentRequest, opts ...grpc.CallOption) (*UpdateDeploymentResponse, error)
 	DeleteDeployment(ctx context.Context, in *DeleteDeploymentRequest, opts ...grpc.CallOption) (*emptypb.Empty, error)
+	CreateIpList(ctx context.Context, in *CreateIpListRequest, opts ...grpc.CallOption) (*CreateIpListResponse, error)
+	ReadIpList(ctx context.Context, in *ReadIpListRequest, opts ...grpc.CallOption) (*ReadIpListResponse, error)
+	UpdateIpList(ctx context.Context, in *UpdateIpListRequest, opts ...grpc.CallOption) (*UpdateIpListResponse, error)
+	DeleteIpList(ctx context.Context, in *DeleteIpListRequest, opts ...grpc.CallOption) (*emptypb.Empty, error)
 	CreateK8SClusterOnboardingCredential(ctx context.Context, in *CreateK8SClusterOnboardingCredentialRequest, opts ...grpc.CallOption) (*CreateK8SClusterOnboardingCredentialResponse, error)
 	ReadK8SClusterOnboardingCredential(ctx context.Context, in *ReadK8SClusterOnboardingCredentialRequest, opts ...grpc.CallOption) (*ReadK8SClusterOnboardingCredentialResponse, error)
 	UpdateK8SClusterOnboardingCredential(ctx context.Context, in *UpdateK8SClusterOnboardingCredentialRequest, opts ...grpc.CallOption) (*UpdateK8SClusterOnboardingCredentialResponse, error)
@@ -295,6 +303,46 @@ func (c *configServiceClient) DeleteDeployment(ctx context.Context, in *DeleteDe
 	return out, nil
 }
 
+func (c *configServiceClient) CreateIpList(ctx context.Context, in *CreateIpListRequest, opts ...grpc.CallOption) (*CreateIpListResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(CreateIpListResponse)
+	err := c.cc.Invoke(ctx, ConfigService_CreateIpList_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *configServiceClient) ReadIpList(ctx context.Context, in *ReadIpListRequest, opts ...grpc.CallOption) (*ReadIpListResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(ReadIpListResponse)
+	err := c.cc.Invoke(ctx, ConfigService_ReadIpList_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *configServiceClient) UpdateIpList(ctx context.Context, in *UpdateIpListRequest, opts ...grpc.CallOption) (*UpdateIpListResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(UpdateIpListResponse)
+	err := c.cc.Invoke(ctx, ConfigService_UpdateIpList_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *configServiceClient) DeleteIpList(ctx context.Context, in *DeleteIpListRequest, opts ...grpc.CallOption) (*emptypb.Empty, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(emptypb.Empty)
+	err := c.cc.Invoke(ctx, ConfigService_DeleteIpList_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 func (c *configServiceClient) CreateK8SClusterOnboardingCredential(ctx context.Context, in *CreateK8SClusterOnboardingCredentialRequest, opts ...grpc.CallOption) (*CreateK8SClusterOnboardingCredentialResponse, error) {
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
 	out := new(CreateK8SClusterOnboardingCredentialResponse)
@@ -399,6 +447,10 @@ type ConfigServiceServer interface {
 	ReadDeployment(context.Context, *ReadDeploymentRequest) (*ReadDeploymentResponse, error)
 	UpdateDeployment(context.Context, *UpdateDeploymentRequest) (*UpdateDeploymentResponse, error)
 	DeleteDeployment(context.Context, *DeleteDeploymentRequest) (*emptypb.Empty, error)
+	CreateIpList(context.Context, *CreateIpListRequest) (*CreateIpListResponse, error)
+	ReadIpList(context.Context, *ReadIpListRequest) (*ReadIpListResponse, error)
+	UpdateIpList(context.Context, *UpdateIpListRequest) (*UpdateIpListResponse, error)
+	DeleteIpList(context.Context, *DeleteIpListRequest) (*emptypb.Empty, error)
 	CreateK8SClusterOnboardingCredential(context.Context, *CreateK8SClusterOnboardingCredentialRequest) (*CreateK8SClusterOnboardingCredentialResponse, error)
 	ReadK8SClusterOnboardingCredential(context.Context, *ReadK8SClusterOnboardingCredentialRequest) (*ReadK8SClusterOnboardingCredentialResponse, error)
 	UpdateK8SClusterOnboardingCredential(context.Context, *UpdateK8SClusterOnboardingCredentialRequest) (*UpdateK8SClusterOnboardingCredentialResponse, error)
@@ -476,6 +528,18 @@ func (UnimplementedConfigServiceServer) UpdateDeployment(context.Context, *Updat
 }
 func (UnimplementedConfigServiceServer) DeleteDeployment(context.Context, *DeleteDeploymentRequest) (*emptypb.Empty, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method DeleteDeployment not implemented")
+}
+func (UnimplementedConfigServiceServer) CreateIpList(context.Context, *CreateIpListRequest) (*CreateIpListResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method CreateIpList not implemented")
+}
+func (UnimplementedConfigServiceServer) ReadIpList(context.Context, *ReadIpListRequest) (*ReadIpListResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method ReadIpList not implemented")
+}
+func (UnimplementedConfigServiceServer) UpdateIpList(context.Context, *UpdateIpListRequest) (*UpdateIpListResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method UpdateIpList not implemented")
+}
+func (UnimplementedConfigServiceServer) DeleteIpList(context.Context, *DeleteIpListRequest) (*emptypb.Empty, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method DeleteIpList not implemented")
 }
 func (UnimplementedConfigServiceServer) CreateK8SClusterOnboardingCredential(context.Context, *CreateK8SClusterOnboardingCredentialRequest) (*CreateK8SClusterOnboardingCredentialResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method CreateK8SClusterOnboardingCredential not implemented")
@@ -882,6 +946,78 @@ func _ConfigService_DeleteDeployment_Handler(srv interface{}, ctx context.Contex
 	return interceptor(ctx, in, info, handler)
 }
 
+func _ConfigService_CreateIpList_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(CreateIpListRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(ConfigServiceServer).CreateIpList(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: ConfigService_CreateIpList_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(ConfigServiceServer).CreateIpList(ctx, req.(*CreateIpListRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _ConfigService_ReadIpList_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(ReadIpListRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(ConfigServiceServer).ReadIpList(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: ConfigService_ReadIpList_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(ConfigServiceServer).ReadIpList(ctx, req.(*ReadIpListRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _ConfigService_UpdateIpList_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(UpdateIpListRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(ConfigServiceServer).UpdateIpList(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: ConfigService_UpdateIpList_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(ConfigServiceServer).UpdateIpList(ctx, req.(*UpdateIpListRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _ConfigService_DeleteIpList_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(DeleteIpListRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(ConfigServiceServer).DeleteIpList(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: ConfigService_DeleteIpList_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(ConfigServiceServer).DeleteIpList(ctx, req.(*DeleteIpListRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 func _ConfigService_CreateK8SClusterOnboardingCredential_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(CreateK8SClusterOnboardingCredentialRequest)
 	if err := dec(in); err != nil {
@@ -1112,6 +1248,22 @@ var ConfigService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "DeleteDeployment",
 			Handler:    _ConfigService_DeleteDeployment_Handler,
+		},
+		{
+			MethodName: "CreateIpList",
+			Handler:    _ConfigService_CreateIpList_Handler,
+		},
+		{
+			MethodName: "ReadIpList",
+			Handler:    _ConfigService_ReadIpList_Handler,
+		},
+		{
+			MethodName: "UpdateIpList",
+			Handler:    _ConfigService_UpdateIpList_Handler,
+		},
+		{
+			MethodName: "DeleteIpList",
+			Handler:    _ConfigService_DeleteIpList_Handler,
 		},
 		{
 			MethodName: "CreateK8SClusterOnboardingCredential",
