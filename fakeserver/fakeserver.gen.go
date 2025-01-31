@@ -106,6 +106,7 @@ type Deployment struct {
 type IpList struct {
 	Id          string
 	Description *string
+	IpAddresses []*configv1.IpList_IpAddresses
 	IpRanges    []*configv1.IpList_IpRanges
 	Name        string
 }
@@ -823,12 +824,14 @@ func (s *FakeConfigServer) CreateIpList(ctx context.Context, req *configv1.Creat
 	model := &IpList{
 		Id:          id,
 		Description: req.Description,
+		IpAddresses: req.IpAddresses,
 		IpRanges:    req.IpRanges,
 		Name:        req.Name,
 	}
 	resp := &configv1.CreateIpListResponse{
 		Id:          id,
 		Description: model.Description,
+		IpAddresses: model.IpAddresses,
 		IpRanges:    model.IpRanges,
 		Name:        model.Name,
 	}
@@ -859,6 +862,7 @@ func (s *FakeConfigServer) ReadIpList(ctx context.Context, req *configv1.ReadIpL
 	resp := &configv1.ReadIpListResponse{
 		Id:          id,
 		Description: model.Description,
+		IpAddresses: model.IpAddresses,
 		IpRanges:    model.IpRanges,
 		Name:        model.Name,
 	}
@@ -893,6 +897,8 @@ func (s *FakeConfigServer) UpdateIpList(ctx context.Context, req *configv1.Updat
 		switch path {
 		case "description":
 			model.Description = req.Description
+		case "ip_addresses":
+			model.IpAddresses = req.IpAddresses
 		case "ip_ranges":
 			model.IpRanges = req.IpRanges
 		case "name":
@@ -912,6 +918,7 @@ func (s *FakeConfigServer) UpdateIpList(ctx context.Context, req *configv1.Updat
 	resp := &configv1.UpdateIpListResponse{
 		Id:          id,
 		Description: model.Description,
+		IpAddresses: model.IpAddresses,
 		IpRanges:    model.IpRanges,
 		Name:        model.Name,
 	}

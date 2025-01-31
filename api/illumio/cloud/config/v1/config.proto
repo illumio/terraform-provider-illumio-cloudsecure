@@ -272,20 +272,25 @@ message UpdateDeploymentResponse {
 message DeleteDeploymentRequest {
   string id = 1;
 }
+message IpList_IpAddresses {
+  bool exclusion = 1;
+  string ip = 2;
+}
 message IpList_IpRanges {
-  string description = 1;
   bool exclusion = 2;
   string from_ip = 3;
   string to_ip = 4;
 }
 message CreateIpListRequest {
   optional string description = 2;
+  repeated IpList_IpAddresses ip_addresses = 6;
   repeated IpList_IpRanges ip_ranges = 3;
   string name = 4;
 }
 message CreateIpListResponse {
   string id = 1;
   optional string description = 2;
+  repeated IpList_IpAddresses ip_addresses = 6;
   repeated IpList_IpRanges ip_ranges = 3;
   string name = 4;
 }
@@ -295,12 +300,14 @@ message ReadIpListRequest {
 message ReadIpListResponse {
   string id = 1;
   optional string description = 2;
+  repeated IpList_IpAddresses ip_addresses = 6;
   repeated IpList_IpRanges ip_ranges = 3;
   string name = 4;
 }
 message UpdateIpListRequest {
   string id = 1;
   optional string description = 2;
+  repeated IpList_IpAddresses ip_addresses = 6;
   repeated IpList_IpRanges ip_ranges = 3;
   string name = 4;
   google.protobuf.FieldMask update_mask = 5;
@@ -308,6 +315,7 @@ message UpdateIpListRequest {
 message UpdateIpListResponse {
   string id = 1;
   optional string description = 2;
+  repeated IpList_IpAddresses ip_addresses = 6;
   repeated IpList_IpRanges ip_ranges = 3;
   string name = 4;
 }

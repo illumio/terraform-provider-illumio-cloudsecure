@@ -3,12 +3,12 @@
 page_title: "illumio-cloudsecure_ip_list Resource - illumio-cloudsecure"
 subcategory: ""
 description: |-
-  Manages list of IP Ranges to define policy on Cloudsecure.
+  Manages a list of IP address ranges to define CloudSecure policies.
 ---
 
 # illumio-cloudsecure_ip_list (Resource)
 
-Manages list of IP Ranges to define policy on Cloudsecure.
+Manages a list of IP address ranges to define CloudSecure policies.
 
 
 
@@ -22,18 +22,27 @@ Manages list of IP Ranges to define policy on Cloudsecure.
 ### Optional
 
 - `description` (String) Description of the IP list.
-- `ip_ranges` (List of Object) List of IP ranges. (see [below for nested schema](#nestedatt--ip_ranges))
+- `ip_addresses` (List of Object) List of IP addresses. (see [below for nested schema](#nestedatt--ip_addresses))
+- `ip_ranges` (List of Object) List of IP address ranges. (see [below for nested schema](#nestedatt--ip_ranges))
 
 ### Read-Only
 
 - `id` (String) CloudSecure ID.
+
+<a id="nestedatt--ip_addresses"></a>
+### Nested Schema for `ip_addresses`
+
+Optional:
+
+- `exclusion` (Boolean)
+- `ip` (String)
+
 
 <a id="nestedatt--ip_ranges"></a>
 ### Nested Schema for `ip_ranges`
 
 Optional:
 
-- `description` (String)
 - `exclusion` (Boolean)
 - `from_ip` (String)
 - `to_ip` (String)

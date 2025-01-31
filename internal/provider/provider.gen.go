@@ -1668,6 +1668,7 @@ type DeploymentResourceModel struct {
 type IpListResourceModel struct {
 	Id          types.String `tfsdk:"id"`
 	Description types.String `tfsdk:"description"`
+	IpAddresses types.List   `tfsdk:"ip_addresses"`
 	IpRanges    types.List   `tfsdk:"ip_ranges"`
 	Name        types.String `tfsdk:"name"`
 }
@@ -2125,6 +2126,26 @@ func NewCreateIpListRequest(ctx context.Context, data *IpListResourceModel) (*co
 		var protoValue string
 		protoValue = dataValue.(types.String).ValueString()
 		proto.Description = &protoValue
+	}
+	if !data.IpAddresses.IsUnknown() && !data.IpAddresses.IsNull() {
+		var dataValue attr.Value = data.IpAddresses
+		var protoValue []*configv1.IpList_IpAddresses
+		{
+			dataElements := dataValue.(types.List).Elements()
+			protoValues := make([]*configv1.IpList_IpAddresses, 0, len(dataElements))
+			for _, dataElement := range dataElements {
+				var dataValue attr.Value = dataElement
+				var protoValue *configv1.IpList_IpAddresses
+				protoValue, newDiags := ConvertDataValueToIpList_IpAddressesProto(ctx, dataValue)
+				diags.Append(newDiags...)
+				if diags.HasError() {
+					return nil, diags
+				}
+				protoValues = append(protoValues, protoValue)
+			}
+			protoValue = protoValues
+		}
+		proto.IpAddresses = protoValue
 	}
 	if !data.IpRanges.IsUnknown() && !data.IpRanges.IsNull() {
 		var dataValue attr.Value = data.IpRanges
@@ -2597,6 +2618,29 @@ func NewUpdateIpListRequest(ctx context.Context, beforeData, afterData *IpListRe
 			var protoValue string
 			protoValue = dataValue.(types.String).ValueString()
 			proto.Description = &protoValue
+		}
+	}
+	if !afterData.IpAddresses.Equal(beforeData.IpAddresses) {
+		proto.UpdateMask.Append(proto, "ip_addresses")
+		if !afterData.IpAddresses.IsUnknown() && !afterData.IpAddresses.IsNull() {
+			var dataValue attr.Value = afterData.IpAddresses
+			var protoValue []*configv1.IpList_IpAddresses
+			{
+				dataElements := dataValue.(types.List).Elements()
+				protoValues := make([]*configv1.IpList_IpAddresses, 0, len(dataElements))
+				for _, dataElement := range dataElements {
+					var dataValue attr.Value = dataElement
+					var protoValue *configv1.IpList_IpAddresses
+					protoValue, newDiags := ConvertDataValueToIpList_IpAddressesProto(ctx, dataValue)
+					diags.Append(newDiags...)
+					if diags.HasError() {
+						return nil, diags
+					}
+					protoValues = append(protoValues, protoValue)
+				}
+				protoValue = protoValues
+			}
+			proto.IpAddresses = protoValue
 		}
 	}
 	if !afterData.IpRanges.Equal(beforeData.IpRanges) {
@@ -3475,6 +3519,29 @@ func CopyCreateIpListResponse(dst *IpListResourceModel, src *configv1.CreateIpLi
 	dst.Id = types.StringValue(src.Id)
 	dst.Description = types.StringPointerValue(src.Description)
 	{
+		protoValue := src.IpAddresses
+		var dataValue types.List
+		{
+			dataElementType := types.ObjectType{
+				AttrTypes: GetTypeAttrsForIpList_IpAddresses(),
+			}
+			protoElements := protoValue
+			if protoElements == nil {
+				dataValue = types.ListNull(dataElementType)
+			} else {
+				dataValues := make([]attr.Value, 0, len(protoElements))
+				for _, protoElement := range protoElements {
+					var protoValue *configv1.IpList_IpAddresses = protoElement
+					var dataValue attr.Value
+					dataValue = ConvertIpList_IpAddressesToObjectValueFromProto(protoValue)
+					dataValues = append(dataValues, dataValue)
+				}
+				dataValue = types.ListValueMust(dataElementType, dataValues)
+			}
+		}
+		dst.IpAddresses = dataValue
+	}
+	{
 		protoValue := src.IpRanges
 		var dataValue types.List
 		{
@@ -3503,6 +3570,29 @@ func CopyReadIpListResponse(dst *IpListResourceModel, src *configv1.ReadIpListRe
 	dst.Id = types.StringValue(src.Id)
 	dst.Description = types.StringPointerValue(src.Description)
 	{
+		protoValue := src.IpAddresses
+		var dataValue types.List
+		{
+			dataElementType := types.ObjectType{
+				AttrTypes: GetTypeAttrsForIpList_IpAddresses(),
+			}
+			protoElements := protoValue
+			if protoElements == nil {
+				dataValue = types.ListNull(dataElementType)
+			} else {
+				dataValues := make([]attr.Value, 0, len(protoElements))
+				for _, protoElement := range protoElements {
+					var protoValue *configv1.IpList_IpAddresses = protoElement
+					var dataValue attr.Value
+					dataValue = ConvertIpList_IpAddressesToObjectValueFromProto(protoValue)
+					dataValues = append(dataValues, dataValue)
+				}
+				dataValue = types.ListValueMust(dataElementType, dataValues)
+			}
+		}
+		dst.IpAddresses = dataValue
+	}
+	{
 		protoValue := src.IpRanges
 		var dataValue types.List
 		{
@@ -3530,6 +3620,29 @@ func CopyReadIpListResponse(dst *IpListResourceModel, src *configv1.ReadIpListRe
 func CopyUpdateIpListResponse(dst *IpListResourceModel, src *configv1.UpdateIpListResponse) {
 	dst.Id = types.StringValue(src.Id)
 	dst.Description = types.StringPointerValue(src.Description)
+	{
+		protoValue := src.IpAddresses
+		var dataValue types.List
+		{
+			dataElementType := types.ObjectType{
+				AttrTypes: GetTypeAttrsForIpList_IpAddresses(),
+			}
+			protoElements := protoValue
+			if protoElements == nil {
+				dataValue = types.ListNull(dataElementType)
+			} else {
+				dataValues := make([]attr.Value, 0, len(protoElements))
+				for _, protoElement := range protoElements {
+					var protoValue *configv1.IpList_IpAddresses = protoElement
+					var dataValue attr.Value
+					dataValue = ConvertIpList_IpAddressesToObjectValueFromProto(protoValue)
+					dataValues = append(dataValues, dataValue)
+				}
+				dataValue = types.ListValueMust(dataElementType, dataValues)
+			}
+		}
+		dst.IpAddresses = dataValue
+	}
 	{
 		protoValue := src.IpRanges
 		var dataValue types.List
@@ -3793,19 +3906,51 @@ func ConvertDataValueToDeployment_AzureTagsProto(ctx context.Context, dataValue 
 	return proto, diags
 }
 
+type IpList_IpAddresses struct {
+	Exclusion types.Bool   `tfsdk:"exclusion"`
+	Ip        types.String `tfsdk:"ip"`
+}
+
+func GetTypeAttrsForIpList_IpAddresses() map[string]attr.Type {
+	return map[string]attr.Type{
+		"exclusion": types.BoolType,
+		"ip":        types.StringType,
+	}
+}
+
+func ConvertIpList_IpAddressesToObjectValueFromProto(proto *configv1.IpList_IpAddresses) basetypes.ObjectValue {
+	return types.ObjectValueMust(
+		GetTypeAttrsForIpList_IpAddresses(),
+		map[string]attr.Value{
+			"exclusion": types.BoolValue(proto.Exclusion),
+			"ip":        types.StringValue(proto.Ip),
+		},
+	)
+}
+
+func ConvertDataValueToIpList_IpAddressesProto(ctx context.Context, dataValue attr.Value) (*configv1.IpList_IpAddresses, diag.Diagnostics) {
+	pv := IpList_IpAddresses{}
+	diags := tfsdk.ValueAs(ctx, dataValue, &pv)
+	if diags.HasError() {
+		return nil, diags
+	}
+	proto := &configv1.IpList_IpAddresses{}
+	proto.Exclusion = pv.Exclusion.ValueBool()
+	proto.Ip = pv.Ip.ValueString()
+	return proto, diags
+}
+
 type IpList_IpRanges struct {
-	Description types.String `tfsdk:"description"`
-	Exclusion   types.Bool   `tfsdk:"exclusion"`
-	FromIp      types.String `tfsdk:"from_ip"`
-	ToIp        types.String `tfsdk:"to_ip"`
+	Exclusion types.Bool   `tfsdk:"exclusion"`
+	FromIp    types.String `tfsdk:"from_ip"`
+	ToIp      types.String `tfsdk:"to_ip"`
 }
 
 func GetTypeAttrsForIpList_IpRanges() map[string]attr.Type {
 	return map[string]attr.Type{
-		"description": types.StringType,
-		"exclusion":   types.BoolType,
-		"from_ip":     types.StringType,
-		"to_ip":       types.StringType,
+		"exclusion": types.BoolType,
+		"from_ip":   types.StringType,
+		"to_ip":     types.StringType,
 	}
 }
 
@@ -3813,10 +3958,9 @@ func ConvertIpList_IpRangesToObjectValueFromProto(proto *configv1.IpList_IpRange
 	return types.ObjectValueMust(
 		GetTypeAttrsForIpList_IpRanges(),
 		map[string]attr.Value{
-			"description": types.StringValue(proto.Description),
-			"exclusion":   types.BoolValue(proto.Exclusion),
-			"from_ip":     types.StringValue(proto.FromIp),
-			"to_ip":       types.StringValue(proto.ToIp),
+			"exclusion": types.BoolValue(proto.Exclusion),
+			"from_ip":   types.StringValue(proto.FromIp),
+			"to_ip":     types.StringValue(proto.ToIp),
 		},
 	)
 }
@@ -3828,7 +3972,6 @@ func ConvertDataValueToIpList_IpRangesProto(ctx context.Context, dataValue attr.
 		return nil, diags
 	}
 	proto := &configv1.IpList_IpRanges{}
-	proto.Description = pv.Description.ValueString()
 	proto.Exclusion = pv.Exclusion.ValueBool()
 	proto.FromIp = pv.FromIp.ValueString()
 	proto.ToIp = pv.ToIp.ValueString()
