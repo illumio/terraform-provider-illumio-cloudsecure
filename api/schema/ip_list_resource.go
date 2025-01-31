@@ -11,10 +11,16 @@ import (
 
 var IPRange = types.ObjectType{
 	AttrTypes: map[string]attr.Type{
-		"description": types.StringType,
-		"exclusion":   types.BoolType,
-		"from_ip":     types.StringType,
-		"to_ip":       types.StringType,
+		"exclusion": types.BoolType,
+		"from_ip":   types.StringType,
+		"to_ip":     types.StringType,
+	},
+}
+
+var IPAddress = types.ObjectType{
+	AttrTypes: map[string]attr.Type{
+		"exclusion": types.BoolType,
+		"ip":        types.StringType,
 	},
 }
 
@@ -29,6 +35,11 @@ var (
 				"description": resource_schema.StringAttribute{
 					Description: "Description of the IP list.",
 					Optional:    true,
+				},
+				"ip_addresses": resource_schema.ListAttribute{
+					Optional:    true,
+					Description: "List of IP addresses.",
+					ElementType: IPAddress,
 				},
 				"ip_ranges": resource_schema.ListAttribute{
 					Optional:    true,
