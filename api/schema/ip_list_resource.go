@@ -23,7 +23,7 @@ var (
 		TypeName: "ip_list",
 		Schema: resource_schema.Schema{
 			Version:     1,
-			Description: "Manages list of IP Ranges to define policy on Cloudsecure.",
+			Description: "Manages a list of IP address ranges to define CloudSecure policies.",
 			Attributes: map[string]resource_schema.Attribute{
 				IDFieldName: idAttribute,
 				"description": resource_schema.StringAttribute{
@@ -32,7 +32,7 @@ var (
 				},
 				"ip_ranges": resource_schema.ListAttribute{
 					Optional:    true,
-					Description: "List of IP ranges.",
+					Description: "List of IP address ranges.",
 					ElementType: IPRange,
 				},
 				"name": resource_schema.StringAttribute{
