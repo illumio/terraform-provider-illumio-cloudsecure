@@ -12,15 +12,15 @@ import (
 var IPRange = types.ObjectType{
 	AttrTypes: map[string]attr.Type{
 		"exclusion": types.BoolType,
-		"from_ip":   types.StringType,
-		"to_ip":     types.StringType,
+		"from_ip_address":   types.StringType,
+		"to_ip_address":     types.StringType,
 	},
 }
 
 var IPAddress = types.ObjectType{
 	AttrTypes: map[string]attr.Type{
 		"exclusion": types.BoolType,
-		"ip":        types.StringType,
+		"ip_address":        types.StringType,
 	},
 }
 
