@@ -30,6 +30,8 @@ type FakeConfigServer struct {
 	AzureSubscriptionMutex              sync.RWMutex
 	DeploymentMap                       map[string]*Deployment
 	DeploymentMutex                     sync.RWMutex
+	IpListMap                           map[string]*IpList
+	IpListMutex                         sync.RWMutex
 	K8SClusterOnboardingCredentialMap   map[string]*K8SClusterOnboardingCredential
 	K8SClusterOnboardingCredentialMutex sync.RWMutex
 	TagToLabelMap                       map[string]*TagToLabel
@@ -47,6 +49,7 @@ func NewFakeConfigServer(logger *zap.Logger) configv1.ConfigServiceServer {
 		AzureFlowLogsStorageAccountMap:    make(map[string]*AzureFlowLogsStorageAccount),
 		AzureSubscriptionMap:              make(map[string]*AzureSubscription),
 		DeploymentMap:                     make(map[string]*Deployment),
+		IpListMap:                         make(map[string]*IpList),
 		K8SClusterOnboardingCredentialMap: make(map[string]*K8SClusterOnboardingCredential),
 		TagToLabelMap:                     make(map[string]*TagToLabel),
 	}
@@ -98,6 +101,14 @@ type Deployment struct {
 	AzureVnetIds         []string
 	Description          *string
 	Name                 string
+}
+
+type IpList struct {
+	Id          string
+	Description *string
+	IpAddresses []*configv1.IpList_IpAddresses
+	IpRanges    []*configv1.IpList_IpRanges
+	Name        string
 }
 
 type K8SClusterOnboardingCredential struct {
@@ -804,6 +815,141 @@ func (s *FakeConfigServer) DeleteDeployment(ctx context.Context, req *configv1.D
 	s.Logger.Info("deleted resource",
 		zap.String("type", "deployment"),
 		zap.String("method", "DeleteDeployment"),
+		zap.String("id", id),
+	)
+	return &emptypb.Empty{}, nil
+}
+func (s *FakeConfigServer) CreateIpList(ctx context.Context, req *configv1.CreateIpListRequest) (*configv1.CreateIpListResponse, error) {
+	id := uuid.New().String()
+	model := &IpList{
+		Id:          id,
+		Description: req.Description,
+		IpAddresses: req.IpAddresses,
+		IpRanges:    req.IpRanges,
+		Name:        req.Name,
+	}
+	resp := &configv1.CreateIpListResponse{
+		Id:          id,
+		Description: model.Description,
+		IpAddresses: model.IpAddresses,
+		IpRanges:    model.IpRanges,
+		Name:        model.Name,
+	}
+	s.IpListMutex.Lock()
+	s.IpListMap[id] = model
+	s.IpListMutex.Unlock()
+	s.Logger.Info("created resource",
+		zap.String("type", "ip_list"),
+		zap.String("method", "CreateIpList"),
+		zap.String("id", id),
+	)
+	return resp, nil
+}
+
+func (s *FakeConfigServer) ReadIpList(ctx context.Context, req *configv1.ReadIpListRequest) (*configv1.ReadIpListResponse, error) {
+	id := req.Id
+	s.IpListMutex.RLock()
+	model, found := s.IpListMap[id]
+	if !found {
+		s.IpListMutex.RUnlock()
+		s.Logger.Error("attempted to read resource with unknown id",
+			zap.String("type", "ip_list"),
+			zap.String("method", "ReadIpList"),
+			zap.String("id", id),
+		)
+		return nil, status.Errorf(codes.NotFound, "no ip_list found with id %s", id)
+	}
+	resp := &configv1.ReadIpListResponse{
+		Id:          id,
+		Description: model.Description,
+		IpAddresses: model.IpAddresses,
+		IpRanges:    model.IpRanges,
+		Name:        model.Name,
+	}
+	s.IpListMutex.RUnlock()
+	s.Logger.Info("read resource",
+		zap.String("type", "ip_list"),
+		zap.String("method", "ReadIpList"),
+		zap.String("id", id),
+	)
+	return resp, nil
+}
+
+func (s *FakeConfigServer) UpdateIpList(ctx context.Context, req *configv1.UpdateIpListRequest) (*configv1.UpdateIpListResponse, error) {
+	id := req.Id
+	s.IpListMutex.Lock()
+	model, found := s.IpListMap[id]
+	if !found {
+		s.IpListMutex.Unlock()
+		s.Logger.Error("attempted to update resource with unknown id",
+			zap.String("type", "ip_list"),
+			zap.String("method", "UpdateIpList"),
+			zap.String("id", id),
+		)
+		return nil, status.Errorf(codes.NotFound, "no ip_list found with id %s", id)
+	}
+	updateMask := req.UpdateMask
+	var updateMaskPaths []string
+	if updateMask != nil {
+		updateMaskPaths = updateMask.Paths
+	}
+	for _, path := range updateMaskPaths {
+		switch path {
+		case "description":
+			model.Description = req.Description
+		case "ip_addresses":
+			model.IpAddresses = req.IpAddresses
+		case "ip_ranges":
+			model.IpRanges = req.IpRanges
+		case "name":
+			model.Name = req.Name
+		default:
+			s.AwsAccountMutex.Unlock()
+			s.Logger.Error("attempted to update resource using invalid update_mask path",
+				zap.String("type", "ip_list"),
+				zap.String("method", "UpdateIpList"),
+				zap.String("id", id),
+				zap.Strings("updateMaskPaths", updateMaskPaths),
+				zap.String("invalidUpdateMaskPath", path),
+			)
+			return nil, status.Errorf(codes.InvalidArgument, "invalid path in update_mask for ip_list: %s", path)
+		}
+	}
+	resp := &configv1.UpdateIpListResponse{
+		Id:          id,
+		Description: model.Description,
+		IpAddresses: model.IpAddresses,
+		IpRanges:    model.IpRanges,
+		Name:        model.Name,
+	}
+	s.IpListMutex.Unlock()
+	s.Logger.Info("updated resource",
+		zap.String("type", "ip_list"),
+		zap.String("method", "UpdateIpList"),
+		zap.String("id", id),
+		zap.Strings("updateMaskPaths", updateMaskPaths),
+	)
+	return resp, nil
+}
+
+func (s *FakeConfigServer) DeleteIpList(ctx context.Context, req *configv1.DeleteIpListRequest) (*emptypb.Empty, error) {
+	id := req.Id
+	s.IpListMutex.Lock()
+	_, found := s.IpListMap[id]
+	if !found {
+		s.IpListMutex.Unlock()
+		s.Logger.Error("attempted to delete resource with unknown id",
+			zap.String("type", "ip_list"),
+			zap.String("method", "DeleteIpList"),
+			zap.String("id", id),
+		)
+		return nil, status.Errorf(codes.NotFound, "no ip_list found with id %s", id)
+	}
+	delete(s.IpListMap, id)
+	s.IpListMutex.Unlock()
+	s.Logger.Info("deleted resource",
+		zap.String("type", "ip_list"),
+		zap.String("method", "DeleteIpList"),
 		zap.String("id", id),
 	)
 	return &emptypb.Empty{}, nil

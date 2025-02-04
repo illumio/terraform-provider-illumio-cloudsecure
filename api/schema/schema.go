@@ -22,6 +22,7 @@ func (c *cloudSecureSchema) Resources() Resources {
 		azureFlowLogsStorageAccount,
 		azureSubscriptionResource,
 		deploymentResource,
+		ipListResource,
 		k8sClusterOnboardingCredential,
 		tagToLabelResource,
 	}
