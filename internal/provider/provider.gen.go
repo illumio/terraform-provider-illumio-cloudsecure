@@ -3908,13 +3908,13 @@ func ConvertDataValueToDeployment_AzureTagsProto(ctx context.Context, dataValue 
 
 type IpList_IpAddresses struct {
 	Exclusion types.Bool   `tfsdk:"exclusion"`
-	Ip        types.String `tfsdk:"ip"`
+	IpAddress types.String `tfsdk:"ip_address"`
 }
 
 func GetTypeAttrsForIpList_IpAddresses() map[string]attr.Type {
 	return map[string]attr.Type{
-		"exclusion": types.BoolType,
-		"ip":        types.StringType,
+		"exclusion":  types.BoolType,
+		"ip_address": types.StringType,
 	}
 }
 
@@ -3922,8 +3922,8 @@ func ConvertIpList_IpAddressesToObjectValueFromProto(proto *configv1.IpList_IpAd
 	return types.ObjectValueMust(
 		GetTypeAttrsForIpList_IpAddresses(),
 		map[string]attr.Value{
-			"exclusion": types.BoolValue(proto.Exclusion),
-			"ip":        types.StringValue(proto.Ip),
+			"exclusion":  types.BoolValue(proto.Exclusion),
+			"ip_address": types.StringValue(proto.IpAddress),
 		},
 	)
 }
@@ -3936,21 +3936,21 @@ func ConvertDataValueToIpList_IpAddressesProto(ctx context.Context, dataValue at
 	}
 	proto := &configv1.IpList_IpAddresses{}
 	proto.Exclusion = pv.Exclusion.ValueBool()
-	proto.Ip = pv.Ip.ValueString()
+	proto.IpAddress = pv.IpAddress.ValueString()
 	return proto, diags
 }
 
 type IpList_IpRanges struct {
-	Exclusion types.Bool   `tfsdk:"exclusion"`
-	FromIp    types.String `tfsdk:"from_ip"`
-	ToIp      types.String `tfsdk:"to_ip"`
+	Exclusion     types.Bool   `tfsdk:"exclusion"`
+	FromIpAddress types.String `tfsdk:"from_ip_address"`
+	ToIpAddress   types.String `tfsdk:"to_ip_address"`
 }
 
 func GetTypeAttrsForIpList_IpRanges() map[string]attr.Type {
 	return map[string]attr.Type{
-		"exclusion": types.BoolType,
-		"from_ip":   types.StringType,
-		"to_ip":     types.StringType,
+		"exclusion":       types.BoolType,
+		"from_ip_address": types.StringType,
+		"to_ip_address":   types.StringType,
 	}
 }
 
@@ -3958,9 +3958,9 @@ func ConvertIpList_IpRangesToObjectValueFromProto(proto *configv1.IpList_IpRange
 	return types.ObjectValueMust(
 		GetTypeAttrsForIpList_IpRanges(),
 		map[string]attr.Value{
-			"exclusion": types.BoolValue(proto.Exclusion),
-			"from_ip":   types.StringValue(proto.FromIp),
-			"to_ip":     types.StringValue(proto.ToIp),
+			"exclusion":       types.BoolValue(proto.Exclusion),
+			"from_ip_address": types.StringValue(proto.FromIpAddress),
+			"to_ip_address":   types.StringValue(proto.ToIpAddress),
 		},
 	)
 }
@@ -3973,8 +3973,8 @@ func ConvertDataValueToIpList_IpRangesProto(ctx context.Context, dataValue attr.
 	}
 	proto := &configv1.IpList_IpRanges{}
 	proto.Exclusion = pv.Exclusion.ValueBool()
-	proto.FromIp = pv.FromIp.ValueString()
-	proto.ToIp = pv.ToIp.ValueString()
+	proto.FromIpAddress = pv.FromIpAddress.ValueString()
+	proto.ToIpAddress = pv.ToIpAddress.ValueString()
 	return proto, diags
 }
 

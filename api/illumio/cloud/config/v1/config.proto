@@ -274,12 +274,12 @@ message DeleteDeploymentRequest {
 }
 message IpList_IpAddresses {
   bool exclusion = 1;
-  string ip = 2;
+  string ip_address = 3;
 }
 message IpList_IpRanges {
   bool exclusion = 2;
-  string from_ip = 3;
-  string to_ip = 4;
+  string from_ip_address = 5;
+  string to_ip_address = 6;
 }
 message CreateIpListRequest {
   optional string description = 2;

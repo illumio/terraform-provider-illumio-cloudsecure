@@ -35,7 +35,7 @@ Manages a list of IP address ranges to define CloudSecure policies.
 Optional:
 
 - `exclusion` (Boolean)
-- `ip` (String)
+- `ip_address` (String)
 
 
 <a id="nestedatt--ip_ranges"></a>
@@ -44,5 +44,5 @@ Optional:
 Optional:
 
 - `exclusion` (Boolean)
-- `from_ip` (String)
-- `to_ip` (String)
+- `from_ip_address` (String)
+- `to_ip_address` (String)
