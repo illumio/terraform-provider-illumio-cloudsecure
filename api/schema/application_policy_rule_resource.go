@@ -22,7 +22,7 @@ var Label = types.ObjectType{
 
 var Port = types.ObjectType{
 	AttrTypes: map[string]attr.Type{
-		"port_number": types.Int32Type,
+		"port_number": types.Int64Type,
 		"protocol":    types.StringType,
 	},
 }
@@ -38,6 +38,7 @@ var (
 				"action": StringResourceAttributeWithMode{
 					StringAttribute: resource_schema.StringAttribute{
 						Description: "Must be `\"Allow\"` or `\"Deny\"`.",
+						Required:    true,
 						Validators: []validator.String{
 							stringvalidator.OneOf("Allow", "Deny"),
 						},
