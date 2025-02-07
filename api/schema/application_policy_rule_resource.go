@@ -38,7 +38,7 @@ var (
 				"action": StringResourceAttributeWithMode{
 					StringAttribute: resource_schema.StringAttribute{
 						MarkdownDescription: "The action to take for flows matched by the application policy rule. Must be `\"Allow\"` or `\"Deny\"`.",
-						Required:    true,
+						Required:            true,
 						Validators: []validator.String{
 							stringvalidator.OneOf("Allow", "Deny"),
 						},
@@ -73,8 +73,8 @@ var (
 				},
 				"to_ports": resource_schema.ListAttribute{
 					MarkdownDescription: "List of transport protocol ports to allow/deny traffic to. The `protocol` for each port must be `\"TCP\"` or `\"UDP\"`.",
-					Optional:    true,
-					ElementType: Port,
+					Optional:            true,
+					ElementType:         Port,
 				},
 			},
 		},

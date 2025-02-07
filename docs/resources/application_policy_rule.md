@@ -17,16 +17,16 @@ Manages policy rules on Cloudsecure applications.
 
 ### Required
 
-- `action` (String) Must be `"Allow"` or `"Deny"`.
+- `action` (String) The action to take for flows matched by the application policy rule. Must be `"Allow"` or `"Deny"`.
 
 ### Optional
 
-- `description` (String) Description of the Application policy rule.
-- `from_ip_list_ids` (List of String) List of IDs of IP Lists for source.
-- `from_labels` (List of Object) List of Cloudsecure labels for source to be associated with this rule. (see [below for nested schema](#nestedatt--from_labels))
-- `to_ip_list_ids` (List of String) List of IDs of IP Lists for destination.
-- `to_labels` (List of Object) List of Cloudsecure labels for destination to be associated with this rule. (see [below for nested schema](#nestedatt--to_labels))
-- `to_ports` (List of Object) List of Ports to be associated with this rule. (see [below for nested schema](#nestedatt--to_ports))
+- `description` (String) Description of the application policy rule.
+- `from_ip_list_ids` (List of String) List of IDs of IP lists to allow/deny traffic from.
+- `from_labels` (List of Object) List of Cloudsecure labels of sources to allow/deny traffic from. (see [below for nested schema](#nestedatt--from_labels))
+- `to_ip_list_ids` (List of String) List of IDs of IP lists to allow/deny traffic to.
+- `to_labels` (List of Object) List of Cloudsecure labels of destinations to allow/deny traffic to. (see [below for nested schema](#nestedatt--to_labels))
+- `to_ports` (List of Object) List of transport protocol ports to allow/deny traffic to. The `protocol` for each port must be `"TCP"` or `"UDP"`. (see [below for nested schema](#nestedatt--to_ports))
 
 ### Read-Only
 
