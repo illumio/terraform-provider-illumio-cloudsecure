@@ -37,7 +37,7 @@ var (
 				IDFieldName: idAttribute,
 				"action": StringResourceAttributeWithMode{
 					StringAttribute: resource_schema.StringAttribute{
-						Description: "Must be `\"Allow\"` or `\"Deny\"`.",
+						MarkdownDescription: "The action to take for flows matched by the application policy rule. Must be `\"Allow\"` or `\"Deny\"`.",
 						Required:    true,
 						Validators: []validator.String{
 							stringvalidator.OneOf("Allow", "Deny"),
@@ -48,31 +48,31 @@ var (
 					},
 				},
 				"description": resource_schema.StringAttribute{
-					Description: "Description of the Application policy rule.",
+					Description: "Description of the application policy rule.",
 					Optional:    true,
 				},
 				"from_ip_list_ids": resource_schema.ListAttribute{
-					Description: "List of IDs of IP Lists for source.",
+					Description: "List of IDs of IP lists to allow/deny traffic from.",
 					Optional:    true,
 					ElementType: types.StringType,
 				},
 				"from_labels": resource_schema.ListAttribute{
-					Description: "List of Cloudsecure labels for source to be associated with this rule.",
+					Description: "List of Cloudsecure labels of sources to allow/deny traffic from.",
 					Optional:    true,
 					ElementType: Label,
 				},
 				"to_ip_list_ids": resource_schema.ListAttribute{
-					Description: "List of IDs of IP Lists for destination.",
+					Description: "List of IDs of IP lists to allow/deny traffic to.",
 					Optional:    true,
 					ElementType: types.StringType,
 				},
 				"to_labels": resource_schema.ListAttribute{
-					Description: "List of Cloudsecure labels for destination to be associated with this rule.",
+					Description: "List of Cloudsecure labels of destinations to allow/deny traffic to.",
 					Optional:    true,
 					ElementType: Label,
 				},
 				"to_ports": resource_schema.ListAttribute{
-					Description: "List of Ports to be associated with this rule.",
+					MarkdownDescription: "List of transport protocol ports to allow/deny traffic to. The `protocol` for each port must be `\"TCP\"` or `\"UDP\"`.",
 					Optional:    true,
 					ElementType: Port,
 				},
