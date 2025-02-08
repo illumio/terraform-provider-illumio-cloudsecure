@@ -20,6 +20,8 @@ import (
 type FakeConfigServer struct {
 	configv1.UnimplementedConfigServiceServer
 	Logger                              *zap.Logger
+	ApplicationPolicyRuleMap            map[string]*ApplicationPolicyRule
+	ApplicationPolicyRuleMutex          sync.RWMutex
 	AwsAccountMap                       map[string]*AwsAccount
 	AwsAccountMutex                     sync.RWMutex
 	AwsFlowLogsS3BucketMap              map[string]*AwsFlowLogsS3Bucket
@@ -44,6 +46,7 @@ var _ configv1.ConfigServiceServer = &FakeConfigServer{}
 func NewFakeConfigServer(logger *zap.Logger) configv1.ConfigServiceServer {
 	return &FakeConfigServer{
 		Logger:                            logger,
+		ApplicationPolicyRuleMap:          make(map[string]*ApplicationPolicyRule),
 		AwsAccountMap:                     make(map[string]*AwsAccount),
 		AwsFlowLogsS3BucketMap:            make(map[string]*AwsFlowLogsS3Bucket),
 		AzureFlowLogsStorageAccountMap:    make(map[string]*AzureFlowLogsStorageAccount),
@@ -53,6 +56,17 @@ func NewFakeConfigServer(logger *zap.Logger) configv1.ConfigServiceServer {
 		K8SClusterOnboardingCredentialMap: make(map[string]*K8SClusterOnboardingCredential),
 		TagToLabelMap:                     make(map[string]*TagToLabel),
 	}
+}
+
+type ApplicationPolicyRule struct {
+	Id            string
+	Action        string
+	Description   *string
+	FromIpListIds []string
+	FromLabels    []*configv1.ApplicationPolicyRule_FromLabels
+	ToIpListIds   []string
+	ToLabels      []*configv1.ApplicationPolicyRule_ToLabels
+	ToPorts       []*configv1.ApplicationPolicyRule_ToPorts
 }
 
 type AwsAccount struct {
@@ -130,6 +144,153 @@ type TagToLabel struct {
 	Name         string
 }
 
+func (s *FakeConfigServer) CreateApplicationPolicyRule(ctx context.Context, req *configv1.CreateApplicationPolicyRuleRequest) (*configv1.CreateApplicationPolicyRuleResponse, error) {
+	id := uuid.New().String()
+	model := &ApplicationPolicyRule{
+		Id:            id,
+		Description:   req.Description,
+		FromIpListIds: req.FromIpListIds,
+		FromLabels:    req.FromLabels,
+		ToIpListIds:   req.ToIpListIds,
+		ToLabels:      req.ToLabels,
+		ToPorts:       req.ToPorts,
+	}
+	resp := &configv1.CreateApplicationPolicyRuleResponse{
+		Id:            id,
+		Description:   model.Description,
+		FromIpListIds: model.FromIpListIds,
+		FromLabels:    model.FromLabels,
+		ToIpListIds:   model.ToIpListIds,
+		ToLabels:      model.ToLabels,
+		ToPorts:       model.ToPorts,
+	}
+	s.ApplicationPolicyRuleMutex.Lock()
+	s.ApplicationPolicyRuleMap[id] = model
+	s.ApplicationPolicyRuleMutex.Unlock()
+	s.Logger.Info("created resource",
+		zap.String("type", "application_policy_rule"),
+		zap.String("method", "CreateApplicationPolicyRule"),
+		zap.String("id", id),
+	)
+	return resp, nil
+}
+
+func (s *FakeConfigServer) ReadApplicationPolicyRule(ctx context.Context, req *configv1.ReadApplicationPolicyRuleRequest) (*configv1.ReadApplicationPolicyRuleResponse, error) {
+	id := req.Id
+	s.ApplicationPolicyRuleMutex.RLock()
+	model, found := s.ApplicationPolicyRuleMap[id]
+	if !found {
+		s.ApplicationPolicyRuleMutex.RUnlock()
+		s.Logger.Error("attempted to read resource with unknown id",
+			zap.String("type", "application_policy_rule"),
+			zap.String("method", "ReadApplicationPolicyRule"),
+			zap.String("id", id),
+		)
+		return nil, status.Errorf(codes.NotFound, "no application_policy_rule found with id %s", id)
+	}
+	resp := &configv1.ReadApplicationPolicyRuleResponse{
+		Id:            id,
+		Description:   model.Description,
+		FromIpListIds: model.FromIpListIds,
+		FromLabels:    model.FromLabels,
+		ToIpListIds:   model.ToIpListIds,
+		ToLabels:      model.ToLabels,
+		ToPorts:       model.ToPorts,
+	}
+	s.ApplicationPolicyRuleMutex.RUnlock()
+	s.Logger.Info("read resource",
+		zap.String("type", "application_policy_rule"),
+		zap.String("method", "ReadApplicationPolicyRule"),
+		zap.String("id", id),
+	)
+	return resp, nil
+}
+
+func (s *FakeConfigServer) UpdateApplicationPolicyRule(ctx context.Context, req *configv1.UpdateApplicationPolicyRuleRequest) (*configv1.UpdateApplicationPolicyRuleResponse, error) {
+	id := req.Id
+	s.ApplicationPolicyRuleMutex.Lock()
+	model, found := s.ApplicationPolicyRuleMap[id]
+	if !found {
+		s.ApplicationPolicyRuleMutex.Unlock()
+		s.Logger.Error("attempted to update resource with unknown id",
+			zap.String("type", "application_policy_rule"),
+			zap.String("method", "UpdateApplicationPolicyRule"),
+			zap.String("id", id),
+		)
+		return nil, status.Errorf(codes.NotFound, "no application_policy_rule found with id %s", id)
+	}
+	updateMask := req.UpdateMask
+	var updateMaskPaths []string
+	if updateMask != nil {
+		updateMaskPaths = updateMask.Paths
+	}
+	for _, path := range updateMaskPaths {
+		switch path {
+		case "description":
+			model.Description = req.Description
+		case "from_ip_list_ids":
+			model.FromIpListIds = req.FromIpListIds
+		case "from_labels":
+			model.FromLabels = req.FromLabels
+		case "to_ip_list_ids":
+			model.ToIpListIds = req.ToIpListIds
+		case "to_labels":
+			model.ToLabels = req.ToLabels
+		case "to_ports":
+			model.ToPorts = req.ToPorts
+		default:
+			s.AwsAccountMutex.Unlock()
+			s.Logger.Error("attempted to update resource using invalid update_mask path",
+				zap.String("type", "application_policy_rule"),
+				zap.String("method", "UpdateApplicationPolicyRule"),
+				zap.String("id", id),
+				zap.Strings("updateMaskPaths", updateMaskPaths),
+				zap.String("invalidUpdateMaskPath", path),
+			)
+			return nil, status.Errorf(codes.InvalidArgument, "invalid path in update_mask for application_policy_rule: %s", path)
+		}
+	}
+	resp := &configv1.UpdateApplicationPolicyRuleResponse{
+		Id:            id,
+		Description:   model.Description,
+		FromIpListIds: model.FromIpListIds,
+		FromLabels:    model.FromLabels,
+		ToIpListIds:   model.ToIpListIds,
+		ToLabels:      model.ToLabels,
+		ToPorts:       model.ToPorts,
+	}
+	s.ApplicationPolicyRuleMutex.Unlock()
+	s.Logger.Info("updated resource",
+		zap.String("type", "application_policy_rule"),
+		zap.String("method", "UpdateApplicationPolicyRule"),
+		zap.String("id", id),
+		zap.Strings("updateMaskPaths", updateMaskPaths),
+	)
+	return resp, nil
+}
+
+func (s *FakeConfigServer) DeleteApplicationPolicyRule(ctx context.Context, req *configv1.DeleteApplicationPolicyRuleRequest) (*emptypb.Empty, error) {
+	id := req.Id
+	s.ApplicationPolicyRuleMutex.Lock()
+	_, found := s.ApplicationPolicyRuleMap[id]
+	if !found {
+		s.ApplicationPolicyRuleMutex.Unlock()
+		s.Logger.Error("attempted to delete resource with unknown id",
+			zap.String("type", "application_policy_rule"),
+			zap.String("method", "DeleteApplicationPolicyRule"),
+			zap.String("id", id),
+		)
+		return nil, status.Errorf(codes.NotFound, "no application_policy_rule found with id %s", id)
+	}
+	delete(s.ApplicationPolicyRuleMap, id)
+	s.ApplicationPolicyRuleMutex.Unlock()
+	s.Logger.Info("deleted resource",
+		zap.String("type", "application_policy_rule"),
+		zap.String("method", "DeleteApplicationPolicyRule"),
+		zap.String("id", id),
+	)
+	return &emptypb.Empty{}, nil
+}
 func (s *FakeConfigServer) CreateAwsAccount(ctx context.Context, req *configv1.CreateAwsAccountRequest) (*configv1.CreateAwsAccountResponse, error) {
 	id := uuid.New().String()
 	model := &AwsAccount{

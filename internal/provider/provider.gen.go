@@ -38,6 +38,8 @@ func (p *Provider) Resources(ctx context.Context) []func() resource.Resource {
 	resp := make([]func() resource.Resource, 0, len(resources))
 	for _, r := range resources {
 		switch r.TypeName {
+		case "application_policy_rule":
+			resp = append(resp, func() resource.Resource { return NewApplicationPolicyRuleResource(r.Schema) })
 		case "aws_account":
 			resp = append(resp, func() resource.Resource { return NewAwsAccountResource(r.Schema) })
 		case "aws_flow_logs_s3_bucket":
@@ -63,6 +65,200 @@ func (p *Provider) DataSources(ctx context.Context) []func() datasource.DataSour
 	return []func() datasource.DataSource{
 		// TODO: Add support for data sources.
 	}
+}
+
+// ApplicationPolicyRuleResource implements the application_policy_rule resource.
+type ApplicationPolicyRuleResource struct {
+	// schema is the schema of the application_policy_rule resource.
+	schema resource_schema.Schema
+
+	// providerData is the provider configuration.
+	config ProviderData
+}
+
+var _ resource.ResourceWithConfigure = &ApplicationPolicyRuleResource{}
+var _ resource.ResourceWithImportState = &ApplicationPolicyRuleResource{}
+
+// NewApplicationPolicyRuleResource returns a new application_policy_rule resource.
+func NewApplicationPolicyRuleResource(schema resource_schema.Schema) resource.Resource {
+	return &ApplicationPolicyRuleResource{
+		schema: schema,
+	}
+}
+
+func (r *ApplicationPolicyRuleResource) Metadata(ctx context.Context, req resource.MetadataRequest, resp *resource.MetadataResponse) {
+	resp.TypeName = req.ProviderTypeName + "_application_policy_rule"
+}
+
+func (r *ApplicationPolicyRuleResource) Schema(ctx context.Context, req resource.SchemaRequest, resp *resource.SchemaResponse) {
+	resp.Schema = r.schema
+}
+
+func (r *ApplicationPolicyRuleResource) Configure(ctx context.Context, req resource.ConfigureRequest, resp *resource.ConfigureResponse) {
+	if req.ProviderData == nil {
+		return
+	}
+
+	providerData, ok := req.ProviderData.(ProviderData)
+	if !ok {
+		resp.Diagnostics.AddError(
+			"Unexpected Resource Configure Type",
+			fmt.Sprintf("Expected ProviderData, got: %T. Please report this issue to the provider developers.", req.ProviderData),
+		)
+
+		return
+	}
+
+	r.config = providerData
+}
+
+func (r *ApplicationPolicyRuleResource) Create(ctx context.Context, req resource.CreateRequest, resp *resource.CreateResponse) {
+	var data ApplicationPolicyRuleResourceModel
+
+	resp.Diagnostics.Append(req.Plan.Get(ctx, &data)...)
+	if resp.Diagnostics.HasError() {
+		return
+	}
+
+	protoReq, diagReq := NewCreateApplicationPolicyRuleRequest(ctx, &data)
+	resp.Diagnostics.Append(diagReq...)
+	if resp.Diagnostics.HasError() {
+		return
+	}
+
+	tflog.Trace(ctx, "creating a resource", map[string]any{"type": "application_policy_rule"})
+
+	rpcCtx, rpcCancel := context.WithTimeout(ctx, r.config.RequestTimeout())
+	protoResp, err := r.config.Client().CreateApplicationPolicyRule(rpcCtx, protoReq)
+	rpcCancel()
+	if err != nil {
+		resp.Diagnostics.AddError("Config API Error", fmt.Sprintf("Unable to create application_policy_rule, got error: %s", err))
+		return
+	}
+
+	CopyCreateApplicationPolicyRuleResponse(&data, protoResp)
+
+	tflog.Trace(ctx, "created a resource", map[string]any{"type": "application_policy_rule", "id": protoResp.Id})
+
+	resp.Diagnostics.Append(resp.State.Set(ctx, &data)...)
+}
+
+func (r *ApplicationPolicyRuleResource) Read(ctx context.Context, req resource.ReadRequest, resp *resource.ReadResponse) {
+	var data ApplicationPolicyRuleResourceModel
+
+	resp.Diagnostics.Append(req.State.Get(ctx, &data)...)
+	if resp.Diagnostics.HasError() {
+		return
+	}
+
+	protoReq, diagsReq := NewReadApplicationPolicyRuleRequest(ctx, &data)
+	resp.Diagnostics.Append(diagsReq...)
+	if resp.Diagnostics.HasError() {
+		return
+	}
+
+	tflog.Trace(ctx, "reading a resource", map[string]any{"type": "application_policy_rule", "id": protoReq.Id})
+
+	rpcCtx, rpcCancel := context.WithTimeout(ctx, r.config.RequestTimeout())
+	protoResp, err := r.config.Client().ReadApplicationPolicyRule(rpcCtx, protoReq)
+	rpcCancel()
+	if err != nil {
+		switch status.Code(err) {
+		case codes.NotFound:
+			resp.Diagnostics.AddWarning("Resource Not Found", fmt.Sprintf("No application_policy_rule found with id %s", protoReq.Id))
+			resp.State.RemoveResource(ctx)
+			return
+		default:
+			resp.Diagnostics.AddError("Config API Error", fmt.Sprintf("Unable to read application_policy_rule, got error: %s", err))
+			return
+		}
+	}
+
+	CopyReadApplicationPolicyRuleResponse(&data, protoResp)
+
+	tflog.Trace(ctx, "read a resource", map[string]any{"type": "application_policy_rule", "id": protoResp.Id})
+
+	resp.Diagnostics.Append(resp.State.Set(ctx, &data)...)
+}
+
+func (r *ApplicationPolicyRuleResource) Update(ctx context.Context, req resource.UpdateRequest, resp *resource.UpdateResponse) {
+	var beforeData ApplicationPolicyRuleResourceModel
+	var afterData ApplicationPolicyRuleResourceModel
+
+	resp.Diagnostics.Append(req.State.Get(ctx, &beforeData)...)
+	if resp.Diagnostics.HasError() {
+		return
+	}
+
+	resp.Diagnostics.Append(req.Plan.Get(ctx, &afterData)...)
+	if resp.Diagnostics.HasError() {
+		return
+	}
+
+	protoReq, diags := NewUpdateApplicationPolicyRuleRequest(ctx, &beforeData, &afterData)
+	resp.Diagnostics.Append(diags...)
+	if resp.Diagnostics.HasError() {
+		return
+	}
+
+	tflog.Trace(ctx, "updating a resource", map[string]any{"type": "application_policy_rule", "id": protoReq.Id, "update_mask": protoReq.UpdateMask.Paths})
+
+	rpcCtx, rpcCancel := context.WithTimeout(ctx, r.config.RequestTimeout())
+	protoResp, err := r.config.Client().UpdateApplicationPolicyRule(rpcCtx, protoReq)
+	rpcCancel()
+	if err != nil {
+		switch status.Code(err) {
+		case codes.NotFound:
+			resp.Diagnostics.AddError("Resource Not Found", fmt.Sprintf("No application_policy_rule found with id %s", protoReq.Id))
+			resp.State.RemoveResource(ctx)
+			return
+		default:
+			resp.Diagnostics.AddError("Config API Error", fmt.Sprintf("Unable to update application_policy_rule, got error: %s", err))
+			return
+		}
+	}
+
+	CopyUpdateApplicationPolicyRuleResponse(&afterData, protoResp)
+
+	tflog.Trace(ctx, "updated a resource", map[string]any{"type": "application_policy_rule", "id": protoResp.Id})
+
+	resp.Diagnostics.Append(resp.State.Set(ctx, &afterData)...)
+}
+
+func (r *ApplicationPolicyRuleResource) Delete(ctx context.Context, req resource.DeleteRequest, resp *resource.DeleteResponse) {
+	var data ApplicationPolicyRuleResourceModel
+
+	resp.Diagnostics.Append(req.State.Get(ctx, &data)...)
+	if resp.Diagnostics.HasError() {
+		return
+	}
+
+	protoReq, diags := NewDeleteApplicationPolicyRuleRequest(ctx, &data)
+	resp.Diagnostics.Append(diags...)
+	if resp.Diagnostics.HasError() {
+		return
+	}
+
+	tflog.Trace(ctx, "deleting a resource", map[string]any{"type": "application_policy_rule", "id": protoReq.Id})
+
+	rpcCtx, rpcCancel := context.WithTimeout(ctx, r.config.RequestTimeout())
+	_, err := r.config.Client().DeleteApplicationPolicyRule(rpcCtx, protoReq)
+	rpcCancel()
+	if err != nil {
+		switch status.Code(err) {
+		case codes.NotFound:
+			tflog.Trace(ctx, "resource was already deleted", map[string]any{"type": "application_policy_rule", "id": protoReq.Id})
+		default:
+			resp.Diagnostics.AddError("Config API Error", fmt.Sprintf("Unable to delete application_policy_rule, got error: %s", err))
+			return
+		}
+	}
+
+	tflog.Trace(ctx, "deleted a resource", map[string]any{"type": "application_policy_rule", "id": protoReq.Id})
+}
+
+func (r *ApplicationPolicyRuleResource) ImportState(ctx context.Context, req resource.ImportStateRequest, resp *resource.ImportStateResponse) {
+	// TODO
 }
 
 // AwsAccountResource implements the aws_account resource.
@@ -1617,6 +1813,17 @@ func (r *TagToLabelResource) ImportState(ctx context.Context, req resource.Impor
 	// TODO
 }
 
+type ApplicationPolicyRuleResourceModel struct {
+	Id            types.String `tfsdk:"id"`
+	Action        types.String `tfsdk:"action"`
+	Description   types.String `tfsdk:"description"`
+	FromIpListIds types.List   `tfsdk:"from_ip_list_ids"`
+	FromLabels    types.List   `tfsdk:"from_labels"`
+	ToIpListIds   types.List   `tfsdk:"to_ip_list_ids"`
+	ToLabels      types.List   `tfsdk:"to_labels"`
+	ToPorts       types.List   `tfsdk:"to_ports"`
+}
+
 type AwsAccountResourceModel struct {
 	Id             types.String `tfsdk:"id"`
 	AccountId      types.String `tfsdk:"account_id"`
@@ -1690,6 +1897,134 @@ type TagToLabelResourceModel struct {
 	Icon         types.Object `tfsdk:"icon"`
 	Key          types.String `tfsdk:"key"`
 	Name         types.String `tfsdk:"name"`
+}
+
+func NewCreateApplicationPolicyRuleRequest(ctx context.Context, data *ApplicationPolicyRuleResourceModel) (*configv1.CreateApplicationPolicyRuleRequest, diag.Diagnostics) {
+	var diags diag.Diagnostics
+	proto := &configv1.CreateApplicationPolicyRuleRequest{}
+	if !data.Description.IsUnknown() && !data.Description.IsNull() {
+		var dataValue attr.Value = data.Description
+		var protoValue string
+		protoValue = dataValue.(types.String).ValueString()
+		proto.Description = &protoValue
+	}
+	if !data.FromIpListIds.IsUnknown() && !data.FromIpListIds.IsNull() {
+		var dataValue attr.Value = data.FromIpListIds
+		var protoValue []string
+		{
+			dataElements := dataValue.(types.List).Elements()
+			protoValues := make([]string, 0, len(dataElements))
+			for _, dataElement := range dataElements {
+				var dataValue attr.Value = dataElement
+				var protoValue string
+				protoValue = dataValue.(types.String).ValueString()
+				protoValues = append(protoValues, protoValue)
+			}
+			protoValue = protoValues
+		}
+		proto.FromIpListIds = protoValue
+	}
+	if !data.FromLabels.IsUnknown() && !data.FromLabels.IsNull() {
+		var dataValue attr.Value = data.FromLabels
+		var protoValue []*configv1.ApplicationPolicyRule_FromLabels
+		{
+			dataElements := dataValue.(types.List).Elements()
+			protoValues := make([]*configv1.ApplicationPolicyRule_FromLabels, 0, len(dataElements))
+			for _, dataElement := range dataElements {
+				var dataValue attr.Value = dataElement
+				var protoValue *configv1.ApplicationPolicyRule_FromLabels
+				protoValue, newDiags := ConvertDataValueToApplicationPolicyRule_FromLabelsProto(ctx, dataValue)
+				diags.Append(newDiags...)
+				if diags.HasError() {
+					return nil, diags
+				}
+				protoValues = append(protoValues, protoValue)
+			}
+			protoValue = protoValues
+		}
+		proto.FromLabels = protoValue
+	}
+	if !data.ToIpListIds.IsUnknown() && !data.ToIpListIds.IsNull() {
+		var dataValue attr.Value = data.ToIpListIds
+		var protoValue []string
+		{
+			dataElements := dataValue.(types.List).Elements()
+			protoValues := make([]string, 0, len(dataElements))
+			for _, dataElement := range dataElements {
+				var dataValue attr.Value = dataElement
+				var protoValue string
+				protoValue = dataValue.(types.String).ValueString()
+				protoValues = append(protoValues, protoValue)
+			}
+			protoValue = protoValues
+		}
+		proto.ToIpListIds = protoValue
+	}
+	if !data.ToLabels.IsUnknown() && !data.ToLabels.IsNull() {
+		var dataValue attr.Value = data.ToLabels
+		var protoValue []*configv1.ApplicationPolicyRule_ToLabels
+		{
+			dataElements := dataValue.(types.List).Elements()
+			protoValues := make([]*configv1.ApplicationPolicyRule_ToLabels, 0, len(dataElements))
+			for _, dataElement := range dataElements {
+				var dataValue attr.Value = dataElement
+				var protoValue *configv1.ApplicationPolicyRule_ToLabels
+				protoValue, newDiags := ConvertDataValueToApplicationPolicyRule_ToLabelsProto(ctx, dataValue)
+				diags.Append(newDiags...)
+				if diags.HasError() {
+					return nil, diags
+				}
+				protoValues = append(protoValues, protoValue)
+			}
+			protoValue = protoValues
+		}
+		proto.ToLabels = protoValue
+	}
+	if !data.ToPorts.IsUnknown() && !data.ToPorts.IsNull() {
+		var dataValue attr.Value = data.ToPorts
+		var protoValue []*configv1.ApplicationPolicyRule_ToPorts
+		{
+			dataElements := dataValue.(types.List).Elements()
+			protoValues := make([]*configv1.ApplicationPolicyRule_ToPorts, 0, len(dataElements))
+			for _, dataElement := range dataElements {
+				var dataValue attr.Value = dataElement
+				var protoValue *configv1.ApplicationPolicyRule_ToPorts
+				protoValue, newDiags := ConvertDataValueToApplicationPolicyRule_ToPortsProto(ctx, dataValue)
+				diags.Append(newDiags...)
+				if diags.HasError() {
+					return nil, diags
+				}
+				protoValues = append(protoValues, protoValue)
+			}
+			protoValue = protoValues
+		}
+		proto.ToPorts = protoValue
+	}
+	return proto, diags
+}
+
+func NewReadApplicationPolicyRuleRequest(ctx context.Context, data *ApplicationPolicyRuleResourceModel) (*configv1.ReadApplicationPolicyRuleRequest, diag.Diagnostics) {
+	var diags diag.Diagnostics
+	proto := &configv1.ReadApplicationPolicyRuleRequest{}
+	if !data.Id.IsUnknown() && !data.Id.IsNull() {
+		var dataValue attr.Value = data.Id
+		var protoValue string
+		protoValue = dataValue.(types.String).ValueString()
+		proto.Id = protoValue
+	}
+	return proto, diags
+}
+
+func NewDeleteApplicationPolicyRuleRequest(ctx context.Context, data *ApplicationPolicyRuleResourceModel) (*configv1.DeleteApplicationPolicyRuleRequest, diag.Diagnostics) {
+	var diags diag.Diagnostics
+	proto := &configv1.DeleteApplicationPolicyRuleRequest{}
+	if !data.Id.IsUnknown() && !data.Id.IsNull() {
+		var dataValue attr.Value = data.Id
+		var protoValue string
+		protoValue = dataValue.(types.String).ValueString()
+		proto.Id = protoValue
+	}
+	return proto, diags
 }
 
 func NewCreateAwsAccountRequest(ctx context.Context, data *AwsAccountResourceModel) (*configv1.CreateAwsAccountRequest, diag.Diagnostics) {
@@ -2332,6 +2667,130 @@ func NewDeleteTagToLabelRequest(ctx context.Context, data *TagToLabelResourceMod
 	return proto, diags
 }
 
+func NewUpdateApplicationPolicyRuleRequest(ctx context.Context, beforeData, afterData *ApplicationPolicyRuleResourceModel) (*configv1.UpdateApplicationPolicyRuleRequest, diag.Diagnostics) {
+	var diags diag.Diagnostics
+	proto := &configv1.UpdateApplicationPolicyRuleRequest{}
+	proto.UpdateMask, _ = fieldmaskpb.New(proto)
+	proto.Id = beforeData.Id.ValueString()
+	if !afterData.Description.Equal(beforeData.Description) {
+		proto.UpdateMask.Append(proto, "description")
+		if !afterData.Description.IsUnknown() && !afterData.Description.IsNull() {
+			var dataValue attr.Value = afterData.Description
+			var protoValue string
+			protoValue = dataValue.(types.String).ValueString()
+			proto.Description = &protoValue
+		}
+	}
+	if !afterData.FromIpListIds.Equal(beforeData.FromIpListIds) {
+		proto.UpdateMask.Append(proto, "from_ip_list_ids")
+		if !afterData.FromIpListIds.IsUnknown() && !afterData.FromIpListIds.IsNull() {
+			var dataValue attr.Value = afterData.FromIpListIds
+			var protoValue []string
+			{
+				dataElements := dataValue.(types.List).Elements()
+				protoValues := make([]string, 0, len(dataElements))
+				for _, dataElement := range dataElements {
+					var dataValue attr.Value = dataElement
+					var protoValue string
+					protoValue = dataValue.(types.String).ValueString()
+					protoValues = append(protoValues, protoValue)
+				}
+				protoValue = protoValues
+			}
+			proto.FromIpListIds = protoValue
+		}
+	}
+	if !afterData.FromLabels.Equal(beforeData.FromLabels) {
+		proto.UpdateMask.Append(proto, "from_labels")
+		if !afterData.FromLabels.IsUnknown() && !afterData.FromLabels.IsNull() {
+			var dataValue attr.Value = afterData.FromLabels
+			var protoValue []*configv1.ApplicationPolicyRule_FromLabels
+			{
+				dataElements := dataValue.(types.List).Elements()
+				protoValues := make([]*configv1.ApplicationPolicyRule_FromLabels, 0, len(dataElements))
+				for _, dataElement := range dataElements {
+					var dataValue attr.Value = dataElement
+					var protoValue *configv1.ApplicationPolicyRule_FromLabels
+					protoValue, newDiags := ConvertDataValueToApplicationPolicyRule_FromLabelsProto(ctx, dataValue)
+					diags.Append(newDiags...)
+					if diags.HasError() {
+						return nil, diags
+					}
+					protoValues = append(protoValues, protoValue)
+				}
+				protoValue = protoValues
+			}
+			proto.FromLabels = protoValue
+		}
+	}
+	if !afterData.ToIpListIds.Equal(beforeData.ToIpListIds) {
+		proto.UpdateMask.Append(proto, "to_ip_list_ids")
+		if !afterData.ToIpListIds.IsUnknown() && !afterData.ToIpListIds.IsNull() {
+			var dataValue attr.Value = afterData.ToIpListIds
+			var protoValue []string
+			{
+				dataElements := dataValue.(types.List).Elements()
+				protoValues := make([]string, 0, len(dataElements))
+				for _, dataElement := range dataElements {
+					var dataValue attr.Value = dataElement
+					var protoValue string
+					protoValue = dataValue.(types.String).ValueString()
+					protoValues = append(protoValues, protoValue)
+				}
+				protoValue = protoValues
+			}
+			proto.ToIpListIds = protoValue
+		}
+	}
+	if !afterData.ToLabels.Equal(beforeData.ToLabels) {
+		proto.UpdateMask.Append(proto, "to_labels")
+		if !afterData.ToLabels.IsUnknown() && !afterData.ToLabels.IsNull() {
+			var dataValue attr.Value = afterData.ToLabels
+			var protoValue []*configv1.ApplicationPolicyRule_ToLabels
+			{
+				dataElements := dataValue.(types.List).Elements()
+				protoValues := make([]*configv1.ApplicationPolicyRule_ToLabels, 0, len(dataElements))
+				for _, dataElement := range dataElements {
+					var dataValue attr.Value = dataElement
+					var protoValue *configv1.ApplicationPolicyRule_ToLabels
+					protoValue, newDiags := ConvertDataValueToApplicationPolicyRule_ToLabelsProto(ctx, dataValue)
+					diags.Append(newDiags...)
+					if diags.HasError() {
+						return nil, diags
+					}
+					protoValues = append(protoValues, protoValue)
+				}
+				protoValue = protoValues
+			}
+			proto.ToLabels = protoValue
+		}
+	}
+	if !afterData.ToPorts.Equal(beforeData.ToPorts) {
+		proto.UpdateMask.Append(proto, "to_ports")
+		if !afterData.ToPorts.IsUnknown() && !afterData.ToPorts.IsNull() {
+			var dataValue attr.Value = afterData.ToPorts
+			var protoValue []*configv1.ApplicationPolicyRule_ToPorts
+			{
+				dataElements := dataValue.(types.List).Elements()
+				protoValues := make([]*configv1.ApplicationPolicyRule_ToPorts, 0, len(dataElements))
+				for _, dataElement := range dataElements {
+					var dataValue attr.Value = dataElement
+					var protoValue *configv1.ApplicationPolicyRule_ToPorts
+					protoValue, newDiags := ConvertDataValueToApplicationPolicyRule_ToPortsProto(ctx, dataValue)
+					diags.Append(newDiags...)
+					if diags.HasError() {
+						return nil, diags
+					}
+					protoValues = append(protoValues, protoValue)
+				}
+				protoValue = protoValues
+			}
+			proto.ToPorts = protoValue
+		}
+	}
+	return proto, diags
+}
+
 func NewUpdateAwsAccountRequest(ctx context.Context, beforeData, afterData *AwsAccountResourceModel) (*configv1.UpdateAwsAccountRequest, diag.Diagnostics) {
 	var diags diag.Diagnostics
 	proto := &configv1.UpdateAwsAccountRequest{}
@@ -2779,6 +3238,351 @@ func NewUpdateTagToLabelRequest(ctx context.Context, beforeData, afterData *TagT
 		}
 	}
 	return proto, diags
+}
+func CopyCreateApplicationPolicyRuleResponse(dst *ApplicationPolicyRuleResourceModel, src *configv1.CreateApplicationPolicyRuleResponse) {
+	dst.Id = types.StringValue(src.Id)
+	dst.Description = types.StringPointerValue(src.Description)
+	{
+		protoValue := src.FromIpListIds
+		var dataValue types.List
+		{
+			dataElementType := types.StringType
+			protoElements := protoValue
+			if protoElements == nil {
+				dataValue = types.ListNull(dataElementType)
+			} else {
+				dataValues := make([]attr.Value, 0, len(protoElements))
+				for _, protoElement := range protoElements {
+					var protoValue string = protoElement
+					var dataValue attr.Value
+					dataValue = types.StringValue(protoValue)
+					dataValues = append(dataValues, dataValue)
+				}
+				dataValue = types.ListValueMust(dataElementType, dataValues)
+			}
+		}
+		dst.FromIpListIds = dataValue
+	}
+	{
+		protoValue := src.FromLabels
+		var dataValue types.List
+		{
+			dataElementType := types.ObjectType{
+				AttrTypes: GetTypeAttrsForApplicationPolicyRule_FromLabels(),
+			}
+			protoElements := protoValue
+			if protoElements == nil {
+				dataValue = types.ListNull(dataElementType)
+			} else {
+				dataValues := make([]attr.Value, 0, len(protoElements))
+				for _, protoElement := range protoElements {
+					var protoValue *configv1.ApplicationPolicyRule_FromLabels = protoElement
+					var dataValue attr.Value
+					dataValue = ConvertApplicationPolicyRule_FromLabelsToObjectValueFromProto(protoValue)
+					dataValues = append(dataValues, dataValue)
+				}
+				dataValue = types.ListValueMust(dataElementType, dataValues)
+			}
+		}
+		dst.FromLabels = dataValue
+	}
+	{
+		protoValue := src.ToIpListIds
+		var dataValue types.List
+		{
+			dataElementType := types.StringType
+			protoElements := protoValue
+			if protoElements == nil {
+				dataValue = types.ListNull(dataElementType)
+			} else {
+				dataValues := make([]attr.Value, 0, len(protoElements))
+				for _, protoElement := range protoElements {
+					var protoValue string = protoElement
+					var dataValue attr.Value
+					dataValue = types.StringValue(protoValue)
+					dataValues = append(dataValues, dataValue)
+				}
+				dataValue = types.ListValueMust(dataElementType, dataValues)
+			}
+		}
+		dst.ToIpListIds = dataValue
+	}
+	{
+		protoValue := src.ToLabels
+		var dataValue types.List
+		{
+			dataElementType := types.ObjectType{
+				AttrTypes: GetTypeAttrsForApplicationPolicyRule_ToLabels(),
+			}
+			protoElements := protoValue
+			if protoElements == nil {
+				dataValue = types.ListNull(dataElementType)
+			} else {
+				dataValues := make([]attr.Value, 0, len(protoElements))
+				for _, protoElement := range protoElements {
+					var protoValue *configv1.ApplicationPolicyRule_ToLabels = protoElement
+					var dataValue attr.Value
+					dataValue = ConvertApplicationPolicyRule_ToLabelsToObjectValueFromProto(protoValue)
+					dataValues = append(dataValues, dataValue)
+				}
+				dataValue = types.ListValueMust(dataElementType, dataValues)
+			}
+		}
+		dst.ToLabels = dataValue
+	}
+	{
+		protoValue := src.ToPorts
+		var dataValue types.List
+		{
+			dataElementType := types.ObjectType{
+				AttrTypes: GetTypeAttrsForApplicationPolicyRule_ToPorts(),
+			}
+			protoElements := protoValue
+			if protoElements == nil {
+				dataValue = types.ListNull(dataElementType)
+			} else {
+				dataValues := make([]attr.Value, 0, len(protoElements))
+				for _, protoElement := range protoElements {
+					var protoValue *configv1.ApplicationPolicyRule_ToPorts = protoElement
+					var dataValue attr.Value
+					dataValue = ConvertApplicationPolicyRule_ToPortsToObjectValueFromProto(protoValue)
+					dataValues = append(dataValues, dataValue)
+				}
+				dataValue = types.ListValueMust(dataElementType, dataValues)
+			}
+		}
+		dst.ToPorts = dataValue
+	}
+}
+func CopyReadApplicationPolicyRuleResponse(dst *ApplicationPolicyRuleResourceModel, src *configv1.ReadApplicationPolicyRuleResponse) {
+	dst.Id = types.StringValue(src.Id)
+	dst.Description = types.StringPointerValue(src.Description)
+	{
+		protoValue := src.FromIpListIds
+		var dataValue types.List
+		{
+			dataElementType := types.StringType
+			protoElements := protoValue
+			if protoElements == nil {
+				dataValue = types.ListNull(dataElementType)
+			} else {
+				dataValues := make([]attr.Value, 0, len(protoElements))
+				for _, protoElement := range protoElements {
+					var protoValue string = protoElement
+					var dataValue attr.Value
+					dataValue = types.StringValue(protoValue)
+					dataValues = append(dataValues, dataValue)
+				}
+				dataValue = types.ListValueMust(dataElementType, dataValues)
+			}
+		}
+		dst.FromIpListIds = dataValue
+	}
+	{
+		protoValue := src.FromLabels
+		var dataValue types.List
+		{
+			dataElementType := types.ObjectType{
+				AttrTypes: GetTypeAttrsForApplicationPolicyRule_FromLabels(),
+			}
+			protoElements := protoValue
+			if protoElements == nil {
+				dataValue = types.ListNull(dataElementType)
+			} else {
+				dataValues := make([]attr.Value, 0, len(protoElements))
+				for _, protoElement := range protoElements {
+					var protoValue *configv1.ApplicationPolicyRule_FromLabels = protoElement
+					var dataValue attr.Value
+					dataValue = ConvertApplicationPolicyRule_FromLabelsToObjectValueFromProto(protoValue)
+					dataValues = append(dataValues, dataValue)
+				}
+				dataValue = types.ListValueMust(dataElementType, dataValues)
+			}
+		}
+		dst.FromLabels = dataValue
+	}
+	{
+		protoValue := src.ToIpListIds
+		var dataValue types.List
+		{
+			dataElementType := types.StringType
+			protoElements := protoValue
+			if protoElements == nil {
+				dataValue = types.ListNull(dataElementType)
+			} else {
+				dataValues := make([]attr.Value, 0, len(protoElements))
+				for _, protoElement := range protoElements {
+					var protoValue string = protoElement
+					var dataValue attr.Value
+					dataValue = types.StringValue(protoValue)
+					dataValues = append(dataValues, dataValue)
+				}
+				dataValue = types.ListValueMust(dataElementType, dataValues)
+			}
+		}
+		dst.ToIpListIds = dataValue
+	}
+	{
+		protoValue := src.ToLabels
+		var dataValue types.List
+		{
+			dataElementType := types.ObjectType{
+				AttrTypes: GetTypeAttrsForApplicationPolicyRule_ToLabels(),
+			}
+			protoElements := protoValue
+			if protoElements == nil {
+				dataValue = types.ListNull(dataElementType)
+			} else {
+				dataValues := make([]attr.Value, 0, len(protoElements))
+				for _, protoElement := range protoElements {
+					var protoValue *configv1.ApplicationPolicyRule_ToLabels = protoElement
+					var dataValue attr.Value
+					dataValue = ConvertApplicationPolicyRule_ToLabelsToObjectValueFromProto(protoValue)
+					dataValues = append(dataValues, dataValue)
+				}
+				dataValue = types.ListValueMust(dataElementType, dataValues)
+			}
+		}
+		dst.ToLabels = dataValue
+	}
+	{
+		protoValue := src.ToPorts
+		var dataValue types.List
+		{
+			dataElementType := types.ObjectType{
+				AttrTypes: GetTypeAttrsForApplicationPolicyRule_ToPorts(),
+			}
+			protoElements := protoValue
+			if protoElements == nil {
+				dataValue = types.ListNull(dataElementType)
+			} else {
+				dataValues := make([]attr.Value, 0, len(protoElements))
+				for _, protoElement := range protoElements {
+					var protoValue *configv1.ApplicationPolicyRule_ToPorts = protoElement
+					var dataValue attr.Value
+					dataValue = ConvertApplicationPolicyRule_ToPortsToObjectValueFromProto(protoValue)
+					dataValues = append(dataValues, dataValue)
+				}
+				dataValue = types.ListValueMust(dataElementType, dataValues)
+			}
+		}
+		dst.ToPorts = dataValue
+	}
+}
+func CopyUpdateApplicationPolicyRuleResponse(dst *ApplicationPolicyRuleResourceModel, src *configv1.UpdateApplicationPolicyRuleResponse) {
+	dst.Id = types.StringValue(src.Id)
+	dst.Description = types.StringPointerValue(src.Description)
+	{
+		protoValue := src.FromIpListIds
+		var dataValue types.List
+		{
+			dataElementType := types.StringType
+			protoElements := protoValue
+			if protoElements == nil {
+				dataValue = types.ListNull(dataElementType)
+			} else {
+				dataValues := make([]attr.Value, 0, len(protoElements))
+				for _, protoElement := range protoElements {
+					var protoValue string = protoElement
+					var dataValue attr.Value
+					dataValue = types.StringValue(protoValue)
+					dataValues = append(dataValues, dataValue)
+				}
+				dataValue = types.ListValueMust(dataElementType, dataValues)
+			}
+		}
+		dst.FromIpListIds = dataValue
+	}
+	{
+		protoValue := src.FromLabels
+		var dataValue types.List
+		{
+			dataElementType := types.ObjectType{
+				AttrTypes: GetTypeAttrsForApplicationPolicyRule_FromLabels(),
+			}
+			protoElements := protoValue
+			if protoElements == nil {
+				dataValue = types.ListNull(dataElementType)
+			} else {
+				dataValues := make([]attr.Value, 0, len(protoElements))
+				for _, protoElement := range protoElements {
+					var protoValue *configv1.ApplicationPolicyRule_FromLabels = protoElement
+					var dataValue attr.Value
+					dataValue = ConvertApplicationPolicyRule_FromLabelsToObjectValueFromProto(protoValue)
+					dataValues = append(dataValues, dataValue)
+				}
+				dataValue = types.ListValueMust(dataElementType, dataValues)
+			}
+		}
+		dst.FromLabels = dataValue
+	}
+	{
+		protoValue := src.ToIpListIds
+		var dataValue types.List
+		{
+			dataElementType := types.StringType
+			protoElements := protoValue
+			if protoElements == nil {
+				dataValue = types.ListNull(dataElementType)
+			} else {
+				dataValues := make([]attr.Value, 0, len(protoElements))
+				for _, protoElement := range protoElements {
+					var protoValue string = protoElement
+					var dataValue attr.Value
+					dataValue = types.StringValue(protoValue)
+					dataValues = append(dataValues, dataValue)
+				}
+				dataValue = types.ListValueMust(dataElementType, dataValues)
+			}
+		}
+		dst.ToIpListIds = dataValue
+	}
+	{
+		protoValue := src.ToLabels
+		var dataValue types.List
+		{
+			dataElementType := types.ObjectType{
+				AttrTypes: GetTypeAttrsForApplicationPolicyRule_ToLabels(),
+			}
+			protoElements := protoValue
+			if protoElements == nil {
+				dataValue = types.ListNull(dataElementType)
+			} else {
+				dataValues := make([]attr.Value, 0, len(protoElements))
+				for _, protoElement := range protoElements {
+					var protoValue *configv1.ApplicationPolicyRule_ToLabels = protoElement
+					var dataValue attr.Value
+					dataValue = ConvertApplicationPolicyRule_ToLabelsToObjectValueFromProto(protoValue)
+					dataValues = append(dataValues, dataValue)
+				}
+				dataValue = types.ListValueMust(dataElementType, dataValues)
+			}
+		}
+		dst.ToLabels = dataValue
+	}
+	{
+		protoValue := src.ToPorts
+		var dataValue types.List
+		{
+			dataElementType := types.ObjectType{
+				AttrTypes: GetTypeAttrsForApplicationPolicyRule_ToPorts(),
+			}
+			protoElements := protoValue
+			if protoElements == nil {
+				dataValue = types.ListNull(dataElementType)
+			} else {
+				dataValues := make([]attr.Value, 0, len(protoElements))
+				for _, protoElement := range protoElements {
+					var protoValue *configv1.ApplicationPolicyRule_ToPorts = protoElement
+					var dataValue attr.Value
+					dataValue = ConvertApplicationPolicyRule_ToPortsToObjectValueFromProto(protoValue)
+					dataValues = append(dataValues, dataValue)
+				}
+				dataValue = types.ListValueMust(dataElementType, dataValues)
+			}
+		}
+		dst.ToPorts = dataValue
+	}
 }
 func CopyCreateAwsAccountResponse(dst *AwsAccountResourceModel, src *configv1.CreateAwsAccountResponse) {
 	dst.Id = types.StringValue(src.Id)
@@ -3836,6 +4640,108 @@ func CopyUpdateTagToLabelResponse(dst *TagToLabelResourceModel, src *configv1.Up
 	dst.Icon = ConvertTagToLabel_IconToObjectValueFromProto(src.Icon)
 	dst.Key = types.StringValue(src.Key)
 	dst.Name = types.StringValue(src.Name)
+}
+
+type ApplicationPolicyRule_FromLabels struct {
+	Key   types.String `tfsdk:"key"`
+	Value types.String `tfsdk:"value"`
+}
+
+func GetTypeAttrsForApplicationPolicyRule_FromLabels() map[string]attr.Type {
+	return map[string]attr.Type{
+		"key":   types.StringType,
+		"value": types.StringType,
+	}
+}
+
+func ConvertApplicationPolicyRule_FromLabelsToObjectValueFromProto(proto *configv1.ApplicationPolicyRule_FromLabels) basetypes.ObjectValue {
+	return types.ObjectValueMust(
+		GetTypeAttrsForApplicationPolicyRule_FromLabels(),
+		map[string]attr.Value{
+			"key":   types.StringValue(proto.Key),
+			"value": types.StringValue(proto.Value),
+		},
+	)
+}
+
+func ConvertDataValueToApplicationPolicyRule_FromLabelsProto(ctx context.Context, dataValue attr.Value) (*configv1.ApplicationPolicyRule_FromLabels, diag.Diagnostics) {
+	pv := ApplicationPolicyRule_FromLabels{}
+	diags := tfsdk.ValueAs(ctx, dataValue, &pv)
+	if diags.HasError() {
+		return nil, diags
+	}
+	proto := &configv1.ApplicationPolicyRule_FromLabels{}
+	proto.Key = pv.Key.ValueString()
+	proto.Value = pv.Value.ValueString()
+	return proto, diags
+}
+
+type ApplicationPolicyRule_ToLabels struct {
+	Key   types.String `tfsdk:"key"`
+	Value types.String `tfsdk:"value"`
+}
+
+func GetTypeAttrsForApplicationPolicyRule_ToLabels() map[string]attr.Type {
+	return map[string]attr.Type{
+		"key":   types.StringType,
+		"value": types.StringType,
+	}
+}
+
+func ConvertApplicationPolicyRule_ToLabelsToObjectValueFromProto(proto *configv1.ApplicationPolicyRule_ToLabels) basetypes.ObjectValue {
+	return types.ObjectValueMust(
+		GetTypeAttrsForApplicationPolicyRule_ToLabels(),
+		map[string]attr.Value{
+			"key":   types.StringValue(proto.Key),
+			"value": types.StringValue(proto.Value),
+		},
+	)
+}
+
+func ConvertDataValueToApplicationPolicyRule_ToLabelsProto(ctx context.Context, dataValue attr.Value) (*configv1.ApplicationPolicyRule_ToLabels, diag.Diagnostics) {
+	pv := ApplicationPolicyRule_ToLabels{}
+	diags := tfsdk.ValueAs(ctx, dataValue, &pv)
+	if diags.HasError() {
+		return nil, diags
+	}
+	proto := &configv1.ApplicationPolicyRule_ToLabels{}
+	proto.Key = pv.Key.ValueString()
+	proto.Value = pv.Value.ValueString()
+	return proto, diags
+}
+
+type ApplicationPolicyRule_ToPorts struct {
+	PortNumber types.Int64  `tfsdk:"port_number"`
+	Protocol   types.String `tfsdk:"protocol"`
+}
+
+func GetTypeAttrsForApplicationPolicyRule_ToPorts() map[string]attr.Type {
+	return map[string]attr.Type{
+		"port_number": types.Int64Type,
+		"protocol":    types.StringType,
+	}
+}
+
+func ConvertApplicationPolicyRule_ToPortsToObjectValueFromProto(proto *configv1.ApplicationPolicyRule_ToPorts) basetypes.ObjectValue {
+	return types.ObjectValueMust(
+		GetTypeAttrsForApplicationPolicyRule_ToPorts(),
+		map[string]attr.Value{
+			"port_number": types.Int64Value(proto.PortNumber),
+			"protocol":    types.StringValue(proto.Protocol),
+		},
+	)
+}
+
+func ConvertDataValueToApplicationPolicyRule_ToPortsProto(ctx context.Context, dataValue attr.Value) (*configv1.ApplicationPolicyRule_ToPorts, diag.Diagnostics) {
+	pv := ApplicationPolicyRule_ToPorts{}
+	diags := tfsdk.ValueAs(ctx, dataValue, &pv)
+	if diags.HasError() {
+		return nil, diags
+	}
+	proto := &configv1.ApplicationPolicyRule_ToPorts{}
+	proto.PortNumber = pv.PortNumber.ValueInt64()
+	proto.Protocol = pv.Protocol.ValueString()
+	return proto, diags
 }
 
 type Deployment_AwsTags struct {

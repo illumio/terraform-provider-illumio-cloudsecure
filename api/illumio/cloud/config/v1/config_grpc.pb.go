@@ -23,6 +23,10 @@ import (
 const _ = grpc.SupportPackageIsVersion9
 
 const (
+	ConfigService_CreateApplicationPolicyRule_FullMethodName          = "/illumio.cloud.config.v1.ConfigService/CreateApplicationPolicyRule"
+	ConfigService_ReadApplicationPolicyRule_FullMethodName            = "/illumio.cloud.config.v1.ConfigService/ReadApplicationPolicyRule"
+	ConfigService_UpdateApplicationPolicyRule_FullMethodName          = "/illumio.cloud.config.v1.ConfigService/UpdateApplicationPolicyRule"
+	ConfigService_DeleteApplicationPolicyRule_FullMethodName          = "/illumio.cloud.config.v1.ConfigService/DeleteApplicationPolicyRule"
 	ConfigService_CreateAwsAccount_FullMethodName                     = "/illumio.cloud.config.v1.ConfigService/CreateAwsAccount"
 	ConfigService_ReadAwsAccount_FullMethodName                       = "/illumio.cloud.config.v1.ConfigService/ReadAwsAccount"
 	ConfigService_UpdateAwsAccount_FullMethodName                     = "/illumio.cloud.config.v1.ConfigService/UpdateAwsAccount"
@@ -61,6 +65,10 @@ const (
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type ConfigServiceClient interface {
+	CreateApplicationPolicyRule(ctx context.Context, in *CreateApplicationPolicyRuleRequest, opts ...grpc.CallOption) (*CreateApplicationPolicyRuleResponse, error)
+	ReadApplicationPolicyRule(ctx context.Context, in *ReadApplicationPolicyRuleRequest, opts ...grpc.CallOption) (*ReadApplicationPolicyRuleResponse, error)
+	UpdateApplicationPolicyRule(ctx context.Context, in *UpdateApplicationPolicyRuleRequest, opts ...grpc.CallOption) (*UpdateApplicationPolicyRuleResponse, error)
+	DeleteApplicationPolicyRule(ctx context.Context, in *DeleteApplicationPolicyRuleRequest, opts ...grpc.CallOption) (*emptypb.Empty, error)
 	CreateAwsAccount(ctx context.Context, in *CreateAwsAccountRequest, opts ...grpc.CallOption) (*CreateAwsAccountResponse, error)
 	ReadAwsAccount(ctx context.Context, in *ReadAwsAccountRequest, opts ...grpc.CallOption) (*ReadAwsAccountResponse, error)
 	UpdateAwsAccount(ctx context.Context, in *UpdateAwsAccountRequest, opts ...grpc.CallOption) (*UpdateAwsAccountResponse, error)
@@ -101,6 +109,46 @@ type configServiceClient struct {
 
 func NewConfigServiceClient(cc grpc.ClientConnInterface) ConfigServiceClient {
 	return &configServiceClient{cc}
+}
+
+func (c *configServiceClient) CreateApplicationPolicyRule(ctx context.Context, in *CreateApplicationPolicyRuleRequest, opts ...grpc.CallOption) (*CreateApplicationPolicyRuleResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(CreateApplicationPolicyRuleResponse)
+	err := c.cc.Invoke(ctx, ConfigService_CreateApplicationPolicyRule_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *configServiceClient) ReadApplicationPolicyRule(ctx context.Context, in *ReadApplicationPolicyRuleRequest, opts ...grpc.CallOption) (*ReadApplicationPolicyRuleResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(ReadApplicationPolicyRuleResponse)
+	err := c.cc.Invoke(ctx, ConfigService_ReadApplicationPolicyRule_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *configServiceClient) UpdateApplicationPolicyRule(ctx context.Context, in *UpdateApplicationPolicyRuleRequest, opts ...grpc.CallOption) (*UpdateApplicationPolicyRuleResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(UpdateApplicationPolicyRuleResponse)
+	err := c.cc.Invoke(ctx, ConfigService_UpdateApplicationPolicyRule_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *configServiceClient) DeleteApplicationPolicyRule(ctx context.Context, in *DeleteApplicationPolicyRuleRequest, opts ...grpc.CallOption) (*emptypb.Empty, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(emptypb.Empty)
+	err := c.cc.Invoke(ctx, ConfigService_DeleteApplicationPolicyRule_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
 }
 
 func (c *configServiceClient) CreateAwsAccount(ctx context.Context, in *CreateAwsAccountRequest, opts ...grpc.CallOption) (*CreateAwsAccountResponse, error) {
@@ -427,6 +475,10 @@ func (c *configServiceClient) DeleteTagToLabel(ctx context.Context, in *DeleteTa
 // All implementations must embed UnimplementedConfigServiceServer
 // for forward compatibility.
 type ConfigServiceServer interface {
+	CreateApplicationPolicyRule(context.Context, *CreateApplicationPolicyRuleRequest) (*CreateApplicationPolicyRuleResponse, error)
+	ReadApplicationPolicyRule(context.Context, *ReadApplicationPolicyRuleRequest) (*ReadApplicationPolicyRuleResponse, error)
+	UpdateApplicationPolicyRule(context.Context, *UpdateApplicationPolicyRuleRequest) (*UpdateApplicationPolicyRuleResponse, error)
+	DeleteApplicationPolicyRule(context.Context, *DeleteApplicationPolicyRuleRequest) (*emptypb.Empty, error)
 	CreateAwsAccount(context.Context, *CreateAwsAccountRequest) (*CreateAwsAccountResponse, error)
 	ReadAwsAccount(context.Context, *ReadAwsAccountRequest) (*ReadAwsAccountResponse, error)
 	UpdateAwsAccount(context.Context, *UpdateAwsAccountRequest) (*UpdateAwsAccountResponse, error)
@@ -469,6 +521,18 @@ type ConfigServiceServer interface {
 // pointer dereference when methods are called.
 type UnimplementedConfigServiceServer struct{}
 
+func (UnimplementedConfigServiceServer) CreateApplicationPolicyRule(context.Context, *CreateApplicationPolicyRuleRequest) (*CreateApplicationPolicyRuleResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method CreateApplicationPolicyRule not implemented")
+}
+func (UnimplementedConfigServiceServer) ReadApplicationPolicyRule(context.Context, *ReadApplicationPolicyRuleRequest) (*ReadApplicationPolicyRuleResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method ReadApplicationPolicyRule not implemented")
+}
+func (UnimplementedConfigServiceServer) UpdateApplicationPolicyRule(context.Context, *UpdateApplicationPolicyRuleRequest) (*UpdateApplicationPolicyRuleResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method UpdateApplicationPolicyRule not implemented")
+}
+func (UnimplementedConfigServiceServer) DeleteApplicationPolicyRule(context.Context, *DeleteApplicationPolicyRuleRequest) (*emptypb.Empty, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method DeleteApplicationPolicyRule not implemented")
+}
 func (UnimplementedConfigServiceServer) CreateAwsAccount(context.Context, *CreateAwsAccountRequest) (*CreateAwsAccountResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method CreateAwsAccount not implemented")
 }
@@ -584,6 +648,78 @@ func RegisterConfigServiceServer(s grpc.ServiceRegistrar, srv ConfigServiceServe
 		t.testEmbeddedByValue()
 	}
 	s.RegisterService(&ConfigService_ServiceDesc, srv)
+}
+
+func _ConfigService_CreateApplicationPolicyRule_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(CreateApplicationPolicyRuleRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(ConfigServiceServer).CreateApplicationPolicyRule(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: ConfigService_CreateApplicationPolicyRule_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(ConfigServiceServer).CreateApplicationPolicyRule(ctx, req.(*CreateApplicationPolicyRuleRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _ConfigService_ReadApplicationPolicyRule_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(ReadApplicationPolicyRuleRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(ConfigServiceServer).ReadApplicationPolicyRule(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: ConfigService_ReadApplicationPolicyRule_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(ConfigServiceServer).ReadApplicationPolicyRule(ctx, req.(*ReadApplicationPolicyRuleRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _ConfigService_UpdateApplicationPolicyRule_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(UpdateApplicationPolicyRuleRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(ConfigServiceServer).UpdateApplicationPolicyRule(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: ConfigService_UpdateApplicationPolicyRule_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(ConfigServiceServer).UpdateApplicationPolicyRule(ctx, req.(*UpdateApplicationPolicyRuleRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _ConfigService_DeleteApplicationPolicyRule_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(DeleteApplicationPolicyRuleRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(ConfigServiceServer).DeleteApplicationPolicyRule(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: ConfigService_DeleteApplicationPolicyRule_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(ConfigServiceServer).DeleteApplicationPolicyRule(ctx, req.(*DeleteApplicationPolicyRuleRequest))
+	}
+	return interceptor(ctx, in, info, handler)
 }
 
 func _ConfigService_CreateAwsAccount_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
@@ -1169,6 +1305,22 @@ var ConfigService_ServiceDesc = grpc.ServiceDesc{
 	ServiceName: "illumio.cloud.config.v1.ConfigService",
 	HandlerType: (*ConfigServiceServer)(nil),
 	Methods: []grpc.MethodDesc{
+		{
+			MethodName: "CreateApplicationPolicyRule",
+			Handler:    _ConfigService_CreateApplicationPolicyRule_Handler,
+		},
+		{
+			MethodName: "ReadApplicationPolicyRule",
+			Handler:    _ConfigService_ReadApplicationPolicyRule_Handler,
+		},
+		{
+			MethodName: "UpdateApplicationPolicyRule",
+			Handler:    _ConfigService_UpdateApplicationPolicyRule_Handler,
+		},
+		{
+			MethodName: "DeleteApplicationPolicyRule",
+			Handler:    _ConfigService_DeleteApplicationPolicyRule_Handler,
+		},
 		{
 			MethodName: "CreateAwsAccount",
 			Handler:    _ConfigService_CreateAwsAccount_Handler,
