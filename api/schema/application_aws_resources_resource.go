@@ -17,7 +17,7 @@ var (
 			Attributes: map[string]resource_schema.Attribute{
 				IDFieldName: idAttribute,
 				"application_id": resource_schema.StringAttribute{
-					Description: "ID of the application.",
+					Description: "ID of the CloudSecure application.",
 					Required:    true,
 				},
 				"account_id": resource_schema.StringAttribute{
@@ -29,107 +29,107 @@ var (
 					Description: "ARNs of AWS resources to associate with the Cloudsecure application",
 					Optional:    true,
 				},
-				"aws_directconnect_connections": resource_schema.SetAttribute{
+				"aws_dx_connection_ids": resource_schema.SetAttribute{
 					ElementType: types.StringType,
 					Description: "IDs of AWS direct connect connections to associate with Cloudsecure Application.",
 					Optional:    true,
 				},
-				"aws_directconnect_virtualinterfaces": resource_schema.SetAttribute{
+				"aws_dx_virtual_interface_ids": resource_schema.SetAttribute{
 					ElementType: types.StringType,
-					Description: "IDs of AWS direct connect virtual interfaces to associate with Cloudsecure Application.",
+					Description: "IDs of AWS direct connect virtual interfaces (public/private/hosted/transit) to associate with Cloudsecure Application.",
 					Optional:    true,
 				},
-				"aws_ec2_customergateways": resource_schema.SetAttribute{
+				"aws_customer_gateway_ids": resource_schema.SetAttribute{
 					ElementType: types.StringType,
-					Description: "IDs of AWS ec2 customer gateways to associate with Cloudsecure Application.",
+					Description: "IDs of AWS customer gateways to associate with Cloudsecure Application.",
 					Optional:    true,
 				},
-				"aws_ec2_egressonlyinternetgateways": resource_schema.SetAttribute{
+				"aws_egress_only_internet_gateway_ids": resource_schema.SetAttribute{
 					ElementType: types.StringType,
-					Description: "IDs of AWS ec2 egress only internet gateways to associate with Cloudsecure Application.",
+					Description: "IDs of AWS egress only internet gateways to associate with Cloudsecure Application.",
 					Optional:    true,
 				},
-				"aws_ec2_eips": resource_schema.SetAttribute{
+				"aws_eip_ids": resource_schema.SetAttribute{
 					ElementType: types.StringType,
 					Description: "IDs of AWS ec2 eips to associate with Cloudsecure Application.",
 					Optional:    true,
 				},
-				"aws_ec2_flowlogs": resource_schema.SetAttribute{
+				"aws_flow_log_ids": resource_schema.SetAttribute{
 					ElementType: types.StringType,
 					Description: "IDs of AWS ec2 flow logs to associate with Cloudsecure Application.",
 					Optional:    true,
 				},
-				"aws_ec2_instances": resource_schema.SetAttribute{
+				"aws_instances_ids": resource_schema.SetAttribute{
 					ElementType: types.StringType,
 					Description: "IDs of AWS ec2 instances to associate with Cloudsecure Application.",
 					Optional:    true,
 				},
-				"aws_ec2_instanceconnectendpoints": resource_schema.SetAttribute{
+				"aws_ec2_instance_connect_endpoint_ids": resource_schema.SetAttribute{
 					ElementType: types.StringType,
 					Description: "IDs of AWS ec2 instance connect endpoints to associate with Cloudsecure Application.",
 					Optional:    true,
 				},
-				"aws_ec2_internetgateways": resource_schema.SetAttribute{
+				"aws_internet_gateway_ids": resource_schema.SetAttribute{
 					ElementType: types.StringType,
 					Description: "IDs of AWS ec2 internet gateways to associate with Cloudsecure Application.",
 					Optional:    true,
 				},
-				"aws_ec2_natgateways": resource_schema.SetAttribute{
+				"aws_nat_gateway_ids": resource_schema.SetAttribute{
 					ElementType: types.StringType,
 					Description: "IDs of AWS ec2 nat gateways to associate with Cloudsecure Application.",
 					Optional:    true,
 				},
-				"aws_ec2_networkacls": resource_schema.SetAttribute{
+				"aws_network_acl": resource_schema.SetAttribute{
 					ElementType: types.StringType,
 					Description: "IDs of AWS ec2 network acls to associate with Cloudsecure Application.",
 					Optional:    true,
 				},
-				"aws_ec2_networkinterfaces": resource_schema.SetAttribute{
+				"aws_network_interface_ids": resource_schema.SetAttribute{
 					ElementType: types.StringType,
 					Description: "IDs of AWS ec2 network interfaces to associate with Cloudsecure Application.",
 					Optional:    true,
 				},
-				"aws_ec2_routetabless": resource_schema.SetAttribute{
+				"aws_route_table_ids": resource_schema.SetAttribute{
 					ElementType: types.StringType,
 					Description: "IDs of AWS ec2 route tabless to associate with Cloudsecure Application.",
 					Optional:    true,
 				},
-				"aws_ec2_securitygroups": resource_schema.SetAttribute{
+				"aws_security_group_ids": resource_schema.SetAttribute{
 					ElementType: types.StringType,
 					Description: "IDs of AWS ec2 security groups to associate with Cloudsecure Application.",
 					Optional:    true,
 				},
-				"aws_ec2_securitygrouprules": resource_schema.SetAttribute{
+				"aws_security_group_rule_ids": resource_schema.SetAttribute{
 					ElementType: types.StringType,
 					Description: "IDs of AWS ec2 security group rules to associate with Cloudsecure Application.",
 					Optional:    true,
 				},
-				"aws_ec2_spotfleetrequests": resource_schema.SetAttribute{
+				"aws_spot_fleet_request_ids": resource_schema.SetAttribute{
 					ElementType: types.StringType,
 					Description: "IDs of AWS ec2 spot fleet requests to associate with Cloudsecure Application.",
 					Optional:    true,
 				},
-				"aws_ec2_spotinstancerequests": resource_schema.SetAttribute{
+				"aws_spot_instance_request_ids": resource_schema.SetAttribute{
 					ElementType: types.StringType,
 					Description: "IDs of AWS ec2 spot instance requests to associate with Cloudsecure Application.",
 					Optional:    true,
 				},
-				"aws_ec2_subnets": resource_schema.SetAttribute{
+				"aws_subnet_ids": resource_schema.SetAttribute{
 					ElementType: types.StringType,
 					Description: "IDs of AWS ec2 subnets to associate with Cloudsecure Application.",
 					Optional:    true,
 				},
-				"aws_ec2_transitgateways": resource_schema.SetAttribute{
+				"aws_ec2_transit_gateway_ids": resource_schema.SetAttribute{
 					ElementType: types.StringType,
 					Description: "IDs of AWS ec2 transit gateways to associate with Cloudsecure Application.",
 					Optional:    true,
 				},
-				"aws_ec2_transitgatewayattachments": resource_schema.SetAttribute{
+				"aws_ec2_transit_gateway_attachments": resource_schema.SetAttribute{
 					ElementType: types.StringType,
-					Description: "IDs of AWS ec2 transit gateway attachments to associate with Cloudsecure Application.",
+					Description: "IDs of AWS transit gateway attachments (peering/vpc) to associate with Cloudsecure Application.",
 					Optional:    true,
 				},
-				"aws_ec2_transitgatewaymulticastdomains": resource_schema.SetAttribute{
+				"aws_ec2_transit_gateway_multicast_domain_ids": resource_schema.SetAttribute{
 					ElementType: types.StringType,
 					Description: "IDs of AWS ec2 transit gateway multicast domains to associate with Cloudsecure Application.",
 					Optional:    true,
