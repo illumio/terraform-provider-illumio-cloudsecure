@@ -198,8 +198,6 @@ message ReadApplicationAwsResourcesResponse {
 }
 message UpdateApplicationAwsResourcesRequest {
   string id = 1;
-  string account_id = 2;
-  string application_id = 3;
   repeated string aws_arns = 4;
   repeated string aws_customer_gateway_ids = 5;
   repeated string aws_dx_connection_ids = 6;

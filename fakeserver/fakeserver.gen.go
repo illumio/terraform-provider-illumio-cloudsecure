@@ -485,10 +485,6 @@ func (s *FakeConfigServer) UpdateApplicationAwsResources(ctx context.Context, re
 	}
 	for _, path := range updateMaskPaths {
 		switch path {
-		case "account_id":
-			model.AccountId = req.AccountId
-		case "application_id":
-			model.ApplicationId = req.ApplicationId
 		case "aws_arns":
 			model.AwsArns = req.AwsArns
 		case "aws_customer_gateway_ids":

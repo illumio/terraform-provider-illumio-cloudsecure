@@ -5,6 +5,8 @@ package schema
 
 import (
 	resource_schema "github.com/hashicorp/terraform-plugin-framework/resource/schema"
+	"github.com/hashicorp/terraform-plugin-framework/resource/schema/planmodifier"
+	"github.com/hashicorp/terraform-plugin-framework/resource/schema/stringplanmodifier"
 	"github.com/hashicorp/terraform-plugin-framework/types"
 )
 
@@ -16,13 +18,29 @@ var (
 			Description: "Manages application resources in CloudSecure.",
 			Attributes: map[string]resource_schema.Attribute{
 				IDFieldName: idAttribute,
-				"application_id": resource_schema.StringAttribute{
-					Description: "ID of the CloudSecure application.",
-					Required:    true,
+				"application_id": StringResourceAttributeWithMode{
+					StringAttribute: resource_schema.StringAttribute{
+						Description: "ID of the CloudSecure application.",
+						Required:    true,
+						PlanModifiers: []planmodifier.String{
+							stringplanmodifier.RequiresReplace(),
+						},
+					},
+					attributeWithMode: attributeWithMode{
+						Mode: ImmutableAttributeMode,
+					},
 				},
-				"account_id": resource_schema.StringAttribute{
-					Description: "ID of the AWS account.",
-					Required:    true,
+				"account_id": StringResourceAttributeWithMode{
+					StringAttribute: resource_schema.StringAttribute{
+						Description: "ID of the AWS account.",
+						Required:    true,
+						PlanModifiers: []planmodifier.String{
+							stringplanmodifier.RequiresReplace(),
+						},
+					},
+					attributeWithMode: attributeWithMode{
+						Mode: ImmutableAttributeMode,
+					},
 				},
 				"aws_arns": resource_schema.SetAttribute{
 					ElementType: types.StringType,

@@ -3733,24 +3733,6 @@ func NewUpdateApplicationAwsResourcesRequest(ctx context.Context, beforeData, af
 	proto := &configv1.UpdateApplicationAwsResourcesRequest{}
 	proto.UpdateMask, _ = fieldmaskpb.New(proto)
 	proto.Id = beforeData.Id.ValueString()
-	if !afterData.AccountId.Equal(beforeData.AccountId) {
-		proto.UpdateMask.Append(proto, "account_id")
-		if !afterData.AccountId.IsUnknown() && !afterData.AccountId.IsNull() {
-			var dataValue attr.Value = afterData.AccountId
-			var protoValue string
-			protoValue = dataValue.(types.String).ValueString()
-			proto.AccountId = protoValue
-		}
-	}
-	if !afterData.ApplicationId.Equal(beforeData.ApplicationId) {
-		proto.UpdateMask.Append(proto, "application_id")
-		if !afterData.ApplicationId.IsUnknown() && !afterData.ApplicationId.IsNull() {
-			var dataValue attr.Value = afterData.ApplicationId
-			var protoValue string
-			protoValue = dataValue.(types.String).ValueString()
-			proto.ApplicationId = protoValue
-		}
-	}
 	if !afterData.AwsArns.Equal(beforeData.AwsArns) {
 		proto.UpdateMask.Append(proto, "aws_arns")
 		if !afterData.AwsArns.IsUnknown() && !afterData.AwsArns.IsNull() {
