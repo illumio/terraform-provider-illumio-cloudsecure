@@ -31,6 +31,10 @@ const (
 	ConfigService_ReadApplicationAwsResources_FullMethodName          = "/illumio.cloud.config.v1.ConfigService/ReadApplicationAwsResources"
 	ConfigService_UpdateApplicationAwsResources_FullMethodName        = "/illumio.cloud.config.v1.ConfigService/UpdateApplicationAwsResources"
 	ConfigService_DeleteApplicationAwsResources_FullMethodName        = "/illumio.cloud.config.v1.ConfigService/DeleteApplicationAwsResources"
+	ConfigService_CreateApplicationAzureResources_FullMethodName      = "/illumio.cloud.config.v1.ConfigService/CreateApplicationAzureResources"
+	ConfigService_ReadApplicationAzureResources_FullMethodName        = "/illumio.cloud.config.v1.ConfigService/ReadApplicationAzureResources"
+	ConfigService_UpdateApplicationAzureResources_FullMethodName      = "/illumio.cloud.config.v1.ConfigService/UpdateApplicationAzureResources"
+	ConfigService_DeleteApplicationAzureResources_FullMethodName      = "/illumio.cloud.config.v1.ConfigService/DeleteApplicationAzureResources"
 	ConfigService_CreateApplicationPolicyRule_FullMethodName          = "/illumio.cloud.config.v1.ConfigService/CreateApplicationPolicyRule"
 	ConfigService_ReadApplicationPolicyRule_FullMethodName            = "/illumio.cloud.config.v1.ConfigService/ReadApplicationPolicyRule"
 	ConfigService_UpdateApplicationPolicyRule_FullMethodName          = "/illumio.cloud.config.v1.ConfigService/UpdateApplicationPolicyRule"
@@ -81,6 +85,10 @@ type ConfigServiceClient interface {
 	ReadApplicationAwsResources(ctx context.Context, in *ReadApplicationAwsResourcesRequest, opts ...grpc.CallOption) (*ReadApplicationAwsResourcesResponse, error)
 	UpdateApplicationAwsResources(ctx context.Context, in *UpdateApplicationAwsResourcesRequest, opts ...grpc.CallOption) (*UpdateApplicationAwsResourcesResponse, error)
 	DeleteApplicationAwsResources(ctx context.Context, in *DeleteApplicationAwsResourcesRequest, opts ...grpc.CallOption) (*emptypb.Empty, error)
+	CreateApplicationAzureResources(ctx context.Context, in *CreateApplicationAzureResourcesRequest, opts ...grpc.CallOption) (*CreateApplicationAzureResourcesResponse, error)
+	ReadApplicationAzureResources(ctx context.Context, in *ReadApplicationAzureResourcesRequest, opts ...grpc.CallOption) (*ReadApplicationAzureResourcesResponse, error)
+	UpdateApplicationAzureResources(ctx context.Context, in *UpdateApplicationAzureResourcesRequest, opts ...grpc.CallOption) (*UpdateApplicationAzureResourcesResponse, error)
+	DeleteApplicationAzureResources(ctx context.Context, in *DeleteApplicationAzureResourcesRequest, opts ...grpc.CallOption) (*emptypb.Empty, error)
 	CreateApplicationPolicyRule(ctx context.Context, in *CreateApplicationPolicyRuleRequest, opts ...grpc.CallOption) (*CreateApplicationPolicyRuleResponse, error)
 	ReadApplicationPolicyRule(ctx context.Context, in *ReadApplicationPolicyRuleRequest, opts ...grpc.CallOption) (*ReadApplicationPolicyRuleResponse, error)
 	UpdateApplicationPolicyRule(ctx context.Context, in *UpdateApplicationPolicyRuleRequest, opts ...grpc.CallOption) (*UpdateApplicationPolicyRuleResponse, error)
@@ -201,6 +209,46 @@ func (c *configServiceClient) DeleteApplicationAwsResources(ctx context.Context,
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
 	out := new(emptypb.Empty)
 	err := c.cc.Invoke(ctx, ConfigService_DeleteApplicationAwsResources_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *configServiceClient) CreateApplicationAzureResources(ctx context.Context, in *CreateApplicationAzureResourcesRequest, opts ...grpc.CallOption) (*CreateApplicationAzureResourcesResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(CreateApplicationAzureResourcesResponse)
+	err := c.cc.Invoke(ctx, ConfigService_CreateApplicationAzureResources_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *configServiceClient) ReadApplicationAzureResources(ctx context.Context, in *ReadApplicationAzureResourcesRequest, opts ...grpc.CallOption) (*ReadApplicationAzureResourcesResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(ReadApplicationAzureResourcesResponse)
+	err := c.cc.Invoke(ctx, ConfigService_ReadApplicationAzureResources_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *configServiceClient) UpdateApplicationAzureResources(ctx context.Context, in *UpdateApplicationAzureResourcesRequest, opts ...grpc.CallOption) (*UpdateApplicationAzureResourcesResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(UpdateApplicationAzureResourcesResponse)
+	err := c.cc.Invoke(ctx, ConfigService_UpdateApplicationAzureResources_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *configServiceClient) DeleteApplicationAzureResources(ctx context.Context, in *DeleteApplicationAzureResourcesRequest, opts ...grpc.CallOption) (*emptypb.Empty, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(emptypb.Empty)
+	err := c.cc.Invoke(ctx, ConfigService_DeleteApplicationAzureResources_FullMethodName, in, out, cOpts...)
 	if err != nil {
 		return nil, err
 	}
@@ -579,6 +627,10 @@ type ConfigServiceServer interface {
 	ReadApplicationAwsResources(context.Context, *ReadApplicationAwsResourcesRequest) (*ReadApplicationAwsResourcesResponse, error)
 	UpdateApplicationAwsResources(context.Context, *UpdateApplicationAwsResourcesRequest) (*UpdateApplicationAwsResourcesResponse, error)
 	DeleteApplicationAwsResources(context.Context, *DeleteApplicationAwsResourcesRequest) (*emptypb.Empty, error)
+	CreateApplicationAzureResources(context.Context, *CreateApplicationAzureResourcesRequest) (*CreateApplicationAzureResourcesResponse, error)
+	ReadApplicationAzureResources(context.Context, *ReadApplicationAzureResourcesRequest) (*ReadApplicationAzureResourcesResponse, error)
+	UpdateApplicationAzureResources(context.Context, *UpdateApplicationAzureResourcesRequest) (*UpdateApplicationAzureResourcesResponse, error)
+	DeleteApplicationAzureResources(context.Context, *DeleteApplicationAzureResourcesRequest) (*emptypb.Empty, error)
 	CreateApplicationPolicyRule(context.Context, *CreateApplicationPolicyRuleRequest) (*CreateApplicationPolicyRuleResponse, error)
 	ReadApplicationPolicyRule(context.Context, *ReadApplicationPolicyRuleRequest) (*ReadApplicationPolicyRuleResponse, error)
 	UpdateApplicationPolicyRule(context.Context, *UpdateApplicationPolicyRuleRequest) (*UpdateApplicationPolicyRuleResponse, error)
@@ -648,6 +700,18 @@ func (UnimplementedConfigServiceServer) UpdateApplicationAwsResources(context.Co
 }
 func (UnimplementedConfigServiceServer) DeleteApplicationAwsResources(context.Context, *DeleteApplicationAwsResourcesRequest) (*emptypb.Empty, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method DeleteApplicationAwsResources not implemented")
+}
+func (UnimplementedConfigServiceServer) CreateApplicationAzureResources(context.Context, *CreateApplicationAzureResourcesRequest) (*CreateApplicationAzureResourcesResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method CreateApplicationAzureResources not implemented")
+}
+func (UnimplementedConfigServiceServer) ReadApplicationAzureResources(context.Context, *ReadApplicationAzureResourcesRequest) (*ReadApplicationAzureResourcesResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method ReadApplicationAzureResources not implemented")
+}
+func (UnimplementedConfigServiceServer) UpdateApplicationAzureResources(context.Context, *UpdateApplicationAzureResourcesRequest) (*UpdateApplicationAzureResourcesResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method UpdateApplicationAzureResources not implemented")
+}
+func (UnimplementedConfigServiceServer) DeleteApplicationAzureResources(context.Context, *DeleteApplicationAzureResourcesRequest) (*emptypb.Empty, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method DeleteApplicationAzureResources not implemented")
 }
 func (UnimplementedConfigServiceServer) CreateApplicationPolicyRule(context.Context, *CreateApplicationPolicyRuleRequest) (*CreateApplicationPolicyRuleResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method CreateApplicationPolicyRule not implemented")
@@ -918,6 +982,78 @@ func _ConfigService_DeleteApplicationAwsResources_Handler(srv interface{}, ctx c
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(ConfigServiceServer).DeleteApplicationAwsResources(ctx, req.(*DeleteApplicationAwsResourcesRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _ConfigService_CreateApplicationAzureResources_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(CreateApplicationAzureResourcesRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(ConfigServiceServer).CreateApplicationAzureResources(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: ConfigService_CreateApplicationAzureResources_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(ConfigServiceServer).CreateApplicationAzureResources(ctx, req.(*CreateApplicationAzureResourcesRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _ConfigService_ReadApplicationAzureResources_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(ReadApplicationAzureResourcesRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(ConfigServiceServer).ReadApplicationAzureResources(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: ConfigService_ReadApplicationAzureResources_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(ConfigServiceServer).ReadApplicationAzureResources(ctx, req.(*ReadApplicationAzureResourcesRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _ConfigService_UpdateApplicationAzureResources_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(UpdateApplicationAzureResourcesRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(ConfigServiceServer).UpdateApplicationAzureResources(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: ConfigService_UpdateApplicationAzureResources_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(ConfigServiceServer).UpdateApplicationAzureResources(ctx, req.(*UpdateApplicationAzureResourcesRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _ConfigService_DeleteApplicationAzureResources_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(DeleteApplicationAzureResourcesRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(ConfigServiceServer).DeleteApplicationAzureResources(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: ConfigService_DeleteApplicationAzureResources_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(ConfigServiceServer).DeleteApplicationAzureResources(ctx, req.(*DeleteApplicationAzureResourcesRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -1608,6 +1744,22 @@ var ConfigService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "DeleteApplicationAwsResources",
 			Handler:    _ConfigService_DeleteApplicationAwsResources_Handler,
+		},
+		{
+			MethodName: "CreateApplicationAzureResources",
+			Handler:    _ConfigService_CreateApplicationAzureResources_Handler,
+		},
+		{
+			MethodName: "ReadApplicationAzureResources",
+			Handler:    _ConfigService_ReadApplicationAzureResources_Handler,
+		},
+		{
+			MethodName: "UpdateApplicationAzureResources",
+			Handler:    _ConfigService_UpdateApplicationAzureResources_Handler,
+		},
+		{
+			MethodName: "DeleteApplicationAzureResources",
+			Handler:    _ConfigService_DeleteApplicationAzureResources_Handler,
 		},
 		{
 			MethodName: "CreateApplicationPolicyRule",

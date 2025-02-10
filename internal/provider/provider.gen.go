@@ -42,6 +42,8 @@ func (p *Provider) Resources(ctx context.Context) []func() resource.Resource {
 			resp = append(resp, func() resource.Resource { return NewApplicationResource(r.Schema) })
 		case "application_aws_resources":
 			resp = append(resp, func() resource.Resource { return NewApplicationAwsResourcesResource(r.Schema) })
+		case "application_azure_resources":
+			resp = append(resp, func() resource.Resource { return NewApplicationAzureResourcesResource(r.Schema) })
 		case "application_policy_rule":
 			resp = append(resp, func() resource.Resource { return NewApplicationPolicyRuleResource(r.Schema) })
 		case "aws_account":
@@ -456,6 +458,200 @@ func (r *ApplicationAwsResourcesResource) Delete(ctx context.Context, req resour
 }
 
 func (r *ApplicationAwsResourcesResource) ImportState(ctx context.Context, req resource.ImportStateRequest, resp *resource.ImportStateResponse) {
+	// TODO
+}
+
+// ApplicationAzureResourcesResource implements the application_azure_resources resource.
+type ApplicationAzureResourcesResource struct {
+	// schema is the schema of the application_azure_resources resource.
+	schema resource_schema.Schema
+
+	// providerData is the provider configuration.
+	config ProviderData
+}
+
+var _ resource.ResourceWithConfigure = &ApplicationAzureResourcesResource{}
+var _ resource.ResourceWithImportState = &ApplicationAzureResourcesResource{}
+
+// NewApplicationAzureResourcesResource returns a new application_azure_resources resource.
+func NewApplicationAzureResourcesResource(schema resource_schema.Schema) resource.Resource {
+	return &ApplicationAzureResourcesResource{
+		schema: schema,
+	}
+}
+
+func (r *ApplicationAzureResourcesResource) Metadata(ctx context.Context, req resource.MetadataRequest, resp *resource.MetadataResponse) {
+	resp.TypeName = req.ProviderTypeName + "_application_azure_resources"
+}
+
+func (r *ApplicationAzureResourcesResource) Schema(ctx context.Context, req resource.SchemaRequest, resp *resource.SchemaResponse) {
+	resp.Schema = r.schema
+}
+
+func (r *ApplicationAzureResourcesResource) Configure(ctx context.Context, req resource.ConfigureRequest, resp *resource.ConfigureResponse) {
+	if req.ProviderData == nil {
+		return
+	}
+
+	providerData, ok := req.ProviderData.(ProviderData)
+	if !ok {
+		resp.Diagnostics.AddError(
+			"Unexpected Resource Configure Type",
+			fmt.Sprintf("Expected ProviderData, got: %T. Please report this issue to the provider developers.", req.ProviderData),
+		)
+
+		return
+	}
+
+	r.config = providerData
+}
+
+func (r *ApplicationAzureResourcesResource) Create(ctx context.Context, req resource.CreateRequest, resp *resource.CreateResponse) {
+	var data ApplicationAzureResourcesResourceModel
+
+	resp.Diagnostics.Append(req.Plan.Get(ctx, &data)...)
+	if resp.Diagnostics.HasError() {
+		return
+	}
+
+	protoReq, diagReq := NewCreateApplicationAzureResourcesRequest(ctx, &data)
+	resp.Diagnostics.Append(diagReq...)
+	if resp.Diagnostics.HasError() {
+		return
+	}
+
+	tflog.Trace(ctx, "creating a resource", map[string]any{"type": "application_azure_resources"})
+
+	rpcCtx, rpcCancel := context.WithTimeout(ctx, r.config.RequestTimeout())
+	protoResp, err := r.config.Client().CreateApplicationAzureResources(rpcCtx, protoReq)
+	rpcCancel()
+	if err != nil {
+		resp.Diagnostics.AddError("Config API Error", fmt.Sprintf("Unable to create application_azure_resources, got error: %s", err))
+		return
+	}
+
+	CopyCreateApplicationAzureResourcesResponse(&data, protoResp)
+
+	tflog.Trace(ctx, "created a resource", map[string]any{"type": "application_azure_resources", "id": protoResp.Id})
+
+	resp.Diagnostics.Append(resp.State.Set(ctx, &data)...)
+}
+
+func (r *ApplicationAzureResourcesResource) Read(ctx context.Context, req resource.ReadRequest, resp *resource.ReadResponse) {
+	var data ApplicationAzureResourcesResourceModel
+
+	resp.Diagnostics.Append(req.State.Get(ctx, &data)...)
+	if resp.Diagnostics.HasError() {
+		return
+	}
+
+	protoReq, diagsReq := NewReadApplicationAzureResourcesRequest(ctx, &data)
+	resp.Diagnostics.Append(diagsReq...)
+	if resp.Diagnostics.HasError() {
+		return
+	}
+
+	tflog.Trace(ctx, "reading a resource", map[string]any{"type": "application_azure_resources", "id": protoReq.Id})
+
+	rpcCtx, rpcCancel := context.WithTimeout(ctx, r.config.RequestTimeout())
+	protoResp, err := r.config.Client().ReadApplicationAzureResources(rpcCtx, protoReq)
+	rpcCancel()
+	if err != nil {
+		switch status.Code(err) {
+		case codes.NotFound:
+			resp.Diagnostics.AddWarning("Resource Not Found", fmt.Sprintf("No application_azure_resources found with id %s", protoReq.Id))
+			resp.State.RemoveResource(ctx)
+			return
+		default:
+			resp.Diagnostics.AddError("Config API Error", fmt.Sprintf("Unable to read application_azure_resources, got error: %s", err))
+			return
+		}
+	}
+
+	CopyReadApplicationAzureResourcesResponse(&data, protoResp)
+
+	tflog.Trace(ctx, "read a resource", map[string]any{"type": "application_azure_resources", "id": protoResp.Id})
+
+	resp.Diagnostics.Append(resp.State.Set(ctx, &data)...)
+}
+
+func (r *ApplicationAzureResourcesResource) Update(ctx context.Context, req resource.UpdateRequest, resp *resource.UpdateResponse) {
+	var beforeData ApplicationAzureResourcesResourceModel
+	var afterData ApplicationAzureResourcesResourceModel
+
+	resp.Diagnostics.Append(req.State.Get(ctx, &beforeData)...)
+	if resp.Diagnostics.HasError() {
+		return
+	}
+
+	resp.Diagnostics.Append(req.Plan.Get(ctx, &afterData)...)
+	if resp.Diagnostics.HasError() {
+		return
+	}
+
+	protoReq, diags := NewUpdateApplicationAzureResourcesRequest(ctx, &beforeData, &afterData)
+	resp.Diagnostics.Append(diags...)
+	if resp.Diagnostics.HasError() {
+		return
+	}
+
+	tflog.Trace(ctx, "updating a resource", map[string]any{"type": "application_azure_resources", "id": protoReq.Id, "update_mask": protoReq.UpdateMask.Paths})
+
+	rpcCtx, rpcCancel := context.WithTimeout(ctx, r.config.RequestTimeout())
+	protoResp, err := r.config.Client().UpdateApplicationAzureResources(rpcCtx, protoReq)
+	rpcCancel()
+	if err != nil {
+		switch status.Code(err) {
+		case codes.NotFound:
+			resp.Diagnostics.AddError("Resource Not Found", fmt.Sprintf("No application_azure_resources found with id %s", protoReq.Id))
+			resp.State.RemoveResource(ctx)
+			return
+		default:
+			resp.Diagnostics.AddError("Config API Error", fmt.Sprintf("Unable to update application_azure_resources, got error: %s", err))
+			return
+		}
+	}
+
+	CopyUpdateApplicationAzureResourcesResponse(&afterData, protoResp)
+
+	tflog.Trace(ctx, "updated a resource", map[string]any{"type": "application_azure_resources", "id": protoResp.Id})
+
+	resp.Diagnostics.Append(resp.State.Set(ctx, &afterData)...)
+}
+
+func (r *ApplicationAzureResourcesResource) Delete(ctx context.Context, req resource.DeleteRequest, resp *resource.DeleteResponse) {
+	var data ApplicationAzureResourcesResourceModel
+
+	resp.Diagnostics.Append(req.State.Get(ctx, &data)...)
+	if resp.Diagnostics.HasError() {
+		return
+	}
+
+	protoReq, diags := NewDeleteApplicationAzureResourcesRequest(ctx, &data)
+	resp.Diagnostics.Append(diags...)
+	if resp.Diagnostics.HasError() {
+		return
+	}
+
+	tflog.Trace(ctx, "deleting a resource", map[string]any{"type": "application_azure_resources", "id": protoReq.Id})
+
+	rpcCtx, rpcCancel := context.WithTimeout(ctx, r.config.RequestTimeout())
+	_, err := r.config.Client().DeleteApplicationAzureResources(rpcCtx, protoReq)
+	rpcCancel()
+	if err != nil {
+		switch status.Code(err) {
+		case codes.NotFound:
+			tflog.Trace(ctx, "resource was already deleted", map[string]any{"type": "application_azure_resources", "id": protoReq.Id})
+		default:
+			resp.Diagnostics.AddError("Config API Error", fmt.Sprintf("Unable to delete application_azure_resources, got error: %s", err))
+			return
+		}
+	}
+
+	tflog.Trace(ctx, "deleted a resource", map[string]any{"type": "application_azure_resources", "id": protoReq.Id})
+}
+
+func (r *ApplicationAzureResourcesResource) ImportState(ctx context.Context, req resource.ImportStateRequest, resp *resource.ImportStateResponse) {
 	// TODO
 }
 
@@ -2249,6 +2445,13 @@ type ApplicationAwsResourcesResourceModel struct {
 	AwsVpnGatewayIds                       types.Set    `tfsdk:"aws_vpn_gateway_ids"`
 }
 
+type ApplicationAzureResourcesResourceModel struct {
+	Id                types.String `tfsdk:"id"`
+	ApplicationId     types.String `tfsdk:"application_id"`
+	AzuremResourceIds types.Set    `tfsdk:"azurem_resource_ids"`
+	SubscriptionId    types.String `tfsdk:"subscription_id"`
+}
+
 type ApplicationPolicyRuleResourceModel struct {
 	Id            types.String `tfsdk:"id"`
 	Action        types.String `tfsdk:"action"`
@@ -2913,6 +3116,64 @@ func NewReadApplicationAwsResourcesRequest(ctx context.Context, data *Applicatio
 func NewDeleteApplicationAwsResourcesRequest(ctx context.Context, data *ApplicationAwsResourcesResourceModel) (*configv1.DeleteApplicationAwsResourcesRequest, diag.Diagnostics) {
 	var diags diag.Diagnostics
 	proto := &configv1.DeleteApplicationAwsResourcesRequest{}
+	if !data.Id.IsUnknown() && !data.Id.IsNull() {
+		var dataValue attr.Value = data.Id
+		var protoValue string
+		protoValue = dataValue.(types.String).ValueString()
+		proto.Id = protoValue
+	}
+	return proto, diags
+}
+
+func NewCreateApplicationAzureResourcesRequest(ctx context.Context, data *ApplicationAzureResourcesResourceModel) (*configv1.CreateApplicationAzureResourcesRequest, diag.Diagnostics) {
+	var diags diag.Diagnostics
+	proto := &configv1.CreateApplicationAzureResourcesRequest{}
+	if !data.ApplicationId.IsUnknown() && !data.ApplicationId.IsNull() {
+		var dataValue attr.Value = data.ApplicationId
+		var protoValue string
+		protoValue = dataValue.(types.String).ValueString()
+		proto.ApplicationId = protoValue
+	}
+	if !data.AzuremResourceIds.IsUnknown() && !data.AzuremResourceIds.IsNull() {
+		var dataValue attr.Value = data.AzuremResourceIds
+		var protoValue []string
+		{
+			dataElements := dataValue.(types.Set).Elements()
+			protoValues := make([]string, 0, len(dataElements))
+			for _, dataElement := range dataElements {
+				var dataValue attr.Value = dataElement
+				var protoValue string
+				protoValue = dataValue.(types.String).ValueString()
+				protoValues = append(protoValues, protoValue)
+			}
+			protoValue = protoValues
+		}
+		proto.AzuremResourceIds = protoValue
+	}
+	if !data.SubscriptionId.IsUnknown() && !data.SubscriptionId.IsNull() {
+		var dataValue attr.Value = data.SubscriptionId
+		var protoValue string
+		protoValue = dataValue.(types.String).ValueString()
+		proto.SubscriptionId = protoValue
+	}
+	return proto, diags
+}
+
+func NewReadApplicationAzureResourcesRequest(ctx context.Context, data *ApplicationAzureResourcesResourceModel) (*configv1.ReadApplicationAzureResourcesRequest, diag.Diagnostics) {
+	var diags diag.Diagnostics
+	proto := &configv1.ReadApplicationAzureResourcesRequest{}
+	if !data.Id.IsUnknown() && !data.Id.IsNull() {
+		var dataValue attr.Value = data.Id
+		var protoValue string
+		protoValue = dataValue.(types.String).ValueString()
+		proto.Id = protoValue
+	}
+	return proto, diags
+}
+
+func NewDeleteApplicationAzureResourcesRequest(ctx context.Context, data *ApplicationAzureResourcesResourceModel) (*configv1.DeleteApplicationAzureResourcesRequest, diag.Diagnostics) {
+	var diags diag.Diagnostics
+	proto := &configv1.DeleteApplicationAzureResourcesRequest{}
 	if !data.Id.IsUnknown() && !data.Id.IsNull() {
 		var dataValue attr.Value = data.Id
 		var protoValue string
@@ -4320,6 +4581,33 @@ func NewUpdateApplicationAwsResourcesRequest(ctx context.Context, beforeData, af
 				protoValue = protoValues
 			}
 			proto.AwsVpnGatewayIds = protoValue
+		}
+	}
+	return proto, diags
+}
+
+func NewUpdateApplicationAzureResourcesRequest(ctx context.Context, beforeData, afterData *ApplicationAzureResourcesResourceModel) (*configv1.UpdateApplicationAzureResourcesRequest, diag.Diagnostics) {
+	var diags diag.Diagnostics
+	proto := &configv1.UpdateApplicationAzureResourcesRequest{}
+	proto.UpdateMask, _ = fieldmaskpb.New(proto)
+	proto.Id = beforeData.Id.ValueString()
+	if !afterData.AzuremResourceIds.Equal(beforeData.AzuremResourceIds) {
+		proto.UpdateMask.Append(proto, "azurem_resource_ids")
+		if !afterData.AzuremResourceIds.IsUnknown() && !afterData.AzuremResourceIds.IsNull() {
+			var dataValue attr.Value = afterData.AzuremResourceIds
+			var protoValue []string
+			{
+				dataElements := dataValue.(types.Set).Elements()
+				protoValues := make([]string, 0, len(dataElements))
+				for _, dataElement := range dataElements {
+					var dataValue attr.Value = dataElement
+					var protoValue string
+					protoValue = dataValue.(types.String).ValueString()
+					protoValues = append(protoValues, protoValue)
+				}
+				protoValue = protoValues
+			}
+			proto.AzuremResourceIds = protoValue
 		}
 	}
 	return proto, diags
@@ -6900,6 +7188,84 @@ func CopyUpdateApplicationAwsResourcesResponse(dst *ApplicationAwsResourcesResou
 		}
 		dst.AwsVpnGatewayIds = dataValue
 	}
+}
+func CopyCreateApplicationAzureResourcesResponse(dst *ApplicationAzureResourcesResourceModel, src *configv1.CreateApplicationAzureResourcesResponse) {
+	dst.Id = types.StringValue(src.Id)
+	dst.ApplicationId = types.StringValue(src.ApplicationId)
+	{
+		protoValue := src.AzuremResourceIds
+		var dataValue types.Set
+		{
+			dataElementType := types.StringType
+			protoElements := protoValue
+			if protoElements == nil {
+				dataValue = types.SetNull(dataElementType)
+			} else {
+				dataValues := make([]attr.Value, 0, len(protoElements))
+				for _, protoElement := range protoElements {
+					var protoValue string = protoElement
+					var dataValue attr.Value
+					dataValue = types.StringValue(protoValue)
+					dataValues = append(dataValues, dataValue)
+				}
+				dataValue = types.SetValueMust(dataElementType, dataValues)
+			}
+		}
+		dst.AzuremResourceIds = dataValue
+	}
+	dst.SubscriptionId = types.StringValue(src.SubscriptionId)
+}
+func CopyReadApplicationAzureResourcesResponse(dst *ApplicationAzureResourcesResourceModel, src *configv1.ReadApplicationAzureResourcesResponse) {
+	dst.Id = types.StringValue(src.Id)
+	dst.ApplicationId = types.StringValue(src.ApplicationId)
+	{
+		protoValue := src.AzuremResourceIds
+		var dataValue types.Set
+		{
+			dataElementType := types.StringType
+			protoElements := protoValue
+			if protoElements == nil {
+				dataValue = types.SetNull(dataElementType)
+			} else {
+				dataValues := make([]attr.Value, 0, len(protoElements))
+				for _, protoElement := range protoElements {
+					var protoValue string = protoElement
+					var dataValue attr.Value
+					dataValue = types.StringValue(protoValue)
+					dataValues = append(dataValues, dataValue)
+				}
+				dataValue = types.SetValueMust(dataElementType, dataValues)
+			}
+		}
+		dst.AzuremResourceIds = dataValue
+	}
+	dst.SubscriptionId = types.StringValue(src.SubscriptionId)
+}
+func CopyUpdateApplicationAzureResourcesResponse(dst *ApplicationAzureResourcesResourceModel, src *configv1.UpdateApplicationAzureResourcesResponse) {
+	dst.Id = types.StringValue(src.Id)
+	dst.ApplicationId = types.StringValue(src.ApplicationId)
+	{
+		protoValue := src.AzuremResourceIds
+		var dataValue types.Set
+		{
+			dataElementType := types.StringType
+			protoElements := protoValue
+			if protoElements == nil {
+				dataValue = types.SetNull(dataElementType)
+			} else {
+				dataValues := make([]attr.Value, 0, len(protoElements))
+				for _, protoElement := range protoElements {
+					var protoValue string = protoElement
+					var dataValue attr.Value
+					dataValue = types.StringValue(protoValue)
+					dataValues = append(dataValues, dataValue)
+				}
+				dataValue = types.SetValueMust(dataElementType, dataValues)
+			}
+		}
+		dst.AzuremResourceIds = dataValue
+	}
+	dst.SubscriptionId = types.StringValue(src.SubscriptionId)
 }
 func CopyCreateApplicationPolicyRuleResponse(dst *ApplicationPolicyRuleResourceModel, src *configv1.CreateApplicationPolicyRuleResponse) {
 	dst.Id = types.StringValue(src.Id)

@@ -24,6 +24,8 @@ type FakeConfigServer struct {
 	ApplicationMutex                    sync.RWMutex
 	ApplicationAwsResourcesMap          map[string]*ApplicationAwsResources
 	ApplicationAwsResourcesMutex        sync.RWMutex
+	ApplicationAzureResourcesMap        map[string]*ApplicationAzureResources
+	ApplicationAzureResourcesMutex      sync.RWMutex
 	ApplicationPolicyRuleMap            map[string]*ApplicationPolicyRule
 	ApplicationPolicyRuleMutex          sync.RWMutex
 	AwsAccountMap                       map[string]*AwsAccount
@@ -52,6 +54,7 @@ func NewFakeConfigServer(logger *zap.Logger) configv1.ConfigServiceServer {
 		Logger:                            logger,
 		ApplicationMap:                    make(map[string]*Application),
 		ApplicationAwsResourcesMap:        make(map[string]*ApplicationAwsResources),
+		ApplicationAzureResourcesMap:      make(map[string]*ApplicationAzureResources),
 		ApplicationPolicyRuleMap:          make(map[string]*ApplicationPolicyRule),
 		AwsAccountMap:                     make(map[string]*AwsAccount),
 		AwsFlowLogsS3BucketMap:            make(map[string]*AwsFlowLogsS3Bucket),
@@ -106,6 +109,13 @@ type ApplicationAwsResources struct {
 	AwsVpcPeeringConnectionIds             []string
 	AwsVpnConnectionIds                    []string
 	AwsVpnGatewayIds                       []string
+}
+
+type ApplicationAzureResources struct {
+	Id                string
+	ApplicationId     string
+	AzuremResourceIds []string
+	SubscriptionId    string
 }
 
 type ApplicationPolicyRule struct {
@@ -623,6 +633,131 @@ func (s *FakeConfigServer) DeleteApplicationAwsResources(ctx context.Context, re
 	s.Logger.Info("deleted resource",
 		zap.String("type", "application_aws_resources"),
 		zap.String("method", "DeleteApplicationAwsResources"),
+		zap.String("id", id),
+	)
+	return &emptypb.Empty{}, nil
+}
+func (s *FakeConfigServer) CreateApplicationAzureResources(ctx context.Context, req *configv1.CreateApplicationAzureResourcesRequest) (*configv1.CreateApplicationAzureResourcesResponse, error) {
+	id := uuid.New().String()
+	model := &ApplicationAzureResources{
+		Id:                id,
+		ApplicationId:     req.ApplicationId,
+		AzuremResourceIds: req.AzuremResourceIds,
+		SubscriptionId:    req.SubscriptionId,
+	}
+	resp := &configv1.CreateApplicationAzureResourcesResponse{
+		Id:                id,
+		ApplicationId:     model.ApplicationId,
+		AzuremResourceIds: model.AzuremResourceIds,
+		SubscriptionId:    model.SubscriptionId,
+	}
+	s.ApplicationAzureResourcesMutex.Lock()
+	s.ApplicationAzureResourcesMap[id] = model
+	s.ApplicationAzureResourcesMutex.Unlock()
+	s.Logger.Info("created resource",
+		zap.String("type", "application_azure_resources"),
+		zap.String("method", "CreateApplicationAzureResources"),
+		zap.String("id", id),
+	)
+	return resp, nil
+}
+
+func (s *FakeConfigServer) ReadApplicationAzureResources(ctx context.Context, req *configv1.ReadApplicationAzureResourcesRequest) (*configv1.ReadApplicationAzureResourcesResponse, error) {
+	id := req.Id
+	s.ApplicationAzureResourcesMutex.RLock()
+	model, found := s.ApplicationAzureResourcesMap[id]
+	if !found {
+		s.ApplicationAzureResourcesMutex.RUnlock()
+		s.Logger.Error("attempted to read resource with unknown id",
+			zap.String("type", "application_azure_resources"),
+			zap.String("method", "ReadApplicationAzureResources"),
+			zap.String("id", id),
+		)
+		return nil, status.Errorf(codes.NotFound, "no application_azure_resources found with id %s", id)
+	}
+	resp := &configv1.ReadApplicationAzureResourcesResponse{
+		Id:                id,
+		ApplicationId:     model.ApplicationId,
+		AzuremResourceIds: model.AzuremResourceIds,
+		SubscriptionId:    model.SubscriptionId,
+	}
+	s.ApplicationAzureResourcesMutex.RUnlock()
+	s.Logger.Info("read resource",
+		zap.String("type", "application_azure_resources"),
+		zap.String("method", "ReadApplicationAzureResources"),
+		zap.String("id", id),
+	)
+	return resp, nil
+}
+
+func (s *FakeConfigServer) UpdateApplicationAzureResources(ctx context.Context, req *configv1.UpdateApplicationAzureResourcesRequest) (*configv1.UpdateApplicationAzureResourcesResponse, error) {
+	id := req.Id
+	s.ApplicationAzureResourcesMutex.Lock()
+	model, found := s.ApplicationAzureResourcesMap[id]
+	if !found {
+		s.ApplicationAzureResourcesMutex.Unlock()
+		s.Logger.Error("attempted to update resource with unknown id",
+			zap.String("type", "application_azure_resources"),
+			zap.String("method", "UpdateApplicationAzureResources"),
+			zap.String("id", id),
+		)
+		return nil, status.Errorf(codes.NotFound, "no application_azure_resources found with id %s", id)
+	}
+	updateMask := req.UpdateMask
+	var updateMaskPaths []string
+	if updateMask != nil {
+		updateMaskPaths = updateMask.Paths
+	}
+	for _, path := range updateMaskPaths {
+		switch path {
+		case "azurem_resource_ids":
+			model.AzuremResourceIds = req.AzuremResourceIds
+		default:
+			s.AwsAccountMutex.Unlock()
+			s.Logger.Error("attempted to update resource using invalid update_mask path",
+				zap.String("type", "application_azure_resources"),
+				zap.String("method", "UpdateApplicationAzureResources"),
+				zap.String("id", id),
+				zap.Strings("updateMaskPaths", updateMaskPaths),
+				zap.String("invalidUpdateMaskPath", path),
+			)
+			return nil, status.Errorf(codes.InvalidArgument, "invalid path in update_mask for application_azure_resources: %s", path)
+		}
+	}
+	resp := &configv1.UpdateApplicationAzureResourcesResponse{
+		Id:                id,
+		ApplicationId:     model.ApplicationId,
+		AzuremResourceIds: model.AzuremResourceIds,
+		SubscriptionId:    model.SubscriptionId,
+	}
+	s.ApplicationAzureResourcesMutex.Unlock()
+	s.Logger.Info("updated resource",
+		zap.String("type", "application_azure_resources"),
+		zap.String("method", "UpdateApplicationAzureResources"),
+		zap.String("id", id),
+		zap.Strings("updateMaskPaths", updateMaskPaths),
+	)
+	return resp, nil
+}
+
+func (s *FakeConfigServer) DeleteApplicationAzureResources(ctx context.Context, req *configv1.DeleteApplicationAzureResourcesRequest) (*emptypb.Empty, error) {
+	id := req.Id
+	s.ApplicationAzureResourcesMutex.Lock()
+	_, found := s.ApplicationAzureResourcesMap[id]
+	if !found {
+		s.ApplicationAzureResourcesMutex.Unlock()
+		s.Logger.Error("attempted to delete resource with unknown id",
+			zap.String("type", "application_azure_resources"),
+			zap.String("method", "DeleteApplicationAzureResources"),
+			zap.String("id", id),
+		)
+		return nil, status.Errorf(codes.NotFound, "no application_azure_resources found with id %s", id)
+	}
+	delete(s.ApplicationAzureResourcesMap, id)
+	s.ApplicationAzureResourcesMutex.Unlock()
+	s.Logger.Info("deleted resource",
+		zap.String("type", "application_azure_resources"),
+		zap.String("method", "DeleteApplicationAzureResources"),
 		zap.String("id", id),
 	)
 	return &emptypb.Empty{}, nil
