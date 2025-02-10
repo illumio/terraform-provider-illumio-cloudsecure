@@ -3,12 +3,12 @@
 page_title: "illumio-cloudsecure_application_aws_resources Resource - illumio-cloudsecure"
 subcategory: ""
 description: |-
-  Resources associated with an application in the Illumio CloudSecure platform.
+  Manages application resources in CloudSecure.
 ---
 
 # illumio-cloudsecure_application_aws_resources (Resource)
 
-Resources associated with an application in the Illumio CloudSecure platform.
+Manages application resources in CloudSecure.
 
 
 
@@ -18,41 +18,41 @@ Resources associated with an application in the Illumio CloudSecure platform.
 ### Required
 
 - `account_id` (String) ID of the AWS account.
-- `application_id` (String) ID of the application.
+- `application_id` (String) ID of the CloudSecure application.
 
 ### Optional
 
 - `aws_arns` (Set of String) ARNs of AWS resources to associate with the Cloudsecure application
-- `aws_directconnect_connections` (Set of String) IDs of AWS direct connect connections to associate with Cloudsecure Application.
-- `aws_directconnect_virtualinterfaces` (Set of String) IDs of AWS direct connect virtual interfaces to associate with Cloudsecure Application.
-- `aws_ec2_customergateways` (Set of String) IDs of AWS ec2 customer gateways to associate with Cloudsecure Application.
-- `aws_ec2_egressonlyinternetgateways` (Set of String) IDs of AWS ec2 egress only internet gateways to associate with Cloudsecure Application.
-- `aws_ec2_eips` (Set of String) IDs of AWS ec2 eips to associate with Cloudsecure Application.
-- `aws_ec2_flowlogs` (Set of String) IDs of AWS ec2 flow logs to associate with Cloudsecure Application.
-- `aws_ec2_instanceconnectendpoints` (Set of String) IDs of AWS ec2 instance connect endpoints to associate with Cloudsecure Application.
-- `aws_ec2_instances` (Set of String) IDs of AWS ec2 instances to associate with Cloudsecure Application.
-- `aws_ec2_internetgateways` (Set of String) IDs of AWS ec2 internet gateways to associate with Cloudsecure Application.
-- `aws_ec2_natgateways` (Set of String) IDs of AWS ec2 nat gateways to associate with Cloudsecure Application.
-- `aws_ec2_networkacls` (Set of String) IDs of AWS ec2 network acls to associate with Cloudsecure Application.
-- `aws_ec2_networkinterfaces` (Set of String) IDs of AWS ec2 network interfaces to associate with Cloudsecure Application.
-- `aws_ec2_routetabless` (Set of String) IDs of AWS ec2 route tabless to associate with Cloudsecure Application.
-- `aws_ec2_securitygrouprules` (Set of String) IDs of AWS ec2 security group rules to associate with Cloudsecure Application.
-- `aws_ec2_securitygroups` (Set of String) IDs of AWS ec2 security groups to associate with Cloudsecure Application.
-- `aws_ec2_spotfleetrequests` (Set of String) IDs of AWS ec2 spot fleet requests to associate with Cloudsecure Application.
-- `aws_ec2_spotinstancerequests` (Set of String) IDs of AWS ec2 spot instance requests to associate with Cloudsecure Application.
-- `aws_ec2_subnets` (Set of String) IDs of AWS ec2 subnets to associate with Cloudsecure Application.
-- `aws_ec2_transitgatewayattachments` (Set of String) IDs of AWS ec2 transit gateway attachments to associate with Cloudsecure Application.
-- `aws_ec2_transitgatewaymulticastdomains` (Set of String) IDs of AWS ec2 transit gateway multicast domains to associate with Cloudsecure Application.
-- `aws_ec2_transitgatewayroutetables` (Set of String) IDs of AWS ec2 transit gateway route tables to associate with Cloudsecure Application.
-- `aws_ec2_transitgateways` (Set of String) IDs of AWS ec2 transit gateways to associate with Cloudsecure Application.
-- `aws_ec2_volumes` (Set of String) IDs of AWS ec2 volumes to associate with Cloudsecure Application.
-- `aws_ec2_vpcendpoints` (Set of String) IDs of AWS ec2 VPC endpoints to associate with Cloudsecure Application.
-- `aws_ec2_vpcendpointservices` (Set of String) IDs of AWS ec2 VPC endpoint services to associate with Cloudsecure Application.
-- `aws_ec2_vpcpeerings` (Set of String) IDs of AWS ec2 VPC peerings to associate with Cloudsecure Application.
-- `aws_ec2_vpcs` (Set of String) IDs of AWS ec2 VPCs to associate with Cloudsecure Application.
-- `aws_ec2_vpnconnections` (Set of String) IDs of AWS ec2 VPN connections to associate with Cloudsecure Application.
-- `aws_ec2_vpngateways` (Set of String) IDs of AWS ec2 VPN gateways to associate with Cloudsecure Application.
-- `aws_rds_dbclusters` (Set of String) IDs of AWS rds db clusters to associate with Cloudsecure Application.
+- `aws_customer_gateway_ids` (Set of String) IDs of AWS customer gateways to associate with the Cloudsecure Application.
+- `aws_dx_connection_ids` (Set of String) IDs of AWS direct connect connections to associate with the Cloudsecure Application.
+- `aws_dx_virtual_interface_ids` (Set of String) IDs of AWS direct connect virtual interfaces (public/private/hosted/transit) to associate with the Cloudsecure Application.
+- `aws_ebs_volume_ids` (Set of String) IDs of AWS ebs volumes to associate with the Cloudsecure Application.
+- `aws_ec2_instance_connect_endpoint_ids` (Set of String) IDs of AWS ec2 instance connect endpoints to associate with the Cloudsecure Application.
+- `aws_ec2_transit_gateway_attachments` (Set of String) IDs of AWS ec2 transit gateway attachments (peering/vpc) to associate with the Cloudsecure Application.
+- `aws_ec2_transit_gateway_ids` (Set of String) IDs of AWS ec2 transit gateways to associate with the Cloudsecure Application.
+- `aws_ec2_transit_gateway_multicast_domain_ids` (Set of String) IDs of AWS ec2 transit gateway multicast domains to associate with the Cloudsecure Application.
+- `aws_ec2_transit_gateway_route_table_ids` (Set of String) IDs of AWS ec2 transit gateway route tables to associate with the Cloudsecure Application.
+- `aws_egress_only_internet_gateway_ids` (Set of String) IDs of AWS egress only internet gateways to associate with the Cloudsecure Application.
+- `aws_eip_ids` (Set of String) IDs of AWS elastic IPs to associate with the Cloudsecure Application.
+- `aws_flow_log_ids` (Set of String) IDs of AWS flow logs to associate with the Cloudsecure Application.
+- `aws_instances_ids` (Set of String) IDs of AWS ec2 instances to associate with the Cloudsecure Application.
+- `aws_internet_gateway_ids` (Set of String) IDs of AWS internet gateways to associate with the Cloudsecure Application.
+- `aws_nat_gateway_ids` (Set of String) IDs of AWS nat gateways to associate with the Cloudsecure Application.
+- `aws_network_acl` (Set of String) IDs of AWS network acls to associate with the Cloudsecure Application.
+- `aws_network_interface_ids` (Set of String) IDs of AWS network interfaces to associate with the Cloudsecure Application.
+- `aws_rds_cluster_ids` (Set of String) IDs of AWS rds db clusters to associate with the Cloudsecure Application.
+- `aws_route_table_ids` (Set of String) IDs of AWS route tabless to associate with the Cloudsecure Application.
+- `aws_security_group_ids` (Set of String) IDs of AWS security groups to associate with the Cloudsecure Application.
+- `aws_security_group_rule_ids` (Set of String) IDs of AWS security group rules to associate with the Cloudsecure Application.
+- `aws_spot_fleet_request_ids` (Set of String) IDs of AWS spot fleet requests to associate with the Cloudsecure Application.
+- `aws_spot_instance_request_ids` (Set of String) IDs of AWS spot instance requests to associate with the Cloudsecure Application.
+- `aws_subnet_ids` (Set of String) IDs of AWS subnets to associate with the Cloudsecure Application.
+- `aws_vpc_endpoint_ids` (Set of String) IDs of AWS VPC endpoints to associate with the Cloudsecure Application.
+- `aws_vpc_endpoint_service_ids` (Set of String) IDs of AWS VPC endpoint services to associate with the Cloudsecure Application.
+- `aws_vpc_ids` (Set of String) IDs of AWS VPCs to associate with the Cloudsecure Application.
+- `aws_vpc_peering_connection_ids` (Set of String) IDs of AWS  VPC peering connections to associate with the Cloudsecure Application.
+- `aws_vpn_connection_ids` (Set of String) IDs of AWS VPN connections to associate with the Cloudsecure Application.
+- `aws_vpn_gateway_ids` (Set of String) IDs of AWS VPN gateways to associate with the Cloudsecure Application.
 
 ### Read-Only
 

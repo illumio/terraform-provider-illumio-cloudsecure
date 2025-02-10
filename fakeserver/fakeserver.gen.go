@@ -20,6 +20,10 @@ import (
 type FakeConfigServer struct {
 	configv1.UnimplementedConfigServiceServer
 	Logger                              *zap.Logger
+	ApplicationMap                      map[string]*Application
+	ApplicationMutex                    sync.RWMutex
+	ApplicationAwsResourcesMap          map[string]*ApplicationAwsResources
+	ApplicationAwsResourcesMutex        sync.RWMutex
 	ApplicationPolicyRuleMap            map[string]*ApplicationPolicyRule
 	ApplicationPolicyRuleMutex          sync.RWMutex
 	AwsAccountMap                       map[string]*AwsAccount
@@ -46,6 +50,8 @@ var _ configv1.ConfigServiceServer = &FakeConfigServer{}
 func NewFakeConfigServer(logger *zap.Logger) configv1.ConfigServiceServer {
 	return &FakeConfigServer{
 		Logger:                            logger,
+		ApplicationMap:                    make(map[string]*Application),
+		ApplicationAwsResourcesMap:        make(map[string]*ApplicationAwsResources),
 		ApplicationPolicyRuleMap:          make(map[string]*ApplicationPolicyRule),
 		AwsAccountMap:                     make(map[string]*AwsAccount),
 		AwsFlowLogsS3BucketMap:            make(map[string]*AwsFlowLogsS3Bucket),
@@ -56,6 +62,50 @@ func NewFakeConfigServer(logger *zap.Logger) configv1.ConfigServiceServer {
 		K8SClusterOnboardingCredentialMap: make(map[string]*K8SClusterOnboardingCredential),
 		TagToLabelMap:                     make(map[string]*TagToLabel),
 	}
+}
+
+type Application struct {
+	Id           string
+	DeploymentId string
+	Description  *string
+	Name         string
+}
+
+type ApplicationAwsResources struct {
+	Id                                     string
+	AccountId                              string
+	ApplicationId                          string
+	AwsArns                                []string
+	AwsCustomerGatewayIds                  []string
+	AwsDxConnectionIds                     []string
+	AwsDxVirtualInterfaceIds               []string
+	AwsEbsVolumeIds                        []string
+	AwsEc2InstanceConnectEndpointIds       []string
+	AwsEc2TransitGatewayAttachments        []string
+	AwsEc2TransitGatewayIds                []string
+	AwsEc2TransitGatewayMulticastDomainIds []string
+	AwsEc2TransitGatewayRouteTableIds      []string
+	AwsEgressOnlyInternetGatewayIds        []string
+	AwsEipIds                              []string
+	AwsFlowLogIds                          []string
+	AwsInstancesIds                        []string
+	AwsInternetGatewayIds                  []string
+	AwsNatGatewayIds                       []string
+	AwsNetworkAcl                          []string
+	AwsNetworkInterfaceIds                 []string
+	AwsRdsClusterIds                       []string
+	AwsRouteTableIds                       []string
+	AwsSecurityGroupIds                    []string
+	AwsSecurityGroupRuleIds                []string
+	AwsSpotFleetRequestIds                 []string
+	AwsSpotInstanceRequestIds              []string
+	AwsSubnetIds                           []string
+	AwsVpcEndpointIds                      []string
+	AwsVpcEndpointServiceIds               []string
+	AwsVpcIds                              []string
+	AwsVpcPeeringConnectionIds             []string
+	AwsVpnConnectionIds                    []string
+	AwsVpnGatewayIds                       []string
 }
 
 type ApplicationPolicyRule struct {
@@ -145,6 +195,442 @@ type TagToLabel struct {
 	Name         string
 }
 
+func (s *FakeConfigServer) CreateApplication(ctx context.Context, req *configv1.CreateApplicationRequest) (*configv1.CreateApplicationResponse, error) {
+	id := uuid.New().String()
+	model := &Application{
+		Id:           id,
+		DeploymentId: req.DeploymentId,
+		Description:  req.Description,
+		Name:         req.Name,
+	}
+	resp := &configv1.CreateApplicationResponse{
+		Id:           id,
+		DeploymentId: model.DeploymentId,
+		Description:  model.Description,
+		Name:         model.Name,
+	}
+	s.ApplicationMutex.Lock()
+	s.ApplicationMap[id] = model
+	s.ApplicationMutex.Unlock()
+	s.Logger.Info("created resource",
+		zap.String("type", "application"),
+		zap.String("method", "CreateApplication"),
+		zap.String("id", id),
+	)
+	return resp, nil
+}
+
+func (s *FakeConfigServer) ReadApplication(ctx context.Context, req *configv1.ReadApplicationRequest) (*configv1.ReadApplicationResponse, error) {
+	id := req.Id
+	s.ApplicationMutex.RLock()
+	model, found := s.ApplicationMap[id]
+	if !found {
+		s.ApplicationMutex.RUnlock()
+		s.Logger.Error("attempted to read resource with unknown id",
+			zap.String("type", "application"),
+			zap.String("method", "ReadApplication"),
+			zap.String("id", id),
+		)
+		return nil, status.Errorf(codes.NotFound, "no application found with id %s", id)
+	}
+	resp := &configv1.ReadApplicationResponse{
+		Id:           id,
+		DeploymentId: model.DeploymentId,
+		Description:  model.Description,
+		Name:         model.Name,
+	}
+	s.ApplicationMutex.RUnlock()
+	s.Logger.Info("read resource",
+		zap.String("type", "application"),
+		zap.String("method", "ReadApplication"),
+		zap.String("id", id),
+	)
+	return resp, nil
+}
+
+func (s *FakeConfigServer) UpdateApplication(ctx context.Context, req *configv1.UpdateApplicationRequest) (*configv1.UpdateApplicationResponse, error) {
+	id := req.Id
+	s.ApplicationMutex.Lock()
+	model, found := s.ApplicationMap[id]
+	if !found {
+		s.ApplicationMutex.Unlock()
+		s.Logger.Error("attempted to update resource with unknown id",
+			zap.String("type", "application"),
+			zap.String("method", "UpdateApplication"),
+			zap.String("id", id),
+		)
+		return nil, status.Errorf(codes.NotFound, "no application found with id %s", id)
+	}
+	updateMask := req.UpdateMask
+	var updateMaskPaths []string
+	if updateMask != nil {
+		updateMaskPaths = updateMask.Paths
+	}
+	for _, path := range updateMaskPaths {
+		switch path {
+		case "description":
+			model.Description = req.Description
+		case "name":
+			model.Name = req.Name
+		default:
+			s.AwsAccountMutex.Unlock()
+			s.Logger.Error("attempted to update resource using invalid update_mask path",
+				zap.String("type", "application"),
+				zap.String("method", "UpdateApplication"),
+				zap.String("id", id),
+				zap.Strings("updateMaskPaths", updateMaskPaths),
+				zap.String("invalidUpdateMaskPath", path),
+			)
+			return nil, status.Errorf(codes.InvalidArgument, "invalid path in update_mask for application: %s", path)
+		}
+	}
+	resp := &configv1.UpdateApplicationResponse{
+		Id:           id,
+		DeploymentId: model.DeploymentId,
+		Description:  model.Description,
+		Name:         model.Name,
+	}
+	s.ApplicationMutex.Unlock()
+	s.Logger.Info("updated resource",
+		zap.String("type", "application"),
+		zap.String("method", "UpdateApplication"),
+		zap.String("id", id),
+		zap.Strings("updateMaskPaths", updateMaskPaths),
+	)
+	return resp, nil
+}
+
+func (s *FakeConfigServer) DeleteApplication(ctx context.Context, req *configv1.DeleteApplicationRequest) (*emptypb.Empty, error) {
+	id := req.Id
+	s.ApplicationMutex.Lock()
+	_, found := s.ApplicationMap[id]
+	if !found {
+		s.ApplicationMutex.Unlock()
+		s.Logger.Error("attempted to delete resource with unknown id",
+			zap.String("type", "application"),
+			zap.String("method", "DeleteApplication"),
+			zap.String("id", id),
+		)
+		return nil, status.Errorf(codes.NotFound, "no application found with id %s", id)
+	}
+	delete(s.ApplicationMap, id)
+	s.ApplicationMutex.Unlock()
+	s.Logger.Info("deleted resource",
+		zap.String("type", "application"),
+		zap.String("method", "DeleteApplication"),
+		zap.String("id", id),
+	)
+	return &emptypb.Empty{}, nil
+}
+func (s *FakeConfigServer) CreateApplicationAwsResources(ctx context.Context, req *configv1.CreateApplicationAwsResourcesRequest) (*configv1.CreateApplicationAwsResourcesResponse, error) {
+	id := uuid.New().String()
+	model := &ApplicationAwsResources{
+		Id:                                     id,
+		AccountId:                              req.AccountId,
+		ApplicationId:                          req.ApplicationId,
+		AwsArns:                                req.AwsArns,
+		AwsCustomerGatewayIds:                  req.AwsCustomerGatewayIds,
+		AwsDxConnectionIds:                     req.AwsDxConnectionIds,
+		AwsDxVirtualInterfaceIds:               req.AwsDxVirtualInterfaceIds,
+		AwsEbsVolumeIds:                        req.AwsEbsVolumeIds,
+		AwsEc2InstanceConnectEndpointIds:       req.AwsEc2InstanceConnectEndpointIds,
+		AwsEc2TransitGatewayAttachments:        req.AwsEc2TransitGatewayAttachments,
+		AwsEc2TransitGatewayIds:                req.AwsEc2TransitGatewayIds,
+		AwsEc2TransitGatewayMulticastDomainIds: req.AwsEc2TransitGatewayMulticastDomainIds,
+		AwsEc2TransitGatewayRouteTableIds:      req.AwsEc2TransitGatewayRouteTableIds,
+		AwsEgressOnlyInternetGatewayIds:        req.AwsEgressOnlyInternetGatewayIds,
+		AwsEipIds:                              req.AwsEipIds,
+		AwsFlowLogIds:                          req.AwsFlowLogIds,
+		AwsInstancesIds:                        req.AwsInstancesIds,
+		AwsInternetGatewayIds:                  req.AwsInternetGatewayIds,
+		AwsNatGatewayIds:                       req.AwsNatGatewayIds,
+		AwsNetworkAcl:                          req.AwsNetworkAcl,
+		AwsNetworkInterfaceIds:                 req.AwsNetworkInterfaceIds,
+		AwsRdsClusterIds:                       req.AwsRdsClusterIds,
+		AwsRouteTableIds:                       req.AwsRouteTableIds,
+		AwsSecurityGroupIds:                    req.AwsSecurityGroupIds,
+		AwsSecurityGroupRuleIds:                req.AwsSecurityGroupRuleIds,
+		AwsSpotFleetRequestIds:                 req.AwsSpotFleetRequestIds,
+		AwsSpotInstanceRequestIds:              req.AwsSpotInstanceRequestIds,
+		AwsSubnetIds:                           req.AwsSubnetIds,
+		AwsVpcEndpointIds:                      req.AwsVpcEndpointIds,
+		AwsVpcEndpointServiceIds:               req.AwsVpcEndpointServiceIds,
+		AwsVpcIds:                              req.AwsVpcIds,
+		AwsVpcPeeringConnectionIds:             req.AwsVpcPeeringConnectionIds,
+		AwsVpnConnectionIds:                    req.AwsVpnConnectionIds,
+		AwsVpnGatewayIds:                       req.AwsVpnGatewayIds,
+	}
+	resp := &configv1.CreateApplicationAwsResourcesResponse{
+		Id:                                     id,
+		AccountId:                              model.AccountId,
+		ApplicationId:                          model.ApplicationId,
+		AwsArns:                                model.AwsArns,
+		AwsCustomerGatewayIds:                  model.AwsCustomerGatewayIds,
+		AwsDxConnectionIds:                     model.AwsDxConnectionIds,
+		AwsDxVirtualInterfaceIds:               model.AwsDxVirtualInterfaceIds,
+		AwsEbsVolumeIds:                        model.AwsEbsVolumeIds,
+		AwsEc2InstanceConnectEndpointIds:       model.AwsEc2InstanceConnectEndpointIds,
+		AwsEc2TransitGatewayAttachments:        model.AwsEc2TransitGatewayAttachments,
+		AwsEc2TransitGatewayIds:                model.AwsEc2TransitGatewayIds,
+		AwsEc2TransitGatewayMulticastDomainIds: model.AwsEc2TransitGatewayMulticastDomainIds,
+		AwsEc2TransitGatewayRouteTableIds:      model.AwsEc2TransitGatewayRouteTableIds,
+		AwsEgressOnlyInternetGatewayIds:        model.AwsEgressOnlyInternetGatewayIds,
+		AwsEipIds:                              model.AwsEipIds,
+		AwsFlowLogIds:                          model.AwsFlowLogIds,
+		AwsInstancesIds:                        model.AwsInstancesIds,
+		AwsInternetGatewayIds:                  model.AwsInternetGatewayIds,
+		AwsNatGatewayIds:                       model.AwsNatGatewayIds,
+		AwsNetworkAcl:                          model.AwsNetworkAcl,
+		AwsNetworkInterfaceIds:                 model.AwsNetworkInterfaceIds,
+		AwsRdsClusterIds:                       model.AwsRdsClusterIds,
+		AwsRouteTableIds:                       model.AwsRouteTableIds,
+		AwsSecurityGroupIds:                    model.AwsSecurityGroupIds,
+		AwsSecurityGroupRuleIds:                model.AwsSecurityGroupRuleIds,
+		AwsSpotFleetRequestIds:                 model.AwsSpotFleetRequestIds,
+		AwsSpotInstanceRequestIds:              model.AwsSpotInstanceRequestIds,
+		AwsSubnetIds:                           model.AwsSubnetIds,
+		AwsVpcEndpointIds:                      model.AwsVpcEndpointIds,
+		AwsVpcEndpointServiceIds:               model.AwsVpcEndpointServiceIds,
+		AwsVpcIds:                              model.AwsVpcIds,
+		AwsVpcPeeringConnectionIds:             model.AwsVpcPeeringConnectionIds,
+		AwsVpnConnectionIds:                    model.AwsVpnConnectionIds,
+		AwsVpnGatewayIds:                       model.AwsVpnGatewayIds,
+	}
+	s.ApplicationAwsResourcesMutex.Lock()
+	s.ApplicationAwsResourcesMap[id] = model
+	s.ApplicationAwsResourcesMutex.Unlock()
+	s.Logger.Info("created resource",
+		zap.String("type", "application_aws_resources"),
+		zap.String("method", "CreateApplicationAwsResources"),
+		zap.String("id", id),
+	)
+	return resp, nil
+}
+
+func (s *FakeConfigServer) ReadApplicationAwsResources(ctx context.Context, req *configv1.ReadApplicationAwsResourcesRequest) (*configv1.ReadApplicationAwsResourcesResponse, error) {
+	id := req.Id
+	s.ApplicationAwsResourcesMutex.RLock()
+	model, found := s.ApplicationAwsResourcesMap[id]
+	if !found {
+		s.ApplicationAwsResourcesMutex.RUnlock()
+		s.Logger.Error("attempted to read resource with unknown id",
+			zap.String("type", "application_aws_resources"),
+			zap.String("method", "ReadApplicationAwsResources"),
+			zap.String("id", id),
+		)
+		return nil, status.Errorf(codes.NotFound, "no application_aws_resources found with id %s", id)
+	}
+	resp := &configv1.ReadApplicationAwsResourcesResponse{
+		Id:                                     id,
+		AccountId:                              model.AccountId,
+		ApplicationId:                          model.ApplicationId,
+		AwsArns:                                model.AwsArns,
+		AwsCustomerGatewayIds:                  model.AwsCustomerGatewayIds,
+		AwsDxConnectionIds:                     model.AwsDxConnectionIds,
+		AwsDxVirtualInterfaceIds:               model.AwsDxVirtualInterfaceIds,
+		AwsEbsVolumeIds:                        model.AwsEbsVolumeIds,
+		AwsEc2InstanceConnectEndpointIds:       model.AwsEc2InstanceConnectEndpointIds,
+		AwsEc2TransitGatewayAttachments:        model.AwsEc2TransitGatewayAttachments,
+		AwsEc2TransitGatewayIds:                model.AwsEc2TransitGatewayIds,
+		AwsEc2TransitGatewayMulticastDomainIds: model.AwsEc2TransitGatewayMulticastDomainIds,
+		AwsEc2TransitGatewayRouteTableIds:      model.AwsEc2TransitGatewayRouteTableIds,
+		AwsEgressOnlyInternetGatewayIds:        model.AwsEgressOnlyInternetGatewayIds,
+		AwsEipIds:                              model.AwsEipIds,
+		AwsFlowLogIds:                          model.AwsFlowLogIds,
+		AwsInstancesIds:                        model.AwsInstancesIds,
+		AwsInternetGatewayIds:                  model.AwsInternetGatewayIds,
+		AwsNatGatewayIds:                       model.AwsNatGatewayIds,
+		AwsNetworkAcl:                          model.AwsNetworkAcl,
+		AwsNetworkInterfaceIds:                 model.AwsNetworkInterfaceIds,
+		AwsRdsClusterIds:                       model.AwsRdsClusterIds,
+		AwsRouteTableIds:                       model.AwsRouteTableIds,
+		AwsSecurityGroupIds:                    model.AwsSecurityGroupIds,
+		AwsSecurityGroupRuleIds:                model.AwsSecurityGroupRuleIds,
+		AwsSpotFleetRequestIds:                 model.AwsSpotFleetRequestIds,
+		AwsSpotInstanceRequestIds:              model.AwsSpotInstanceRequestIds,
+		AwsSubnetIds:                           model.AwsSubnetIds,
+		AwsVpcEndpointIds:                      model.AwsVpcEndpointIds,
+		AwsVpcEndpointServiceIds:               model.AwsVpcEndpointServiceIds,
+		AwsVpcIds:                              model.AwsVpcIds,
+		AwsVpcPeeringConnectionIds:             model.AwsVpcPeeringConnectionIds,
+		AwsVpnConnectionIds:                    model.AwsVpnConnectionIds,
+		AwsVpnGatewayIds:                       model.AwsVpnGatewayIds,
+	}
+	s.ApplicationAwsResourcesMutex.RUnlock()
+	s.Logger.Info("read resource",
+		zap.String("type", "application_aws_resources"),
+		zap.String("method", "ReadApplicationAwsResources"),
+		zap.String("id", id),
+	)
+	return resp, nil
+}
+
+func (s *FakeConfigServer) UpdateApplicationAwsResources(ctx context.Context, req *configv1.UpdateApplicationAwsResourcesRequest) (*configv1.UpdateApplicationAwsResourcesResponse, error) {
+	id := req.Id
+	s.ApplicationAwsResourcesMutex.Lock()
+	model, found := s.ApplicationAwsResourcesMap[id]
+	if !found {
+		s.ApplicationAwsResourcesMutex.Unlock()
+		s.Logger.Error("attempted to update resource with unknown id",
+			zap.String("type", "application_aws_resources"),
+			zap.String("method", "UpdateApplicationAwsResources"),
+			zap.String("id", id),
+		)
+		return nil, status.Errorf(codes.NotFound, "no application_aws_resources found with id %s", id)
+	}
+	updateMask := req.UpdateMask
+	var updateMaskPaths []string
+	if updateMask != nil {
+		updateMaskPaths = updateMask.Paths
+	}
+	for _, path := range updateMaskPaths {
+		switch path {
+		case "account_id":
+			model.AccountId = req.AccountId
+		case "application_id":
+			model.ApplicationId = req.ApplicationId
+		case "aws_arns":
+			model.AwsArns = req.AwsArns
+		case "aws_customer_gateway_ids":
+			model.AwsCustomerGatewayIds = req.AwsCustomerGatewayIds
+		case "aws_dx_connection_ids":
+			model.AwsDxConnectionIds = req.AwsDxConnectionIds
+		case "aws_dx_virtual_interface_ids":
+			model.AwsDxVirtualInterfaceIds = req.AwsDxVirtualInterfaceIds
+		case "aws_ebs_volume_ids":
+			model.AwsEbsVolumeIds = req.AwsEbsVolumeIds
+		case "aws_ec2_instance_connect_endpoint_ids":
+			model.AwsEc2InstanceConnectEndpointIds = req.AwsEc2InstanceConnectEndpointIds
+		case "aws_ec2_transit_gateway_attachments":
+			model.AwsEc2TransitGatewayAttachments = req.AwsEc2TransitGatewayAttachments
+		case "aws_ec2_transit_gateway_ids":
+			model.AwsEc2TransitGatewayIds = req.AwsEc2TransitGatewayIds
+		case "aws_ec2_transit_gateway_multicast_domain_ids":
+			model.AwsEc2TransitGatewayMulticastDomainIds = req.AwsEc2TransitGatewayMulticastDomainIds
+		case "aws_ec2_transit_gateway_route_table_ids":
+			model.AwsEc2TransitGatewayRouteTableIds = req.AwsEc2TransitGatewayRouteTableIds
+		case "aws_egress_only_internet_gateway_ids":
+			model.AwsEgressOnlyInternetGatewayIds = req.AwsEgressOnlyInternetGatewayIds
+		case "aws_eip_ids":
+			model.AwsEipIds = req.AwsEipIds
+		case "aws_flow_log_ids":
+			model.AwsFlowLogIds = req.AwsFlowLogIds
+		case "aws_instances_ids":
+			model.AwsInstancesIds = req.AwsInstancesIds
+		case "aws_internet_gateway_ids":
+			model.AwsInternetGatewayIds = req.AwsInternetGatewayIds
+		case "aws_nat_gateway_ids":
+			model.AwsNatGatewayIds = req.AwsNatGatewayIds
+		case "aws_network_acl":
+			model.AwsNetworkAcl = req.AwsNetworkAcl
+		case "aws_network_interface_ids":
+			model.AwsNetworkInterfaceIds = req.AwsNetworkInterfaceIds
+		case "aws_rds_cluster_ids":
+			model.AwsRdsClusterIds = req.AwsRdsClusterIds
+		case "aws_route_table_ids":
+			model.AwsRouteTableIds = req.AwsRouteTableIds
+		case "aws_security_group_ids":
+			model.AwsSecurityGroupIds = req.AwsSecurityGroupIds
+		case "aws_security_group_rule_ids":
+			model.AwsSecurityGroupRuleIds = req.AwsSecurityGroupRuleIds
+		case "aws_spot_fleet_request_ids":
+			model.AwsSpotFleetRequestIds = req.AwsSpotFleetRequestIds
+		case "aws_spot_instance_request_ids":
+			model.AwsSpotInstanceRequestIds = req.AwsSpotInstanceRequestIds
+		case "aws_subnet_ids":
+			model.AwsSubnetIds = req.AwsSubnetIds
+		case "aws_vpc_endpoint_ids":
+			model.AwsVpcEndpointIds = req.AwsVpcEndpointIds
+		case "aws_vpc_endpoint_service_ids":
+			model.AwsVpcEndpointServiceIds = req.AwsVpcEndpointServiceIds
+		case "aws_vpc_ids":
+			model.AwsVpcIds = req.AwsVpcIds
+		case "aws_vpc_peering_connection_ids":
+			model.AwsVpcPeeringConnectionIds = req.AwsVpcPeeringConnectionIds
+		case "aws_vpn_connection_ids":
+			model.AwsVpnConnectionIds = req.AwsVpnConnectionIds
+		case "aws_vpn_gateway_ids":
+			model.AwsVpnGatewayIds = req.AwsVpnGatewayIds
+		default:
+			s.AwsAccountMutex.Unlock()
+			s.Logger.Error("attempted to update resource using invalid update_mask path",
+				zap.String("type", "application_aws_resources"),
+				zap.String("method", "UpdateApplicationAwsResources"),
+				zap.String("id", id),
+				zap.Strings("updateMaskPaths", updateMaskPaths),
+				zap.String("invalidUpdateMaskPath", path),
+			)
+			return nil, status.Errorf(codes.InvalidArgument, "invalid path in update_mask for application_aws_resources: %s", path)
+		}
+	}
+	resp := &configv1.UpdateApplicationAwsResourcesResponse{
+		Id:                                     id,
+		AccountId:                              model.AccountId,
+		ApplicationId:                          model.ApplicationId,
+		AwsArns:                                model.AwsArns,
+		AwsCustomerGatewayIds:                  model.AwsCustomerGatewayIds,
+		AwsDxConnectionIds:                     model.AwsDxConnectionIds,
+		AwsDxVirtualInterfaceIds:               model.AwsDxVirtualInterfaceIds,
+		AwsEbsVolumeIds:                        model.AwsEbsVolumeIds,
+		AwsEc2InstanceConnectEndpointIds:       model.AwsEc2InstanceConnectEndpointIds,
+		AwsEc2TransitGatewayAttachments:        model.AwsEc2TransitGatewayAttachments,
+		AwsEc2TransitGatewayIds:                model.AwsEc2TransitGatewayIds,
+		AwsEc2TransitGatewayMulticastDomainIds: model.AwsEc2TransitGatewayMulticastDomainIds,
+		AwsEc2TransitGatewayRouteTableIds:      model.AwsEc2TransitGatewayRouteTableIds,
+		AwsEgressOnlyInternetGatewayIds:        model.AwsEgressOnlyInternetGatewayIds,
+		AwsEipIds:                              model.AwsEipIds,
+		AwsFlowLogIds:                          model.AwsFlowLogIds,
+		AwsInstancesIds:                        model.AwsInstancesIds,
+		AwsInternetGatewayIds:                  model.AwsInternetGatewayIds,
+		AwsNatGatewayIds:                       model.AwsNatGatewayIds,
+		AwsNetworkAcl:                          model.AwsNetworkAcl,
+		AwsNetworkInterfaceIds:                 model.AwsNetworkInterfaceIds,
+		AwsRdsClusterIds:                       model.AwsRdsClusterIds,
+		AwsRouteTableIds:                       model.AwsRouteTableIds,
+		AwsSecurityGroupIds:                    model.AwsSecurityGroupIds,
+		AwsSecurityGroupRuleIds:                model.AwsSecurityGroupRuleIds,
+		AwsSpotFleetRequestIds:                 model.AwsSpotFleetRequestIds,
+		AwsSpotInstanceRequestIds:              model.AwsSpotInstanceRequestIds,
+		AwsSubnetIds:                           model.AwsSubnetIds,
+		AwsVpcEndpointIds:                      model.AwsVpcEndpointIds,
+		AwsVpcEndpointServiceIds:               model.AwsVpcEndpointServiceIds,
+		AwsVpcIds:                              model.AwsVpcIds,
+		AwsVpcPeeringConnectionIds:             model.AwsVpcPeeringConnectionIds,
+		AwsVpnConnectionIds:                    model.AwsVpnConnectionIds,
+		AwsVpnGatewayIds:                       model.AwsVpnGatewayIds,
+	}
+	s.ApplicationAwsResourcesMutex.Unlock()
+	s.Logger.Info("updated resource",
+		zap.String("type", "application_aws_resources"),
+		zap.String("method", "UpdateApplicationAwsResources"),
+		zap.String("id", id),
+		zap.Strings("updateMaskPaths", updateMaskPaths),
+	)
+	return resp, nil
+}
+
+func (s *FakeConfigServer) DeleteApplicationAwsResources(ctx context.Context, req *configv1.DeleteApplicationAwsResourcesRequest) (*emptypb.Empty, error) {
+	id := req.Id
+	s.ApplicationAwsResourcesMutex.Lock()
+	_, found := s.ApplicationAwsResourcesMap[id]
+	if !found {
+		s.ApplicationAwsResourcesMutex.Unlock()
+		s.Logger.Error("attempted to delete resource with unknown id",
+			zap.String("type", "application_aws_resources"),
+			zap.String("method", "DeleteApplicationAwsResources"),
+			zap.String("id", id),
+		)
+		return nil, status.Errorf(codes.NotFound, "no application_aws_resources found with id %s", id)
+	}
+	delete(s.ApplicationAwsResourcesMap, id)
+	s.ApplicationAwsResourcesMutex.Unlock()
+	s.Logger.Info("deleted resource",
+		zap.String("type", "application_aws_resources"),
+		zap.String("method", "DeleteApplicationAwsResources"),
+		zap.String("id", id),
+	)
+	return &emptypb.Empty{}, nil
+}
 func (s *FakeConfigServer) CreateApplicationPolicyRule(ctx context.Context, req *configv1.CreateApplicationPolicyRuleRequest) (*configv1.CreateApplicationPolicyRuleResponse, error) {
 	id := uuid.New().String()
 	model := &ApplicationPolicyRule{

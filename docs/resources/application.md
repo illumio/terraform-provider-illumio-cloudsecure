@@ -3,12 +3,12 @@
 page_title: "illumio-cloudsecure_application Resource - illumio-cloudsecure"
 subcategory: ""
 description: |-
-  An application in the Illumio CloudSecure platform.
+  Manages an application in CloudSecure.
 ---
 
 # illumio-cloudsecure_application (Resource)
 
-An application in the Illumio CloudSecure platform.
+Manages an application in CloudSecure.
 
 
 
@@ -17,12 +17,12 @@ An application in the Illumio CloudSecure platform.
 
 ### Required
 
-- `deployment_id` (String) ID of the Cloudsecure deployment.
-- `name` (String) Display name of the created CloudSecure application.
+- `deployment_id` (String) ID of the CloudSecure deployment.
+- `name` (String) Display name for the CloudSecure application.
 
 ### Optional
 
-- `description` (String) Description of the created application.
+- `description` (String) Description of the CloudSecure application.
 
 ### Read-Only
 
