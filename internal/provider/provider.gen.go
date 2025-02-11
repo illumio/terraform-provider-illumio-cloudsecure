@@ -1816,6 +1816,7 @@ func (r *TagToLabelResource) ImportState(ctx context.Context, req resource.Impor
 type ApplicationPolicyRuleResourceModel struct {
 	Id            types.String `tfsdk:"id"`
 	Action        types.String `tfsdk:"action"`
+	ApplicationId types.String `tfsdk:"application_id"`
 	Description   types.String `tfsdk:"description"`
 	FromIpListIds types.List   `tfsdk:"from_ip_list_ids"`
 	FromLabels    types.List   `tfsdk:"from_labels"`
@@ -1907,6 +1908,12 @@ func NewCreateApplicationPolicyRuleRequest(ctx context.Context, data *Applicatio
 		var protoValue string
 		protoValue = dataValue.(types.String).ValueString()
 		proto.Action = protoValue
+	}
+	if !data.ApplicationId.IsUnknown() && !data.ApplicationId.IsNull() {
+		var dataValue attr.Value = data.ApplicationId
+		var protoValue string
+		protoValue = dataValue.(types.String).ValueString()
+		proto.ApplicationId = protoValue
 	}
 	if !data.Description.IsUnknown() && !data.Description.IsNull() {
 		var dataValue attr.Value = data.Description
@@ -2687,6 +2694,15 @@ func NewUpdateApplicationPolicyRuleRequest(ctx context.Context, beforeData, afte
 			proto.Action = protoValue
 		}
 	}
+	if !afterData.ApplicationId.Equal(beforeData.ApplicationId) {
+		proto.UpdateMask.Append(proto, "application_id")
+		if !afterData.ApplicationId.IsUnknown() && !afterData.ApplicationId.IsNull() {
+			var dataValue attr.Value = afterData.ApplicationId
+			var protoValue string
+			protoValue = dataValue.(types.String).ValueString()
+			proto.ApplicationId = protoValue
+		}
+	}
 	if !afterData.Description.Equal(beforeData.Description) {
 		proto.UpdateMask.Append(proto, "description")
 		if !afterData.Description.IsUnknown() && !afterData.Description.IsNull() {
@@ -3257,6 +3273,7 @@ func NewUpdateTagToLabelRequest(ctx context.Context, beforeData, afterData *TagT
 func CopyCreateApplicationPolicyRuleResponse(dst *ApplicationPolicyRuleResourceModel, src *configv1.CreateApplicationPolicyRuleResponse) {
 	dst.Id = types.StringValue(src.Id)
 	dst.Action = types.StringValue(src.Action)
+	dst.ApplicationId = types.StringValue(src.ApplicationId)
 	dst.Description = types.StringPointerValue(src.Description)
 	{
 		protoValue := src.FromIpListIds
@@ -3373,6 +3390,7 @@ func CopyCreateApplicationPolicyRuleResponse(dst *ApplicationPolicyRuleResourceM
 func CopyReadApplicationPolicyRuleResponse(dst *ApplicationPolicyRuleResourceModel, src *configv1.ReadApplicationPolicyRuleResponse) {
 	dst.Id = types.StringValue(src.Id)
 	dst.Action = types.StringValue(src.Action)
+	dst.ApplicationId = types.StringValue(src.ApplicationId)
 	dst.Description = types.StringPointerValue(src.Description)
 	{
 		protoValue := src.FromIpListIds
@@ -3489,6 +3507,7 @@ func CopyReadApplicationPolicyRuleResponse(dst *ApplicationPolicyRuleResourceMod
 func CopyUpdateApplicationPolicyRuleResponse(dst *ApplicationPolicyRuleResourceModel, src *configv1.UpdateApplicationPolicyRuleResponse) {
 	dst.Id = types.StringValue(src.Id)
 	dst.Action = types.StringValue(src.Action)
+	dst.ApplicationId = types.StringValue(src.ApplicationId)
 	dst.Description = types.StringPointerValue(src.Description)
 	{
 		protoValue := src.FromIpListIds

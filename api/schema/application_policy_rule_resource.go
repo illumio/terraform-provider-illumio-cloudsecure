@@ -50,6 +50,18 @@ var (
 						Mode: ReadWriteAttributeMode,
 					},
 				},
+				"application_id": StringResourceAttributeWithMode{
+					StringAttribute: resource_schema.StringAttribute{
+						Description: "Id of the application on which this rule is based.",
+						Required:    true,
+						PlanModifiers: []planmodifier.String{
+							stringplanmodifier.RequiresReplace(),
+						},
+					},
+					attributeWithMode: attributeWithMode{
+						Mode: ReadWriteAttributeMode,
+					},
+				},
 				"description": resource_schema.StringAttribute{
 					Description: "Description of the application policy rule.",
 					Optional:    true,

@@ -18,6 +18,7 @@ Manages policy rules on Cloudsecure applications.
 ### Required
 
 - `action` (String) The action to take for flows matched by the application policy rule. Must be `"Allow"` or `"Deny"`.
+- `application_id` (String) Id of the application on which this rule is based.
 
 ### Optional
 
