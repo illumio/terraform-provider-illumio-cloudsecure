@@ -1902,6 +1902,12 @@ type TagToLabelResourceModel struct {
 func NewCreateApplicationPolicyRuleRequest(ctx context.Context, data *ApplicationPolicyRuleResourceModel) (*configv1.CreateApplicationPolicyRuleRequest, diag.Diagnostics) {
 	var diags diag.Diagnostics
 	proto := &configv1.CreateApplicationPolicyRuleRequest{}
+	if !data.Action.IsUnknown() && !data.Action.IsNull() {
+		var dataValue attr.Value = data.Action
+		var protoValue string
+		protoValue = dataValue.(types.String).ValueString()
+		proto.Action = protoValue
+	}
 	if !data.Description.IsUnknown() && !data.Description.IsNull() {
 		var dataValue attr.Value = data.Description
 		var protoValue string
@@ -2672,6 +2678,15 @@ func NewUpdateApplicationPolicyRuleRequest(ctx context.Context, beforeData, afte
 	proto := &configv1.UpdateApplicationPolicyRuleRequest{}
 	proto.UpdateMask, _ = fieldmaskpb.New(proto)
 	proto.Id = beforeData.Id.ValueString()
+	if !afterData.Action.Equal(beforeData.Action) {
+		proto.UpdateMask.Append(proto, "action")
+		if !afterData.Action.IsUnknown() && !afterData.Action.IsNull() {
+			var dataValue attr.Value = afterData.Action
+			var protoValue string
+			protoValue = dataValue.(types.String).ValueString()
+			proto.Action = protoValue
+		}
+	}
 	if !afterData.Description.Equal(beforeData.Description) {
 		proto.UpdateMask.Append(proto, "description")
 		if !afterData.Description.IsUnknown() && !afterData.Description.IsNull() {
@@ -3241,6 +3256,7 @@ func NewUpdateTagToLabelRequest(ctx context.Context, beforeData, afterData *TagT
 }
 func CopyCreateApplicationPolicyRuleResponse(dst *ApplicationPolicyRuleResourceModel, src *configv1.CreateApplicationPolicyRuleResponse) {
 	dst.Id = types.StringValue(src.Id)
+	dst.Action = types.StringValue(src.Action)
 	dst.Description = types.StringPointerValue(src.Description)
 	{
 		protoValue := src.FromIpListIds
@@ -3356,6 +3372,7 @@ func CopyCreateApplicationPolicyRuleResponse(dst *ApplicationPolicyRuleResourceM
 }
 func CopyReadApplicationPolicyRuleResponse(dst *ApplicationPolicyRuleResourceModel, src *configv1.ReadApplicationPolicyRuleResponse) {
 	dst.Id = types.StringValue(src.Id)
+	dst.Action = types.StringValue(src.Action)
 	dst.Description = types.StringPointerValue(src.Description)
 	{
 		protoValue := src.FromIpListIds
@@ -3471,6 +3488,7 @@ func CopyReadApplicationPolicyRuleResponse(dst *ApplicationPolicyRuleResourceMod
 }
 func CopyUpdateApplicationPolicyRuleResponse(dst *ApplicationPolicyRuleResourceModel, src *configv1.UpdateApplicationPolicyRuleResponse) {
 	dst.Id = types.StringValue(src.Id)
+	dst.Action = types.StringValue(src.Action)
 	dst.Description = types.StringPointerValue(src.Description)
 	{
 		protoValue := src.FromIpListIds

@@ -46,6 +46,9 @@ var (
 							stringplanmodifier.RequiresReplace(),
 						},
 					},
+					attributeWithMode: attributeWithMode{
+						Mode: ReadWriteAttributeMode,
+					},
 				},
 				"description": resource_schema.StringAttribute{
 					Description: "Description of the application policy rule.",

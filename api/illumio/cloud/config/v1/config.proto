@@ -56,6 +56,7 @@ message ApplicationPolicyRule_ToPorts {
   string protocol = 2;
 }
 message CreateApplicationPolicyRuleRequest {
+  string action = 2;
   optional string description = 3;
   repeated string from_ip_list_ids = 4;
   repeated ApplicationPolicyRule_FromLabels from_labels = 5;
@@ -65,6 +66,7 @@ message CreateApplicationPolicyRuleRequest {
 }
 message CreateApplicationPolicyRuleResponse {
   string id = 1;
+  string action = 2;
   optional string description = 3;
   repeated string from_ip_list_ids = 4;
   repeated ApplicationPolicyRule_FromLabels from_labels = 5;
@@ -77,6 +79,7 @@ message ReadApplicationPolicyRuleRequest {
 }
 message ReadApplicationPolicyRuleResponse {
   string id = 1;
+  string action = 2;
   optional string description = 3;
   repeated string from_ip_list_ids = 4;
   repeated ApplicationPolicyRule_FromLabels from_labels = 5;
@@ -86,6 +89,7 @@ message ReadApplicationPolicyRuleResponse {
 }
 message UpdateApplicationPolicyRuleRequest {
   string id = 1;
+  string action = 2;
   optional string description = 3;
   repeated string from_ip_list_ids = 4;
   repeated ApplicationPolicyRule_FromLabels from_labels = 5;
@@ -96,6 +100,7 @@ message UpdateApplicationPolicyRuleRequest {
 }
 message UpdateApplicationPolicyRuleResponse {
   string id = 1;
+  string action = 2;
   optional string description = 3;
   repeated string from_ip_list_ids = 4;
   repeated ApplicationPolicyRule_FromLabels from_labels = 5;
