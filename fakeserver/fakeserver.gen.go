@@ -148,6 +148,7 @@ func (s *FakeConfigServer) CreateApplicationPolicyRule(ctx context.Context, req 
 	id := uuid.New().String()
 	model := &ApplicationPolicyRule{
 		Id:            id,
+		Action:        req.Action,
 		Description:   req.Description,
 		FromIpListIds: req.FromIpListIds,
 		FromLabels:    req.FromLabels,
@@ -157,6 +158,7 @@ func (s *FakeConfigServer) CreateApplicationPolicyRule(ctx context.Context, req 
 	}
 	resp := &configv1.CreateApplicationPolicyRuleResponse{
 		Id:            id,
+		Action:        model.Action,
 		Description:   model.Description,
 		FromIpListIds: model.FromIpListIds,
 		FromLabels:    model.FromLabels,
@@ -190,6 +192,7 @@ func (s *FakeConfigServer) ReadApplicationPolicyRule(ctx context.Context, req *c
 	}
 	resp := &configv1.ReadApplicationPolicyRuleResponse{
 		Id:            id,
+		Action:        model.Action,
 		Description:   model.Description,
 		FromIpListIds: model.FromIpListIds,
 		FromLabels:    model.FromLabels,
@@ -226,6 +229,8 @@ func (s *FakeConfigServer) UpdateApplicationPolicyRule(ctx context.Context, req 
 	}
 	for _, path := range updateMaskPaths {
 		switch path {
+		case "action":
+			model.Action = req.Action
 		case "description":
 			model.Description = req.Description
 		case "from_ip_list_ids":
@@ -252,6 +257,7 @@ func (s *FakeConfigServer) UpdateApplicationPolicyRule(ctx context.Context, req 
 	}
 	resp := &configv1.UpdateApplicationPolicyRuleResponse{
 		Id:            id,
+		Action:        model.Action,
 		Description:   model.Description,
 		FromIpListIds: model.FromIpListIds,
 		FromLabels:    model.FromLabels,
