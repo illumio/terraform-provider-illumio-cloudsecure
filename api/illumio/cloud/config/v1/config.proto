@@ -276,13 +276,13 @@ message DeleteApplicationAwsResourcesRequest {
 }
 message CreateApplicationAzureResourcesRequest {
   string application_id = 2;
-  repeated string azurem_resource_ids = 3;
+  repeated string azure_resource_ids = 3;
   string subscription_id = 4;
 }
 message CreateApplicationAzureResourcesResponse {
   string id = 1;
   string application_id = 2;
-  repeated string azurem_resource_ids = 3;
+  repeated string azure_resource_ids = 3;
   string subscription_id = 4;
 }
 message ReadApplicationAzureResourcesRequest {
@@ -291,18 +291,18 @@ message ReadApplicationAzureResourcesRequest {
 message ReadApplicationAzureResourcesResponse {
   string id = 1;
   string application_id = 2;
-  repeated string azurem_resource_ids = 3;
+  repeated string azure_resource_ids = 3;
   string subscription_id = 4;
 }
 message UpdateApplicationAzureResourcesRequest {
   string id = 1;
-  repeated string azurem_resource_ids = 3;
+  repeated string azure_resource_ids = 3;
   google.protobuf.FieldMask update_mask = 5;
 }
 message UpdateApplicationAzureResourcesResponse {
   string id = 1;
   string application_id = 2;
-  repeated string azurem_resource_ids = 3;
+  repeated string azure_resource_ids = 3;
   string subscription_id = 4;
 }
 message DeleteApplicationAzureResourcesRequest {

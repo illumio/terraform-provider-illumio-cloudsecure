@@ -30,7 +30,7 @@ var (
 						Mode: ImmutableAttributeMode,
 					},
 				},
-				"azurem_resource_ids": resource_schema.SetAttribute{
+				"azure_resource_ids": resource_schema.ListAttribute{
 					ElementType: types.StringType,
 					Description: "IDs of Azure resources to associate with the CloudSecure application",
 					Optional:    true,

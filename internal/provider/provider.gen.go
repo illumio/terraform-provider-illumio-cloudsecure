@@ -2412,44 +2412,44 @@ type ApplicationAwsResourcesResourceModel struct {
 	Id                                     types.String `tfsdk:"id"`
 	AccountId                              types.String `tfsdk:"account_id"`
 	ApplicationId                          types.String `tfsdk:"application_id"`
-	AwsArns                                types.Set    `tfsdk:"aws_arns"`
-	AwsCustomerGatewayIds                  types.Set    `tfsdk:"aws_customer_gateway_ids"`
-	AwsDxConnectionIds                     types.Set    `tfsdk:"aws_dx_connection_ids"`
-	AwsDxVirtualInterfaceIds               types.Set    `tfsdk:"aws_dx_virtual_interface_ids"`
-	AwsEbsVolumeIds                        types.Set    `tfsdk:"aws_ebs_volume_ids"`
-	AwsEc2InstanceConnectEndpointIds       types.Set    `tfsdk:"aws_ec2_instance_connect_endpoint_ids"`
-	AwsEc2TransitGatewayAttachments        types.Set    `tfsdk:"aws_ec2_transit_gateway_attachments"`
-	AwsEc2TransitGatewayIds                types.Set    `tfsdk:"aws_ec2_transit_gateway_ids"`
-	AwsEc2TransitGatewayMulticastDomainIds types.Set    `tfsdk:"aws_ec2_transit_gateway_multicast_domain_ids"`
-	AwsEc2TransitGatewayRouteTableIds      types.Set    `tfsdk:"aws_ec2_transit_gateway_route_table_ids"`
-	AwsEgressOnlyInternetGatewayIds        types.Set    `tfsdk:"aws_egress_only_internet_gateway_ids"`
-	AwsEipIds                              types.Set    `tfsdk:"aws_eip_ids"`
-	AwsFlowLogIds                          types.Set    `tfsdk:"aws_flow_log_ids"`
-	AwsInstancesIds                        types.Set    `tfsdk:"aws_instances_ids"`
-	AwsInternetGatewayIds                  types.Set    `tfsdk:"aws_internet_gateway_ids"`
-	AwsNatGatewayIds                       types.Set    `tfsdk:"aws_nat_gateway_ids"`
-	AwsNetworkAcl                          types.Set    `tfsdk:"aws_network_acl"`
-	AwsNetworkInterfaceIds                 types.Set    `tfsdk:"aws_network_interface_ids"`
-	AwsRdsClusterIds                       types.Set    `tfsdk:"aws_rds_cluster_ids"`
-	AwsRouteTableIds                       types.Set    `tfsdk:"aws_route_table_ids"`
-	AwsSecurityGroupIds                    types.Set    `tfsdk:"aws_security_group_ids"`
-	AwsSecurityGroupRuleIds                types.Set    `tfsdk:"aws_security_group_rule_ids"`
-	AwsSpotFleetRequestIds                 types.Set    `tfsdk:"aws_spot_fleet_request_ids"`
-	AwsSpotInstanceRequestIds              types.Set    `tfsdk:"aws_spot_instance_request_ids"`
-	AwsSubnetIds                           types.Set    `tfsdk:"aws_subnet_ids"`
-	AwsVpcEndpointIds                      types.Set    `tfsdk:"aws_vpc_endpoint_ids"`
-	AwsVpcEndpointServiceIds               types.Set    `tfsdk:"aws_vpc_endpoint_service_ids"`
-	AwsVpcIds                              types.Set    `tfsdk:"aws_vpc_ids"`
-	AwsVpcPeeringConnectionIds             types.Set    `tfsdk:"aws_vpc_peering_connection_ids"`
-	AwsVpnConnectionIds                    types.Set    `tfsdk:"aws_vpn_connection_ids"`
-	AwsVpnGatewayIds                       types.Set    `tfsdk:"aws_vpn_gateway_ids"`
+	AwsArns                                types.List   `tfsdk:"aws_arns"`
+	AwsCustomerGatewayIds                  types.List   `tfsdk:"aws_customer_gateway_ids"`
+	AwsDxConnectionIds                     types.List   `tfsdk:"aws_dx_connection_ids"`
+	AwsDxVirtualInterfaceIds               types.List   `tfsdk:"aws_dx_virtual_interface_ids"`
+	AwsEbsVolumeIds                        types.List   `tfsdk:"aws_ebs_volume_ids"`
+	AwsEc2InstanceConnectEndpointIds       types.List   `tfsdk:"aws_ec2_instance_connect_endpoint_ids"`
+	AwsEc2TransitGatewayAttachments        types.List   `tfsdk:"aws_ec2_transit_gateway_attachments"`
+	AwsEc2TransitGatewayIds                types.List   `tfsdk:"aws_ec2_transit_gateway_ids"`
+	AwsEc2TransitGatewayMulticastDomainIds types.List   `tfsdk:"aws_ec2_transit_gateway_multicast_domain_ids"`
+	AwsEc2TransitGatewayRouteTableIds      types.List   `tfsdk:"aws_ec2_transit_gateway_route_table_ids"`
+	AwsEgressOnlyInternetGatewayIds        types.List   `tfsdk:"aws_egress_only_internet_gateway_ids"`
+	AwsEipIds                              types.List   `tfsdk:"aws_eip_ids"`
+	AwsFlowLogIds                          types.List   `tfsdk:"aws_flow_log_ids"`
+	AwsInstancesIds                        types.List   `tfsdk:"aws_instances_ids"`
+	AwsInternetGatewayIds                  types.List   `tfsdk:"aws_internet_gateway_ids"`
+	AwsNatGatewayIds                       types.List   `tfsdk:"aws_nat_gateway_ids"`
+	AwsNetworkAcl                          types.List   `tfsdk:"aws_network_acl"`
+	AwsNetworkInterfaceIds                 types.List   `tfsdk:"aws_network_interface_ids"`
+	AwsRdsClusterIds                       types.List   `tfsdk:"aws_rds_cluster_ids"`
+	AwsRouteTableIds                       types.List   `tfsdk:"aws_route_table_ids"`
+	AwsSecurityGroupIds                    types.List   `tfsdk:"aws_security_group_ids"`
+	AwsSecurityGroupRuleIds                types.List   `tfsdk:"aws_security_group_rule_ids"`
+	AwsSpotFleetRequestIds                 types.List   `tfsdk:"aws_spot_fleet_request_ids"`
+	AwsSpotInstanceRequestIds              types.List   `tfsdk:"aws_spot_instance_request_ids"`
+	AwsSubnetIds                           types.List   `tfsdk:"aws_subnet_ids"`
+	AwsVpcEndpointIds                      types.List   `tfsdk:"aws_vpc_endpoint_ids"`
+	AwsVpcEndpointServiceIds               types.List   `tfsdk:"aws_vpc_endpoint_service_ids"`
+	AwsVpcIds                              types.List   `tfsdk:"aws_vpc_ids"`
+	AwsVpcPeeringConnectionIds             types.List   `tfsdk:"aws_vpc_peering_connection_ids"`
+	AwsVpnConnectionIds                    types.List   `tfsdk:"aws_vpn_connection_ids"`
+	AwsVpnGatewayIds                       types.List   `tfsdk:"aws_vpn_gateway_ids"`
 }
 
 type ApplicationAzureResourcesResourceModel struct {
-	Id                types.String `tfsdk:"id"`
-	ApplicationId     types.String `tfsdk:"application_id"`
-	AzuremResourceIds types.Set    `tfsdk:"azurem_resource_ids"`
-	SubscriptionId    types.String `tfsdk:"subscription_id"`
+	Id               types.String `tfsdk:"id"`
+	ApplicationId    types.String `tfsdk:"application_id"`
+	AzureResourceIds types.List   `tfsdk:"azure_resource_ids"`
+	SubscriptionId   types.String `tfsdk:"subscription_id"`
 }
 
 type ApplicationPolicyRuleResourceModel struct {
@@ -2606,7 +2606,7 @@ func NewCreateApplicationAwsResourcesRequest(ctx context.Context, data *Applicat
 		var dataValue attr.Value = data.AwsArns
 		var protoValue []string
 		{
-			dataElements := dataValue.(types.Set).Elements()
+			dataElements := dataValue.(types.List).Elements()
 			protoValues := make([]string, 0, len(dataElements))
 			for _, dataElement := range dataElements {
 				var dataValue attr.Value = dataElement
@@ -2622,7 +2622,7 @@ func NewCreateApplicationAwsResourcesRequest(ctx context.Context, data *Applicat
 		var dataValue attr.Value = data.AwsCustomerGatewayIds
 		var protoValue []string
 		{
-			dataElements := dataValue.(types.Set).Elements()
+			dataElements := dataValue.(types.List).Elements()
 			protoValues := make([]string, 0, len(dataElements))
 			for _, dataElement := range dataElements {
 				var dataValue attr.Value = dataElement
@@ -2638,7 +2638,7 @@ func NewCreateApplicationAwsResourcesRequest(ctx context.Context, data *Applicat
 		var dataValue attr.Value = data.AwsDxConnectionIds
 		var protoValue []string
 		{
-			dataElements := dataValue.(types.Set).Elements()
+			dataElements := dataValue.(types.List).Elements()
 			protoValues := make([]string, 0, len(dataElements))
 			for _, dataElement := range dataElements {
 				var dataValue attr.Value = dataElement
@@ -2654,7 +2654,7 @@ func NewCreateApplicationAwsResourcesRequest(ctx context.Context, data *Applicat
 		var dataValue attr.Value = data.AwsDxVirtualInterfaceIds
 		var protoValue []string
 		{
-			dataElements := dataValue.(types.Set).Elements()
+			dataElements := dataValue.(types.List).Elements()
 			protoValues := make([]string, 0, len(dataElements))
 			for _, dataElement := range dataElements {
 				var dataValue attr.Value = dataElement
@@ -2670,7 +2670,7 @@ func NewCreateApplicationAwsResourcesRequest(ctx context.Context, data *Applicat
 		var dataValue attr.Value = data.AwsEbsVolumeIds
 		var protoValue []string
 		{
-			dataElements := dataValue.(types.Set).Elements()
+			dataElements := dataValue.(types.List).Elements()
 			protoValues := make([]string, 0, len(dataElements))
 			for _, dataElement := range dataElements {
 				var dataValue attr.Value = dataElement
@@ -2686,7 +2686,7 @@ func NewCreateApplicationAwsResourcesRequest(ctx context.Context, data *Applicat
 		var dataValue attr.Value = data.AwsEc2InstanceConnectEndpointIds
 		var protoValue []string
 		{
-			dataElements := dataValue.(types.Set).Elements()
+			dataElements := dataValue.(types.List).Elements()
 			protoValues := make([]string, 0, len(dataElements))
 			for _, dataElement := range dataElements {
 				var dataValue attr.Value = dataElement
@@ -2702,7 +2702,7 @@ func NewCreateApplicationAwsResourcesRequest(ctx context.Context, data *Applicat
 		var dataValue attr.Value = data.AwsEc2TransitGatewayAttachments
 		var protoValue []string
 		{
-			dataElements := dataValue.(types.Set).Elements()
+			dataElements := dataValue.(types.List).Elements()
 			protoValues := make([]string, 0, len(dataElements))
 			for _, dataElement := range dataElements {
 				var dataValue attr.Value = dataElement
@@ -2718,7 +2718,7 @@ func NewCreateApplicationAwsResourcesRequest(ctx context.Context, data *Applicat
 		var dataValue attr.Value = data.AwsEc2TransitGatewayIds
 		var protoValue []string
 		{
-			dataElements := dataValue.(types.Set).Elements()
+			dataElements := dataValue.(types.List).Elements()
 			protoValues := make([]string, 0, len(dataElements))
 			for _, dataElement := range dataElements {
 				var dataValue attr.Value = dataElement
@@ -2734,7 +2734,7 @@ func NewCreateApplicationAwsResourcesRequest(ctx context.Context, data *Applicat
 		var dataValue attr.Value = data.AwsEc2TransitGatewayMulticastDomainIds
 		var protoValue []string
 		{
-			dataElements := dataValue.(types.Set).Elements()
+			dataElements := dataValue.(types.List).Elements()
 			protoValues := make([]string, 0, len(dataElements))
 			for _, dataElement := range dataElements {
 				var dataValue attr.Value = dataElement
@@ -2750,7 +2750,7 @@ func NewCreateApplicationAwsResourcesRequest(ctx context.Context, data *Applicat
 		var dataValue attr.Value = data.AwsEc2TransitGatewayRouteTableIds
 		var protoValue []string
 		{
-			dataElements := dataValue.(types.Set).Elements()
+			dataElements := dataValue.(types.List).Elements()
 			protoValues := make([]string, 0, len(dataElements))
 			for _, dataElement := range dataElements {
 				var dataValue attr.Value = dataElement
@@ -2766,7 +2766,7 @@ func NewCreateApplicationAwsResourcesRequest(ctx context.Context, data *Applicat
 		var dataValue attr.Value = data.AwsEgressOnlyInternetGatewayIds
 		var protoValue []string
 		{
-			dataElements := dataValue.(types.Set).Elements()
+			dataElements := dataValue.(types.List).Elements()
 			protoValues := make([]string, 0, len(dataElements))
 			for _, dataElement := range dataElements {
 				var dataValue attr.Value = dataElement
@@ -2782,7 +2782,7 @@ func NewCreateApplicationAwsResourcesRequest(ctx context.Context, data *Applicat
 		var dataValue attr.Value = data.AwsEipIds
 		var protoValue []string
 		{
-			dataElements := dataValue.(types.Set).Elements()
+			dataElements := dataValue.(types.List).Elements()
 			protoValues := make([]string, 0, len(dataElements))
 			for _, dataElement := range dataElements {
 				var dataValue attr.Value = dataElement
@@ -2798,7 +2798,7 @@ func NewCreateApplicationAwsResourcesRequest(ctx context.Context, data *Applicat
 		var dataValue attr.Value = data.AwsFlowLogIds
 		var protoValue []string
 		{
-			dataElements := dataValue.(types.Set).Elements()
+			dataElements := dataValue.(types.List).Elements()
 			protoValues := make([]string, 0, len(dataElements))
 			for _, dataElement := range dataElements {
 				var dataValue attr.Value = dataElement
@@ -2814,7 +2814,7 @@ func NewCreateApplicationAwsResourcesRequest(ctx context.Context, data *Applicat
 		var dataValue attr.Value = data.AwsInstancesIds
 		var protoValue []string
 		{
-			dataElements := dataValue.(types.Set).Elements()
+			dataElements := dataValue.(types.List).Elements()
 			protoValues := make([]string, 0, len(dataElements))
 			for _, dataElement := range dataElements {
 				var dataValue attr.Value = dataElement
@@ -2830,7 +2830,7 @@ func NewCreateApplicationAwsResourcesRequest(ctx context.Context, data *Applicat
 		var dataValue attr.Value = data.AwsInternetGatewayIds
 		var protoValue []string
 		{
-			dataElements := dataValue.(types.Set).Elements()
+			dataElements := dataValue.(types.List).Elements()
 			protoValues := make([]string, 0, len(dataElements))
 			for _, dataElement := range dataElements {
 				var dataValue attr.Value = dataElement
@@ -2846,7 +2846,7 @@ func NewCreateApplicationAwsResourcesRequest(ctx context.Context, data *Applicat
 		var dataValue attr.Value = data.AwsNatGatewayIds
 		var protoValue []string
 		{
-			dataElements := dataValue.(types.Set).Elements()
+			dataElements := dataValue.(types.List).Elements()
 			protoValues := make([]string, 0, len(dataElements))
 			for _, dataElement := range dataElements {
 				var dataValue attr.Value = dataElement
@@ -2862,7 +2862,7 @@ func NewCreateApplicationAwsResourcesRequest(ctx context.Context, data *Applicat
 		var dataValue attr.Value = data.AwsNetworkAcl
 		var protoValue []string
 		{
-			dataElements := dataValue.(types.Set).Elements()
+			dataElements := dataValue.(types.List).Elements()
 			protoValues := make([]string, 0, len(dataElements))
 			for _, dataElement := range dataElements {
 				var dataValue attr.Value = dataElement
@@ -2878,7 +2878,7 @@ func NewCreateApplicationAwsResourcesRequest(ctx context.Context, data *Applicat
 		var dataValue attr.Value = data.AwsNetworkInterfaceIds
 		var protoValue []string
 		{
-			dataElements := dataValue.(types.Set).Elements()
+			dataElements := dataValue.(types.List).Elements()
 			protoValues := make([]string, 0, len(dataElements))
 			for _, dataElement := range dataElements {
 				var dataValue attr.Value = dataElement
@@ -2894,7 +2894,7 @@ func NewCreateApplicationAwsResourcesRequest(ctx context.Context, data *Applicat
 		var dataValue attr.Value = data.AwsRdsClusterIds
 		var protoValue []string
 		{
-			dataElements := dataValue.(types.Set).Elements()
+			dataElements := dataValue.(types.List).Elements()
 			protoValues := make([]string, 0, len(dataElements))
 			for _, dataElement := range dataElements {
 				var dataValue attr.Value = dataElement
@@ -2910,7 +2910,7 @@ func NewCreateApplicationAwsResourcesRequest(ctx context.Context, data *Applicat
 		var dataValue attr.Value = data.AwsRouteTableIds
 		var protoValue []string
 		{
-			dataElements := dataValue.(types.Set).Elements()
+			dataElements := dataValue.(types.List).Elements()
 			protoValues := make([]string, 0, len(dataElements))
 			for _, dataElement := range dataElements {
 				var dataValue attr.Value = dataElement
@@ -2926,7 +2926,7 @@ func NewCreateApplicationAwsResourcesRequest(ctx context.Context, data *Applicat
 		var dataValue attr.Value = data.AwsSecurityGroupIds
 		var protoValue []string
 		{
-			dataElements := dataValue.(types.Set).Elements()
+			dataElements := dataValue.(types.List).Elements()
 			protoValues := make([]string, 0, len(dataElements))
 			for _, dataElement := range dataElements {
 				var dataValue attr.Value = dataElement
@@ -2942,7 +2942,7 @@ func NewCreateApplicationAwsResourcesRequest(ctx context.Context, data *Applicat
 		var dataValue attr.Value = data.AwsSecurityGroupRuleIds
 		var protoValue []string
 		{
-			dataElements := dataValue.(types.Set).Elements()
+			dataElements := dataValue.(types.List).Elements()
 			protoValues := make([]string, 0, len(dataElements))
 			for _, dataElement := range dataElements {
 				var dataValue attr.Value = dataElement
@@ -2958,7 +2958,7 @@ func NewCreateApplicationAwsResourcesRequest(ctx context.Context, data *Applicat
 		var dataValue attr.Value = data.AwsSpotFleetRequestIds
 		var protoValue []string
 		{
-			dataElements := dataValue.(types.Set).Elements()
+			dataElements := dataValue.(types.List).Elements()
 			protoValues := make([]string, 0, len(dataElements))
 			for _, dataElement := range dataElements {
 				var dataValue attr.Value = dataElement
@@ -2974,7 +2974,7 @@ func NewCreateApplicationAwsResourcesRequest(ctx context.Context, data *Applicat
 		var dataValue attr.Value = data.AwsSpotInstanceRequestIds
 		var protoValue []string
 		{
-			dataElements := dataValue.(types.Set).Elements()
+			dataElements := dataValue.(types.List).Elements()
 			protoValues := make([]string, 0, len(dataElements))
 			for _, dataElement := range dataElements {
 				var dataValue attr.Value = dataElement
@@ -2990,7 +2990,7 @@ func NewCreateApplicationAwsResourcesRequest(ctx context.Context, data *Applicat
 		var dataValue attr.Value = data.AwsSubnetIds
 		var protoValue []string
 		{
-			dataElements := dataValue.(types.Set).Elements()
+			dataElements := dataValue.(types.List).Elements()
 			protoValues := make([]string, 0, len(dataElements))
 			for _, dataElement := range dataElements {
 				var dataValue attr.Value = dataElement
@@ -3006,7 +3006,7 @@ func NewCreateApplicationAwsResourcesRequest(ctx context.Context, data *Applicat
 		var dataValue attr.Value = data.AwsVpcEndpointIds
 		var protoValue []string
 		{
-			dataElements := dataValue.(types.Set).Elements()
+			dataElements := dataValue.(types.List).Elements()
 			protoValues := make([]string, 0, len(dataElements))
 			for _, dataElement := range dataElements {
 				var dataValue attr.Value = dataElement
@@ -3022,7 +3022,7 @@ func NewCreateApplicationAwsResourcesRequest(ctx context.Context, data *Applicat
 		var dataValue attr.Value = data.AwsVpcEndpointServiceIds
 		var protoValue []string
 		{
-			dataElements := dataValue.(types.Set).Elements()
+			dataElements := dataValue.(types.List).Elements()
 			protoValues := make([]string, 0, len(dataElements))
 			for _, dataElement := range dataElements {
 				var dataValue attr.Value = dataElement
@@ -3038,7 +3038,7 @@ func NewCreateApplicationAwsResourcesRequest(ctx context.Context, data *Applicat
 		var dataValue attr.Value = data.AwsVpcIds
 		var protoValue []string
 		{
-			dataElements := dataValue.(types.Set).Elements()
+			dataElements := dataValue.(types.List).Elements()
 			protoValues := make([]string, 0, len(dataElements))
 			for _, dataElement := range dataElements {
 				var dataValue attr.Value = dataElement
@@ -3054,7 +3054,7 @@ func NewCreateApplicationAwsResourcesRequest(ctx context.Context, data *Applicat
 		var dataValue attr.Value = data.AwsVpcPeeringConnectionIds
 		var protoValue []string
 		{
-			dataElements := dataValue.(types.Set).Elements()
+			dataElements := dataValue.(types.List).Elements()
 			protoValues := make([]string, 0, len(dataElements))
 			for _, dataElement := range dataElements {
 				var dataValue attr.Value = dataElement
@@ -3070,7 +3070,7 @@ func NewCreateApplicationAwsResourcesRequest(ctx context.Context, data *Applicat
 		var dataValue attr.Value = data.AwsVpnConnectionIds
 		var protoValue []string
 		{
-			dataElements := dataValue.(types.Set).Elements()
+			dataElements := dataValue.(types.List).Elements()
 			protoValues := make([]string, 0, len(dataElements))
 			for _, dataElement := range dataElements {
 				var dataValue attr.Value = dataElement
@@ -3086,7 +3086,7 @@ func NewCreateApplicationAwsResourcesRequest(ctx context.Context, data *Applicat
 		var dataValue attr.Value = data.AwsVpnGatewayIds
 		var protoValue []string
 		{
-			dataElements := dataValue.(types.Set).Elements()
+			dataElements := dataValue.(types.List).Elements()
 			protoValues := make([]string, 0, len(dataElements))
 			for _, dataElement := range dataElements {
 				var dataValue attr.Value = dataElement
@@ -3134,11 +3134,11 @@ func NewCreateApplicationAzureResourcesRequest(ctx context.Context, data *Applic
 		protoValue = dataValue.(types.String).ValueString()
 		proto.ApplicationId = protoValue
 	}
-	if !data.AzuremResourceIds.IsUnknown() && !data.AzuremResourceIds.IsNull() {
-		var dataValue attr.Value = data.AzuremResourceIds
+	if !data.AzureResourceIds.IsUnknown() && !data.AzureResourceIds.IsNull() {
+		var dataValue attr.Value = data.AzureResourceIds
 		var protoValue []string
 		{
-			dataElements := dataValue.(types.Set).Elements()
+			dataElements := dataValue.(types.List).Elements()
 			protoValues := make([]string, 0, len(dataElements))
 			for _, dataElement := range dataElements {
 				var dataValue attr.Value = dataElement
@@ -3148,7 +3148,7 @@ func NewCreateApplicationAzureResourcesRequest(ctx context.Context, data *Applic
 			}
 			protoValue = protoValues
 		}
-		proto.AzuremResourceIds = protoValue
+		proto.AzureResourceIds = protoValue
 	}
 	if !data.SubscriptionId.IsUnknown() && !data.SubscriptionId.IsNull() {
 		var dataValue attr.Value = data.SubscriptionId
@@ -4000,7 +4000,7 @@ func NewUpdateApplicationAwsResourcesRequest(ctx context.Context, beforeData, af
 			var dataValue attr.Value = afterData.AwsArns
 			var protoValue []string
 			{
-				dataElements := dataValue.(types.Set).Elements()
+				dataElements := dataValue.(types.List).Elements()
 				protoValues := make([]string, 0, len(dataElements))
 				for _, dataElement := range dataElements {
 					var dataValue attr.Value = dataElement
@@ -4019,7 +4019,7 @@ func NewUpdateApplicationAwsResourcesRequest(ctx context.Context, beforeData, af
 			var dataValue attr.Value = afterData.AwsCustomerGatewayIds
 			var protoValue []string
 			{
-				dataElements := dataValue.(types.Set).Elements()
+				dataElements := dataValue.(types.List).Elements()
 				protoValues := make([]string, 0, len(dataElements))
 				for _, dataElement := range dataElements {
 					var dataValue attr.Value = dataElement
@@ -4038,7 +4038,7 @@ func NewUpdateApplicationAwsResourcesRequest(ctx context.Context, beforeData, af
 			var dataValue attr.Value = afterData.AwsDxConnectionIds
 			var protoValue []string
 			{
-				dataElements := dataValue.(types.Set).Elements()
+				dataElements := dataValue.(types.List).Elements()
 				protoValues := make([]string, 0, len(dataElements))
 				for _, dataElement := range dataElements {
 					var dataValue attr.Value = dataElement
@@ -4057,7 +4057,7 @@ func NewUpdateApplicationAwsResourcesRequest(ctx context.Context, beforeData, af
 			var dataValue attr.Value = afterData.AwsDxVirtualInterfaceIds
 			var protoValue []string
 			{
-				dataElements := dataValue.(types.Set).Elements()
+				dataElements := dataValue.(types.List).Elements()
 				protoValues := make([]string, 0, len(dataElements))
 				for _, dataElement := range dataElements {
 					var dataValue attr.Value = dataElement
@@ -4076,7 +4076,7 @@ func NewUpdateApplicationAwsResourcesRequest(ctx context.Context, beforeData, af
 			var dataValue attr.Value = afterData.AwsEbsVolumeIds
 			var protoValue []string
 			{
-				dataElements := dataValue.(types.Set).Elements()
+				dataElements := dataValue.(types.List).Elements()
 				protoValues := make([]string, 0, len(dataElements))
 				for _, dataElement := range dataElements {
 					var dataValue attr.Value = dataElement
@@ -4095,7 +4095,7 @@ func NewUpdateApplicationAwsResourcesRequest(ctx context.Context, beforeData, af
 			var dataValue attr.Value = afterData.AwsEc2InstanceConnectEndpointIds
 			var protoValue []string
 			{
-				dataElements := dataValue.(types.Set).Elements()
+				dataElements := dataValue.(types.List).Elements()
 				protoValues := make([]string, 0, len(dataElements))
 				for _, dataElement := range dataElements {
 					var dataValue attr.Value = dataElement
@@ -4114,7 +4114,7 @@ func NewUpdateApplicationAwsResourcesRequest(ctx context.Context, beforeData, af
 			var dataValue attr.Value = afterData.AwsEc2TransitGatewayAttachments
 			var protoValue []string
 			{
-				dataElements := dataValue.(types.Set).Elements()
+				dataElements := dataValue.(types.List).Elements()
 				protoValues := make([]string, 0, len(dataElements))
 				for _, dataElement := range dataElements {
 					var dataValue attr.Value = dataElement
@@ -4133,7 +4133,7 @@ func NewUpdateApplicationAwsResourcesRequest(ctx context.Context, beforeData, af
 			var dataValue attr.Value = afterData.AwsEc2TransitGatewayIds
 			var protoValue []string
 			{
-				dataElements := dataValue.(types.Set).Elements()
+				dataElements := dataValue.(types.List).Elements()
 				protoValues := make([]string, 0, len(dataElements))
 				for _, dataElement := range dataElements {
 					var dataValue attr.Value = dataElement
@@ -4152,7 +4152,7 @@ func NewUpdateApplicationAwsResourcesRequest(ctx context.Context, beforeData, af
 			var dataValue attr.Value = afterData.AwsEc2TransitGatewayMulticastDomainIds
 			var protoValue []string
 			{
-				dataElements := dataValue.(types.Set).Elements()
+				dataElements := dataValue.(types.List).Elements()
 				protoValues := make([]string, 0, len(dataElements))
 				for _, dataElement := range dataElements {
 					var dataValue attr.Value = dataElement
@@ -4171,7 +4171,7 @@ func NewUpdateApplicationAwsResourcesRequest(ctx context.Context, beforeData, af
 			var dataValue attr.Value = afterData.AwsEc2TransitGatewayRouteTableIds
 			var protoValue []string
 			{
-				dataElements := dataValue.(types.Set).Elements()
+				dataElements := dataValue.(types.List).Elements()
 				protoValues := make([]string, 0, len(dataElements))
 				for _, dataElement := range dataElements {
 					var dataValue attr.Value = dataElement
@@ -4190,7 +4190,7 @@ func NewUpdateApplicationAwsResourcesRequest(ctx context.Context, beforeData, af
 			var dataValue attr.Value = afterData.AwsEgressOnlyInternetGatewayIds
 			var protoValue []string
 			{
-				dataElements := dataValue.(types.Set).Elements()
+				dataElements := dataValue.(types.List).Elements()
 				protoValues := make([]string, 0, len(dataElements))
 				for _, dataElement := range dataElements {
 					var dataValue attr.Value = dataElement
@@ -4209,7 +4209,7 @@ func NewUpdateApplicationAwsResourcesRequest(ctx context.Context, beforeData, af
 			var dataValue attr.Value = afterData.AwsEipIds
 			var protoValue []string
 			{
-				dataElements := dataValue.(types.Set).Elements()
+				dataElements := dataValue.(types.List).Elements()
 				protoValues := make([]string, 0, len(dataElements))
 				for _, dataElement := range dataElements {
 					var dataValue attr.Value = dataElement
@@ -4228,7 +4228,7 @@ func NewUpdateApplicationAwsResourcesRequest(ctx context.Context, beforeData, af
 			var dataValue attr.Value = afterData.AwsFlowLogIds
 			var protoValue []string
 			{
-				dataElements := dataValue.(types.Set).Elements()
+				dataElements := dataValue.(types.List).Elements()
 				protoValues := make([]string, 0, len(dataElements))
 				for _, dataElement := range dataElements {
 					var dataValue attr.Value = dataElement
@@ -4247,7 +4247,7 @@ func NewUpdateApplicationAwsResourcesRequest(ctx context.Context, beforeData, af
 			var dataValue attr.Value = afterData.AwsInstancesIds
 			var protoValue []string
 			{
-				dataElements := dataValue.(types.Set).Elements()
+				dataElements := dataValue.(types.List).Elements()
 				protoValues := make([]string, 0, len(dataElements))
 				for _, dataElement := range dataElements {
 					var dataValue attr.Value = dataElement
@@ -4266,7 +4266,7 @@ func NewUpdateApplicationAwsResourcesRequest(ctx context.Context, beforeData, af
 			var dataValue attr.Value = afterData.AwsInternetGatewayIds
 			var protoValue []string
 			{
-				dataElements := dataValue.(types.Set).Elements()
+				dataElements := dataValue.(types.List).Elements()
 				protoValues := make([]string, 0, len(dataElements))
 				for _, dataElement := range dataElements {
 					var dataValue attr.Value = dataElement
@@ -4285,7 +4285,7 @@ func NewUpdateApplicationAwsResourcesRequest(ctx context.Context, beforeData, af
 			var dataValue attr.Value = afterData.AwsNatGatewayIds
 			var protoValue []string
 			{
-				dataElements := dataValue.(types.Set).Elements()
+				dataElements := dataValue.(types.List).Elements()
 				protoValues := make([]string, 0, len(dataElements))
 				for _, dataElement := range dataElements {
 					var dataValue attr.Value = dataElement
@@ -4304,7 +4304,7 @@ func NewUpdateApplicationAwsResourcesRequest(ctx context.Context, beforeData, af
 			var dataValue attr.Value = afterData.AwsNetworkAcl
 			var protoValue []string
 			{
-				dataElements := dataValue.(types.Set).Elements()
+				dataElements := dataValue.(types.List).Elements()
 				protoValues := make([]string, 0, len(dataElements))
 				for _, dataElement := range dataElements {
 					var dataValue attr.Value = dataElement
@@ -4323,7 +4323,7 @@ func NewUpdateApplicationAwsResourcesRequest(ctx context.Context, beforeData, af
 			var dataValue attr.Value = afterData.AwsNetworkInterfaceIds
 			var protoValue []string
 			{
-				dataElements := dataValue.(types.Set).Elements()
+				dataElements := dataValue.(types.List).Elements()
 				protoValues := make([]string, 0, len(dataElements))
 				for _, dataElement := range dataElements {
 					var dataValue attr.Value = dataElement
@@ -4342,7 +4342,7 @@ func NewUpdateApplicationAwsResourcesRequest(ctx context.Context, beforeData, af
 			var dataValue attr.Value = afterData.AwsRdsClusterIds
 			var protoValue []string
 			{
-				dataElements := dataValue.(types.Set).Elements()
+				dataElements := dataValue.(types.List).Elements()
 				protoValues := make([]string, 0, len(dataElements))
 				for _, dataElement := range dataElements {
 					var dataValue attr.Value = dataElement
@@ -4361,7 +4361,7 @@ func NewUpdateApplicationAwsResourcesRequest(ctx context.Context, beforeData, af
 			var dataValue attr.Value = afterData.AwsRouteTableIds
 			var protoValue []string
 			{
-				dataElements := dataValue.(types.Set).Elements()
+				dataElements := dataValue.(types.List).Elements()
 				protoValues := make([]string, 0, len(dataElements))
 				for _, dataElement := range dataElements {
 					var dataValue attr.Value = dataElement
@@ -4380,7 +4380,7 @@ func NewUpdateApplicationAwsResourcesRequest(ctx context.Context, beforeData, af
 			var dataValue attr.Value = afterData.AwsSecurityGroupIds
 			var protoValue []string
 			{
-				dataElements := dataValue.(types.Set).Elements()
+				dataElements := dataValue.(types.List).Elements()
 				protoValues := make([]string, 0, len(dataElements))
 				for _, dataElement := range dataElements {
 					var dataValue attr.Value = dataElement
@@ -4399,7 +4399,7 @@ func NewUpdateApplicationAwsResourcesRequest(ctx context.Context, beforeData, af
 			var dataValue attr.Value = afterData.AwsSecurityGroupRuleIds
 			var protoValue []string
 			{
-				dataElements := dataValue.(types.Set).Elements()
+				dataElements := dataValue.(types.List).Elements()
 				protoValues := make([]string, 0, len(dataElements))
 				for _, dataElement := range dataElements {
 					var dataValue attr.Value = dataElement
@@ -4418,7 +4418,7 @@ func NewUpdateApplicationAwsResourcesRequest(ctx context.Context, beforeData, af
 			var dataValue attr.Value = afterData.AwsSpotFleetRequestIds
 			var protoValue []string
 			{
-				dataElements := dataValue.(types.Set).Elements()
+				dataElements := dataValue.(types.List).Elements()
 				protoValues := make([]string, 0, len(dataElements))
 				for _, dataElement := range dataElements {
 					var dataValue attr.Value = dataElement
@@ -4437,7 +4437,7 @@ func NewUpdateApplicationAwsResourcesRequest(ctx context.Context, beforeData, af
 			var dataValue attr.Value = afterData.AwsSpotInstanceRequestIds
 			var protoValue []string
 			{
-				dataElements := dataValue.(types.Set).Elements()
+				dataElements := dataValue.(types.List).Elements()
 				protoValues := make([]string, 0, len(dataElements))
 				for _, dataElement := range dataElements {
 					var dataValue attr.Value = dataElement
@@ -4456,7 +4456,7 @@ func NewUpdateApplicationAwsResourcesRequest(ctx context.Context, beforeData, af
 			var dataValue attr.Value = afterData.AwsSubnetIds
 			var protoValue []string
 			{
-				dataElements := dataValue.(types.Set).Elements()
+				dataElements := dataValue.(types.List).Elements()
 				protoValues := make([]string, 0, len(dataElements))
 				for _, dataElement := range dataElements {
 					var dataValue attr.Value = dataElement
@@ -4475,7 +4475,7 @@ func NewUpdateApplicationAwsResourcesRequest(ctx context.Context, beforeData, af
 			var dataValue attr.Value = afterData.AwsVpcEndpointIds
 			var protoValue []string
 			{
-				dataElements := dataValue.(types.Set).Elements()
+				dataElements := dataValue.(types.List).Elements()
 				protoValues := make([]string, 0, len(dataElements))
 				for _, dataElement := range dataElements {
 					var dataValue attr.Value = dataElement
@@ -4494,7 +4494,7 @@ func NewUpdateApplicationAwsResourcesRequest(ctx context.Context, beforeData, af
 			var dataValue attr.Value = afterData.AwsVpcEndpointServiceIds
 			var protoValue []string
 			{
-				dataElements := dataValue.(types.Set).Elements()
+				dataElements := dataValue.(types.List).Elements()
 				protoValues := make([]string, 0, len(dataElements))
 				for _, dataElement := range dataElements {
 					var dataValue attr.Value = dataElement
@@ -4513,7 +4513,7 @@ func NewUpdateApplicationAwsResourcesRequest(ctx context.Context, beforeData, af
 			var dataValue attr.Value = afterData.AwsVpcIds
 			var protoValue []string
 			{
-				dataElements := dataValue.(types.Set).Elements()
+				dataElements := dataValue.(types.List).Elements()
 				protoValues := make([]string, 0, len(dataElements))
 				for _, dataElement := range dataElements {
 					var dataValue attr.Value = dataElement
@@ -4532,7 +4532,7 @@ func NewUpdateApplicationAwsResourcesRequest(ctx context.Context, beforeData, af
 			var dataValue attr.Value = afterData.AwsVpcPeeringConnectionIds
 			var protoValue []string
 			{
-				dataElements := dataValue.(types.Set).Elements()
+				dataElements := dataValue.(types.List).Elements()
 				protoValues := make([]string, 0, len(dataElements))
 				for _, dataElement := range dataElements {
 					var dataValue attr.Value = dataElement
@@ -4551,7 +4551,7 @@ func NewUpdateApplicationAwsResourcesRequest(ctx context.Context, beforeData, af
 			var dataValue attr.Value = afterData.AwsVpnConnectionIds
 			var protoValue []string
 			{
-				dataElements := dataValue.(types.Set).Elements()
+				dataElements := dataValue.(types.List).Elements()
 				protoValues := make([]string, 0, len(dataElements))
 				for _, dataElement := range dataElements {
 					var dataValue attr.Value = dataElement
@@ -4570,7 +4570,7 @@ func NewUpdateApplicationAwsResourcesRequest(ctx context.Context, beforeData, af
 			var dataValue attr.Value = afterData.AwsVpnGatewayIds
 			var protoValue []string
 			{
-				dataElements := dataValue.(types.Set).Elements()
+				dataElements := dataValue.(types.List).Elements()
 				protoValues := make([]string, 0, len(dataElements))
 				for _, dataElement := range dataElements {
 					var dataValue attr.Value = dataElement
@@ -4591,13 +4591,13 @@ func NewUpdateApplicationAzureResourcesRequest(ctx context.Context, beforeData, 
 	proto := &configv1.UpdateApplicationAzureResourcesRequest{}
 	proto.UpdateMask, _ = fieldmaskpb.New(proto)
 	proto.Id = beforeData.Id.ValueString()
-	if !afterData.AzuremResourceIds.Equal(beforeData.AzuremResourceIds) {
-		proto.UpdateMask.Append(proto, "azurem_resource_ids")
-		if !afterData.AzuremResourceIds.IsUnknown() && !afterData.AzuremResourceIds.IsNull() {
-			var dataValue attr.Value = afterData.AzuremResourceIds
+	if !afterData.AzureResourceIds.Equal(beforeData.AzureResourceIds) {
+		proto.UpdateMask.Append(proto, "azure_resource_ids")
+		if !afterData.AzureResourceIds.IsUnknown() && !afterData.AzureResourceIds.IsNull() {
+			var dataValue attr.Value = afterData.AzureResourceIds
 			var protoValue []string
 			{
-				dataElements := dataValue.(types.Set).Elements()
+				dataElements := dataValue.(types.List).Elements()
 				protoValues := make([]string, 0, len(dataElements))
 				for _, dataElement := range dataElements {
 					var dataValue attr.Value = dataElement
@@ -4607,7 +4607,7 @@ func NewUpdateApplicationAzureResourcesRequest(ctx context.Context, beforeData, 
 				}
 				protoValue = protoValues
 			}
-			proto.AzuremResourceIds = protoValue
+			proto.AzureResourceIds = protoValue
 		}
 	}
 	return proto, diags
@@ -5227,12 +5227,12 @@ func CopyCreateApplicationAwsResourcesResponse(dst *ApplicationAwsResourcesResou
 	dst.ApplicationId = types.StringValue(src.ApplicationId)
 	{
 		protoValue := src.AwsArns
-		var dataValue types.Set
+		var dataValue types.List
 		{
 			dataElementType := types.StringType
 			protoElements := protoValue
 			if protoElements == nil {
-				dataValue = types.SetNull(dataElementType)
+				dataValue = types.ListNull(dataElementType)
 			} else {
 				dataValues := make([]attr.Value, 0, len(protoElements))
 				for _, protoElement := range protoElements {
@@ -5241,19 +5241,19 @@ func CopyCreateApplicationAwsResourcesResponse(dst *ApplicationAwsResourcesResou
 					dataValue = types.StringValue(protoValue)
 					dataValues = append(dataValues, dataValue)
 				}
-				dataValue = types.SetValueMust(dataElementType, dataValues)
+				dataValue = types.ListValueMust(dataElementType, dataValues)
 			}
 		}
 		dst.AwsArns = dataValue
 	}
 	{
 		protoValue := src.AwsCustomerGatewayIds
-		var dataValue types.Set
+		var dataValue types.List
 		{
 			dataElementType := types.StringType
 			protoElements := protoValue
 			if protoElements == nil {
-				dataValue = types.SetNull(dataElementType)
+				dataValue = types.ListNull(dataElementType)
 			} else {
 				dataValues := make([]attr.Value, 0, len(protoElements))
 				for _, protoElement := range protoElements {
@@ -5262,19 +5262,19 @@ func CopyCreateApplicationAwsResourcesResponse(dst *ApplicationAwsResourcesResou
 					dataValue = types.StringValue(protoValue)
 					dataValues = append(dataValues, dataValue)
 				}
-				dataValue = types.SetValueMust(dataElementType, dataValues)
+				dataValue = types.ListValueMust(dataElementType, dataValues)
 			}
 		}
 		dst.AwsCustomerGatewayIds = dataValue
 	}
 	{
 		protoValue := src.AwsDxConnectionIds
-		var dataValue types.Set
+		var dataValue types.List
 		{
 			dataElementType := types.StringType
 			protoElements := protoValue
 			if protoElements == nil {
-				dataValue = types.SetNull(dataElementType)
+				dataValue = types.ListNull(dataElementType)
 			} else {
 				dataValues := make([]attr.Value, 0, len(protoElements))
 				for _, protoElement := range protoElements {
@@ -5283,19 +5283,19 @@ func CopyCreateApplicationAwsResourcesResponse(dst *ApplicationAwsResourcesResou
 					dataValue = types.StringValue(protoValue)
 					dataValues = append(dataValues, dataValue)
 				}
-				dataValue = types.SetValueMust(dataElementType, dataValues)
+				dataValue = types.ListValueMust(dataElementType, dataValues)
 			}
 		}
 		dst.AwsDxConnectionIds = dataValue
 	}
 	{
 		protoValue := src.AwsDxVirtualInterfaceIds
-		var dataValue types.Set
+		var dataValue types.List
 		{
 			dataElementType := types.StringType
 			protoElements := protoValue
 			if protoElements == nil {
-				dataValue = types.SetNull(dataElementType)
+				dataValue = types.ListNull(dataElementType)
 			} else {
 				dataValues := make([]attr.Value, 0, len(protoElements))
 				for _, protoElement := range protoElements {
@@ -5304,19 +5304,19 @@ func CopyCreateApplicationAwsResourcesResponse(dst *ApplicationAwsResourcesResou
 					dataValue = types.StringValue(protoValue)
 					dataValues = append(dataValues, dataValue)
 				}
-				dataValue = types.SetValueMust(dataElementType, dataValues)
+				dataValue = types.ListValueMust(dataElementType, dataValues)
 			}
 		}
 		dst.AwsDxVirtualInterfaceIds = dataValue
 	}
 	{
 		protoValue := src.AwsEbsVolumeIds
-		var dataValue types.Set
+		var dataValue types.List
 		{
 			dataElementType := types.StringType
 			protoElements := protoValue
 			if protoElements == nil {
-				dataValue = types.SetNull(dataElementType)
+				dataValue = types.ListNull(dataElementType)
 			} else {
 				dataValues := make([]attr.Value, 0, len(protoElements))
 				for _, protoElement := range protoElements {
@@ -5325,19 +5325,19 @@ func CopyCreateApplicationAwsResourcesResponse(dst *ApplicationAwsResourcesResou
 					dataValue = types.StringValue(protoValue)
 					dataValues = append(dataValues, dataValue)
 				}
-				dataValue = types.SetValueMust(dataElementType, dataValues)
+				dataValue = types.ListValueMust(dataElementType, dataValues)
 			}
 		}
 		dst.AwsEbsVolumeIds = dataValue
 	}
 	{
 		protoValue := src.AwsEc2InstanceConnectEndpointIds
-		var dataValue types.Set
+		var dataValue types.List
 		{
 			dataElementType := types.StringType
 			protoElements := protoValue
 			if protoElements == nil {
-				dataValue = types.SetNull(dataElementType)
+				dataValue = types.ListNull(dataElementType)
 			} else {
 				dataValues := make([]attr.Value, 0, len(protoElements))
 				for _, protoElement := range protoElements {
@@ -5346,19 +5346,19 @@ func CopyCreateApplicationAwsResourcesResponse(dst *ApplicationAwsResourcesResou
 					dataValue = types.StringValue(protoValue)
 					dataValues = append(dataValues, dataValue)
 				}
-				dataValue = types.SetValueMust(dataElementType, dataValues)
+				dataValue = types.ListValueMust(dataElementType, dataValues)
 			}
 		}
 		dst.AwsEc2InstanceConnectEndpointIds = dataValue
 	}
 	{
 		protoValue := src.AwsEc2TransitGatewayAttachments
-		var dataValue types.Set
+		var dataValue types.List
 		{
 			dataElementType := types.StringType
 			protoElements := protoValue
 			if protoElements == nil {
-				dataValue = types.SetNull(dataElementType)
+				dataValue = types.ListNull(dataElementType)
 			} else {
 				dataValues := make([]attr.Value, 0, len(protoElements))
 				for _, protoElement := range protoElements {
@@ -5367,19 +5367,19 @@ func CopyCreateApplicationAwsResourcesResponse(dst *ApplicationAwsResourcesResou
 					dataValue = types.StringValue(protoValue)
 					dataValues = append(dataValues, dataValue)
 				}
-				dataValue = types.SetValueMust(dataElementType, dataValues)
+				dataValue = types.ListValueMust(dataElementType, dataValues)
 			}
 		}
 		dst.AwsEc2TransitGatewayAttachments = dataValue
 	}
 	{
 		protoValue := src.AwsEc2TransitGatewayIds
-		var dataValue types.Set
+		var dataValue types.List
 		{
 			dataElementType := types.StringType
 			protoElements := protoValue
 			if protoElements == nil {
-				dataValue = types.SetNull(dataElementType)
+				dataValue = types.ListNull(dataElementType)
 			} else {
 				dataValues := make([]attr.Value, 0, len(protoElements))
 				for _, protoElement := range protoElements {
@@ -5388,19 +5388,19 @@ func CopyCreateApplicationAwsResourcesResponse(dst *ApplicationAwsResourcesResou
 					dataValue = types.StringValue(protoValue)
 					dataValues = append(dataValues, dataValue)
 				}
-				dataValue = types.SetValueMust(dataElementType, dataValues)
+				dataValue = types.ListValueMust(dataElementType, dataValues)
 			}
 		}
 		dst.AwsEc2TransitGatewayIds = dataValue
 	}
 	{
 		protoValue := src.AwsEc2TransitGatewayMulticastDomainIds
-		var dataValue types.Set
+		var dataValue types.List
 		{
 			dataElementType := types.StringType
 			protoElements := protoValue
 			if protoElements == nil {
-				dataValue = types.SetNull(dataElementType)
+				dataValue = types.ListNull(dataElementType)
 			} else {
 				dataValues := make([]attr.Value, 0, len(protoElements))
 				for _, protoElement := range protoElements {
@@ -5409,19 +5409,19 @@ func CopyCreateApplicationAwsResourcesResponse(dst *ApplicationAwsResourcesResou
 					dataValue = types.StringValue(protoValue)
 					dataValues = append(dataValues, dataValue)
 				}
-				dataValue = types.SetValueMust(dataElementType, dataValues)
+				dataValue = types.ListValueMust(dataElementType, dataValues)
 			}
 		}
 		dst.AwsEc2TransitGatewayMulticastDomainIds = dataValue
 	}
 	{
 		protoValue := src.AwsEc2TransitGatewayRouteTableIds
-		var dataValue types.Set
+		var dataValue types.List
 		{
 			dataElementType := types.StringType
 			protoElements := protoValue
 			if protoElements == nil {
-				dataValue = types.SetNull(dataElementType)
+				dataValue = types.ListNull(dataElementType)
 			} else {
 				dataValues := make([]attr.Value, 0, len(protoElements))
 				for _, protoElement := range protoElements {
@@ -5430,19 +5430,19 @@ func CopyCreateApplicationAwsResourcesResponse(dst *ApplicationAwsResourcesResou
 					dataValue = types.StringValue(protoValue)
 					dataValues = append(dataValues, dataValue)
 				}
-				dataValue = types.SetValueMust(dataElementType, dataValues)
+				dataValue = types.ListValueMust(dataElementType, dataValues)
 			}
 		}
 		dst.AwsEc2TransitGatewayRouteTableIds = dataValue
 	}
 	{
 		protoValue := src.AwsEgressOnlyInternetGatewayIds
-		var dataValue types.Set
+		var dataValue types.List
 		{
 			dataElementType := types.StringType
 			protoElements := protoValue
 			if protoElements == nil {
-				dataValue = types.SetNull(dataElementType)
+				dataValue = types.ListNull(dataElementType)
 			} else {
 				dataValues := make([]attr.Value, 0, len(protoElements))
 				for _, protoElement := range protoElements {
@@ -5451,19 +5451,19 @@ func CopyCreateApplicationAwsResourcesResponse(dst *ApplicationAwsResourcesResou
 					dataValue = types.StringValue(protoValue)
 					dataValues = append(dataValues, dataValue)
 				}
-				dataValue = types.SetValueMust(dataElementType, dataValues)
+				dataValue = types.ListValueMust(dataElementType, dataValues)
 			}
 		}
 		dst.AwsEgressOnlyInternetGatewayIds = dataValue
 	}
 	{
 		protoValue := src.AwsEipIds
-		var dataValue types.Set
+		var dataValue types.List
 		{
 			dataElementType := types.StringType
 			protoElements := protoValue
 			if protoElements == nil {
-				dataValue = types.SetNull(dataElementType)
+				dataValue = types.ListNull(dataElementType)
 			} else {
 				dataValues := make([]attr.Value, 0, len(protoElements))
 				for _, protoElement := range protoElements {
@@ -5472,19 +5472,19 @@ func CopyCreateApplicationAwsResourcesResponse(dst *ApplicationAwsResourcesResou
 					dataValue = types.StringValue(protoValue)
 					dataValues = append(dataValues, dataValue)
 				}
-				dataValue = types.SetValueMust(dataElementType, dataValues)
+				dataValue = types.ListValueMust(dataElementType, dataValues)
 			}
 		}
 		dst.AwsEipIds = dataValue
 	}
 	{
 		protoValue := src.AwsFlowLogIds
-		var dataValue types.Set
+		var dataValue types.List
 		{
 			dataElementType := types.StringType
 			protoElements := protoValue
 			if protoElements == nil {
-				dataValue = types.SetNull(dataElementType)
+				dataValue = types.ListNull(dataElementType)
 			} else {
 				dataValues := make([]attr.Value, 0, len(protoElements))
 				for _, protoElement := range protoElements {
@@ -5493,19 +5493,19 @@ func CopyCreateApplicationAwsResourcesResponse(dst *ApplicationAwsResourcesResou
 					dataValue = types.StringValue(protoValue)
 					dataValues = append(dataValues, dataValue)
 				}
-				dataValue = types.SetValueMust(dataElementType, dataValues)
+				dataValue = types.ListValueMust(dataElementType, dataValues)
 			}
 		}
 		dst.AwsFlowLogIds = dataValue
 	}
 	{
 		protoValue := src.AwsInstancesIds
-		var dataValue types.Set
+		var dataValue types.List
 		{
 			dataElementType := types.StringType
 			protoElements := protoValue
 			if protoElements == nil {
-				dataValue = types.SetNull(dataElementType)
+				dataValue = types.ListNull(dataElementType)
 			} else {
 				dataValues := make([]attr.Value, 0, len(protoElements))
 				for _, protoElement := range protoElements {
@@ -5514,19 +5514,19 @@ func CopyCreateApplicationAwsResourcesResponse(dst *ApplicationAwsResourcesResou
 					dataValue = types.StringValue(protoValue)
 					dataValues = append(dataValues, dataValue)
 				}
-				dataValue = types.SetValueMust(dataElementType, dataValues)
+				dataValue = types.ListValueMust(dataElementType, dataValues)
 			}
 		}
 		dst.AwsInstancesIds = dataValue
 	}
 	{
 		protoValue := src.AwsInternetGatewayIds
-		var dataValue types.Set
+		var dataValue types.List
 		{
 			dataElementType := types.StringType
 			protoElements := protoValue
 			if protoElements == nil {
-				dataValue = types.SetNull(dataElementType)
+				dataValue = types.ListNull(dataElementType)
 			} else {
 				dataValues := make([]attr.Value, 0, len(protoElements))
 				for _, protoElement := range protoElements {
@@ -5535,19 +5535,19 @@ func CopyCreateApplicationAwsResourcesResponse(dst *ApplicationAwsResourcesResou
 					dataValue = types.StringValue(protoValue)
 					dataValues = append(dataValues, dataValue)
 				}
-				dataValue = types.SetValueMust(dataElementType, dataValues)
+				dataValue = types.ListValueMust(dataElementType, dataValues)
 			}
 		}
 		dst.AwsInternetGatewayIds = dataValue
 	}
 	{
 		protoValue := src.AwsNatGatewayIds
-		var dataValue types.Set
+		var dataValue types.List
 		{
 			dataElementType := types.StringType
 			protoElements := protoValue
 			if protoElements == nil {
-				dataValue = types.SetNull(dataElementType)
+				dataValue = types.ListNull(dataElementType)
 			} else {
 				dataValues := make([]attr.Value, 0, len(protoElements))
 				for _, protoElement := range protoElements {
@@ -5556,19 +5556,19 @@ func CopyCreateApplicationAwsResourcesResponse(dst *ApplicationAwsResourcesResou
 					dataValue = types.StringValue(protoValue)
 					dataValues = append(dataValues, dataValue)
 				}
-				dataValue = types.SetValueMust(dataElementType, dataValues)
+				dataValue = types.ListValueMust(dataElementType, dataValues)
 			}
 		}
 		dst.AwsNatGatewayIds = dataValue
 	}
 	{
 		protoValue := src.AwsNetworkAcl
-		var dataValue types.Set
+		var dataValue types.List
 		{
 			dataElementType := types.StringType
 			protoElements := protoValue
 			if protoElements == nil {
-				dataValue = types.SetNull(dataElementType)
+				dataValue = types.ListNull(dataElementType)
 			} else {
 				dataValues := make([]attr.Value, 0, len(protoElements))
 				for _, protoElement := range protoElements {
@@ -5577,19 +5577,19 @@ func CopyCreateApplicationAwsResourcesResponse(dst *ApplicationAwsResourcesResou
 					dataValue = types.StringValue(protoValue)
 					dataValues = append(dataValues, dataValue)
 				}
-				dataValue = types.SetValueMust(dataElementType, dataValues)
+				dataValue = types.ListValueMust(dataElementType, dataValues)
 			}
 		}
 		dst.AwsNetworkAcl = dataValue
 	}
 	{
 		protoValue := src.AwsNetworkInterfaceIds
-		var dataValue types.Set
+		var dataValue types.List
 		{
 			dataElementType := types.StringType
 			protoElements := protoValue
 			if protoElements == nil {
-				dataValue = types.SetNull(dataElementType)
+				dataValue = types.ListNull(dataElementType)
 			} else {
 				dataValues := make([]attr.Value, 0, len(protoElements))
 				for _, protoElement := range protoElements {
@@ -5598,19 +5598,19 @@ func CopyCreateApplicationAwsResourcesResponse(dst *ApplicationAwsResourcesResou
 					dataValue = types.StringValue(protoValue)
 					dataValues = append(dataValues, dataValue)
 				}
-				dataValue = types.SetValueMust(dataElementType, dataValues)
+				dataValue = types.ListValueMust(dataElementType, dataValues)
 			}
 		}
 		dst.AwsNetworkInterfaceIds = dataValue
 	}
 	{
 		protoValue := src.AwsRdsClusterIds
-		var dataValue types.Set
+		var dataValue types.List
 		{
 			dataElementType := types.StringType
 			protoElements := protoValue
 			if protoElements == nil {
-				dataValue = types.SetNull(dataElementType)
+				dataValue = types.ListNull(dataElementType)
 			} else {
 				dataValues := make([]attr.Value, 0, len(protoElements))
 				for _, protoElement := range protoElements {
@@ -5619,19 +5619,19 @@ func CopyCreateApplicationAwsResourcesResponse(dst *ApplicationAwsResourcesResou
 					dataValue = types.StringValue(protoValue)
 					dataValues = append(dataValues, dataValue)
 				}
-				dataValue = types.SetValueMust(dataElementType, dataValues)
+				dataValue = types.ListValueMust(dataElementType, dataValues)
 			}
 		}
 		dst.AwsRdsClusterIds = dataValue
 	}
 	{
 		protoValue := src.AwsRouteTableIds
-		var dataValue types.Set
+		var dataValue types.List
 		{
 			dataElementType := types.StringType
 			protoElements := protoValue
 			if protoElements == nil {
-				dataValue = types.SetNull(dataElementType)
+				dataValue = types.ListNull(dataElementType)
 			} else {
 				dataValues := make([]attr.Value, 0, len(protoElements))
 				for _, protoElement := range protoElements {
@@ -5640,19 +5640,19 @@ func CopyCreateApplicationAwsResourcesResponse(dst *ApplicationAwsResourcesResou
 					dataValue = types.StringValue(protoValue)
 					dataValues = append(dataValues, dataValue)
 				}
-				dataValue = types.SetValueMust(dataElementType, dataValues)
+				dataValue = types.ListValueMust(dataElementType, dataValues)
 			}
 		}
 		dst.AwsRouteTableIds = dataValue
 	}
 	{
 		protoValue := src.AwsSecurityGroupIds
-		var dataValue types.Set
+		var dataValue types.List
 		{
 			dataElementType := types.StringType
 			protoElements := protoValue
 			if protoElements == nil {
-				dataValue = types.SetNull(dataElementType)
+				dataValue = types.ListNull(dataElementType)
 			} else {
 				dataValues := make([]attr.Value, 0, len(protoElements))
 				for _, protoElement := range protoElements {
@@ -5661,19 +5661,19 @@ func CopyCreateApplicationAwsResourcesResponse(dst *ApplicationAwsResourcesResou
 					dataValue = types.StringValue(protoValue)
 					dataValues = append(dataValues, dataValue)
 				}
-				dataValue = types.SetValueMust(dataElementType, dataValues)
+				dataValue = types.ListValueMust(dataElementType, dataValues)
 			}
 		}
 		dst.AwsSecurityGroupIds = dataValue
 	}
 	{
 		protoValue := src.AwsSecurityGroupRuleIds
-		var dataValue types.Set
+		var dataValue types.List
 		{
 			dataElementType := types.StringType
 			protoElements := protoValue
 			if protoElements == nil {
-				dataValue = types.SetNull(dataElementType)
+				dataValue = types.ListNull(dataElementType)
 			} else {
 				dataValues := make([]attr.Value, 0, len(protoElements))
 				for _, protoElement := range protoElements {
@@ -5682,19 +5682,19 @@ func CopyCreateApplicationAwsResourcesResponse(dst *ApplicationAwsResourcesResou
 					dataValue = types.StringValue(protoValue)
 					dataValues = append(dataValues, dataValue)
 				}
-				dataValue = types.SetValueMust(dataElementType, dataValues)
+				dataValue = types.ListValueMust(dataElementType, dataValues)
 			}
 		}
 		dst.AwsSecurityGroupRuleIds = dataValue
 	}
 	{
 		protoValue := src.AwsSpotFleetRequestIds
-		var dataValue types.Set
+		var dataValue types.List
 		{
 			dataElementType := types.StringType
 			protoElements := protoValue
 			if protoElements == nil {
-				dataValue = types.SetNull(dataElementType)
+				dataValue = types.ListNull(dataElementType)
 			} else {
 				dataValues := make([]attr.Value, 0, len(protoElements))
 				for _, protoElement := range protoElements {
@@ -5703,19 +5703,19 @@ func CopyCreateApplicationAwsResourcesResponse(dst *ApplicationAwsResourcesResou
 					dataValue = types.StringValue(protoValue)
 					dataValues = append(dataValues, dataValue)
 				}
-				dataValue = types.SetValueMust(dataElementType, dataValues)
+				dataValue = types.ListValueMust(dataElementType, dataValues)
 			}
 		}
 		dst.AwsSpotFleetRequestIds = dataValue
 	}
 	{
 		protoValue := src.AwsSpotInstanceRequestIds
-		var dataValue types.Set
+		var dataValue types.List
 		{
 			dataElementType := types.StringType
 			protoElements := protoValue
 			if protoElements == nil {
-				dataValue = types.SetNull(dataElementType)
+				dataValue = types.ListNull(dataElementType)
 			} else {
 				dataValues := make([]attr.Value, 0, len(protoElements))
 				for _, protoElement := range protoElements {
@@ -5724,19 +5724,19 @@ func CopyCreateApplicationAwsResourcesResponse(dst *ApplicationAwsResourcesResou
 					dataValue = types.StringValue(protoValue)
 					dataValues = append(dataValues, dataValue)
 				}
-				dataValue = types.SetValueMust(dataElementType, dataValues)
+				dataValue = types.ListValueMust(dataElementType, dataValues)
 			}
 		}
 		dst.AwsSpotInstanceRequestIds = dataValue
 	}
 	{
 		protoValue := src.AwsSubnetIds
-		var dataValue types.Set
+		var dataValue types.List
 		{
 			dataElementType := types.StringType
 			protoElements := protoValue
 			if protoElements == nil {
-				dataValue = types.SetNull(dataElementType)
+				dataValue = types.ListNull(dataElementType)
 			} else {
 				dataValues := make([]attr.Value, 0, len(protoElements))
 				for _, protoElement := range protoElements {
@@ -5745,19 +5745,19 @@ func CopyCreateApplicationAwsResourcesResponse(dst *ApplicationAwsResourcesResou
 					dataValue = types.StringValue(protoValue)
 					dataValues = append(dataValues, dataValue)
 				}
-				dataValue = types.SetValueMust(dataElementType, dataValues)
+				dataValue = types.ListValueMust(dataElementType, dataValues)
 			}
 		}
 		dst.AwsSubnetIds = dataValue
 	}
 	{
 		protoValue := src.AwsVpcEndpointIds
-		var dataValue types.Set
+		var dataValue types.List
 		{
 			dataElementType := types.StringType
 			protoElements := protoValue
 			if protoElements == nil {
-				dataValue = types.SetNull(dataElementType)
+				dataValue = types.ListNull(dataElementType)
 			} else {
 				dataValues := make([]attr.Value, 0, len(protoElements))
 				for _, protoElement := range protoElements {
@@ -5766,19 +5766,19 @@ func CopyCreateApplicationAwsResourcesResponse(dst *ApplicationAwsResourcesResou
 					dataValue = types.StringValue(protoValue)
 					dataValues = append(dataValues, dataValue)
 				}
-				dataValue = types.SetValueMust(dataElementType, dataValues)
+				dataValue = types.ListValueMust(dataElementType, dataValues)
 			}
 		}
 		dst.AwsVpcEndpointIds = dataValue
 	}
 	{
 		protoValue := src.AwsVpcEndpointServiceIds
-		var dataValue types.Set
+		var dataValue types.List
 		{
 			dataElementType := types.StringType
 			protoElements := protoValue
 			if protoElements == nil {
-				dataValue = types.SetNull(dataElementType)
+				dataValue = types.ListNull(dataElementType)
 			} else {
 				dataValues := make([]attr.Value, 0, len(protoElements))
 				for _, protoElement := range protoElements {
@@ -5787,19 +5787,19 @@ func CopyCreateApplicationAwsResourcesResponse(dst *ApplicationAwsResourcesResou
 					dataValue = types.StringValue(protoValue)
 					dataValues = append(dataValues, dataValue)
 				}
-				dataValue = types.SetValueMust(dataElementType, dataValues)
+				dataValue = types.ListValueMust(dataElementType, dataValues)
 			}
 		}
 		dst.AwsVpcEndpointServiceIds = dataValue
 	}
 	{
 		protoValue := src.AwsVpcIds
-		var dataValue types.Set
+		var dataValue types.List
 		{
 			dataElementType := types.StringType
 			protoElements := protoValue
 			if protoElements == nil {
-				dataValue = types.SetNull(dataElementType)
+				dataValue = types.ListNull(dataElementType)
 			} else {
 				dataValues := make([]attr.Value, 0, len(protoElements))
 				for _, protoElement := range protoElements {
@@ -5808,19 +5808,19 @@ func CopyCreateApplicationAwsResourcesResponse(dst *ApplicationAwsResourcesResou
 					dataValue = types.StringValue(protoValue)
 					dataValues = append(dataValues, dataValue)
 				}
-				dataValue = types.SetValueMust(dataElementType, dataValues)
+				dataValue = types.ListValueMust(dataElementType, dataValues)
 			}
 		}
 		dst.AwsVpcIds = dataValue
 	}
 	{
 		protoValue := src.AwsVpcPeeringConnectionIds
-		var dataValue types.Set
+		var dataValue types.List
 		{
 			dataElementType := types.StringType
 			protoElements := protoValue
 			if protoElements == nil {
-				dataValue = types.SetNull(dataElementType)
+				dataValue = types.ListNull(dataElementType)
 			} else {
 				dataValues := make([]attr.Value, 0, len(protoElements))
 				for _, protoElement := range protoElements {
@@ -5829,19 +5829,19 @@ func CopyCreateApplicationAwsResourcesResponse(dst *ApplicationAwsResourcesResou
 					dataValue = types.StringValue(protoValue)
 					dataValues = append(dataValues, dataValue)
 				}
-				dataValue = types.SetValueMust(dataElementType, dataValues)
+				dataValue = types.ListValueMust(dataElementType, dataValues)
 			}
 		}
 		dst.AwsVpcPeeringConnectionIds = dataValue
 	}
 	{
 		protoValue := src.AwsVpnConnectionIds
-		var dataValue types.Set
+		var dataValue types.List
 		{
 			dataElementType := types.StringType
 			protoElements := protoValue
 			if protoElements == nil {
-				dataValue = types.SetNull(dataElementType)
+				dataValue = types.ListNull(dataElementType)
 			} else {
 				dataValues := make([]attr.Value, 0, len(protoElements))
 				for _, protoElement := range protoElements {
@@ -5850,19 +5850,19 @@ func CopyCreateApplicationAwsResourcesResponse(dst *ApplicationAwsResourcesResou
 					dataValue = types.StringValue(protoValue)
 					dataValues = append(dataValues, dataValue)
 				}
-				dataValue = types.SetValueMust(dataElementType, dataValues)
+				dataValue = types.ListValueMust(dataElementType, dataValues)
 			}
 		}
 		dst.AwsVpnConnectionIds = dataValue
 	}
 	{
 		protoValue := src.AwsVpnGatewayIds
-		var dataValue types.Set
+		var dataValue types.List
 		{
 			dataElementType := types.StringType
 			protoElements := protoValue
 			if protoElements == nil {
-				dataValue = types.SetNull(dataElementType)
+				dataValue = types.ListNull(dataElementType)
 			} else {
 				dataValues := make([]attr.Value, 0, len(protoElements))
 				for _, protoElement := range protoElements {
@@ -5871,7 +5871,7 @@ func CopyCreateApplicationAwsResourcesResponse(dst *ApplicationAwsResourcesResou
 					dataValue = types.StringValue(protoValue)
 					dataValues = append(dataValues, dataValue)
 				}
-				dataValue = types.SetValueMust(dataElementType, dataValues)
+				dataValue = types.ListValueMust(dataElementType, dataValues)
 			}
 		}
 		dst.AwsVpnGatewayIds = dataValue
@@ -5883,12 +5883,12 @@ func CopyReadApplicationAwsResourcesResponse(dst *ApplicationAwsResourcesResourc
 	dst.ApplicationId = types.StringValue(src.ApplicationId)
 	{
 		protoValue := src.AwsArns
-		var dataValue types.Set
+		var dataValue types.List
 		{
 			dataElementType := types.StringType
 			protoElements := protoValue
 			if protoElements == nil {
-				dataValue = types.SetNull(dataElementType)
+				dataValue = types.ListNull(dataElementType)
 			} else {
 				dataValues := make([]attr.Value, 0, len(protoElements))
 				for _, protoElement := range protoElements {
@@ -5897,19 +5897,19 @@ func CopyReadApplicationAwsResourcesResponse(dst *ApplicationAwsResourcesResourc
 					dataValue = types.StringValue(protoValue)
 					dataValues = append(dataValues, dataValue)
 				}
-				dataValue = types.SetValueMust(dataElementType, dataValues)
+				dataValue = types.ListValueMust(dataElementType, dataValues)
 			}
 		}
 		dst.AwsArns = dataValue
 	}
 	{
 		protoValue := src.AwsCustomerGatewayIds
-		var dataValue types.Set
+		var dataValue types.List
 		{
 			dataElementType := types.StringType
 			protoElements := protoValue
 			if protoElements == nil {
-				dataValue = types.SetNull(dataElementType)
+				dataValue = types.ListNull(dataElementType)
 			} else {
 				dataValues := make([]attr.Value, 0, len(protoElements))
 				for _, protoElement := range protoElements {
@@ -5918,19 +5918,19 @@ func CopyReadApplicationAwsResourcesResponse(dst *ApplicationAwsResourcesResourc
 					dataValue = types.StringValue(protoValue)
 					dataValues = append(dataValues, dataValue)
 				}
-				dataValue = types.SetValueMust(dataElementType, dataValues)
+				dataValue = types.ListValueMust(dataElementType, dataValues)
 			}
 		}
 		dst.AwsCustomerGatewayIds = dataValue
 	}
 	{
 		protoValue := src.AwsDxConnectionIds
-		var dataValue types.Set
+		var dataValue types.List
 		{
 			dataElementType := types.StringType
 			protoElements := protoValue
 			if protoElements == nil {
-				dataValue = types.SetNull(dataElementType)
+				dataValue = types.ListNull(dataElementType)
 			} else {
 				dataValues := make([]attr.Value, 0, len(protoElements))
 				for _, protoElement := range protoElements {
@@ -5939,19 +5939,19 @@ func CopyReadApplicationAwsResourcesResponse(dst *ApplicationAwsResourcesResourc
 					dataValue = types.StringValue(protoValue)
 					dataValues = append(dataValues, dataValue)
 				}
-				dataValue = types.SetValueMust(dataElementType, dataValues)
+				dataValue = types.ListValueMust(dataElementType, dataValues)
 			}
 		}
 		dst.AwsDxConnectionIds = dataValue
 	}
 	{
 		protoValue := src.AwsDxVirtualInterfaceIds
-		var dataValue types.Set
+		var dataValue types.List
 		{
 			dataElementType := types.StringType
 			protoElements := protoValue
 			if protoElements == nil {
-				dataValue = types.SetNull(dataElementType)
+				dataValue = types.ListNull(dataElementType)
 			} else {
 				dataValues := make([]attr.Value, 0, len(protoElements))
 				for _, protoElement := range protoElements {
@@ -5960,19 +5960,19 @@ func CopyReadApplicationAwsResourcesResponse(dst *ApplicationAwsResourcesResourc
 					dataValue = types.StringValue(protoValue)
 					dataValues = append(dataValues, dataValue)
 				}
-				dataValue = types.SetValueMust(dataElementType, dataValues)
+				dataValue = types.ListValueMust(dataElementType, dataValues)
 			}
 		}
 		dst.AwsDxVirtualInterfaceIds = dataValue
 	}
 	{
 		protoValue := src.AwsEbsVolumeIds
-		var dataValue types.Set
+		var dataValue types.List
 		{
 			dataElementType := types.StringType
 			protoElements := protoValue
 			if protoElements == nil {
-				dataValue = types.SetNull(dataElementType)
+				dataValue = types.ListNull(dataElementType)
 			} else {
 				dataValues := make([]attr.Value, 0, len(protoElements))
 				for _, protoElement := range protoElements {
@@ -5981,19 +5981,19 @@ func CopyReadApplicationAwsResourcesResponse(dst *ApplicationAwsResourcesResourc
 					dataValue = types.StringValue(protoValue)
 					dataValues = append(dataValues, dataValue)
 				}
-				dataValue = types.SetValueMust(dataElementType, dataValues)
+				dataValue = types.ListValueMust(dataElementType, dataValues)
 			}
 		}
 		dst.AwsEbsVolumeIds = dataValue
 	}
 	{
 		protoValue := src.AwsEc2InstanceConnectEndpointIds
-		var dataValue types.Set
+		var dataValue types.List
 		{
 			dataElementType := types.StringType
 			protoElements := protoValue
 			if protoElements == nil {
-				dataValue = types.SetNull(dataElementType)
+				dataValue = types.ListNull(dataElementType)
 			} else {
 				dataValues := make([]attr.Value, 0, len(protoElements))
 				for _, protoElement := range protoElements {
@@ -6002,19 +6002,19 @@ func CopyReadApplicationAwsResourcesResponse(dst *ApplicationAwsResourcesResourc
 					dataValue = types.StringValue(protoValue)
 					dataValues = append(dataValues, dataValue)
 				}
-				dataValue = types.SetValueMust(dataElementType, dataValues)
+				dataValue = types.ListValueMust(dataElementType, dataValues)
 			}
 		}
 		dst.AwsEc2InstanceConnectEndpointIds = dataValue
 	}
 	{
 		protoValue := src.AwsEc2TransitGatewayAttachments
-		var dataValue types.Set
+		var dataValue types.List
 		{
 			dataElementType := types.StringType
 			protoElements := protoValue
 			if protoElements == nil {
-				dataValue = types.SetNull(dataElementType)
+				dataValue = types.ListNull(dataElementType)
 			} else {
 				dataValues := make([]attr.Value, 0, len(protoElements))
 				for _, protoElement := range protoElements {
@@ -6023,19 +6023,19 @@ func CopyReadApplicationAwsResourcesResponse(dst *ApplicationAwsResourcesResourc
 					dataValue = types.StringValue(protoValue)
 					dataValues = append(dataValues, dataValue)
 				}
-				dataValue = types.SetValueMust(dataElementType, dataValues)
+				dataValue = types.ListValueMust(dataElementType, dataValues)
 			}
 		}
 		dst.AwsEc2TransitGatewayAttachments = dataValue
 	}
 	{
 		protoValue := src.AwsEc2TransitGatewayIds
-		var dataValue types.Set
+		var dataValue types.List
 		{
 			dataElementType := types.StringType
 			protoElements := protoValue
 			if protoElements == nil {
-				dataValue = types.SetNull(dataElementType)
+				dataValue = types.ListNull(dataElementType)
 			} else {
 				dataValues := make([]attr.Value, 0, len(protoElements))
 				for _, protoElement := range protoElements {
@@ -6044,19 +6044,19 @@ func CopyReadApplicationAwsResourcesResponse(dst *ApplicationAwsResourcesResourc
 					dataValue = types.StringValue(protoValue)
 					dataValues = append(dataValues, dataValue)
 				}
-				dataValue = types.SetValueMust(dataElementType, dataValues)
+				dataValue = types.ListValueMust(dataElementType, dataValues)
 			}
 		}
 		dst.AwsEc2TransitGatewayIds = dataValue
 	}
 	{
 		protoValue := src.AwsEc2TransitGatewayMulticastDomainIds
-		var dataValue types.Set
+		var dataValue types.List
 		{
 			dataElementType := types.StringType
 			protoElements := protoValue
 			if protoElements == nil {
-				dataValue = types.SetNull(dataElementType)
+				dataValue = types.ListNull(dataElementType)
 			} else {
 				dataValues := make([]attr.Value, 0, len(protoElements))
 				for _, protoElement := range protoElements {
@@ -6065,19 +6065,19 @@ func CopyReadApplicationAwsResourcesResponse(dst *ApplicationAwsResourcesResourc
 					dataValue = types.StringValue(protoValue)
 					dataValues = append(dataValues, dataValue)
 				}
-				dataValue = types.SetValueMust(dataElementType, dataValues)
+				dataValue = types.ListValueMust(dataElementType, dataValues)
 			}
 		}
 		dst.AwsEc2TransitGatewayMulticastDomainIds = dataValue
 	}
 	{
 		protoValue := src.AwsEc2TransitGatewayRouteTableIds
-		var dataValue types.Set
+		var dataValue types.List
 		{
 			dataElementType := types.StringType
 			protoElements := protoValue
 			if protoElements == nil {
-				dataValue = types.SetNull(dataElementType)
+				dataValue = types.ListNull(dataElementType)
 			} else {
 				dataValues := make([]attr.Value, 0, len(protoElements))
 				for _, protoElement := range protoElements {
@@ -6086,19 +6086,19 @@ func CopyReadApplicationAwsResourcesResponse(dst *ApplicationAwsResourcesResourc
 					dataValue = types.StringValue(protoValue)
 					dataValues = append(dataValues, dataValue)
 				}
-				dataValue = types.SetValueMust(dataElementType, dataValues)
+				dataValue = types.ListValueMust(dataElementType, dataValues)
 			}
 		}
 		dst.AwsEc2TransitGatewayRouteTableIds = dataValue
 	}
 	{
 		protoValue := src.AwsEgressOnlyInternetGatewayIds
-		var dataValue types.Set
+		var dataValue types.List
 		{
 			dataElementType := types.StringType
 			protoElements := protoValue
 			if protoElements == nil {
-				dataValue = types.SetNull(dataElementType)
+				dataValue = types.ListNull(dataElementType)
 			} else {
 				dataValues := make([]attr.Value, 0, len(protoElements))
 				for _, protoElement := range protoElements {
@@ -6107,19 +6107,19 @@ func CopyReadApplicationAwsResourcesResponse(dst *ApplicationAwsResourcesResourc
 					dataValue = types.StringValue(protoValue)
 					dataValues = append(dataValues, dataValue)
 				}
-				dataValue = types.SetValueMust(dataElementType, dataValues)
+				dataValue = types.ListValueMust(dataElementType, dataValues)
 			}
 		}
 		dst.AwsEgressOnlyInternetGatewayIds = dataValue
 	}
 	{
 		protoValue := src.AwsEipIds
-		var dataValue types.Set
+		var dataValue types.List
 		{
 			dataElementType := types.StringType
 			protoElements := protoValue
 			if protoElements == nil {
-				dataValue = types.SetNull(dataElementType)
+				dataValue = types.ListNull(dataElementType)
 			} else {
 				dataValues := make([]attr.Value, 0, len(protoElements))
 				for _, protoElement := range protoElements {
@@ -6128,19 +6128,19 @@ func CopyReadApplicationAwsResourcesResponse(dst *ApplicationAwsResourcesResourc
 					dataValue = types.StringValue(protoValue)
 					dataValues = append(dataValues, dataValue)
 				}
-				dataValue = types.SetValueMust(dataElementType, dataValues)
+				dataValue = types.ListValueMust(dataElementType, dataValues)
 			}
 		}
 		dst.AwsEipIds = dataValue
 	}
 	{
 		protoValue := src.AwsFlowLogIds
-		var dataValue types.Set
+		var dataValue types.List
 		{
 			dataElementType := types.StringType
 			protoElements := protoValue
 			if protoElements == nil {
-				dataValue = types.SetNull(dataElementType)
+				dataValue = types.ListNull(dataElementType)
 			} else {
 				dataValues := make([]attr.Value, 0, len(protoElements))
 				for _, protoElement := range protoElements {
@@ -6149,19 +6149,19 @@ func CopyReadApplicationAwsResourcesResponse(dst *ApplicationAwsResourcesResourc
 					dataValue = types.StringValue(protoValue)
 					dataValues = append(dataValues, dataValue)
 				}
-				dataValue = types.SetValueMust(dataElementType, dataValues)
+				dataValue = types.ListValueMust(dataElementType, dataValues)
 			}
 		}
 		dst.AwsFlowLogIds = dataValue
 	}
 	{
 		protoValue := src.AwsInstancesIds
-		var dataValue types.Set
+		var dataValue types.List
 		{
 			dataElementType := types.StringType
 			protoElements := protoValue
 			if protoElements == nil {
-				dataValue = types.SetNull(dataElementType)
+				dataValue = types.ListNull(dataElementType)
 			} else {
 				dataValues := make([]attr.Value, 0, len(protoElements))
 				for _, protoElement := range protoElements {
@@ -6170,19 +6170,19 @@ func CopyReadApplicationAwsResourcesResponse(dst *ApplicationAwsResourcesResourc
 					dataValue = types.StringValue(protoValue)
 					dataValues = append(dataValues, dataValue)
 				}
-				dataValue = types.SetValueMust(dataElementType, dataValues)
+				dataValue = types.ListValueMust(dataElementType, dataValues)
 			}
 		}
 		dst.AwsInstancesIds = dataValue
 	}
 	{
 		protoValue := src.AwsInternetGatewayIds
-		var dataValue types.Set
+		var dataValue types.List
 		{
 			dataElementType := types.StringType
 			protoElements := protoValue
 			if protoElements == nil {
-				dataValue = types.SetNull(dataElementType)
+				dataValue = types.ListNull(dataElementType)
 			} else {
 				dataValues := make([]attr.Value, 0, len(protoElements))
 				for _, protoElement := range protoElements {
@@ -6191,19 +6191,19 @@ func CopyReadApplicationAwsResourcesResponse(dst *ApplicationAwsResourcesResourc
 					dataValue = types.StringValue(protoValue)
 					dataValues = append(dataValues, dataValue)
 				}
-				dataValue = types.SetValueMust(dataElementType, dataValues)
+				dataValue = types.ListValueMust(dataElementType, dataValues)
 			}
 		}
 		dst.AwsInternetGatewayIds = dataValue
 	}
 	{
 		protoValue := src.AwsNatGatewayIds
-		var dataValue types.Set
+		var dataValue types.List
 		{
 			dataElementType := types.StringType
 			protoElements := protoValue
 			if protoElements == nil {
-				dataValue = types.SetNull(dataElementType)
+				dataValue = types.ListNull(dataElementType)
 			} else {
 				dataValues := make([]attr.Value, 0, len(protoElements))
 				for _, protoElement := range protoElements {
@@ -6212,19 +6212,19 @@ func CopyReadApplicationAwsResourcesResponse(dst *ApplicationAwsResourcesResourc
 					dataValue = types.StringValue(protoValue)
 					dataValues = append(dataValues, dataValue)
 				}
-				dataValue = types.SetValueMust(dataElementType, dataValues)
+				dataValue = types.ListValueMust(dataElementType, dataValues)
 			}
 		}
 		dst.AwsNatGatewayIds = dataValue
 	}
 	{
 		protoValue := src.AwsNetworkAcl
-		var dataValue types.Set
+		var dataValue types.List
 		{
 			dataElementType := types.StringType
 			protoElements := protoValue
 			if protoElements == nil {
-				dataValue = types.SetNull(dataElementType)
+				dataValue = types.ListNull(dataElementType)
 			} else {
 				dataValues := make([]attr.Value, 0, len(protoElements))
 				for _, protoElement := range protoElements {
@@ -6233,19 +6233,19 @@ func CopyReadApplicationAwsResourcesResponse(dst *ApplicationAwsResourcesResourc
 					dataValue = types.StringValue(protoValue)
 					dataValues = append(dataValues, dataValue)
 				}
-				dataValue = types.SetValueMust(dataElementType, dataValues)
+				dataValue = types.ListValueMust(dataElementType, dataValues)
 			}
 		}
 		dst.AwsNetworkAcl = dataValue
 	}
 	{
 		protoValue := src.AwsNetworkInterfaceIds
-		var dataValue types.Set
+		var dataValue types.List
 		{
 			dataElementType := types.StringType
 			protoElements := protoValue
 			if protoElements == nil {
-				dataValue = types.SetNull(dataElementType)
+				dataValue = types.ListNull(dataElementType)
 			} else {
 				dataValues := make([]attr.Value, 0, len(protoElements))
 				for _, protoElement := range protoElements {
@@ -6254,19 +6254,19 @@ func CopyReadApplicationAwsResourcesResponse(dst *ApplicationAwsResourcesResourc
 					dataValue = types.StringValue(protoValue)
 					dataValues = append(dataValues, dataValue)
 				}
-				dataValue = types.SetValueMust(dataElementType, dataValues)
+				dataValue = types.ListValueMust(dataElementType, dataValues)
 			}
 		}
 		dst.AwsNetworkInterfaceIds = dataValue
 	}
 	{
 		protoValue := src.AwsRdsClusterIds
-		var dataValue types.Set
+		var dataValue types.List
 		{
 			dataElementType := types.StringType
 			protoElements := protoValue
 			if protoElements == nil {
-				dataValue = types.SetNull(dataElementType)
+				dataValue = types.ListNull(dataElementType)
 			} else {
 				dataValues := make([]attr.Value, 0, len(protoElements))
 				for _, protoElement := range protoElements {
@@ -6275,19 +6275,19 @@ func CopyReadApplicationAwsResourcesResponse(dst *ApplicationAwsResourcesResourc
 					dataValue = types.StringValue(protoValue)
 					dataValues = append(dataValues, dataValue)
 				}
-				dataValue = types.SetValueMust(dataElementType, dataValues)
+				dataValue = types.ListValueMust(dataElementType, dataValues)
 			}
 		}
 		dst.AwsRdsClusterIds = dataValue
 	}
 	{
 		protoValue := src.AwsRouteTableIds
-		var dataValue types.Set
+		var dataValue types.List
 		{
 			dataElementType := types.StringType
 			protoElements := protoValue
 			if protoElements == nil {
-				dataValue = types.SetNull(dataElementType)
+				dataValue = types.ListNull(dataElementType)
 			} else {
 				dataValues := make([]attr.Value, 0, len(protoElements))
 				for _, protoElement := range protoElements {
@@ -6296,19 +6296,19 @@ func CopyReadApplicationAwsResourcesResponse(dst *ApplicationAwsResourcesResourc
 					dataValue = types.StringValue(protoValue)
 					dataValues = append(dataValues, dataValue)
 				}
-				dataValue = types.SetValueMust(dataElementType, dataValues)
+				dataValue = types.ListValueMust(dataElementType, dataValues)
 			}
 		}
 		dst.AwsRouteTableIds = dataValue
 	}
 	{
 		protoValue := src.AwsSecurityGroupIds
-		var dataValue types.Set
+		var dataValue types.List
 		{
 			dataElementType := types.StringType
 			protoElements := protoValue
 			if protoElements == nil {
-				dataValue = types.SetNull(dataElementType)
+				dataValue = types.ListNull(dataElementType)
 			} else {
 				dataValues := make([]attr.Value, 0, len(protoElements))
 				for _, protoElement := range protoElements {
@@ -6317,19 +6317,19 @@ func CopyReadApplicationAwsResourcesResponse(dst *ApplicationAwsResourcesResourc
 					dataValue = types.StringValue(protoValue)
 					dataValues = append(dataValues, dataValue)
 				}
-				dataValue = types.SetValueMust(dataElementType, dataValues)
+				dataValue = types.ListValueMust(dataElementType, dataValues)
 			}
 		}
 		dst.AwsSecurityGroupIds = dataValue
 	}
 	{
 		protoValue := src.AwsSecurityGroupRuleIds
-		var dataValue types.Set
+		var dataValue types.List
 		{
 			dataElementType := types.StringType
 			protoElements := protoValue
 			if protoElements == nil {
-				dataValue = types.SetNull(dataElementType)
+				dataValue = types.ListNull(dataElementType)
 			} else {
 				dataValues := make([]attr.Value, 0, len(protoElements))
 				for _, protoElement := range protoElements {
@@ -6338,19 +6338,19 @@ func CopyReadApplicationAwsResourcesResponse(dst *ApplicationAwsResourcesResourc
 					dataValue = types.StringValue(protoValue)
 					dataValues = append(dataValues, dataValue)
 				}
-				dataValue = types.SetValueMust(dataElementType, dataValues)
+				dataValue = types.ListValueMust(dataElementType, dataValues)
 			}
 		}
 		dst.AwsSecurityGroupRuleIds = dataValue
 	}
 	{
 		protoValue := src.AwsSpotFleetRequestIds
-		var dataValue types.Set
+		var dataValue types.List
 		{
 			dataElementType := types.StringType
 			protoElements := protoValue
 			if protoElements == nil {
-				dataValue = types.SetNull(dataElementType)
+				dataValue = types.ListNull(dataElementType)
 			} else {
 				dataValues := make([]attr.Value, 0, len(protoElements))
 				for _, protoElement := range protoElements {
@@ -6359,19 +6359,19 @@ func CopyReadApplicationAwsResourcesResponse(dst *ApplicationAwsResourcesResourc
 					dataValue = types.StringValue(protoValue)
 					dataValues = append(dataValues, dataValue)
 				}
-				dataValue = types.SetValueMust(dataElementType, dataValues)
+				dataValue = types.ListValueMust(dataElementType, dataValues)
 			}
 		}
 		dst.AwsSpotFleetRequestIds = dataValue
 	}
 	{
 		protoValue := src.AwsSpotInstanceRequestIds
-		var dataValue types.Set
+		var dataValue types.List
 		{
 			dataElementType := types.StringType
 			protoElements := protoValue
 			if protoElements == nil {
-				dataValue = types.SetNull(dataElementType)
+				dataValue = types.ListNull(dataElementType)
 			} else {
 				dataValues := make([]attr.Value, 0, len(protoElements))
 				for _, protoElement := range protoElements {
@@ -6380,19 +6380,19 @@ func CopyReadApplicationAwsResourcesResponse(dst *ApplicationAwsResourcesResourc
 					dataValue = types.StringValue(protoValue)
 					dataValues = append(dataValues, dataValue)
 				}
-				dataValue = types.SetValueMust(dataElementType, dataValues)
+				dataValue = types.ListValueMust(dataElementType, dataValues)
 			}
 		}
 		dst.AwsSpotInstanceRequestIds = dataValue
 	}
 	{
 		protoValue := src.AwsSubnetIds
-		var dataValue types.Set
+		var dataValue types.List
 		{
 			dataElementType := types.StringType
 			protoElements := protoValue
 			if protoElements == nil {
-				dataValue = types.SetNull(dataElementType)
+				dataValue = types.ListNull(dataElementType)
 			} else {
 				dataValues := make([]attr.Value, 0, len(protoElements))
 				for _, protoElement := range protoElements {
@@ -6401,19 +6401,19 @@ func CopyReadApplicationAwsResourcesResponse(dst *ApplicationAwsResourcesResourc
 					dataValue = types.StringValue(protoValue)
 					dataValues = append(dataValues, dataValue)
 				}
-				dataValue = types.SetValueMust(dataElementType, dataValues)
+				dataValue = types.ListValueMust(dataElementType, dataValues)
 			}
 		}
 		dst.AwsSubnetIds = dataValue
 	}
 	{
 		protoValue := src.AwsVpcEndpointIds
-		var dataValue types.Set
+		var dataValue types.List
 		{
 			dataElementType := types.StringType
 			protoElements := protoValue
 			if protoElements == nil {
-				dataValue = types.SetNull(dataElementType)
+				dataValue = types.ListNull(dataElementType)
 			} else {
 				dataValues := make([]attr.Value, 0, len(protoElements))
 				for _, protoElement := range protoElements {
@@ -6422,19 +6422,19 @@ func CopyReadApplicationAwsResourcesResponse(dst *ApplicationAwsResourcesResourc
 					dataValue = types.StringValue(protoValue)
 					dataValues = append(dataValues, dataValue)
 				}
-				dataValue = types.SetValueMust(dataElementType, dataValues)
+				dataValue = types.ListValueMust(dataElementType, dataValues)
 			}
 		}
 		dst.AwsVpcEndpointIds = dataValue
 	}
 	{
 		protoValue := src.AwsVpcEndpointServiceIds
-		var dataValue types.Set
+		var dataValue types.List
 		{
 			dataElementType := types.StringType
 			protoElements := protoValue
 			if protoElements == nil {
-				dataValue = types.SetNull(dataElementType)
+				dataValue = types.ListNull(dataElementType)
 			} else {
 				dataValues := make([]attr.Value, 0, len(protoElements))
 				for _, protoElement := range protoElements {
@@ -6443,19 +6443,19 @@ func CopyReadApplicationAwsResourcesResponse(dst *ApplicationAwsResourcesResourc
 					dataValue = types.StringValue(protoValue)
 					dataValues = append(dataValues, dataValue)
 				}
-				dataValue = types.SetValueMust(dataElementType, dataValues)
+				dataValue = types.ListValueMust(dataElementType, dataValues)
 			}
 		}
 		dst.AwsVpcEndpointServiceIds = dataValue
 	}
 	{
 		protoValue := src.AwsVpcIds
-		var dataValue types.Set
+		var dataValue types.List
 		{
 			dataElementType := types.StringType
 			protoElements := protoValue
 			if protoElements == nil {
-				dataValue = types.SetNull(dataElementType)
+				dataValue = types.ListNull(dataElementType)
 			} else {
 				dataValues := make([]attr.Value, 0, len(protoElements))
 				for _, protoElement := range protoElements {
@@ -6464,19 +6464,19 @@ func CopyReadApplicationAwsResourcesResponse(dst *ApplicationAwsResourcesResourc
 					dataValue = types.StringValue(protoValue)
 					dataValues = append(dataValues, dataValue)
 				}
-				dataValue = types.SetValueMust(dataElementType, dataValues)
+				dataValue = types.ListValueMust(dataElementType, dataValues)
 			}
 		}
 		dst.AwsVpcIds = dataValue
 	}
 	{
 		protoValue := src.AwsVpcPeeringConnectionIds
-		var dataValue types.Set
+		var dataValue types.List
 		{
 			dataElementType := types.StringType
 			protoElements := protoValue
 			if protoElements == nil {
-				dataValue = types.SetNull(dataElementType)
+				dataValue = types.ListNull(dataElementType)
 			} else {
 				dataValues := make([]attr.Value, 0, len(protoElements))
 				for _, protoElement := range protoElements {
@@ -6485,19 +6485,19 @@ func CopyReadApplicationAwsResourcesResponse(dst *ApplicationAwsResourcesResourc
 					dataValue = types.StringValue(protoValue)
 					dataValues = append(dataValues, dataValue)
 				}
-				dataValue = types.SetValueMust(dataElementType, dataValues)
+				dataValue = types.ListValueMust(dataElementType, dataValues)
 			}
 		}
 		dst.AwsVpcPeeringConnectionIds = dataValue
 	}
 	{
 		protoValue := src.AwsVpnConnectionIds
-		var dataValue types.Set
+		var dataValue types.List
 		{
 			dataElementType := types.StringType
 			protoElements := protoValue
 			if protoElements == nil {
-				dataValue = types.SetNull(dataElementType)
+				dataValue = types.ListNull(dataElementType)
 			} else {
 				dataValues := make([]attr.Value, 0, len(protoElements))
 				for _, protoElement := range protoElements {
@@ -6506,19 +6506,19 @@ func CopyReadApplicationAwsResourcesResponse(dst *ApplicationAwsResourcesResourc
 					dataValue = types.StringValue(protoValue)
 					dataValues = append(dataValues, dataValue)
 				}
-				dataValue = types.SetValueMust(dataElementType, dataValues)
+				dataValue = types.ListValueMust(dataElementType, dataValues)
 			}
 		}
 		dst.AwsVpnConnectionIds = dataValue
 	}
 	{
 		protoValue := src.AwsVpnGatewayIds
-		var dataValue types.Set
+		var dataValue types.List
 		{
 			dataElementType := types.StringType
 			protoElements := protoValue
 			if protoElements == nil {
-				dataValue = types.SetNull(dataElementType)
+				dataValue = types.ListNull(dataElementType)
 			} else {
 				dataValues := make([]attr.Value, 0, len(protoElements))
 				for _, protoElement := range protoElements {
@@ -6527,7 +6527,7 @@ func CopyReadApplicationAwsResourcesResponse(dst *ApplicationAwsResourcesResourc
 					dataValue = types.StringValue(protoValue)
 					dataValues = append(dataValues, dataValue)
 				}
-				dataValue = types.SetValueMust(dataElementType, dataValues)
+				dataValue = types.ListValueMust(dataElementType, dataValues)
 			}
 		}
 		dst.AwsVpnGatewayIds = dataValue
@@ -6539,12 +6539,12 @@ func CopyUpdateApplicationAwsResourcesResponse(dst *ApplicationAwsResourcesResou
 	dst.ApplicationId = types.StringValue(src.ApplicationId)
 	{
 		protoValue := src.AwsArns
-		var dataValue types.Set
+		var dataValue types.List
 		{
 			dataElementType := types.StringType
 			protoElements := protoValue
 			if protoElements == nil {
-				dataValue = types.SetNull(dataElementType)
+				dataValue = types.ListNull(dataElementType)
 			} else {
 				dataValues := make([]attr.Value, 0, len(protoElements))
 				for _, protoElement := range protoElements {
@@ -6553,19 +6553,19 @@ func CopyUpdateApplicationAwsResourcesResponse(dst *ApplicationAwsResourcesResou
 					dataValue = types.StringValue(protoValue)
 					dataValues = append(dataValues, dataValue)
 				}
-				dataValue = types.SetValueMust(dataElementType, dataValues)
+				dataValue = types.ListValueMust(dataElementType, dataValues)
 			}
 		}
 		dst.AwsArns = dataValue
 	}
 	{
 		protoValue := src.AwsCustomerGatewayIds
-		var dataValue types.Set
+		var dataValue types.List
 		{
 			dataElementType := types.StringType
 			protoElements := protoValue
 			if protoElements == nil {
-				dataValue = types.SetNull(dataElementType)
+				dataValue = types.ListNull(dataElementType)
 			} else {
 				dataValues := make([]attr.Value, 0, len(protoElements))
 				for _, protoElement := range protoElements {
@@ -6574,19 +6574,19 @@ func CopyUpdateApplicationAwsResourcesResponse(dst *ApplicationAwsResourcesResou
 					dataValue = types.StringValue(protoValue)
 					dataValues = append(dataValues, dataValue)
 				}
-				dataValue = types.SetValueMust(dataElementType, dataValues)
+				dataValue = types.ListValueMust(dataElementType, dataValues)
 			}
 		}
 		dst.AwsCustomerGatewayIds = dataValue
 	}
 	{
 		protoValue := src.AwsDxConnectionIds
-		var dataValue types.Set
+		var dataValue types.List
 		{
 			dataElementType := types.StringType
 			protoElements := protoValue
 			if protoElements == nil {
-				dataValue = types.SetNull(dataElementType)
+				dataValue = types.ListNull(dataElementType)
 			} else {
 				dataValues := make([]attr.Value, 0, len(protoElements))
 				for _, protoElement := range protoElements {
@@ -6595,19 +6595,19 @@ func CopyUpdateApplicationAwsResourcesResponse(dst *ApplicationAwsResourcesResou
 					dataValue = types.StringValue(protoValue)
 					dataValues = append(dataValues, dataValue)
 				}
-				dataValue = types.SetValueMust(dataElementType, dataValues)
+				dataValue = types.ListValueMust(dataElementType, dataValues)
 			}
 		}
 		dst.AwsDxConnectionIds = dataValue
 	}
 	{
 		protoValue := src.AwsDxVirtualInterfaceIds
-		var dataValue types.Set
+		var dataValue types.List
 		{
 			dataElementType := types.StringType
 			protoElements := protoValue
 			if protoElements == nil {
-				dataValue = types.SetNull(dataElementType)
+				dataValue = types.ListNull(dataElementType)
 			} else {
 				dataValues := make([]attr.Value, 0, len(protoElements))
 				for _, protoElement := range protoElements {
@@ -6616,19 +6616,19 @@ func CopyUpdateApplicationAwsResourcesResponse(dst *ApplicationAwsResourcesResou
 					dataValue = types.StringValue(protoValue)
 					dataValues = append(dataValues, dataValue)
 				}
-				dataValue = types.SetValueMust(dataElementType, dataValues)
+				dataValue = types.ListValueMust(dataElementType, dataValues)
 			}
 		}
 		dst.AwsDxVirtualInterfaceIds = dataValue
 	}
 	{
 		protoValue := src.AwsEbsVolumeIds
-		var dataValue types.Set
+		var dataValue types.List
 		{
 			dataElementType := types.StringType
 			protoElements := protoValue
 			if protoElements == nil {
-				dataValue = types.SetNull(dataElementType)
+				dataValue = types.ListNull(dataElementType)
 			} else {
 				dataValues := make([]attr.Value, 0, len(protoElements))
 				for _, protoElement := range protoElements {
@@ -6637,19 +6637,19 @@ func CopyUpdateApplicationAwsResourcesResponse(dst *ApplicationAwsResourcesResou
 					dataValue = types.StringValue(protoValue)
 					dataValues = append(dataValues, dataValue)
 				}
-				dataValue = types.SetValueMust(dataElementType, dataValues)
+				dataValue = types.ListValueMust(dataElementType, dataValues)
 			}
 		}
 		dst.AwsEbsVolumeIds = dataValue
 	}
 	{
 		protoValue := src.AwsEc2InstanceConnectEndpointIds
-		var dataValue types.Set
+		var dataValue types.List
 		{
 			dataElementType := types.StringType
 			protoElements := protoValue
 			if protoElements == nil {
-				dataValue = types.SetNull(dataElementType)
+				dataValue = types.ListNull(dataElementType)
 			} else {
 				dataValues := make([]attr.Value, 0, len(protoElements))
 				for _, protoElement := range protoElements {
@@ -6658,19 +6658,19 @@ func CopyUpdateApplicationAwsResourcesResponse(dst *ApplicationAwsResourcesResou
 					dataValue = types.StringValue(protoValue)
 					dataValues = append(dataValues, dataValue)
 				}
-				dataValue = types.SetValueMust(dataElementType, dataValues)
+				dataValue = types.ListValueMust(dataElementType, dataValues)
 			}
 		}
 		dst.AwsEc2InstanceConnectEndpointIds = dataValue
 	}
 	{
 		protoValue := src.AwsEc2TransitGatewayAttachments
-		var dataValue types.Set
+		var dataValue types.List
 		{
 			dataElementType := types.StringType
 			protoElements := protoValue
 			if protoElements == nil {
-				dataValue = types.SetNull(dataElementType)
+				dataValue = types.ListNull(dataElementType)
 			} else {
 				dataValues := make([]attr.Value, 0, len(protoElements))
 				for _, protoElement := range protoElements {
@@ -6679,19 +6679,19 @@ func CopyUpdateApplicationAwsResourcesResponse(dst *ApplicationAwsResourcesResou
 					dataValue = types.StringValue(protoValue)
 					dataValues = append(dataValues, dataValue)
 				}
-				dataValue = types.SetValueMust(dataElementType, dataValues)
+				dataValue = types.ListValueMust(dataElementType, dataValues)
 			}
 		}
 		dst.AwsEc2TransitGatewayAttachments = dataValue
 	}
 	{
 		protoValue := src.AwsEc2TransitGatewayIds
-		var dataValue types.Set
+		var dataValue types.List
 		{
 			dataElementType := types.StringType
 			protoElements := protoValue
 			if protoElements == nil {
-				dataValue = types.SetNull(dataElementType)
+				dataValue = types.ListNull(dataElementType)
 			} else {
 				dataValues := make([]attr.Value, 0, len(protoElements))
 				for _, protoElement := range protoElements {
@@ -6700,19 +6700,19 @@ func CopyUpdateApplicationAwsResourcesResponse(dst *ApplicationAwsResourcesResou
 					dataValue = types.StringValue(protoValue)
 					dataValues = append(dataValues, dataValue)
 				}
-				dataValue = types.SetValueMust(dataElementType, dataValues)
+				dataValue = types.ListValueMust(dataElementType, dataValues)
 			}
 		}
 		dst.AwsEc2TransitGatewayIds = dataValue
 	}
 	{
 		protoValue := src.AwsEc2TransitGatewayMulticastDomainIds
-		var dataValue types.Set
+		var dataValue types.List
 		{
 			dataElementType := types.StringType
 			protoElements := protoValue
 			if protoElements == nil {
-				dataValue = types.SetNull(dataElementType)
+				dataValue = types.ListNull(dataElementType)
 			} else {
 				dataValues := make([]attr.Value, 0, len(protoElements))
 				for _, protoElement := range protoElements {
@@ -6721,19 +6721,19 @@ func CopyUpdateApplicationAwsResourcesResponse(dst *ApplicationAwsResourcesResou
 					dataValue = types.StringValue(protoValue)
 					dataValues = append(dataValues, dataValue)
 				}
-				dataValue = types.SetValueMust(dataElementType, dataValues)
+				dataValue = types.ListValueMust(dataElementType, dataValues)
 			}
 		}
 		dst.AwsEc2TransitGatewayMulticastDomainIds = dataValue
 	}
 	{
 		protoValue := src.AwsEc2TransitGatewayRouteTableIds
-		var dataValue types.Set
+		var dataValue types.List
 		{
 			dataElementType := types.StringType
 			protoElements := protoValue
 			if protoElements == nil {
-				dataValue = types.SetNull(dataElementType)
+				dataValue = types.ListNull(dataElementType)
 			} else {
 				dataValues := make([]attr.Value, 0, len(protoElements))
 				for _, protoElement := range protoElements {
@@ -6742,19 +6742,19 @@ func CopyUpdateApplicationAwsResourcesResponse(dst *ApplicationAwsResourcesResou
 					dataValue = types.StringValue(protoValue)
 					dataValues = append(dataValues, dataValue)
 				}
-				dataValue = types.SetValueMust(dataElementType, dataValues)
+				dataValue = types.ListValueMust(dataElementType, dataValues)
 			}
 		}
 		dst.AwsEc2TransitGatewayRouteTableIds = dataValue
 	}
 	{
 		protoValue := src.AwsEgressOnlyInternetGatewayIds
-		var dataValue types.Set
+		var dataValue types.List
 		{
 			dataElementType := types.StringType
 			protoElements := protoValue
 			if protoElements == nil {
-				dataValue = types.SetNull(dataElementType)
+				dataValue = types.ListNull(dataElementType)
 			} else {
 				dataValues := make([]attr.Value, 0, len(protoElements))
 				for _, protoElement := range protoElements {
@@ -6763,19 +6763,19 @@ func CopyUpdateApplicationAwsResourcesResponse(dst *ApplicationAwsResourcesResou
 					dataValue = types.StringValue(protoValue)
 					dataValues = append(dataValues, dataValue)
 				}
-				dataValue = types.SetValueMust(dataElementType, dataValues)
+				dataValue = types.ListValueMust(dataElementType, dataValues)
 			}
 		}
 		dst.AwsEgressOnlyInternetGatewayIds = dataValue
 	}
 	{
 		protoValue := src.AwsEipIds
-		var dataValue types.Set
+		var dataValue types.List
 		{
 			dataElementType := types.StringType
 			protoElements := protoValue
 			if protoElements == nil {
-				dataValue = types.SetNull(dataElementType)
+				dataValue = types.ListNull(dataElementType)
 			} else {
 				dataValues := make([]attr.Value, 0, len(protoElements))
 				for _, protoElement := range protoElements {
@@ -6784,19 +6784,19 @@ func CopyUpdateApplicationAwsResourcesResponse(dst *ApplicationAwsResourcesResou
 					dataValue = types.StringValue(protoValue)
 					dataValues = append(dataValues, dataValue)
 				}
-				dataValue = types.SetValueMust(dataElementType, dataValues)
+				dataValue = types.ListValueMust(dataElementType, dataValues)
 			}
 		}
 		dst.AwsEipIds = dataValue
 	}
 	{
 		protoValue := src.AwsFlowLogIds
-		var dataValue types.Set
+		var dataValue types.List
 		{
 			dataElementType := types.StringType
 			protoElements := protoValue
 			if protoElements == nil {
-				dataValue = types.SetNull(dataElementType)
+				dataValue = types.ListNull(dataElementType)
 			} else {
 				dataValues := make([]attr.Value, 0, len(protoElements))
 				for _, protoElement := range protoElements {
@@ -6805,19 +6805,19 @@ func CopyUpdateApplicationAwsResourcesResponse(dst *ApplicationAwsResourcesResou
 					dataValue = types.StringValue(protoValue)
 					dataValues = append(dataValues, dataValue)
 				}
-				dataValue = types.SetValueMust(dataElementType, dataValues)
+				dataValue = types.ListValueMust(dataElementType, dataValues)
 			}
 		}
 		dst.AwsFlowLogIds = dataValue
 	}
 	{
 		protoValue := src.AwsInstancesIds
-		var dataValue types.Set
+		var dataValue types.List
 		{
 			dataElementType := types.StringType
 			protoElements := protoValue
 			if protoElements == nil {
-				dataValue = types.SetNull(dataElementType)
+				dataValue = types.ListNull(dataElementType)
 			} else {
 				dataValues := make([]attr.Value, 0, len(protoElements))
 				for _, protoElement := range protoElements {
@@ -6826,19 +6826,19 @@ func CopyUpdateApplicationAwsResourcesResponse(dst *ApplicationAwsResourcesResou
 					dataValue = types.StringValue(protoValue)
 					dataValues = append(dataValues, dataValue)
 				}
-				dataValue = types.SetValueMust(dataElementType, dataValues)
+				dataValue = types.ListValueMust(dataElementType, dataValues)
 			}
 		}
 		dst.AwsInstancesIds = dataValue
 	}
 	{
 		protoValue := src.AwsInternetGatewayIds
-		var dataValue types.Set
+		var dataValue types.List
 		{
 			dataElementType := types.StringType
 			protoElements := protoValue
 			if protoElements == nil {
-				dataValue = types.SetNull(dataElementType)
+				dataValue = types.ListNull(dataElementType)
 			} else {
 				dataValues := make([]attr.Value, 0, len(protoElements))
 				for _, protoElement := range protoElements {
@@ -6847,19 +6847,19 @@ func CopyUpdateApplicationAwsResourcesResponse(dst *ApplicationAwsResourcesResou
 					dataValue = types.StringValue(protoValue)
 					dataValues = append(dataValues, dataValue)
 				}
-				dataValue = types.SetValueMust(dataElementType, dataValues)
+				dataValue = types.ListValueMust(dataElementType, dataValues)
 			}
 		}
 		dst.AwsInternetGatewayIds = dataValue
 	}
 	{
 		protoValue := src.AwsNatGatewayIds
-		var dataValue types.Set
+		var dataValue types.List
 		{
 			dataElementType := types.StringType
 			protoElements := protoValue
 			if protoElements == nil {
-				dataValue = types.SetNull(dataElementType)
+				dataValue = types.ListNull(dataElementType)
 			} else {
 				dataValues := make([]attr.Value, 0, len(protoElements))
 				for _, protoElement := range protoElements {
@@ -6868,19 +6868,19 @@ func CopyUpdateApplicationAwsResourcesResponse(dst *ApplicationAwsResourcesResou
 					dataValue = types.StringValue(protoValue)
 					dataValues = append(dataValues, dataValue)
 				}
-				dataValue = types.SetValueMust(dataElementType, dataValues)
+				dataValue = types.ListValueMust(dataElementType, dataValues)
 			}
 		}
 		dst.AwsNatGatewayIds = dataValue
 	}
 	{
 		protoValue := src.AwsNetworkAcl
-		var dataValue types.Set
+		var dataValue types.List
 		{
 			dataElementType := types.StringType
 			protoElements := protoValue
 			if protoElements == nil {
-				dataValue = types.SetNull(dataElementType)
+				dataValue = types.ListNull(dataElementType)
 			} else {
 				dataValues := make([]attr.Value, 0, len(protoElements))
 				for _, protoElement := range protoElements {
@@ -6889,19 +6889,19 @@ func CopyUpdateApplicationAwsResourcesResponse(dst *ApplicationAwsResourcesResou
 					dataValue = types.StringValue(protoValue)
 					dataValues = append(dataValues, dataValue)
 				}
-				dataValue = types.SetValueMust(dataElementType, dataValues)
+				dataValue = types.ListValueMust(dataElementType, dataValues)
 			}
 		}
 		dst.AwsNetworkAcl = dataValue
 	}
 	{
 		protoValue := src.AwsNetworkInterfaceIds
-		var dataValue types.Set
+		var dataValue types.List
 		{
 			dataElementType := types.StringType
 			protoElements := protoValue
 			if protoElements == nil {
-				dataValue = types.SetNull(dataElementType)
+				dataValue = types.ListNull(dataElementType)
 			} else {
 				dataValues := make([]attr.Value, 0, len(protoElements))
 				for _, protoElement := range protoElements {
@@ -6910,19 +6910,19 @@ func CopyUpdateApplicationAwsResourcesResponse(dst *ApplicationAwsResourcesResou
 					dataValue = types.StringValue(protoValue)
 					dataValues = append(dataValues, dataValue)
 				}
-				dataValue = types.SetValueMust(dataElementType, dataValues)
+				dataValue = types.ListValueMust(dataElementType, dataValues)
 			}
 		}
 		dst.AwsNetworkInterfaceIds = dataValue
 	}
 	{
 		protoValue := src.AwsRdsClusterIds
-		var dataValue types.Set
+		var dataValue types.List
 		{
 			dataElementType := types.StringType
 			protoElements := protoValue
 			if protoElements == nil {
-				dataValue = types.SetNull(dataElementType)
+				dataValue = types.ListNull(dataElementType)
 			} else {
 				dataValues := make([]attr.Value, 0, len(protoElements))
 				for _, protoElement := range protoElements {
@@ -6931,19 +6931,19 @@ func CopyUpdateApplicationAwsResourcesResponse(dst *ApplicationAwsResourcesResou
 					dataValue = types.StringValue(protoValue)
 					dataValues = append(dataValues, dataValue)
 				}
-				dataValue = types.SetValueMust(dataElementType, dataValues)
+				dataValue = types.ListValueMust(dataElementType, dataValues)
 			}
 		}
 		dst.AwsRdsClusterIds = dataValue
 	}
 	{
 		protoValue := src.AwsRouteTableIds
-		var dataValue types.Set
+		var dataValue types.List
 		{
 			dataElementType := types.StringType
 			protoElements := protoValue
 			if protoElements == nil {
-				dataValue = types.SetNull(dataElementType)
+				dataValue = types.ListNull(dataElementType)
 			} else {
 				dataValues := make([]attr.Value, 0, len(protoElements))
 				for _, protoElement := range protoElements {
@@ -6952,19 +6952,19 @@ func CopyUpdateApplicationAwsResourcesResponse(dst *ApplicationAwsResourcesResou
 					dataValue = types.StringValue(protoValue)
 					dataValues = append(dataValues, dataValue)
 				}
-				dataValue = types.SetValueMust(dataElementType, dataValues)
+				dataValue = types.ListValueMust(dataElementType, dataValues)
 			}
 		}
 		dst.AwsRouteTableIds = dataValue
 	}
 	{
 		protoValue := src.AwsSecurityGroupIds
-		var dataValue types.Set
+		var dataValue types.List
 		{
 			dataElementType := types.StringType
 			protoElements := protoValue
 			if protoElements == nil {
-				dataValue = types.SetNull(dataElementType)
+				dataValue = types.ListNull(dataElementType)
 			} else {
 				dataValues := make([]attr.Value, 0, len(protoElements))
 				for _, protoElement := range protoElements {
@@ -6973,19 +6973,19 @@ func CopyUpdateApplicationAwsResourcesResponse(dst *ApplicationAwsResourcesResou
 					dataValue = types.StringValue(protoValue)
 					dataValues = append(dataValues, dataValue)
 				}
-				dataValue = types.SetValueMust(dataElementType, dataValues)
+				dataValue = types.ListValueMust(dataElementType, dataValues)
 			}
 		}
 		dst.AwsSecurityGroupIds = dataValue
 	}
 	{
 		protoValue := src.AwsSecurityGroupRuleIds
-		var dataValue types.Set
+		var dataValue types.List
 		{
 			dataElementType := types.StringType
 			protoElements := protoValue
 			if protoElements == nil {
-				dataValue = types.SetNull(dataElementType)
+				dataValue = types.ListNull(dataElementType)
 			} else {
 				dataValues := make([]attr.Value, 0, len(protoElements))
 				for _, protoElement := range protoElements {
@@ -6994,19 +6994,19 @@ func CopyUpdateApplicationAwsResourcesResponse(dst *ApplicationAwsResourcesResou
 					dataValue = types.StringValue(protoValue)
 					dataValues = append(dataValues, dataValue)
 				}
-				dataValue = types.SetValueMust(dataElementType, dataValues)
+				dataValue = types.ListValueMust(dataElementType, dataValues)
 			}
 		}
 		dst.AwsSecurityGroupRuleIds = dataValue
 	}
 	{
 		protoValue := src.AwsSpotFleetRequestIds
-		var dataValue types.Set
+		var dataValue types.List
 		{
 			dataElementType := types.StringType
 			protoElements := protoValue
 			if protoElements == nil {
-				dataValue = types.SetNull(dataElementType)
+				dataValue = types.ListNull(dataElementType)
 			} else {
 				dataValues := make([]attr.Value, 0, len(protoElements))
 				for _, protoElement := range protoElements {
@@ -7015,19 +7015,19 @@ func CopyUpdateApplicationAwsResourcesResponse(dst *ApplicationAwsResourcesResou
 					dataValue = types.StringValue(protoValue)
 					dataValues = append(dataValues, dataValue)
 				}
-				dataValue = types.SetValueMust(dataElementType, dataValues)
+				dataValue = types.ListValueMust(dataElementType, dataValues)
 			}
 		}
 		dst.AwsSpotFleetRequestIds = dataValue
 	}
 	{
 		protoValue := src.AwsSpotInstanceRequestIds
-		var dataValue types.Set
+		var dataValue types.List
 		{
 			dataElementType := types.StringType
 			protoElements := protoValue
 			if protoElements == nil {
-				dataValue = types.SetNull(dataElementType)
+				dataValue = types.ListNull(dataElementType)
 			} else {
 				dataValues := make([]attr.Value, 0, len(protoElements))
 				for _, protoElement := range protoElements {
@@ -7036,19 +7036,19 @@ func CopyUpdateApplicationAwsResourcesResponse(dst *ApplicationAwsResourcesResou
 					dataValue = types.StringValue(protoValue)
 					dataValues = append(dataValues, dataValue)
 				}
-				dataValue = types.SetValueMust(dataElementType, dataValues)
+				dataValue = types.ListValueMust(dataElementType, dataValues)
 			}
 		}
 		dst.AwsSpotInstanceRequestIds = dataValue
 	}
 	{
 		protoValue := src.AwsSubnetIds
-		var dataValue types.Set
+		var dataValue types.List
 		{
 			dataElementType := types.StringType
 			protoElements := protoValue
 			if protoElements == nil {
-				dataValue = types.SetNull(dataElementType)
+				dataValue = types.ListNull(dataElementType)
 			} else {
 				dataValues := make([]attr.Value, 0, len(protoElements))
 				for _, protoElement := range protoElements {
@@ -7057,19 +7057,19 @@ func CopyUpdateApplicationAwsResourcesResponse(dst *ApplicationAwsResourcesResou
 					dataValue = types.StringValue(protoValue)
 					dataValues = append(dataValues, dataValue)
 				}
-				dataValue = types.SetValueMust(dataElementType, dataValues)
+				dataValue = types.ListValueMust(dataElementType, dataValues)
 			}
 		}
 		dst.AwsSubnetIds = dataValue
 	}
 	{
 		protoValue := src.AwsVpcEndpointIds
-		var dataValue types.Set
+		var dataValue types.List
 		{
 			dataElementType := types.StringType
 			protoElements := protoValue
 			if protoElements == nil {
-				dataValue = types.SetNull(dataElementType)
+				dataValue = types.ListNull(dataElementType)
 			} else {
 				dataValues := make([]attr.Value, 0, len(protoElements))
 				for _, protoElement := range protoElements {
@@ -7078,19 +7078,19 @@ func CopyUpdateApplicationAwsResourcesResponse(dst *ApplicationAwsResourcesResou
 					dataValue = types.StringValue(protoValue)
 					dataValues = append(dataValues, dataValue)
 				}
-				dataValue = types.SetValueMust(dataElementType, dataValues)
+				dataValue = types.ListValueMust(dataElementType, dataValues)
 			}
 		}
 		dst.AwsVpcEndpointIds = dataValue
 	}
 	{
 		protoValue := src.AwsVpcEndpointServiceIds
-		var dataValue types.Set
+		var dataValue types.List
 		{
 			dataElementType := types.StringType
 			protoElements := protoValue
 			if protoElements == nil {
-				dataValue = types.SetNull(dataElementType)
+				dataValue = types.ListNull(dataElementType)
 			} else {
 				dataValues := make([]attr.Value, 0, len(protoElements))
 				for _, protoElement := range protoElements {
@@ -7099,19 +7099,19 @@ func CopyUpdateApplicationAwsResourcesResponse(dst *ApplicationAwsResourcesResou
 					dataValue = types.StringValue(protoValue)
 					dataValues = append(dataValues, dataValue)
 				}
-				dataValue = types.SetValueMust(dataElementType, dataValues)
+				dataValue = types.ListValueMust(dataElementType, dataValues)
 			}
 		}
 		dst.AwsVpcEndpointServiceIds = dataValue
 	}
 	{
 		protoValue := src.AwsVpcIds
-		var dataValue types.Set
+		var dataValue types.List
 		{
 			dataElementType := types.StringType
 			protoElements := protoValue
 			if protoElements == nil {
-				dataValue = types.SetNull(dataElementType)
+				dataValue = types.ListNull(dataElementType)
 			} else {
 				dataValues := make([]attr.Value, 0, len(protoElements))
 				for _, protoElement := range protoElements {
@@ -7120,19 +7120,19 @@ func CopyUpdateApplicationAwsResourcesResponse(dst *ApplicationAwsResourcesResou
 					dataValue = types.StringValue(protoValue)
 					dataValues = append(dataValues, dataValue)
 				}
-				dataValue = types.SetValueMust(dataElementType, dataValues)
+				dataValue = types.ListValueMust(dataElementType, dataValues)
 			}
 		}
 		dst.AwsVpcIds = dataValue
 	}
 	{
 		protoValue := src.AwsVpcPeeringConnectionIds
-		var dataValue types.Set
+		var dataValue types.List
 		{
 			dataElementType := types.StringType
 			protoElements := protoValue
 			if protoElements == nil {
-				dataValue = types.SetNull(dataElementType)
+				dataValue = types.ListNull(dataElementType)
 			} else {
 				dataValues := make([]attr.Value, 0, len(protoElements))
 				for _, protoElement := range protoElements {
@@ -7141,19 +7141,19 @@ func CopyUpdateApplicationAwsResourcesResponse(dst *ApplicationAwsResourcesResou
 					dataValue = types.StringValue(protoValue)
 					dataValues = append(dataValues, dataValue)
 				}
-				dataValue = types.SetValueMust(dataElementType, dataValues)
+				dataValue = types.ListValueMust(dataElementType, dataValues)
 			}
 		}
 		dst.AwsVpcPeeringConnectionIds = dataValue
 	}
 	{
 		protoValue := src.AwsVpnConnectionIds
-		var dataValue types.Set
+		var dataValue types.List
 		{
 			dataElementType := types.StringType
 			protoElements := protoValue
 			if protoElements == nil {
-				dataValue = types.SetNull(dataElementType)
+				dataValue = types.ListNull(dataElementType)
 			} else {
 				dataValues := make([]attr.Value, 0, len(protoElements))
 				for _, protoElement := range protoElements {
@@ -7162,19 +7162,19 @@ func CopyUpdateApplicationAwsResourcesResponse(dst *ApplicationAwsResourcesResou
 					dataValue = types.StringValue(protoValue)
 					dataValues = append(dataValues, dataValue)
 				}
-				dataValue = types.SetValueMust(dataElementType, dataValues)
+				dataValue = types.ListValueMust(dataElementType, dataValues)
 			}
 		}
 		dst.AwsVpnConnectionIds = dataValue
 	}
 	{
 		protoValue := src.AwsVpnGatewayIds
-		var dataValue types.Set
+		var dataValue types.List
 		{
 			dataElementType := types.StringType
 			protoElements := protoValue
 			if protoElements == nil {
-				dataValue = types.SetNull(dataElementType)
+				dataValue = types.ListNull(dataElementType)
 			} else {
 				dataValues := make([]attr.Value, 0, len(protoElements))
 				for _, protoElement := range protoElements {
@@ -7183,7 +7183,7 @@ func CopyUpdateApplicationAwsResourcesResponse(dst *ApplicationAwsResourcesResou
 					dataValue = types.StringValue(protoValue)
 					dataValues = append(dataValues, dataValue)
 				}
-				dataValue = types.SetValueMust(dataElementType, dataValues)
+				dataValue = types.ListValueMust(dataElementType, dataValues)
 			}
 		}
 		dst.AwsVpnGatewayIds = dataValue
@@ -7193,13 +7193,13 @@ func CopyCreateApplicationAzureResourcesResponse(dst *ApplicationAzureResourcesR
 	dst.Id = types.StringValue(src.Id)
 	dst.ApplicationId = types.StringValue(src.ApplicationId)
 	{
-		protoValue := src.AzuremResourceIds
-		var dataValue types.Set
+		protoValue := src.AzureResourceIds
+		var dataValue types.List
 		{
 			dataElementType := types.StringType
 			protoElements := protoValue
 			if protoElements == nil {
-				dataValue = types.SetNull(dataElementType)
+				dataValue = types.ListNull(dataElementType)
 			} else {
 				dataValues := make([]attr.Value, 0, len(protoElements))
 				for _, protoElement := range protoElements {
@@ -7208,10 +7208,10 @@ func CopyCreateApplicationAzureResourcesResponse(dst *ApplicationAzureResourcesR
 					dataValue = types.StringValue(protoValue)
 					dataValues = append(dataValues, dataValue)
 				}
-				dataValue = types.SetValueMust(dataElementType, dataValues)
+				dataValue = types.ListValueMust(dataElementType, dataValues)
 			}
 		}
-		dst.AzuremResourceIds = dataValue
+		dst.AzureResourceIds = dataValue
 	}
 	dst.SubscriptionId = types.StringValue(src.SubscriptionId)
 }
@@ -7219,13 +7219,13 @@ func CopyReadApplicationAzureResourcesResponse(dst *ApplicationAzureResourcesRes
 	dst.Id = types.StringValue(src.Id)
 	dst.ApplicationId = types.StringValue(src.ApplicationId)
 	{
-		protoValue := src.AzuremResourceIds
-		var dataValue types.Set
+		protoValue := src.AzureResourceIds
+		var dataValue types.List
 		{
 			dataElementType := types.StringType
 			protoElements := protoValue
 			if protoElements == nil {
-				dataValue = types.SetNull(dataElementType)
+				dataValue = types.ListNull(dataElementType)
 			} else {
 				dataValues := make([]attr.Value, 0, len(protoElements))
 				for _, protoElement := range protoElements {
@@ -7234,10 +7234,10 @@ func CopyReadApplicationAzureResourcesResponse(dst *ApplicationAzureResourcesRes
 					dataValue = types.StringValue(protoValue)
 					dataValues = append(dataValues, dataValue)
 				}
-				dataValue = types.SetValueMust(dataElementType, dataValues)
+				dataValue = types.ListValueMust(dataElementType, dataValues)
 			}
 		}
-		dst.AzuremResourceIds = dataValue
+		dst.AzureResourceIds = dataValue
 	}
 	dst.SubscriptionId = types.StringValue(src.SubscriptionId)
 }
@@ -7245,13 +7245,13 @@ func CopyUpdateApplicationAzureResourcesResponse(dst *ApplicationAzureResourcesR
 	dst.Id = types.StringValue(src.Id)
 	dst.ApplicationId = types.StringValue(src.ApplicationId)
 	{
-		protoValue := src.AzuremResourceIds
-		var dataValue types.Set
+		protoValue := src.AzureResourceIds
+		var dataValue types.List
 		{
 			dataElementType := types.StringType
 			protoElements := protoValue
 			if protoElements == nil {
-				dataValue = types.SetNull(dataElementType)
+				dataValue = types.ListNull(dataElementType)
 			} else {
 				dataValues := make([]attr.Value, 0, len(protoElements))
 				for _, protoElement := range protoElements {
@@ -7260,10 +7260,10 @@ func CopyUpdateApplicationAzureResourcesResponse(dst *ApplicationAzureResourcesR
 					dataValue = types.StringValue(protoValue)
 					dataValues = append(dataValues, dataValue)
 				}
-				dataValue = types.SetValueMust(dataElementType, dataValues)
+				dataValue = types.ListValueMust(dataElementType, dataValues)
 			}
 		}
-		dst.AzuremResourceIds = dataValue
+		dst.AzureResourceIds = dataValue
 	}
 	dst.SubscriptionId = types.StringValue(src.SubscriptionId)
 }

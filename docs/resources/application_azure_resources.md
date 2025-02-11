@@ -22,7 +22,7 @@ Manages a set of Azure resources belonging to a single Azure account that are as
 
 ### Optional
 
-- `azurem_resource_ids` (Set of String) IDs of Azure resources to associate with the CloudSecure application
+- `azure_resource_ids` (List of String) IDs of Azure resources to associate with the CloudSecure application
 
 ### Read-Only
 
