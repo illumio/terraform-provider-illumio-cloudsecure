@@ -52,7 +52,7 @@ var (
 				},
 				"application_id": StringResourceAttributeWithMode{
 					StringAttribute: resource_schema.StringAttribute{
-						Description: "Id of the application on which this rule is based.",
+						Description: "ID of the CloudSecure application on which this rule is based.",
 						Required:    true,
 						PlanModifiers: []planmodifier.String{
 							stringplanmodifier.RequiresReplace(),
