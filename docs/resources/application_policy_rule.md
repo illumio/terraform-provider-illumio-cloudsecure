@@ -3,12 +3,12 @@
 page_title: "illumio-cloudsecure_application_policy_rule Resource - illumio-cloudsecure"
 subcategory: ""
 description: |-
-  Manages policy rules on Cloudsecure applications.
+  Manages policy rules on CloudSecure applications.
 ---
 
 # illumio-cloudsecure_application_policy_rule (Resource)
 
-Manages policy rules on Cloudsecure applications.
+Manages policy rules on CloudSecure applications.
 
 
 
@@ -18,7 +18,7 @@ Manages policy rules on Cloudsecure applications.
 ### Required
 
 - `action` (String) The action to take for flows matched by the application policy rule. Must be `"Allow"` or `"Deny"`.
-- `application_id` (String) Id of the application on which this rule is based.
+- `application_id` (String) ID of the CloudSecure application on which this rule is based.
 
 ### Optional
 
