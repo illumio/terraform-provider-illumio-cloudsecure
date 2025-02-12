@@ -17,7 +17,10 @@ func (c *cloudSecureSchema) Version() string {
 func (c *cloudSecureSchema) Resources() Resources {
 	// Keep all resources sorted by lexicographic name order.
 	resources := Resources{
+		applicationAwsResourcesResource,
+		applicationAzureResourcesResource,
 		applicationPolicyRuleResource,
+		applicationResource,
 		awsAccountResource,
 		awsFlowLogsS3Bucket,
 		azureFlowLogsStorageAccount,

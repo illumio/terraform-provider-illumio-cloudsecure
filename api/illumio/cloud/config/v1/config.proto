@@ -6,6 +6,18 @@ package illumio.cloud.config.v1;
 import "google/protobuf/empty.proto";
 import "google/protobuf/field_mask.proto";
 service ConfigService {
+  rpc CreateApplication(CreateApplicationRequest) returns (CreateApplicationResponse);
+  rpc ReadApplication(ReadApplicationRequest) returns (ReadApplicationResponse);
+  rpc UpdateApplication(UpdateApplicationRequest) returns (UpdateApplicationResponse);
+  rpc DeleteApplication(DeleteApplicationRequest) returns (google.protobuf.Empty);
+  rpc CreateApplicationAwsResources(CreateApplicationAwsResourcesRequest) returns (CreateApplicationAwsResourcesResponse);
+  rpc ReadApplicationAwsResources(ReadApplicationAwsResourcesRequest) returns (ReadApplicationAwsResourcesResponse);
+  rpc UpdateApplicationAwsResources(UpdateApplicationAwsResourcesRequest) returns (UpdateApplicationAwsResourcesResponse);
+  rpc DeleteApplicationAwsResources(DeleteApplicationAwsResourcesRequest) returns (google.protobuf.Empty);
+  rpc CreateApplicationAzureResources(CreateApplicationAzureResourcesRequest) returns (CreateApplicationAzureResourcesResponse);
+  rpc ReadApplicationAzureResources(ReadApplicationAzureResourcesRequest) returns (ReadApplicationAzureResourcesResponse);
+  rpc UpdateApplicationAzureResources(UpdateApplicationAzureResourcesRequest) returns (UpdateApplicationAzureResourcesResponse);
+  rpc DeleteApplicationAzureResources(DeleteApplicationAzureResourcesRequest) returns (google.protobuf.Empty);
   rpc CreateApplicationPolicyRule(CreateApplicationPolicyRuleRequest) returns (CreateApplicationPolicyRuleResponse);
   rpc ReadApplicationPolicyRule(ReadApplicationPolicyRuleRequest) returns (ReadApplicationPolicyRuleResponse);
   rpc UpdateApplicationPolicyRule(UpdateApplicationPolicyRuleRequest) returns (UpdateApplicationPolicyRuleResponse);
@@ -42,6 +54,259 @@ service ConfigService {
   rpc ReadTagToLabel(ReadTagToLabelRequest) returns (ReadTagToLabelResponse);
   rpc UpdateTagToLabel(UpdateTagToLabelRequest) returns (UpdateTagToLabelResponse);
   rpc DeleteTagToLabel(DeleteTagToLabelRequest) returns (google.protobuf.Empty);
+}
+message CreateApplicationRequest {
+  string deployment_id = 2;
+  optional string description = 3;
+  string name = 4;
+}
+message CreateApplicationResponse {
+  string id = 1;
+  string deployment_id = 2;
+  optional string description = 3;
+  string name = 4;
+}
+message ReadApplicationRequest {
+  string id = 1;
+}
+message ReadApplicationResponse {
+  string id = 1;
+  string deployment_id = 2;
+  optional string description = 3;
+  string name = 4;
+}
+message UpdateApplicationRequest {
+  string id = 1;
+  optional string description = 3;
+  string name = 4;
+  google.protobuf.FieldMask update_mask = 5;
+}
+message UpdateApplicationResponse {
+  string id = 1;
+  string deployment_id = 2;
+  optional string description = 3;
+  string name = 4;
+}
+message DeleteApplicationRequest {
+  string id = 1;
+}
+message CreateApplicationAwsResourcesRequest {
+  string account_id = 2;
+  string application_id = 3;
+  repeated string arns = 4;
+  repeated string aws_customer_gateway_ids = 5;
+  repeated string aws_dx_connection_ids = 6;
+  repeated string aws_dx_virtual_interface_ids = 7;
+  repeated string aws_ebs_volume_ids = 8;
+  repeated string aws_ec2_instance_connect_endpoint_ids = 9;
+  repeated string aws_ec2_transit_gateway_attachment_ids = 10;
+  repeated string aws_ec2_transit_gateway_ids = 11;
+  repeated string aws_ec2_transit_gateway_multicast_domain_ids = 12;
+  repeated string aws_ec2_transit_gateway_route_table_ids = 13;
+  repeated string aws_egress_only_internet_gateway_ids = 14;
+  repeated string aws_eip_ids = 15;
+  repeated string aws_flow_log_ids = 16;
+  repeated string aws_instances_ids = 17;
+  repeated string aws_internet_gateway_ids = 18;
+  repeated string aws_nat_gateway_ids = 19;
+  repeated string aws_network_acl_ids = 20;
+  repeated string aws_network_interface_ids = 21;
+  repeated string aws_rds_cluster_ids = 22;
+  repeated string aws_route_table_ids = 23;
+  repeated string aws_security_group_ids = 24;
+  repeated string aws_security_group_rule_ids = 25;
+  repeated string aws_spot_fleet_request_ids = 26;
+  repeated string aws_spot_instance_request_ids = 27;
+  repeated string aws_subnet_ids = 28;
+  repeated string aws_vpc_endpoint_ids = 29;
+  repeated string aws_vpc_endpoint_service_ids = 30;
+  repeated string aws_vpc_ids = 31;
+  repeated string aws_vpc_peering_connection_ids = 32;
+  repeated string aws_vpn_connection_ids = 33;
+  repeated string aws_vpn_gateway_ids = 34;
+}
+message CreateApplicationAwsResourcesResponse {
+  string id = 1;
+  string account_id = 2;
+  string application_id = 3;
+  repeated string arns = 4;
+  repeated string aws_customer_gateway_ids = 5;
+  repeated string aws_dx_connection_ids = 6;
+  repeated string aws_dx_virtual_interface_ids = 7;
+  repeated string aws_ebs_volume_ids = 8;
+  repeated string aws_ec2_instance_connect_endpoint_ids = 9;
+  repeated string aws_ec2_transit_gateway_attachment_ids = 10;
+  repeated string aws_ec2_transit_gateway_ids = 11;
+  repeated string aws_ec2_transit_gateway_multicast_domain_ids = 12;
+  repeated string aws_ec2_transit_gateway_route_table_ids = 13;
+  repeated string aws_egress_only_internet_gateway_ids = 14;
+  repeated string aws_eip_ids = 15;
+  repeated string aws_flow_log_ids = 16;
+  repeated string aws_instances_ids = 17;
+  repeated string aws_internet_gateway_ids = 18;
+  repeated string aws_nat_gateway_ids = 19;
+  repeated string aws_network_acl_ids = 20;
+  repeated string aws_network_interface_ids = 21;
+  repeated string aws_rds_cluster_ids = 22;
+  repeated string aws_route_table_ids = 23;
+  repeated string aws_security_group_ids = 24;
+  repeated string aws_security_group_rule_ids = 25;
+  repeated string aws_spot_fleet_request_ids = 26;
+  repeated string aws_spot_instance_request_ids = 27;
+  repeated string aws_subnet_ids = 28;
+  repeated string aws_vpc_endpoint_ids = 29;
+  repeated string aws_vpc_endpoint_service_ids = 30;
+  repeated string aws_vpc_ids = 31;
+  repeated string aws_vpc_peering_connection_ids = 32;
+  repeated string aws_vpn_connection_ids = 33;
+  repeated string aws_vpn_gateway_ids = 34;
+}
+message ReadApplicationAwsResourcesRequest {
+  string id = 1;
+}
+message ReadApplicationAwsResourcesResponse {
+  string id = 1;
+  string account_id = 2;
+  string application_id = 3;
+  repeated string arns = 4;
+  repeated string aws_customer_gateway_ids = 5;
+  repeated string aws_dx_connection_ids = 6;
+  repeated string aws_dx_virtual_interface_ids = 7;
+  repeated string aws_ebs_volume_ids = 8;
+  repeated string aws_ec2_instance_connect_endpoint_ids = 9;
+  repeated string aws_ec2_transit_gateway_attachment_ids = 10;
+  repeated string aws_ec2_transit_gateway_ids = 11;
+  repeated string aws_ec2_transit_gateway_multicast_domain_ids = 12;
+  repeated string aws_ec2_transit_gateway_route_table_ids = 13;
+  repeated string aws_egress_only_internet_gateway_ids = 14;
+  repeated string aws_eip_ids = 15;
+  repeated string aws_flow_log_ids = 16;
+  repeated string aws_instances_ids = 17;
+  repeated string aws_internet_gateway_ids = 18;
+  repeated string aws_nat_gateway_ids = 19;
+  repeated string aws_network_acl_ids = 20;
+  repeated string aws_network_interface_ids = 21;
+  repeated string aws_rds_cluster_ids = 22;
+  repeated string aws_route_table_ids = 23;
+  repeated string aws_security_group_ids = 24;
+  repeated string aws_security_group_rule_ids = 25;
+  repeated string aws_spot_fleet_request_ids = 26;
+  repeated string aws_spot_instance_request_ids = 27;
+  repeated string aws_subnet_ids = 28;
+  repeated string aws_vpc_endpoint_ids = 29;
+  repeated string aws_vpc_endpoint_service_ids = 30;
+  repeated string aws_vpc_ids = 31;
+  repeated string aws_vpc_peering_connection_ids = 32;
+  repeated string aws_vpn_connection_ids = 33;
+  repeated string aws_vpn_gateway_ids = 34;
+}
+message UpdateApplicationAwsResourcesRequest {
+  string id = 1;
+  repeated string arns = 4;
+  repeated string aws_customer_gateway_ids = 5;
+  repeated string aws_dx_connection_ids = 6;
+  repeated string aws_dx_virtual_interface_ids = 7;
+  repeated string aws_ebs_volume_ids = 8;
+  repeated string aws_ec2_instance_connect_endpoint_ids = 9;
+  repeated string aws_ec2_transit_gateway_attachment_ids = 10;
+  repeated string aws_ec2_transit_gateway_ids = 11;
+  repeated string aws_ec2_transit_gateway_multicast_domain_ids = 12;
+  repeated string aws_ec2_transit_gateway_route_table_ids = 13;
+  repeated string aws_egress_only_internet_gateway_ids = 14;
+  repeated string aws_eip_ids = 15;
+  repeated string aws_flow_log_ids = 16;
+  repeated string aws_instances_ids = 17;
+  repeated string aws_internet_gateway_ids = 18;
+  repeated string aws_nat_gateway_ids = 19;
+  repeated string aws_network_acl_ids = 20;
+  repeated string aws_network_interface_ids = 21;
+  repeated string aws_rds_cluster_ids = 22;
+  repeated string aws_route_table_ids = 23;
+  repeated string aws_security_group_ids = 24;
+  repeated string aws_security_group_rule_ids = 25;
+  repeated string aws_spot_fleet_request_ids = 26;
+  repeated string aws_spot_instance_request_ids = 27;
+  repeated string aws_subnet_ids = 28;
+  repeated string aws_vpc_endpoint_ids = 29;
+  repeated string aws_vpc_endpoint_service_ids = 30;
+  repeated string aws_vpc_ids = 31;
+  repeated string aws_vpc_peering_connection_ids = 32;
+  repeated string aws_vpn_connection_ids = 33;
+  repeated string aws_vpn_gateway_ids = 34;
+  google.protobuf.FieldMask update_mask = 35;
+}
+message UpdateApplicationAwsResourcesResponse {
+  string id = 1;
+  string account_id = 2;
+  string application_id = 3;
+  repeated string arns = 4;
+  repeated string aws_customer_gateway_ids = 5;
+  repeated string aws_dx_connection_ids = 6;
+  repeated string aws_dx_virtual_interface_ids = 7;
+  repeated string aws_ebs_volume_ids = 8;
+  repeated string aws_ec2_instance_connect_endpoint_ids = 9;
+  repeated string aws_ec2_transit_gateway_attachment_ids = 10;
+  repeated string aws_ec2_transit_gateway_ids = 11;
+  repeated string aws_ec2_transit_gateway_multicast_domain_ids = 12;
+  repeated string aws_ec2_transit_gateway_route_table_ids = 13;
+  repeated string aws_egress_only_internet_gateway_ids = 14;
+  repeated string aws_eip_ids = 15;
+  repeated string aws_flow_log_ids = 16;
+  repeated string aws_instances_ids = 17;
+  repeated string aws_internet_gateway_ids = 18;
+  repeated string aws_nat_gateway_ids = 19;
+  repeated string aws_network_acl_ids = 20;
+  repeated string aws_network_interface_ids = 21;
+  repeated string aws_rds_cluster_ids = 22;
+  repeated string aws_route_table_ids = 23;
+  repeated string aws_security_group_ids = 24;
+  repeated string aws_security_group_rule_ids = 25;
+  repeated string aws_spot_fleet_request_ids = 26;
+  repeated string aws_spot_instance_request_ids = 27;
+  repeated string aws_subnet_ids = 28;
+  repeated string aws_vpc_endpoint_ids = 29;
+  repeated string aws_vpc_endpoint_service_ids = 30;
+  repeated string aws_vpc_ids = 31;
+  repeated string aws_vpc_peering_connection_ids = 32;
+  repeated string aws_vpn_connection_ids = 33;
+  repeated string aws_vpn_gateway_ids = 34;
+}
+message DeleteApplicationAwsResourcesRequest {
+  string id = 1;
+}
+message CreateApplicationAzureResourcesRequest {
+  string application_id = 2;
+  repeated string resource_ids = 3;
+  string subscription_id = 4;
+}
+message CreateApplicationAzureResourcesResponse {
+  string id = 1;
+  string application_id = 2;
+  repeated string resource_ids = 3;
+  string subscription_id = 4;
+}
+message ReadApplicationAzureResourcesRequest {
+  string id = 1;
+}
+message ReadApplicationAzureResourcesResponse {
+  string id = 1;
+  string application_id = 2;
+  repeated string resource_ids = 3;
+  string subscription_id = 4;
+}
+message UpdateApplicationAzureResourcesRequest {
+  string id = 1;
+  repeated string resource_ids = 3;
+  google.protobuf.FieldMask update_mask = 5;
+}
+message UpdateApplicationAzureResourcesResponse {
+  string id = 1;
+  string application_id = 2;
+  repeated string resource_ids = 3;
+  string subscription_id = 4;
+}
+message DeleteApplicationAzureResourcesRequest {
+  string id = 1;
 }
 message ApplicationPolicyRule_FromLabels {
   string key = 1;
