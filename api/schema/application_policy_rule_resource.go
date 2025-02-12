@@ -32,7 +32,7 @@ var (
 		TypeName: "application_policy_rule",
 		Schema: resource_schema.Schema{
 			Version:     1,
-			Description: "Manages policy rules on Cloudsecure applications.",
+			Description: "Manages policy rules on CloudSecure applications.",
 			Attributes: map[string]resource_schema.Attribute{
 				IDFieldName: idAttribute,
 				"action": StringResourceAttributeWithMode{
@@ -42,6 +42,18 @@ var (
 						Validators: []validator.String{
 							stringvalidator.OneOf("Allow", "Deny"),
 						},
+						PlanModifiers: []planmodifier.String{
+							stringplanmodifier.RequiresReplace(),
+						},
+					},
+					attributeWithMode: attributeWithMode{
+						Mode: ReadWriteAttributeMode,
+					},
+				},
+				"application_id": StringResourceAttributeWithMode{
+					StringAttribute: resource_schema.StringAttribute{
+						Description: "ID of the CloudSecure application on which this rule is based.",
+						Required:    true,
 						PlanModifiers: []planmodifier.String{
 							stringplanmodifier.RequiresReplace(),
 						},
