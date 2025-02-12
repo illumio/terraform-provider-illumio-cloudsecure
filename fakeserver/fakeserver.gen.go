@@ -78,7 +78,7 @@ type ApplicationAwsResources struct {
 	Id                                     string
 	AccountId                              string
 	ApplicationId                          string
-	AwsArns                                []string
+	Arns                                   []string
 	AwsCustomerGatewayIds                  []string
 	AwsDxConnectionIds                     []string
 	AwsDxVirtualInterfaceIds               []string
@@ -112,10 +112,10 @@ type ApplicationAwsResources struct {
 }
 
 type ApplicationAzureResources struct {
-	Id               string
-	ApplicationId    string
-	AzureResourceIds []string
-	SubscriptionId   string
+	Id             string
+	ApplicationId  string
+	ResourceIds    []string
+	SubscriptionId string
 }
 
 type ApplicationPolicyRule struct {
@@ -338,7 +338,7 @@ func (s *FakeConfigServer) CreateApplicationAwsResources(ctx context.Context, re
 		Id:                                     id,
 		AccountId:                              req.AccountId,
 		ApplicationId:                          req.ApplicationId,
-		AwsArns:                                req.AwsArns,
+		Arns:                                   req.Arns,
 		AwsCustomerGatewayIds:                  req.AwsCustomerGatewayIds,
 		AwsDxConnectionIds:                     req.AwsDxConnectionIds,
 		AwsDxVirtualInterfaceIds:               req.AwsDxVirtualInterfaceIds,
@@ -374,7 +374,7 @@ func (s *FakeConfigServer) CreateApplicationAwsResources(ctx context.Context, re
 		Id:                                     id,
 		AccountId:                              model.AccountId,
 		ApplicationId:                          model.ApplicationId,
-		AwsArns:                                model.AwsArns,
+		Arns:                                   model.Arns,
 		AwsCustomerGatewayIds:                  model.AwsCustomerGatewayIds,
 		AwsDxConnectionIds:                     model.AwsDxConnectionIds,
 		AwsDxVirtualInterfaceIds:               model.AwsDxVirtualInterfaceIds,
@@ -434,7 +434,7 @@ func (s *FakeConfigServer) ReadApplicationAwsResources(ctx context.Context, req 
 		Id:                                     id,
 		AccountId:                              model.AccountId,
 		ApplicationId:                          model.ApplicationId,
-		AwsArns:                                model.AwsArns,
+		Arns:                                   model.Arns,
 		AwsCustomerGatewayIds:                  model.AwsCustomerGatewayIds,
 		AwsDxConnectionIds:                     model.AwsDxConnectionIds,
 		AwsDxVirtualInterfaceIds:               model.AwsDxVirtualInterfaceIds,
@@ -495,8 +495,8 @@ func (s *FakeConfigServer) UpdateApplicationAwsResources(ctx context.Context, re
 	}
 	for _, path := range updateMaskPaths {
 		switch path {
-		case "aws_arns":
-			model.AwsArns = req.AwsArns
+		case "arns":
+			model.Arns = req.Arns
 		case "aws_customer_gateway_ids":
 			model.AwsCustomerGatewayIds = req.AwsCustomerGatewayIds
 		case "aws_dx_connection_ids":
@@ -573,7 +573,7 @@ func (s *FakeConfigServer) UpdateApplicationAwsResources(ctx context.Context, re
 		Id:                                     id,
 		AccountId:                              model.AccountId,
 		ApplicationId:                          model.ApplicationId,
-		AwsArns:                                model.AwsArns,
+		Arns:                                   model.Arns,
 		AwsCustomerGatewayIds:                  model.AwsCustomerGatewayIds,
 		AwsDxConnectionIds:                     model.AwsDxConnectionIds,
 		AwsDxVirtualInterfaceIds:               model.AwsDxVirtualInterfaceIds,
@@ -640,16 +640,16 @@ func (s *FakeConfigServer) DeleteApplicationAwsResources(ctx context.Context, re
 func (s *FakeConfigServer) CreateApplicationAzureResources(ctx context.Context, req *configv1.CreateApplicationAzureResourcesRequest) (*configv1.CreateApplicationAzureResourcesResponse, error) {
 	id := uuid.New().String()
 	model := &ApplicationAzureResources{
-		Id:               id,
-		ApplicationId:    req.ApplicationId,
-		AzureResourceIds: req.AzureResourceIds,
-		SubscriptionId:   req.SubscriptionId,
+		Id:             id,
+		ApplicationId:  req.ApplicationId,
+		ResourceIds:    req.ResourceIds,
+		SubscriptionId: req.SubscriptionId,
 	}
 	resp := &configv1.CreateApplicationAzureResourcesResponse{
-		Id:               id,
-		ApplicationId:    model.ApplicationId,
-		AzureResourceIds: model.AzureResourceIds,
-		SubscriptionId:   model.SubscriptionId,
+		Id:             id,
+		ApplicationId:  model.ApplicationId,
+		ResourceIds:    model.ResourceIds,
+		SubscriptionId: model.SubscriptionId,
 	}
 	s.ApplicationAzureResourcesMutex.Lock()
 	s.ApplicationAzureResourcesMap[id] = model
@@ -676,10 +676,10 @@ func (s *FakeConfigServer) ReadApplicationAzureResources(ctx context.Context, re
 		return nil, status.Errorf(codes.NotFound, "no application_azure_resources found with id %s", id)
 	}
 	resp := &configv1.ReadApplicationAzureResourcesResponse{
-		Id:               id,
-		ApplicationId:    model.ApplicationId,
-		AzureResourceIds: model.AzureResourceIds,
-		SubscriptionId:   model.SubscriptionId,
+		Id:             id,
+		ApplicationId:  model.ApplicationId,
+		ResourceIds:    model.ResourceIds,
+		SubscriptionId: model.SubscriptionId,
 	}
 	s.ApplicationAzureResourcesMutex.RUnlock()
 	s.Logger.Info("read resource",
@@ -710,8 +710,8 @@ func (s *FakeConfigServer) UpdateApplicationAzureResources(ctx context.Context, 
 	}
 	for _, path := range updateMaskPaths {
 		switch path {
-		case "azure_resource_ids":
-			model.AzureResourceIds = req.AzureResourceIds
+		case "resource_ids":
+			model.ResourceIds = req.ResourceIds
 		default:
 			s.AwsAccountMutex.Unlock()
 			s.Logger.Error("attempted to update resource using invalid update_mask path",
@@ -725,10 +725,10 @@ func (s *FakeConfigServer) UpdateApplicationAzureResources(ctx context.Context, 
 		}
 	}
 	resp := &configv1.UpdateApplicationAzureResourcesResponse{
-		Id:               id,
-		ApplicationId:    model.ApplicationId,
-		AzureResourceIds: model.AzureResourceIds,
-		SubscriptionId:   model.SubscriptionId,
+		Id:             id,
+		ApplicationId:  model.ApplicationId,
+		ResourceIds:    model.ResourceIds,
+		SubscriptionId: model.SubscriptionId,
 	}
 	s.ApplicationAzureResourcesMutex.Unlock()
 	s.Logger.Info("updated resource",

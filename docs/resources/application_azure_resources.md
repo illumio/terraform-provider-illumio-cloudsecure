@@ -3,12 +3,12 @@
 page_title: "illumio-cloudsecure_application_azure_resources Resource - illumio-cloudsecure"
 subcategory: ""
 description: |-
-  Manages a set of Azure resources belonging to a single Azure account that are associated with a CloudSecure application.
+  Manages a set of Azure resources belonging to a single Azure subscription that are associated with a CloudSecure application.
 ---
 
 # illumio-cloudsecure_application_azure_resources (Resource)
 
-Manages a set of Azure resources belonging to a single Azure account that are associated with a CloudSecure application.
+Manages a set of Azure resources belonging to a single Azure subscription that are associated with a CloudSecure application.
 
 
 
@@ -18,11 +18,11 @@ Manages a set of Azure resources belonging to a single Azure account that are as
 ### Required
 
 - `application_id` (String) ID of the CloudSecure application.
-- `subscription_id` (String) ID of the Azure account the Azure resources belong to.
+- `subscription_id` (String) ID of the Azure subscription the Azure resources belong to.
 
 ### Optional
 
-- `azure_resource_ids` (List of String) IDs of Azure resources to associate with the CloudSecure application
+- `resource_ids` (List of String) IDs of Azure resources to associate with the CloudSecure application
 
 ### Read-Only
 

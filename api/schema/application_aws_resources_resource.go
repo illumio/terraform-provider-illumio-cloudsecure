@@ -42,7 +42,7 @@ var (
 						Mode: ImmutableAttributeMode,
 					},
 				},
-				"aws_arns": resource_schema.ListAttribute{
+				"arns": resource_schema.ListAttribute{
 					ElementType: types.StringType,
 					Description: "ARNs of AWS resources to associate with the CloudSecure application",
 					Optional:    true,

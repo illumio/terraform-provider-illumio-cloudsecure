@@ -15,7 +15,7 @@ var (
 		TypeName: "application_azure_resources",
 		Schema: resource_schema.Schema{
 			Version:     1,
-			Description: "Manages a set of Azure resources belonging to a single Azure account that are associated with a CloudSecure application.",
+			Description: "Manages a set of Azure resources belonging to a single Azure subscription that are associated with a CloudSecure application.",
 			Attributes: map[string]resource_schema.Attribute{
 				IDFieldName: idAttribute,
 				"application_id": StringResourceAttributeWithMode{
@@ -30,14 +30,14 @@ var (
 						Mode: ImmutableAttributeMode,
 					},
 				},
-				"azure_resource_ids": resource_schema.ListAttribute{
+				"resource_ids": resource_schema.ListAttribute{
 					ElementType: types.StringType,
 					Description: "IDs of Azure resources to associate with the CloudSecure application",
 					Optional:    true,
 				},
 				"subscription_id": StringResourceAttributeWithMode{
 					StringAttribute: resource_schema.StringAttribute{
-						Description: "ID of the Azure account the Azure resources belong to.",
+						Description: "ID of the Azure subscription the Azure resources belong to.",
 						Required:    true,
 						PlanModifiers: []planmodifier.String{
 							stringplanmodifier.RequiresReplace(),

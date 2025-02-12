@@ -93,7 +93,7 @@ message DeleteApplicationRequest {
 message CreateApplicationAwsResourcesRequest {
   string account_id = 2;
   string application_id = 3;
-  repeated string aws_arns = 4;
+  repeated string arns = 4;
   repeated string aws_customer_gateway_ids = 5;
   repeated string aws_dx_connection_ids = 6;
   repeated string aws_dx_virtual_interface_ids = 7;
@@ -129,7 +129,7 @@ message CreateApplicationAwsResourcesResponse {
   string id = 1;
   string account_id = 2;
   string application_id = 3;
-  repeated string aws_arns = 4;
+  repeated string arns = 4;
   repeated string aws_customer_gateway_ids = 5;
   repeated string aws_dx_connection_ids = 6;
   repeated string aws_dx_virtual_interface_ids = 7;
@@ -168,7 +168,7 @@ message ReadApplicationAwsResourcesResponse {
   string id = 1;
   string account_id = 2;
   string application_id = 3;
-  repeated string aws_arns = 4;
+  repeated string arns = 4;
   repeated string aws_customer_gateway_ids = 5;
   repeated string aws_dx_connection_ids = 6;
   repeated string aws_dx_virtual_interface_ids = 7;
@@ -202,7 +202,7 @@ message ReadApplicationAwsResourcesResponse {
 }
 message UpdateApplicationAwsResourcesRequest {
   string id = 1;
-  repeated string aws_arns = 4;
+  repeated string arns = 4;
   repeated string aws_customer_gateway_ids = 5;
   repeated string aws_dx_connection_ids = 6;
   repeated string aws_dx_virtual_interface_ids = 7;
@@ -239,7 +239,7 @@ message UpdateApplicationAwsResourcesResponse {
   string id = 1;
   string account_id = 2;
   string application_id = 3;
-  repeated string aws_arns = 4;
+  repeated string arns = 4;
   repeated string aws_customer_gateway_ids = 5;
   repeated string aws_dx_connection_ids = 6;
   repeated string aws_dx_virtual_interface_ids = 7;
@@ -276,13 +276,13 @@ message DeleteApplicationAwsResourcesRequest {
 }
 message CreateApplicationAzureResourcesRequest {
   string application_id = 2;
-  repeated string azure_resource_ids = 3;
+  repeated string resource_ids = 3;
   string subscription_id = 4;
 }
 message CreateApplicationAzureResourcesResponse {
   string id = 1;
   string application_id = 2;
-  repeated string azure_resource_ids = 3;
+  repeated string resource_ids = 3;
   string subscription_id = 4;
 }
 message ReadApplicationAzureResourcesRequest {
@@ -291,18 +291,18 @@ message ReadApplicationAzureResourcesRequest {
 message ReadApplicationAzureResourcesResponse {
   string id = 1;
   string application_id = 2;
-  repeated string azure_resource_ids = 3;
+  repeated string resource_ids = 3;
   string subscription_id = 4;
 }
 message UpdateApplicationAzureResourcesRequest {
   string id = 1;
-  repeated string azure_resource_ids = 3;
+  repeated string resource_ids = 3;
   google.protobuf.FieldMask update_mask = 5;
 }
 message UpdateApplicationAzureResourcesResponse {
   string id = 1;
   string application_id = 2;
-  repeated string azure_resource_ids = 3;
+  repeated string resource_ids = 3;
   string subscription_id = 4;
 }
 message DeleteApplicationAzureResourcesRequest {

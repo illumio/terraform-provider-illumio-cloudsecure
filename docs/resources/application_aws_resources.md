@@ -22,7 +22,7 @@ Manages a set of AWS resources belonging to a single AWS account that are associ
 
 ### Optional
 
-- `aws_arns` (List of String) ARNs of AWS resources to associate with the CloudSecure application
+- `arns` (List of String) ARNs of AWS resources to associate with the CloudSecure application
 - `aws_customer_gateway_ids` (List of String) IDs of AWS customer gateways to associate with the CloudSecure Application.
 - `aws_dx_connection_ids` (List of String) IDs of AWS Direct Connect connections to associate with the CloudSecure Application.
 - `aws_dx_virtual_interface_ids` (List of String) IDs of AWS Direct Connect virtual interfaces (public/private/hosted/transit) to associate with the CloudSecure Application.
