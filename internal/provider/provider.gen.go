@@ -2418,7 +2418,7 @@ type ApplicationAwsResourcesResourceModel struct {
 	AwsDxVirtualInterfaceIds               types.List   `tfsdk:"aws_dx_virtual_interface_ids"`
 	AwsEbsVolumeIds                        types.List   `tfsdk:"aws_ebs_volume_ids"`
 	AwsEc2InstanceConnectEndpointIds       types.List   `tfsdk:"aws_ec2_instance_connect_endpoint_ids"`
-	AwsEc2TransitGatewayAttachments        types.List   `tfsdk:"aws_ec2_transit_gateway_attachments"`
+	AwsEc2TransitGatewayAttachmentIds      types.List   `tfsdk:"aws_ec2_transit_gateway_attachment_ids"`
 	AwsEc2TransitGatewayIds                types.List   `tfsdk:"aws_ec2_transit_gateway_ids"`
 	AwsEc2TransitGatewayMulticastDomainIds types.List   `tfsdk:"aws_ec2_transit_gateway_multicast_domain_ids"`
 	AwsEc2TransitGatewayRouteTableIds      types.List   `tfsdk:"aws_ec2_transit_gateway_route_table_ids"`
@@ -2428,7 +2428,7 @@ type ApplicationAwsResourcesResourceModel struct {
 	AwsInstancesIds                        types.List   `tfsdk:"aws_instances_ids"`
 	AwsInternetGatewayIds                  types.List   `tfsdk:"aws_internet_gateway_ids"`
 	AwsNatGatewayIds                       types.List   `tfsdk:"aws_nat_gateway_ids"`
-	AwsNetworkAcl                          types.List   `tfsdk:"aws_network_acl"`
+	AwsNetworkAclIds                       types.List   `tfsdk:"aws_network_acl_ids"`
 	AwsNetworkInterfaceIds                 types.List   `tfsdk:"aws_network_interface_ids"`
 	AwsRdsClusterIds                       types.List   `tfsdk:"aws_rds_cluster_ids"`
 	AwsRouteTableIds                       types.List   `tfsdk:"aws_route_table_ids"`
@@ -2698,8 +2698,8 @@ func NewCreateApplicationAwsResourcesRequest(ctx context.Context, data *Applicat
 		}
 		proto.AwsEc2InstanceConnectEndpointIds = protoValue
 	}
-	if !data.AwsEc2TransitGatewayAttachments.IsUnknown() && !data.AwsEc2TransitGatewayAttachments.IsNull() {
-		var dataValue attr.Value = data.AwsEc2TransitGatewayAttachments
+	if !data.AwsEc2TransitGatewayAttachmentIds.IsUnknown() && !data.AwsEc2TransitGatewayAttachmentIds.IsNull() {
+		var dataValue attr.Value = data.AwsEc2TransitGatewayAttachmentIds
 		var protoValue []string
 		{
 			dataElements := dataValue.(types.List).Elements()
@@ -2712,7 +2712,7 @@ func NewCreateApplicationAwsResourcesRequest(ctx context.Context, data *Applicat
 			}
 			protoValue = protoValues
 		}
-		proto.AwsEc2TransitGatewayAttachments = protoValue
+		proto.AwsEc2TransitGatewayAttachmentIds = protoValue
 	}
 	if !data.AwsEc2TransitGatewayIds.IsUnknown() && !data.AwsEc2TransitGatewayIds.IsNull() {
 		var dataValue attr.Value = data.AwsEc2TransitGatewayIds
@@ -2858,8 +2858,8 @@ func NewCreateApplicationAwsResourcesRequest(ctx context.Context, data *Applicat
 		}
 		proto.AwsNatGatewayIds = protoValue
 	}
-	if !data.AwsNetworkAcl.IsUnknown() && !data.AwsNetworkAcl.IsNull() {
-		var dataValue attr.Value = data.AwsNetworkAcl
+	if !data.AwsNetworkAclIds.IsUnknown() && !data.AwsNetworkAclIds.IsNull() {
+		var dataValue attr.Value = data.AwsNetworkAclIds
 		var protoValue []string
 		{
 			dataElements := dataValue.(types.List).Elements()
@@ -2872,7 +2872,7 @@ func NewCreateApplicationAwsResourcesRequest(ctx context.Context, data *Applicat
 			}
 			protoValue = protoValues
 		}
-		proto.AwsNetworkAcl = protoValue
+		proto.AwsNetworkAclIds = protoValue
 	}
 	if !data.AwsNetworkInterfaceIds.IsUnknown() && !data.AwsNetworkInterfaceIds.IsNull() {
 		var dataValue attr.Value = data.AwsNetworkInterfaceIds
@@ -4108,10 +4108,10 @@ func NewUpdateApplicationAwsResourcesRequest(ctx context.Context, beforeData, af
 			proto.AwsEc2InstanceConnectEndpointIds = protoValue
 		}
 	}
-	if !afterData.AwsEc2TransitGatewayAttachments.Equal(beforeData.AwsEc2TransitGatewayAttachments) {
-		proto.UpdateMask.Append(proto, "aws_ec2_transit_gateway_attachments")
-		if !afterData.AwsEc2TransitGatewayAttachments.IsUnknown() && !afterData.AwsEc2TransitGatewayAttachments.IsNull() {
-			var dataValue attr.Value = afterData.AwsEc2TransitGatewayAttachments
+	if !afterData.AwsEc2TransitGatewayAttachmentIds.Equal(beforeData.AwsEc2TransitGatewayAttachmentIds) {
+		proto.UpdateMask.Append(proto, "aws_ec2_transit_gateway_attachment_ids")
+		if !afterData.AwsEc2TransitGatewayAttachmentIds.IsUnknown() && !afterData.AwsEc2TransitGatewayAttachmentIds.IsNull() {
+			var dataValue attr.Value = afterData.AwsEc2TransitGatewayAttachmentIds
 			var protoValue []string
 			{
 				dataElements := dataValue.(types.List).Elements()
@@ -4124,7 +4124,7 @@ func NewUpdateApplicationAwsResourcesRequest(ctx context.Context, beforeData, af
 				}
 				protoValue = protoValues
 			}
-			proto.AwsEc2TransitGatewayAttachments = protoValue
+			proto.AwsEc2TransitGatewayAttachmentIds = protoValue
 		}
 	}
 	if !afterData.AwsEc2TransitGatewayIds.Equal(beforeData.AwsEc2TransitGatewayIds) {
@@ -4298,10 +4298,10 @@ func NewUpdateApplicationAwsResourcesRequest(ctx context.Context, beforeData, af
 			proto.AwsNatGatewayIds = protoValue
 		}
 	}
-	if !afterData.AwsNetworkAcl.Equal(beforeData.AwsNetworkAcl) {
-		proto.UpdateMask.Append(proto, "aws_network_acl")
-		if !afterData.AwsNetworkAcl.IsUnknown() && !afterData.AwsNetworkAcl.IsNull() {
-			var dataValue attr.Value = afterData.AwsNetworkAcl
+	if !afterData.AwsNetworkAclIds.Equal(beforeData.AwsNetworkAclIds) {
+		proto.UpdateMask.Append(proto, "aws_network_acl_ids")
+		if !afterData.AwsNetworkAclIds.IsUnknown() && !afterData.AwsNetworkAclIds.IsNull() {
+			var dataValue attr.Value = afterData.AwsNetworkAclIds
 			var protoValue []string
 			{
 				dataElements := dataValue.(types.List).Elements()
@@ -4314,7 +4314,7 @@ func NewUpdateApplicationAwsResourcesRequest(ctx context.Context, beforeData, af
 				}
 				protoValue = protoValues
 			}
-			proto.AwsNetworkAcl = protoValue
+			proto.AwsNetworkAclIds = protoValue
 		}
 	}
 	if !afterData.AwsNetworkInterfaceIds.Equal(beforeData.AwsNetworkInterfaceIds) {
@@ -5352,7 +5352,7 @@ func CopyCreateApplicationAwsResourcesResponse(dst *ApplicationAwsResourcesResou
 		dst.AwsEc2InstanceConnectEndpointIds = dataValue
 	}
 	{
-		protoValue := src.AwsEc2TransitGatewayAttachments
+		protoValue := src.AwsEc2TransitGatewayAttachmentIds
 		var dataValue types.List
 		{
 			dataElementType := types.StringType
@@ -5370,7 +5370,7 @@ func CopyCreateApplicationAwsResourcesResponse(dst *ApplicationAwsResourcesResou
 				dataValue = types.ListValueMust(dataElementType, dataValues)
 			}
 		}
-		dst.AwsEc2TransitGatewayAttachments = dataValue
+		dst.AwsEc2TransitGatewayAttachmentIds = dataValue
 	}
 	{
 		protoValue := src.AwsEc2TransitGatewayIds
@@ -5562,7 +5562,7 @@ func CopyCreateApplicationAwsResourcesResponse(dst *ApplicationAwsResourcesResou
 		dst.AwsNatGatewayIds = dataValue
 	}
 	{
-		protoValue := src.AwsNetworkAcl
+		protoValue := src.AwsNetworkAclIds
 		var dataValue types.List
 		{
 			dataElementType := types.StringType
@@ -5580,7 +5580,7 @@ func CopyCreateApplicationAwsResourcesResponse(dst *ApplicationAwsResourcesResou
 				dataValue = types.ListValueMust(dataElementType, dataValues)
 			}
 		}
-		dst.AwsNetworkAcl = dataValue
+		dst.AwsNetworkAclIds = dataValue
 	}
 	{
 		protoValue := src.AwsNetworkInterfaceIds
@@ -6008,7 +6008,7 @@ func CopyReadApplicationAwsResourcesResponse(dst *ApplicationAwsResourcesResourc
 		dst.AwsEc2InstanceConnectEndpointIds = dataValue
 	}
 	{
-		protoValue := src.AwsEc2TransitGatewayAttachments
+		protoValue := src.AwsEc2TransitGatewayAttachmentIds
 		var dataValue types.List
 		{
 			dataElementType := types.StringType
@@ -6026,7 +6026,7 @@ func CopyReadApplicationAwsResourcesResponse(dst *ApplicationAwsResourcesResourc
 				dataValue = types.ListValueMust(dataElementType, dataValues)
 			}
 		}
-		dst.AwsEc2TransitGatewayAttachments = dataValue
+		dst.AwsEc2TransitGatewayAttachmentIds = dataValue
 	}
 	{
 		protoValue := src.AwsEc2TransitGatewayIds
@@ -6218,7 +6218,7 @@ func CopyReadApplicationAwsResourcesResponse(dst *ApplicationAwsResourcesResourc
 		dst.AwsNatGatewayIds = dataValue
 	}
 	{
-		protoValue := src.AwsNetworkAcl
+		protoValue := src.AwsNetworkAclIds
 		var dataValue types.List
 		{
 			dataElementType := types.StringType
@@ -6236,7 +6236,7 @@ func CopyReadApplicationAwsResourcesResponse(dst *ApplicationAwsResourcesResourc
 				dataValue = types.ListValueMust(dataElementType, dataValues)
 			}
 		}
-		dst.AwsNetworkAcl = dataValue
+		dst.AwsNetworkAclIds = dataValue
 	}
 	{
 		protoValue := src.AwsNetworkInterfaceIds
@@ -6664,7 +6664,7 @@ func CopyUpdateApplicationAwsResourcesResponse(dst *ApplicationAwsResourcesResou
 		dst.AwsEc2InstanceConnectEndpointIds = dataValue
 	}
 	{
-		protoValue := src.AwsEc2TransitGatewayAttachments
+		protoValue := src.AwsEc2TransitGatewayAttachmentIds
 		var dataValue types.List
 		{
 			dataElementType := types.StringType
@@ -6682,7 +6682,7 @@ func CopyUpdateApplicationAwsResourcesResponse(dst *ApplicationAwsResourcesResou
 				dataValue = types.ListValueMust(dataElementType, dataValues)
 			}
 		}
-		dst.AwsEc2TransitGatewayAttachments = dataValue
+		dst.AwsEc2TransitGatewayAttachmentIds = dataValue
 	}
 	{
 		protoValue := src.AwsEc2TransitGatewayIds
@@ -6874,7 +6874,7 @@ func CopyUpdateApplicationAwsResourcesResponse(dst *ApplicationAwsResourcesResou
 		dst.AwsNatGatewayIds = dataValue
 	}
 	{
-		protoValue := src.AwsNetworkAcl
+		protoValue := src.AwsNetworkAclIds
 		var dataValue types.List
 		{
 			dataElementType := types.StringType
@@ -6892,7 +6892,7 @@ func CopyUpdateApplicationAwsResourcesResponse(dst *ApplicationAwsResourcesResou
 				dataValue = types.ListValueMust(dataElementType, dataValues)
 			}
 		}
-		dst.AwsNetworkAcl = dataValue
+		dst.AwsNetworkAclIds = dataValue
 	}
 	{
 		protoValue := src.AwsNetworkInterfaceIds

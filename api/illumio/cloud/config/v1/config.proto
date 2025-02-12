@@ -99,7 +99,7 @@ message CreateApplicationAwsResourcesRequest {
   repeated string aws_dx_virtual_interface_ids = 7;
   repeated string aws_ebs_volume_ids = 8;
   repeated string aws_ec2_instance_connect_endpoint_ids = 9;
-  repeated string aws_ec2_transit_gateway_attachments = 10;
+  repeated string aws_ec2_transit_gateway_attachment_ids = 10;
   repeated string aws_ec2_transit_gateway_ids = 11;
   repeated string aws_ec2_transit_gateway_multicast_domain_ids = 12;
   repeated string aws_ec2_transit_gateway_route_table_ids = 13;
@@ -109,7 +109,7 @@ message CreateApplicationAwsResourcesRequest {
   repeated string aws_instances_ids = 17;
   repeated string aws_internet_gateway_ids = 18;
   repeated string aws_nat_gateway_ids = 19;
-  repeated string aws_network_acl = 20;
+  repeated string aws_network_acl_ids = 20;
   repeated string aws_network_interface_ids = 21;
   repeated string aws_rds_cluster_ids = 22;
   repeated string aws_route_table_ids = 23;
@@ -135,7 +135,7 @@ message CreateApplicationAwsResourcesResponse {
   repeated string aws_dx_virtual_interface_ids = 7;
   repeated string aws_ebs_volume_ids = 8;
   repeated string aws_ec2_instance_connect_endpoint_ids = 9;
-  repeated string aws_ec2_transit_gateway_attachments = 10;
+  repeated string aws_ec2_transit_gateway_attachment_ids = 10;
   repeated string aws_ec2_transit_gateway_ids = 11;
   repeated string aws_ec2_transit_gateway_multicast_domain_ids = 12;
   repeated string aws_ec2_transit_gateway_route_table_ids = 13;
@@ -145,7 +145,7 @@ message CreateApplicationAwsResourcesResponse {
   repeated string aws_instances_ids = 17;
   repeated string aws_internet_gateway_ids = 18;
   repeated string aws_nat_gateway_ids = 19;
-  repeated string aws_network_acl = 20;
+  repeated string aws_network_acl_ids = 20;
   repeated string aws_network_interface_ids = 21;
   repeated string aws_rds_cluster_ids = 22;
   repeated string aws_route_table_ids = 23;
@@ -174,7 +174,7 @@ message ReadApplicationAwsResourcesResponse {
   repeated string aws_dx_virtual_interface_ids = 7;
   repeated string aws_ebs_volume_ids = 8;
   repeated string aws_ec2_instance_connect_endpoint_ids = 9;
-  repeated string aws_ec2_transit_gateway_attachments = 10;
+  repeated string aws_ec2_transit_gateway_attachment_ids = 10;
   repeated string aws_ec2_transit_gateway_ids = 11;
   repeated string aws_ec2_transit_gateway_multicast_domain_ids = 12;
   repeated string aws_ec2_transit_gateway_route_table_ids = 13;
@@ -184,7 +184,7 @@ message ReadApplicationAwsResourcesResponse {
   repeated string aws_instances_ids = 17;
   repeated string aws_internet_gateway_ids = 18;
   repeated string aws_nat_gateway_ids = 19;
-  repeated string aws_network_acl = 20;
+  repeated string aws_network_acl_ids = 20;
   repeated string aws_network_interface_ids = 21;
   repeated string aws_rds_cluster_ids = 22;
   repeated string aws_route_table_ids = 23;
@@ -208,7 +208,7 @@ message UpdateApplicationAwsResourcesRequest {
   repeated string aws_dx_virtual_interface_ids = 7;
   repeated string aws_ebs_volume_ids = 8;
   repeated string aws_ec2_instance_connect_endpoint_ids = 9;
-  repeated string aws_ec2_transit_gateway_attachments = 10;
+  repeated string aws_ec2_transit_gateway_attachment_ids = 10;
   repeated string aws_ec2_transit_gateway_ids = 11;
   repeated string aws_ec2_transit_gateway_multicast_domain_ids = 12;
   repeated string aws_ec2_transit_gateway_route_table_ids = 13;
@@ -218,7 +218,7 @@ message UpdateApplicationAwsResourcesRequest {
   repeated string aws_instances_ids = 17;
   repeated string aws_internet_gateway_ids = 18;
   repeated string aws_nat_gateway_ids = 19;
-  repeated string aws_network_acl = 20;
+  repeated string aws_network_acl_ids = 20;
   repeated string aws_network_interface_ids = 21;
   repeated string aws_rds_cluster_ids = 22;
   repeated string aws_route_table_ids = 23;
@@ -245,7 +245,7 @@ message UpdateApplicationAwsResourcesResponse {
   repeated string aws_dx_virtual_interface_ids = 7;
   repeated string aws_ebs_volume_ids = 8;
   repeated string aws_ec2_instance_connect_endpoint_ids = 9;
-  repeated string aws_ec2_transit_gateway_attachments = 10;
+  repeated string aws_ec2_transit_gateway_attachment_ids = 10;
   repeated string aws_ec2_transit_gateway_ids = 11;
   repeated string aws_ec2_transit_gateway_multicast_domain_ids = 12;
   repeated string aws_ec2_transit_gateway_route_table_ids = 13;
@@ -255,7 +255,7 @@ message UpdateApplicationAwsResourcesResponse {
   repeated string aws_instances_ids = 17;
   repeated string aws_internet_gateway_ids = 18;
   repeated string aws_nat_gateway_ids = 19;
-  repeated string aws_network_acl = 20;
+  repeated string aws_network_acl_ids = 20;
   repeated string aws_network_interface_ids = 21;
   repeated string aws_rds_cluster_ids = 22;
   repeated string aws_route_table_ids = 23;

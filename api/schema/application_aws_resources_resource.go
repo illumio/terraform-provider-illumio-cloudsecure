@@ -72,7 +72,7 @@ var (
 					Description: "IDs of AWS EC2 Instance connect endpoints to associate with the CloudSecure Application.",
 					Optional:    true,
 				},
-				"aws_ec2_transit_gateway_attachments": resource_schema.ListAttribute{
+				"aws_ec2_transit_gateway_attachment_ids": resource_schema.ListAttribute{
 					ElementType: types.StringType,
 					Description: "IDs of AWS EC2 transit gateway attachments (peering/vpc) to associate with the CloudSecure Application.",
 					Optional:    true,
@@ -122,7 +122,7 @@ var (
 					Description: "IDs of AWS NAT Gateways to associate with the CloudSecure Application.",
 					Optional:    true,
 				},
-				"aws_network_acl": resource_schema.ListAttribute{
+				"aws_network_acl_ids": resource_schema.ListAttribute{
 					ElementType: types.StringType,
 					Description: "IDs of AWS network ACLs to associate with the CloudSecure Application.",
 					Optional:    true,

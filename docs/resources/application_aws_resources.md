@@ -28,7 +28,7 @@ Manages a set of AWS resources belonging to a single AWS account that are associ
 - `aws_dx_virtual_interface_ids` (List of String) IDs of AWS Direct Connect virtual interfaces (public/private/hosted/transit) to associate with the CloudSecure Application.
 - `aws_ebs_volume_ids` (List of String) IDs of AWS EBS volumes to associate with the CloudSecure Application.
 - `aws_ec2_instance_connect_endpoint_ids` (List of String) IDs of AWS EC2 Instance connect endpoints to associate with the CloudSecure Application.
-- `aws_ec2_transit_gateway_attachments` (List of String) IDs of AWS EC2 transit gateway attachments (peering/vpc) to associate with the CloudSecure Application.
+- `aws_ec2_transit_gateway_attachment_ids` (List of String) IDs of AWS EC2 transit gateway attachments (peering/vpc) to associate with the CloudSecure Application.
 - `aws_ec2_transit_gateway_ids` (List of String) IDs of AWS EC2 transit gateways to associate with the CloudSecure Application.
 - `aws_ec2_transit_gateway_multicast_domain_ids` (List of String) IDs of AWS EC2 transit gateway multicast domains to associate with the CloudSecure Application.
 - `aws_ec2_transit_gateway_route_table_ids` (List of String) IDs of AWS EC2 transit gateway route tables to associate with the CloudSecure Application.
@@ -38,7 +38,7 @@ Manages a set of AWS resources belonging to a single AWS account that are associ
 - `aws_instances_ids` (List of String) IDs of AWS EC2 instances to associate with the CloudSecure Application.
 - `aws_internet_gateway_ids` (List of String) IDs of AWS Internet Gateways to associate with the CloudSecure Application.
 - `aws_nat_gateway_ids` (List of String) IDs of AWS NAT Gateways to associate with the CloudSecure Application.
-- `aws_network_acl` (List of String) IDs of AWS network ACLs to associate with the CloudSecure Application.
+- `aws_network_acl_ids` (List of String) IDs of AWS network ACLs to associate with the CloudSecure Application.
 - `aws_network_interface_ids` (List of String) IDs of AWS Elastic Network Interfaces (ENI) to associate with the CloudSecure Application.
 - `aws_rds_cluster_ids` (List of String) IDs of AWS RDS database clusters to associate with the CloudSecure Application.
 - `aws_route_table_ids` (List of String) IDs of AWS VPC routing tables to associate with the CloudSecure Application.

@@ -84,7 +84,7 @@ type ApplicationAwsResources struct {
 	AwsDxVirtualInterfaceIds               []string
 	AwsEbsVolumeIds                        []string
 	AwsEc2InstanceConnectEndpointIds       []string
-	AwsEc2TransitGatewayAttachments        []string
+	AwsEc2TransitGatewayAttachmentIds      []string
 	AwsEc2TransitGatewayIds                []string
 	AwsEc2TransitGatewayMulticastDomainIds []string
 	AwsEc2TransitGatewayRouteTableIds      []string
@@ -94,7 +94,7 @@ type ApplicationAwsResources struct {
 	AwsInstancesIds                        []string
 	AwsInternetGatewayIds                  []string
 	AwsNatGatewayIds                       []string
-	AwsNetworkAcl                          []string
+	AwsNetworkAclIds                       []string
 	AwsNetworkInterfaceIds                 []string
 	AwsRdsClusterIds                       []string
 	AwsRouteTableIds                       []string
@@ -344,7 +344,7 @@ func (s *FakeConfigServer) CreateApplicationAwsResources(ctx context.Context, re
 		AwsDxVirtualInterfaceIds:               req.AwsDxVirtualInterfaceIds,
 		AwsEbsVolumeIds:                        req.AwsEbsVolumeIds,
 		AwsEc2InstanceConnectEndpointIds:       req.AwsEc2InstanceConnectEndpointIds,
-		AwsEc2TransitGatewayAttachments:        req.AwsEc2TransitGatewayAttachments,
+		AwsEc2TransitGatewayAttachmentIds:      req.AwsEc2TransitGatewayAttachmentIds,
 		AwsEc2TransitGatewayIds:                req.AwsEc2TransitGatewayIds,
 		AwsEc2TransitGatewayMulticastDomainIds: req.AwsEc2TransitGatewayMulticastDomainIds,
 		AwsEc2TransitGatewayRouteTableIds:      req.AwsEc2TransitGatewayRouteTableIds,
@@ -354,7 +354,7 @@ func (s *FakeConfigServer) CreateApplicationAwsResources(ctx context.Context, re
 		AwsInstancesIds:                        req.AwsInstancesIds,
 		AwsInternetGatewayIds:                  req.AwsInternetGatewayIds,
 		AwsNatGatewayIds:                       req.AwsNatGatewayIds,
-		AwsNetworkAcl:                          req.AwsNetworkAcl,
+		AwsNetworkAclIds:                       req.AwsNetworkAclIds,
 		AwsNetworkInterfaceIds:                 req.AwsNetworkInterfaceIds,
 		AwsRdsClusterIds:                       req.AwsRdsClusterIds,
 		AwsRouteTableIds:                       req.AwsRouteTableIds,
@@ -380,7 +380,7 @@ func (s *FakeConfigServer) CreateApplicationAwsResources(ctx context.Context, re
 		AwsDxVirtualInterfaceIds:               model.AwsDxVirtualInterfaceIds,
 		AwsEbsVolumeIds:                        model.AwsEbsVolumeIds,
 		AwsEc2InstanceConnectEndpointIds:       model.AwsEc2InstanceConnectEndpointIds,
-		AwsEc2TransitGatewayAttachments:        model.AwsEc2TransitGatewayAttachments,
+		AwsEc2TransitGatewayAttachmentIds:      model.AwsEc2TransitGatewayAttachmentIds,
 		AwsEc2TransitGatewayIds:                model.AwsEc2TransitGatewayIds,
 		AwsEc2TransitGatewayMulticastDomainIds: model.AwsEc2TransitGatewayMulticastDomainIds,
 		AwsEc2TransitGatewayRouteTableIds:      model.AwsEc2TransitGatewayRouteTableIds,
@@ -390,7 +390,7 @@ func (s *FakeConfigServer) CreateApplicationAwsResources(ctx context.Context, re
 		AwsInstancesIds:                        model.AwsInstancesIds,
 		AwsInternetGatewayIds:                  model.AwsInternetGatewayIds,
 		AwsNatGatewayIds:                       model.AwsNatGatewayIds,
-		AwsNetworkAcl:                          model.AwsNetworkAcl,
+		AwsNetworkAclIds:                       model.AwsNetworkAclIds,
 		AwsNetworkInterfaceIds:                 model.AwsNetworkInterfaceIds,
 		AwsRdsClusterIds:                       model.AwsRdsClusterIds,
 		AwsRouteTableIds:                       model.AwsRouteTableIds,
@@ -440,7 +440,7 @@ func (s *FakeConfigServer) ReadApplicationAwsResources(ctx context.Context, req 
 		AwsDxVirtualInterfaceIds:               model.AwsDxVirtualInterfaceIds,
 		AwsEbsVolumeIds:                        model.AwsEbsVolumeIds,
 		AwsEc2InstanceConnectEndpointIds:       model.AwsEc2InstanceConnectEndpointIds,
-		AwsEc2TransitGatewayAttachments:        model.AwsEc2TransitGatewayAttachments,
+		AwsEc2TransitGatewayAttachmentIds:      model.AwsEc2TransitGatewayAttachmentIds,
 		AwsEc2TransitGatewayIds:                model.AwsEc2TransitGatewayIds,
 		AwsEc2TransitGatewayMulticastDomainIds: model.AwsEc2TransitGatewayMulticastDomainIds,
 		AwsEc2TransitGatewayRouteTableIds:      model.AwsEc2TransitGatewayRouteTableIds,
@@ -450,7 +450,7 @@ func (s *FakeConfigServer) ReadApplicationAwsResources(ctx context.Context, req 
 		AwsInstancesIds:                        model.AwsInstancesIds,
 		AwsInternetGatewayIds:                  model.AwsInternetGatewayIds,
 		AwsNatGatewayIds:                       model.AwsNatGatewayIds,
-		AwsNetworkAcl:                          model.AwsNetworkAcl,
+		AwsNetworkAclIds:                       model.AwsNetworkAclIds,
 		AwsNetworkInterfaceIds:                 model.AwsNetworkInterfaceIds,
 		AwsRdsClusterIds:                       model.AwsRdsClusterIds,
 		AwsRouteTableIds:                       model.AwsRouteTableIds,
@@ -507,8 +507,8 @@ func (s *FakeConfigServer) UpdateApplicationAwsResources(ctx context.Context, re
 			model.AwsEbsVolumeIds = req.AwsEbsVolumeIds
 		case "aws_ec2_instance_connect_endpoint_ids":
 			model.AwsEc2InstanceConnectEndpointIds = req.AwsEc2InstanceConnectEndpointIds
-		case "aws_ec2_transit_gateway_attachments":
-			model.AwsEc2TransitGatewayAttachments = req.AwsEc2TransitGatewayAttachments
+		case "aws_ec2_transit_gateway_attachment_ids":
+			model.AwsEc2TransitGatewayAttachmentIds = req.AwsEc2TransitGatewayAttachmentIds
 		case "aws_ec2_transit_gateway_ids":
 			model.AwsEc2TransitGatewayIds = req.AwsEc2TransitGatewayIds
 		case "aws_ec2_transit_gateway_multicast_domain_ids":
@@ -527,8 +527,8 @@ func (s *FakeConfigServer) UpdateApplicationAwsResources(ctx context.Context, re
 			model.AwsInternetGatewayIds = req.AwsInternetGatewayIds
 		case "aws_nat_gateway_ids":
 			model.AwsNatGatewayIds = req.AwsNatGatewayIds
-		case "aws_network_acl":
-			model.AwsNetworkAcl = req.AwsNetworkAcl
+		case "aws_network_acl_ids":
+			model.AwsNetworkAclIds = req.AwsNetworkAclIds
 		case "aws_network_interface_ids":
 			model.AwsNetworkInterfaceIds = req.AwsNetworkInterfaceIds
 		case "aws_rds_cluster_ids":
@@ -579,7 +579,7 @@ func (s *FakeConfigServer) UpdateApplicationAwsResources(ctx context.Context, re
 		AwsDxVirtualInterfaceIds:               model.AwsDxVirtualInterfaceIds,
 		AwsEbsVolumeIds:                        model.AwsEbsVolumeIds,
 		AwsEc2InstanceConnectEndpointIds:       model.AwsEc2InstanceConnectEndpointIds,
-		AwsEc2TransitGatewayAttachments:        model.AwsEc2TransitGatewayAttachments,
+		AwsEc2TransitGatewayAttachmentIds:      model.AwsEc2TransitGatewayAttachmentIds,
 		AwsEc2TransitGatewayIds:                model.AwsEc2TransitGatewayIds,
 		AwsEc2TransitGatewayMulticastDomainIds: model.AwsEc2TransitGatewayMulticastDomainIds,
 		AwsEc2TransitGatewayRouteTableIds:      model.AwsEc2TransitGatewayRouteTableIds,
@@ -589,7 +589,7 @@ func (s *FakeConfigServer) UpdateApplicationAwsResources(ctx context.Context, re
 		AwsInstancesIds:                        model.AwsInstancesIds,
 		AwsInternetGatewayIds:                  model.AwsInternetGatewayIds,
 		AwsNatGatewayIds:                       model.AwsNatGatewayIds,
-		AwsNetworkAcl:                          model.AwsNetworkAcl,
+		AwsNetworkAclIds:                       model.AwsNetworkAclIds,
 		AwsNetworkInterfaceIds:                 model.AwsNetworkInterfaceIds,
 		AwsRdsClusterIds:                       model.AwsRdsClusterIds,
 		AwsRouteTableIds:                       model.AwsRouteTableIds,
