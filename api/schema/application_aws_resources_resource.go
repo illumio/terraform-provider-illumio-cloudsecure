@@ -18,9 +18,9 @@ var (
 			Description: "Manages a set of AWS resources belonging to a single AWS account that are associated with a CloudSecure application.",
 			Attributes: map[string]resource_schema.Attribute{
 				IDFieldName: idAttribute,
-				"application_id": StringResourceAttributeWithMode{
+				"account_id": StringResourceAttributeWithMode{
 					StringAttribute: resource_schema.StringAttribute{
-						Description: "ID of the CloudSecure application.",
+						Description: "ID of the AWS account the AWS resources belong to.",
 						Required:    true,
 						PlanModifiers: []planmodifier.String{
 							stringplanmodifier.RequiresReplace(),
@@ -30,9 +30,9 @@ var (
 						Mode: ImmutableAttributeMode,
 					},
 				},
-				"account_id": StringResourceAttributeWithMode{
+				"application_id": StringResourceAttributeWithMode{
 					StringAttribute: resource_schema.StringAttribute{
-						Description: "ID of the AWS account the AWS resources belong to.",
+						Description: "ID of the CloudSecure application.",
 						Required:    true,
 						PlanModifiers: []planmodifier.String{
 							stringplanmodifier.RequiresReplace(),
