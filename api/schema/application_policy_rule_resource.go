@@ -88,7 +88,7 @@ var (
 				},
 				"to_ports": resource_schema.ListAttribute{
 					MarkdownDescription: "List of transport protocol ports to allow/deny traffic to. The `protocol` for each port must be `\"TCP\"` or `\"UDP\"`. ",
-					Required:			 true,
+					Required:            true,
 					ElementType:         Port,
 				},
 			},
