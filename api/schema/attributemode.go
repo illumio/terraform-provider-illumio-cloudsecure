@@ -34,8 +34,8 @@ type AttributeMode struct {
 var (
 	// These variables should be considered constant and must not be modified.
 
-	// CreatableIDAttributeMode is the mode of "id" attributes that are passed in creation.
-	CreatableIDAttributeMode = AttributeMode{
+	// KeyAttributeMode is the mode of attributes that are used to identify resource instances.
+	KeyAttributeMode = AttributeMode{
 		InCreateRequest:  true,
 		InCreateResponse: true,
 		InReadRequest:    true,
