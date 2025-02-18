@@ -651,10 +651,10 @@ func (s *FakeConfigServer) DeleteApplicationAwsResources(ctx context.Context, re
 func (s *FakeConfigServer) CreateApplicationAzureResources(ctx context.Context, req *configv1.CreateApplicationAzureResourcesRequest) (*configv1.CreateApplicationAzureResourcesResponse, error) {
 	id := uuid.New().String()
 	model := &ApplicationAzureResources{
-		Id:                     id,
-		ApplicationId:          req.ApplicationId,
-		ApplicationResourceIds: req.ApplicationResourceIds,
-		ResourceIds:            req.ResourceIds,
+		Id:             id,
+		ApplicationId:  req.ApplicationId,
+		ResourceIds:    req.ResourceIds,
+		SubscriptionId: req.SubscriptionId,
 	}
 	resp := &configv1.CreateApplicationAzureResourcesResponse{
 		Id:                     id,

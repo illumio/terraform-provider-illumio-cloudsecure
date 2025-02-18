@@ -3192,22 +3192,6 @@ func NewCreateApplicationAzureResourcesRequest(ctx context.Context, data *Applic
 		protoValue = dataValue.(types.String).ValueString()
 		proto.ApplicationId = protoValue
 	}
-	if !data.ApplicationResourceIds.IsUnknown() && !data.ApplicationResourceIds.IsNull() {
-		var dataValue attr.Value = data.ApplicationResourceIds
-		var protoValue []string
-		{
-			dataElements := dataValue.(types.List).Elements()
-			protoValues := make([]string, 0, len(dataElements))
-			for _, dataElement := range dataElements {
-				var dataValue attr.Value = dataElement
-				var protoValue string
-				protoValue = dataValue.(types.String).ValueString()
-				protoValues = append(protoValues, protoValue)
-			}
-			protoValue = protoValues
-		}
-		proto.ApplicationResourceIds = protoValue
-	}
 	if !data.ResourceIds.IsUnknown() && !data.ResourceIds.IsNull() {
 		var dataValue attr.Value = data.ResourceIds
 		var protoValue []string
@@ -3223,6 +3207,12 @@ func NewCreateApplicationAzureResourcesRequest(ctx context.Context, data *Applic
 			protoValue = protoValues
 		}
 		proto.ResourceIds = protoValue
+	}
+	if !data.SubscriptionId.IsUnknown() && !data.SubscriptionId.IsNull() {
+		var dataValue attr.Value = data.SubscriptionId
+		var protoValue string
+		protoValue = dataValue.(types.String).ValueString()
+		proto.SubscriptionId = protoValue
 	}
 	return proto, diags
 }

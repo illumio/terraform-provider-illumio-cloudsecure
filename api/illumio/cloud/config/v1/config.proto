@@ -288,8 +288,8 @@ message DeleteApplicationAwsResourcesRequest {
 }
 message CreateApplicationAzureResourcesRequest {
   string application_id = 2;
-  repeated string application_resource_ids = 6;
   repeated string resource_ids = 3;
+  string subscription_id = 4;
 }
 message CreateApplicationAzureResourcesResponse {
   string id = 1;

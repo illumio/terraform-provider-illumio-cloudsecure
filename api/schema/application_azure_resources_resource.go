@@ -37,7 +37,7 @@ var (
 						Computed:    true,
 					},
 					attributeWithMode: attributeWithMode{
-						Mode: KeyAttributeMode,
+						Mode: IDAttributeMode,
 					},
 				},
 				"resource_ids": resource_schema.ListAttribute{
@@ -54,7 +54,7 @@ var (
 						},
 					},
 					attributeWithMode: attributeWithMode{
-						Mode: IDAttributeMode,
+						Mode: KeyAttributeMode,
 					},
 				},
 			},
