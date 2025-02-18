@@ -26,4 +26,5 @@ Manages a set of Azure resources belonging to a single Azure subscription that a
 
 ### Read-Only
 
+- `application_resource_ids` (List of String) CloudSecure IDs of the resources in the CloudSecure application
 - `id` (String) CloudSecure ID.

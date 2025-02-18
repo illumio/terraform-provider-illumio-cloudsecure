@@ -27,7 +27,17 @@ var (
 						},
 					},
 					attributeWithMode: attributeWithMode{
-						Mode: ImmutableAttributeMode,
+						Mode: CreatableIDAttributeMode,
+					},
+				},
+				"application_resource_ids": ListResourceAttributeWithMode{
+					ListAttribute: resource_schema.ListAttribute{
+						ElementType: types.StringType,
+						Description: "CloudSecure IDs of the resources in the CloudSecure application",
+						Computed:    true,
+					},
+					attributeWithMode: attributeWithMode{
+						Mode: CreatableIDAttributeMode,
 					},
 				},
 				"resource_ids": resource_schema.ListAttribute{
@@ -44,7 +54,7 @@ var (
 						},
 					},
 					attributeWithMode: attributeWithMode{
-						Mode: ImmutableAttributeMode,
+						Mode: IDAttributeMode,
 					},
 				},
 			},
