@@ -27,12 +27,22 @@ var (
 						},
 					},
 					attributeWithMode: attributeWithMode{
-						Mode: ImmutableAttributeMode,
+						Mode: KeyAttributeMode,
+					},
+				},
+				"application_resource_ids": ListResourceAttributeWithMode{
+					ListAttribute: resource_schema.ListAttribute{
+						ElementType: types.StringType,
+						Description: "CloudSecure IDs of the resources in the CloudSecure application.",
+						Computed:    true,
+					},
+					attributeWithMode: attributeWithMode{
+						Mode: IDAttributeMode,
 					},
 				},
 				"resource_ids": resource_schema.ListAttribute{
 					ElementType: types.StringType,
-					Description: "IDs of Azure resources to associate with the CloudSecure application",
+					Description: "IDs of Azure resources to associate with the CloudSecure application.",
 					Optional:    true,
 				},
 				"subscription_id": StringResourceAttributeWithMode{
@@ -44,7 +54,7 @@ var (
 						},
 					},
 					attributeWithMode: attributeWithMode{
-						Mode: ImmutableAttributeMode,
+						Mode: KeyAttributeMode,
 					},
 				},
 			},

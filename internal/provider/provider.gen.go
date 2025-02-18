@@ -2412,6 +2412,7 @@ type ApplicationAwsResourcesResourceModel struct {
 	Id                                     types.String `tfsdk:"id"`
 	AccountId                              types.String `tfsdk:"account_id"`
 	ApplicationId                          types.String `tfsdk:"application_id"`
+	ApplicationResourceIds                 types.List   `tfsdk:"application_resource_ids"`
 	Arns                                   types.List   `tfsdk:"arns"`
 	AwsCustomerGatewayIds                  types.List   `tfsdk:"aws_customer_gateway_ids"`
 	AwsDxConnectionIds                     types.List   `tfsdk:"aws_dx_connection_ids"`
@@ -2446,10 +2447,11 @@ type ApplicationAwsResourcesResourceModel struct {
 }
 
 type ApplicationAzureResourcesResourceModel struct {
-	Id             types.String `tfsdk:"id"`
-	ApplicationId  types.String `tfsdk:"application_id"`
-	ResourceIds    types.List   `tfsdk:"resource_ids"`
-	SubscriptionId types.String `tfsdk:"subscription_id"`
+	Id                     types.String `tfsdk:"id"`
+	ApplicationId          types.String `tfsdk:"application_id"`
+	ApplicationResourceIds types.List   `tfsdk:"application_resource_ids"`
+	ResourceIds            types.List   `tfsdk:"resource_ids"`
+	SubscriptionId         types.String `tfsdk:"subscription_id"`
 }
 
 type ApplicationPolicyRuleResourceModel struct {
@@ -3110,6 +3112,34 @@ func NewReadApplicationAwsResourcesRequest(ctx context.Context, data *Applicatio
 		protoValue = dataValue.(types.String).ValueString()
 		proto.Id = protoValue
 	}
+	if !data.AccountId.IsUnknown() && !data.AccountId.IsNull() {
+		var dataValue attr.Value = data.AccountId
+		var protoValue string
+		protoValue = dataValue.(types.String).ValueString()
+		proto.AccountId = protoValue
+	}
+	if !data.ApplicationId.IsUnknown() && !data.ApplicationId.IsNull() {
+		var dataValue attr.Value = data.ApplicationId
+		var protoValue string
+		protoValue = dataValue.(types.String).ValueString()
+		proto.ApplicationId = protoValue
+	}
+	if !data.ApplicationResourceIds.IsUnknown() && !data.ApplicationResourceIds.IsNull() {
+		var dataValue attr.Value = data.ApplicationResourceIds
+		var protoValue []string
+		{
+			dataElements := dataValue.(types.List).Elements()
+			protoValues := make([]string, 0, len(dataElements))
+			for _, dataElement := range dataElements {
+				var dataValue attr.Value = dataElement
+				var protoValue string
+				protoValue = dataValue.(types.String).ValueString()
+				protoValues = append(protoValues, protoValue)
+			}
+			protoValue = protoValues
+		}
+		proto.ApplicationResourceIds = protoValue
+	}
 	return proto, diags
 }
 
@@ -3121,6 +3151,34 @@ func NewDeleteApplicationAwsResourcesRequest(ctx context.Context, data *Applicat
 		var protoValue string
 		protoValue = dataValue.(types.String).ValueString()
 		proto.Id = protoValue
+	}
+	if !data.AccountId.IsUnknown() && !data.AccountId.IsNull() {
+		var dataValue attr.Value = data.AccountId
+		var protoValue string
+		protoValue = dataValue.(types.String).ValueString()
+		proto.AccountId = protoValue
+	}
+	if !data.ApplicationId.IsUnknown() && !data.ApplicationId.IsNull() {
+		var dataValue attr.Value = data.ApplicationId
+		var protoValue string
+		protoValue = dataValue.(types.String).ValueString()
+		proto.ApplicationId = protoValue
+	}
+	if !data.ApplicationResourceIds.IsUnknown() && !data.ApplicationResourceIds.IsNull() {
+		var dataValue attr.Value = data.ApplicationResourceIds
+		var protoValue []string
+		{
+			dataElements := dataValue.(types.List).Elements()
+			protoValues := make([]string, 0, len(dataElements))
+			for _, dataElement := range dataElements {
+				var dataValue attr.Value = dataElement
+				var protoValue string
+				protoValue = dataValue.(types.String).ValueString()
+				protoValues = append(protoValues, protoValue)
+			}
+			protoValue = protoValues
+		}
+		proto.ApplicationResourceIds = protoValue
 	}
 	return proto, diags
 }
@@ -3168,6 +3226,34 @@ func NewReadApplicationAzureResourcesRequest(ctx context.Context, data *Applicat
 		protoValue = dataValue.(types.String).ValueString()
 		proto.Id = protoValue
 	}
+	if !data.ApplicationId.IsUnknown() && !data.ApplicationId.IsNull() {
+		var dataValue attr.Value = data.ApplicationId
+		var protoValue string
+		protoValue = dataValue.(types.String).ValueString()
+		proto.ApplicationId = protoValue
+	}
+	if !data.ApplicationResourceIds.IsUnknown() && !data.ApplicationResourceIds.IsNull() {
+		var dataValue attr.Value = data.ApplicationResourceIds
+		var protoValue []string
+		{
+			dataElements := dataValue.(types.List).Elements()
+			protoValues := make([]string, 0, len(dataElements))
+			for _, dataElement := range dataElements {
+				var dataValue attr.Value = dataElement
+				var protoValue string
+				protoValue = dataValue.(types.String).ValueString()
+				protoValues = append(protoValues, protoValue)
+			}
+			protoValue = protoValues
+		}
+		proto.ApplicationResourceIds = protoValue
+	}
+	if !data.SubscriptionId.IsUnknown() && !data.SubscriptionId.IsNull() {
+		var dataValue attr.Value = data.SubscriptionId
+		var protoValue string
+		protoValue = dataValue.(types.String).ValueString()
+		proto.SubscriptionId = protoValue
+	}
 	return proto, diags
 }
 
@@ -3179,6 +3265,34 @@ func NewDeleteApplicationAzureResourcesRequest(ctx context.Context, data *Applic
 		var protoValue string
 		protoValue = dataValue.(types.String).ValueString()
 		proto.Id = protoValue
+	}
+	if !data.ApplicationId.IsUnknown() && !data.ApplicationId.IsNull() {
+		var dataValue attr.Value = data.ApplicationId
+		var protoValue string
+		protoValue = dataValue.(types.String).ValueString()
+		proto.ApplicationId = protoValue
+	}
+	if !data.ApplicationResourceIds.IsUnknown() && !data.ApplicationResourceIds.IsNull() {
+		var dataValue attr.Value = data.ApplicationResourceIds
+		var protoValue []string
+		{
+			dataElements := dataValue.(types.List).Elements()
+			protoValues := make([]string, 0, len(dataElements))
+			for _, dataElement := range dataElements {
+				var dataValue attr.Value = dataElement
+				var protoValue string
+				protoValue = dataValue.(types.String).ValueString()
+				protoValues = append(protoValues, protoValue)
+			}
+			protoValue = protoValues
+		}
+		proto.ApplicationResourceIds = protoValue
+	}
+	if !data.SubscriptionId.IsUnknown() && !data.SubscriptionId.IsNull() {
+		var dataValue attr.Value = data.SubscriptionId
+		var protoValue string
+		protoValue = dataValue.(types.String).ValueString()
+		proto.SubscriptionId = protoValue
 	}
 	return proto, diags
 }
@@ -3994,6 +4108,43 @@ func NewUpdateApplicationAwsResourcesRequest(ctx context.Context, beforeData, af
 	proto := &configv1.UpdateApplicationAwsResourcesRequest{}
 	proto.UpdateMask, _ = fieldmaskpb.New(proto)
 	proto.Id = beforeData.Id.ValueString()
+	if !afterData.AccountId.Equal(beforeData.AccountId) {
+		proto.UpdateMask.Append(proto, "account_id")
+		if !afterData.AccountId.IsUnknown() && !afterData.AccountId.IsNull() {
+			var dataValue attr.Value = afterData.AccountId
+			var protoValue string
+			protoValue = dataValue.(types.String).ValueString()
+			proto.AccountId = protoValue
+		}
+	}
+	if !afterData.ApplicationId.Equal(beforeData.ApplicationId) {
+		proto.UpdateMask.Append(proto, "application_id")
+		if !afterData.ApplicationId.IsUnknown() && !afterData.ApplicationId.IsNull() {
+			var dataValue attr.Value = afterData.ApplicationId
+			var protoValue string
+			protoValue = dataValue.(types.String).ValueString()
+			proto.ApplicationId = protoValue
+		}
+	}
+	if !afterData.ApplicationResourceIds.Equal(beforeData.ApplicationResourceIds) {
+		proto.UpdateMask.Append(proto, "application_resource_ids")
+		if !afterData.ApplicationResourceIds.IsUnknown() && !afterData.ApplicationResourceIds.IsNull() {
+			var dataValue attr.Value = afterData.ApplicationResourceIds
+			var protoValue []string
+			{
+				dataElements := dataValue.(types.List).Elements()
+				protoValues := make([]string, 0, len(dataElements))
+				for _, dataElement := range dataElements {
+					var dataValue attr.Value = dataElement
+					var protoValue string
+					protoValue = dataValue.(types.String).ValueString()
+					protoValues = append(protoValues, protoValue)
+				}
+				protoValue = protoValues
+			}
+			proto.ApplicationResourceIds = protoValue
+		}
+	}
 	if !afterData.Arns.Equal(beforeData.Arns) {
 		proto.UpdateMask.Append(proto, "arns")
 		if !afterData.Arns.IsUnknown() && !afterData.Arns.IsNull() {
@@ -4591,6 +4742,34 @@ func NewUpdateApplicationAzureResourcesRequest(ctx context.Context, beforeData, 
 	proto := &configv1.UpdateApplicationAzureResourcesRequest{}
 	proto.UpdateMask, _ = fieldmaskpb.New(proto)
 	proto.Id = beforeData.Id.ValueString()
+	if !afterData.ApplicationId.Equal(beforeData.ApplicationId) {
+		proto.UpdateMask.Append(proto, "application_id")
+		if !afterData.ApplicationId.IsUnknown() && !afterData.ApplicationId.IsNull() {
+			var dataValue attr.Value = afterData.ApplicationId
+			var protoValue string
+			protoValue = dataValue.(types.String).ValueString()
+			proto.ApplicationId = protoValue
+		}
+	}
+	if !afterData.ApplicationResourceIds.Equal(beforeData.ApplicationResourceIds) {
+		proto.UpdateMask.Append(proto, "application_resource_ids")
+		if !afterData.ApplicationResourceIds.IsUnknown() && !afterData.ApplicationResourceIds.IsNull() {
+			var dataValue attr.Value = afterData.ApplicationResourceIds
+			var protoValue []string
+			{
+				dataElements := dataValue.(types.List).Elements()
+				protoValues := make([]string, 0, len(dataElements))
+				for _, dataElement := range dataElements {
+					var dataValue attr.Value = dataElement
+					var protoValue string
+					protoValue = dataValue.(types.String).ValueString()
+					protoValues = append(protoValues, protoValue)
+				}
+				protoValue = protoValues
+			}
+			proto.ApplicationResourceIds = protoValue
+		}
+	}
 	if !afterData.ResourceIds.Equal(beforeData.ResourceIds) {
 		proto.UpdateMask.Append(proto, "resource_ids")
 		if !afterData.ResourceIds.IsUnknown() && !afterData.ResourceIds.IsNull() {
@@ -4608,6 +4787,15 @@ func NewUpdateApplicationAzureResourcesRequest(ctx context.Context, beforeData, 
 				protoValue = protoValues
 			}
 			proto.ResourceIds = protoValue
+		}
+	}
+	if !afterData.SubscriptionId.Equal(beforeData.SubscriptionId) {
+		proto.UpdateMask.Append(proto, "subscription_id")
+		if !afterData.SubscriptionId.IsUnknown() && !afterData.SubscriptionId.IsNull() {
+			var dataValue attr.Value = afterData.SubscriptionId
+			var protoValue string
+			protoValue = dataValue.(types.String).ValueString()
+			proto.SubscriptionId = protoValue
 		}
 	}
 	return proto, diags
@@ -5225,6 +5413,27 @@ func CopyCreateApplicationAwsResourcesResponse(dst *ApplicationAwsResourcesResou
 	dst.Id = types.StringValue(src.Id)
 	dst.AccountId = types.StringValue(src.AccountId)
 	dst.ApplicationId = types.StringValue(src.ApplicationId)
+	{
+		protoValue := src.ApplicationResourceIds
+		var dataValue types.List
+		{
+			dataElementType := types.StringType
+			protoElements := protoValue
+			if protoElements == nil {
+				dataValue = types.ListNull(dataElementType)
+			} else {
+				dataValues := make([]attr.Value, 0, len(protoElements))
+				for _, protoElement := range protoElements {
+					var protoValue string = protoElement
+					var dataValue attr.Value
+					dataValue = types.StringValue(protoValue)
+					dataValues = append(dataValues, dataValue)
+				}
+				dataValue = types.ListValueMust(dataElementType, dataValues)
+			}
+		}
+		dst.ApplicationResourceIds = dataValue
+	}
 	{
 		protoValue := src.Arns
 		var dataValue types.List
@@ -5882,6 +6091,27 @@ func CopyReadApplicationAwsResourcesResponse(dst *ApplicationAwsResourcesResourc
 	dst.AccountId = types.StringValue(src.AccountId)
 	dst.ApplicationId = types.StringValue(src.ApplicationId)
 	{
+		protoValue := src.ApplicationResourceIds
+		var dataValue types.List
+		{
+			dataElementType := types.StringType
+			protoElements := protoValue
+			if protoElements == nil {
+				dataValue = types.ListNull(dataElementType)
+			} else {
+				dataValues := make([]attr.Value, 0, len(protoElements))
+				for _, protoElement := range protoElements {
+					var protoValue string = protoElement
+					var dataValue attr.Value
+					dataValue = types.StringValue(protoValue)
+					dataValues = append(dataValues, dataValue)
+				}
+				dataValue = types.ListValueMust(dataElementType, dataValues)
+			}
+		}
+		dst.ApplicationResourceIds = dataValue
+	}
+	{
 		protoValue := src.Arns
 		var dataValue types.List
 		{
@@ -6538,6 +6768,27 @@ func CopyUpdateApplicationAwsResourcesResponse(dst *ApplicationAwsResourcesResou
 	dst.AccountId = types.StringValue(src.AccountId)
 	dst.ApplicationId = types.StringValue(src.ApplicationId)
 	{
+		protoValue := src.ApplicationResourceIds
+		var dataValue types.List
+		{
+			dataElementType := types.StringType
+			protoElements := protoValue
+			if protoElements == nil {
+				dataValue = types.ListNull(dataElementType)
+			} else {
+				dataValues := make([]attr.Value, 0, len(protoElements))
+				for _, protoElement := range protoElements {
+					var protoValue string = protoElement
+					var dataValue attr.Value
+					dataValue = types.StringValue(protoValue)
+					dataValues = append(dataValues, dataValue)
+				}
+				dataValue = types.ListValueMust(dataElementType, dataValues)
+			}
+		}
+		dst.ApplicationResourceIds = dataValue
+	}
+	{
 		protoValue := src.Arns
 		var dataValue types.List
 		{
@@ -7193,6 +7444,27 @@ func CopyCreateApplicationAzureResourcesResponse(dst *ApplicationAzureResourcesR
 	dst.Id = types.StringValue(src.Id)
 	dst.ApplicationId = types.StringValue(src.ApplicationId)
 	{
+		protoValue := src.ApplicationResourceIds
+		var dataValue types.List
+		{
+			dataElementType := types.StringType
+			protoElements := protoValue
+			if protoElements == nil {
+				dataValue = types.ListNull(dataElementType)
+			} else {
+				dataValues := make([]attr.Value, 0, len(protoElements))
+				for _, protoElement := range protoElements {
+					var protoValue string = protoElement
+					var dataValue attr.Value
+					dataValue = types.StringValue(protoValue)
+					dataValues = append(dataValues, dataValue)
+				}
+				dataValue = types.ListValueMust(dataElementType, dataValues)
+			}
+		}
+		dst.ApplicationResourceIds = dataValue
+	}
+	{
 		protoValue := src.ResourceIds
 		var dataValue types.List
 		{
@@ -7219,6 +7491,27 @@ func CopyReadApplicationAzureResourcesResponse(dst *ApplicationAzureResourcesRes
 	dst.Id = types.StringValue(src.Id)
 	dst.ApplicationId = types.StringValue(src.ApplicationId)
 	{
+		protoValue := src.ApplicationResourceIds
+		var dataValue types.List
+		{
+			dataElementType := types.StringType
+			protoElements := protoValue
+			if protoElements == nil {
+				dataValue = types.ListNull(dataElementType)
+			} else {
+				dataValues := make([]attr.Value, 0, len(protoElements))
+				for _, protoElement := range protoElements {
+					var protoValue string = protoElement
+					var dataValue attr.Value
+					dataValue = types.StringValue(protoValue)
+					dataValues = append(dataValues, dataValue)
+				}
+				dataValue = types.ListValueMust(dataElementType, dataValues)
+			}
+		}
+		dst.ApplicationResourceIds = dataValue
+	}
+	{
 		protoValue := src.ResourceIds
 		var dataValue types.List
 		{
@@ -7244,6 +7537,27 @@ func CopyReadApplicationAzureResourcesResponse(dst *ApplicationAzureResourcesRes
 func CopyUpdateApplicationAzureResourcesResponse(dst *ApplicationAzureResourcesResourceModel, src *configv1.UpdateApplicationAzureResourcesResponse) {
 	dst.Id = types.StringValue(src.Id)
 	dst.ApplicationId = types.StringValue(src.ApplicationId)
+	{
+		protoValue := src.ApplicationResourceIds
+		var dataValue types.List
+		{
+			dataElementType := types.StringType
+			protoElements := protoValue
+			if protoElements == nil {
+				dataValue = types.ListNull(dataElementType)
+			} else {
+				dataValues := make([]attr.Value, 0, len(protoElements))
+				for _, protoElement := range protoElements {
+					var protoValue string = protoElement
+					var dataValue attr.Value
+					dataValue = types.StringValue(protoValue)
+					dataValues = append(dataValues, dataValue)
+				}
+				dataValue = types.ListValueMust(dataElementType, dataValues)
+			}
+		}
+		dst.ApplicationResourceIds = dataValue
+	}
 	{
 		protoValue := src.ResourceIds
 		var dataValue types.List

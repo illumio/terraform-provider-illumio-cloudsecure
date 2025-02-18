@@ -34,6 +34,17 @@ type AttributeMode struct {
 var (
 	// These variables should be considered constant and must not be modified.
 
+	// KeyAttributeMode is the mode of attributes that are used to identify resource instances.
+	KeyAttributeMode = AttributeMode{
+		InCreateRequest:  true,
+		InCreateResponse: true,
+		InReadRequest:    true,
+		InReadResponse:   true,
+		InUpdateRequest:  true,
+		InUpdateResponse: true,
+		InDeleteRequest:  true,
+	}
+
 	// IDAttributeMode is the mode of "id" attributes.
 	IDAttributeMode = AttributeMode{
 		InCreateResponse: true,

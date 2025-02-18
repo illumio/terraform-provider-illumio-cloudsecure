@@ -56,4 +56,5 @@ Manages a set of AWS resources belonging to a single AWS account that are associ
 
 ### Read-Only
 
+- `application_resource_ids` (List of String) CloudSecure IDs of the resources in the CloudSecure application.
 - `id` (String) CloudSecure ID.
