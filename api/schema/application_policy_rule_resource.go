@@ -37,10 +37,10 @@ var (
 				IDFieldName: idAttribute,
 				"action": StringResourceAttributeWithMode{
 					StringAttribute: resource_schema.StringAttribute{
-						MarkdownDescription: "The action to take for flows matched by the application policy rule. Must be `\"Allow\"` or `\"Deny\"`.",
+						MarkdownDescription: "The action to take for flows matched by the application policy rule. Must be `\"Allow\"`, `\"Deny\"` or `\"OverrideDeny\"`.",
 						Required:            true,
 						Validators: []validator.String{
-							stringvalidator.OneOf("Allow", "Deny"),
+							stringvalidator.OneOf("Allow", "Deny", "OverrideDeny"),
 						},
 						PlanModifiers: []planmodifier.String{
 							stringplanmodifier.RequiresReplace(),
