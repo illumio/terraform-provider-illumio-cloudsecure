@@ -17,7 +17,7 @@ Manages policy rules on CloudSecure applications.
 
 ### Required
 
-- `action` (String) The action to take for flows matched by the application policy rule. Must be `"Allow"` or `"Deny"`.
+- `action` (String) The action to take for flows matched by the application policy rule. Must be `"Allow"`, `"Deny"` or `"OverrideDeny"`.
 - `application_id` (String) ID of the CloudSecure application on which this rule is based.
 - `to_ports` (List of Object) List of transport protocol ports to allow/deny traffic to. The `protocol` for each port must be `"TCP"` or `"UDP"`. (see [below for nested schema](#nestedatt--to_ports))
 
