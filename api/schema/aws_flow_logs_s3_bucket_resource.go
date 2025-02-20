@@ -10,7 +10,7 @@ import (
 )
 
 var (
-	awsFlowLogsS3Bucket = Resource{
+	awsFlowLogsS3BucketResource = Resource{
 		TypeName: "aws_flow_logs_s3_bucket",
 		Schema: resource_schema.Schema{
 			Version:     1,

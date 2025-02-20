@@ -22,12 +22,12 @@ func (c *cloudSecureSchema) Resources() Resources {
 		applicationPolicyRuleResource,
 		applicationResource,
 		awsAccountResource,
-		awsFlowLogsS3Bucket,
-		azureFlowLogsStorageAccount,
+		awsFlowLogsS3BucketResource,
+		azureFlowLogsStorageAccountResource,
 		azureSubscriptionResource,
 		deploymentResource,
 		ipListResource,
-		k8sClusterOnboardingCredential,
+		k8sClusterOnboardingCredentialResource,
 		tagToLabelResource,
 	}
 	sort.Sort(resources)

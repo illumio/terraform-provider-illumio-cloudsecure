@@ -10,7 +10,7 @@ import (
 )
 
 var (
-	azureFlowLogsStorageAccount = Resource{
+	azureFlowLogsStorageAccountResource = Resource{
 		TypeName: "azure_flow_logs_storage_account",
 		Schema: resource_schema.Schema{
 			Version:     1,
