@@ -10,16 +10,16 @@ import (
 )
 
 var (
-	awsFlowLogsS3Bucket = Resource{
-		TypeName: "aws_flow_logs_s3_bucket",
+	azureFlowLogsStorageAccountResource = Resource{
+		TypeName: "azure_flow_logs_storage_account",
 		Schema: resource_schema.Schema{
 			Version:     1,
-			Description: "Manages CloudSecure access to flow logs in an AWS S3 bucket.",
+			Description: "Manages CloudSecure access to flow logs in an Azure Storage Account.",
 			Attributes: map[string]resource_schema.Attribute{
 				IDFieldName: idAttribute,
-				"account_id": StringResourceAttributeWithMode{
+				"subscription_id": StringResourceAttributeWithMode{
 					StringAttribute: resource_schema.StringAttribute{
-						MarkdownDescription: "AWS account ID.",
+						MarkdownDescription: "Azure subscription ID.",
 						Required:            true,
 						PlanModifiers: []planmodifier.String{
 							stringplanmodifier.RequiresReplace(),
@@ -29,9 +29,9 @@ var (
 						Mode: ImmutableAttributeMode,
 					},
 				},
-				"s3_bucket_arn": StringResourceAttributeWithMode{
+				"storage_account_resource_id": StringResourceAttributeWithMode{
 					StringAttribute: resource_schema.StringAttribute{
-						Description: "ARN of the AWS S3 bucket containing flow logs.",
+						Description: "Resource ID of the Azure Storage Account containing flow logs.",
 						Required:    true,
 						PlanModifiers: []planmodifier.String{
 							stringplanmodifier.RequiresReplace(),
