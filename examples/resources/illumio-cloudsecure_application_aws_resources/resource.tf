@@ -22,7 +22,7 @@ resource "illumio-cloudsecure_application_aws_resources" "aws_security_group_res
   account_id     = data.aws_caller_identity.current.account_id
   aws_security_group_ids = [
     "sg-021b2bc8d1f6b2dec",
-    "sg-0742cd5a71ccbfc67",
+    "sg-0742cd5a71ccbfc67"
   ]
 }
 
