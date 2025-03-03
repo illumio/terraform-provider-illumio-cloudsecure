@@ -20,10 +20,11 @@ var Label = types.ObjectType{
 	},
 }
 
-var Port = types.ObjectType{
+var PortRange = types.ObjectType{
 	AttrTypes: map[string]attr.Type{
-		"port_number": types.Int64Type,
-		"protocol":    types.StringType,
+		"from_port": types.Int64Type,
+		"to_port":   types.Int64Type,
+		"protocol":  types.StringType,
 	},
 }
 
@@ -66,6 +67,10 @@ var (
 					Description: "Description of the application policy rule.",
 					Optional:    true,
 				},
+				"external_scope": resource_schema.BoolAttribute{
+					Description: "Specifies whether the application policy allow rule can be applied to scope outside the CloudSecure application.",
+					Optional:    true,
+				},
 				"from_ip_list_ids": resource_schema.ListAttribute{
 					Description: "List of IDs of IP lists to allow/deny traffic from.",
 					Optional:    true,
@@ -86,10 +91,10 @@ var (
 					Optional:    true,
 					ElementType: Label,
 				},
-				"to_ports": resource_schema.ListAttribute{
-					MarkdownDescription: "List of transport protocol ports to allow/deny traffic to. The `protocol` for each port must be `\"TCP\"` or `\"UDP\"`. ",
+				"to_port_ranges": resource_schema.ListAttribute{
+					MarkdownDescription: "List of transport protocol ports to allow/deny traffic to. The `protocol` for each port must be `\"TCP\"` or `\"UDP\"`. Skip to_port for single port.",
 					Required:            true,
-					ElementType:         Port,
+					ElementType:         PortRange,
 				},
 			},
 		},

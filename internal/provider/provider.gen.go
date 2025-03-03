@@ -2459,11 +2459,12 @@ type ApplicationPolicyRuleResourceModel struct {
 	Action        types.String `tfsdk:"action"`
 	ApplicationId types.String `tfsdk:"application_id"`
 	Description   types.String `tfsdk:"description"`
+	ExternalScope types.Bool   `tfsdk:"external_scope"`
 	FromIpListIds types.List   `tfsdk:"from_ip_list_ids"`
 	FromLabels    types.List   `tfsdk:"from_labels"`
 	ToIpListIds   types.List   `tfsdk:"to_ip_list_ids"`
 	ToLabels      types.List   `tfsdk:"to_labels"`
-	ToPorts       types.List   `tfsdk:"to_ports"`
+	ToPortRanges  types.List   `tfsdk:"to_port_ranges"`
 }
 
 type AwsAccountResourceModel struct {
@@ -3318,6 +3319,12 @@ func NewCreateApplicationPolicyRuleRequest(ctx context.Context, data *Applicatio
 		protoValue = dataValue.(types.String).ValueString()
 		proto.Description = &protoValue
 	}
+	if !data.ExternalScope.IsUnknown() && !data.ExternalScope.IsNull() {
+		var dataValue attr.Value = data.ExternalScope
+		var protoValue bool
+		protoValue = dataValue.(types.Bool).ValueBool()
+		proto.ExternalScope = &protoValue
+	}
 	if !data.FromIpListIds.IsUnknown() && !data.FromIpListIds.IsNull() {
 		var dataValue attr.Value = data.FromIpListIds
 		var protoValue []string
@@ -3390,16 +3397,16 @@ func NewCreateApplicationPolicyRuleRequest(ctx context.Context, data *Applicatio
 		}
 		proto.ToLabels = protoValue
 	}
-	if !data.ToPorts.IsUnknown() && !data.ToPorts.IsNull() {
-		var dataValue attr.Value = data.ToPorts
-		var protoValue []*configv1.ApplicationPolicyRule_ToPorts
+	if !data.ToPortRanges.IsUnknown() && !data.ToPortRanges.IsNull() {
+		var dataValue attr.Value = data.ToPortRanges
+		var protoValue []*configv1.ApplicationPolicyRule_ToPortRanges
 		{
 			dataElements := dataValue.(types.List).Elements()
-			protoValues := make([]*configv1.ApplicationPolicyRule_ToPorts, 0, len(dataElements))
+			protoValues := make([]*configv1.ApplicationPolicyRule_ToPortRanges, 0, len(dataElements))
 			for _, dataElement := range dataElements {
 				var dataValue attr.Value = dataElement
-				var protoValue *configv1.ApplicationPolicyRule_ToPorts
-				protoValue, newDiags := ConvertDataValueToApplicationPolicyRule_ToPortsProto(ctx, dataValue)
+				var protoValue *configv1.ApplicationPolicyRule_ToPortRanges
+				protoValue, newDiags := ConvertDataValueToApplicationPolicyRule_ToPortRangesProto(ctx, dataValue)
 				diags.Append(newDiags...)
 				if diags.HasError() {
 					return nil, diags
@@ -3408,7 +3415,7 @@ func NewCreateApplicationPolicyRuleRequest(ctx context.Context, data *Applicatio
 			}
 			protoValue = protoValues
 		}
-		proto.ToPorts = protoValue
+		proto.ToPortRanges = protoValue
 	}
 	return proto, diags
 }
@@ -4833,6 +4840,15 @@ func NewUpdateApplicationPolicyRuleRequest(ctx context.Context, beforeData, afte
 			proto.Description = &protoValue
 		}
 	}
+	if !afterData.ExternalScope.Equal(beforeData.ExternalScope) {
+		proto.UpdateMask.Append(proto, "external_scope")
+		if !afterData.ExternalScope.IsUnknown() && !afterData.ExternalScope.IsNull() {
+			var dataValue attr.Value = afterData.ExternalScope
+			var protoValue bool
+			protoValue = dataValue.(types.Bool).ValueBool()
+			proto.ExternalScope = &protoValue
+		}
+	}
 	if !afterData.FromIpListIds.Equal(beforeData.FromIpListIds) {
 		proto.UpdateMask.Append(proto, "from_ip_list_ids")
 		if !afterData.FromIpListIds.IsUnknown() && !afterData.FromIpListIds.IsNull() {
@@ -4917,18 +4933,18 @@ func NewUpdateApplicationPolicyRuleRequest(ctx context.Context, beforeData, afte
 			proto.ToLabels = protoValue
 		}
 	}
-	if !afterData.ToPorts.Equal(beforeData.ToPorts) {
-		proto.UpdateMask.Append(proto, "to_ports")
-		if !afterData.ToPorts.IsUnknown() && !afterData.ToPorts.IsNull() {
-			var dataValue attr.Value = afterData.ToPorts
-			var protoValue []*configv1.ApplicationPolicyRule_ToPorts
+	if !afterData.ToPortRanges.Equal(beforeData.ToPortRanges) {
+		proto.UpdateMask.Append(proto, "to_port_ranges")
+		if !afterData.ToPortRanges.IsUnknown() && !afterData.ToPortRanges.IsNull() {
+			var dataValue attr.Value = afterData.ToPortRanges
+			var protoValue []*configv1.ApplicationPolicyRule_ToPortRanges
 			{
 				dataElements := dataValue.(types.List).Elements()
-				protoValues := make([]*configv1.ApplicationPolicyRule_ToPorts, 0, len(dataElements))
+				protoValues := make([]*configv1.ApplicationPolicyRule_ToPortRanges, 0, len(dataElements))
 				for _, dataElement := range dataElements {
 					var dataValue attr.Value = dataElement
-					var protoValue *configv1.ApplicationPolicyRule_ToPorts
-					protoValue, newDiags := ConvertDataValueToApplicationPolicyRule_ToPortsProto(ctx, dataValue)
+					var protoValue *configv1.ApplicationPolicyRule_ToPortRanges
+					protoValue, newDiags := ConvertDataValueToApplicationPolicyRule_ToPortRangesProto(ctx, dataValue)
 					diags.Append(newDiags...)
 					if diags.HasError() {
 						return nil, diags
@@ -4937,7 +4953,7 @@ func NewUpdateApplicationPolicyRuleRequest(ctx context.Context, beforeData, afte
 				}
 				protoValue = protoValues
 			}
-			proto.ToPorts = protoValue
+			proto.ToPortRanges = protoValue
 		}
 	}
 	return proto, diags
@@ -7586,6 +7602,7 @@ func CopyCreateApplicationPolicyRuleResponse(dst *ApplicationPolicyRuleResourceM
 	dst.Action = types.StringValue(src.Action)
 	dst.ApplicationId = types.StringValue(src.ApplicationId)
 	dst.Description = types.StringPointerValue(src.Description)
+	dst.ExternalScope = types.BoolPointerValue(src.ExternalScope)
 	{
 		protoValue := src.FromIpListIds
 		var dataValue types.List
@@ -7675,11 +7692,11 @@ func CopyCreateApplicationPolicyRuleResponse(dst *ApplicationPolicyRuleResourceM
 		dst.ToLabels = dataValue
 	}
 	{
-		protoValue := src.ToPorts
+		protoValue := src.ToPortRanges
 		var dataValue types.List
 		{
 			dataElementType := types.ObjectType{
-				AttrTypes: GetTypeAttrsForApplicationPolicyRule_ToPorts(),
+				AttrTypes: GetTypeAttrsForApplicationPolicyRule_ToPortRanges(),
 			}
 			protoElements := protoValue
 			if protoElements == nil {
@@ -7687,15 +7704,15 @@ func CopyCreateApplicationPolicyRuleResponse(dst *ApplicationPolicyRuleResourceM
 			} else {
 				dataValues := make([]attr.Value, 0, len(protoElements))
 				for _, protoElement := range protoElements {
-					var protoValue *configv1.ApplicationPolicyRule_ToPorts = protoElement
+					var protoValue *configv1.ApplicationPolicyRule_ToPortRanges = protoElement
 					var dataValue attr.Value
-					dataValue = ConvertApplicationPolicyRule_ToPortsToObjectValueFromProto(protoValue)
+					dataValue = ConvertApplicationPolicyRule_ToPortRangesToObjectValueFromProto(protoValue)
 					dataValues = append(dataValues, dataValue)
 				}
 				dataValue = types.ListValueMust(dataElementType, dataValues)
 			}
 		}
-		dst.ToPorts = dataValue
+		dst.ToPortRanges = dataValue
 	}
 }
 func CopyReadApplicationPolicyRuleResponse(dst *ApplicationPolicyRuleResourceModel, src *configv1.ReadApplicationPolicyRuleResponse) {
@@ -7703,6 +7720,7 @@ func CopyReadApplicationPolicyRuleResponse(dst *ApplicationPolicyRuleResourceMod
 	dst.Action = types.StringValue(src.Action)
 	dst.ApplicationId = types.StringValue(src.ApplicationId)
 	dst.Description = types.StringPointerValue(src.Description)
+	dst.ExternalScope = types.BoolPointerValue(src.ExternalScope)
 	{
 		protoValue := src.FromIpListIds
 		var dataValue types.List
@@ -7792,11 +7810,11 @@ func CopyReadApplicationPolicyRuleResponse(dst *ApplicationPolicyRuleResourceMod
 		dst.ToLabels = dataValue
 	}
 	{
-		protoValue := src.ToPorts
+		protoValue := src.ToPortRanges
 		var dataValue types.List
 		{
 			dataElementType := types.ObjectType{
-				AttrTypes: GetTypeAttrsForApplicationPolicyRule_ToPorts(),
+				AttrTypes: GetTypeAttrsForApplicationPolicyRule_ToPortRanges(),
 			}
 			protoElements := protoValue
 			if protoElements == nil {
@@ -7804,15 +7822,15 @@ func CopyReadApplicationPolicyRuleResponse(dst *ApplicationPolicyRuleResourceMod
 			} else {
 				dataValues := make([]attr.Value, 0, len(protoElements))
 				for _, protoElement := range protoElements {
-					var protoValue *configv1.ApplicationPolicyRule_ToPorts = protoElement
+					var protoValue *configv1.ApplicationPolicyRule_ToPortRanges = protoElement
 					var dataValue attr.Value
-					dataValue = ConvertApplicationPolicyRule_ToPortsToObjectValueFromProto(protoValue)
+					dataValue = ConvertApplicationPolicyRule_ToPortRangesToObjectValueFromProto(protoValue)
 					dataValues = append(dataValues, dataValue)
 				}
 				dataValue = types.ListValueMust(dataElementType, dataValues)
 			}
 		}
-		dst.ToPorts = dataValue
+		dst.ToPortRanges = dataValue
 	}
 }
 func CopyUpdateApplicationPolicyRuleResponse(dst *ApplicationPolicyRuleResourceModel, src *configv1.UpdateApplicationPolicyRuleResponse) {
@@ -7820,6 +7838,7 @@ func CopyUpdateApplicationPolicyRuleResponse(dst *ApplicationPolicyRuleResourceM
 	dst.Action = types.StringValue(src.Action)
 	dst.ApplicationId = types.StringValue(src.ApplicationId)
 	dst.Description = types.StringPointerValue(src.Description)
+	dst.ExternalScope = types.BoolPointerValue(src.ExternalScope)
 	{
 		protoValue := src.FromIpListIds
 		var dataValue types.List
@@ -7909,11 +7928,11 @@ func CopyUpdateApplicationPolicyRuleResponse(dst *ApplicationPolicyRuleResourceM
 		dst.ToLabels = dataValue
 	}
 	{
-		protoValue := src.ToPorts
+		protoValue := src.ToPortRanges
 		var dataValue types.List
 		{
 			dataElementType := types.ObjectType{
-				AttrTypes: GetTypeAttrsForApplicationPolicyRule_ToPorts(),
+				AttrTypes: GetTypeAttrsForApplicationPolicyRule_ToPortRanges(),
 			}
 			protoElements := protoValue
 			if protoElements == nil {
@@ -7921,15 +7940,15 @@ func CopyUpdateApplicationPolicyRuleResponse(dst *ApplicationPolicyRuleResourceM
 			} else {
 				dataValues := make([]attr.Value, 0, len(protoElements))
 				for _, protoElement := range protoElements {
-					var protoValue *configv1.ApplicationPolicyRule_ToPorts = protoElement
+					var protoValue *configv1.ApplicationPolicyRule_ToPortRanges = protoElement
 					var dataValue attr.Value
-					dataValue = ConvertApplicationPolicyRule_ToPortsToObjectValueFromProto(protoValue)
+					dataValue = ConvertApplicationPolicyRule_ToPortRangesToObjectValueFromProto(protoValue)
 					dataValues = append(dataValues, dataValue)
 				}
 				dataValue = types.ListValueMust(dataElementType, dataValues)
 			}
 		}
-		dst.ToPorts = dataValue
+		dst.ToPortRanges = dataValue
 	}
 }
 func CopyCreateAwsAccountResponse(dst *AwsAccountResourceModel, src *configv1.CreateAwsAccountResponse) {
@@ -9058,37 +9077,41 @@ func ConvertDataValueToApplicationPolicyRule_ToLabelsProto(ctx context.Context, 
 	return proto, diags
 }
 
-type ApplicationPolicyRule_ToPorts struct {
-	PortNumber types.Int64  `tfsdk:"port_number"`
-	Protocol   types.String `tfsdk:"protocol"`
+type ApplicationPolicyRule_ToPortRanges struct {
+	FromPort types.Int64  `tfsdk:"from_port"`
+	Protocol types.String `tfsdk:"protocol"`
+	ToPort   types.Int64  `tfsdk:"to_port"`
 }
 
-func GetTypeAttrsForApplicationPolicyRule_ToPorts() map[string]attr.Type {
+func GetTypeAttrsForApplicationPolicyRule_ToPortRanges() map[string]attr.Type {
 	return map[string]attr.Type{
-		"port_number": types.Int64Type,
-		"protocol":    types.StringType,
+		"from_port": types.Int64Type,
+		"protocol":  types.StringType,
+		"to_port":   types.Int64Type,
 	}
 }
 
-func ConvertApplicationPolicyRule_ToPortsToObjectValueFromProto(proto *configv1.ApplicationPolicyRule_ToPorts) basetypes.ObjectValue {
+func ConvertApplicationPolicyRule_ToPortRangesToObjectValueFromProto(proto *configv1.ApplicationPolicyRule_ToPortRanges) basetypes.ObjectValue {
 	return types.ObjectValueMust(
-		GetTypeAttrsForApplicationPolicyRule_ToPorts(),
+		GetTypeAttrsForApplicationPolicyRule_ToPortRanges(),
 		map[string]attr.Value{
-			"port_number": types.Int64Value(proto.PortNumber),
-			"protocol":    types.StringValue(proto.Protocol),
+			"from_port": types.Int64Value(proto.FromPort),
+			"protocol":  types.StringValue(proto.Protocol),
+			"to_port":   types.Int64Value(proto.ToPort),
 		},
 	)
 }
 
-func ConvertDataValueToApplicationPolicyRule_ToPortsProto(ctx context.Context, dataValue attr.Value) (*configv1.ApplicationPolicyRule_ToPorts, diag.Diagnostics) {
-	pv := ApplicationPolicyRule_ToPorts{}
+func ConvertDataValueToApplicationPolicyRule_ToPortRangesProto(ctx context.Context, dataValue attr.Value) (*configv1.ApplicationPolicyRule_ToPortRanges, diag.Diagnostics) {
+	pv := ApplicationPolicyRule_ToPortRanges{}
 	diags := tfsdk.ValueAs(ctx, dataValue, &pv)
 	if diags.HasError() {
 		return nil, diags
 	}
-	proto := &configv1.ApplicationPolicyRule_ToPorts{}
-	proto.PortNumber = pv.PortNumber.ValueInt64()
+	proto := &configv1.ApplicationPolicyRule_ToPortRanges{}
+	proto.FromPort = pv.FromPort.ValueInt64()
 	proto.Protocol = pv.Protocol.ValueString()
+	proto.ToPort = pv.ToPort.ValueInt64()
 	return proto, diags
 }
 
