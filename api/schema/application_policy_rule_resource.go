@@ -48,7 +48,7 @@ var (
 						},
 					},
 					attributeWithMode: attributeWithMode{
-						Mode: ReadWriteAttributeMode,
+						Mode: KeyAttributeMode,
 					},
 				},
 				"application_id": StringResourceAttributeWithMode{
@@ -60,7 +60,7 @@ var (
 						},
 					},
 					attributeWithMode: attributeWithMode{
-						Mode: ReadWriteAttributeMode,
+						Mode: KeyAttributeMode,
 					},
 				},
 				"description": resource_schema.StringAttribute{

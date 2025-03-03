@@ -3429,6 +3429,18 @@ func NewReadApplicationPolicyRuleRequest(ctx context.Context, data *ApplicationP
 		protoValue = dataValue.(types.String).ValueString()
 		proto.Id = protoValue
 	}
+	if !data.Action.IsUnknown() && !data.Action.IsNull() {
+		var dataValue attr.Value = data.Action
+		var protoValue string
+		protoValue = dataValue.(types.String).ValueString()
+		proto.Action = protoValue
+	}
+	if !data.ApplicationId.IsUnknown() && !data.ApplicationId.IsNull() {
+		var dataValue attr.Value = data.ApplicationId
+		var protoValue string
+		protoValue = dataValue.(types.String).ValueString()
+		proto.ApplicationId = protoValue
+	}
 	return proto, diags
 }
 
@@ -3440,6 +3452,18 @@ func NewDeleteApplicationPolicyRuleRequest(ctx context.Context, data *Applicatio
 		var protoValue string
 		protoValue = dataValue.(types.String).ValueString()
 		proto.Id = protoValue
+	}
+	if !data.Action.IsUnknown() && !data.Action.IsNull() {
+		var dataValue attr.Value = data.Action
+		var protoValue string
+		protoValue = dataValue.(types.String).ValueString()
+		proto.Action = protoValue
+	}
+	if !data.ApplicationId.IsUnknown() && !data.ApplicationId.IsNull() {
+		var dataValue attr.Value = data.ApplicationId
+		var protoValue string
+		protoValue = dataValue.(types.String).ValueString()
+		proto.ApplicationId = protoValue
 	}
 	return proto, diags
 }
