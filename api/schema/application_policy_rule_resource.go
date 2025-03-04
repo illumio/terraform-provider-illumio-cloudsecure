@@ -68,8 +68,8 @@ var (
 					Optional:    true,
 				},
 				"external_scope": resource_schema.BoolAttribute{
-					Description: "Specifies whether the application policy allow rule can be applied to scope outside the CloudSecure application.",
-					Optional:    true,
+					MarkdownDescription: "Specifies whether the application policy allow rule can be applied to scope outside the CloudSecure application. Applicable only for `\"Allow\"` action.",
+					Optional:            true,
 				},
 				"from_ip_list_ids": resource_schema.ListAttribute{
 					Description: "List of IDs of IP lists to allow/deny traffic from.",
