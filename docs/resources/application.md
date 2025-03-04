@@ -16,7 +16,7 @@ Manages an application in CloudSecure.
 data "azurerm_subscription" "current" {}
 data "aws_caller_identity" "current" {}
 
-# Create a deployment and an application
+# Define a deployment and an application
 
 resource "illumio-cloudsecure_deployment" "test_deployment" {
   name                   = "Production"

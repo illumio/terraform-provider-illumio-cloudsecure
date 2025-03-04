@@ -370,6 +370,8 @@ message CreateApplicationPolicyRuleResponse {
 }
 message ReadApplicationPolicyRuleRequest {
   string id = 1;
+  string action = 2;
+  string application_id = 10;
 }
 message ReadApplicationPolicyRuleResponse {
   string id = 1;
@@ -410,6 +412,8 @@ message UpdateApplicationPolicyRuleResponse {
 }
 message DeleteApplicationPolicyRuleRequest {
   string id = 1;
+  string action = 2;
+  string application_id = 10;
 }
 message CreateAwsAccountRequest {
   string account_id = 2;

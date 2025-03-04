@@ -15,7 +15,7 @@ Manages a set of Azure resources belonging to a single Azure subscription that a
 ```terraform
 data "azurerm_subscription" "current" {}
 
-# Create a deployment and an application
+# Define a deployment and an application
 
 resource "illumio-cloudsecure_deployment" "test_deployment" {
   name                   = "Production"
