@@ -92,7 +92,7 @@ var (
 					ElementType: Label,
 				},
 				"to_port_ranges": resource_schema.ListAttribute{
-					MarkdownDescription: "List of transport protocol ports to allow/deny traffic to. The `protocol` for each port must be `\"TCP\"` or `\"UDP\"`. Skip to_port for single port.",
+					MarkdownDescription: "List of transport protocol ports to allow/deny traffic to. The `protocol` for each port must be `\"TCP\"` or `\"UDP\"`.",
 					Required:            true,
 					ElementType:         PortRange,
 				},
