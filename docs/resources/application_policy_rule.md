@@ -24,7 +24,7 @@ Manages policy rules on CloudSecure applications.
 ### Optional
 
 - `description` (String) Description of the application policy rule.
-- `external_scope` (Boolean) Specifies whether the application policy allow rule can be applied to scope outside the CloudSecure application.
+- `external_scope` (Boolean) Specifies whether the application policy allow rule can be applied to scope outside the CloudSecure application. Applicable only for `"Allow"` action.
 - `from_ip_list_ids` (List of String) List of IDs of IP lists to allow/deny traffic from.
 - `from_labels` (List of Object) List of Cloudsecure labels of sources to allow/deny traffic from. (see [below for nested schema](#nestedatt--from_labels))
 - `to_ip_list_ids` (List of String) List of IDs of IP lists to allow/deny traffic to.
