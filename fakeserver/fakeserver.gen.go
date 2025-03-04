@@ -125,11 +125,12 @@ type ApplicationPolicyRule struct {
 	Action        string
 	ApplicationId string
 	Description   *string
+	ExternalScope *bool
 	FromIpListIds []string
 	FromLabels    []*configv1.ApplicationPolicyRule_FromLabels
 	ToIpListIds   []string
 	ToLabels      []*configv1.ApplicationPolicyRule_ToLabels
-	ToPorts       []*configv1.ApplicationPolicyRule_ToPorts
+	ToPortRanges  []*configv1.ApplicationPolicyRule_ToPortRanges
 }
 
 type AwsAccount struct {
@@ -789,22 +790,24 @@ func (s *FakeConfigServer) CreateApplicationPolicyRule(ctx context.Context, req 
 		Action:        req.Action,
 		ApplicationId: req.ApplicationId,
 		Description:   req.Description,
+		ExternalScope: req.ExternalScope,
 		FromIpListIds: req.FromIpListIds,
 		FromLabels:    req.FromLabels,
 		ToIpListIds:   req.ToIpListIds,
 		ToLabels:      req.ToLabels,
-		ToPorts:       req.ToPorts,
+		ToPortRanges:  req.ToPortRanges,
 	}
 	resp := &configv1.CreateApplicationPolicyRuleResponse{
 		Id:            id,
 		Action:        model.Action,
 		ApplicationId: model.ApplicationId,
 		Description:   model.Description,
+		ExternalScope: model.ExternalScope,
 		FromIpListIds: model.FromIpListIds,
 		FromLabels:    model.FromLabels,
 		ToIpListIds:   model.ToIpListIds,
 		ToLabels:      model.ToLabels,
-		ToPorts:       model.ToPorts,
+		ToPortRanges:  model.ToPortRanges,
 	}
 	s.ApplicationPolicyRuleMutex.Lock()
 	s.ApplicationPolicyRuleMap[id] = model
@@ -835,11 +838,12 @@ func (s *FakeConfigServer) ReadApplicationPolicyRule(ctx context.Context, req *c
 		Action:        model.Action,
 		ApplicationId: model.ApplicationId,
 		Description:   model.Description,
+		ExternalScope: model.ExternalScope,
 		FromIpListIds: model.FromIpListIds,
 		FromLabels:    model.FromLabels,
 		ToIpListIds:   model.ToIpListIds,
 		ToLabels:      model.ToLabels,
-		ToPorts:       model.ToPorts,
+		ToPortRanges:  model.ToPortRanges,
 	}
 	s.ApplicationPolicyRuleMutex.RUnlock()
 	s.Logger.Info("read resource",
@@ -876,6 +880,8 @@ func (s *FakeConfigServer) UpdateApplicationPolicyRule(ctx context.Context, req 
 			model.ApplicationId = req.ApplicationId
 		case "description":
 			model.Description = req.Description
+		case "external_scope":
+			model.ExternalScope = req.ExternalScope
 		case "from_ip_list_ids":
 			model.FromIpListIds = req.FromIpListIds
 		case "from_labels":
@@ -884,8 +890,8 @@ func (s *FakeConfigServer) UpdateApplicationPolicyRule(ctx context.Context, req 
 			model.ToIpListIds = req.ToIpListIds
 		case "to_labels":
 			model.ToLabels = req.ToLabels
-		case "to_ports":
-			model.ToPorts = req.ToPorts
+		case "to_port_ranges":
+			model.ToPortRanges = req.ToPortRanges
 		default:
 			s.AwsAccountMutex.Unlock()
 			s.Logger.Error("attempted to update resource using invalid update_mask path",
@@ -903,11 +909,12 @@ func (s *FakeConfigServer) UpdateApplicationPolicyRule(ctx context.Context, req 
 		Action:        model.Action,
 		ApplicationId: model.ApplicationId,
 		Description:   model.Description,
+		ExternalScope: model.ExternalScope,
 		FromIpListIds: model.FromIpListIds,
 		FromLabels:    model.FromLabels,
 		ToIpListIds:   model.ToIpListIds,
 		ToLabels:      model.ToLabels,
-		ToPorts:       model.ToPorts,
+		ToPortRanges:  model.ToPortRanges,
 	}
 	s.ApplicationPolicyRuleMutex.Unlock()
 	s.Logger.Info("updated resource",

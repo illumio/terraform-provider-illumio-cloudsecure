@@ -19,11 +19,12 @@ Manages policy rules on CloudSecure applications.
 
 - `action` (String) The action to take for flows matched by the application policy rule. Must be `"Allow"`, `"Deny"` or `"OverrideDeny"`.
 - `application_id` (String) ID of the CloudSecure application on which this rule is based.
-- `to_ports` (List of Object) List of transport protocol ports to allow/deny traffic to. The `protocol` for each port must be `"TCP"` or `"UDP"`. (see [below for nested schema](#nestedatt--to_ports))
+- `to_port_ranges` (List of Object) List of transport protocol ports to allow/deny traffic to. The `protocol` for each port must be `"TCP"` or `"UDP"`. (see [below for nested schema](#nestedatt--to_port_ranges))
 
 ### Optional
 
 - `description` (String) Description of the application policy rule.
+- `external_scope` (Boolean) Specifies whether the application policy allow rule can be applied to scope outside the CloudSecure application. Applicable only for `"Allow"` action.
 - `from_ip_list_ids` (List of String) List of IDs of IP lists to allow/deny traffic from.
 - `from_labels` (List of Object) List of Cloudsecure labels of sources to allow/deny traffic from. (see [below for nested schema](#nestedatt--from_labels))
 - `to_ip_list_ids` (List of String) List of IDs of IP lists to allow/deny traffic to.
@@ -33,13 +34,14 @@ Manages policy rules on CloudSecure applications.
 
 - `id` (String) CloudSecure ID.
 
-<a id="nestedatt--to_ports"></a>
-### Nested Schema for `to_ports`
+<a id="nestedatt--to_port_ranges"></a>
+### Nested Schema for `to_port_ranges`
 
 Required:
 
-- `port_number` (Number)
+- `from_port` (Number)
 - `protocol` (String)
+- `to_port` (Number)
 
 
 <a id="nestedatt--from_labels"></a>
