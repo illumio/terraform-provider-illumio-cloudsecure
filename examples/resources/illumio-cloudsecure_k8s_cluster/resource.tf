@@ -9,11 +9,11 @@ resource "illumio-cloudsecure_k8s_cluster" "example" {
 
 output "example_client_id" {
   value       = illumio-cloudsecure_k8s_cluster.example.client_id
-  description = "The service account client_id used."
+  description = "The clusters Oauth2 client_id"
 }
 
 output "example_client_secret" {
   value       = illumio-cloudsecure_k8s_cluster.example.client_secret
-  description = "The service account client_secret used."
+  description = "The clusters Oauth2 client_secret"
   sensitive   = true
 }
