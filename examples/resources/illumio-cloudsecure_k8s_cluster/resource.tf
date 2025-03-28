@@ -1,6 +1,6 @@
 resource "illumio-cloudsecure_k8s_cluster" "example" {
-  client_id       = "xxxxx"
-  client_secret   = "xxxxx"
+  client_id      = "xxxxx"
+  client_secret  = "xxxxx"
   illumio_region = "aws-us-west-2"
 
   # Optional attributes
