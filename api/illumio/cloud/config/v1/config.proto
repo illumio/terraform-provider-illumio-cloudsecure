@@ -704,12 +704,14 @@ message DeleteIpListRequest {
 }
 message CreateK8SClusterRequest {
   string illumio_region = 4;
+  optional string log_level = 6;
 }
 message CreateK8SClusterResponse {
   string id = 1;
   string client_id = 2;
   string client_secret = 3;
   string illumio_region = 4;
+  optional string log_level = 6;
 }
 message ReadK8SClusterRequest {
   string id = 1;
@@ -718,15 +720,18 @@ message ReadK8SClusterResponse {
   string id = 1;
   string client_id = 2;
   string illumio_region = 4;
+  optional string log_level = 6;
 }
 message UpdateK8SClusterRequest {
   string id = 1;
+  optional string log_level = 6;
   google.protobuf.FieldMask update_mask = 5;
 }
 message UpdateK8SClusterResponse {
   string id = 1;
   string client_id = 2;
   string illumio_region = 4;
+  optional string log_level = 6;
 }
 message DeleteK8SClusterRequest {
   string id = 1;

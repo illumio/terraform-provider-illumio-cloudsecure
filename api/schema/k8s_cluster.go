@@ -54,6 +54,17 @@ var (
 						Mode: ImmutableAttributeMode,
 					},
 				},
+				"log_level": StringResourceAttributeWithMode{
+					StringAttribute: resource_schema.StringAttribute{
+						Optional: true,
+						MarkdownDescription: "Log level indicates what verbosity of logs the cloud operator will print out. " +
+							"This configuration option may become of use if CloudSecure support needs to observe and debug issues on a given cluster. " +
+							"Must be one of: `debug`, `info`, `warn`, or `error`.",
+					},
+					attributeWithMode: attributeWithMode{
+						Mode: ReadWriteAttributeMode,
+					},
+				},
 			},
 		},
 	}
