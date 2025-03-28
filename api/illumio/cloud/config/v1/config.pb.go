@@ -6710,6 +6710,378 @@ func (x *DeleteIpListRequest) GetId() string {
 	return ""
 }
 
+type CreateK8SClusterRequest struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	IllumioRegion string                 `protobuf:"bytes,4,opt,name=illumio_region,json=illumioRegion,proto3" json:"illumio_region,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *CreateK8SClusterRequest) Reset() {
+	*x = CreateK8SClusterRequest{}
+	mi := &file_illumio_cloud_config_v1_config_proto_msgTypes[77]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *CreateK8SClusterRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*CreateK8SClusterRequest) ProtoMessage() {}
+
+func (x *CreateK8SClusterRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_illumio_cloud_config_v1_config_proto_msgTypes[77]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use CreateK8SClusterRequest.ProtoReflect.Descriptor instead.
+func (*CreateK8SClusterRequest) Descriptor() ([]byte, []int) {
+	return file_illumio_cloud_config_v1_config_proto_rawDescGZIP(), []int{77}
+}
+
+func (x *CreateK8SClusterRequest) GetIllumioRegion() string {
+	if x != nil {
+		return x.IllumioRegion
+	}
+	return ""
+}
+
+type CreateK8SClusterResponse struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Id            string                 `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
+	ClientId      string                 `protobuf:"bytes,2,opt,name=client_id,json=clientId,proto3" json:"client_id,omitempty"`
+	ClientSecret  string                 `protobuf:"bytes,3,opt,name=client_secret,json=clientSecret,proto3" json:"client_secret,omitempty"`
+	IllumioRegion string                 `protobuf:"bytes,4,opt,name=illumio_region,json=illumioRegion,proto3" json:"illumio_region,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *CreateK8SClusterResponse) Reset() {
+	*x = CreateK8SClusterResponse{}
+	mi := &file_illumio_cloud_config_v1_config_proto_msgTypes[78]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *CreateK8SClusterResponse) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*CreateK8SClusterResponse) ProtoMessage() {}
+
+func (x *CreateK8SClusterResponse) ProtoReflect() protoreflect.Message {
+	mi := &file_illumio_cloud_config_v1_config_proto_msgTypes[78]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use CreateK8SClusterResponse.ProtoReflect.Descriptor instead.
+func (*CreateK8SClusterResponse) Descriptor() ([]byte, []int) {
+	return file_illumio_cloud_config_v1_config_proto_rawDescGZIP(), []int{78}
+}
+
+func (x *CreateK8SClusterResponse) GetId() string {
+	if x != nil {
+		return x.Id
+	}
+	return ""
+}
+
+func (x *CreateK8SClusterResponse) GetClientId() string {
+	if x != nil {
+		return x.ClientId
+	}
+	return ""
+}
+
+func (x *CreateK8SClusterResponse) GetClientSecret() string {
+	if x != nil {
+		return x.ClientSecret
+	}
+	return ""
+}
+
+func (x *CreateK8SClusterResponse) GetIllumioRegion() string {
+	if x != nil {
+		return x.IllumioRegion
+	}
+	return ""
+}
+
+type ReadK8SClusterRequest struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Id            string                 `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *ReadK8SClusterRequest) Reset() {
+	*x = ReadK8SClusterRequest{}
+	mi := &file_illumio_cloud_config_v1_config_proto_msgTypes[79]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *ReadK8SClusterRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*ReadK8SClusterRequest) ProtoMessage() {}
+
+func (x *ReadK8SClusterRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_illumio_cloud_config_v1_config_proto_msgTypes[79]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use ReadK8SClusterRequest.ProtoReflect.Descriptor instead.
+func (*ReadK8SClusterRequest) Descriptor() ([]byte, []int) {
+	return file_illumio_cloud_config_v1_config_proto_rawDescGZIP(), []int{79}
+}
+
+func (x *ReadK8SClusterRequest) GetId() string {
+	if x != nil {
+		return x.Id
+	}
+	return ""
+}
+
+type ReadK8SClusterResponse struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Id            string                 `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
+	ClientId      string                 `protobuf:"bytes,2,opt,name=client_id,json=clientId,proto3" json:"client_id,omitempty"`
+	IllumioRegion string                 `protobuf:"bytes,4,opt,name=illumio_region,json=illumioRegion,proto3" json:"illumio_region,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *ReadK8SClusterResponse) Reset() {
+	*x = ReadK8SClusterResponse{}
+	mi := &file_illumio_cloud_config_v1_config_proto_msgTypes[80]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *ReadK8SClusterResponse) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*ReadK8SClusterResponse) ProtoMessage() {}
+
+func (x *ReadK8SClusterResponse) ProtoReflect() protoreflect.Message {
+	mi := &file_illumio_cloud_config_v1_config_proto_msgTypes[80]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use ReadK8SClusterResponse.ProtoReflect.Descriptor instead.
+func (*ReadK8SClusterResponse) Descriptor() ([]byte, []int) {
+	return file_illumio_cloud_config_v1_config_proto_rawDescGZIP(), []int{80}
+}
+
+func (x *ReadK8SClusterResponse) GetId() string {
+	if x != nil {
+		return x.Id
+	}
+	return ""
+}
+
+func (x *ReadK8SClusterResponse) GetClientId() string {
+	if x != nil {
+		return x.ClientId
+	}
+	return ""
+}
+
+func (x *ReadK8SClusterResponse) GetIllumioRegion() string {
+	if x != nil {
+		return x.IllumioRegion
+	}
+	return ""
+}
+
+type UpdateK8SClusterRequest struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Id            string                 `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
+	UpdateMask    *fieldmaskpb.FieldMask `protobuf:"bytes,5,opt,name=update_mask,json=updateMask,proto3" json:"update_mask,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *UpdateK8SClusterRequest) Reset() {
+	*x = UpdateK8SClusterRequest{}
+	mi := &file_illumio_cloud_config_v1_config_proto_msgTypes[81]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *UpdateK8SClusterRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*UpdateK8SClusterRequest) ProtoMessage() {}
+
+func (x *UpdateK8SClusterRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_illumio_cloud_config_v1_config_proto_msgTypes[81]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use UpdateK8SClusterRequest.ProtoReflect.Descriptor instead.
+func (*UpdateK8SClusterRequest) Descriptor() ([]byte, []int) {
+	return file_illumio_cloud_config_v1_config_proto_rawDescGZIP(), []int{81}
+}
+
+func (x *UpdateK8SClusterRequest) GetId() string {
+	if x != nil {
+		return x.Id
+	}
+	return ""
+}
+
+func (x *UpdateK8SClusterRequest) GetUpdateMask() *fieldmaskpb.FieldMask {
+	if x != nil {
+		return x.UpdateMask
+	}
+	return nil
+}
+
+type UpdateK8SClusterResponse struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Id            string                 `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
+	ClientId      string                 `protobuf:"bytes,2,opt,name=client_id,json=clientId,proto3" json:"client_id,omitempty"`
+	IllumioRegion string                 `protobuf:"bytes,4,opt,name=illumio_region,json=illumioRegion,proto3" json:"illumio_region,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *UpdateK8SClusterResponse) Reset() {
+	*x = UpdateK8SClusterResponse{}
+	mi := &file_illumio_cloud_config_v1_config_proto_msgTypes[82]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *UpdateK8SClusterResponse) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*UpdateK8SClusterResponse) ProtoMessage() {}
+
+func (x *UpdateK8SClusterResponse) ProtoReflect() protoreflect.Message {
+	mi := &file_illumio_cloud_config_v1_config_proto_msgTypes[82]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use UpdateK8SClusterResponse.ProtoReflect.Descriptor instead.
+func (*UpdateK8SClusterResponse) Descriptor() ([]byte, []int) {
+	return file_illumio_cloud_config_v1_config_proto_rawDescGZIP(), []int{82}
+}
+
+func (x *UpdateK8SClusterResponse) GetId() string {
+	if x != nil {
+		return x.Id
+	}
+	return ""
+}
+
+func (x *UpdateK8SClusterResponse) GetClientId() string {
+	if x != nil {
+		return x.ClientId
+	}
+	return ""
+}
+
+func (x *UpdateK8SClusterResponse) GetIllumioRegion() string {
+	if x != nil {
+		return x.IllumioRegion
+	}
+	return ""
+}
+
+type DeleteK8SClusterRequest struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Id            string                 `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *DeleteK8SClusterRequest) Reset() {
+	*x = DeleteK8SClusterRequest{}
+	mi := &file_illumio_cloud_config_v1_config_proto_msgTypes[83]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *DeleteK8SClusterRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*DeleteK8SClusterRequest) ProtoMessage() {}
+
+func (x *DeleteK8SClusterRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_illumio_cloud_config_v1_config_proto_msgTypes[83]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use DeleteK8SClusterRequest.ProtoReflect.Descriptor instead.
+func (*DeleteK8SClusterRequest) Descriptor() ([]byte, []int) {
+	return file_illumio_cloud_config_v1_config_proto_rawDescGZIP(), []int{83}
+}
+
+func (x *DeleteK8SClusterRequest) GetId() string {
+	if x != nil {
+		return x.Id
+	}
+	return ""
+}
+
 type CreateK8SClusterOnboardingCredentialRequest struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
 	Description   *string                `protobuf:"bytes,5,opt,name=description,proto3,oneof" json:"description,omitempty"`
@@ -6721,7 +7093,7 @@ type CreateK8SClusterOnboardingCredentialRequest struct {
 
 func (x *CreateK8SClusterOnboardingCredentialRequest) Reset() {
 	*x = CreateK8SClusterOnboardingCredentialRequest{}
-	mi := &file_illumio_cloud_config_v1_config_proto_msgTypes[77]
+	mi := &file_illumio_cloud_config_v1_config_proto_msgTypes[84]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -6733,7 +7105,7 @@ func (x *CreateK8SClusterOnboardingCredentialRequest) String() string {
 func (*CreateK8SClusterOnboardingCredentialRequest) ProtoMessage() {}
 
 func (x *CreateK8SClusterOnboardingCredentialRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_illumio_cloud_config_v1_config_proto_msgTypes[77]
+	mi := &file_illumio_cloud_config_v1_config_proto_msgTypes[84]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -6746,7 +7118,7 @@ func (x *CreateK8SClusterOnboardingCredentialRequest) ProtoReflect() protoreflec
 
 // Deprecated: Use CreateK8SClusterOnboardingCredentialRequest.ProtoReflect.Descriptor instead.
 func (*CreateK8SClusterOnboardingCredentialRequest) Descriptor() ([]byte, []int) {
-	return file_illumio_cloud_config_v1_config_proto_rawDescGZIP(), []int{77}
+	return file_illumio_cloud_config_v1_config_proto_rawDescGZIP(), []int{84}
 }
 
 func (x *CreateK8SClusterOnboardingCredentialRequest) GetDescription() string {
@@ -6785,7 +7157,7 @@ type CreateK8SClusterOnboardingCredentialResponse struct {
 
 func (x *CreateK8SClusterOnboardingCredentialResponse) Reset() {
 	*x = CreateK8SClusterOnboardingCredentialResponse{}
-	mi := &file_illumio_cloud_config_v1_config_proto_msgTypes[78]
+	mi := &file_illumio_cloud_config_v1_config_proto_msgTypes[85]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -6797,7 +7169,7 @@ func (x *CreateK8SClusterOnboardingCredentialResponse) String() string {
 func (*CreateK8SClusterOnboardingCredentialResponse) ProtoMessage() {}
 
 func (x *CreateK8SClusterOnboardingCredentialResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_illumio_cloud_config_v1_config_proto_msgTypes[78]
+	mi := &file_illumio_cloud_config_v1_config_proto_msgTypes[85]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -6810,7 +7182,7 @@ func (x *CreateK8SClusterOnboardingCredentialResponse) ProtoReflect() protorefle
 
 // Deprecated: Use CreateK8SClusterOnboardingCredentialResponse.ProtoReflect.Descriptor instead.
 func (*CreateK8SClusterOnboardingCredentialResponse) Descriptor() ([]byte, []int) {
-	return file_illumio_cloud_config_v1_config_proto_rawDescGZIP(), []int{78}
+	return file_illumio_cloud_config_v1_config_proto_rawDescGZIP(), []int{85}
 }
 
 func (x *CreateK8SClusterOnboardingCredentialResponse) GetId() string {
@@ -6871,7 +7243,7 @@ type ReadK8SClusterOnboardingCredentialRequest struct {
 
 func (x *ReadK8SClusterOnboardingCredentialRequest) Reset() {
 	*x = ReadK8SClusterOnboardingCredentialRequest{}
-	mi := &file_illumio_cloud_config_v1_config_proto_msgTypes[79]
+	mi := &file_illumio_cloud_config_v1_config_proto_msgTypes[86]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -6883,7 +7255,7 @@ func (x *ReadK8SClusterOnboardingCredentialRequest) String() string {
 func (*ReadK8SClusterOnboardingCredentialRequest) ProtoMessage() {}
 
 func (x *ReadK8SClusterOnboardingCredentialRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_illumio_cloud_config_v1_config_proto_msgTypes[79]
+	mi := &file_illumio_cloud_config_v1_config_proto_msgTypes[86]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -6896,7 +7268,7 @@ func (x *ReadK8SClusterOnboardingCredentialRequest) ProtoReflect() protoreflect.
 
 // Deprecated: Use ReadK8SClusterOnboardingCredentialRequest.ProtoReflect.Descriptor instead.
 func (*ReadK8SClusterOnboardingCredentialRequest) Descriptor() ([]byte, []int) {
-	return file_illumio_cloud_config_v1_config_proto_rawDescGZIP(), []int{79}
+	return file_illumio_cloud_config_v1_config_proto_rawDescGZIP(), []int{86}
 }
 
 func (x *ReadK8SClusterOnboardingCredentialRequest) GetId() string {
@@ -6920,7 +7292,7 @@ type ReadK8SClusterOnboardingCredentialResponse struct {
 
 func (x *ReadK8SClusterOnboardingCredentialResponse) Reset() {
 	*x = ReadK8SClusterOnboardingCredentialResponse{}
-	mi := &file_illumio_cloud_config_v1_config_proto_msgTypes[80]
+	mi := &file_illumio_cloud_config_v1_config_proto_msgTypes[87]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -6932,7 +7304,7 @@ func (x *ReadK8SClusterOnboardingCredentialResponse) String() string {
 func (*ReadK8SClusterOnboardingCredentialResponse) ProtoMessage() {}
 
 func (x *ReadK8SClusterOnboardingCredentialResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_illumio_cloud_config_v1_config_proto_msgTypes[80]
+	mi := &file_illumio_cloud_config_v1_config_proto_msgTypes[87]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -6945,7 +7317,7 @@ func (x *ReadK8SClusterOnboardingCredentialResponse) ProtoReflect() protoreflect
 
 // Deprecated: Use ReadK8SClusterOnboardingCredentialResponse.ProtoReflect.Descriptor instead.
 func (*ReadK8SClusterOnboardingCredentialResponse) Descriptor() ([]byte, []int) {
-	return file_illumio_cloud_config_v1_config_proto_rawDescGZIP(), []int{80}
+	return file_illumio_cloud_config_v1_config_proto_rawDescGZIP(), []int{87}
 }
 
 func (x *ReadK8SClusterOnboardingCredentialResponse) GetId() string {
@@ -7002,7 +7374,7 @@ type UpdateK8SClusterOnboardingCredentialRequest struct {
 
 func (x *UpdateK8SClusterOnboardingCredentialRequest) Reset() {
 	*x = UpdateK8SClusterOnboardingCredentialRequest{}
-	mi := &file_illumio_cloud_config_v1_config_proto_msgTypes[81]
+	mi := &file_illumio_cloud_config_v1_config_proto_msgTypes[88]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -7014,7 +7386,7 @@ func (x *UpdateK8SClusterOnboardingCredentialRequest) String() string {
 func (*UpdateK8SClusterOnboardingCredentialRequest) ProtoMessage() {}
 
 func (x *UpdateK8SClusterOnboardingCredentialRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_illumio_cloud_config_v1_config_proto_msgTypes[81]
+	mi := &file_illumio_cloud_config_v1_config_proto_msgTypes[88]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -7027,7 +7399,7 @@ func (x *UpdateK8SClusterOnboardingCredentialRequest) ProtoReflect() protoreflec
 
 // Deprecated: Use UpdateK8SClusterOnboardingCredentialRequest.ProtoReflect.Descriptor instead.
 func (*UpdateK8SClusterOnboardingCredentialRequest) Descriptor() ([]byte, []int) {
-	return file_illumio_cloud_config_v1_config_proto_rawDescGZIP(), []int{81}
+	return file_illumio_cloud_config_v1_config_proto_rawDescGZIP(), []int{88}
 }
 
 func (x *UpdateK8SClusterOnboardingCredentialRequest) GetId() string {
@@ -7072,7 +7444,7 @@ type UpdateK8SClusterOnboardingCredentialResponse struct {
 
 func (x *UpdateK8SClusterOnboardingCredentialResponse) Reset() {
 	*x = UpdateK8SClusterOnboardingCredentialResponse{}
-	mi := &file_illumio_cloud_config_v1_config_proto_msgTypes[82]
+	mi := &file_illumio_cloud_config_v1_config_proto_msgTypes[89]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -7084,7 +7456,7 @@ func (x *UpdateK8SClusterOnboardingCredentialResponse) String() string {
 func (*UpdateK8SClusterOnboardingCredentialResponse) ProtoMessage() {}
 
 func (x *UpdateK8SClusterOnboardingCredentialResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_illumio_cloud_config_v1_config_proto_msgTypes[82]
+	mi := &file_illumio_cloud_config_v1_config_proto_msgTypes[89]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -7097,7 +7469,7 @@ func (x *UpdateK8SClusterOnboardingCredentialResponse) ProtoReflect() protorefle
 
 // Deprecated: Use UpdateK8SClusterOnboardingCredentialResponse.ProtoReflect.Descriptor instead.
 func (*UpdateK8SClusterOnboardingCredentialResponse) Descriptor() ([]byte, []int) {
-	return file_illumio_cloud_config_v1_config_proto_rawDescGZIP(), []int{82}
+	return file_illumio_cloud_config_v1_config_proto_rawDescGZIP(), []int{89}
 }
 
 func (x *UpdateK8SClusterOnboardingCredentialResponse) GetId() string {
@@ -7151,7 +7523,7 @@ type DeleteK8SClusterOnboardingCredentialRequest struct {
 
 func (x *DeleteK8SClusterOnboardingCredentialRequest) Reset() {
 	*x = DeleteK8SClusterOnboardingCredentialRequest{}
-	mi := &file_illumio_cloud_config_v1_config_proto_msgTypes[83]
+	mi := &file_illumio_cloud_config_v1_config_proto_msgTypes[90]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -7163,7 +7535,7 @@ func (x *DeleteK8SClusterOnboardingCredentialRequest) String() string {
 func (*DeleteK8SClusterOnboardingCredentialRequest) ProtoMessage() {}
 
 func (x *DeleteK8SClusterOnboardingCredentialRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_illumio_cloud_config_v1_config_proto_msgTypes[83]
+	mi := &file_illumio_cloud_config_v1_config_proto_msgTypes[90]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -7176,7 +7548,7 @@ func (x *DeleteK8SClusterOnboardingCredentialRequest) ProtoReflect() protoreflec
 
 // Deprecated: Use DeleteK8SClusterOnboardingCredentialRequest.ProtoReflect.Descriptor instead.
 func (*DeleteK8SClusterOnboardingCredentialRequest) Descriptor() ([]byte, []int) {
-	return file_illumio_cloud_config_v1_config_proto_rawDescGZIP(), []int{83}
+	return file_illumio_cloud_config_v1_config_proto_rawDescGZIP(), []int{90}
 }
 
 func (x *DeleteK8SClusterOnboardingCredentialRequest) GetId() string {
@@ -7197,7 +7569,7 @@ type TagToLabel_Icon struct {
 
 func (x *TagToLabel_Icon) Reset() {
 	*x = TagToLabel_Icon{}
-	mi := &file_illumio_cloud_config_v1_config_proto_msgTypes[84]
+	mi := &file_illumio_cloud_config_v1_config_proto_msgTypes[91]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -7209,7 +7581,7 @@ func (x *TagToLabel_Icon) String() string {
 func (*TagToLabel_Icon) ProtoMessage() {}
 
 func (x *TagToLabel_Icon) ProtoReflect() protoreflect.Message {
-	mi := &file_illumio_cloud_config_v1_config_proto_msgTypes[84]
+	mi := &file_illumio_cloud_config_v1_config_proto_msgTypes[91]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -7222,7 +7594,7 @@ func (x *TagToLabel_Icon) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use TagToLabel_Icon.ProtoReflect.Descriptor instead.
 func (*TagToLabel_Icon) Descriptor() ([]byte, []int) {
-	return file_illumio_cloud_config_v1_config_proto_rawDescGZIP(), []int{84}
+	return file_illumio_cloud_config_v1_config_proto_rawDescGZIP(), []int{91}
 }
 
 func (x *TagToLabel_Icon) GetBackgroundColor() string {
@@ -7259,7 +7631,7 @@ type CreateTagToLabelRequest struct {
 
 func (x *CreateTagToLabelRequest) Reset() {
 	*x = CreateTagToLabelRequest{}
-	mi := &file_illumio_cloud_config_v1_config_proto_msgTypes[85]
+	mi := &file_illumio_cloud_config_v1_config_proto_msgTypes[92]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -7271,7 +7643,7 @@ func (x *CreateTagToLabelRequest) String() string {
 func (*CreateTagToLabelRequest) ProtoMessage() {}
 
 func (x *CreateTagToLabelRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_illumio_cloud_config_v1_config_proto_msgTypes[85]
+	mi := &file_illumio_cloud_config_v1_config_proto_msgTypes[92]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -7284,7 +7656,7 @@ func (x *CreateTagToLabelRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use CreateTagToLabelRequest.ProtoReflect.Descriptor instead.
 func (*CreateTagToLabelRequest) Descriptor() ([]byte, []int) {
-	return file_illumio_cloud_config_v1_config_proto_rawDescGZIP(), []int{85}
+	return file_illumio_cloud_config_v1_config_proto_rawDescGZIP(), []int{92}
 }
 
 func (x *CreateTagToLabelRequest) GetAwsTagKeys() []string {
@@ -7336,7 +7708,7 @@ type CreateTagToLabelResponse struct {
 
 func (x *CreateTagToLabelResponse) Reset() {
 	*x = CreateTagToLabelResponse{}
-	mi := &file_illumio_cloud_config_v1_config_proto_msgTypes[86]
+	mi := &file_illumio_cloud_config_v1_config_proto_msgTypes[93]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -7348,7 +7720,7 @@ func (x *CreateTagToLabelResponse) String() string {
 func (*CreateTagToLabelResponse) ProtoMessage() {}
 
 func (x *CreateTagToLabelResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_illumio_cloud_config_v1_config_proto_msgTypes[86]
+	mi := &file_illumio_cloud_config_v1_config_proto_msgTypes[93]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -7361,7 +7733,7 @@ func (x *CreateTagToLabelResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use CreateTagToLabelResponse.ProtoReflect.Descriptor instead.
 func (*CreateTagToLabelResponse) Descriptor() ([]byte, []int) {
-	return file_illumio_cloud_config_v1_config_proto_rawDescGZIP(), []int{86}
+	return file_illumio_cloud_config_v1_config_proto_rawDescGZIP(), []int{93}
 }
 
 func (x *CreateTagToLabelResponse) GetId() string {
@@ -7415,7 +7787,7 @@ type ReadTagToLabelRequest struct {
 
 func (x *ReadTagToLabelRequest) Reset() {
 	*x = ReadTagToLabelRequest{}
-	mi := &file_illumio_cloud_config_v1_config_proto_msgTypes[87]
+	mi := &file_illumio_cloud_config_v1_config_proto_msgTypes[94]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -7427,7 +7799,7 @@ func (x *ReadTagToLabelRequest) String() string {
 func (*ReadTagToLabelRequest) ProtoMessage() {}
 
 func (x *ReadTagToLabelRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_illumio_cloud_config_v1_config_proto_msgTypes[87]
+	mi := &file_illumio_cloud_config_v1_config_proto_msgTypes[94]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -7440,7 +7812,7 @@ func (x *ReadTagToLabelRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use ReadTagToLabelRequest.ProtoReflect.Descriptor instead.
 func (*ReadTagToLabelRequest) Descriptor() ([]byte, []int) {
-	return file_illumio_cloud_config_v1_config_proto_rawDescGZIP(), []int{87}
+	return file_illumio_cloud_config_v1_config_proto_rawDescGZIP(), []int{94}
 }
 
 func (x *ReadTagToLabelRequest) GetId() string {
@@ -7464,7 +7836,7 @@ type ReadTagToLabelResponse struct {
 
 func (x *ReadTagToLabelResponse) Reset() {
 	*x = ReadTagToLabelResponse{}
-	mi := &file_illumio_cloud_config_v1_config_proto_msgTypes[88]
+	mi := &file_illumio_cloud_config_v1_config_proto_msgTypes[95]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -7476,7 +7848,7 @@ func (x *ReadTagToLabelResponse) String() string {
 func (*ReadTagToLabelResponse) ProtoMessage() {}
 
 func (x *ReadTagToLabelResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_illumio_cloud_config_v1_config_proto_msgTypes[88]
+	mi := &file_illumio_cloud_config_v1_config_proto_msgTypes[95]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -7489,7 +7861,7 @@ func (x *ReadTagToLabelResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use ReadTagToLabelResponse.ProtoReflect.Descriptor instead.
 func (*ReadTagToLabelResponse) Descriptor() ([]byte, []int) {
-	return file_illumio_cloud_config_v1_config_proto_rawDescGZIP(), []int{88}
+	return file_illumio_cloud_config_v1_config_proto_rawDescGZIP(), []int{95}
 }
 
 func (x *ReadTagToLabelResponse) GetId() string {
@@ -7549,7 +7921,7 @@ type UpdateTagToLabelRequest struct {
 
 func (x *UpdateTagToLabelRequest) Reset() {
 	*x = UpdateTagToLabelRequest{}
-	mi := &file_illumio_cloud_config_v1_config_proto_msgTypes[89]
+	mi := &file_illumio_cloud_config_v1_config_proto_msgTypes[96]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -7561,7 +7933,7 @@ func (x *UpdateTagToLabelRequest) String() string {
 func (*UpdateTagToLabelRequest) ProtoMessage() {}
 
 func (x *UpdateTagToLabelRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_illumio_cloud_config_v1_config_proto_msgTypes[89]
+	mi := &file_illumio_cloud_config_v1_config_proto_msgTypes[96]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -7574,7 +7946,7 @@ func (x *UpdateTagToLabelRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use UpdateTagToLabelRequest.ProtoReflect.Descriptor instead.
 func (*UpdateTagToLabelRequest) Descriptor() ([]byte, []int) {
-	return file_illumio_cloud_config_v1_config_proto_rawDescGZIP(), []int{89}
+	return file_illumio_cloud_config_v1_config_proto_rawDescGZIP(), []int{96}
 }
 
 func (x *UpdateTagToLabelRequest) GetId() string {
@@ -7640,7 +8012,7 @@ type UpdateTagToLabelResponse struct {
 
 func (x *UpdateTagToLabelResponse) Reset() {
 	*x = UpdateTagToLabelResponse{}
-	mi := &file_illumio_cloud_config_v1_config_proto_msgTypes[90]
+	mi := &file_illumio_cloud_config_v1_config_proto_msgTypes[97]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -7652,7 +8024,7 @@ func (x *UpdateTagToLabelResponse) String() string {
 func (*UpdateTagToLabelResponse) ProtoMessage() {}
 
 func (x *UpdateTagToLabelResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_illumio_cloud_config_v1_config_proto_msgTypes[90]
+	mi := &file_illumio_cloud_config_v1_config_proto_msgTypes[97]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -7665,7 +8037,7 @@ func (x *UpdateTagToLabelResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use UpdateTagToLabelResponse.ProtoReflect.Descriptor instead.
 func (*UpdateTagToLabelResponse) Descriptor() ([]byte, []int) {
-	return file_illumio_cloud_config_v1_config_proto_rawDescGZIP(), []int{90}
+	return file_illumio_cloud_config_v1_config_proto_rawDescGZIP(), []int{97}
 }
 
 func (x *UpdateTagToLabelResponse) GetId() string {
@@ -7719,7 +8091,7 @@ type DeleteTagToLabelRequest struct {
 
 func (x *DeleteTagToLabelRequest) Reset() {
 	*x = DeleteTagToLabelRequest{}
-	mi := &file_illumio_cloud_config_v1_config_proto_msgTypes[91]
+	mi := &file_illumio_cloud_config_v1_config_proto_msgTypes[98]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -7731,7 +8103,7 @@ func (x *DeleteTagToLabelRequest) String() string {
 func (*DeleteTagToLabelRequest) ProtoMessage() {}
 
 func (x *DeleteTagToLabelRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_illumio_cloud_config_v1_config_proto_msgTypes[91]
+	mi := &file_illumio_cloud_config_v1_config_proto_msgTypes[98]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -7744,7 +8116,7 @@ func (x *DeleteTagToLabelRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use DeleteTagToLabelRequest.ProtoReflect.Descriptor instead.
 func (*DeleteTagToLabelRequest) Descriptor() ([]byte, []int) {
-	return file_illumio_cloud_config_v1_config_proto_rawDescGZIP(), []int{91}
+	return file_illumio_cloud_config_v1_config_proto_rawDescGZIP(), []int{98}
 }
 
 func (x *DeleteTagToLabelRequest) GetId() string {
@@ -8412,6 +8784,29 @@ const file_illumio_cloud_config_v1_config_proto_rawDesc = "" +
 	"\x04name\x18\x04 \x01(\tR\x04nameB\x0e\n" +
 	"\f_description\"%\n" +
 	"\x13DeleteIpListRequest\x12\x0e\n" +
+	"\x02id\x18\x01 \x01(\tR\x02id\"@\n" +
+	"\x17CreateK8SClusterRequest\x12%\n" +
+	"\x0eillumio_region\x18\x04 \x01(\tR\rillumioRegion\"\x93\x01\n" +
+	"\x18CreateK8SClusterResponse\x12\x0e\n" +
+	"\x02id\x18\x01 \x01(\tR\x02id\x12\x1b\n" +
+	"\tclient_id\x18\x02 \x01(\tR\bclientId\x12#\n" +
+	"\rclient_secret\x18\x03 \x01(\tR\fclientSecret\x12%\n" +
+	"\x0eillumio_region\x18\x04 \x01(\tR\rillumioRegion\"'\n" +
+	"\x15ReadK8SClusterRequest\x12\x0e\n" +
+	"\x02id\x18\x01 \x01(\tR\x02id\"l\n" +
+	"\x16ReadK8SClusterResponse\x12\x0e\n" +
+	"\x02id\x18\x01 \x01(\tR\x02id\x12\x1b\n" +
+	"\tclient_id\x18\x02 \x01(\tR\bclientId\x12%\n" +
+	"\x0eillumio_region\x18\x04 \x01(\tR\rillumioRegion\"f\n" +
+	"\x17UpdateK8SClusterRequest\x12\x0e\n" +
+	"\x02id\x18\x01 \x01(\tR\x02id\x12;\n" +
+	"\vupdate_mask\x18\x05 \x01(\v2\x1a.google.protobuf.FieldMaskR\n" +
+	"updateMask\"n\n" +
+	"\x18UpdateK8SClusterResponse\x12\x0e\n" +
+	"\x02id\x18\x01 \x01(\tR\x02id\x12\x1b\n" +
+	"\tclient_id\x18\x02 \x01(\tR\bclientId\x12%\n" +
+	"\x0eillumio_region\x18\x04 \x01(\tR\rillumioRegion\")\n" +
+	"\x17DeleteK8SClusterRequest\x12\x0e\n" +
 	"\x02id\x18\x01 \x01(\tR\x02id\"\x9f\x01\n" +
 	"+CreateK8SClusterOnboardingCredentialRequest\x12%\n" +
 	"\vdescription\x18\x05 \x01(\tH\x00R\vdescription\x88\x01\x01\x12%\n" +
@@ -8505,7 +8900,7 @@ const file_illumio_cloud_config_v1_config_proto_rawDesc = "" +
 	"\x03key\x18\x05 \x01(\tR\x03key\x12\x12\n" +
 	"\x04name\x18\x06 \x01(\tR\x04name\")\n" +
 	"\x17DeleteTagToLabelRequest\x12\x0e\n" +
-	"\x02id\x18\x01 \x01(\tR\x02id2\x9c2\n" +
+	"\x02id\x18\x01 \x01(\tR\x02id2\xdf5\n" +
 	"\rConfigService\x12z\n" +
 	"\x11CreateApplication\x121.illumio.cloud.config.v1.CreateApplicationRequest\x1a2.illumio.cloud.config.v1.CreateApplicationResponse\x12t\n" +
 	"\x0fReadApplication\x12/.illumio.cloud.config.v1.ReadApplicationRequest\x1a0.illumio.cloud.config.v1.ReadApplicationResponse\x12z\n" +
@@ -8547,7 +8942,11 @@ const file_illumio_cloud_config_v1_config_proto_rawDesc = "" +
 	"\n" +
 	"ReadIpList\x12*.illumio.cloud.config.v1.ReadIpListRequest\x1a+.illumio.cloud.config.v1.ReadIpListResponse\x12k\n" +
 	"\fUpdateIpList\x12,.illumio.cloud.config.v1.UpdateIpListRequest\x1a-.illumio.cloud.config.v1.UpdateIpListResponse\x12T\n" +
-	"\fDeleteIpList\x12,.illumio.cloud.config.v1.DeleteIpListRequest\x1a\x16.google.protobuf.Empty\x12\xb3\x01\n" +
+	"\fDeleteIpList\x12,.illumio.cloud.config.v1.DeleteIpListRequest\x1a\x16.google.protobuf.Empty\x12w\n" +
+	"\x10CreateK8SCluster\x120.illumio.cloud.config.v1.CreateK8SClusterRequest\x1a1.illumio.cloud.config.v1.CreateK8SClusterResponse\x12q\n" +
+	"\x0eReadK8SCluster\x12..illumio.cloud.config.v1.ReadK8SClusterRequest\x1a/.illumio.cloud.config.v1.ReadK8SClusterResponse\x12w\n" +
+	"\x10UpdateK8SCluster\x120.illumio.cloud.config.v1.UpdateK8SClusterRequest\x1a1.illumio.cloud.config.v1.UpdateK8SClusterResponse\x12\\\n" +
+	"\x10DeleteK8SCluster\x120.illumio.cloud.config.v1.DeleteK8SClusterRequest\x1a\x16.google.protobuf.Empty\x12\xb3\x01\n" +
 	"$CreateK8SClusterOnboardingCredential\x12D.illumio.cloud.config.v1.CreateK8SClusterOnboardingCredentialRequest\x1aE.illumio.cloud.config.v1.CreateK8SClusterOnboardingCredentialResponse\x12\xad\x01\n" +
 	"\"ReadK8SClusterOnboardingCredential\x12B.illumio.cloud.config.v1.ReadK8SClusterOnboardingCredentialRequest\x1aC.illumio.cloud.config.v1.ReadK8SClusterOnboardingCredentialResponse\x12\xb3\x01\n" +
 	"$UpdateK8SClusterOnboardingCredential\x12D.illumio.cloud.config.v1.UpdateK8SClusterOnboardingCredentialRequest\x1aE.illumio.cloud.config.v1.UpdateK8SClusterOnboardingCredentialResponse\x12\x84\x01\n" +
@@ -8570,7 +8969,7 @@ func file_illumio_cloud_config_v1_config_proto_rawDescGZIP() []byte {
 	return file_illumio_cloud_config_v1_config_proto_rawDescData
 }
 
-var file_illumio_cloud_config_v1_config_proto_msgTypes = make([]protoimpl.MessageInfo, 92)
+var file_illumio_cloud_config_v1_config_proto_msgTypes = make([]protoimpl.MessageInfo, 99)
 var file_illumio_cloud_config_v1_config_proto_goTypes = []any{
 	(*CreateApplicationRequest)(nil),                     // 0: illumio.cloud.config.v1.CreateApplicationRequest
 	(*CreateApplicationResponse)(nil),                    // 1: illumio.cloud.config.v1.CreateApplicationResponse
@@ -8649,28 +9048,35 @@ var file_illumio_cloud_config_v1_config_proto_goTypes = []any{
 	(*UpdateIpListRequest)(nil),                          // 74: illumio.cloud.config.v1.UpdateIpListRequest
 	(*UpdateIpListResponse)(nil),                         // 75: illumio.cloud.config.v1.UpdateIpListResponse
 	(*DeleteIpListRequest)(nil),                          // 76: illumio.cloud.config.v1.DeleteIpListRequest
-	(*CreateK8SClusterOnboardingCredentialRequest)(nil),  // 77: illumio.cloud.config.v1.CreateK8SClusterOnboardingCredentialRequest
-	(*CreateK8SClusterOnboardingCredentialResponse)(nil), // 78: illumio.cloud.config.v1.CreateK8SClusterOnboardingCredentialResponse
-	(*ReadK8SClusterOnboardingCredentialRequest)(nil),    // 79: illumio.cloud.config.v1.ReadK8SClusterOnboardingCredentialRequest
-	(*ReadK8SClusterOnboardingCredentialResponse)(nil),   // 80: illumio.cloud.config.v1.ReadK8SClusterOnboardingCredentialResponse
-	(*UpdateK8SClusterOnboardingCredentialRequest)(nil),  // 81: illumio.cloud.config.v1.UpdateK8SClusterOnboardingCredentialRequest
-	(*UpdateK8SClusterOnboardingCredentialResponse)(nil), // 82: illumio.cloud.config.v1.UpdateK8SClusterOnboardingCredentialResponse
-	(*DeleteK8SClusterOnboardingCredentialRequest)(nil),  // 83: illumio.cloud.config.v1.DeleteK8SClusterOnboardingCredentialRequest
-	(*TagToLabel_Icon)(nil),                              // 84: illumio.cloud.config.v1.TagToLabel_Icon
-	(*CreateTagToLabelRequest)(nil),                      // 85: illumio.cloud.config.v1.CreateTagToLabelRequest
-	(*CreateTagToLabelResponse)(nil),                     // 86: illumio.cloud.config.v1.CreateTagToLabelResponse
-	(*ReadTagToLabelRequest)(nil),                        // 87: illumio.cloud.config.v1.ReadTagToLabelRequest
-	(*ReadTagToLabelResponse)(nil),                       // 88: illumio.cloud.config.v1.ReadTagToLabelResponse
-	(*UpdateTagToLabelRequest)(nil),                      // 89: illumio.cloud.config.v1.UpdateTagToLabelRequest
-	(*UpdateTagToLabelResponse)(nil),                     // 90: illumio.cloud.config.v1.UpdateTagToLabelResponse
-	(*DeleteTagToLabelRequest)(nil),                      // 91: illumio.cloud.config.v1.DeleteTagToLabelRequest
-	(*fieldmaskpb.FieldMask)(nil),                        // 92: google.protobuf.FieldMask
-	(*emptypb.Empty)(nil),                                // 93: google.protobuf.Empty
+	(*CreateK8SClusterRequest)(nil),                      // 77: illumio.cloud.config.v1.CreateK8SClusterRequest
+	(*CreateK8SClusterResponse)(nil),                     // 78: illumio.cloud.config.v1.CreateK8SClusterResponse
+	(*ReadK8SClusterRequest)(nil),                        // 79: illumio.cloud.config.v1.ReadK8SClusterRequest
+	(*ReadK8SClusterResponse)(nil),                       // 80: illumio.cloud.config.v1.ReadK8SClusterResponse
+	(*UpdateK8SClusterRequest)(nil),                      // 81: illumio.cloud.config.v1.UpdateK8SClusterRequest
+	(*UpdateK8SClusterResponse)(nil),                     // 82: illumio.cloud.config.v1.UpdateK8SClusterResponse
+	(*DeleteK8SClusterRequest)(nil),                      // 83: illumio.cloud.config.v1.DeleteK8SClusterRequest
+	(*CreateK8SClusterOnboardingCredentialRequest)(nil),  // 84: illumio.cloud.config.v1.CreateK8SClusterOnboardingCredentialRequest
+	(*CreateK8SClusterOnboardingCredentialResponse)(nil), // 85: illumio.cloud.config.v1.CreateK8SClusterOnboardingCredentialResponse
+	(*ReadK8SClusterOnboardingCredentialRequest)(nil),    // 86: illumio.cloud.config.v1.ReadK8SClusterOnboardingCredentialRequest
+	(*ReadK8SClusterOnboardingCredentialResponse)(nil),   // 87: illumio.cloud.config.v1.ReadK8SClusterOnboardingCredentialResponse
+	(*UpdateK8SClusterOnboardingCredentialRequest)(nil),  // 88: illumio.cloud.config.v1.UpdateK8SClusterOnboardingCredentialRequest
+	(*UpdateK8SClusterOnboardingCredentialResponse)(nil), // 89: illumio.cloud.config.v1.UpdateK8SClusterOnboardingCredentialResponse
+	(*DeleteK8SClusterOnboardingCredentialRequest)(nil),  // 90: illumio.cloud.config.v1.DeleteK8SClusterOnboardingCredentialRequest
+	(*TagToLabel_Icon)(nil),                              // 91: illumio.cloud.config.v1.TagToLabel_Icon
+	(*CreateTagToLabelRequest)(nil),                      // 92: illumio.cloud.config.v1.CreateTagToLabelRequest
+	(*CreateTagToLabelResponse)(nil),                     // 93: illumio.cloud.config.v1.CreateTagToLabelResponse
+	(*ReadTagToLabelRequest)(nil),                        // 94: illumio.cloud.config.v1.ReadTagToLabelRequest
+	(*ReadTagToLabelResponse)(nil),                       // 95: illumio.cloud.config.v1.ReadTagToLabelResponse
+	(*UpdateTagToLabelRequest)(nil),                      // 96: illumio.cloud.config.v1.UpdateTagToLabelRequest
+	(*UpdateTagToLabelResponse)(nil),                     // 97: illumio.cloud.config.v1.UpdateTagToLabelResponse
+	(*DeleteTagToLabelRequest)(nil),                      // 98: illumio.cloud.config.v1.DeleteTagToLabelRequest
+	(*fieldmaskpb.FieldMask)(nil),                        // 99: google.protobuf.FieldMask
+	(*emptypb.Empty)(nil),                                // 100: google.protobuf.Empty
 }
 var file_illumio_cloud_config_v1_config_proto_depIdxs = []int32{
-	92,  // 0: illumio.cloud.config.v1.UpdateApplicationRequest.update_mask:type_name -> google.protobuf.FieldMask
-	92,  // 1: illumio.cloud.config.v1.UpdateApplicationAwsResourcesRequest.update_mask:type_name -> google.protobuf.FieldMask
-	92,  // 2: illumio.cloud.config.v1.UpdateApplicationAzureResourcesRequest.update_mask:type_name -> google.protobuf.FieldMask
+	99,  // 0: illumio.cloud.config.v1.UpdateApplicationRequest.update_mask:type_name -> google.protobuf.FieldMask
+	99,  // 1: illumio.cloud.config.v1.UpdateApplicationAwsResourcesRequest.update_mask:type_name -> google.protobuf.FieldMask
+	99,  // 2: illumio.cloud.config.v1.UpdateApplicationAzureResourcesRequest.update_mask:type_name -> google.protobuf.FieldMask
 	21,  // 3: illumio.cloud.config.v1.CreateApplicationPolicyRuleRequest.from_labels:type_name -> illumio.cloud.config.v1.ApplicationPolicyRule_FromLabels
 	22,  // 4: illumio.cloud.config.v1.CreateApplicationPolicyRuleRequest.to_labels:type_name -> illumio.cloud.config.v1.ApplicationPolicyRule_ToLabels
 	23,  // 5: illumio.cloud.config.v1.CreateApplicationPolicyRuleRequest.to_port_ranges:type_name -> illumio.cloud.config.v1.ApplicationPolicyRule_ToPortRanges
@@ -8683,14 +9089,14 @@ var file_illumio_cloud_config_v1_config_proto_depIdxs = []int32{
 	21,  // 12: illumio.cloud.config.v1.UpdateApplicationPolicyRuleRequest.from_labels:type_name -> illumio.cloud.config.v1.ApplicationPolicyRule_FromLabels
 	22,  // 13: illumio.cloud.config.v1.UpdateApplicationPolicyRuleRequest.to_labels:type_name -> illumio.cloud.config.v1.ApplicationPolicyRule_ToLabels
 	23,  // 14: illumio.cloud.config.v1.UpdateApplicationPolicyRuleRequest.to_port_ranges:type_name -> illumio.cloud.config.v1.ApplicationPolicyRule_ToPortRanges
-	92,  // 15: illumio.cloud.config.v1.UpdateApplicationPolicyRuleRequest.update_mask:type_name -> google.protobuf.FieldMask
+	99,  // 15: illumio.cloud.config.v1.UpdateApplicationPolicyRuleRequest.update_mask:type_name -> google.protobuf.FieldMask
 	21,  // 16: illumio.cloud.config.v1.UpdateApplicationPolicyRuleResponse.from_labels:type_name -> illumio.cloud.config.v1.ApplicationPolicyRule_FromLabels
 	22,  // 17: illumio.cloud.config.v1.UpdateApplicationPolicyRuleResponse.to_labels:type_name -> illumio.cloud.config.v1.ApplicationPolicyRule_ToLabels
 	23,  // 18: illumio.cloud.config.v1.UpdateApplicationPolicyRuleResponse.to_port_ranges:type_name -> illumio.cloud.config.v1.ApplicationPolicyRule_ToPortRanges
-	92,  // 19: illumio.cloud.config.v1.UpdateAwsAccountRequest.update_mask:type_name -> google.protobuf.FieldMask
-	92,  // 20: illumio.cloud.config.v1.UpdateAwsFlowLogsS3BucketRequest.update_mask:type_name -> google.protobuf.FieldMask
-	92,  // 21: illumio.cloud.config.v1.UpdateAzureFlowLogsStorageAccountRequest.update_mask:type_name -> google.protobuf.FieldMask
-	92,  // 22: illumio.cloud.config.v1.UpdateAzureSubscriptionRequest.update_mask:type_name -> google.protobuf.FieldMask
+	99,  // 19: illumio.cloud.config.v1.UpdateAwsAccountRequest.update_mask:type_name -> google.protobuf.FieldMask
+	99,  // 20: illumio.cloud.config.v1.UpdateAwsFlowLogsS3BucketRequest.update_mask:type_name -> google.protobuf.FieldMask
+	99,  // 21: illumio.cloud.config.v1.UpdateAzureFlowLogsStorageAccountRequest.update_mask:type_name -> google.protobuf.FieldMask
+	99,  // 22: illumio.cloud.config.v1.UpdateAzureSubscriptionRequest.update_mask:type_name -> google.protobuf.FieldMask
 	59,  // 23: illumio.cloud.config.v1.CreateDeploymentRequest.aws_tags:type_name -> illumio.cloud.config.v1.Deployment_AwsTags
 	60,  // 24: illumio.cloud.config.v1.CreateDeploymentRequest.azure_tags:type_name -> illumio.cloud.config.v1.Deployment_AzureTags
 	59,  // 25: illumio.cloud.config.v1.CreateDeploymentResponse.aws_tags:type_name -> illumio.cloud.config.v1.Deployment_AwsTags
@@ -8699,7 +9105,7 @@ var file_illumio_cloud_config_v1_config_proto_depIdxs = []int32{
 	60,  // 28: illumio.cloud.config.v1.ReadDeploymentResponse.azure_tags:type_name -> illumio.cloud.config.v1.Deployment_AzureTags
 	59,  // 29: illumio.cloud.config.v1.UpdateDeploymentRequest.aws_tags:type_name -> illumio.cloud.config.v1.Deployment_AwsTags
 	60,  // 30: illumio.cloud.config.v1.UpdateDeploymentRequest.azure_tags:type_name -> illumio.cloud.config.v1.Deployment_AzureTags
-	92,  // 31: illumio.cloud.config.v1.UpdateDeploymentRequest.update_mask:type_name -> google.protobuf.FieldMask
+	99,  // 31: illumio.cloud.config.v1.UpdateDeploymentRequest.update_mask:type_name -> google.protobuf.FieldMask
 	59,  // 32: illumio.cloud.config.v1.UpdateDeploymentResponse.aws_tags:type_name -> illumio.cloud.config.v1.Deployment_AwsTags
 	60,  // 33: illumio.cloud.config.v1.UpdateDeploymentResponse.azure_tags:type_name -> illumio.cloud.config.v1.Deployment_AzureTags
 	68,  // 34: illumio.cloud.config.v1.CreateIpListRequest.ip_addresses:type_name -> illumio.cloud.config.v1.IpList_IpAddresses
@@ -8710,117 +9116,126 @@ var file_illumio_cloud_config_v1_config_proto_depIdxs = []int32{
 	69,  // 39: illumio.cloud.config.v1.ReadIpListResponse.ip_ranges:type_name -> illumio.cloud.config.v1.IpList_IpRanges
 	68,  // 40: illumio.cloud.config.v1.UpdateIpListRequest.ip_addresses:type_name -> illumio.cloud.config.v1.IpList_IpAddresses
 	69,  // 41: illumio.cloud.config.v1.UpdateIpListRequest.ip_ranges:type_name -> illumio.cloud.config.v1.IpList_IpRanges
-	92,  // 42: illumio.cloud.config.v1.UpdateIpListRequest.update_mask:type_name -> google.protobuf.FieldMask
+	99,  // 42: illumio.cloud.config.v1.UpdateIpListRequest.update_mask:type_name -> google.protobuf.FieldMask
 	68,  // 43: illumio.cloud.config.v1.UpdateIpListResponse.ip_addresses:type_name -> illumio.cloud.config.v1.IpList_IpAddresses
 	69,  // 44: illumio.cloud.config.v1.UpdateIpListResponse.ip_ranges:type_name -> illumio.cloud.config.v1.IpList_IpRanges
-	92,  // 45: illumio.cloud.config.v1.UpdateK8SClusterOnboardingCredentialRequest.update_mask:type_name -> google.protobuf.FieldMask
-	84,  // 46: illumio.cloud.config.v1.CreateTagToLabelRequest.icon:type_name -> illumio.cloud.config.v1.TagToLabel_Icon
-	84,  // 47: illumio.cloud.config.v1.CreateTagToLabelResponse.icon:type_name -> illumio.cloud.config.v1.TagToLabel_Icon
-	84,  // 48: illumio.cloud.config.v1.ReadTagToLabelResponse.icon:type_name -> illumio.cloud.config.v1.TagToLabel_Icon
-	84,  // 49: illumio.cloud.config.v1.UpdateTagToLabelRequest.icon:type_name -> illumio.cloud.config.v1.TagToLabel_Icon
-	92,  // 50: illumio.cloud.config.v1.UpdateTagToLabelRequest.update_mask:type_name -> google.protobuf.FieldMask
-	84,  // 51: illumio.cloud.config.v1.UpdateTagToLabelResponse.icon:type_name -> illumio.cloud.config.v1.TagToLabel_Icon
-	0,   // 52: illumio.cloud.config.v1.ConfigService.CreateApplication:input_type -> illumio.cloud.config.v1.CreateApplicationRequest
-	2,   // 53: illumio.cloud.config.v1.ConfigService.ReadApplication:input_type -> illumio.cloud.config.v1.ReadApplicationRequest
-	4,   // 54: illumio.cloud.config.v1.ConfigService.UpdateApplication:input_type -> illumio.cloud.config.v1.UpdateApplicationRequest
-	6,   // 55: illumio.cloud.config.v1.ConfigService.DeleteApplication:input_type -> illumio.cloud.config.v1.DeleteApplicationRequest
-	7,   // 56: illumio.cloud.config.v1.ConfigService.CreateApplicationAwsResources:input_type -> illumio.cloud.config.v1.CreateApplicationAwsResourcesRequest
-	9,   // 57: illumio.cloud.config.v1.ConfigService.ReadApplicationAwsResources:input_type -> illumio.cloud.config.v1.ReadApplicationAwsResourcesRequest
-	11,  // 58: illumio.cloud.config.v1.ConfigService.UpdateApplicationAwsResources:input_type -> illumio.cloud.config.v1.UpdateApplicationAwsResourcesRequest
-	13,  // 59: illumio.cloud.config.v1.ConfigService.DeleteApplicationAwsResources:input_type -> illumio.cloud.config.v1.DeleteApplicationAwsResourcesRequest
-	14,  // 60: illumio.cloud.config.v1.ConfigService.CreateApplicationAzureResources:input_type -> illumio.cloud.config.v1.CreateApplicationAzureResourcesRequest
-	16,  // 61: illumio.cloud.config.v1.ConfigService.ReadApplicationAzureResources:input_type -> illumio.cloud.config.v1.ReadApplicationAzureResourcesRequest
-	18,  // 62: illumio.cloud.config.v1.ConfigService.UpdateApplicationAzureResources:input_type -> illumio.cloud.config.v1.UpdateApplicationAzureResourcesRequest
-	20,  // 63: illumio.cloud.config.v1.ConfigService.DeleteApplicationAzureResources:input_type -> illumio.cloud.config.v1.DeleteApplicationAzureResourcesRequest
-	24,  // 64: illumio.cloud.config.v1.ConfigService.CreateApplicationPolicyRule:input_type -> illumio.cloud.config.v1.CreateApplicationPolicyRuleRequest
-	26,  // 65: illumio.cloud.config.v1.ConfigService.ReadApplicationPolicyRule:input_type -> illumio.cloud.config.v1.ReadApplicationPolicyRuleRequest
-	28,  // 66: illumio.cloud.config.v1.ConfigService.UpdateApplicationPolicyRule:input_type -> illumio.cloud.config.v1.UpdateApplicationPolicyRuleRequest
-	30,  // 67: illumio.cloud.config.v1.ConfigService.DeleteApplicationPolicyRule:input_type -> illumio.cloud.config.v1.DeleteApplicationPolicyRuleRequest
-	31,  // 68: illumio.cloud.config.v1.ConfigService.CreateAwsAccount:input_type -> illumio.cloud.config.v1.CreateAwsAccountRequest
-	33,  // 69: illumio.cloud.config.v1.ConfigService.ReadAwsAccount:input_type -> illumio.cloud.config.v1.ReadAwsAccountRequest
-	35,  // 70: illumio.cloud.config.v1.ConfigService.UpdateAwsAccount:input_type -> illumio.cloud.config.v1.UpdateAwsAccountRequest
-	37,  // 71: illumio.cloud.config.v1.ConfigService.DeleteAwsAccount:input_type -> illumio.cloud.config.v1.DeleteAwsAccountRequest
-	38,  // 72: illumio.cloud.config.v1.ConfigService.CreateAwsFlowLogsS3Bucket:input_type -> illumio.cloud.config.v1.CreateAwsFlowLogsS3BucketRequest
-	40,  // 73: illumio.cloud.config.v1.ConfigService.ReadAwsFlowLogsS3Bucket:input_type -> illumio.cloud.config.v1.ReadAwsFlowLogsS3BucketRequest
-	42,  // 74: illumio.cloud.config.v1.ConfigService.UpdateAwsFlowLogsS3Bucket:input_type -> illumio.cloud.config.v1.UpdateAwsFlowLogsS3BucketRequest
-	44,  // 75: illumio.cloud.config.v1.ConfigService.DeleteAwsFlowLogsS3Bucket:input_type -> illumio.cloud.config.v1.DeleteAwsFlowLogsS3BucketRequest
-	45,  // 76: illumio.cloud.config.v1.ConfigService.CreateAzureFlowLogsStorageAccount:input_type -> illumio.cloud.config.v1.CreateAzureFlowLogsStorageAccountRequest
-	47,  // 77: illumio.cloud.config.v1.ConfigService.ReadAzureFlowLogsStorageAccount:input_type -> illumio.cloud.config.v1.ReadAzureFlowLogsStorageAccountRequest
-	49,  // 78: illumio.cloud.config.v1.ConfigService.UpdateAzureFlowLogsStorageAccount:input_type -> illumio.cloud.config.v1.UpdateAzureFlowLogsStorageAccountRequest
-	51,  // 79: illumio.cloud.config.v1.ConfigService.DeleteAzureFlowLogsStorageAccount:input_type -> illumio.cloud.config.v1.DeleteAzureFlowLogsStorageAccountRequest
-	52,  // 80: illumio.cloud.config.v1.ConfigService.CreateAzureSubscription:input_type -> illumio.cloud.config.v1.CreateAzureSubscriptionRequest
-	54,  // 81: illumio.cloud.config.v1.ConfigService.ReadAzureSubscription:input_type -> illumio.cloud.config.v1.ReadAzureSubscriptionRequest
-	56,  // 82: illumio.cloud.config.v1.ConfigService.UpdateAzureSubscription:input_type -> illumio.cloud.config.v1.UpdateAzureSubscriptionRequest
-	58,  // 83: illumio.cloud.config.v1.ConfigService.DeleteAzureSubscription:input_type -> illumio.cloud.config.v1.DeleteAzureSubscriptionRequest
-	61,  // 84: illumio.cloud.config.v1.ConfigService.CreateDeployment:input_type -> illumio.cloud.config.v1.CreateDeploymentRequest
-	63,  // 85: illumio.cloud.config.v1.ConfigService.ReadDeployment:input_type -> illumio.cloud.config.v1.ReadDeploymentRequest
-	65,  // 86: illumio.cloud.config.v1.ConfigService.UpdateDeployment:input_type -> illumio.cloud.config.v1.UpdateDeploymentRequest
-	67,  // 87: illumio.cloud.config.v1.ConfigService.DeleteDeployment:input_type -> illumio.cloud.config.v1.DeleteDeploymentRequest
-	70,  // 88: illumio.cloud.config.v1.ConfigService.CreateIpList:input_type -> illumio.cloud.config.v1.CreateIpListRequest
-	72,  // 89: illumio.cloud.config.v1.ConfigService.ReadIpList:input_type -> illumio.cloud.config.v1.ReadIpListRequest
-	74,  // 90: illumio.cloud.config.v1.ConfigService.UpdateIpList:input_type -> illumio.cloud.config.v1.UpdateIpListRequest
-	76,  // 91: illumio.cloud.config.v1.ConfigService.DeleteIpList:input_type -> illumio.cloud.config.v1.DeleteIpListRequest
-	77,  // 92: illumio.cloud.config.v1.ConfigService.CreateK8SClusterOnboardingCredential:input_type -> illumio.cloud.config.v1.CreateK8SClusterOnboardingCredentialRequest
-	79,  // 93: illumio.cloud.config.v1.ConfigService.ReadK8SClusterOnboardingCredential:input_type -> illumio.cloud.config.v1.ReadK8SClusterOnboardingCredentialRequest
-	81,  // 94: illumio.cloud.config.v1.ConfigService.UpdateK8SClusterOnboardingCredential:input_type -> illumio.cloud.config.v1.UpdateK8SClusterOnboardingCredentialRequest
-	83,  // 95: illumio.cloud.config.v1.ConfigService.DeleteK8SClusterOnboardingCredential:input_type -> illumio.cloud.config.v1.DeleteK8SClusterOnboardingCredentialRequest
-	85,  // 96: illumio.cloud.config.v1.ConfigService.CreateTagToLabel:input_type -> illumio.cloud.config.v1.CreateTagToLabelRequest
-	87,  // 97: illumio.cloud.config.v1.ConfigService.ReadTagToLabel:input_type -> illumio.cloud.config.v1.ReadTagToLabelRequest
-	89,  // 98: illumio.cloud.config.v1.ConfigService.UpdateTagToLabel:input_type -> illumio.cloud.config.v1.UpdateTagToLabelRequest
-	91,  // 99: illumio.cloud.config.v1.ConfigService.DeleteTagToLabel:input_type -> illumio.cloud.config.v1.DeleteTagToLabelRequest
-	1,   // 100: illumio.cloud.config.v1.ConfigService.CreateApplication:output_type -> illumio.cloud.config.v1.CreateApplicationResponse
-	3,   // 101: illumio.cloud.config.v1.ConfigService.ReadApplication:output_type -> illumio.cloud.config.v1.ReadApplicationResponse
-	5,   // 102: illumio.cloud.config.v1.ConfigService.UpdateApplication:output_type -> illumio.cloud.config.v1.UpdateApplicationResponse
-	93,  // 103: illumio.cloud.config.v1.ConfigService.DeleteApplication:output_type -> google.protobuf.Empty
-	8,   // 104: illumio.cloud.config.v1.ConfigService.CreateApplicationAwsResources:output_type -> illumio.cloud.config.v1.CreateApplicationAwsResourcesResponse
-	10,  // 105: illumio.cloud.config.v1.ConfigService.ReadApplicationAwsResources:output_type -> illumio.cloud.config.v1.ReadApplicationAwsResourcesResponse
-	12,  // 106: illumio.cloud.config.v1.ConfigService.UpdateApplicationAwsResources:output_type -> illumio.cloud.config.v1.UpdateApplicationAwsResourcesResponse
-	93,  // 107: illumio.cloud.config.v1.ConfigService.DeleteApplicationAwsResources:output_type -> google.protobuf.Empty
-	15,  // 108: illumio.cloud.config.v1.ConfigService.CreateApplicationAzureResources:output_type -> illumio.cloud.config.v1.CreateApplicationAzureResourcesResponse
-	17,  // 109: illumio.cloud.config.v1.ConfigService.ReadApplicationAzureResources:output_type -> illumio.cloud.config.v1.ReadApplicationAzureResourcesResponse
-	19,  // 110: illumio.cloud.config.v1.ConfigService.UpdateApplicationAzureResources:output_type -> illumio.cloud.config.v1.UpdateApplicationAzureResourcesResponse
-	93,  // 111: illumio.cloud.config.v1.ConfigService.DeleteApplicationAzureResources:output_type -> google.protobuf.Empty
-	25,  // 112: illumio.cloud.config.v1.ConfigService.CreateApplicationPolicyRule:output_type -> illumio.cloud.config.v1.CreateApplicationPolicyRuleResponse
-	27,  // 113: illumio.cloud.config.v1.ConfigService.ReadApplicationPolicyRule:output_type -> illumio.cloud.config.v1.ReadApplicationPolicyRuleResponse
-	29,  // 114: illumio.cloud.config.v1.ConfigService.UpdateApplicationPolicyRule:output_type -> illumio.cloud.config.v1.UpdateApplicationPolicyRuleResponse
-	93,  // 115: illumio.cloud.config.v1.ConfigService.DeleteApplicationPolicyRule:output_type -> google.protobuf.Empty
-	32,  // 116: illumio.cloud.config.v1.ConfigService.CreateAwsAccount:output_type -> illumio.cloud.config.v1.CreateAwsAccountResponse
-	34,  // 117: illumio.cloud.config.v1.ConfigService.ReadAwsAccount:output_type -> illumio.cloud.config.v1.ReadAwsAccountResponse
-	36,  // 118: illumio.cloud.config.v1.ConfigService.UpdateAwsAccount:output_type -> illumio.cloud.config.v1.UpdateAwsAccountResponse
-	93,  // 119: illumio.cloud.config.v1.ConfigService.DeleteAwsAccount:output_type -> google.protobuf.Empty
-	39,  // 120: illumio.cloud.config.v1.ConfigService.CreateAwsFlowLogsS3Bucket:output_type -> illumio.cloud.config.v1.CreateAwsFlowLogsS3BucketResponse
-	41,  // 121: illumio.cloud.config.v1.ConfigService.ReadAwsFlowLogsS3Bucket:output_type -> illumio.cloud.config.v1.ReadAwsFlowLogsS3BucketResponse
-	43,  // 122: illumio.cloud.config.v1.ConfigService.UpdateAwsFlowLogsS3Bucket:output_type -> illumio.cloud.config.v1.UpdateAwsFlowLogsS3BucketResponse
-	93,  // 123: illumio.cloud.config.v1.ConfigService.DeleteAwsFlowLogsS3Bucket:output_type -> google.protobuf.Empty
-	46,  // 124: illumio.cloud.config.v1.ConfigService.CreateAzureFlowLogsStorageAccount:output_type -> illumio.cloud.config.v1.CreateAzureFlowLogsStorageAccountResponse
-	48,  // 125: illumio.cloud.config.v1.ConfigService.ReadAzureFlowLogsStorageAccount:output_type -> illumio.cloud.config.v1.ReadAzureFlowLogsStorageAccountResponse
-	50,  // 126: illumio.cloud.config.v1.ConfigService.UpdateAzureFlowLogsStorageAccount:output_type -> illumio.cloud.config.v1.UpdateAzureFlowLogsStorageAccountResponse
-	93,  // 127: illumio.cloud.config.v1.ConfigService.DeleteAzureFlowLogsStorageAccount:output_type -> google.protobuf.Empty
-	53,  // 128: illumio.cloud.config.v1.ConfigService.CreateAzureSubscription:output_type -> illumio.cloud.config.v1.CreateAzureSubscriptionResponse
-	55,  // 129: illumio.cloud.config.v1.ConfigService.ReadAzureSubscription:output_type -> illumio.cloud.config.v1.ReadAzureSubscriptionResponse
-	57,  // 130: illumio.cloud.config.v1.ConfigService.UpdateAzureSubscription:output_type -> illumio.cloud.config.v1.UpdateAzureSubscriptionResponse
-	93,  // 131: illumio.cloud.config.v1.ConfigService.DeleteAzureSubscription:output_type -> google.protobuf.Empty
-	62,  // 132: illumio.cloud.config.v1.ConfigService.CreateDeployment:output_type -> illumio.cloud.config.v1.CreateDeploymentResponse
-	64,  // 133: illumio.cloud.config.v1.ConfigService.ReadDeployment:output_type -> illumio.cloud.config.v1.ReadDeploymentResponse
-	66,  // 134: illumio.cloud.config.v1.ConfigService.UpdateDeployment:output_type -> illumio.cloud.config.v1.UpdateDeploymentResponse
-	93,  // 135: illumio.cloud.config.v1.ConfigService.DeleteDeployment:output_type -> google.protobuf.Empty
-	71,  // 136: illumio.cloud.config.v1.ConfigService.CreateIpList:output_type -> illumio.cloud.config.v1.CreateIpListResponse
-	73,  // 137: illumio.cloud.config.v1.ConfigService.ReadIpList:output_type -> illumio.cloud.config.v1.ReadIpListResponse
-	75,  // 138: illumio.cloud.config.v1.ConfigService.UpdateIpList:output_type -> illumio.cloud.config.v1.UpdateIpListResponse
-	93,  // 139: illumio.cloud.config.v1.ConfigService.DeleteIpList:output_type -> google.protobuf.Empty
-	78,  // 140: illumio.cloud.config.v1.ConfigService.CreateK8SClusterOnboardingCredential:output_type -> illumio.cloud.config.v1.CreateK8SClusterOnboardingCredentialResponse
-	80,  // 141: illumio.cloud.config.v1.ConfigService.ReadK8SClusterOnboardingCredential:output_type -> illumio.cloud.config.v1.ReadK8SClusterOnboardingCredentialResponse
-	82,  // 142: illumio.cloud.config.v1.ConfigService.UpdateK8SClusterOnboardingCredential:output_type -> illumio.cloud.config.v1.UpdateK8SClusterOnboardingCredentialResponse
-	93,  // 143: illumio.cloud.config.v1.ConfigService.DeleteK8SClusterOnboardingCredential:output_type -> google.protobuf.Empty
-	86,  // 144: illumio.cloud.config.v1.ConfigService.CreateTagToLabel:output_type -> illumio.cloud.config.v1.CreateTagToLabelResponse
-	88,  // 145: illumio.cloud.config.v1.ConfigService.ReadTagToLabel:output_type -> illumio.cloud.config.v1.ReadTagToLabelResponse
-	90,  // 146: illumio.cloud.config.v1.ConfigService.UpdateTagToLabel:output_type -> illumio.cloud.config.v1.UpdateTagToLabelResponse
-	93,  // 147: illumio.cloud.config.v1.ConfigService.DeleteTagToLabel:output_type -> google.protobuf.Empty
-	100, // [100:148] is the sub-list for method output_type
-	52,  // [52:100] is the sub-list for method input_type
-	52,  // [52:52] is the sub-list for extension type_name
-	52,  // [52:52] is the sub-list for extension extendee
-	0,   // [0:52] is the sub-list for field type_name
+	99,  // 45: illumio.cloud.config.v1.UpdateK8SClusterRequest.update_mask:type_name -> google.protobuf.FieldMask
+	99,  // 46: illumio.cloud.config.v1.UpdateK8SClusterOnboardingCredentialRequest.update_mask:type_name -> google.protobuf.FieldMask
+	91,  // 47: illumio.cloud.config.v1.CreateTagToLabelRequest.icon:type_name -> illumio.cloud.config.v1.TagToLabel_Icon
+	91,  // 48: illumio.cloud.config.v1.CreateTagToLabelResponse.icon:type_name -> illumio.cloud.config.v1.TagToLabel_Icon
+	91,  // 49: illumio.cloud.config.v1.ReadTagToLabelResponse.icon:type_name -> illumio.cloud.config.v1.TagToLabel_Icon
+	91,  // 50: illumio.cloud.config.v1.UpdateTagToLabelRequest.icon:type_name -> illumio.cloud.config.v1.TagToLabel_Icon
+	99,  // 51: illumio.cloud.config.v1.UpdateTagToLabelRequest.update_mask:type_name -> google.protobuf.FieldMask
+	91,  // 52: illumio.cloud.config.v1.UpdateTagToLabelResponse.icon:type_name -> illumio.cloud.config.v1.TagToLabel_Icon
+	0,   // 53: illumio.cloud.config.v1.ConfigService.CreateApplication:input_type -> illumio.cloud.config.v1.CreateApplicationRequest
+	2,   // 54: illumio.cloud.config.v1.ConfigService.ReadApplication:input_type -> illumio.cloud.config.v1.ReadApplicationRequest
+	4,   // 55: illumio.cloud.config.v1.ConfigService.UpdateApplication:input_type -> illumio.cloud.config.v1.UpdateApplicationRequest
+	6,   // 56: illumio.cloud.config.v1.ConfigService.DeleteApplication:input_type -> illumio.cloud.config.v1.DeleteApplicationRequest
+	7,   // 57: illumio.cloud.config.v1.ConfigService.CreateApplicationAwsResources:input_type -> illumio.cloud.config.v1.CreateApplicationAwsResourcesRequest
+	9,   // 58: illumio.cloud.config.v1.ConfigService.ReadApplicationAwsResources:input_type -> illumio.cloud.config.v1.ReadApplicationAwsResourcesRequest
+	11,  // 59: illumio.cloud.config.v1.ConfigService.UpdateApplicationAwsResources:input_type -> illumio.cloud.config.v1.UpdateApplicationAwsResourcesRequest
+	13,  // 60: illumio.cloud.config.v1.ConfigService.DeleteApplicationAwsResources:input_type -> illumio.cloud.config.v1.DeleteApplicationAwsResourcesRequest
+	14,  // 61: illumio.cloud.config.v1.ConfigService.CreateApplicationAzureResources:input_type -> illumio.cloud.config.v1.CreateApplicationAzureResourcesRequest
+	16,  // 62: illumio.cloud.config.v1.ConfigService.ReadApplicationAzureResources:input_type -> illumio.cloud.config.v1.ReadApplicationAzureResourcesRequest
+	18,  // 63: illumio.cloud.config.v1.ConfigService.UpdateApplicationAzureResources:input_type -> illumio.cloud.config.v1.UpdateApplicationAzureResourcesRequest
+	20,  // 64: illumio.cloud.config.v1.ConfigService.DeleteApplicationAzureResources:input_type -> illumio.cloud.config.v1.DeleteApplicationAzureResourcesRequest
+	24,  // 65: illumio.cloud.config.v1.ConfigService.CreateApplicationPolicyRule:input_type -> illumio.cloud.config.v1.CreateApplicationPolicyRuleRequest
+	26,  // 66: illumio.cloud.config.v1.ConfigService.ReadApplicationPolicyRule:input_type -> illumio.cloud.config.v1.ReadApplicationPolicyRuleRequest
+	28,  // 67: illumio.cloud.config.v1.ConfigService.UpdateApplicationPolicyRule:input_type -> illumio.cloud.config.v1.UpdateApplicationPolicyRuleRequest
+	30,  // 68: illumio.cloud.config.v1.ConfigService.DeleteApplicationPolicyRule:input_type -> illumio.cloud.config.v1.DeleteApplicationPolicyRuleRequest
+	31,  // 69: illumio.cloud.config.v1.ConfigService.CreateAwsAccount:input_type -> illumio.cloud.config.v1.CreateAwsAccountRequest
+	33,  // 70: illumio.cloud.config.v1.ConfigService.ReadAwsAccount:input_type -> illumio.cloud.config.v1.ReadAwsAccountRequest
+	35,  // 71: illumio.cloud.config.v1.ConfigService.UpdateAwsAccount:input_type -> illumio.cloud.config.v1.UpdateAwsAccountRequest
+	37,  // 72: illumio.cloud.config.v1.ConfigService.DeleteAwsAccount:input_type -> illumio.cloud.config.v1.DeleteAwsAccountRequest
+	38,  // 73: illumio.cloud.config.v1.ConfigService.CreateAwsFlowLogsS3Bucket:input_type -> illumio.cloud.config.v1.CreateAwsFlowLogsS3BucketRequest
+	40,  // 74: illumio.cloud.config.v1.ConfigService.ReadAwsFlowLogsS3Bucket:input_type -> illumio.cloud.config.v1.ReadAwsFlowLogsS3BucketRequest
+	42,  // 75: illumio.cloud.config.v1.ConfigService.UpdateAwsFlowLogsS3Bucket:input_type -> illumio.cloud.config.v1.UpdateAwsFlowLogsS3BucketRequest
+	44,  // 76: illumio.cloud.config.v1.ConfigService.DeleteAwsFlowLogsS3Bucket:input_type -> illumio.cloud.config.v1.DeleteAwsFlowLogsS3BucketRequest
+	45,  // 77: illumio.cloud.config.v1.ConfigService.CreateAzureFlowLogsStorageAccount:input_type -> illumio.cloud.config.v1.CreateAzureFlowLogsStorageAccountRequest
+	47,  // 78: illumio.cloud.config.v1.ConfigService.ReadAzureFlowLogsStorageAccount:input_type -> illumio.cloud.config.v1.ReadAzureFlowLogsStorageAccountRequest
+	49,  // 79: illumio.cloud.config.v1.ConfigService.UpdateAzureFlowLogsStorageAccount:input_type -> illumio.cloud.config.v1.UpdateAzureFlowLogsStorageAccountRequest
+	51,  // 80: illumio.cloud.config.v1.ConfigService.DeleteAzureFlowLogsStorageAccount:input_type -> illumio.cloud.config.v1.DeleteAzureFlowLogsStorageAccountRequest
+	52,  // 81: illumio.cloud.config.v1.ConfigService.CreateAzureSubscription:input_type -> illumio.cloud.config.v1.CreateAzureSubscriptionRequest
+	54,  // 82: illumio.cloud.config.v1.ConfigService.ReadAzureSubscription:input_type -> illumio.cloud.config.v1.ReadAzureSubscriptionRequest
+	56,  // 83: illumio.cloud.config.v1.ConfigService.UpdateAzureSubscription:input_type -> illumio.cloud.config.v1.UpdateAzureSubscriptionRequest
+	58,  // 84: illumio.cloud.config.v1.ConfigService.DeleteAzureSubscription:input_type -> illumio.cloud.config.v1.DeleteAzureSubscriptionRequest
+	61,  // 85: illumio.cloud.config.v1.ConfigService.CreateDeployment:input_type -> illumio.cloud.config.v1.CreateDeploymentRequest
+	63,  // 86: illumio.cloud.config.v1.ConfigService.ReadDeployment:input_type -> illumio.cloud.config.v1.ReadDeploymentRequest
+	65,  // 87: illumio.cloud.config.v1.ConfigService.UpdateDeployment:input_type -> illumio.cloud.config.v1.UpdateDeploymentRequest
+	67,  // 88: illumio.cloud.config.v1.ConfigService.DeleteDeployment:input_type -> illumio.cloud.config.v1.DeleteDeploymentRequest
+	70,  // 89: illumio.cloud.config.v1.ConfigService.CreateIpList:input_type -> illumio.cloud.config.v1.CreateIpListRequest
+	72,  // 90: illumio.cloud.config.v1.ConfigService.ReadIpList:input_type -> illumio.cloud.config.v1.ReadIpListRequest
+	74,  // 91: illumio.cloud.config.v1.ConfigService.UpdateIpList:input_type -> illumio.cloud.config.v1.UpdateIpListRequest
+	76,  // 92: illumio.cloud.config.v1.ConfigService.DeleteIpList:input_type -> illumio.cloud.config.v1.DeleteIpListRequest
+	77,  // 93: illumio.cloud.config.v1.ConfigService.CreateK8SCluster:input_type -> illumio.cloud.config.v1.CreateK8SClusterRequest
+	79,  // 94: illumio.cloud.config.v1.ConfigService.ReadK8SCluster:input_type -> illumio.cloud.config.v1.ReadK8SClusterRequest
+	81,  // 95: illumio.cloud.config.v1.ConfigService.UpdateK8SCluster:input_type -> illumio.cloud.config.v1.UpdateK8SClusterRequest
+	83,  // 96: illumio.cloud.config.v1.ConfigService.DeleteK8SCluster:input_type -> illumio.cloud.config.v1.DeleteK8SClusterRequest
+	84,  // 97: illumio.cloud.config.v1.ConfigService.CreateK8SClusterOnboardingCredential:input_type -> illumio.cloud.config.v1.CreateK8SClusterOnboardingCredentialRequest
+	86,  // 98: illumio.cloud.config.v1.ConfigService.ReadK8SClusterOnboardingCredential:input_type -> illumio.cloud.config.v1.ReadK8SClusterOnboardingCredentialRequest
+	88,  // 99: illumio.cloud.config.v1.ConfigService.UpdateK8SClusterOnboardingCredential:input_type -> illumio.cloud.config.v1.UpdateK8SClusterOnboardingCredentialRequest
+	90,  // 100: illumio.cloud.config.v1.ConfigService.DeleteK8SClusterOnboardingCredential:input_type -> illumio.cloud.config.v1.DeleteK8SClusterOnboardingCredentialRequest
+	92,  // 101: illumio.cloud.config.v1.ConfigService.CreateTagToLabel:input_type -> illumio.cloud.config.v1.CreateTagToLabelRequest
+	94,  // 102: illumio.cloud.config.v1.ConfigService.ReadTagToLabel:input_type -> illumio.cloud.config.v1.ReadTagToLabelRequest
+	96,  // 103: illumio.cloud.config.v1.ConfigService.UpdateTagToLabel:input_type -> illumio.cloud.config.v1.UpdateTagToLabelRequest
+	98,  // 104: illumio.cloud.config.v1.ConfigService.DeleteTagToLabel:input_type -> illumio.cloud.config.v1.DeleteTagToLabelRequest
+	1,   // 105: illumio.cloud.config.v1.ConfigService.CreateApplication:output_type -> illumio.cloud.config.v1.CreateApplicationResponse
+	3,   // 106: illumio.cloud.config.v1.ConfigService.ReadApplication:output_type -> illumio.cloud.config.v1.ReadApplicationResponse
+	5,   // 107: illumio.cloud.config.v1.ConfigService.UpdateApplication:output_type -> illumio.cloud.config.v1.UpdateApplicationResponse
+	100, // 108: illumio.cloud.config.v1.ConfigService.DeleteApplication:output_type -> google.protobuf.Empty
+	8,   // 109: illumio.cloud.config.v1.ConfigService.CreateApplicationAwsResources:output_type -> illumio.cloud.config.v1.CreateApplicationAwsResourcesResponse
+	10,  // 110: illumio.cloud.config.v1.ConfigService.ReadApplicationAwsResources:output_type -> illumio.cloud.config.v1.ReadApplicationAwsResourcesResponse
+	12,  // 111: illumio.cloud.config.v1.ConfigService.UpdateApplicationAwsResources:output_type -> illumio.cloud.config.v1.UpdateApplicationAwsResourcesResponse
+	100, // 112: illumio.cloud.config.v1.ConfigService.DeleteApplicationAwsResources:output_type -> google.protobuf.Empty
+	15,  // 113: illumio.cloud.config.v1.ConfigService.CreateApplicationAzureResources:output_type -> illumio.cloud.config.v1.CreateApplicationAzureResourcesResponse
+	17,  // 114: illumio.cloud.config.v1.ConfigService.ReadApplicationAzureResources:output_type -> illumio.cloud.config.v1.ReadApplicationAzureResourcesResponse
+	19,  // 115: illumio.cloud.config.v1.ConfigService.UpdateApplicationAzureResources:output_type -> illumio.cloud.config.v1.UpdateApplicationAzureResourcesResponse
+	100, // 116: illumio.cloud.config.v1.ConfigService.DeleteApplicationAzureResources:output_type -> google.protobuf.Empty
+	25,  // 117: illumio.cloud.config.v1.ConfigService.CreateApplicationPolicyRule:output_type -> illumio.cloud.config.v1.CreateApplicationPolicyRuleResponse
+	27,  // 118: illumio.cloud.config.v1.ConfigService.ReadApplicationPolicyRule:output_type -> illumio.cloud.config.v1.ReadApplicationPolicyRuleResponse
+	29,  // 119: illumio.cloud.config.v1.ConfigService.UpdateApplicationPolicyRule:output_type -> illumio.cloud.config.v1.UpdateApplicationPolicyRuleResponse
+	100, // 120: illumio.cloud.config.v1.ConfigService.DeleteApplicationPolicyRule:output_type -> google.protobuf.Empty
+	32,  // 121: illumio.cloud.config.v1.ConfigService.CreateAwsAccount:output_type -> illumio.cloud.config.v1.CreateAwsAccountResponse
+	34,  // 122: illumio.cloud.config.v1.ConfigService.ReadAwsAccount:output_type -> illumio.cloud.config.v1.ReadAwsAccountResponse
+	36,  // 123: illumio.cloud.config.v1.ConfigService.UpdateAwsAccount:output_type -> illumio.cloud.config.v1.UpdateAwsAccountResponse
+	100, // 124: illumio.cloud.config.v1.ConfigService.DeleteAwsAccount:output_type -> google.protobuf.Empty
+	39,  // 125: illumio.cloud.config.v1.ConfigService.CreateAwsFlowLogsS3Bucket:output_type -> illumio.cloud.config.v1.CreateAwsFlowLogsS3BucketResponse
+	41,  // 126: illumio.cloud.config.v1.ConfigService.ReadAwsFlowLogsS3Bucket:output_type -> illumio.cloud.config.v1.ReadAwsFlowLogsS3BucketResponse
+	43,  // 127: illumio.cloud.config.v1.ConfigService.UpdateAwsFlowLogsS3Bucket:output_type -> illumio.cloud.config.v1.UpdateAwsFlowLogsS3BucketResponse
+	100, // 128: illumio.cloud.config.v1.ConfigService.DeleteAwsFlowLogsS3Bucket:output_type -> google.protobuf.Empty
+	46,  // 129: illumio.cloud.config.v1.ConfigService.CreateAzureFlowLogsStorageAccount:output_type -> illumio.cloud.config.v1.CreateAzureFlowLogsStorageAccountResponse
+	48,  // 130: illumio.cloud.config.v1.ConfigService.ReadAzureFlowLogsStorageAccount:output_type -> illumio.cloud.config.v1.ReadAzureFlowLogsStorageAccountResponse
+	50,  // 131: illumio.cloud.config.v1.ConfigService.UpdateAzureFlowLogsStorageAccount:output_type -> illumio.cloud.config.v1.UpdateAzureFlowLogsStorageAccountResponse
+	100, // 132: illumio.cloud.config.v1.ConfigService.DeleteAzureFlowLogsStorageAccount:output_type -> google.protobuf.Empty
+	53,  // 133: illumio.cloud.config.v1.ConfigService.CreateAzureSubscription:output_type -> illumio.cloud.config.v1.CreateAzureSubscriptionResponse
+	55,  // 134: illumio.cloud.config.v1.ConfigService.ReadAzureSubscription:output_type -> illumio.cloud.config.v1.ReadAzureSubscriptionResponse
+	57,  // 135: illumio.cloud.config.v1.ConfigService.UpdateAzureSubscription:output_type -> illumio.cloud.config.v1.UpdateAzureSubscriptionResponse
+	100, // 136: illumio.cloud.config.v1.ConfigService.DeleteAzureSubscription:output_type -> google.protobuf.Empty
+	62,  // 137: illumio.cloud.config.v1.ConfigService.CreateDeployment:output_type -> illumio.cloud.config.v1.CreateDeploymentResponse
+	64,  // 138: illumio.cloud.config.v1.ConfigService.ReadDeployment:output_type -> illumio.cloud.config.v1.ReadDeploymentResponse
+	66,  // 139: illumio.cloud.config.v1.ConfigService.UpdateDeployment:output_type -> illumio.cloud.config.v1.UpdateDeploymentResponse
+	100, // 140: illumio.cloud.config.v1.ConfigService.DeleteDeployment:output_type -> google.protobuf.Empty
+	71,  // 141: illumio.cloud.config.v1.ConfigService.CreateIpList:output_type -> illumio.cloud.config.v1.CreateIpListResponse
+	73,  // 142: illumio.cloud.config.v1.ConfigService.ReadIpList:output_type -> illumio.cloud.config.v1.ReadIpListResponse
+	75,  // 143: illumio.cloud.config.v1.ConfigService.UpdateIpList:output_type -> illumio.cloud.config.v1.UpdateIpListResponse
+	100, // 144: illumio.cloud.config.v1.ConfigService.DeleteIpList:output_type -> google.protobuf.Empty
+	78,  // 145: illumio.cloud.config.v1.ConfigService.CreateK8SCluster:output_type -> illumio.cloud.config.v1.CreateK8SClusterResponse
+	80,  // 146: illumio.cloud.config.v1.ConfigService.ReadK8SCluster:output_type -> illumio.cloud.config.v1.ReadK8SClusterResponse
+	82,  // 147: illumio.cloud.config.v1.ConfigService.UpdateK8SCluster:output_type -> illumio.cloud.config.v1.UpdateK8SClusterResponse
+	100, // 148: illumio.cloud.config.v1.ConfigService.DeleteK8SCluster:output_type -> google.protobuf.Empty
+	85,  // 149: illumio.cloud.config.v1.ConfigService.CreateK8SClusterOnboardingCredential:output_type -> illumio.cloud.config.v1.CreateK8SClusterOnboardingCredentialResponse
+	87,  // 150: illumio.cloud.config.v1.ConfigService.ReadK8SClusterOnboardingCredential:output_type -> illumio.cloud.config.v1.ReadK8SClusterOnboardingCredentialResponse
+	89,  // 151: illumio.cloud.config.v1.ConfigService.UpdateK8SClusterOnboardingCredential:output_type -> illumio.cloud.config.v1.UpdateK8SClusterOnboardingCredentialResponse
+	100, // 152: illumio.cloud.config.v1.ConfigService.DeleteK8SClusterOnboardingCredential:output_type -> google.protobuf.Empty
+	93,  // 153: illumio.cloud.config.v1.ConfigService.CreateTagToLabel:output_type -> illumio.cloud.config.v1.CreateTagToLabelResponse
+	95,  // 154: illumio.cloud.config.v1.ConfigService.ReadTagToLabel:output_type -> illumio.cloud.config.v1.ReadTagToLabelResponse
+	97,  // 155: illumio.cloud.config.v1.ConfigService.UpdateTagToLabel:output_type -> illumio.cloud.config.v1.UpdateTagToLabelResponse
+	100, // 156: illumio.cloud.config.v1.ConfigService.DeleteTagToLabel:output_type -> google.protobuf.Empty
+	105, // [105:157] is the sub-list for method output_type
+	53,  // [53:105] is the sub-list for method input_type
+	53,  // [53:53] is the sub-list for extension type_name
+	53,  // [53:53] is the sub-list for extension extendee
+	0,   // [0:53] is the sub-list for field type_name
 }
 
 func init() { file_illumio_cloud_config_v1_config_proto_init() }
@@ -8852,18 +9267,18 @@ func file_illumio_cloud_config_v1_config_proto_init() {
 	file_illumio_cloud_config_v1_config_proto_msgTypes[73].OneofWrappers = []any{}
 	file_illumio_cloud_config_v1_config_proto_msgTypes[74].OneofWrappers = []any{}
 	file_illumio_cloud_config_v1_config_proto_msgTypes[75].OneofWrappers = []any{}
-	file_illumio_cloud_config_v1_config_proto_msgTypes[77].OneofWrappers = []any{}
-	file_illumio_cloud_config_v1_config_proto_msgTypes[78].OneofWrappers = []any{}
-	file_illumio_cloud_config_v1_config_proto_msgTypes[80].OneofWrappers = []any{}
-	file_illumio_cloud_config_v1_config_proto_msgTypes[81].OneofWrappers = []any{}
-	file_illumio_cloud_config_v1_config_proto_msgTypes[82].OneofWrappers = []any{}
+	file_illumio_cloud_config_v1_config_proto_msgTypes[84].OneofWrappers = []any{}
+	file_illumio_cloud_config_v1_config_proto_msgTypes[85].OneofWrappers = []any{}
+	file_illumio_cloud_config_v1_config_proto_msgTypes[87].OneofWrappers = []any{}
+	file_illumio_cloud_config_v1_config_proto_msgTypes[88].OneofWrappers = []any{}
+	file_illumio_cloud_config_v1_config_proto_msgTypes[89].OneofWrappers = []any{}
 	type x struct{}
 	out := protoimpl.TypeBuilder{
 		File: protoimpl.DescBuilder{
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: unsafe.Slice(unsafe.StringData(file_illumio_cloud_config_v1_config_proto_rawDesc), len(file_illumio_cloud_config_v1_config_proto_rawDesc)),
 			NumEnums:      0,
-			NumMessages:   92,
+			NumMessages:   99,
 			NumExtensions: 0,
 			NumServices:   1,
 		},

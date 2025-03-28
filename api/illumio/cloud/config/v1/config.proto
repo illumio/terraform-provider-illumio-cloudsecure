@@ -46,6 +46,10 @@ service ConfigService {
   rpc ReadIpList(ReadIpListRequest) returns (ReadIpListResponse);
   rpc UpdateIpList(UpdateIpListRequest) returns (UpdateIpListResponse);
   rpc DeleteIpList(DeleteIpListRequest) returns (google.protobuf.Empty);
+  rpc CreateK8SCluster(CreateK8SClusterRequest) returns (CreateK8SClusterResponse);
+  rpc ReadK8SCluster(ReadK8SClusterRequest) returns (ReadK8SClusterResponse);
+  rpc UpdateK8SCluster(UpdateK8SClusterRequest) returns (UpdateK8SClusterResponse);
+  rpc DeleteK8SCluster(DeleteK8SClusterRequest) returns (google.protobuf.Empty);
   rpc CreateK8SClusterOnboardingCredential(CreateK8SClusterOnboardingCredentialRequest) returns (CreateK8SClusterOnboardingCredentialResponse);
   rpc ReadK8SClusterOnboardingCredential(ReadK8SClusterOnboardingCredentialRequest) returns (ReadK8SClusterOnboardingCredentialResponse);
   rpc UpdateK8SClusterOnboardingCredential(UpdateK8SClusterOnboardingCredentialRequest) returns (UpdateK8SClusterOnboardingCredentialResponse);
@@ -696,6 +700,35 @@ message UpdateIpListResponse {
   string name = 4;
 }
 message DeleteIpListRequest {
+  string id = 1;
+}
+message CreateK8SClusterRequest {
+  string illumio_region = 4;
+}
+message CreateK8SClusterResponse {
+  string id = 1;
+  string client_id = 2;
+  string client_secret = 3;
+  string illumio_region = 4;
+}
+message ReadK8SClusterRequest {
+  string id = 1;
+}
+message ReadK8SClusterResponse {
+  string id = 1;
+  string client_id = 2;
+  string illumio_region = 4;
+}
+message UpdateK8SClusterRequest {
+  string id = 1;
+  google.protobuf.FieldMask update_mask = 5;
+}
+message UpdateK8SClusterResponse {
+  string id = 1;
+  string client_id = 2;
+  string illumio_region = 4;
+}
+message DeleteK8SClusterRequest {
   string id = 1;
 }
 message CreateK8SClusterOnboardingCredentialRequest {
