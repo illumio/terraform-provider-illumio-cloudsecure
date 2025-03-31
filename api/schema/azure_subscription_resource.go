@@ -36,6 +36,7 @@ var (
 					StringAttribute: resource_schema.StringAttribute{
 						Description: "The client_secret of the Azure Active Directory App Service Principal used by CloudSecure to manage this subscription.",
 						Required:    true,
+						Sensitive:   true,
 						PlanModifiers: []planmodifier.String{
 							stringplanmodifier.RequiresReplace(),
 						},
