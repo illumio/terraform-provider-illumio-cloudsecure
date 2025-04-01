@@ -1,6 +1,7 @@
 module github.com/illumio/terraform-provider-illumio-cloudsecure
 
 go 1.23.4
+toolchain go1.24.1
 
 require (
 	github.com/bufbuild/buf v1.51.0
@@ -14,7 +15,7 @@ require (
 	go.uber.org/zap v1.27.0
 	golang.org/x/exp v0.0.0-20250228200357-dead58393ab7
 	golang.org/x/oauth2 v0.28.0
-	google.golang.org/grpc v1.71.0
+	google.golang.org/grpc v1.71.1
 	google.golang.org/protobuf v1.36.6
 )
 
