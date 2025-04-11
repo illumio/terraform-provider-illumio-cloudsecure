@@ -20,5 +20,8 @@ jobs:
     container:
       image: semgrep/semgrep
     steps:
-      - uses: actions/checkout@v4
-      - run: semgrep ci
+      - name: Check out repo
+        uses: actions/checkout@v4
+
+      - name: Run Semgrep
+        run: semgrep ci

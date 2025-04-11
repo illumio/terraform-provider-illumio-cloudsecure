@@ -19,13 +19,15 @@ jobs:
     name: golangci-lint
     runs-on: ubuntu-latest
     steps:
-      - name: Check out code
+      - name: Check out repo
         uses: actions/checkout@v4
+
       - name: Set up go
         uses: actions/setup-go@v5
         with:
           go-version-file: "go.mod"
           cache: true
+
       - name: Lint Golang
         uses: golangci/golangci-lint-action@v7
         with:
