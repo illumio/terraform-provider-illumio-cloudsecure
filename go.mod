@@ -1,6 +1,6 @@
 module github.com/illumio/terraform-provider-illumio-cloudsecure
 
-go 1.23.4
+go 1.24.1
 
 require (
 	github.com/bufbuild/buf v1.51.0
