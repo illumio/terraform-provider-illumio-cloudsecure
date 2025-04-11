@@ -58,10 +58,11 @@ var (
 					},
 				},
 				"log_level": resource_schema.StringAttribute{
-					Optional: true,
 					MarkdownDescription: "Verbosity of the logs produced by the CloudSecure k8s operator. " +
 						"Must be one of: `Debug`, `Info`, `Warn`, or `Error`.",
-					Default: stringdefault.StaticString("Info"),
+					Optional: true,
+					Computed: true,
+					Default:  stringdefault.StaticString("Info"),
 					Validators: []validator.String{
 						stringvalidator.OneOf("Debug", "Info", "Warn", "Error"),
 					},

@@ -40,6 +40,8 @@ type FakeConfigServer struct {
 	DeploymentMutex                     sync.RWMutex
 	IpListMap                           map[string]*IpList
 	IpListMutex                         sync.RWMutex
+	K8SClusterMap                       map[string]*K8SCluster
+	K8SClusterMutex                     sync.RWMutex
 	K8SClusterOnboardingCredentialMap   map[string]*K8SClusterOnboardingCredential
 	K8SClusterOnboardingCredentialMutex sync.RWMutex
 	TagToLabelMap                       map[string]*TagToLabel
@@ -62,6 +64,7 @@ func NewFakeConfigServer(logger *zap.Logger) configv1.ConfigServiceServer {
 		AzureSubscriptionMap:              make(map[string]*AzureSubscription),
 		DeploymentMap:                     make(map[string]*Deployment),
 		IpListMap:                         make(map[string]*IpList),
+		K8SClusterMap:                     make(map[string]*K8SCluster),
 		K8SClusterOnboardingCredentialMap: make(map[string]*K8SClusterOnboardingCredential),
 		TagToLabelMap:                     make(map[string]*TagToLabel),
 	}
@@ -187,6 +190,14 @@ type IpList struct {
 	IpAddresses []*configv1.IpList_IpAddresses
 	IpRanges    []*configv1.IpList_IpRanges
 	Name        string
+}
+
+type K8SCluster struct {
+	Id            string
+	ClientId      string
+	ClientSecret  string
+	IllumioRegion string
+	LogLevel      string
 }
 
 type K8SClusterOnboardingCredential struct {
@@ -1768,6 +1779,131 @@ func (s *FakeConfigServer) DeleteIpList(ctx context.Context, req *configv1.Delet
 	s.Logger.Info("deleted resource",
 		zap.String("type", "ip_list"),
 		zap.String("method", "DeleteIpList"),
+		zap.String("id", id),
+	)
+	return &emptypb.Empty{}, nil
+}
+func (s *FakeConfigServer) CreateK8SCluster(ctx context.Context, req *configv1.CreateK8SClusterRequest) (*configv1.CreateK8SClusterResponse, error) {
+	id := uuid.New().String()
+	model := &K8SCluster{
+		Id:            id,
+		IllumioRegion: req.IllumioRegion,
+		LogLevel:      req.LogLevel,
+	}
+	resp := &configv1.CreateK8SClusterResponse{
+		Id:            id,
+		ClientId:      model.ClientId,
+		ClientSecret:  model.ClientSecret,
+		IllumioRegion: model.IllumioRegion,
+		LogLevel:      model.LogLevel,
+	}
+	s.K8SClusterMutex.Lock()
+	s.K8SClusterMap[id] = model
+	s.K8SClusterMutex.Unlock()
+	s.Logger.Info("created resource",
+		zap.String("type", "k8s_cluster"),
+		zap.String("method", "CreateK8SCluster"),
+		zap.String("id", id),
+	)
+	return resp, nil
+}
+
+func (s *FakeConfigServer) ReadK8SCluster(ctx context.Context, req *configv1.ReadK8SClusterRequest) (*configv1.ReadK8SClusterResponse, error) {
+	id := req.Id
+	s.K8SClusterMutex.RLock()
+	model, found := s.K8SClusterMap[id]
+	if !found {
+		s.K8SClusterMutex.RUnlock()
+		s.Logger.Error("attempted to read resource with unknown id",
+			zap.String("type", "k8s_cluster"),
+			zap.String("method", "ReadK8SCluster"),
+			zap.String("id", id),
+		)
+		return nil, status.Errorf(codes.NotFound, "no k8s_cluster found with id %s", id)
+	}
+	resp := &configv1.ReadK8SClusterResponse{
+		Id:            id,
+		ClientId:      model.ClientId,
+		IllumioRegion: model.IllumioRegion,
+		LogLevel:      model.LogLevel,
+	}
+	s.K8SClusterMutex.RUnlock()
+	s.Logger.Info("read resource",
+		zap.String("type", "k8s_cluster"),
+		zap.String("method", "ReadK8SCluster"),
+		zap.String("id", id),
+	)
+	return resp, nil
+}
+
+func (s *FakeConfigServer) UpdateK8SCluster(ctx context.Context, req *configv1.UpdateK8SClusterRequest) (*configv1.UpdateK8SClusterResponse, error) {
+	id := req.Id
+	s.K8SClusterMutex.Lock()
+	model, found := s.K8SClusterMap[id]
+	if !found {
+		s.K8SClusterMutex.Unlock()
+		s.Logger.Error("attempted to update resource with unknown id",
+			zap.String("type", "k8s_cluster"),
+			zap.String("method", "UpdateK8SCluster"),
+			zap.String("id", id),
+		)
+		return nil, status.Errorf(codes.NotFound, "no k8s_cluster found with id %s", id)
+	}
+	updateMask := req.UpdateMask
+	var updateMaskPaths []string
+	if updateMask != nil {
+		updateMaskPaths = updateMask.Paths
+	}
+	for _, path := range updateMaskPaths {
+		switch path {
+		case "log_level":
+			model.LogLevel = req.LogLevel
+		default:
+			s.AwsAccountMutex.Unlock()
+			s.Logger.Error("attempted to update resource using invalid update_mask path",
+				zap.String("type", "k8s_cluster"),
+				zap.String("method", "UpdateK8SCluster"),
+				zap.String("id", id),
+				zap.Strings("updateMaskPaths", updateMaskPaths),
+				zap.String("invalidUpdateMaskPath", path),
+			)
+			return nil, status.Errorf(codes.InvalidArgument, "invalid path in update_mask for k8s_cluster: %s", path)
+		}
+	}
+	resp := &configv1.UpdateK8SClusterResponse{
+		Id:            id,
+		ClientId:      model.ClientId,
+		IllumioRegion: model.IllumioRegion,
+		LogLevel:      model.LogLevel,
+	}
+	s.K8SClusterMutex.Unlock()
+	s.Logger.Info("updated resource",
+		zap.String("type", "k8s_cluster"),
+		zap.String("method", "UpdateK8SCluster"),
+		zap.String("id", id),
+		zap.Strings("updateMaskPaths", updateMaskPaths),
+	)
+	return resp, nil
+}
+
+func (s *FakeConfigServer) DeleteK8SCluster(ctx context.Context, req *configv1.DeleteK8SClusterRequest) (*emptypb.Empty, error) {
+	id := req.Id
+	s.K8SClusterMutex.Lock()
+	_, found := s.K8SClusterMap[id]
+	if !found {
+		s.K8SClusterMutex.Unlock()
+		s.Logger.Error("attempted to delete resource with unknown id",
+			zap.String("type", "k8s_cluster"),
+			zap.String("method", "DeleteK8SCluster"),
+			zap.String("id", id),
+		)
+		return nil, status.Errorf(codes.NotFound, "no k8s_cluster found with id %s", id)
+	}
+	delete(s.K8SClusterMap, id)
+	s.K8SClusterMutex.Unlock()
+	s.Logger.Info("deleted resource",
+		zap.String("type", "k8s_cluster"),
+		zap.String("method", "DeleteK8SCluster"),
 		zap.String("id", id),
 	)
 	return &emptypb.Empty{}, nil

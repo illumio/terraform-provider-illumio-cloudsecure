@@ -58,6 +58,8 @@ func (p *Provider) Resources(ctx context.Context) []func() resource.Resource {
 			resp = append(resp, func() resource.Resource { return NewDeploymentResource(r.Schema) })
 		case "ip_list":
 			resp = append(resp, func() resource.Resource { return NewIpListResource(r.Schema) })
+		case "k8s_cluster":
+			resp = append(resp, func() resource.Resource { return NewK8SClusterResource(r.Schema) })
 		case "k8s_cluster_onboarding_credential":
 			resp = append(resp, func() resource.Resource { return NewK8SClusterOnboardingCredentialResource(r.Schema) })
 		case "tag_to_label":
@@ -2013,6 +2015,200 @@ func (r *IpListResource) ImportState(ctx context.Context, req resource.ImportSta
 	// TODO
 }
 
+// K8SClusterResource implements the k8s_cluster resource.
+type K8SClusterResource struct {
+	// schema is the schema of the k8s_cluster resource.
+	schema resource_schema.Schema
+
+	// providerData is the provider configuration.
+	config ProviderData
+}
+
+var _ resource.ResourceWithConfigure = &K8SClusterResource{}
+var _ resource.ResourceWithImportState = &K8SClusterResource{}
+
+// NewK8SClusterResource returns a new k8s_cluster resource.
+func NewK8SClusterResource(schema resource_schema.Schema) resource.Resource {
+	return &K8SClusterResource{
+		schema: schema,
+	}
+}
+
+func (r *K8SClusterResource) Metadata(ctx context.Context, req resource.MetadataRequest, resp *resource.MetadataResponse) {
+	resp.TypeName = req.ProviderTypeName + "_k8s_cluster"
+}
+
+func (r *K8SClusterResource) Schema(ctx context.Context, req resource.SchemaRequest, resp *resource.SchemaResponse) {
+	resp.Schema = r.schema
+}
+
+func (r *K8SClusterResource) Configure(ctx context.Context, req resource.ConfigureRequest, resp *resource.ConfigureResponse) {
+	if req.ProviderData == nil {
+		return
+	}
+
+	providerData, ok := req.ProviderData.(ProviderData)
+	if !ok {
+		resp.Diagnostics.AddError(
+			"Unexpected Resource Configure Type",
+			fmt.Sprintf("Expected ProviderData, got: %T. Please report this issue to the provider developers.", req.ProviderData),
+		)
+
+		return
+	}
+
+	r.config = providerData
+}
+
+func (r *K8SClusterResource) Create(ctx context.Context, req resource.CreateRequest, resp *resource.CreateResponse) {
+	var data K8SClusterResourceModel
+
+	resp.Diagnostics.Append(req.Plan.Get(ctx, &data)...)
+	if resp.Diagnostics.HasError() {
+		return
+	}
+
+	protoReq, diagReq := NewCreateK8SClusterRequest(ctx, &data)
+	resp.Diagnostics.Append(diagReq...)
+	if resp.Diagnostics.HasError() {
+		return
+	}
+
+	tflog.Trace(ctx, "creating a resource", map[string]any{"type": "k8s_cluster"})
+
+	rpcCtx, rpcCancel := context.WithTimeout(ctx, r.config.RequestTimeout())
+	protoResp, err := r.config.Client().CreateK8SCluster(rpcCtx, protoReq)
+	rpcCancel()
+	if err != nil {
+		resp.Diagnostics.AddError("Config API Error", fmt.Sprintf("Unable to create k8s_cluster, got error: %s", err))
+		return
+	}
+
+	CopyCreateK8SClusterResponse(&data, protoResp)
+
+	tflog.Trace(ctx, "created a resource", map[string]any{"type": "k8s_cluster", "id": protoResp.Id})
+
+	resp.Diagnostics.Append(resp.State.Set(ctx, &data)...)
+}
+
+func (r *K8SClusterResource) Read(ctx context.Context, req resource.ReadRequest, resp *resource.ReadResponse) {
+	var data K8SClusterResourceModel
+
+	resp.Diagnostics.Append(req.State.Get(ctx, &data)...)
+	if resp.Diagnostics.HasError() {
+		return
+	}
+
+	protoReq, diagsReq := NewReadK8SClusterRequest(ctx, &data)
+	resp.Diagnostics.Append(diagsReq...)
+	if resp.Diagnostics.HasError() {
+		return
+	}
+
+	tflog.Trace(ctx, "reading a resource", map[string]any{"type": "k8s_cluster", "id": protoReq.Id})
+
+	rpcCtx, rpcCancel := context.WithTimeout(ctx, r.config.RequestTimeout())
+	protoResp, err := r.config.Client().ReadK8SCluster(rpcCtx, protoReq)
+	rpcCancel()
+	if err != nil {
+		switch status.Code(err) {
+		case codes.NotFound:
+			resp.Diagnostics.AddWarning("Resource Not Found", fmt.Sprintf("No k8s_cluster found with id %s", protoReq.Id))
+			resp.State.RemoveResource(ctx)
+			return
+		default:
+			resp.Diagnostics.AddError("Config API Error", fmt.Sprintf("Unable to read k8s_cluster, got error: %s", err))
+			return
+		}
+	}
+
+	CopyReadK8SClusterResponse(&data, protoResp)
+
+	tflog.Trace(ctx, "read a resource", map[string]any{"type": "k8s_cluster", "id": protoResp.Id})
+
+	resp.Diagnostics.Append(resp.State.Set(ctx, &data)...)
+}
+
+func (r *K8SClusterResource) Update(ctx context.Context, req resource.UpdateRequest, resp *resource.UpdateResponse) {
+	var beforeData K8SClusterResourceModel
+	var afterData K8SClusterResourceModel
+
+	resp.Diagnostics.Append(req.State.Get(ctx, &beforeData)...)
+	if resp.Diagnostics.HasError() {
+		return
+	}
+
+	resp.Diagnostics.Append(req.Plan.Get(ctx, &afterData)...)
+	if resp.Diagnostics.HasError() {
+		return
+	}
+
+	protoReq, diags := NewUpdateK8SClusterRequest(ctx, &beforeData, &afterData)
+	resp.Diagnostics.Append(diags...)
+	if resp.Diagnostics.HasError() {
+		return
+	}
+
+	tflog.Trace(ctx, "updating a resource", map[string]any{"type": "k8s_cluster", "id": protoReq.Id, "update_mask": protoReq.UpdateMask.Paths})
+
+	rpcCtx, rpcCancel := context.WithTimeout(ctx, r.config.RequestTimeout())
+	protoResp, err := r.config.Client().UpdateK8SCluster(rpcCtx, protoReq)
+	rpcCancel()
+	if err != nil {
+		switch status.Code(err) {
+		case codes.NotFound:
+			resp.Diagnostics.AddError("Resource Not Found", fmt.Sprintf("No k8s_cluster found with id %s", protoReq.Id))
+			resp.State.RemoveResource(ctx)
+			return
+		default:
+			resp.Diagnostics.AddError("Config API Error", fmt.Sprintf("Unable to update k8s_cluster, got error: %s", err))
+			return
+		}
+	}
+
+	CopyUpdateK8SClusterResponse(&afterData, protoResp)
+
+	tflog.Trace(ctx, "updated a resource", map[string]any{"type": "k8s_cluster", "id": protoResp.Id})
+
+	resp.Diagnostics.Append(resp.State.Set(ctx, &afterData)...)
+}
+
+func (r *K8SClusterResource) Delete(ctx context.Context, req resource.DeleteRequest, resp *resource.DeleteResponse) {
+	var data K8SClusterResourceModel
+
+	resp.Diagnostics.Append(req.State.Get(ctx, &data)...)
+	if resp.Diagnostics.HasError() {
+		return
+	}
+
+	protoReq, diags := NewDeleteK8SClusterRequest(ctx, &data)
+	resp.Diagnostics.Append(diags...)
+	if resp.Diagnostics.HasError() {
+		return
+	}
+
+	tflog.Trace(ctx, "deleting a resource", map[string]any{"type": "k8s_cluster", "id": protoReq.Id})
+
+	rpcCtx, rpcCancel := context.WithTimeout(ctx, r.config.RequestTimeout())
+	_, err := r.config.Client().DeleteK8SCluster(rpcCtx, protoReq)
+	rpcCancel()
+	if err != nil {
+		switch status.Code(err) {
+		case codes.NotFound:
+			tflog.Trace(ctx, "resource was already deleted", map[string]any{"type": "k8s_cluster", "id": protoReq.Id})
+		default:
+			resp.Diagnostics.AddError("Config API Error", fmt.Sprintf("Unable to delete k8s_cluster, got error: %s", err))
+			return
+		}
+	}
+
+	tflog.Trace(ctx, "deleted a resource", map[string]any{"type": "k8s_cluster", "id": protoReq.Id})
+}
+
+func (r *K8SClusterResource) ImportState(ctx context.Context, req resource.ImportStateRequest, resp *resource.ImportStateResponse) {
+	// TODO
+}
+
 // K8SClusterOnboardingCredentialResource implements the k8s_cluster_onboarding_credential resource.
 type K8SClusterOnboardingCredentialResource struct {
 	// schema is the schema of the k8s_cluster_onboarding_credential resource.
@@ -2521,6 +2717,14 @@ type IpListResourceModel struct {
 	IpAddresses types.List   `tfsdk:"ip_addresses"`
 	IpRanges    types.List   `tfsdk:"ip_ranges"`
 	Name        types.String `tfsdk:"name"`
+}
+
+type K8SClusterResourceModel struct {
+	Id            types.String `tfsdk:"id"`
+	ClientId      types.String `tfsdk:"client_id"`
+	ClientSecret  types.String `tfsdk:"client_secret"`
+	IllumioRegion types.String `tfsdk:"illumio_region"`
+	LogLevel      types.String `tfsdk:"log_level"`
 }
 
 type K8SClusterOnboardingCredentialResourceModel struct {
@@ -3976,6 +4180,48 @@ func NewDeleteIpListRequest(ctx context.Context, data *IpListResourceModel) (*co
 	return proto, diags
 }
 
+func NewCreateK8SClusterRequest(ctx context.Context, data *K8SClusterResourceModel) (*configv1.CreateK8SClusterRequest, diag.Diagnostics) {
+	var diags diag.Diagnostics
+	proto := &configv1.CreateK8SClusterRequest{}
+	if !data.IllumioRegion.IsUnknown() && !data.IllumioRegion.IsNull() {
+		var dataValue attr.Value = data.IllumioRegion
+		var protoValue string
+		protoValue = dataValue.(types.String).ValueString()
+		proto.IllumioRegion = protoValue
+	}
+	if !data.LogLevel.IsUnknown() && !data.LogLevel.IsNull() {
+		var dataValue attr.Value = data.LogLevel
+		var protoValue string
+		protoValue = dataValue.(types.String).ValueString()
+		proto.LogLevel = protoValue
+	}
+	return proto, diags
+}
+
+func NewReadK8SClusterRequest(ctx context.Context, data *K8SClusterResourceModel) (*configv1.ReadK8SClusterRequest, diag.Diagnostics) {
+	var diags diag.Diagnostics
+	proto := &configv1.ReadK8SClusterRequest{}
+	if !data.Id.IsUnknown() && !data.Id.IsNull() {
+		var dataValue attr.Value = data.Id
+		var protoValue string
+		protoValue = dataValue.(types.String).ValueString()
+		proto.Id = protoValue
+	}
+	return proto, diags
+}
+
+func NewDeleteK8SClusterRequest(ctx context.Context, data *K8SClusterResourceModel) (*configv1.DeleteK8SClusterRequest, diag.Diagnostics) {
+	var diags diag.Diagnostics
+	proto := &configv1.DeleteK8SClusterRequest{}
+	if !data.Id.IsUnknown() && !data.Id.IsNull() {
+		var dataValue attr.Value = data.Id
+		var protoValue string
+		protoValue = dataValue.(types.String).ValueString()
+		proto.Id = protoValue
+	}
+	return proto, diags
+}
+
 func NewCreateK8SClusterOnboardingCredentialRequest(ctx context.Context, data *K8SClusterOnboardingCredentialResourceModel) (*configv1.CreateK8SClusterOnboardingCredentialRequest, diag.Diagnostics) {
 	var diags diag.Diagnostics
 	proto := &configv1.CreateK8SClusterOnboardingCredentialRequest{}
@@ -5324,6 +5570,23 @@ func NewUpdateIpListRequest(ctx context.Context, beforeData, afterData *IpListRe
 			var protoValue string
 			protoValue = dataValue.(types.String).ValueString()
 			proto.Name = protoValue
+		}
+	}
+	return proto, diags
+}
+
+func NewUpdateK8SClusterRequest(ctx context.Context, beforeData, afterData *K8SClusterResourceModel) (*configv1.UpdateK8SClusterRequest, diag.Diagnostics) {
+	var diags diag.Diagnostics
+	proto := &configv1.UpdateK8SClusterRequest{}
+	proto.UpdateMask, _ = fieldmaskpb.New(proto)
+	proto.Id = beforeData.Id.ValueString()
+	if !afterData.LogLevel.Equal(beforeData.LogLevel) {
+		proto.UpdateMask.Append(proto, "log_level")
+		if !afterData.LogLevel.IsUnknown() && !afterData.LogLevel.IsNull() {
+			var dataValue attr.Value = afterData.LogLevel
+			var protoValue string
+			protoValue = dataValue.(types.String).ValueString()
+			proto.LogLevel = protoValue
 		}
 	}
 	return proto, diags
@@ -8862,6 +9125,25 @@ func CopyUpdateIpListResponse(dst *IpListResourceModel, src *configv1.UpdateIpLi
 		dst.IpRanges = dataValue
 	}
 	dst.Name = types.StringValue(src.Name)
+}
+func CopyCreateK8SClusterResponse(dst *K8SClusterResourceModel, src *configv1.CreateK8SClusterResponse) {
+	dst.Id = types.StringValue(src.Id)
+	dst.ClientId = types.StringValue(src.ClientId)
+	dst.ClientSecret = types.StringValue(src.ClientSecret)
+	dst.IllumioRegion = types.StringValue(src.IllumioRegion)
+	dst.LogLevel = types.StringValue(src.LogLevel)
+}
+func CopyReadK8SClusterResponse(dst *K8SClusterResourceModel, src *configv1.ReadK8SClusterResponse) {
+	dst.Id = types.StringValue(src.Id)
+	dst.ClientId = types.StringValue(src.ClientId)
+	dst.IllumioRegion = types.StringValue(src.IllumioRegion)
+	dst.LogLevel = types.StringValue(src.LogLevel)
+}
+func CopyUpdateK8SClusterResponse(dst *K8SClusterResourceModel, src *configv1.UpdateK8SClusterResponse) {
+	dst.Id = types.StringValue(src.Id)
+	dst.ClientId = types.StringValue(src.ClientId)
+	dst.IllumioRegion = types.StringValue(src.IllumioRegion)
+	dst.LogLevel = types.StringValue(src.LogLevel)
 }
 func CopyCreateK8SClusterOnboardingCredentialResponse(dst *K8SClusterOnboardingCredentialResourceModel, src *configv1.CreateK8SClusterOnboardingCredentialResponse) {
 	dst.Id = types.StringValue(src.Id)
