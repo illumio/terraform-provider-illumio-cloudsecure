@@ -2724,7 +2724,6 @@ type K8SClusterResourceModel struct {
 	ClientId      types.String `tfsdk:"client_id"`
 	ClientSecret  types.String `tfsdk:"client_secret"`
 	IllumioRegion types.String `tfsdk:"illumio_region"`
-	LogLevel      types.String `tfsdk:"log_level"`
 }
 
 type K8SClusterOnboardingCredentialResourceModel struct {
@@ -4189,12 +4188,6 @@ func NewCreateK8SClusterRequest(ctx context.Context, data *K8SClusterResourceMod
 		protoValue = dataValue.(types.String).ValueString()
 		proto.IllumioRegion = protoValue
 	}
-	if !data.LogLevel.IsUnknown() && !data.LogLevel.IsNull() {
-		var dataValue attr.Value = data.LogLevel
-		var protoValue string
-		protoValue = dataValue.(types.String).ValueString()
-		proto.LogLevel = protoValue
-	}
 	return proto, diags
 }
 
@@ -5580,15 +5573,6 @@ func NewUpdateK8SClusterRequest(ctx context.Context, beforeData, afterData *K8SC
 	proto := &configv1.UpdateK8SClusterRequest{}
 	proto.UpdateMask, _ = fieldmaskpb.New(proto)
 	proto.Id = beforeData.Id.ValueString()
-	if !afterData.LogLevel.Equal(beforeData.LogLevel) {
-		proto.UpdateMask.Append(proto, "log_level")
-		if !afterData.LogLevel.IsUnknown() && !afterData.LogLevel.IsNull() {
-			var dataValue attr.Value = afterData.LogLevel
-			var protoValue string
-			protoValue = dataValue.(types.String).ValueString()
-			proto.LogLevel = protoValue
-		}
-	}
 	return proto, diags
 }
 
@@ -9131,19 +9115,16 @@ func CopyCreateK8SClusterResponse(dst *K8SClusterResourceModel, src *configv1.Cr
 	dst.ClientId = types.StringValue(src.ClientId)
 	dst.ClientSecret = types.StringValue(src.ClientSecret)
 	dst.IllumioRegion = types.StringValue(src.IllumioRegion)
-	dst.LogLevel = types.StringValue(src.LogLevel)
 }
 func CopyReadK8SClusterResponse(dst *K8SClusterResourceModel, src *configv1.ReadK8SClusterResponse) {
 	dst.Id = types.StringValue(src.Id)
 	dst.ClientId = types.StringValue(src.ClientId)
 	dst.IllumioRegion = types.StringValue(src.IllumioRegion)
-	dst.LogLevel = types.StringValue(src.LogLevel)
 }
 func CopyUpdateK8SClusterResponse(dst *K8SClusterResourceModel, src *configv1.UpdateK8SClusterResponse) {
 	dst.Id = types.StringValue(src.Id)
 	dst.ClientId = types.StringValue(src.ClientId)
 	dst.IllumioRegion = types.StringValue(src.IllumioRegion)
-	dst.LogLevel = types.StringValue(src.LogLevel)
 }
 func CopyCreateK8SClusterOnboardingCredentialResponse(dst *K8SClusterOnboardingCredentialResourceModel, src *configv1.CreateK8SClusterOnboardingCredentialResponse) {
 	dst.Id = types.StringValue(src.Id)
