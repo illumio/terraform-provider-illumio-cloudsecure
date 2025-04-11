@@ -1,32 +1,32 @@
 name: golangci-lint
 on:
-    push:
-        branches:
-            - main
-        paths:
-            - '**.go'
-    pull_request:
-        branches:
-            - main
-        paths:
-            - '**.go'
+  push:
+    branches:
+      - main
+    paths:
+      - "**.go"
+  pull_request:
+    branches:
+      - main
+    paths:
+      - "**.go"
 
 permissions:
-    contents: read
+  contents: read
 
 jobs:
-    golangci:
-        name: golangci-lint
-        runs-on: ubuntu-latest
-        steps:
-            - name: Check out code
-              uses: actions/checkout@v4
-            - name: Set up go
-              uses: actions/setup-go@v5
-              with:
-                go-version-file: "go.mod"
-                cache: true
-            - name: Lint Golang
-              uses: golangci/golangci-lint-action@v6
-              with:
-                version: v1.60.3
+  golangci:
+    name: golangci-lint
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out code
+        uses: actions/checkout@v4
+      - name: Set up go
+        uses: actions/setup-go@v5
+        with:
+          go-version-file: "go.mod"
+          cache: true
+      - name: Lint Golang
+        uses: golangci/golangci-lint-action@v7
+        with:
+          version: v2.0.2
