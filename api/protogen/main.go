@@ -8,6 +8,7 @@ import (
 	"flag"
 	"fmt"
 	"os"
+	"path/filepath"
 
 	"github.com/illumio/terraform-provider-illumio-cloudsecure/api/schema"
 )
@@ -32,7 +33,7 @@ func main() {
 	// doesn't modify the tags of existing attributes.
 	var tagger *apiSpecTagger
 
-	tagsJSONBytes, err := os.ReadFile(tagsfile)
+	tagsJSONBytes, err := os.ReadFile(filepath.Clean(tagsfile))
 	if err == nil {
 		err = json.Unmarshal(tagsJSONBytes, &tagger)
 		if err != nil {
@@ -45,7 +46,7 @@ func main() {
 		tagger = newAPISpecTagger()
 	}
 
-	f, err := os.OpenFile(outfile, os.O_WRONLY|os.O_CREATE|os.O_TRUNC, 0644)
+	f, err := os.OpenFile(filepath.Clean(outfile), os.O_WRONLY|os.O_CREATE|os.O_TRUNC, 0644)
 	if err != nil {
 		fmt.Fprintf(os.Stderr, "failed to open output file %q: %s", outfile, err)
 		os.Exit(1)
