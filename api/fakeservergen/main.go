@@ -7,6 +7,7 @@ import (
 	"flag"
 	"fmt"
 	"os"
+	"path/filepath"
 
 	"github.com/illumio/terraform-provider-illumio-cloudsecure/api/schema"
 )
@@ -27,7 +28,7 @@ func init() {
 func main() {
 	flag.Parse()
 
-	file, err := os.OpenFile(outfile, os.O_WRONLY|os.O_CREATE|os.O_TRUNC, 0644)
+	file, err := os.OpenFile(filepath.Clean(outfile), os.O_WRONLY|os.O_CREATE|os.O_TRUNC, 0644)
 	if err != nil {
 		fmt.Fprintf(os.Stderr, "failed to open file %q: %s", outfile, err)
 		os.Exit(1)

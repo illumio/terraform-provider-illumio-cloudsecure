@@ -1,30 +1,40 @@
 # Visit https://golangci-lint.run/ for usage documentation
 # and information on other useful linters
+version: "2"
 issues:
   max-issues-per-linter: 0
   max-same-issues: 0
 
 linters:
-  enable-all: true
+  default: all
   disable:
     - cyclop
     - depguard
     - dupl
     - err113
-    - execinquery
     - exhaustruct
-    - exportloopref
     - funlen
     - gochecknoglobals
     - gochecknoinits
     - godox
-    - gofumpt
-    - gomnd
     - ireturn
     - lll
     - mnd
     - nonamedreturns
     - paralleltest
+    - revive
     - testpackage
     - varnamelen
     - wrapcheck
+  settings:
+    gosec:
+      config:
+        G302: "0644" # Allow creating file with mode 0644
+
+formatters:
+  enable:
+    - gci
+    - gofmt
+    # - gofumpt
+    - goimports
+    # - golines

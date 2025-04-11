@@ -17,7 +17,8 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Check out code
+      - name: Check out repo
         uses: actions/checkout@v4
+
       - name: Lint Terraform
         uses: actionshub/terraform-lint@2.0.1
