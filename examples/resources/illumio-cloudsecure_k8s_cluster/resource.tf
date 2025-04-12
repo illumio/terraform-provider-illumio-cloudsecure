@@ -1,8 +1,5 @@
 resource "illumio-cloudsecure_k8s_cluster" "example" {
   illumio_region = "aws-us-west-2"
-
-  # Optional attributes
-  log_level = "Debug"
 }
 
 output "example_client_id" {
