@@ -35,6 +35,10 @@ const (
 	ConfigService_ReadApplicationAzureResources_FullMethodName        = "/illumio.cloud.config.v1.ConfigService/ReadApplicationAzureResources"
 	ConfigService_UpdateApplicationAzureResources_FullMethodName      = "/illumio.cloud.config.v1.ConfigService/UpdateApplicationAzureResources"
 	ConfigService_DeleteApplicationAzureResources_FullMethodName      = "/illumio.cloud.config.v1.ConfigService/DeleteApplicationAzureResources"
+	ConfigService_CreateApplicationPolicyRule_FullMethodName          = "/illumio.cloud.config.v1.ConfigService/CreateApplicationPolicyRule"
+	ConfigService_ReadApplicationPolicyRule_FullMethodName            = "/illumio.cloud.config.v1.ConfigService/ReadApplicationPolicyRule"
+	ConfigService_UpdateApplicationPolicyRule_FullMethodName          = "/illumio.cloud.config.v1.ConfigService/UpdateApplicationPolicyRule"
+	ConfigService_DeleteApplicationPolicyRule_FullMethodName          = "/illumio.cloud.config.v1.ConfigService/DeleteApplicationPolicyRule"
 	ConfigService_CreateAwsAccount_FullMethodName                     = "/illumio.cloud.config.v1.ConfigService/CreateAwsAccount"
 	ConfigService_ReadAwsAccount_FullMethodName                       = "/illumio.cloud.config.v1.ConfigService/ReadAwsAccount"
 	ConfigService_UpdateAwsAccount_FullMethodName                     = "/illumio.cloud.config.v1.ConfigService/UpdateAwsAccount"
@@ -55,6 +59,10 @@ const (
 	ConfigService_ReadDeployment_FullMethodName                       = "/illumio.cloud.config.v1.ConfigService/ReadDeployment"
 	ConfigService_UpdateDeployment_FullMethodName                     = "/illumio.cloud.config.v1.ConfigService/UpdateDeployment"
 	ConfigService_DeleteDeployment_FullMethodName                     = "/illumio.cloud.config.v1.ConfigService/DeleteDeployment"
+	ConfigService_CreateIpList_FullMethodName                         = "/illumio.cloud.config.v1.ConfigService/CreateIpList"
+	ConfigService_ReadIpList_FullMethodName                           = "/illumio.cloud.config.v1.ConfigService/ReadIpList"
+	ConfigService_UpdateIpList_FullMethodName                         = "/illumio.cloud.config.v1.ConfigService/UpdateIpList"
+	ConfigService_DeleteIpList_FullMethodName                         = "/illumio.cloud.config.v1.ConfigService/DeleteIpList"
 	ConfigService_CreateK8SCluster_FullMethodName                     = "/illumio.cloud.config.v1.ConfigService/CreateK8SCluster"
 	ConfigService_ReadK8SCluster_FullMethodName                       = "/illumio.cloud.config.v1.ConfigService/ReadK8SCluster"
 	ConfigService_UpdateK8SCluster_FullMethodName                     = "/illumio.cloud.config.v1.ConfigService/UpdateK8SCluster"
@@ -85,6 +93,10 @@ type ConfigServiceClient interface {
 	ReadApplicationAzureResources(ctx context.Context, in *ReadApplicationAzureResourcesRequest, opts ...grpc.CallOption) (*ReadApplicationAzureResourcesResponse, error)
 	UpdateApplicationAzureResources(ctx context.Context, in *UpdateApplicationAzureResourcesRequest, opts ...grpc.CallOption) (*UpdateApplicationAzureResourcesResponse, error)
 	DeleteApplicationAzureResources(ctx context.Context, in *DeleteApplicationAzureResourcesRequest, opts ...grpc.CallOption) (*emptypb.Empty, error)
+	CreateApplicationPolicyRule(ctx context.Context, in *CreateApplicationPolicyRuleRequest, opts ...grpc.CallOption) (*CreateApplicationPolicyRuleResponse, error)
+	ReadApplicationPolicyRule(ctx context.Context, in *ReadApplicationPolicyRuleRequest, opts ...grpc.CallOption) (*ReadApplicationPolicyRuleResponse, error)
+	UpdateApplicationPolicyRule(ctx context.Context, in *UpdateApplicationPolicyRuleRequest, opts ...grpc.CallOption) (*UpdateApplicationPolicyRuleResponse, error)
+	DeleteApplicationPolicyRule(ctx context.Context, in *DeleteApplicationPolicyRuleRequest, opts ...grpc.CallOption) (*emptypb.Empty, error)
 	CreateAwsAccount(ctx context.Context, in *CreateAwsAccountRequest, opts ...grpc.CallOption) (*CreateAwsAccountResponse, error)
 	ReadAwsAccount(ctx context.Context, in *ReadAwsAccountRequest, opts ...grpc.CallOption) (*ReadAwsAccountResponse, error)
 	UpdateAwsAccount(ctx context.Context, in *UpdateAwsAccountRequest, opts ...grpc.CallOption) (*UpdateAwsAccountResponse, error)
@@ -105,6 +117,10 @@ type ConfigServiceClient interface {
 	ReadDeployment(ctx context.Context, in *ReadDeploymentRequest, opts ...grpc.CallOption) (*ReadDeploymentResponse, error)
 	UpdateDeployment(ctx context.Context, in *UpdateDeploymentRequest, opts ...grpc.CallOption) (*UpdateDeploymentResponse, error)
 	DeleteDeployment(ctx context.Context, in *DeleteDeploymentRequest, opts ...grpc.CallOption) (*emptypb.Empty, error)
+	CreateIpList(ctx context.Context, in *CreateIpListRequest, opts ...grpc.CallOption) (*CreateIpListResponse, error)
+	ReadIpList(ctx context.Context, in *ReadIpListRequest, opts ...grpc.CallOption) (*ReadIpListResponse, error)
+	UpdateIpList(ctx context.Context, in *UpdateIpListRequest, opts ...grpc.CallOption) (*UpdateIpListResponse, error)
+	DeleteIpList(ctx context.Context, in *DeleteIpListRequest, opts ...grpc.CallOption) (*emptypb.Empty, error)
 	CreateK8SCluster(ctx context.Context, in *CreateK8SClusterRequest, opts ...grpc.CallOption) (*CreateK8SClusterResponse, error)
 	ReadK8SCluster(ctx context.Context, in *ReadK8SClusterRequest, opts ...grpc.CallOption) (*ReadK8SClusterResponse, error)
 	UpdateK8SCluster(ctx context.Context, in *UpdateK8SClusterRequest, opts ...grpc.CallOption) (*UpdateK8SClusterResponse, error)
@@ -241,6 +257,46 @@ func (c *configServiceClient) DeleteApplicationAzureResources(ctx context.Contex
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
 	out := new(emptypb.Empty)
 	err := c.cc.Invoke(ctx, ConfigService_DeleteApplicationAzureResources_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *configServiceClient) CreateApplicationPolicyRule(ctx context.Context, in *CreateApplicationPolicyRuleRequest, opts ...grpc.CallOption) (*CreateApplicationPolicyRuleResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(CreateApplicationPolicyRuleResponse)
+	err := c.cc.Invoke(ctx, ConfigService_CreateApplicationPolicyRule_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *configServiceClient) ReadApplicationPolicyRule(ctx context.Context, in *ReadApplicationPolicyRuleRequest, opts ...grpc.CallOption) (*ReadApplicationPolicyRuleResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(ReadApplicationPolicyRuleResponse)
+	err := c.cc.Invoke(ctx, ConfigService_ReadApplicationPolicyRule_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *configServiceClient) UpdateApplicationPolicyRule(ctx context.Context, in *UpdateApplicationPolicyRuleRequest, opts ...grpc.CallOption) (*UpdateApplicationPolicyRuleResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(UpdateApplicationPolicyRuleResponse)
+	err := c.cc.Invoke(ctx, ConfigService_UpdateApplicationPolicyRule_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *configServiceClient) DeleteApplicationPolicyRule(ctx context.Context, in *DeleteApplicationPolicyRuleRequest, opts ...grpc.CallOption) (*emptypb.Empty, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(emptypb.Empty)
+	err := c.cc.Invoke(ctx, ConfigService_DeleteApplicationPolicyRule_FullMethodName, in, out, cOpts...)
 	if err != nil {
 		return nil, err
 	}
@@ -447,6 +503,46 @@ func (c *configServiceClient) DeleteDeployment(ctx context.Context, in *DeleteDe
 	return out, nil
 }
 
+func (c *configServiceClient) CreateIpList(ctx context.Context, in *CreateIpListRequest, opts ...grpc.CallOption) (*CreateIpListResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(CreateIpListResponse)
+	err := c.cc.Invoke(ctx, ConfigService_CreateIpList_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *configServiceClient) ReadIpList(ctx context.Context, in *ReadIpListRequest, opts ...grpc.CallOption) (*ReadIpListResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(ReadIpListResponse)
+	err := c.cc.Invoke(ctx, ConfigService_ReadIpList_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *configServiceClient) UpdateIpList(ctx context.Context, in *UpdateIpListRequest, opts ...grpc.CallOption) (*UpdateIpListResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(UpdateIpListResponse)
+	err := c.cc.Invoke(ctx, ConfigService_UpdateIpList_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *configServiceClient) DeleteIpList(ctx context.Context, in *DeleteIpListRequest, opts ...grpc.CallOption) (*emptypb.Empty, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(emptypb.Empty)
+	err := c.cc.Invoke(ctx, ConfigService_DeleteIpList_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 func (c *configServiceClient) CreateK8SCluster(ctx context.Context, in *CreateK8SClusterRequest, opts ...grpc.CallOption) (*CreateK8SClusterResponse, error) {
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
 	out := new(CreateK8SClusterResponse)
@@ -583,6 +679,10 @@ type ConfigServiceServer interface {
 	ReadApplicationAzureResources(context.Context, *ReadApplicationAzureResourcesRequest) (*ReadApplicationAzureResourcesResponse, error)
 	UpdateApplicationAzureResources(context.Context, *UpdateApplicationAzureResourcesRequest) (*UpdateApplicationAzureResourcesResponse, error)
 	DeleteApplicationAzureResources(context.Context, *DeleteApplicationAzureResourcesRequest) (*emptypb.Empty, error)
+	CreateApplicationPolicyRule(context.Context, *CreateApplicationPolicyRuleRequest) (*CreateApplicationPolicyRuleResponse, error)
+	ReadApplicationPolicyRule(context.Context, *ReadApplicationPolicyRuleRequest) (*ReadApplicationPolicyRuleResponse, error)
+	UpdateApplicationPolicyRule(context.Context, *UpdateApplicationPolicyRuleRequest) (*UpdateApplicationPolicyRuleResponse, error)
+	DeleteApplicationPolicyRule(context.Context, *DeleteApplicationPolicyRuleRequest) (*emptypb.Empty, error)
 	CreateAwsAccount(context.Context, *CreateAwsAccountRequest) (*CreateAwsAccountResponse, error)
 	ReadAwsAccount(context.Context, *ReadAwsAccountRequest) (*ReadAwsAccountResponse, error)
 	UpdateAwsAccount(context.Context, *UpdateAwsAccountRequest) (*UpdateAwsAccountResponse, error)
@@ -603,6 +703,10 @@ type ConfigServiceServer interface {
 	ReadDeployment(context.Context, *ReadDeploymentRequest) (*ReadDeploymentResponse, error)
 	UpdateDeployment(context.Context, *UpdateDeploymentRequest) (*UpdateDeploymentResponse, error)
 	DeleteDeployment(context.Context, *DeleteDeploymentRequest) (*emptypb.Empty, error)
+	CreateIpList(context.Context, *CreateIpListRequest) (*CreateIpListResponse, error)
+	ReadIpList(context.Context, *ReadIpListRequest) (*ReadIpListResponse, error)
+	UpdateIpList(context.Context, *UpdateIpListRequest) (*UpdateIpListResponse, error)
+	DeleteIpList(context.Context, *DeleteIpListRequest) (*emptypb.Empty, error)
 	CreateK8SCluster(context.Context, *CreateK8SClusterRequest) (*CreateK8SClusterResponse, error)
 	ReadK8SCluster(context.Context, *ReadK8SClusterRequest) (*ReadK8SClusterResponse, error)
 	UpdateK8SCluster(context.Context, *UpdateK8SClusterRequest) (*UpdateK8SClusterResponse, error)
@@ -660,6 +764,18 @@ func (UnimplementedConfigServiceServer) UpdateApplicationAzureResources(context.
 }
 func (UnimplementedConfigServiceServer) DeleteApplicationAzureResources(context.Context, *DeleteApplicationAzureResourcesRequest) (*emptypb.Empty, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method DeleteApplicationAzureResources not implemented")
+}
+func (UnimplementedConfigServiceServer) CreateApplicationPolicyRule(context.Context, *CreateApplicationPolicyRuleRequest) (*CreateApplicationPolicyRuleResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method CreateApplicationPolicyRule not implemented")
+}
+func (UnimplementedConfigServiceServer) ReadApplicationPolicyRule(context.Context, *ReadApplicationPolicyRuleRequest) (*ReadApplicationPolicyRuleResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method ReadApplicationPolicyRule not implemented")
+}
+func (UnimplementedConfigServiceServer) UpdateApplicationPolicyRule(context.Context, *UpdateApplicationPolicyRuleRequest) (*UpdateApplicationPolicyRuleResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method UpdateApplicationPolicyRule not implemented")
+}
+func (UnimplementedConfigServiceServer) DeleteApplicationPolicyRule(context.Context, *DeleteApplicationPolicyRuleRequest) (*emptypb.Empty, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method DeleteApplicationPolicyRule not implemented")
 }
 func (UnimplementedConfigServiceServer) CreateAwsAccount(context.Context, *CreateAwsAccountRequest) (*CreateAwsAccountResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method CreateAwsAccount not implemented")
@@ -720,6 +836,18 @@ func (UnimplementedConfigServiceServer) UpdateDeployment(context.Context, *Updat
 }
 func (UnimplementedConfigServiceServer) DeleteDeployment(context.Context, *DeleteDeploymentRequest) (*emptypb.Empty, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method DeleteDeployment not implemented")
+}
+func (UnimplementedConfigServiceServer) CreateIpList(context.Context, *CreateIpListRequest) (*CreateIpListResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method CreateIpList not implemented")
+}
+func (UnimplementedConfigServiceServer) ReadIpList(context.Context, *ReadIpListRequest) (*ReadIpListResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method ReadIpList not implemented")
+}
+func (UnimplementedConfigServiceServer) UpdateIpList(context.Context, *UpdateIpListRequest) (*UpdateIpListResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method UpdateIpList not implemented")
+}
+func (UnimplementedConfigServiceServer) DeleteIpList(context.Context, *DeleteIpListRequest) (*emptypb.Empty, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method DeleteIpList not implemented")
 }
 func (UnimplementedConfigServiceServer) CreateK8SCluster(context.Context, *CreateK8SClusterRequest) (*CreateK8SClusterResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method CreateK8SCluster not implemented")
@@ -990,6 +1118,78 @@ func _ConfigService_DeleteApplicationAzureResources_Handler(srv interface{}, ctx
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(ConfigServiceServer).DeleteApplicationAzureResources(ctx, req.(*DeleteApplicationAzureResourcesRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _ConfigService_CreateApplicationPolicyRule_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(CreateApplicationPolicyRuleRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(ConfigServiceServer).CreateApplicationPolicyRule(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: ConfigService_CreateApplicationPolicyRule_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(ConfigServiceServer).CreateApplicationPolicyRule(ctx, req.(*CreateApplicationPolicyRuleRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _ConfigService_ReadApplicationPolicyRule_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(ReadApplicationPolicyRuleRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(ConfigServiceServer).ReadApplicationPolicyRule(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: ConfigService_ReadApplicationPolicyRule_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(ConfigServiceServer).ReadApplicationPolicyRule(ctx, req.(*ReadApplicationPolicyRuleRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _ConfigService_UpdateApplicationPolicyRule_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(UpdateApplicationPolicyRuleRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(ConfigServiceServer).UpdateApplicationPolicyRule(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: ConfigService_UpdateApplicationPolicyRule_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(ConfigServiceServer).UpdateApplicationPolicyRule(ctx, req.(*UpdateApplicationPolicyRuleRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _ConfigService_DeleteApplicationPolicyRule_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(DeleteApplicationPolicyRuleRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(ConfigServiceServer).DeleteApplicationPolicyRule(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: ConfigService_DeleteApplicationPolicyRule_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(ConfigServiceServer).DeleteApplicationPolicyRule(ctx, req.(*DeleteApplicationPolicyRuleRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -1354,6 +1554,78 @@ func _ConfigService_DeleteDeployment_Handler(srv interface{}, ctx context.Contex
 	return interceptor(ctx, in, info, handler)
 }
 
+func _ConfigService_CreateIpList_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(CreateIpListRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(ConfigServiceServer).CreateIpList(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: ConfigService_CreateIpList_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(ConfigServiceServer).CreateIpList(ctx, req.(*CreateIpListRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _ConfigService_ReadIpList_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(ReadIpListRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(ConfigServiceServer).ReadIpList(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: ConfigService_ReadIpList_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(ConfigServiceServer).ReadIpList(ctx, req.(*ReadIpListRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _ConfigService_UpdateIpList_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(UpdateIpListRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(ConfigServiceServer).UpdateIpList(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: ConfigService_UpdateIpList_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(ConfigServiceServer).UpdateIpList(ctx, req.(*UpdateIpListRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _ConfigService_DeleteIpList_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(DeleteIpListRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(ConfigServiceServer).DeleteIpList(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: ConfigService_DeleteIpList_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(ConfigServiceServer).DeleteIpList(ctx, req.(*DeleteIpListRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 func _ConfigService_CreateK8SCluster_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(CreateK8SClusterRequest)
 	if err := dec(in); err != nil {
@@ -1626,6 +1898,22 @@ var ConfigService_ServiceDesc = grpc.ServiceDesc{
 			Handler:    _ConfigService_DeleteApplicationAzureResources_Handler,
 		},
 		{
+			MethodName: "CreateApplicationPolicyRule",
+			Handler:    _ConfigService_CreateApplicationPolicyRule_Handler,
+		},
+		{
+			MethodName: "ReadApplicationPolicyRule",
+			Handler:    _ConfigService_ReadApplicationPolicyRule_Handler,
+		},
+		{
+			MethodName: "UpdateApplicationPolicyRule",
+			Handler:    _ConfigService_UpdateApplicationPolicyRule_Handler,
+		},
+		{
+			MethodName: "DeleteApplicationPolicyRule",
+			Handler:    _ConfigService_DeleteApplicationPolicyRule_Handler,
+		},
+		{
 			MethodName: "CreateAwsAccount",
 			Handler:    _ConfigService_CreateAwsAccount_Handler,
 		},
@@ -1704,6 +1992,22 @@ var ConfigService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "DeleteDeployment",
 			Handler:    _ConfigService_DeleteDeployment_Handler,
+		},
+		{
+			MethodName: "CreateIpList",
+			Handler:    _ConfigService_CreateIpList_Handler,
+		},
+		{
+			MethodName: "ReadIpList",
+			Handler:    _ConfigService_ReadIpList_Handler,
+		},
+		{
+			MethodName: "UpdateIpList",
+			Handler:    _ConfigService_UpdateIpList_Handler,
+		},
+		{
+			MethodName: "DeleteIpList",
+			Handler:    _ConfigService_DeleteIpList_Handler,
 		},
 		{
 			MethodName: "CreateK8SCluster",
