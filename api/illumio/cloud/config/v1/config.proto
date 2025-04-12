@@ -18,10 +18,6 @@ service ConfigService {
   rpc ReadApplicationAzureResources(ReadApplicationAzureResourcesRequest) returns (ReadApplicationAzureResourcesResponse);
   rpc UpdateApplicationAzureResources(UpdateApplicationAzureResourcesRequest) returns (UpdateApplicationAzureResourcesResponse);
   rpc DeleteApplicationAzureResources(DeleteApplicationAzureResourcesRequest) returns (google.protobuf.Empty);
-  rpc CreateApplicationPolicyRule(CreateApplicationPolicyRuleRequest) returns (CreateApplicationPolicyRuleResponse);
-  rpc ReadApplicationPolicyRule(ReadApplicationPolicyRuleRequest) returns (ReadApplicationPolicyRuleResponse);
-  rpc UpdateApplicationPolicyRule(UpdateApplicationPolicyRuleRequest) returns (UpdateApplicationPolicyRuleResponse);
-  rpc DeleteApplicationPolicyRule(DeleteApplicationPolicyRuleRequest) returns (google.protobuf.Empty);
   rpc CreateAwsAccount(CreateAwsAccountRequest) returns (CreateAwsAccountResponse);
   rpc ReadAwsAccount(ReadAwsAccountRequest) returns (ReadAwsAccountResponse);
   rpc UpdateAwsAccount(UpdateAwsAccountRequest) returns (UpdateAwsAccountResponse);
@@ -42,10 +38,6 @@ service ConfigService {
   rpc ReadDeployment(ReadDeploymentRequest) returns (ReadDeploymentResponse);
   rpc UpdateDeployment(UpdateDeploymentRequest) returns (UpdateDeploymentResponse);
   rpc DeleteDeployment(DeleteDeploymentRequest) returns (google.protobuf.Empty);
-  rpc CreateIpList(CreateIpListRequest) returns (CreateIpListResponse);
-  rpc ReadIpList(ReadIpListRequest) returns (ReadIpListResponse);
-  rpc UpdateIpList(UpdateIpListRequest) returns (UpdateIpListResponse);
-  rpc DeleteIpList(DeleteIpListRequest) returns (google.protobuf.Empty);
   rpc CreateK8SCluster(CreateK8SClusterRequest) returns (CreateK8SClusterResponse);
   rpc ReadK8SCluster(ReadK8SClusterRequest) returns (ReadK8SClusterResponse);
   rpc UpdateK8SCluster(UpdateK8SClusterRequest) returns (UpdateK8SClusterResponse);
@@ -336,89 +328,6 @@ message DeleteApplicationAzureResourcesRequest {
   repeated string application_resource_ids = 6;
   string subscription_id = 4;
 }
-message ApplicationPolicyRule_FromLabels {
-  string key = 1;
-  string value = 2;
-}
-message ApplicationPolicyRule_ToLabels {
-  string key = 1;
-  string value = 2;
-}
-message ApplicationPolicyRule_ToPortRanges {
-  int64 from_port = 1;
-  string protocol = 2;
-  int64 to_port = 3;
-}
-message CreateApplicationPolicyRuleRequest {
-  string action = 2;
-  string application_id = 10;
-  optional string description = 3;
-  optional bool external_scope = 11;
-  repeated string from_ip_list_ids = 4;
-  repeated ApplicationPolicyRule_FromLabels from_labels = 5;
-  repeated string to_ip_list_ids = 6;
-  repeated ApplicationPolicyRule_ToLabels to_labels = 7;
-  repeated ApplicationPolicyRule_ToPortRanges to_port_ranges = 12;
-}
-message CreateApplicationPolicyRuleResponse {
-  string id = 1;
-  string action = 2;
-  string application_id = 10;
-  optional string description = 3;
-  optional bool external_scope = 11;
-  repeated string from_ip_list_ids = 4;
-  repeated ApplicationPolicyRule_FromLabels from_labels = 5;
-  repeated string to_ip_list_ids = 6;
-  repeated ApplicationPolicyRule_ToLabels to_labels = 7;
-  repeated ApplicationPolicyRule_ToPortRanges to_port_ranges = 12;
-}
-message ReadApplicationPolicyRuleRequest {
-  string id = 1;
-  string action = 2;
-  string application_id = 10;
-}
-message ReadApplicationPolicyRuleResponse {
-  string id = 1;
-  string action = 2;
-  string application_id = 10;
-  optional string description = 3;
-  optional bool external_scope = 11;
-  repeated string from_ip_list_ids = 4;
-  repeated ApplicationPolicyRule_FromLabels from_labels = 5;
-  repeated string to_ip_list_ids = 6;
-  repeated ApplicationPolicyRule_ToLabels to_labels = 7;
-  repeated ApplicationPolicyRule_ToPortRanges to_port_ranges = 12;
-}
-message UpdateApplicationPolicyRuleRequest {
-  string id = 1;
-  string action = 2;
-  string application_id = 10;
-  optional string description = 3;
-  optional bool external_scope = 11;
-  repeated string from_ip_list_ids = 4;
-  repeated ApplicationPolicyRule_FromLabels from_labels = 5;
-  repeated string to_ip_list_ids = 6;
-  repeated ApplicationPolicyRule_ToLabels to_labels = 7;
-  repeated ApplicationPolicyRule_ToPortRanges to_port_ranges = 12;
-  google.protobuf.FieldMask update_mask = 9;
-}
-message UpdateApplicationPolicyRuleResponse {
-  string id = 1;
-  string action = 2;
-  string application_id = 10;
-  optional string description = 3;
-  optional bool external_scope = 11;
-  repeated string from_ip_list_ids = 4;
-  repeated ApplicationPolicyRule_FromLabels from_labels = 5;
-  repeated string to_ip_list_ids = 6;
-  repeated ApplicationPolicyRule_ToLabels to_labels = 7;
-  repeated ApplicationPolicyRule_ToPortRanges to_port_ranges = 12;
-}
-message DeleteApplicationPolicyRuleRequest {
-  string id = 1;
-  string action = 2;
-  string application_id = 10;
-}
 message CreateAwsAccountRequest {
   string account_id = 2;
   string mode = 5;
@@ -650,56 +559,6 @@ message UpdateDeploymentResponse {
   string name = 13;
 }
 message DeleteDeploymentRequest {
-  string id = 1;
-}
-message IpList_IpAddresses {
-  bool exclusion = 1;
-  string ip_address = 3;
-}
-message IpList_IpRanges {
-  bool exclusion = 2;
-  string from_ip_address = 5;
-  string to_ip_address = 6;
-}
-message CreateIpListRequest {
-  optional string description = 2;
-  repeated IpList_IpAddresses ip_addresses = 6;
-  repeated IpList_IpRanges ip_ranges = 3;
-  string name = 4;
-}
-message CreateIpListResponse {
-  string id = 1;
-  optional string description = 2;
-  repeated IpList_IpAddresses ip_addresses = 6;
-  repeated IpList_IpRanges ip_ranges = 3;
-  string name = 4;
-}
-message ReadIpListRequest {
-  string id = 1;
-}
-message ReadIpListResponse {
-  string id = 1;
-  optional string description = 2;
-  repeated IpList_IpAddresses ip_addresses = 6;
-  repeated IpList_IpRanges ip_ranges = 3;
-  string name = 4;
-}
-message UpdateIpListRequest {
-  string id = 1;
-  optional string description = 2;
-  repeated IpList_IpAddresses ip_addresses = 6;
-  repeated IpList_IpRanges ip_ranges = 3;
-  string name = 4;
-  google.protobuf.FieldMask update_mask = 5;
-}
-message UpdateIpListResponse {
-  string id = 1;
-  optional string description = 2;
-  repeated IpList_IpAddresses ip_addresses = 6;
-  repeated IpList_IpRanges ip_ranges = 3;
-  string name = 4;
-}
-message DeleteIpListRequest {
   string id = 1;
 }
 message CreateK8SClusterRequest {
