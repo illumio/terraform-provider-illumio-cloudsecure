@@ -2940,7 +2940,6 @@ type CreateApplicationPolicyRuleResponse struct {
 	Action        string                                `protobuf:"bytes,2,opt,name=action,proto3" json:"action,omitempty"`
 	ApplicationId string                                `protobuf:"bytes,10,opt,name=application_id,json=applicationId,proto3" json:"application_id,omitempty"`
 	Description   *string                               `protobuf:"bytes,3,opt,name=description,proto3,oneof" json:"description,omitempty"`
-	ExternalScope *bool                                 `protobuf:"varint,11,opt,name=external_scope,json=externalScope,proto3,oneof" json:"external_scope,omitempty"`
 	FromIpListIds []string                              `protobuf:"bytes,4,rep,name=from_ip_list_ids,json=fromIpListIds,proto3" json:"from_ip_list_ids,omitempty"`
 	FromLabels    []*ApplicationPolicyRule_FromLabels   `protobuf:"bytes,5,rep,name=from_labels,json=fromLabels,proto3" json:"from_labels,omitempty"`
 	ToIpListIds   []string                              `protobuf:"bytes,6,rep,name=to_ip_list_ids,json=toIpListIds,proto3" json:"to_ip_list_ids,omitempty"`
@@ -3006,13 +3005,6 @@ func (x *CreateApplicationPolicyRuleResponse) GetDescription() string {
 		return *x.Description
 	}
 	return ""
-}
-
-func (x *CreateApplicationPolicyRuleResponse) GetExternalScope() bool {
-	if x != nil && x.ExternalScope != nil {
-		return *x.ExternalScope
-	}
-	return false
 }
 
 func (x *CreateApplicationPolicyRuleResponse) GetFromIpListIds() []string {
@@ -3116,7 +3108,6 @@ type ReadApplicationPolicyRuleResponse struct {
 	Action        string                                `protobuf:"bytes,2,opt,name=action,proto3" json:"action,omitempty"`
 	ApplicationId string                                `protobuf:"bytes,10,opt,name=application_id,json=applicationId,proto3" json:"application_id,omitempty"`
 	Description   *string                               `protobuf:"bytes,3,opt,name=description,proto3,oneof" json:"description,omitempty"`
-	ExternalScope *bool                                 `protobuf:"varint,11,opt,name=external_scope,json=externalScope,proto3,oneof" json:"external_scope,omitempty"`
 	FromIpListIds []string                              `protobuf:"bytes,4,rep,name=from_ip_list_ids,json=fromIpListIds,proto3" json:"from_ip_list_ids,omitempty"`
 	FromLabels    []*ApplicationPolicyRule_FromLabels   `protobuf:"bytes,5,rep,name=from_labels,json=fromLabels,proto3" json:"from_labels,omitempty"`
 	ToIpListIds   []string                              `protobuf:"bytes,6,rep,name=to_ip_list_ids,json=toIpListIds,proto3" json:"to_ip_list_ids,omitempty"`
@@ -3184,13 +3175,6 @@ func (x *ReadApplicationPolicyRuleResponse) GetDescription() string {
 	return ""
 }
 
-func (x *ReadApplicationPolicyRuleResponse) GetExternalScope() bool {
-	if x != nil && x.ExternalScope != nil {
-		return *x.ExternalScope
-	}
-	return false
-}
-
 func (x *ReadApplicationPolicyRuleResponse) GetFromIpListIds() []string {
 	if x != nil {
 		return x.FromIpListIds
@@ -3232,7 +3216,6 @@ type UpdateApplicationPolicyRuleRequest struct {
 	Action        string                                `protobuf:"bytes,2,opt,name=action,proto3" json:"action,omitempty"`
 	ApplicationId string                                `protobuf:"bytes,10,opt,name=application_id,json=applicationId,proto3" json:"application_id,omitempty"`
 	Description   *string                               `protobuf:"bytes,3,opt,name=description,proto3,oneof" json:"description,omitempty"`
-	ExternalScope *bool                                 `protobuf:"varint,11,opt,name=external_scope,json=externalScope,proto3,oneof" json:"external_scope,omitempty"`
 	FromIpListIds []string                              `protobuf:"bytes,4,rep,name=from_ip_list_ids,json=fromIpListIds,proto3" json:"from_ip_list_ids,omitempty"`
 	FromLabels    []*ApplicationPolicyRule_FromLabels   `protobuf:"bytes,5,rep,name=from_labels,json=fromLabels,proto3" json:"from_labels,omitempty"`
 	ToIpListIds   []string                              `protobuf:"bytes,6,rep,name=to_ip_list_ids,json=toIpListIds,proto3" json:"to_ip_list_ids,omitempty"`
@@ -3301,13 +3284,6 @@ func (x *UpdateApplicationPolicyRuleRequest) GetDescription() string {
 	return ""
 }
 
-func (x *UpdateApplicationPolicyRuleRequest) GetExternalScope() bool {
-	if x != nil && x.ExternalScope != nil {
-		return *x.ExternalScope
-	}
-	return false
-}
-
 func (x *UpdateApplicationPolicyRuleRequest) GetFromIpListIds() []string {
 	if x != nil {
 		return x.FromIpListIds
@@ -3356,7 +3332,6 @@ type UpdateApplicationPolicyRuleResponse struct {
 	Action        string                                `protobuf:"bytes,2,opt,name=action,proto3" json:"action,omitempty"`
 	ApplicationId string                                `protobuf:"bytes,10,opt,name=application_id,json=applicationId,proto3" json:"application_id,omitempty"`
 	Description   *string                               `protobuf:"bytes,3,opt,name=description,proto3,oneof" json:"description,omitempty"`
-	ExternalScope *bool                                 `protobuf:"varint,11,opt,name=external_scope,json=externalScope,proto3,oneof" json:"external_scope,omitempty"`
 	FromIpListIds []string                              `protobuf:"bytes,4,rep,name=from_ip_list_ids,json=fromIpListIds,proto3" json:"from_ip_list_ids,omitempty"`
 	FromLabels    []*ApplicationPolicyRule_FromLabels   `protobuf:"bytes,5,rep,name=from_labels,json=fromLabels,proto3" json:"from_labels,omitempty"`
 	ToIpListIds   []string                              `protobuf:"bytes,6,rep,name=to_ip_list_ids,json=toIpListIds,proto3" json:"to_ip_list_ids,omitempty"`
@@ -3422,13 +3397,6 @@ func (x *UpdateApplicationPolicyRuleResponse) GetDescription() string {
 		return *x.Description
 	}
 	return ""
-}
-
-func (x *UpdateApplicationPolicyRuleResponse) GetExternalScope() bool {
-	if x != nil && x.ExternalScope != nil {
-		return *x.ExternalScope
-	}
-	return false
 }
 
 func (x *UpdateApplicationPolicyRuleResponse) GetFromIpListIds() []string {
@@ -8470,49 +8438,44 @@ const file_illumio_cloud_config_v1_config_proto_rawDesc = "" +
 	"\tto_labels\x18\a \x03(\v27.illumio.cloud.config.v1.ApplicationPolicyRule_ToLabelsR\btoLabels\x12a\n" +
 	"\x0eto_port_ranges\x18\f \x03(\v2;.illumio.cloud.config.v1.ApplicationPolicyRule_ToPortRangesR\ftoPortRangesB\x0e\n" +
 	"\f_descriptionB\x11\n" +
-	"\x0f_external_scope\"\xcd\x04\n" +
+	"\x0f_external_scope\"\x8e\x04\n" +
 	"#CreateApplicationPolicyRuleResponse\x12\x0e\n" +
 	"\x02id\x18\x01 \x01(\tR\x02id\x12\x16\n" +
 	"\x06action\x18\x02 \x01(\tR\x06action\x12%\n" +
 	"\x0eapplication_id\x18\n" +
 	" \x01(\tR\rapplicationId\x12%\n" +
-	"\vdescription\x18\x03 \x01(\tH\x00R\vdescription\x88\x01\x01\x12*\n" +
-	"\x0eexternal_scope\x18\v \x01(\bH\x01R\rexternalScope\x88\x01\x01\x12'\n" +
+	"\vdescription\x18\x03 \x01(\tH\x00R\vdescription\x88\x01\x01\x12'\n" +
 	"\x10from_ip_list_ids\x18\x04 \x03(\tR\rfromIpListIds\x12Z\n" +
 	"\vfrom_labels\x18\x05 \x03(\v29.illumio.cloud.config.v1.ApplicationPolicyRule_FromLabelsR\n" +
 	"fromLabels\x12#\n" +
 	"\x0eto_ip_list_ids\x18\x06 \x03(\tR\vtoIpListIds\x12T\n" +
 	"\tto_labels\x18\a \x03(\v27.illumio.cloud.config.v1.ApplicationPolicyRule_ToLabelsR\btoLabels\x12a\n" +
 	"\x0eto_port_ranges\x18\f \x03(\v2;.illumio.cloud.config.v1.ApplicationPolicyRule_ToPortRangesR\ftoPortRangesB\x0e\n" +
-	"\f_descriptionB\x11\n" +
-	"\x0f_external_scope\"q\n" +
+	"\f_description\"q\n" +
 	" ReadApplicationPolicyRuleRequest\x12\x0e\n" +
 	"\x02id\x18\x01 \x01(\tR\x02id\x12\x16\n" +
 	"\x06action\x18\x02 \x01(\tR\x06action\x12%\n" +
 	"\x0eapplication_id\x18\n" +
-	" \x01(\tR\rapplicationId\"\xcb\x04\n" +
+	" \x01(\tR\rapplicationId\"\x8c\x04\n" +
 	"!ReadApplicationPolicyRuleResponse\x12\x0e\n" +
 	"\x02id\x18\x01 \x01(\tR\x02id\x12\x16\n" +
 	"\x06action\x18\x02 \x01(\tR\x06action\x12%\n" +
 	"\x0eapplication_id\x18\n" +
 	" \x01(\tR\rapplicationId\x12%\n" +
-	"\vdescription\x18\x03 \x01(\tH\x00R\vdescription\x88\x01\x01\x12*\n" +
-	"\x0eexternal_scope\x18\v \x01(\bH\x01R\rexternalScope\x88\x01\x01\x12'\n" +
+	"\vdescription\x18\x03 \x01(\tH\x00R\vdescription\x88\x01\x01\x12'\n" +
 	"\x10from_ip_list_ids\x18\x04 \x03(\tR\rfromIpListIds\x12Z\n" +
 	"\vfrom_labels\x18\x05 \x03(\v29.illumio.cloud.config.v1.ApplicationPolicyRule_FromLabelsR\n" +
 	"fromLabels\x12#\n" +
 	"\x0eto_ip_list_ids\x18\x06 \x03(\tR\vtoIpListIds\x12T\n" +
 	"\tto_labels\x18\a \x03(\v27.illumio.cloud.config.v1.ApplicationPolicyRule_ToLabelsR\btoLabels\x12a\n" +
 	"\x0eto_port_ranges\x18\f \x03(\v2;.illumio.cloud.config.v1.ApplicationPolicyRule_ToPortRangesR\ftoPortRangesB\x0e\n" +
-	"\f_descriptionB\x11\n" +
-	"\x0f_external_scope\"\x89\x05\n" +
+	"\f_description\"\xca\x04\n" +
 	"\"UpdateApplicationPolicyRuleRequest\x12\x0e\n" +
 	"\x02id\x18\x01 \x01(\tR\x02id\x12\x16\n" +
 	"\x06action\x18\x02 \x01(\tR\x06action\x12%\n" +
 	"\x0eapplication_id\x18\n" +
 	" \x01(\tR\rapplicationId\x12%\n" +
-	"\vdescription\x18\x03 \x01(\tH\x00R\vdescription\x88\x01\x01\x12*\n" +
-	"\x0eexternal_scope\x18\v \x01(\bH\x01R\rexternalScope\x88\x01\x01\x12'\n" +
+	"\vdescription\x18\x03 \x01(\tH\x00R\vdescription\x88\x01\x01\x12'\n" +
 	"\x10from_ip_list_ids\x18\x04 \x03(\tR\rfromIpListIds\x12Z\n" +
 	"\vfrom_labels\x18\x05 \x03(\v29.illumio.cloud.config.v1.ApplicationPolicyRule_FromLabelsR\n" +
 	"fromLabels\x12#\n" +
@@ -8521,23 +8484,20 @@ const file_illumio_cloud_config_v1_config_proto_rawDesc = "" +
 	"\x0eto_port_ranges\x18\f \x03(\v2;.illumio.cloud.config.v1.ApplicationPolicyRule_ToPortRangesR\ftoPortRanges\x12;\n" +
 	"\vupdate_mask\x18\t \x01(\v2\x1a.google.protobuf.FieldMaskR\n" +
 	"updateMaskB\x0e\n" +
-	"\f_descriptionB\x11\n" +
-	"\x0f_external_scope\"\xcd\x04\n" +
+	"\f_description\"\x8e\x04\n" +
 	"#UpdateApplicationPolicyRuleResponse\x12\x0e\n" +
 	"\x02id\x18\x01 \x01(\tR\x02id\x12\x16\n" +
 	"\x06action\x18\x02 \x01(\tR\x06action\x12%\n" +
 	"\x0eapplication_id\x18\n" +
 	" \x01(\tR\rapplicationId\x12%\n" +
-	"\vdescription\x18\x03 \x01(\tH\x00R\vdescription\x88\x01\x01\x12*\n" +
-	"\x0eexternal_scope\x18\v \x01(\bH\x01R\rexternalScope\x88\x01\x01\x12'\n" +
+	"\vdescription\x18\x03 \x01(\tH\x00R\vdescription\x88\x01\x01\x12'\n" +
 	"\x10from_ip_list_ids\x18\x04 \x03(\tR\rfromIpListIds\x12Z\n" +
 	"\vfrom_labels\x18\x05 \x03(\v29.illumio.cloud.config.v1.ApplicationPolicyRule_FromLabelsR\n" +
 	"fromLabels\x12#\n" +
 	"\x0eto_ip_list_ids\x18\x06 \x03(\tR\vtoIpListIds\x12T\n" +
 	"\tto_labels\x18\a \x03(\v27.illumio.cloud.config.v1.ApplicationPolicyRule_ToLabelsR\btoLabels\x12a\n" +
 	"\x0eto_port_ranges\x18\f \x03(\v2;.illumio.cloud.config.v1.ApplicationPolicyRule_ToPortRangesR\ftoPortRangesB\x0e\n" +
-	"\f_descriptionB\x11\n" +
-	"\x0f_external_scope\"s\n" +
+	"\f_description\"s\n" +
 	"\"DeleteApplicationPolicyRuleRequest\x12\x0e\n" +
 	"\x02id\x18\x01 \x01(\tR\x02id\x12\x16\n" +
 	"\x06action\x18\x02 \x01(\tR\x06action\x12%\n" +

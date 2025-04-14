@@ -5110,15 +5110,6 @@ func NewUpdateApplicationPolicyRuleRequest(ctx context.Context, beforeData, afte
 			proto.Description = &protoValue
 		}
 	}
-	if !afterData.ExternalScope.Equal(beforeData.ExternalScope) {
-		proto.UpdateMask.Append(proto, "external_scope")
-		if !afterData.ExternalScope.IsUnknown() && !afterData.ExternalScope.IsNull() {
-			var dataValue attr.Value = afterData.ExternalScope
-			var protoValue bool
-			protoValue = dataValue.(types.Bool).ValueBool()
-			proto.ExternalScope = &protoValue
-		}
-	}
 	if !afterData.FromIpListIds.Equal(beforeData.FromIpListIds) {
 		proto.UpdateMask.Append(proto, "from_ip_list_ids")
 		if !afterData.FromIpListIds.IsUnknown() && !afterData.FromIpListIds.IsNull() {
@@ -7889,7 +7880,6 @@ func CopyCreateApplicationPolicyRuleResponse(dst *ApplicationPolicyRuleResourceM
 	dst.Action = types.StringValue(src.Action)
 	dst.ApplicationId = types.StringValue(src.ApplicationId)
 	dst.Description = types.StringPointerValue(src.Description)
-	dst.ExternalScope = types.BoolPointerValue(src.ExternalScope)
 	{
 		protoValue := src.FromIpListIds
 		var dataValue types.List
@@ -8007,7 +7997,6 @@ func CopyReadApplicationPolicyRuleResponse(dst *ApplicationPolicyRuleResourceMod
 	dst.Action = types.StringValue(src.Action)
 	dst.ApplicationId = types.StringValue(src.ApplicationId)
 	dst.Description = types.StringPointerValue(src.Description)
-	dst.ExternalScope = types.BoolPointerValue(src.ExternalScope)
 	{
 		protoValue := src.FromIpListIds
 		var dataValue types.List
@@ -8125,7 +8114,6 @@ func CopyUpdateApplicationPolicyRuleResponse(dst *ApplicationPolicyRuleResourceM
 	dst.Action = types.StringValue(src.Action)
 	dst.ApplicationId = types.StringValue(src.ApplicationId)
 	dst.Description = types.StringPointerValue(src.Description)
-	dst.ExternalScope = types.BoolPointerValue(src.ExternalScope)
 	{
 		protoValue := src.FromIpListIds
 		var dataValue types.List

@@ -813,7 +813,6 @@ func (s *FakeConfigServer) CreateApplicationPolicyRule(ctx context.Context, req 
 		Action:        model.Action,
 		ApplicationId: model.ApplicationId,
 		Description:   model.Description,
-		ExternalScope: model.ExternalScope,
 		FromIpListIds: model.FromIpListIds,
 		FromLabels:    model.FromLabels,
 		ToIpListIds:   model.ToIpListIds,
@@ -849,7 +848,6 @@ func (s *FakeConfigServer) ReadApplicationPolicyRule(ctx context.Context, req *c
 		Action:        model.Action,
 		ApplicationId: model.ApplicationId,
 		Description:   model.Description,
-		ExternalScope: model.ExternalScope,
 		FromIpListIds: model.FromIpListIds,
 		FromLabels:    model.FromLabels,
 		ToIpListIds:   model.ToIpListIds,
@@ -891,8 +889,6 @@ func (s *FakeConfigServer) UpdateApplicationPolicyRule(ctx context.Context, req 
 			model.ApplicationId = req.ApplicationId
 		case "description":
 			model.Description = req.Description
-		case "external_scope":
-			model.ExternalScope = req.ExternalScope
 		case "from_ip_list_ids":
 			model.FromIpListIds = req.FromIpListIds
 		case "from_labels":
@@ -920,7 +916,6 @@ func (s *FakeConfigServer) UpdateApplicationPolicyRule(ctx context.Context, req 
 		Action:        model.Action,
 		ApplicationId: model.ApplicationId,
 		Description:   model.Description,
-		ExternalScope: model.ExternalScope,
 		FromIpListIds: model.FromIpListIds,
 		FromLabels:    model.FromLabels,
 		ToIpListIds:   model.ToIpListIds,
