@@ -7,6 +7,7 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework-validators/stringvalidator"
 	"github.com/hashicorp/terraform-plugin-framework/attr"
 	resource_schema "github.com/hashicorp/terraform-plugin-framework/resource/schema"
+	"github.com/hashicorp/terraform-plugin-framework/resource/schema/boolplanmodifier"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/planmodifier"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/stringplanmodifier"
 	"github.com/hashicorp/terraform-plugin-framework/schema/validator"
@@ -48,6 +49,7 @@ var (
 						},
 					},
 					attributeWithMode: attributeWithMode{
+						// TODO: Change this to ReadWriteAttributeMode.
 						Mode: KeyAttributeMode,
 					},
 				},
@@ -60,6 +62,7 @@ var (
 						},
 					},
 					attributeWithMode: attributeWithMode{
+						// TODO: Change this to ReadWriteAttributeMode.
 						Mode: KeyAttributeMode,
 					},
 				},
@@ -67,9 +70,19 @@ var (
 					Description: "Description of the application policy rule.",
 					Optional:    true,
 				},
-				"external_scope": resource_schema.BoolAttribute{
-					MarkdownDescription: "Specifies whether the application policy allow rule can be applied to scope outside the CloudSecure application. Applicable only for `\"Allow\"` action.",
-					Optional:            true,
+				"external_scope": BoolResourceAttributeWithMode{
+					BoolAttribute: resource_schema.BoolAttribute{
+						MarkdownDescription: "Specifies whether the application policy allow rule can be applied to scope outside the CloudSecure application. Applicable only for `\"Allow\"` action.",
+						Optional:            true,
+						PlanModifiers: []planmodifier.Bool{
+							// TODO: Remove this when moving to ReadWriteAttributeMode.
+							boolplanmodifier.RequiresReplace(),
+						},
+					},
+					attributeWithMode: attributeWithMode{
+						// TODO: Change this to ReadWriteAttributeMode.
+						Mode: WriteOnlyOnceAttributeMode,
+					},
 				},
 				"from_ip_list_ids": resource_schema.ListAttribute{
 					Description: "List of IDs of IP lists to allow/deny traffic from.",

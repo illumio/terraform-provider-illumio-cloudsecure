@@ -365,7 +365,6 @@ message CreateApplicationPolicyRuleResponse {
   string action = 2;
   string application_id = 10;
   optional string description = 3;
-  optional bool external_scope = 11;
   repeated string from_ip_list_ids = 4;
   repeated ApplicationPolicyRule_FromLabels from_labels = 5;
   repeated string to_ip_list_ids = 6;
@@ -382,7 +381,6 @@ message ReadApplicationPolicyRuleResponse {
   string action = 2;
   string application_id = 10;
   optional string description = 3;
-  optional bool external_scope = 11;
   repeated string from_ip_list_ids = 4;
   repeated ApplicationPolicyRule_FromLabels from_labels = 5;
   repeated string to_ip_list_ids = 6;
@@ -394,7 +392,6 @@ message UpdateApplicationPolicyRuleRequest {
   string action = 2;
   string application_id = 10;
   optional string description = 3;
-  optional bool external_scope = 11;
   repeated string from_ip_list_ids = 4;
   repeated ApplicationPolicyRule_FromLabels from_labels = 5;
   repeated string to_ip_list_ids = 6;
@@ -407,7 +404,6 @@ message UpdateApplicationPolicyRuleResponse {
   string action = 2;
   string application_id = 10;
   optional string description = 3;
-  optional bool external_scope = 11;
   repeated string from_ip_list_ids = 4;
   repeated ApplicationPolicyRule_FromLabels from_labels = 5;
   repeated string to_ip_list_ids = 6;

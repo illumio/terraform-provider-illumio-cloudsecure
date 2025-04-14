@@ -27,9 +27,11 @@ var (
 						},
 					},
 					attributeWithMode: attributeWithMode{
+						// TODO: Change this to ReadWriteAttributeMode.
 						Mode: KeyAttributeMode,
 					},
 				},
+				// TODO: Remove this attribute.
 				"application_resource_ids": ListResourceAttributeWithMode{
 					ListAttribute: resource_schema.ListAttribute{
 						ElementType: types.StringType,
@@ -54,6 +56,7 @@ var (
 						},
 					},
 					attributeWithMode: attributeWithMode{
+						// TODO: Change this to ReadWriteAttributeMode.
 						Mode: KeyAttributeMode,
 					},
 				},
