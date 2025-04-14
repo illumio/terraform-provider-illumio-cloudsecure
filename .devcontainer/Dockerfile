@@ -38,7 +38,7 @@ USER vscode
 RUN terraform -install-autocomplete
 
 RUN go install github.com/bufbuild/buf/cmd/buf@${BUF_VERSION} \
-    && go install go install github.com/golangci/golangci-lint/v2/cmd/golangci-lint@${GOLANGCI_VERSION}
+    && go install github.com/golangci/golangci-lint/v2/cmd/golangci-lint@${GOLANGCI_VERSION}
 
 USER root
 
