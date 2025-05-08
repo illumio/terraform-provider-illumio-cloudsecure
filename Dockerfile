@@ -4,17 +4,17 @@
 # Docker image that contains Terraform and the Terraform Provider for Illumio CloudSecure.
 #
 # To build the image:
-# docker build -t illumio-terraform:1.5.0 ./
+# docker build -t illumio-terraform:1.0.0-dev ./
 #
 # To build the image for another platform, e.g. arm64:
-# docker buildx build --platform linux/arm64 -t illumio-terraform:1.5.0 ./
+# docker buildx build --platform linux/arm64 -t illumio-terraform:1.0.0-dev ./
 #
 # To run the image:
-# docker run --rm -ti -e TF_VAR_illumio_cloudsecure_client_id -e TF_VAR_illumio_cloudsecure_client_secret --userns=keep-id:uid=$(id -u),gid=$(id -g) --mount type=bind,src="$(pwd)",target=/workspace illumio-terraform:1.5.0 <terraform command and arguments...>
+# docker run --rm -ti -e TF_VAR_illumio_cloudsecure_client_id -e TF_VAR_illumio_cloudsecure_client_secret --mount type=bind,src="$(pwd)",target=/workspace illumio-terraform:1.0.0-dev <terraform command and arguments...>
 
 FROM golang:1.24.3-bookworm AS build
 
-ARG VERSION=1.5.0
+ARG VERSION=1.0.0-dev
 
 USER root
 
@@ -34,7 +34,7 @@ FROM debian:bookworm
 
 ARG TARGETARCH
 ARG TERRAFORM_VERSION=1.11.4-1
-ARG VERSION=1.5.0
+ARG VERSION=1.0.0-dev
 
 USER root
 
