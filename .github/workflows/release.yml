@@ -86,9 +86,9 @@ jobs:
           push: true
           platforms: linux/amd64,linux/arm64
           build-args: |
-            VERSION=1.5.0
+            VERSION=${{ github.ref_name }}
           tags: |
-            ghcr.io/${{ github.repository }}:test
+            ghcr.io/${{ github.repository }}:${{ github.ref_name }}
 
       - name: Sign the images with GitHub OIDC Token
-        run: cosign sign --yes ghcr.io/${{ github.repository }}:test
+        run: cosign sign --yes ghcr.io/${{ github.repository }}:${{ github.ref_name }}
