@@ -69,7 +69,7 @@ RUN wget -q -O- https://apt.releases.hashicorp.com/gpg | \
 
 # Create a terraform:terraform user
 
-RUN addgroup --gid 10000 terraform && adduser --uid 10000 --gid 10000 --home /terraform terraform \
+RUN addgroup --gid 10000 terraform && adduser --uid 10000 --gid 10000 --disabled-password --home /terraform terraform \
     && mkdir -p /terraform/.terraform.d/plugins/registry.terraform.io/illumio/illumio-cloudsecure/${VERSION}/linux_${TARGETARCH} \
     && chown -R terraform:terraform /terraform
 
