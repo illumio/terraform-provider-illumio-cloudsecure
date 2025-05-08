@@ -11,9 +11,8 @@
 #
 name: release
 on:
-  push:
-    tags:
-      - "v*"
+  pull_request:
+    types: [opened, synchronize, reopened]
 permissions:
   contents: write
 jobs:
