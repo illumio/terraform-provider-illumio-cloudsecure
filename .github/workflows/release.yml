@@ -16,37 +16,37 @@ on:
 permissions:
   contents: write
 jobs:
-  goreleaser:
-    name: GoReleaser
-    runs-on: ubuntu-24.04
-    steps:
-      - name: Check out repo
-        uses: actions/checkout@v4
+  # goreleaser:
+  #   name: GoReleaser
+  #   runs-on: ubuntu-24.04
+  #   steps:
+  #     - name: Check out repo
+  #       uses: actions/checkout@v4
 
-      - name: Unshallow
-        run: git fetch --prune --unshallow
+  #     - name: Unshallow
+  #       run: git fetch --prune --unshallow
 
-      - name: Set up Go
-        uses: actions/setup-go@v5
-        with:
-          go-version-file: "go.mod"
-          cache: true
+  #     - name: Set up Go
+  #       uses: actions/setup-go@v5
+  #       with:
+  #         go-version-file: "go.mod"
+  #         cache: true
 
-      - name: Import GPG key
-        uses: crazy-max/ghaction-import-gpg@v6
-        id: import_gpg
-        with:
-          gpg_private_key: ${{ secrets.GPG_PRIVATE_KEY }}
-          passphrase: ${{ secrets.PASSPHRASE }}
+  #     - name: Import GPG key
+  #       uses: crazy-max/ghaction-import-gpg@v6
+  #       id: import_gpg
+  #       with:
+  #         gpg_private_key: ${{ secrets.GPG_PRIVATE_KEY }}
+  #         passphrase: ${{ secrets.PASSPHRASE }}
 
-      - name: Run GoReleaser
-        uses: goreleaser/goreleaser-action@v6
-        with:
-          version: latest
-          args: release --clean
-        env:
-          GPG_FINGERPRINT: ${{ steps.import_gpg.outputs.fingerprint }}
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+  #     - name: Run GoReleaser
+  #       uses: goreleaser/goreleaser-action@v6
+  #       with:
+  #         version: latest
+  #         args: release --clean
+  #       env:
+  #         GPG_FINGERPRINT: ${{ steps.import_gpg.outputs.fingerprint }}
+  #         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
   docker:
     name: Docker
