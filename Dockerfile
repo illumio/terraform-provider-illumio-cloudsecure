@@ -14,7 +14,7 @@
 
 FROM golang:1.24.3-bookworm AS build
 
-ARG VERSION=1.0.0-dev
+ARG VERSION=v1.0.0-dev
 
 USER root
 
@@ -24,8 +24,8 @@ RUN mkdir -p /build \
     && cd /build \
     && git clone https://github.com/illumio/terraform-provider-illumio-cloudsecure.git \
     && cd terraform-provider-illumio-cloudsecure \
-    && git checkout v${VERSION} \
-    && CGO_ENABLED=0 go build -trimpath -ldflags="-s -w -X main.version=v${VERSION} -X main.commit=`git rev-parse --short HEAD`" -a -o terraform-provider-illumio-cloudsecure \
+    && git checkout ${VERSION} \
+    && CGO_ENABLED=0 go build -trimpath -ldflags="-s -w -X main.version=${VERSION} -X main.commit=`git rev-parse --short HEAD`" -a -o terraform-provider-illumio-cloudsecure \
     && mv terraform-provider-illumio-cloudsecure / \
     && cd / \
     && rm -rf /build
@@ -34,7 +34,7 @@ FROM debian:bookworm
 
 ARG TARGETARCH
 ARG TERRAFORM_VERSION=1.11.4-1
-ARG VERSION=1.0.0-dev
+ARG VERSION=v1.0.0-dev
 
 USER root
 
@@ -70,12 +70,12 @@ RUN wget -q -O- https://apt.releases.hashicorp.com/gpg | \
 # Create a terraform:terraform user
 
 RUN addgroup --gid 10000 terraform && adduser --uid 10000 --gid 10000 --disabled-password --home /terraform terraform \
-    && mkdir -p /terraform/.terraform.d/plugins/registry.terraform.io/illumio/illumio-cloudsecure/${VERSION}/linux_${TARGETARCH} \
+    && mkdir -p /terraform/.terraform.d/plugins/registry.terraform.io/illumio/illumio-cloudsecure/${VERSION#v}/linux_${TARGETARCH} \
     && chown -R terraform:terraform /terraform
 
 # Pre-install the terraform-provider-illumio-cloudsecure provider
 
-COPY --from=build /terraform-provider-illumio-cloudsecure /terraform/.terraform.d/plugins/registry.terraform.io/illumio/illumio-cloudsecure/${VERSION}/linux_${TARGETARCH}/
+COPY --from=build /terraform-provider-illumio-cloudsecure /terraform/.terraform.d/plugins/registry.terraform.io/illumio/illumio-cloudsecure/${VERSION#v}/linux_${TARGETARCH}/
 
 # Create a /workspace volume mount point and use that as the working directory
 
