@@ -372,7 +372,7 @@ var (
 					ElementType: types.StringType,
 				},
 				"icon": resource_schema.ObjectAttribute{
-					MarkdownDescription: "Icon of the created CloudSecure labels. The supported icon names are: \n > ``` " + strings.Join(SupportedIconTypes, ",") + " ```",
+					MarkdownDescription: "Icon of the created CloudSecure labels. The supported icon names are: \n > ``` " + strings.Join(SupportedIconTypes, ", ") + " ```",
 					Required:            true,
 					AttributeTypes: map[string]attr.Type{
 						"name":             types.StringType,
