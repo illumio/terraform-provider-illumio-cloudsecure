@@ -39,7 +39,7 @@ resource "illumio-cloudsecure_azure_subscription" "managed_azure_subscription" {
 
 
 /*
-  ✅ Recommended: Use the official Illumio CloudSecure module to onboard Azure subscriptions with Illumio CloudSecure.
+  ✅ Recommended Approach: Use the official Illumio CloudSecure module to onboard Azure subscriptions with Illumio CloudSecure.
 
   This module simplifies authentication, secret handling, and role assignment,
   promoting maintainable and secure infrastructure-as-code.

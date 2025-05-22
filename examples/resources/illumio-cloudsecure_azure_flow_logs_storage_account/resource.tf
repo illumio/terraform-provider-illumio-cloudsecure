@@ -18,7 +18,7 @@ resource "illumio-cloudsecure_azure_flow_logs_storage_account" "managed_flow_log
 
 
 /*
-  ✅ Recommended: Use the official Illumio CloudSecure module to integrate Azure subscriptions and
+  ✅ Recommended Approach: Use the official Illumio CloudSecure module to integrate Azure subscriptions and
    storage accounts with Illumio CloudSecure.
 
   These modules encapsulate authentication, role-based access, and flow log storage configuration,

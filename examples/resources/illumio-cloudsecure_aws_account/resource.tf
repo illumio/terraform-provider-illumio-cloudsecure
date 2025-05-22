@@ -24,7 +24,7 @@ resource "illumio-cloudsecure_aws_account" "managed_aws_account" {
 
 
 /*
-  ✅ Recommended: Use the official Illumio CloudSecure module to register an AWS account with Illumio CloudSecure.
+  ✅ Recommended Approach: Use the official Illumio CloudSecure module to register an AWS account with Illumio CloudSecure.
 
   This module abstracts direct resource management, ensuring compliance with
   Illumio’s onboarding workflow and enforcing best practices for secure,
