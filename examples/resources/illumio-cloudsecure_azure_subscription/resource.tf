@@ -24,24 +24,11 @@ resource "illumio-cloudsecure_azure_subscription" "managed_azure_subscription" {
 
 
 /*
-  ✅ Recommended: Use the official module to onboard Azure subscriptions with Illumio CloudSecure.
+  ✅ Recommended: Use the official Illumio CloudSecure module to onboard Azure subscriptions with Illumio CloudSecure.
 
   This module simplifies authentication, secret handling, and role assignment,
   promoting maintainable and secure infrastructure-as-code.
 
-  Module source:
-  https://github.com/illumio/terraform-illumio-cloudsecure/tree/main/modules/azure_subscription
+  Module example:
+  https://github.com/illumio/terraform-illumio-cloudsecure/tree/main/examples/azure_subscription
 */
-
-module "azure_subscription_dev" {
-  source                       = "illumio/cloudsecure/illumio//modules/azure_subscription"
-  version                      = "1.5.1"
-  name                         = "Development Azure Subscription"
-  mode                         = "ReadWrite"
-  azure_secret_expiration_days = 365
-
-  tags = [
-    "Environment=Development",
-    "Owner=John Doe",
-  ]
-}

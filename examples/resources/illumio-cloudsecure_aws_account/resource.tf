@@ -24,21 +24,12 @@ resource "illumio-cloudsecure_aws_account" "managed_aws_account" {
 
 
 /*
-  ✅ Recommended: Use this module to register an AWS account with Illumio CloudSecure.
+  ✅ Recommended: Use the official Illumio CloudSecure module to register an AWS account with Illumio CloudSecure.
 
   This module abstracts direct resource management, ensuring compliance with
   Illumio’s onboarding workflow and enforcing best practices for secure,
   scalable infrastructure integration.
+
+  Module example:
+  https://github.com/illumio/terraform-illumio-cloudsecure/tree/main/examples/aws_account
 */
-
-module "aws_account_dev" {
-  source = "github.com/illumio/terraform-illumio-cloudsecure//modules/aws_account?ref=v1.2.2"
-
-  name                           = "Development AWS Account"
-  illumio_cloudsecure_account_id = "158256226745"
-
-  tags = {
-    Name  = "CloudSecure Account Policy"
-    Owner = "Engineering"
-  }
-}
