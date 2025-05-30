@@ -60,7 +60,7 @@ cp terraform-provider-illumio-cloudsecure ~/.terraform.d/plugins/registry.terraf
       required_providers {
          illumio-cloudsecure = {
             source  = "illumio/illumio-cloudsecure"
-            version = "~> 1.5.0"
+            version = "~> 1.5.3"
          }
       }
    }
