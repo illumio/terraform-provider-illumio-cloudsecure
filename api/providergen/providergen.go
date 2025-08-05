@@ -841,8 +841,8 @@ func TerraformObjectAttributeTypeToProtoType(nestedMessageNamePrefix, attrName s
 
 	for _, fieldName := range attrs {
 		fieldType := object.AttrTypes[fieldName]
-		t, err := TerraformAttributeTypeToProtoType(wrappedMessageName, fieldName, fieldType, true)
 
+		t, err := TerraformAttributeTypeToProtoType(wrappedMessageName, fieldName, fieldType, true)
 		if err != nil {
 			return "", nil, fmt.Errorf("failed to transform field %s in object %s: %w", fieldName, nestedMessageNamePrefix, err)
 		}

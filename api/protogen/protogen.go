@@ -294,8 +294,8 @@ func terraformObjectAttributeTypeToProtoType(messageNamePrefix, attrName string,
 
 	for _, name := range attrs {
 		attrType := obj.AttrTypes[name]
-		isRepeated, t, msg, err := terraformAttributeTypeToProtoType(wrappedMessageName, name, attrType, tagger)
 
+		isRepeated, t, msg, err := terraformAttributeTypeToProtoType(wrappedMessageName, name, attrType, tagger)
 		if err != nil {
 			return false, "", nil, fmt.Errorf("failed to convert field %s in object %s: %w", name, attrName, err)
 		}
