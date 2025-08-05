@@ -86,7 +86,8 @@ func jsonResponse(w http.ResponseWriter, status int, data any) {
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(status)
 
-	if encodeError := json.NewEncoder(w).Encode(data); encodeError != nil {
+	encodeError := json.NewEncoder(w).Encode(data)
+	if encodeError != nil {
 		http.Error(w, encodeError.Error(), http.StatusInternalServerError)
 
 		return

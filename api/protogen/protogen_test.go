@@ -640,6 +640,7 @@ func (suite *GenerateTestSuite) TestGRPCAPISpecTemplateMessage() { //nolint:main
 	for name, tc := range tests {
 		suite.Run(name, func() {
 			var buf bytes.Buffer
+
 			err := grpcAPISpecTemplate.ExecuteTemplate(&buf, "message", tc.message)
 
 			if suite.NoError(err, "template execution failed") {
@@ -837,6 +838,7 @@ func (suite *GenerateTestSuite) TestGRPCAPISpecTemplate() {
 	for name, tc := range tests {
 		suite.Run(name, func() {
 			var buf bytes.Buffer
+
 			err := grpcAPISpecTemplate.Execute(&buf, tc.data)
 
 			if suite.NoError(err, "template execution failed") {

@@ -143,7 +143,9 @@ func main() {
 		panic(fmt.Sprintf("failed to configure logger: %s", err))
 	}
 
-	listener, err := net.Listen(network, apiEndpoint)
+	listenConfig := net.ListenConfig{}
+
+	listener, err := listenConfig.Listen(context.Background(), network, apiEndpoint)
 	if err != nil {
 		logger.Fatal("failed to open network port", zap.Error(err))
 	}
@@ -175,9 +177,11 @@ func main() {
 			cert,
 		)
 	}()
+
 	logger.Info("token endpoint listening", zap.String("address", tokenEndpoint))
 
-	if err := server.Serve(listener); err != nil {
+	err = server.Serve(listener)
+	if err != nil {
 		logger.Fatal("server failed", zap.Error(err))
 	}
 }

@@ -2,7 +2,7 @@ ARG VARIANT=1.24-bookworm
 FROM mcr.microsoft.com/vscode/devcontainers/go:${VARIANT}
 
 ARG BUF_VERSION=v1.56.0
-ARG GOLANGCI_VERSION=v2.0.2
+ARG GOLANGCI_VERSION=v2.3.1
 ARG TERRAFORM_VERSION=1.11.4-1
 
 USER root

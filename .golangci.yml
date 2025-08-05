@@ -26,6 +26,7 @@ linters:
     - testpackage
     - varnamelen
     - wrapcheck
+    - wsl
   settings:
     gosec:
       config:

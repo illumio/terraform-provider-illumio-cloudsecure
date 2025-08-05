@@ -461,6 +461,7 @@ func TerraformObjectAttributeTypeToProtoType(nestedMessageNamePrefix, attrName s
 
 func TerraformRepeatedAttributeTypeToProtoType(nestedMessageNamePrefix, attrName string, elementType attr.Type) (t string, err error) {
 	elementTypeIsRepeated := false
+
 	switch elementType.(type) {
 	case types.ListType:
 		elementTypeIsRepeated = true
