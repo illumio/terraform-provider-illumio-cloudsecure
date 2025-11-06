@@ -3140,6 +3140,7 @@ type OrganizationPolicyRuleResourceModel struct {
 	Id                   types.String `tfsdk:"id"`
 	Action               types.String `tfsdk:"action"`
 	Description          types.String `tfsdk:"description"`
+	ExternalScope        types.Bool   `tfsdk:"external_scope"`
 	FromIpListIds        types.List   `tfsdk:"from_ip_list_ids"`
 	FromLabels           types.List   `tfsdk:"from_labels"`
 	OrganizationPolicyId types.String `tfsdk:"organization_policy_id"`
@@ -4744,6 +4745,12 @@ func NewCreateOrganizationPolicyRuleRequest(ctx context.Context, data *Organizat
 		protoValue = dataValue.(types.String).ValueString()
 		proto.Description = &protoValue
 	}
+	if !data.ExternalScope.IsUnknown() && !data.ExternalScope.IsNull() {
+		var dataValue attr.Value = data.ExternalScope
+		var protoValue bool
+		protoValue = dataValue.(types.Bool).ValueBool()
+		proto.ExternalScope = protoValue
+	}
 	if !data.FromIpListIds.IsUnknown() && !data.FromIpListIds.IsNull() {
 		var dataValue attr.Value = data.FromIpListIds
 		var protoValue []string
@@ -6264,6 +6271,15 @@ func NewUpdateOrganizationPolicyRuleRequest(ctx context.Context, beforeData, aft
 			var protoValue string
 			protoValue = dataValue.(types.String).ValueString()
 			proto.Description = &protoValue
+		}
+	}
+	if !afterData.ExternalScope.Equal(beforeData.ExternalScope) {
+		proto.UpdateMask.Append(proto, "external_scope")
+		if !afterData.ExternalScope.IsUnknown() && !afterData.ExternalScope.IsNull() {
+			var dataValue attr.Value = afterData.ExternalScope
+			var protoValue bool
+			protoValue = dataValue.(types.Bool).ValueBool()
+			proto.ExternalScope = protoValue
 		}
 	}
 	if !afterData.FromIpListIds.Equal(beforeData.FromIpListIds) {
@@ -9956,6 +9972,7 @@ func CopyCreateOrganizationPolicyRuleResponse(dst *OrganizationPolicyRuleResourc
 	dst.Id = types.StringValue(src.Id)
 	dst.Action = types.StringValue(src.Action)
 	dst.Description = types.StringPointerValue(src.Description)
+	dst.ExternalScope = types.BoolValue(src.ExternalScope)
 	{
 		protoValue := src.FromIpListIds
 		var dataValue types.List
@@ -10073,6 +10090,7 @@ func CopyReadOrganizationPolicyRuleResponse(dst *OrganizationPolicyRuleResourceM
 	dst.Id = types.StringValue(src.Id)
 	dst.Action = types.StringValue(src.Action)
 	dst.Description = types.StringPointerValue(src.Description)
+	dst.ExternalScope = types.BoolValue(src.ExternalScope)
 	{
 		protoValue := src.FromIpListIds
 		var dataValue types.List
@@ -10190,6 +10208,7 @@ func CopyUpdateOrganizationPolicyRuleResponse(dst *OrganizationPolicyRuleResourc
 	dst.Id = types.StringValue(src.Id)
 	dst.Action = types.StringValue(src.Action)
 	dst.Description = types.StringPointerValue(src.Description)
+	dst.ExternalScope = types.BoolValue(src.ExternalScope)
 	{
 		protoValue := src.FromIpListIds
 		var dataValue types.List
