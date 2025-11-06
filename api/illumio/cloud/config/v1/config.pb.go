@@ -7569,6 +7569,7 @@ func (x *DeleteK8SClusterOnboardingCredentialRequest) GetId() string {
 type CreateOrganizationPolicyRequest struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
 	Description   *string                `protobuf:"bytes,2,opt,name=description,proto3,oneof" json:"description,omitempty"`
+	Enabled       bool                   `protobuf:"varint,5,opt,name=enabled,proto3" json:"enabled,omitempty"`
 	Name          string                 `protobuf:"bytes,3,opt,name=name,proto3" json:"name,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
@@ -7611,6 +7612,13 @@ func (x *CreateOrganizationPolicyRequest) GetDescription() string {
 	return ""
 }
 
+func (x *CreateOrganizationPolicyRequest) GetEnabled() bool {
+	if x != nil {
+		return x.Enabled
+	}
+	return false
+}
+
 func (x *CreateOrganizationPolicyRequest) GetName() string {
 	if x != nil {
 		return x.Name
@@ -7622,6 +7630,7 @@ type CreateOrganizationPolicyResponse struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
 	Id            string                 `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
 	Description   *string                `protobuf:"bytes,2,opt,name=description,proto3,oneof" json:"description,omitempty"`
+	Enabled       bool                   `protobuf:"varint,5,opt,name=enabled,proto3" json:"enabled,omitempty"`
 	Name          string                 `protobuf:"bytes,3,opt,name=name,proto3" json:"name,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
@@ -7669,6 +7678,13 @@ func (x *CreateOrganizationPolicyResponse) GetDescription() string {
 		return *x.Description
 	}
 	return ""
+}
+
+func (x *CreateOrganizationPolicyResponse) GetEnabled() bool {
+	if x != nil {
+		return x.Enabled
+	}
+	return false
 }
 
 func (x *CreateOrganizationPolicyResponse) GetName() string {
@@ -7726,6 +7742,7 @@ type ReadOrganizationPolicyResponse struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
 	Id            string                 `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
 	Description   *string                `protobuf:"bytes,2,opt,name=description,proto3,oneof" json:"description,omitempty"`
+	Enabled       bool                   `protobuf:"varint,5,opt,name=enabled,proto3" json:"enabled,omitempty"`
 	Name          string                 `protobuf:"bytes,3,opt,name=name,proto3" json:"name,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
@@ -7775,6 +7792,13 @@ func (x *ReadOrganizationPolicyResponse) GetDescription() string {
 	return ""
 }
 
+func (x *ReadOrganizationPolicyResponse) GetEnabled() bool {
+	if x != nil {
+		return x.Enabled
+	}
+	return false
+}
+
 func (x *ReadOrganizationPolicyResponse) GetName() string {
 	if x != nil {
 		return x.Name
@@ -7786,6 +7810,7 @@ type UpdateOrganizationPolicyRequest struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
 	Id            string                 `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
 	Description   *string                `protobuf:"bytes,2,opt,name=description,proto3,oneof" json:"description,omitempty"`
+	Enabled       bool                   `protobuf:"varint,5,opt,name=enabled,proto3" json:"enabled,omitempty"`
 	Name          string                 `protobuf:"bytes,3,opt,name=name,proto3" json:"name,omitempty"`
 	UpdateMask    *fieldmaskpb.FieldMask `protobuf:"bytes,4,opt,name=update_mask,json=updateMask,proto3" json:"update_mask,omitempty"`
 	unknownFields protoimpl.UnknownFields
@@ -7836,6 +7861,13 @@ func (x *UpdateOrganizationPolicyRequest) GetDescription() string {
 	return ""
 }
 
+func (x *UpdateOrganizationPolicyRequest) GetEnabled() bool {
+	if x != nil {
+		return x.Enabled
+	}
+	return false
+}
+
 func (x *UpdateOrganizationPolicyRequest) GetName() string {
 	if x != nil {
 		return x.Name
@@ -7854,6 +7886,7 @@ type UpdateOrganizationPolicyResponse struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
 	Id            string                 `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
 	Description   *string                `protobuf:"bytes,2,opt,name=description,proto3,oneof" json:"description,omitempty"`
+	Enabled       bool                   `protobuf:"varint,5,opt,name=enabled,proto3" json:"enabled,omitempty"`
 	Name          string                 `protobuf:"bytes,3,opt,name=name,proto3" json:"name,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
@@ -7901,6 +7934,13 @@ func (x *UpdateOrganizationPolicyResponse) GetDescription() string {
 		return *x.Description
 	}
 	return ""
+}
+
+func (x *UpdateOrganizationPolicyResponse) GetEnabled() bool {
+	if x != nil {
+		return x.Enabled
+	}
+	return false
 }
 
 func (x *UpdateOrganizationPolicyResponse) GetName() string {
@@ -10036,33 +10076,38 @@ const file_illumio_cloud_config_v1_config_proto_rawDesc = "" +
 	"\x04name\x18\a \x01(\tR\x04nameB\x0e\n" +
 	"\f_description\"=\n" +
 	"+DeleteK8SClusterOnboardingCredentialRequest\x12\x0e\n" +
-	"\x02id\x18\x01 \x01(\tR\x02id\"l\n" +
+	"\x02id\x18\x01 \x01(\tR\x02id\"\x86\x01\n" +
 	"\x1fCreateOrganizationPolicyRequest\x12%\n" +
-	"\vdescription\x18\x02 \x01(\tH\x00R\vdescription\x88\x01\x01\x12\x12\n" +
+	"\vdescription\x18\x02 \x01(\tH\x00R\vdescription\x88\x01\x01\x12\x18\n" +
+	"\aenabled\x18\x05 \x01(\bR\aenabled\x12\x12\n" +
 	"\x04name\x18\x03 \x01(\tR\x04nameB\x0e\n" +
-	"\f_description\"}\n" +
+	"\f_description\"\x97\x01\n" +
 	" CreateOrganizationPolicyResponse\x12\x0e\n" +
 	"\x02id\x18\x01 \x01(\tR\x02id\x12%\n" +
-	"\vdescription\x18\x02 \x01(\tH\x00R\vdescription\x88\x01\x01\x12\x12\n" +
+	"\vdescription\x18\x02 \x01(\tH\x00R\vdescription\x88\x01\x01\x12\x18\n" +
+	"\aenabled\x18\x05 \x01(\bR\aenabled\x12\x12\n" +
 	"\x04name\x18\x03 \x01(\tR\x04nameB\x0e\n" +
 	"\f_description\"/\n" +
 	"\x1dReadOrganizationPolicyRequest\x12\x0e\n" +
-	"\x02id\x18\x01 \x01(\tR\x02id\"{\n" +
+	"\x02id\x18\x01 \x01(\tR\x02id\"\x95\x01\n" +
 	"\x1eReadOrganizationPolicyResponse\x12\x0e\n" +
 	"\x02id\x18\x01 \x01(\tR\x02id\x12%\n" +
-	"\vdescription\x18\x02 \x01(\tH\x00R\vdescription\x88\x01\x01\x12\x12\n" +
+	"\vdescription\x18\x02 \x01(\tH\x00R\vdescription\x88\x01\x01\x12\x18\n" +
+	"\aenabled\x18\x05 \x01(\bR\aenabled\x12\x12\n" +
 	"\x04name\x18\x03 \x01(\tR\x04nameB\x0e\n" +
-	"\f_description\"\xb9\x01\n" +
+	"\f_description\"\xd3\x01\n" +
 	"\x1fUpdateOrganizationPolicyRequest\x12\x0e\n" +
 	"\x02id\x18\x01 \x01(\tR\x02id\x12%\n" +
-	"\vdescription\x18\x02 \x01(\tH\x00R\vdescription\x88\x01\x01\x12\x12\n" +
+	"\vdescription\x18\x02 \x01(\tH\x00R\vdescription\x88\x01\x01\x12\x18\n" +
+	"\aenabled\x18\x05 \x01(\bR\aenabled\x12\x12\n" +
 	"\x04name\x18\x03 \x01(\tR\x04name\x12;\n" +
 	"\vupdate_mask\x18\x04 \x01(\v2\x1a.google.protobuf.FieldMaskR\n" +
 	"updateMaskB\x0e\n" +
-	"\f_description\"}\n" +
+	"\f_description\"\x97\x01\n" +
 	" UpdateOrganizationPolicyResponse\x12\x0e\n" +
 	"\x02id\x18\x01 \x01(\tR\x02id\x12%\n" +
-	"\vdescription\x18\x02 \x01(\tH\x00R\vdescription\x88\x01\x01\x12\x12\n" +
+	"\vdescription\x18\x02 \x01(\tH\x00R\vdescription\x88\x01\x01\x12\x18\n" +
+	"\aenabled\x18\x05 \x01(\bR\aenabled\x12\x12\n" +
 	"\x04name\x18\x03 \x01(\tR\x04nameB\x0e\n" +
 	"\f_description\"1\n" +
 	"\x1fDeleteOrganizationPolicyRequest\x12\x0e\n" +

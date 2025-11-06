@@ -219,6 +219,7 @@ type K8SClusterOnboardingCredential struct {
 type OrganizationPolicy struct {
 	Id          string
 	Description *string
+	Enabled     bool
 	Name        string
 }
 
@@ -2066,11 +2067,13 @@ func (s *FakeConfigServer) CreateOrganizationPolicy(ctx context.Context, req *co
 	model := &OrganizationPolicy{
 		Id:          id,
 		Description: req.Description,
+		Enabled:     req.Enabled,
 		Name:        req.Name,
 	}
 	resp := &configv1.CreateOrganizationPolicyResponse{
 		Id:          id,
 		Description: model.Description,
+		Enabled:     model.Enabled,
 		Name:        model.Name,
 	}
 	s.OrganizationPolicyMutex.Lock()
@@ -2100,6 +2103,7 @@ func (s *FakeConfigServer) ReadOrganizationPolicy(ctx context.Context, req *conf
 	resp := &configv1.ReadOrganizationPolicyResponse{
 		Id:          id,
 		Description: model.Description,
+		Enabled:     model.Enabled,
 		Name:        model.Name,
 	}
 	s.OrganizationPolicyMutex.RUnlock()
@@ -2133,6 +2137,8 @@ func (s *FakeConfigServer) UpdateOrganizationPolicy(ctx context.Context, req *co
 		switch path {
 		case "description":
 			model.Description = req.Description
+		case "enabled":
+			model.Enabled = req.Enabled
 		case "name":
 			model.Name = req.Name
 		default:
@@ -2150,6 +2156,7 @@ func (s *FakeConfigServer) UpdateOrganizationPolicy(ctx context.Context, req *co
 	resp := &configv1.UpdateOrganizationPolicyResponse{
 		Id:          id,
 		Description: model.Description,
+		Enabled:     model.Enabled,
 		Name:        model.Name,
 	}
 	s.OrganizationPolicyMutex.Unlock()

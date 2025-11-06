@@ -3132,6 +3132,7 @@ type K8SClusterOnboardingCredentialResourceModel struct {
 type OrganizationPolicyResourceModel struct {
 	Id          types.String `tfsdk:"id"`
 	Description types.String `tfsdk:"description"`
+	Enabled     types.Bool   `tfsdk:"enabled"`
 	Name        types.String `tfsdk:"name"`
 }
 
@@ -4689,6 +4690,12 @@ func NewCreateOrganizationPolicyRequest(ctx context.Context, data *OrganizationP
 		protoValue = dataValue.(types.String).ValueString()
 		proto.Description = &protoValue
 	}
+	if !data.Enabled.IsUnknown() && !data.Enabled.IsNull() {
+		var dataValue attr.Value = data.Enabled
+		var protoValue bool
+		protoValue = dataValue.(types.Bool).ValueBool()
+		proto.Enabled = protoValue
+	}
 	if !data.Name.IsUnknown() && !data.Name.IsNull() {
 		var dataValue attr.Value = data.Name
 		var protoValue string
@@ -6213,6 +6220,15 @@ func NewUpdateOrganizationPolicyRequest(ctx context.Context, beforeData, afterDa
 			var protoValue string
 			protoValue = dataValue.(types.String).ValueString()
 			proto.Description = &protoValue
+		}
+	}
+	if !afterData.Enabled.Equal(beforeData.Enabled) {
+		proto.UpdateMask.Append(proto, "enabled")
+		if !afterData.Enabled.IsUnknown() && !afterData.Enabled.IsNull() {
+			var dataValue attr.Value = afterData.Enabled
+			var protoValue bool
+			protoValue = dataValue.(types.Bool).ValueBool()
+			proto.Enabled = protoValue
 		}
 	}
 	if !afterData.Name.Equal(beforeData.Name) {
@@ -9921,16 +9937,19 @@ func CopyUpdateK8SClusterOnboardingCredentialResponse(dst *K8SClusterOnboardingC
 func CopyCreateOrganizationPolicyResponse(dst *OrganizationPolicyResourceModel, src *configv1.CreateOrganizationPolicyResponse) {
 	dst.Id = types.StringValue(src.Id)
 	dst.Description = types.StringPointerValue(src.Description)
+	dst.Enabled = types.BoolValue(src.Enabled)
 	dst.Name = types.StringValue(src.Name)
 }
 func CopyReadOrganizationPolicyResponse(dst *OrganizationPolicyResourceModel, src *configv1.ReadOrganizationPolicyResponse) {
 	dst.Id = types.StringValue(src.Id)
 	dst.Description = types.StringPointerValue(src.Description)
+	dst.Enabled = types.BoolValue(src.Enabled)
 	dst.Name = types.StringValue(src.Name)
 }
 func CopyUpdateOrganizationPolicyResponse(dst *OrganizationPolicyResourceModel, src *configv1.UpdateOrganizationPolicyResponse) {
 	dst.Id = types.StringValue(src.Id)
 	dst.Description = types.StringPointerValue(src.Description)
+	dst.Enabled = types.BoolValue(src.Enabled)
 	dst.Name = types.StringValue(src.Name)
 }
 func CopyCreateOrganizationPolicyRuleResponse(dst *OrganizationPolicyRuleResourceModel, src *configv1.CreateOrganizationPolicyRuleResponse) {
