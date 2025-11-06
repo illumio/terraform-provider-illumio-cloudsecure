@@ -227,6 +227,7 @@ type OrganizationPolicyRule struct {
 	Id                   string
 	Action               string
 	Description          *string
+	ExternalScope        bool
 	FromIpListIds        []string
 	FromLabels           []*configv1.OrganizationPolicyRule_FromLabels
 	OrganizationPolicyId string
@@ -2197,6 +2198,7 @@ func (s *FakeConfigServer) CreateOrganizationPolicyRule(ctx context.Context, req
 		Id:                   id,
 		Action:               req.Action,
 		Description:          req.Description,
+		ExternalScope:        req.ExternalScope,
 		FromIpListIds:        req.FromIpListIds,
 		FromLabels:           req.FromLabels,
 		OrganizationPolicyId: req.OrganizationPolicyId,
@@ -2208,6 +2210,7 @@ func (s *FakeConfigServer) CreateOrganizationPolicyRule(ctx context.Context, req
 		Id:                   id,
 		Action:               model.Action,
 		Description:          model.Description,
+		ExternalScope:        model.ExternalScope,
 		FromIpListIds:        model.FromIpListIds,
 		FromLabels:           model.FromLabels,
 		OrganizationPolicyId: model.OrganizationPolicyId,
@@ -2243,6 +2246,7 @@ func (s *FakeConfigServer) ReadOrganizationPolicyRule(ctx context.Context, req *
 		Id:                   id,
 		Action:               model.Action,
 		Description:          model.Description,
+		ExternalScope:        model.ExternalScope,
 		FromIpListIds:        model.FromIpListIds,
 		FromLabels:           model.FromLabels,
 		OrganizationPolicyId: model.OrganizationPolicyId,
@@ -2283,6 +2287,8 @@ func (s *FakeConfigServer) UpdateOrganizationPolicyRule(ctx context.Context, req
 			model.Action = req.Action
 		case "description":
 			model.Description = req.Description
+		case "external_scope":
+			model.ExternalScope = req.ExternalScope
 		case "from_ip_list_ids":
 			model.FromIpListIds = req.FromIpListIds
 		case "from_labels":
@@ -2311,6 +2317,7 @@ func (s *FakeConfigServer) UpdateOrganizationPolicyRule(ctx context.Context, req
 		Id:                   id,
 		Action:               model.Action,
 		Description:          model.Description,
+		ExternalScope:        model.ExternalScope,
 		FromIpListIds:        model.FromIpListIds,
 		FromLabels:           model.FromLabels,
 		OrganizationPolicyId: model.OrganizationPolicyId,
