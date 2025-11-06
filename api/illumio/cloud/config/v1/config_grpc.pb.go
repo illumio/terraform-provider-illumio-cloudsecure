@@ -71,6 +71,14 @@ const (
 	ConfigService_ReadK8SClusterOnboardingCredential_FullMethodName   = "/illumio.cloud.config.v1.ConfigService/ReadK8SClusterOnboardingCredential"
 	ConfigService_UpdateK8SClusterOnboardingCredential_FullMethodName = "/illumio.cloud.config.v1.ConfigService/UpdateK8SClusterOnboardingCredential"
 	ConfigService_DeleteK8SClusterOnboardingCredential_FullMethodName = "/illumio.cloud.config.v1.ConfigService/DeleteK8SClusterOnboardingCredential"
+	ConfigService_CreateOrganizationPolicy_FullMethodName             = "/illumio.cloud.config.v1.ConfigService/CreateOrganizationPolicy"
+	ConfigService_ReadOrganizationPolicy_FullMethodName               = "/illumio.cloud.config.v1.ConfigService/ReadOrganizationPolicy"
+	ConfigService_UpdateOrganizationPolicy_FullMethodName             = "/illumio.cloud.config.v1.ConfigService/UpdateOrganizationPolicy"
+	ConfigService_DeleteOrganizationPolicy_FullMethodName             = "/illumio.cloud.config.v1.ConfigService/DeleteOrganizationPolicy"
+	ConfigService_CreateOrganizationPolicyRule_FullMethodName         = "/illumio.cloud.config.v1.ConfigService/CreateOrganizationPolicyRule"
+	ConfigService_ReadOrganizationPolicyRule_FullMethodName           = "/illumio.cloud.config.v1.ConfigService/ReadOrganizationPolicyRule"
+	ConfigService_UpdateOrganizationPolicyRule_FullMethodName         = "/illumio.cloud.config.v1.ConfigService/UpdateOrganizationPolicyRule"
+	ConfigService_DeleteOrganizationPolicyRule_FullMethodName         = "/illumio.cloud.config.v1.ConfigService/DeleteOrganizationPolicyRule"
 	ConfigService_CreateTagToLabel_FullMethodName                     = "/illumio.cloud.config.v1.ConfigService/CreateTagToLabel"
 	ConfigService_ReadTagToLabel_FullMethodName                       = "/illumio.cloud.config.v1.ConfigService/ReadTagToLabel"
 	ConfigService_UpdateTagToLabel_FullMethodName                     = "/illumio.cloud.config.v1.ConfigService/UpdateTagToLabel"
@@ -129,6 +137,14 @@ type ConfigServiceClient interface {
 	ReadK8SClusterOnboardingCredential(ctx context.Context, in *ReadK8SClusterOnboardingCredentialRequest, opts ...grpc.CallOption) (*ReadK8SClusterOnboardingCredentialResponse, error)
 	UpdateK8SClusterOnboardingCredential(ctx context.Context, in *UpdateK8SClusterOnboardingCredentialRequest, opts ...grpc.CallOption) (*UpdateK8SClusterOnboardingCredentialResponse, error)
 	DeleteK8SClusterOnboardingCredential(ctx context.Context, in *DeleteK8SClusterOnboardingCredentialRequest, opts ...grpc.CallOption) (*emptypb.Empty, error)
+	CreateOrganizationPolicy(ctx context.Context, in *CreateOrganizationPolicyRequest, opts ...grpc.CallOption) (*CreateOrganizationPolicyResponse, error)
+	ReadOrganizationPolicy(ctx context.Context, in *ReadOrganizationPolicyRequest, opts ...grpc.CallOption) (*ReadOrganizationPolicyResponse, error)
+	UpdateOrganizationPolicy(ctx context.Context, in *UpdateOrganizationPolicyRequest, opts ...grpc.CallOption) (*UpdateOrganizationPolicyResponse, error)
+	DeleteOrganizationPolicy(ctx context.Context, in *DeleteOrganizationPolicyRequest, opts ...grpc.CallOption) (*emptypb.Empty, error)
+	CreateOrganizationPolicyRule(ctx context.Context, in *CreateOrganizationPolicyRuleRequest, opts ...grpc.CallOption) (*CreateOrganizationPolicyRuleResponse, error)
+	ReadOrganizationPolicyRule(ctx context.Context, in *ReadOrganizationPolicyRuleRequest, opts ...grpc.CallOption) (*ReadOrganizationPolicyRuleResponse, error)
+	UpdateOrganizationPolicyRule(ctx context.Context, in *UpdateOrganizationPolicyRuleRequest, opts ...grpc.CallOption) (*UpdateOrganizationPolicyRuleResponse, error)
+	DeleteOrganizationPolicyRule(ctx context.Context, in *DeleteOrganizationPolicyRuleRequest, opts ...grpc.CallOption) (*emptypb.Empty, error)
 	CreateTagToLabel(ctx context.Context, in *CreateTagToLabelRequest, opts ...grpc.CallOption) (*CreateTagToLabelResponse, error)
 	ReadTagToLabel(ctx context.Context, in *ReadTagToLabelRequest, opts ...grpc.CallOption) (*ReadTagToLabelResponse, error)
 	UpdateTagToLabel(ctx context.Context, in *UpdateTagToLabelRequest, opts ...grpc.CallOption) (*UpdateTagToLabelResponse, error)
@@ -623,6 +639,86 @@ func (c *configServiceClient) DeleteK8SClusterOnboardingCredential(ctx context.C
 	return out, nil
 }
 
+func (c *configServiceClient) CreateOrganizationPolicy(ctx context.Context, in *CreateOrganizationPolicyRequest, opts ...grpc.CallOption) (*CreateOrganizationPolicyResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(CreateOrganizationPolicyResponse)
+	err := c.cc.Invoke(ctx, ConfigService_CreateOrganizationPolicy_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *configServiceClient) ReadOrganizationPolicy(ctx context.Context, in *ReadOrganizationPolicyRequest, opts ...grpc.CallOption) (*ReadOrganizationPolicyResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(ReadOrganizationPolicyResponse)
+	err := c.cc.Invoke(ctx, ConfigService_ReadOrganizationPolicy_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *configServiceClient) UpdateOrganizationPolicy(ctx context.Context, in *UpdateOrganizationPolicyRequest, opts ...grpc.CallOption) (*UpdateOrganizationPolicyResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(UpdateOrganizationPolicyResponse)
+	err := c.cc.Invoke(ctx, ConfigService_UpdateOrganizationPolicy_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *configServiceClient) DeleteOrganizationPolicy(ctx context.Context, in *DeleteOrganizationPolicyRequest, opts ...grpc.CallOption) (*emptypb.Empty, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(emptypb.Empty)
+	err := c.cc.Invoke(ctx, ConfigService_DeleteOrganizationPolicy_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *configServiceClient) CreateOrganizationPolicyRule(ctx context.Context, in *CreateOrganizationPolicyRuleRequest, opts ...grpc.CallOption) (*CreateOrganizationPolicyRuleResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(CreateOrganizationPolicyRuleResponse)
+	err := c.cc.Invoke(ctx, ConfigService_CreateOrganizationPolicyRule_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *configServiceClient) ReadOrganizationPolicyRule(ctx context.Context, in *ReadOrganizationPolicyRuleRequest, opts ...grpc.CallOption) (*ReadOrganizationPolicyRuleResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(ReadOrganizationPolicyRuleResponse)
+	err := c.cc.Invoke(ctx, ConfigService_ReadOrganizationPolicyRule_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *configServiceClient) UpdateOrganizationPolicyRule(ctx context.Context, in *UpdateOrganizationPolicyRuleRequest, opts ...grpc.CallOption) (*UpdateOrganizationPolicyRuleResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(UpdateOrganizationPolicyRuleResponse)
+	err := c.cc.Invoke(ctx, ConfigService_UpdateOrganizationPolicyRule_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *configServiceClient) DeleteOrganizationPolicyRule(ctx context.Context, in *DeleteOrganizationPolicyRuleRequest, opts ...grpc.CallOption) (*emptypb.Empty, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(emptypb.Empty)
+	err := c.cc.Invoke(ctx, ConfigService_DeleteOrganizationPolicyRule_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 func (c *configServiceClient) CreateTagToLabel(ctx context.Context, in *CreateTagToLabelRequest, opts ...grpc.CallOption) (*CreateTagToLabelResponse, error) {
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
 	out := new(CreateTagToLabelResponse)
@@ -715,6 +811,14 @@ type ConfigServiceServer interface {
 	ReadK8SClusterOnboardingCredential(context.Context, *ReadK8SClusterOnboardingCredentialRequest) (*ReadK8SClusterOnboardingCredentialResponse, error)
 	UpdateK8SClusterOnboardingCredential(context.Context, *UpdateK8SClusterOnboardingCredentialRequest) (*UpdateK8SClusterOnboardingCredentialResponse, error)
 	DeleteK8SClusterOnboardingCredential(context.Context, *DeleteK8SClusterOnboardingCredentialRequest) (*emptypb.Empty, error)
+	CreateOrganizationPolicy(context.Context, *CreateOrganizationPolicyRequest) (*CreateOrganizationPolicyResponse, error)
+	ReadOrganizationPolicy(context.Context, *ReadOrganizationPolicyRequest) (*ReadOrganizationPolicyResponse, error)
+	UpdateOrganizationPolicy(context.Context, *UpdateOrganizationPolicyRequest) (*UpdateOrganizationPolicyResponse, error)
+	DeleteOrganizationPolicy(context.Context, *DeleteOrganizationPolicyRequest) (*emptypb.Empty, error)
+	CreateOrganizationPolicyRule(context.Context, *CreateOrganizationPolicyRuleRequest) (*CreateOrganizationPolicyRuleResponse, error)
+	ReadOrganizationPolicyRule(context.Context, *ReadOrganizationPolicyRuleRequest) (*ReadOrganizationPolicyRuleResponse, error)
+	UpdateOrganizationPolicyRule(context.Context, *UpdateOrganizationPolicyRuleRequest) (*UpdateOrganizationPolicyRuleResponse, error)
+	DeleteOrganizationPolicyRule(context.Context, *DeleteOrganizationPolicyRuleRequest) (*emptypb.Empty, error)
 	CreateTagToLabel(context.Context, *CreateTagToLabelRequest) (*CreateTagToLabelResponse, error)
 	ReadTagToLabel(context.Context, *ReadTagToLabelRequest) (*ReadTagToLabelResponse, error)
 	UpdateTagToLabel(context.Context, *UpdateTagToLabelRequest) (*UpdateTagToLabelResponse, error)
@@ -872,6 +976,30 @@ func (UnimplementedConfigServiceServer) UpdateK8SClusterOnboardingCredential(con
 }
 func (UnimplementedConfigServiceServer) DeleteK8SClusterOnboardingCredential(context.Context, *DeleteK8SClusterOnboardingCredentialRequest) (*emptypb.Empty, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method DeleteK8SClusterOnboardingCredential not implemented")
+}
+func (UnimplementedConfigServiceServer) CreateOrganizationPolicy(context.Context, *CreateOrganizationPolicyRequest) (*CreateOrganizationPolicyResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method CreateOrganizationPolicy not implemented")
+}
+func (UnimplementedConfigServiceServer) ReadOrganizationPolicy(context.Context, *ReadOrganizationPolicyRequest) (*ReadOrganizationPolicyResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method ReadOrganizationPolicy not implemented")
+}
+func (UnimplementedConfigServiceServer) UpdateOrganizationPolicy(context.Context, *UpdateOrganizationPolicyRequest) (*UpdateOrganizationPolicyResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method UpdateOrganizationPolicy not implemented")
+}
+func (UnimplementedConfigServiceServer) DeleteOrganizationPolicy(context.Context, *DeleteOrganizationPolicyRequest) (*emptypb.Empty, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method DeleteOrganizationPolicy not implemented")
+}
+func (UnimplementedConfigServiceServer) CreateOrganizationPolicyRule(context.Context, *CreateOrganizationPolicyRuleRequest) (*CreateOrganizationPolicyRuleResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method CreateOrganizationPolicyRule not implemented")
+}
+func (UnimplementedConfigServiceServer) ReadOrganizationPolicyRule(context.Context, *ReadOrganizationPolicyRuleRequest) (*ReadOrganizationPolicyRuleResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method ReadOrganizationPolicyRule not implemented")
+}
+func (UnimplementedConfigServiceServer) UpdateOrganizationPolicyRule(context.Context, *UpdateOrganizationPolicyRuleRequest) (*UpdateOrganizationPolicyRuleResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method UpdateOrganizationPolicyRule not implemented")
+}
+func (UnimplementedConfigServiceServer) DeleteOrganizationPolicyRule(context.Context, *DeleteOrganizationPolicyRuleRequest) (*emptypb.Empty, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method DeleteOrganizationPolicyRule not implemented")
 }
 func (UnimplementedConfigServiceServer) CreateTagToLabel(context.Context, *CreateTagToLabelRequest) (*CreateTagToLabelResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method CreateTagToLabel not implemented")
@@ -1770,6 +1898,150 @@ func _ConfigService_DeleteK8SClusterOnboardingCredential_Handler(srv interface{}
 	return interceptor(ctx, in, info, handler)
 }
 
+func _ConfigService_CreateOrganizationPolicy_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(CreateOrganizationPolicyRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(ConfigServiceServer).CreateOrganizationPolicy(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: ConfigService_CreateOrganizationPolicy_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(ConfigServiceServer).CreateOrganizationPolicy(ctx, req.(*CreateOrganizationPolicyRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _ConfigService_ReadOrganizationPolicy_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(ReadOrganizationPolicyRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(ConfigServiceServer).ReadOrganizationPolicy(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: ConfigService_ReadOrganizationPolicy_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(ConfigServiceServer).ReadOrganizationPolicy(ctx, req.(*ReadOrganizationPolicyRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _ConfigService_UpdateOrganizationPolicy_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(UpdateOrganizationPolicyRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(ConfigServiceServer).UpdateOrganizationPolicy(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: ConfigService_UpdateOrganizationPolicy_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(ConfigServiceServer).UpdateOrganizationPolicy(ctx, req.(*UpdateOrganizationPolicyRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _ConfigService_DeleteOrganizationPolicy_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(DeleteOrganizationPolicyRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(ConfigServiceServer).DeleteOrganizationPolicy(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: ConfigService_DeleteOrganizationPolicy_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(ConfigServiceServer).DeleteOrganizationPolicy(ctx, req.(*DeleteOrganizationPolicyRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _ConfigService_CreateOrganizationPolicyRule_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(CreateOrganizationPolicyRuleRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(ConfigServiceServer).CreateOrganizationPolicyRule(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: ConfigService_CreateOrganizationPolicyRule_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(ConfigServiceServer).CreateOrganizationPolicyRule(ctx, req.(*CreateOrganizationPolicyRuleRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _ConfigService_ReadOrganizationPolicyRule_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(ReadOrganizationPolicyRuleRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(ConfigServiceServer).ReadOrganizationPolicyRule(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: ConfigService_ReadOrganizationPolicyRule_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(ConfigServiceServer).ReadOrganizationPolicyRule(ctx, req.(*ReadOrganizationPolicyRuleRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _ConfigService_UpdateOrganizationPolicyRule_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(UpdateOrganizationPolicyRuleRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(ConfigServiceServer).UpdateOrganizationPolicyRule(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: ConfigService_UpdateOrganizationPolicyRule_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(ConfigServiceServer).UpdateOrganizationPolicyRule(ctx, req.(*UpdateOrganizationPolicyRuleRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _ConfigService_DeleteOrganizationPolicyRule_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(DeleteOrganizationPolicyRuleRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(ConfigServiceServer).DeleteOrganizationPolicyRule(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: ConfigService_DeleteOrganizationPolicyRule_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(ConfigServiceServer).DeleteOrganizationPolicyRule(ctx, req.(*DeleteOrganizationPolicyRuleRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 func _ConfigService_CreateTagToLabel_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(CreateTagToLabelRequest)
 	if err := dec(in); err != nil {
@@ -2040,6 +2312,38 @@ var ConfigService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "DeleteK8SClusterOnboardingCredential",
 			Handler:    _ConfigService_DeleteK8SClusterOnboardingCredential_Handler,
+		},
+		{
+			MethodName: "CreateOrganizationPolicy",
+			Handler:    _ConfigService_CreateOrganizationPolicy_Handler,
+		},
+		{
+			MethodName: "ReadOrganizationPolicy",
+			Handler:    _ConfigService_ReadOrganizationPolicy_Handler,
+		},
+		{
+			MethodName: "UpdateOrganizationPolicy",
+			Handler:    _ConfigService_UpdateOrganizationPolicy_Handler,
+		},
+		{
+			MethodName: "DeleteOrganizationPolicy",
+			Handler:    _ConfigService_DeleteOrganizationPolicy_Handler,
+		},
+		{
+			MethodName: "CreateOrganizationPolicyRule",
+			Handler:    _ConfigService_CreateOrganizationPolicyRule_Handler,
+		},
+		{
+			MethodName: "ReadOrganizationPolicyRule",
+			Handler:    _ConfigService_ReadOrganizationPolicyRule_Handler,
+		},
+		{
+			MethodName: "UpdateOrganizationPolicyRule",
+			Handler:    _ConfigService_UpdateOrganizationPolicyRule_Handler,
+		},
+		{
+			MethodName: "DeleteOrganizationPolicyRule",
+			Handler:    _ConfigService_DeleteOrganizationPolicyRule_Handler,
 		},
 		{
 			MethodName: "CreateTagToLabel",

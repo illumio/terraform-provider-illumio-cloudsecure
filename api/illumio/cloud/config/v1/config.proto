@@ -54,6 +54,14 @@ service ConfigService {
   rpc ReadK8SClusterOnboardingCredential(ReadK8SClusterOnboardingCredentialRequest) returns (ReadK8SClusterOnboardingCredentialResponse);
   rpc UpdateK8SClusterOnboardingCredential(UpdateK8SClusterOnboardingCredentialRequest) returns (UpdateK8SClusterOnboardingCredentialResponse);
   rpc DeleteK8SClusterOnboardingCredential(DeleteK8SClusterOnboardingCredentialRequest) returns (google.protobuf.Empty);
+  rpc CreateOrganizationPolicy(CreateOrganizationPolicyRequest) returns (CreateOrganizationPolicyResponse);
+  rpc ReadOrganizationPolicy(ReadOrganizationPolicyRequest) returns (ReadOrganizationPolicyResponse);
+  rpc UpdateOrganizationPolicy(UpdateOrganizationPolicyRequest) returns (UpdateOrganizationPolicyResponse);
+  rpc DeleteOrganizationPolicy(DeleteOrganizationPolicyRequest) returns (google.protobuf.Empty);
+  rpc CreateOrganizationPolicyRule(CreateOrganizationPolicyRuleRequest) returns (CreateOrganizationPolicyRuleResponse);
+  rpc ReadOrganizationPolicyRule(ReadOrganizationPolicyRuleRequest) returns (ReadOrganizationPolicyRuleResponse);
+  rpc UpdateOrganizationPolicyRule(UpdateOrganizationPolicyRuleRequest) returns (UpdateOrganizationPolicyRuleResponse);
+  rpc DeleteOrganizationPolicyRule(DeleteOrganizationPolicyRuleRequest) returns (google.protobuf.Empty);
   rpc CreateTagToLabel(CreateTagToLabelRequest) returns (CreateTagToLabelResponse);
   rpc ReadTagToLabel(ReadTagToLabelRequest) returns (ReadTagToLabelResponse);
   rpc UpdateTagToLabel(UpdateTagToLabelRequest) returns (UpdateTagToLabelResponse);
@@ -772,6 +780,111 @@ message UpdateK8SClusterOnboardingCredentialResponse {
   string name = 7;
 }
 message DeleteK8SClusterOnboardingCredentialRequest {
+  string id = 1;
+}
+message CreateOrganizationPolicyRequest {
+  optional string description = 2;
+  string name = 3;
+}
+message CreateOrganizationPolicyResponse {
+  string id = 1;
+  optional string description = 2;
+  string name = 3;
+}
+message ReadOrganizationPolicyRequest {
+  string id = 1;
+}
+message ReadOrganizationPolicyResponse {
+  string id = 1;
+  optional string description = 2;
+  string name = 3;
+}
+message UpdateOrganizationPolicyRequest {
+  string id = 1;
+  optional string description = 2;
+  string name = 3;
+  google.protobuf.FieldMask update_mask = 4;
+}
+message UpdateOrganizationPolicyResponse {
+  string id = 1;
+  optional string description = 2;
+  string name = 3;
+}
+message DeleteOrganizationPolicyRequest {
+  string id = 1;
+}
+message OrganizationPolicyRule_FromLabels {
+  string key = 1;
+  string value = 2;
+}
+message OrganizationPolicyRule_ToLabels {
+  string key = 1;
+  string value = 2;
+}
+message OrganizationPolicyRule_ToPortRanges {
+  int64 from_port = 1;
+  string protocol = 2;
+  int64 to_port = 3;
+}
+message CreateOrganizationPolicyRuleRequest {
+  string action = 2;
+  optional string description = 3;
+  repeated string from_ip_list_ids = 4;
+  repeated OrganizationPolicyRule_FromLabels from_labels = 5;
+  string organization_policy_id = 6;
+  repeated string to_ip_list_ids = 7;
+  repeated OrganizationPolicyRule_ToLabels to_labels = 8;
+  repeated OrganizationPolicyRule_ToPortRanges to_port_ranges = 9;
+}
+message CreateOrganizationPolicyRuleResponse {
+  string id = 1;
+  string action = 2;
+  optional string description = 3;
+  repeated string from_ip_list_ids = 4;
+  repeated OrganizationPolicyRule_FromLabels from_labels = 5;
+  string organization_policy_id = 6;
+  repeated string to_ip_list_ids = 7;
+  repeated OrganizationPolicyRule_ToLabels to_labels = 8;
+  repeated OrganizationPolicyRule_ToPortRanges to_port_ranges = 9;
+}
+message ReadOrganizationPolicyRuleRequest {
+  string id = 1;
+}
+message ReadOrganizationPolicyRuleResponse {
+  string id = 1;
+  string action = 2;
+  optional string description = 3;
+  repeated string from_ip_list_ids = 4;
+  repeated OrganizationPolicyRule_FromLabels from_labels = 5;
+  string organization_policy_id = 6;
+  repeated string to_ip_list_ids = 7;
+  repeated OrganizationPolicyRule_ToLabels to_labels = 8;
+  repeated OrganizationPolicyRule_ToPortRanges to_port_ranges = 9;
+}
+message UpdateOrganizationPolicyRuleRequest {
+  string id = 1;
+  string action = 2;
+  optional string description = 3;
+  repeated string from_ip_list_ids = 4;
+  repeated OrganizationPolicyRule_FromLabels from_labels = 5;
+  string organization_policy_id = 6;
+  repeated string to_ip_list_ids = 7;
+  repeated OrganizationPolicyRule_ToLabels to_labels = 8;
+  repeated OrganizationPolicyRule_ToPortRanges to_port_ranges = 9;
+  google.protobuf.FieldMask update_mask = 10;
+}
+message UpdateOrganizationPolicyRuleResponse {
+  string id = 1;
+  string action = 2;
+  optional string description = 3;
+  repeated string from_ip_list_ids = 4;
+  repeated OrganizationPolicyRule_FromLabels from_labels = 5;
+  string organization_policy_id = 6;
+  repeated string to_ip_list_ids = 7;
+  repeated OrganizationPolicyRule_ToLabels to_labels = 8;
+  repeated OrganizationPolicyRule_ToPortRanges to_port_ranges = 9;
+}
+message DeleteOrganizationPolicyRuleRequest {
   string id = 1;
 }
 message TagToLabel_Icon {
