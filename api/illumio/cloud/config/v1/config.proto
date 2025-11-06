@@ -784,11 +784,13 @@ message DeleteK8SClusterOnboardingCredentialRequest {
 }
 message CreateOrganizationPolicyRequest {
   optional string description = 2;
+  bool enabled = 5;
   string name = 3;
 }
 message CreateOrganizationPolicyResponse {
   string id = 1;
   optional string description = 2;
+  bool enabled = 5;
   string name = 3;
 }
 message ReadOrganizationPolicyRequest {
@@ -797,17 +799,20 @@ message ReadOrganizationPolicyRequest {
 message ReadOrganizationPolicyResponse {
   string id = 1;
   optional string description = 2;
+  bool enabled = 5;
   string name = 3;
 }
 message UpdateOrganizationPolicyRequest {
   string id = 1;
   optional string description = 2;
+  bool enabled = 5;
   string name = 3;
   google.protobuf.FieldMask update_mask = 4;
 }
 message UpdateOrganizationPolicyResponse {
   string id = 1;
   optional string description = 2;
+  bool enabled = 5;
   string name = 3;
 }
 message DeleteOrganizationPolicyRequest {

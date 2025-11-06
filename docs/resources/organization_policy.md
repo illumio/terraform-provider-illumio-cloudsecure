@@ -22,6 +22,7 @@ Manages policy rules on CloudSecure organizations.
 ### Optional
 
 - `description` (String) Description of the CloudSecure application.
+- `enabled` (Boolean) Indicates whether the organization policy is enabled.
 
 ### Read-Only
 
