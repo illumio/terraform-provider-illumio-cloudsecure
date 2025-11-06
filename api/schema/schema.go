@@ -29,6 +29,8 @@ func (c *cloudSecureSchema) Resources() Resources {
 		ipListResource,
 		k8sClusterOnboardingCredentialResource,
 		k8sClusterResource,
+		organizationPolicyResource,
+		organizationPolicyRuleResource,
 		tagToLabelResource,
 	}
 	sort.Sort(resources)
