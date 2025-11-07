@@ -3,12 +3,12 @@
 page_title: "illumio-cloudsecure_organization_policy Resource - illumio-cloudsecure"
 subcategory: ""
 description: |-
-  Manages policy rules on CloudSecure organizations.
+  Manages a set of organization-wide policy rules on CloudSecure.
 ---
 
 # illumio-cloudsecure_organization_policy (Resource)
 
-Manages policy rules on CloudSecure organizations.
+Manages a set of organization-wide policy rules on CloudSecure.
 
 
 
@@ -21,7 +21,7 @@ Manages policy rules on CloudSecure organizations.
 
 ### Optional
 
-- `description` (String) Description of the CloudSecure application.
+- `description` (String) Description of the CloudSecure organization policy.
 - `enabled` (Boolean) Indicates whether the organization policy is enabled.
 
 ### Read-Only
