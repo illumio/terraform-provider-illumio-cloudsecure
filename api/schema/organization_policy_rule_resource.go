@@ -38,7 +38,7 @@ var (
 				},
 				"organization_policy_id": StringResourceAttributeWithMode{
 					StringAttribute: resource_schema.StringAttribute{
-						Description: "ID of the CloudSecure organization policy on which this rule is based.",
+						Description: "ID of the CloudSecure organization policy to contain this rule.",
 						Required:    true,
 						PlanModifiers: []planmodifier.String{
 							stringplanmodifier.RequiresReplace(),
