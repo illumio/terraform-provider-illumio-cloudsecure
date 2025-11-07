@@ -17,7 +17,7 @@ var (
 			Attributes: map[string]resource_schema.Attribute{
 				IDFieldName: idAttribute,
 				"description": resource_schema.StringAttribute{
-					Description: "Description of the CloudSecure application.",
+					Description: "Description of the CloudSecure organization policy.",
 					Optional:    true,
 				},
 				"name": resource_schema.StringAttribute{
