@@ -13,7 +13,7 @@ var (
 		TypeName: "organization_policy",
 		Schema: resource_schema.Schema{
 			Version:     1,
-			Description: "Manages policy rules on CloudSecure organizations.",
+			Description: "Manages a set of organization-wide policy rules on CloudSecure.",
 			Attributes: map[string]resource_schema.Attribute{
 				IDFieldName: idAttribute,
 				"description": resource_schema.StringAttribute{
