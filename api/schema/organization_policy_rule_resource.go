@@ -79,7 +79,7 @@ var (
 					ElementType: types.StringType,
 				},
 				"to_labels": resource_schema.ListAttribute{
-					Description: "List of Cloudsecure labels of destinations to allow/deny traffic to.",
+					Description: "List of CloudSecure labels of destinations to allow/deny traffic to.",
 					Optional:    true,
 					ElementType: Label,
 				},
