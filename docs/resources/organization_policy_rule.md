@@ -18,7 +18,7 @@ Manages policy rules on CloudSecure organizations.
 ### Required
 
 - `action` (String) The action to take for flows matched by the organization policy rule. Must be `"Allow"`, `"Deny"` or `"OverrideDeny"`.
-- `organization_policy_id` (String) ID of the CloudSecure organization policy on which this rule is based.
+- `organization_policy_id` (String) ID of the CloudSecure organization policy to contain this rule.
 - `to_port_ranges` (List of Object) List of transport protocol ports to allow/deny traffic to. The `protocol` for each port must be `"TCP"` or `"UDP"`. (see [below for nested schema](#nestedatt--to_port_ranges))
 
 ### Optional
@@ -26,9 +26,9 @@ Manages policy rules on CloudSecure organizations.
 - `description` (String) Description of the organization policy rule.
 - `external_scope` (Boolean) Specifies whether the application policy allow rule can be applied to scope outside the CloudSecure application. Applicable only for `"Allow"` action.
 - `from_ip_list_ids` (List of String) List of IDs of IP lists to allow/deny traffic from.
-- `from_labels` (List of Object) List of Cloudsecure labels of sources to allow/deny traffic from. (see [below for nested schema](#nestedatt--from_labels))
+- `from_labels` (List of Object) List of CloudSecure labels of sources to allow/deny traffic from. (see [below for nested schema](#nestedatt--from_labels))
 - `to_ip_list_ids` (List of String) List of IDs of IP lists to allow/deny traffic to.
-- `to_labels` (List of Object) List of Cloudsecure labels of destinations to allow/deny traffic to. (see [below for nested schema](#nestedatt--to_labels))
+- `to_labels` (List of Object) List of CloudSecure labels of destinations to allow/deny traffic to. (see [below for nested schema](#nestedatt--to_labels))
 
 ### Read-Only
 
