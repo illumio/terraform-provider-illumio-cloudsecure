@@ -20,15 +20,15 @@ var (
 					Description: "Description of the CloudSecure organization policy.",
 					Optional:    true,
 				},
-				"name": resource_schema.StringAttribute{
-					Description: "Display name for the CloudSecure application.",
-					Required:    true,
-				},
 				"enabled": resource_schema.BoolAttribute{
 					Description: "Indicates whether the organization policy is enabled.",
 					Optional:    true,
 					Computed:    true,
 					Default:     booldefault.StaticBool(true),
+				},
+				"name": resource_schema.StringAttribute{
+					Description: "Display name for the CloudSecure application.",
+					Required:    true,
 				},
 			},
 		},
