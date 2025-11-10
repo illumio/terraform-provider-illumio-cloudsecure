@@ -71,7 +71,7 @@ func ProtoMessageNameForCreateRequest(camelCaseResourcename string) string {
 	return "Create" + camelCaseResourcename + "Request"
 }
 
-// ProtoMessageNameForCreatResponse returns the name of the Protocol Buffer message for create responses for the given CamelCased resource name.
+// ProtoMessageNameForCreateResponse returns the name of the Protocol Buffer message for create responses for the given CamelCased resource name.
 func ProtoMessageNameForCreateResponse(camelCaseResourcename string) string {
 	return "Create" + camelCaseResourcename + "Response"
 }

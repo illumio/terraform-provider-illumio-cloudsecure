@@ -18,7 +18,7 @@ TF_PLUGIN_DIR = $(OS)_$(ARCH)
 default: testacc
 
 # Run acceptance tests
-.PHONY: testacc clean-build clean generate build run reset lint
+.PHONY: testacc clean-build clean generate build run reset lint attrcheck pre-commit-install
 
 testacc:
 	TF_ACC=1 go test ./... -v $(TESTARGS) -timeout 120m
@@ -57,3 +57,9 @@ lint:
 
 tests:
 	go test -v ./...
+
+attrcheck:
+	go run ./tools/attrcheck ./api/schema
+
+pre-commit-install:
+	pre-commit install --hook-type pre-commit

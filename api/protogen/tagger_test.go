@@ -82,8 +82,8 @@ func (suite *GenerateTestSuite) TestAttributeTaggerMarshalJSON() {
 		suite.Run(name, func() {
 			tagger := newAttributeTagger(tc.preAssignedTags)
 			gotJSONBytes, gotErr := json.Marshal(tagger)
-			suite.NoError(gotErr, "JSON marshaling failed")
-			suite.Equal(tc.expectedJSON, string(gotJSONBytes), "JSON value should match")
+			suite.Require().NoError(gotErr, "JSON marshaling failed")
+			suite.JSONEq(tc.expectedJSON, string(gotJSONBytes), "JSON value should match")
 		})
 	}
 }
@@ -120,7 +120,7 @@ func (suite *GenerateTestSuite) TestAttributeTaggerUnmarshalJSON() {
 		suite.Run(name, func() {
 			tagger := newAttributeTagger(nil)
 			gotErr := json.Unmarshal([]byte(tc.json), &tagger)
-			suite.NoError(gotErr, "JSON unmarshaling failed")
+			suite.Require().NoError(gotErr, "JSON unmarshaling failed")
 			suite.Equal(tc.expectedAssignedTags, tagger.AssignedTags, "assigned tags should match")
 			suite.Equal(tc.expectedNextTag, tagger.NextTag, "next tag should match")
 		})
@@ -169,16 +169,16 @@ func (suite *GenerateTestSuite) TestAPISpecTaggerJSONMarshaling() {
 
 	// Test that marshaling the tagger generates the correct JSON value.
 	gotJSONBytes, gotErr = json.Marshal(tagger)
-	suite.NoError(gotErr, "JSON marshaling failed")
-	suite.Equal(`{"resource/res1":{"field1":1,"field2":2},"resource/res2":{"field1":1,"field2":2}}`, string(gotJSONBytes), "JSON value should match")
+	suite.Require().NoError(gotErr, "JSON marshaling failed")
+	suite.JSONEq(`{"resource/res1":{"field1":1,"field2":2},"resource/res2":{"field1":1,"field2":2}}`, string(gotJSONBytes), "JSON value should match")
 
 	// Test that unmarshaling and marshaling again generates the same JSON value.
 	tagger = nil
 	gotErr = json.Unmarshal(gotJSONBytes, &tagger)
-	suite.NoError(gotErr, "JSON unmarshaling failed")
+	suite.Require().NoError(gotErr, "JSON unmarshaling failed")
 	gotJSONBytes, gotErr = json.Marshal(tagger)
-	suite.NoError(gotErr, "JSON marshaling failed")
-	suite.Equal(`{"resource/res1":{"field1":1,"field2":2},"resource/res2":{"field1":1,"field2":2}}`, string(gotJSONBytes), "JSON value should match")
+	suite.Require().NoError(gotErr, "JSON marshaling failed")
+	suite.JSONEq(`{"resource/res1":{"field1":1,"field2":2},"resource/res2":{"field1":1,"field2":2}}`, string(gotJSONBytes), "JSON value should match")
 
 	// Test that the next tags were calculated correctly on unmarshaling.
 	gotTag = tagger.AssignTag("resource/res1", "field3")
@@ -187,6 +187,6 @@ func (suite *GenerateTestSuite) TestAPISpecTaggerJSONMarshaling() {
 	// Test that adding a new namespace works.
 	_ = tagger.AssignTag("resource/res3", "field1")
 	gotJSONBytes, gotErr = json.Marshal(tagger)
-	suite.NoError(gotErr, "JSON marshaling failed")
-	suite.Equal(`{"resource/res1":{"field1":1,"field2":2,"field3":3},"resource/res2":{"field1":1,"field2":2},"resource/res3":{"field1":1}}`, string(gotJSONBytes), "JSON value should match")
+	suite.Require().NoError(gotErr, "JSON marshaling failed")
+	suite.JSONEq(`{"resource/res1":{"field1":1,"field2":2,"field3":3},"resource/res2":{"field1":1,"field2":2},"resource/res3":{"field1":1}}`, string(gotJSONBytes), "JSON value should match")
 }

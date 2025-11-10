@@ -34,8 +34,8 @@ type DataSource struct {
 	Schema datasource_schema.Schema
 }
 
-// Resources is a list of Resource elements.
-// The TypeName of each Resource must be unique.
+// DataSources is a list of DataSources elements.
+// The TypeName of each DataSources must be unique.
 type DataSources []DataSource
 
 func (r DataSources) Len() int           { return len(r) }
@@ -49,7 +49,7 @@ type Schema interface {
 	// a resource, datasource, or attribute is deleted,
 	// an optional attribute is modified to be required,
 	// when a required attribute is added to an existing resource,
-	// or when the type of an existing attribute is modified.
+	// or when the type of existing attribute is modified.
 	Version() string
 
 	// Resources returns the list of resources provided by the provider sorted by TypeName.

@@ -1,0 +1,33 @@
+# Copyright (c) Illumio, Inc.
+# SPDX-License-Identifier: MPL-2.0
+# Pre-commit configuration for repository checks.
+
+repos:
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v4.6.0
+    hooks:
+      - id: check-added-large-files
+      - id: check-merge-conflict
+      - id: end-of-file-fixer
+      - id: trailing-whitespace
+      - id: check-yaml
+        args: ["--allow-multiple-documents"]
+      - id: check-json
+
+  - repo: https://github.com/golangci/golangci-lint
+    rev: v1.60.1
+    hooks:
+      - id: golangci-lint
+        args: ["run"]
+
+  # Local hooks
+  - repo: local
+    hooks:
+      - id: go-attr-order-check
+        name: Go attribute map key ordering check
+        entry: go run ./tools/attrcheck
+        language: system
+        pass_filenames: false
+        files: \.(go)$
+        stages: [commit]
+
