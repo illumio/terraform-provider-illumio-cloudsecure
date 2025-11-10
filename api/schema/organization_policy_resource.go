@@ -27,7 +27,7 @@ var (
 					Default:     booldefault.StaticBool(true),
 				},
 				"name": resource_schema.StringAttribute{
-					Description: "Display name for the CloudSecure application.",
+					Description: "Display name for the CloudSecure organization policy.",
 					Required:    true,
 				},
 			},

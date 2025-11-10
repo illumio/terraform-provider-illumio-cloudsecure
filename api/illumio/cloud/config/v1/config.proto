@@ -834,25 +834,23 @@ message OrganizationPolicyRule_ToPortRanges {
 message CreateOrganizationPolicyRuleRequest {
   string action = 2;
   optional string description = 3;
-  bool external_scope = 4;
-  repeated string from_ip_list_ids = 5;
-  repeated OrganizationPolicyRule_FromLabels from_labels = 6;
-  string organization_policy_id = 7;
-  repeated string to_ip_list_ids = 8;
-  repeated OrganizationPolicyRule_ToLabels to_labels = 9;
-  repeated OrganizationPolicyRule_ToPortRanges to_port_ranges = 10;
+  repeated string from_ip_list_ids = 4;
+  repeated OrganizationPolicyRule_FromLabels from_labels = 5;
+  string organization_policy_id = 6;
+  repeated string to_ip_list_ids = 7;
+  repeated OrganizationPolicyRule_ToLabels to_labels = 8;
+  repeated OrganizationPolicyRule_ToPortRanges to_port_ranges = 9;
 }
 message CreateOrganizationPolicyRuleResponse {
   string id = 1;
   string action = 2;
   optional string description = 3;
-  bool external_scope = 4;
-  repeated string from_ip_list_ids = 5;
-  repeated OrganizationPolicyRule_FromLabels from_labels = 6;
-  string organization_policy_id = 7;
-  repeated string to_ip_list_ids = 8;
-  repeated OrganizationPolicyRule_ToLabels to_labels = 9;
-  repeated OrganizationPolicyRule_ToPortRanges to_port_ranges = 10;
+  repeated string from_ip_list_ids = 4;
+  repeated OrganizationPolicyRule_FromLabels from_labels = 5;
+  string organization_policy_id = 6;
+  repeated string to_ip_list_ids = 7;
+  repeated OrganizationPolicyRule_ToLabels to_labels = 8;
+  repeated OrganizationPolicyRule_ToPortRanges to_port_ranges = 9;
 }
 message ReadOrganizationPolicyRuleRequest {
   string id = 1;
@@ -861,38 +859,35 @@ message ReadOrganizationPolicyRuleResponse {
   string id = 1;
   string action = 2;
   optional string description = 3;
-  bool external_scope = 4;
-  repeated string from_ip_list_ids = 5;
-  repeated OrganizationPolicyRule_FromLabels from_labels = 6;
-  string organization_policy_id = 7;
-  repeated string to_ip_list_ids = 8;
-  repeated OrganizationPolicyRule_ToLabels to_labels = 9;
-  repeated OrganizationPolicyRule_ToPortRanges to_port_ranges = 10;
+  repeated string from_ip_list_ids = 4;
+  repeated OrganizationPolicyRule_FromLabels from_labels = 5;
+  string organization_policy_id = 6;
+  repeated string to_ip_list_ids = 7;
+  repeated OrganizationPolicyRule_ToLabels to_labels = 8;
+  repeated OrganizationPolicyRule_ToPortRanges to_port_ranges = 9;
 }
 message UpdateOrganizationPolicyRuleRequest {
   string id = 1;
   string action = 2;
   optional string description = 3;
-  bool external_scope = 4;
-  repeated string from_ip_list_ids = 5;
-  repeated OrganizationPolicyRule_FromLabels from_labels = 6;
-  string organization_policy_id = 7;
-  repeated string to_ip_list_ids = 8;
-  repeated OrganizationPolicyRule_ToLabels to_labels = 9;
-  repeated OrganizationPolicyRule_ToPortRanges to_port_ranges = 10;
-  google.protobuf.FieldMask update_mask = 11;
+  repeated string from_ip_list_ids = 4;
+  repeated OrganizationPolicyRule_FromLabels from_labels = 5;
+  string organization_policy_id = 6;
+  repeated string to_ip_list_ids = 7;
+  repeated OrganizationPolicyRule_ToLabels to_labels = 8;
+  repeated OrganizationPolicyRule_ToPortRanges to_port_ranges = 9;
+  google.protobuf.FieldMask update_mask = 10;
 }
 message UpdateOrganizationPolicyRuleResponse {
   string id = 1;
   string action = 2;
   optional string description = 3;
-  bool external_scope = 4;
-  repeated string from_ip_list_ids = 5;
-  repeated OrganizationPolicyRule_FromLabels from_labels = 6;
-  string organization_policy_id = 7;
-  repeated string to_ip_list_ids = 8;
-  repeated OrganizationPolicyRule_ToLabels to_labels = 9;
-  repeated OrganizationPolicyRule_ToPortRanges to_port_ranges = 10;
+  repeated string from_ip_list_ids = 4;
+  repeated OrganizationPolicyRule_FromLabels from_labels = 5;
+  string organization_policy_id = 6;
+  repeated string to_ip_list_ids = 7;
+  repeated OrganizationPolicyRule_ToLabels to_labels = 8;
+  repeated OrganizationPolicyRule_ToPortRanges to_port_ranges = 9;
 }
 message DeleteOrganizationPolicyRuleRequest {
   string id = 1;
