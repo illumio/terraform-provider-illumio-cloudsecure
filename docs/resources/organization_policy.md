@@ -17,7 +17,7 @@ Manages a set of organization-wide policy rules on CloudSecure.
 
 ### Required
 
-- `name` (String) Display name for the CloudSecure application.
+- `name` (String) Display name for the CloudSecure organization policy.
 
 ### Optional
 

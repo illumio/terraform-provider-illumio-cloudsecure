@@ -6,7 +6,6 @@ package schema
 import (
 	"github.com/hashicorp/terraform-plugin-framework-validators/stringvalidator"
 	resource_schema "github.com/hashicorp/terraform-plugin-framework/resource/schema"
-	"github.com/hashicorp/terraform-plugin-framework/resource/schema/booldefault"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/planmodifier"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/stringplanmodifier"
 	"github.com/hashicorp/terraform-plugin-framework/schema/validator"
@@ -18,7 +17,7 @@ var (
 		TypeName: "organization_policy_rule",
 		Schema: resource_schema.Schema{
 			Version:     1,
-			Description: "Manages policy rules on CloudSecure organizations.",
+			Description: "Manages policy rules on CloudSecure organization policy.",
 			Attributes: map[string]resource_schema.Attribute{
 				IDFieldName: idAttribute,
 				"action": StringResourceAttributeWithMode{
@@ -39,17 +38,6 @@ var (
 				"description": resource_schema.StringAttribute{
 					Description: "Description of the organization policy rule.",
 					Optional:    true,
-				},
-				"external_scope": BoolResourceAttributeWithMode{
-					BoolAttribute: resource_schema.BoolAttribute{
-						Description: "Specifies whether the organization policy rule can be applied outside of the scopes of the organization policy. Applicable only for `\"Allow\"` action.",
-						Optional:            true,
-						Computed:            true,
-						Default:             booldefault.StaticBool(false),
-					},
-					attributeWithMode: attributeWithMode{
-						Mode: ReadWriteAttributeMode,
-					},
 				},
 				"from_ip_list_ids": resource_schema.ListAttribute{
 					Description: "List of IDs of IP lists to allow/deny traffic from.",
