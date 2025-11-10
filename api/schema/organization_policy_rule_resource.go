@@ -42,7 +42,7 @@ var (
 				},
 				"external_scope": BoolResourceAttributeWithMode{
 					BoolAttribute: resource_schema.BoolAttribute{
-						MarkdownDescription: "Specifies whether the application policy allow rule can be applied to scope outside the CloudSecure application. Applicable only for `\"Allow\"` action.",
+						Description: "Specifies whether the organization policy rule can be applied outside of the scopes of the organization policy. Applicable only for `\"Allow\"` action.",
 						Optional:            true,
 						Computed:            true,
 						Default:             booldefault.StaticBool(false),
