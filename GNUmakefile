@@ -62,4 +62,4 @@ attrcheck:
 	go run ./tools/attrcheck ./api/schema
 
 pre-commit-install:
-	pre-commit install --hook-type pre-commit
+	./scripts/install-pre-commit-hook.sh
