@@ -17,7 +17,7 @@ var (
 		TypeName: "organization_policy_rule",
 		Schema: resource_schema.Schema{
 			Version:     1,
-			Description: "Manages policy rules on CloudSecure organization policy.",
+			Description: "Manages policy rules in CloudSecure organization policies.",
 			Attributes: map[string]resource_schema.Attribute{
 				IDFieldName: idAttribute,
 				"action": StringResourceAttributeWithMode{
