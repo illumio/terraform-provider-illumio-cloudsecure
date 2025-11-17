@@ -62,6 +62,10 @@ func (p *Provider) Resources(ctx context.Context) []func() resource.Resource {
 			resp = append(resp, func() resource.Resource { return NewK8SClusterResource(r.Schema) })
 		case "k8s_cluster_onboarding_credential":
 			resp = append(resp, func() resource.Resource { return NewK8SClusterOnboardingCredentialResource(r.Schema) })
+		case "organization_policy":
+			resp = append(resp, func() resource.Resource { return NewOrganizationPolicyResource(r.Schema) })
+		case "organization_policy_rule":
+			resp = append(resp, func() resource.Resource { return NewOrganizationPolicyRuleResource(r.Schema) })
 		case "tag_to_label":
 			resp = append(resp, func() resource.Resource { return NewTagToLabelResource(r.Schema) })
 		}
@@ -2403,6 +2407,394 @@ func (r *K8SClusterOnboardingCredentialResource) ImportState(ctx context.Context
 	// TODO
 }
 
+// OrganizationPolicyResource implements the organization_policy resource.
+type OrganizationPolicyResource struct {
+	// schema is the schema of the organization_policy resource.
+	schema resource_schema.Schema
+
+	// providerData is the provider configuration.
+	config ProviderData
+}
+
+var _ resource.ResourceWithConfigure = &OrganizationPolicyResource{}
+var _ resource.ResourceWithImportState = &OrganizationPolicyResource{}
+
+// NewOrganizationPolicyResource returns a new organization_policy resource.
+func NewOrganizationPolicyResource(schema resource_schema.Schema) resource.Resource {
+	return &OrganizationPolicyResource{
+		schema: schema,
+	}
+}
+
+func (r *OrganizationPolicyResource) Metadata(ctx context.Context, req resource.MetadataRequest, resp *resource.MetadataResponse) {
+	resp.TypeName = req.ProviderTypeName + "_organization_policy"
+}
+
+func (r *OrganizationPolicyResource) Schema(ctx context.Context, req resource.SchemaRequest, resp *resource.SchemaResponse) {
+	resp.Schema = r.schema
+}
+
+func (r *OrganizationPolicyResource) Configure(ctx context.Context, req resource.ConfigureRequest, resp *resource.ConfigureResponse) {
+	if req.ProviderData == nil {
+		return
+	}
+
+	providerData, ok := req.ProviderData.(ProviderData)
+	if !ok {
+		resp.Diagnostics.AddError(
+			"Unexpected Resource Configure Type",
+			fmt.Sprintf("Expected ProviderData, got: %T. Please report this issue to the provider developers.", req.ProviderData),
+		)
+
+		return
+	}
+
+	r.config = providerData
+}
+
+func (r *OrganizationPolicyResource) Create(ctx context.Context, req resource.CreateRequest, resp *resource.CreateResponse) {
+	var data OrganizationPolicyResourceModel
+
+	resp.Diagnostics.Append(req.Plan.Get(ctx, &data)...)
+	if resp.Diagnostics.HasError() {
+		return
+	}
+
+	protoReq, diagReq := NewCreateOrganizationPolicyRequest(ctx, &data)
+	resp.Diagnostics.Append(diagReq...)
+	if resp.Diagnostics.HasError() {
+		return
+	}
+
+	tflog.Trace(ctx, "creating a resource", map[string]any{"type": "organization_policy"})
+
+	rpcCtx, rpcCancel := context.WithTimeout(ctx, r.config.RequestTimeout())
+	protoResp, err := r.config.Client().CreateOrganizationPolicy(rpcCtx, protoReq)
+	rpcCancel()
+	if err != nil {
+		resp.Diagnostics.AddError("Config API Error", fmt.Sprintf("Unable to create organization_policy, got error: %s", err))
+		return
+	}
+
+	CopyCreateOrganizationPolicyResponse(&data, protoResp)
+
+	tflog.Trace(ctx, "created a resource", map[string]any{"type": "organization_policy", "id": protoResp.Id})
+
+	resp.Diagnostics.Append(resp.State.Set(ctx, &data)...)
+}
+
+func (r *OrganizationPolicyResource) Read(ctx context.Context, req resource.ReadRequest, resp *resource.ReadResponse) {
+	var data OrganizationPolicyResourceModel
+
+	resp.Diagnostics.Append(req.State.Get(ctx, &data)...)
+	if resp.Diagnostics.HasError() {
+		return
+	}
+
+	protoReq, diagsReq := NewReadOrganizationPolicyRequest(ctx, &data)
+	resp.Diagnostics.Append(diagsReq...)
+	if resp.Diagnostics.HasError() {
+		return
+	}
+
+	tflog.Trace(ctx, "reading a resource", map[string]any{"type": "organization_policy", "id": protoReq.Id})
+
+	rpcCtx, rpcCancel := context.WithTimeout(ctx, r.config.RequestTimeout())
+	protoResp, err := r.config.Client().ReadOrganizationPolicy(rpcCtx, protoReq)
+	rpcCancel()
+	if err != nil {
+		switch status.Code(err) {
+		case codes.NotFound:
+			resp.Diagnostics.AddWarning("Resource Not Found", fmt.Sprintf("No organization_policy found with id %s", protoReq.Id))
+			resp.State.RemoveResource(ctx)
+			return
+		default:
+			resp.Diagnostics.AddError("Config API Error", fmt.Sprintf("Unable to read organization_policy, got error: %s", err))
+			return
+		}
+	}
+
+	CopyReadOrganizationPolicyResponse(&data, protoResp)
+
+	tflog.Trace(ctx, "read a resource", map[string]any{"type": "organization_policy", "id": protoResp.Id})
+
+	resp.Diagnostics.Append(resp.State.Set(ctx, &data)...)
+}
+
+func (r *OrganizationPolicyResource) Update(ctx context.Context, req resource.UpdateRequest, resp *resource.UpdateResponse) {
+	var beforeData OrganizationPolicyResourceModel
+	var afterData OrganizationPolicyResourceModel
+
+	resp.Diagnostics.Append(req.State.Get(ctx, &beforeData)...)
+	if resp.Diagnostics.HasError() {
+		return
+	}
+
+	resp.Diagnostics.Append(req.Plan.Get(ctx, &afterData)...)
+	if resp.Diagnostics.HasError() {
+		return
+	}
+
+	protoReq, diags := NewUpdateOrganizationPolicyRequest(ctx, &beforeData, &afterData)
+	resp.Diagnostics.Append(diags...)
+	if resp.Diagnostics.HasError() {
+		return
+	}
+
+	tflog.Trace(ctx, "updating a resource", map[string]any{"type": "organization_policy", "id": protoReq.Id, "update_mask": protoReq.UpdateMask.Paths})
+
+	rpcCtx, rpcCancel := context.WithTimeout(ctx, r.config.RequestTimeout())
+	protoResp, err := r.config.Client().UpdateOrganizationPolicy(rpcCtx, protoReq)
+	rpcCancel()
+	if err != nil {
+		switch status.Code(err) {
+		case codes.NotFound:
+			resp.Diagnostics.AddError("Resource Not Found", fmt.Sprintf("No organization_policy found with id %s", protoReq.Id))
+			resp.State.RemoveResource(ctx)
+			return
+		default:
+			resp.Diagnostics.AddError("Config API Error", fmt.Sprintf("Unable to update organization_policy, got error: %s", err))
+			return
+		}
+	}
+
+	CopyUpdateOrganizationPolicyResponse(&afterData, protoResp)
+
+	tflog.Trace(ctx, "updated a resource", map[string]any{"type": "organization_policy", "id": protoResp.Id})
+
+	resp.Diagnostics.Append(resp.State.Set(ctx, &afterData)...)
+}
+
+func (r *OrganizationPolicyResource) Delete(ctx context.Context, req resource.DeleteRequest, resp *resource.DeleteResponse) {
+	var data OrganizationPolicyResourceModel
+
+	resp.Diagnostics.Append(req.State.Get(ctx, &data)...)
+	if resp.Diagnostics.HasError() {
+		return
+	}
+
+	protoReq, diags := NewDeleteOrganizationPolicyRequest(ctx, &data)
+	resp.Diagnostics.Append(diags...)
+	if resp.Diagnostics.HasError() {
+		return
+	}
+
+	tflog.Trace(ctx, "deleting a resource", map[string]any{"type": "organization_policy", "id": protoReq.Id})
+
+	rpcCtx, rpcCancel := context.WithTimeout(ctx, r.config.RequestTimeout())
+	_, err := r.config.Client().DeleteOrganizationPolicy(rpcCtx, protoReq)
+	rpcCancel()
+	if err != nil {
+		switch status.Code(err) {
+		case codes.NotFound:
+			tflog.Trace(ctx, "resource was already deleted", map[string]any{"type": "organization_policy", "id": protoReq.Id})
+		default:
+			resp.Diagnostics.AddError("Config API Error", fmt.Sprintf("Unable to delete organization_policy, got error: %s", err))
+			return
+		}
+	}
+
+	tflog.Trace(ctx, "deleted a resource", map[string]any{"type": "organization_policy", "id": protoReq.Id})
+}
+
+func (r *OrganizationPolicyResource) ImportState(ctx context.Context, req resource.ImportStateRequest, resp *resource.ImportStateResponse) {
+	// TODO
+}
+
+// OrganizationPolicyRuleResource implements the organization_policy_rule resource.
+type OrganizationPolicyRuleResource struct {
+	// schema is the schema of the organization_policy_rule resource.
+	schema resource_schema.Schema
+
+	// providerData is the provider configuration.
+	config ProviderData
+}
+
+var _ resource.ResourceWithConfigure = &OrganizationPolicyRuleResource{}
+var _ resource.ResourceWithImportState = &OrganizationPolicyRuleResource{}
+
+// NewOrganizationPolicyRuleResource returns a new organization_policy_rule resource.
+func NewOrganizationPolicyRuleResource(schema resource_schema.Schema) resource.Resource {
+	return &OrganizationPolicyRuleResource{
+		schema: schema,
+	}
+}
+
+func (r *OrganizationPolicyRuleResource) Metadata(ctx context.Context, req resource.MetadataRequest, resp *resource.MetadataResponse) {
+	resp.TypeName = req.ProviderTypeName + "_organization_policy_rule"
+}
+
+func (r *OrganizationPolicyRuleResource) Schema(ctx context.Context, req resource.SchemaRequest, resp *resource.SchemaResponse) {
+	resp.Schema = r.schema
+}
+
+func (r *OrganizationPolicyRuleResource) Configure(ctx context.Context, req resource.ConfigureRequest, resp *resource.ConfigureResponse) {
+	if req.ProviderData == nil {
+		return
+	}
+
+	providerData, ok := req.ProviderData.(ProviderData)
+	if !ok {
+		resp.Diagnostics.AddError(
+			"Unexpected Resource Configure Type",
+			fmt.Sprintf("Expected ProviderData, got: %T. Please report this issue to the provider developers.", req.ProviderData),
+		)
+
+		return
+	}
+
+	r.config = providerData
+}
+
+func (r *OrganizationPolicyRuleResource) Create(ctx context.Context, req resource.CreateRequest, resp *resource.CreateResponse) {
+	var data OrganizationPolicyRuleResourceModel
+
+	resp.Diagnostics.Append(req.Plan.Get(ctx, &data)...)
+	if resp.Diagnostics.HasError() {
+		return
+	}
+
+	protoReq, diagReq := NewCreateOrganizationPolicyRuleRequest(ctx, &data)
+	resp.Diagnostics.Append(diagReq...)
+	if resp.Diagnostics.HasError() {
+		return
+	}
+
+	tflog.Trace(ctx, "creating a resource", map[string]any{"type": "organization_policy_rule"})
+
+	rpcCtx, rpcCancel := context.WithTimeout(ctx, r.config.RequestTimeout())
+	protoResp, err := r.config.Client().CreateOrganizationPolicyRule(rpcCtx, protoReq)
+	rpcCancel()
+	if err != nil {
+		resp.Diagnostics.AddError("Config API Error", fmt.Sprintf("Unable to create organization_policy_rule, got error: %s", err))
+		return
+	}
+
+	CopyCreateOrganizationPolicyRuleResponse(&data, protoResp)
+
+	tflog.Trace(ctx, "created a resource", map[string]any{"type": "organization_policy_rule", "id": protoResp.Id})
+
+	resp.Diagnostics.Append(resp.State.Set(ctx, &data)...)
+}
+
+func (r *OrganizationPolicyRuleResource) Read(ctx context.Context, req resource.ReadRequest, resp *resource.ReadResponse) {
+	var data OrganizationPolicyRuleResourceModel
+
+	resp.Diagnostics.Append(req.State.Get(ctx, &data)...)
+	if resp.Diagnostics.HasError() {
+		return
+	}
+
+	protoReq, diagsReq := NewReadOrganizationPolicyRuleRequest(ctx, &data)
+	resp.Diagnostics.Append(diagsReq...)
+	if resp.Diagnostics.HasError() {
+		return
+	}
+
+	tflog.Trace(ctx, "reading a resource", map[string]any{"type": "organization_policy_rule", "id": protoReq.Id})
+
+	rpcCtx, rpcCancel := context.WithTimeout(ctx, r.config.RequestTimeout())
+	protoResp, err := r.config.Client().ReadOrganizationPolicyRule(rpcCtx, protoReq)
+	rpcCancel()
+	if err != nil {
+		switch status.Code(err) {
+		case codes.NotFound:
+			resp.Diagnostics.AddWarning("Resource Not Found", fmt.Sprintf("No organization_policy_rule found with id %s", protoReq.Id))
+			resp.State.RemoveResource(ctx)
+			return
+		default:
+			resp.Diagnostics.AddError("Config API Error", fmt.Sprintf("Unable to read organization_policy_rule, got error: %s", err))
+			return
+		}
+	}
+
+	CopyReadOrganizationPolicyRuleResponse(&data, protoResp)
+
+	tflog.Trace(ctx, "read a resource", map[string]any{"type": "organization_policy_rule", "id": protoResp.Id})
+
+	resp.Diagnostics.Append(resp.State.Set(ctx, &data)...)
+}
+
+func (r *OrganizationPolicyRuleResource) Update(ctx context.Context, req resource.UpdateRequest, resp *resource.UpdateResponse) {
+	var beforeData OrganizationPolicyRuleResourceModel
+	var afterData OrganizationPolicyRuleResourceModel
+
+	resp.Diagnostics.Append(req.State.Get(ctx, &beforeData)...)
+	if resp.Diagnostics.HasError() {
+		return
+	}
+
+	resp.Diagnostics.Append(req.Plan.Get(ctx, &afterData)...)
+	if resp.Diagnostics.HasError() {
+		return
+	}
+
+	protoReq, diags := NewUpdateOrganizationPolicyRuleRequest(ctx, &beforeData, &afterData)
+	resp.Diagnostics.Append(diags...)
+	if resp.Diagnostics.HasError() {
+		return
+	}
+
+	tflog.Trace(ctx, "updating a resource", map[string]any{"type": "organization_policy_rule", "id": protoReq.Id, "update_mask": protoReq.UpdateMask.Paths})
+
+	rpcCtx, rpcCancel := context.WithTimeout(ctx, r.config.RequestTimeout())
+	protoResp, err := r.config.Client().UpdateOrganizationPolicyRule(rpcCtx, protoReq)
+	rpcCancel()
+	if err != nil {
+		switch status.Code(err) {
+		case codes.NotFound:
+			resp.Diagnostics.AddError("Resource Not Found", fmt.Sprintf("No organization_policy_rule found with id %s", protoReq.Id))
+			resp.State.RemoveResource(ctx)
+			return
+		default:
+			resp.Diagnostics.AddError("Config API Error", fmt.Sprintf("Unable to update organization_policy_rule, got error: %s", err))
+			return
+		}
+	}
+
+	CopyUpdateOrganizationPolicyRuleResponse(&afterData, protoResp)
+
+	tflog.Trace(ctx, "updated a resource", map[string]any{"type": "organization_policy_rule", "id": protoResp.Id})
+
+	resp.Diagnostics.Append(resp.State.Set(ctx, &afterData)...)
+}
+
+func (r *OrganizationPolicyRuleResource) Delete(ctx context.Context, req resource.DeleteRequest, resp *resource.DeleteResponse) {
+	var data OrganizationPolicyRuleResourceModel
+
+	resp.Diagnostics.Append(req.State.Get(ctx, &data)...)
+	if resp.Diagnostics.HasError() {
+		return
+	}
+
+	protoReq, diags := NewDeleteOrganizationPolicyRuleRequest(ctx, &data)
+	resp.Diagnostics.Append(diags...)
+	if resp.Diagnostics.HasError() {
+		return
+	}
+
+	tflog.Trace(ctx, "deleting a resource", map[string]any{"type": "organization_policy_rule", "id": protoReq.Id})
+
+	rpcCtx, rpcCancel := context.WithTimeout(ctx, r.config.RequestTimeout())
+	_, err := r.config.Client().DeleteOrganizationPolicyRule(rpcCtx, protoReq)
+	rpcCancel()
+	if err != nil {
+		switch status.Code(err) {
+		case codes.NotFound:
+			tflog.Trace(ctx, "resource was already deleted", map[string]any{"type": "organization_policy_rule", "id": protoReq.Id})
+		default:
+			resp.Diagnostics.AddError("Config API Error", fmt.Sprintf("Unable to delete organization_policy_rule, got error: %s", err))
+			return
+		}
+	}
+
+	tflog.Trace(ctx, "deleted a resource", map[string]any{"type": "organization_policy_rule", "id": protoReq.Id})
+}
+
+func (r *OrganizationPolicyRuleResource) ImportState(ctx context.Context, req resource.ImportStateRequest, resp *resource.ImportStateResponse) {
+	// TODO
+}
+
 // TagToLabelResource implements the tag_to_label resource.
 type TagToLabelResource struct {
 	// schema is the schema of the tag_to_label resource.
@@ -2735,6 +3127,25 @@ type K8SClusterOnboardingCredentialResourceModel struct {
 	Description   types.String `tfsdk:"description"`
 	IllumioRegion types.String `tfsdk:"illumio_region"`
 	Name          types.String `tfsdk:"name"`
+}
+
+type OrganizationPolicyResourceModel struct {
+	Id          types.String `tfsdk:"id"`
+	Description types.String `tfsdk:"description"`
+	Enabled     types.Bool   `tfsdk:"enabled"`
+	Name        types.String `tfsdk:"name"`
+}
+
+type OrganizationPolicyRuleResourceModel struct {
+	Id                   types.String `tfsdk:"id"`
+	Action               types.String `tfsdk:"action"`
+	Description          types.String `tfsdk:"description"`
+	FromIpListIds        types.List   `tfsdk:"from_ip_list_ids"`
+	FromLabels           types.List   `tfsdk:"from_labels"`
+	OrganizationPolicyId types.String `tfsdk:"organization_policy_id"`
+	ToIpListIds          types.List   `tfsdk:"to_ip_list_ids"`
+	ToLabels             types.List   `tfsdk:"to_labels"`
+	ToPortRanges         types.List   `tfsdk:"to_port_ranges"`
 }
 
 type TagToLabelResourceModel struct {
@@ -4270,6 +4681,194 @@ func NewDeleteK8SClusterOnboardingCredentialRequest(ctx context.Context, data *K
 	return proto, diags
 }
 
+func NewCreateOrganizationPolicyRequest(ctx context.Context, data *OrganizationPolicyResourceModel) (*configv1.CreateOrganizationPolicyRequest, diag.Diagnostics) {
+	var diags diag.Diagnostics
+	proto := &configv1.CreateOrganizationPolicyRequest{}
+	if !data.Description.IsUnknown() && !data.Description.IsNull() {
+		var dataValue attr.Value = data.Description
+		var protoValue string
+		protoValue = dataValue.(types.String).ValueString()
+		proto.Description = &protoValue
+	}
+	if !data.Enabled.IsUnknown() && !data.Enabled.IsNull() {
+		var dataValue attr.Value = data.Enabled
+		var protoValue bool
+		protoValue = dataValue.(types.Bool).ValueBool()
+		proto.Enabled = protoValue
+	}
+	if !data.Name.IsUnknown() && !data.Name.IsNull() {
+		var dataValue attr.Value = data.Name
+		var protoValue string
+		protoValue = dataValue.(types.String).ValueString()
+		proto.Name = protoValue
+	}
+	return proto, diags
+}
+
+func NewReadOrganizationPolicyRequest(ctx context.Context, data *OrganizationPolicyResourceModel) (*configv1.ReadOrganizationPolicyRequest, diag.Diagnostics) {
+	var diags diag.Diagnostics
+	proto := &configv1.ReadOrganizationPolicyRequest{}
+	if !data.Id.IsUnknown() && !data.Id.IsNull() {
+		var dataValue attr.Value = data.Id
+		var protoValue string
+		protoValue = dataValue.(types.String).ValueString()
+		proto.Id = protoValue
+	}
+	return proto, diags
+}
+
+func NewDeleteOrganizationPolicyRequest(ctx context.Context, data *OrganizationPolicyResourceModel) (*configv1.DeleteOrganizationPolicyRequest, diag.Diagnostics) {
+	var diags diag.Diagnostics
+	proto := &configv1.DeleteOrganizationPolicyRequest{}
+	if !data.Id.IsUnknown() && !data.Id.IsNull() {
+		var dataValue attr.Value = data.Id
+		var protoValue string
+		protoValue = dataValue.(types.String).ValueString()
+		proto.Id = protoValue
+	}
+	return proto, diags
+}
+
+func NewCreateOrganizationPolicyRuleRequest(ctx context.Context, data *OrganizationPolicyRuleResourceModel) (*configv1.CreateOrganizationPolicyRuleRequest, diag.Diagnostics) {
+	var diags diag.Diagnostics
+	proto := &configv1.CreateOrganizationPolicyRuleRequest{}
+	if !data.Action.IsUnknown() && !data.Action.IsNull() {
+		var dataValue attr.Value = data.Action
+		var protoValue string
+		protoValue = dataValue.(types.String).ValueString()
+		proto.Action = protoValue
+	}
+	if !data.Description.IsUnknown() && !data.Description.IsNull() {
+		var dataValue attr.Value = data.Description
+		var protoValue string
+		protoValue = dataValue.(types.String).ValueString()
+		proto.Description = &protoValue
+	}
+	if !data.FromIpListIds.IsUnknown() && !data.FromIpListIds.IsNull() {
+		var dataValue attr.Value = data.FromIpListIds
+		var protoValue []string
+		{
+			dataElements := dataValue.(types.List).Elements()
+			protoValues := make([]string, 0, len(dataElements))
+			for _, dataElement := range dataElements {
+				var dataValue attr.Value = dataElement
+				var protoValue string
+				protoValue = dataValue.(types.String).ValueString()
+				protoValues = append(protoValues, protoValue)
+			}
+			protoValue = protoValues
+		}
+		proto.FromIpListIds = protoValue
+	}
+	if !data.FromLabels.IsUnknown() && !data.FromLabels.IsNull() {
+		var dataValue attr.Value = data.FromLabels
+		var protoValue []*configv1.OrganizationPolicyRule_FromLabels
+		{
+			dataElements := dataValue.(types.List).Elements()
+			protoValues := make([]*configv1.OrganizationPolicyRule_FromLabels, 0, len(dataElements))
+			for _, dataElement := range dataElements {
+				var dataValue attr.Value = dataElement
+				var protoValue *configv1.OrganizationPolicyRule_FromLabels
+				protoValue, newDiags := ConvertDataValueToOrganizationPolicyRule_FromLabelsProto(ctx, dataValue)
+				diags.Append(newDiags...)
+				if diags.HasError() {
+					return nil, diags
+				}
+				protoValues = append(protoValues, protoValue)
+			}
+			protoValue = protoValues
+		}
+		proto.FromLabels = protoValue
+	}
+	if !data.OrganizationPolicyId.IsUnknown() && !data.OrganizationPolicyId.IsNull() {
+		var dataValue attr.Value = data.OrganizationPolicyId
+		var protoValue string
+		protoValue = dataValue.(types.String).ValueString()
+		proto.OrganizationPolicyId = protoValue
+	}
+	if !data.ToIpListIds.IsUnknown() && !data.ToIpListIds.IsNull() {
+		var dataValue attr.Value = data.ToIpListIds
+		var protoValue []string
+		{
+			dataElements := dataValue.(types.List).Elements()
+			protoValues := make([]string, 0, len(dataElements))
+			for _, dataElement := range dataElements {
+				var dataValue attr.Value = dataElement
+				var protoValue string
+				protoValue = dataValue.(types.String).ValueString()
+				protoValues = append(protoValues, protoValue)
+			}
+			protoValue = protoValues
+		}
+		proto.ToIpListIds = protoValue
+	}
+	if !data.ToLabels.IsUnknown() && !data.ToLabels.IsNull() {
+		var dataValue attr.Value = data.ToLabels
+		var protoValue []*configv1.OrganizationPolicyRule_ToLabels
+		{
+			dataElements := dataValue.(types.List).Elements()
+			protoValues := make([]*configv1.OrganizationPolicyRule_ToLabels, 0, len(dataElements))
+			for _, dataElement := range dataElements {
+				var dataValue attr.Value = dataElement
+				var protoValue *configv1.OrganizationPolicyRule_ToLabels
+				protoValue, newDiags := ConvertDataValueToOrganizationPolicyRule_ToLabelsProto(ctx, dataValue)
+				diags.Append(newDiags...)
+				if diags.HasError() {
+					return nil, diags
+				}
+				protoValues = append(protoValues, protoValue)
+			}
+			protoValue = protoValues
+		}
+		proto.ToLabels = protoValue
+	}
+	if !data.ToPortRanges.IsUnknown() && !data.ToPortRanges.IsNull() {
+		var dataValue attr.Value = data.ToPortRanges
+		var protoValue []*configv1.OrganizationPolicyRule_ToPortRanges
+		{
+			dataElements := dataValue.(types.List).Elements()
+			protoValues := make([]*configv1.OrganizationPolicyRule_ToPortRanges, 0, len(dataElements))
+			for _, dataElement := range dataElements {
+				var dataValue attr.Value = dataElement
+				var protoValue *configv1.OrganizationPolicyRule_ToPortRanges
+				protoValue, newDiags := ConvertDataValueToOrganizationPolicyRule_ToPortRangesProto(ctx, dataValue)
+				diags.Append(newDiags...)
+				if diags.HasError() {
+					return nil, diags
+				}
+				protoValues = append(protoValues, protoValue)
+			}
+			protoValue = protoValues
+		}
+		proto.ToPortRanges = protoValue
+	}
+	return proto, diags
+}
+
+func NewReadOrganizationPolicyRuleRequest(ctx context.Context, data *OrganizationPolicyRuleResourceModel) (*configv1.ReadOrganizationPolicyRuleRequest, diag.Diagnostics) {
+	var diags diag.Diagnostics
+	proto := &configv1.ReadOrganizationPolicyRuleRequest{}
+	if !data.Id.IsUnknown() && !data.Id.IsNull() {
+		var dataValue attr.Value = data.Id
+		var protoValue string
+		protoValue = dataValue.(types.String).ValueString()
+		proto.Id = protoValue
+	}
+	return proto, diags
+}
+
+func NewDeleteOrganizationPolicyRuleRequest(ctx context.Context, data *OrganizationPolicyRuleResourceModel) (*configv1.DeleteOrganizationPolicyRuleRequest, diag.Diagnostics) {
+	var diags diag.Diagnostics
+	proto := &configv1.DeleteOrganizationPolicyRuleRequest{}
+	if !data.Id.IsUnknown() && !data.Id.IsNull() {
+		var dataValue attr.Value = data.Id
+		var protoValue string
+		protoValue = dataValue.(types.String).ValueString()
+		proto.Id = protoValue
+	}
+	return proto, diags
+}
+
 func NewCreateTagToLabelRequest(ctx context.Context, data *TagToLabelResourceModel) (*configv1.CreateTagToLabelRequest, diag.Diagnostics) {
 	var diags diag.Diagnostics
 	proto := &configv1.CreateTagToLabelRequest{}
@@ -5604,6 +6203,183 @@ func NewUpdateK8SClusterOnboardingCredentialRequest(ctx context.Context, beforeD
 			var protoValue string
 			protoValue = dataValue.(types.String).ValueString()
 			proto.Name = protoValue
+		}
+	}
+	return proto, diags
+}
+
+func NewUpdateOrganizationPolicyRequest(ctx context.Context, beforeData, afterData *OrganizationPolicyResourceModel) (*configv1.UpdateOrganizationPolicyRequest, diag.Diagnostics) {
+	var diags diag.Diagnostics
+	proto := &configv1.UpdateOrganizationPolicyRequest{}
+	proto.UpdateMask, _ = fieldmaskpb.New(proto)
+	proto.Id = beforeData.Id.ValueString()
+	if !afterData.Description.Equal(beforeData.Description) {
+		proto.UpdateMask.Append(proto, "description")
+		if !afterData.Description.IsUnknown() && !afterData.Description.IsNull() {
+			var dataValue attr.Value = afterData.Description
+			var protoValue string
+			protoValue = dataValue.(types.String).ValueString()
+			proto.Description = &protoValue
+		}
+	}
+	if !afterData.Enabled.Equal(beforeData.Enabled) {
+		proto.UpdateMask.Append(proto, "enabled")
+		if !afterData.Enabled.IsUnknown() && !afterData.Enabled.IsNull() {
+			var dataValue attr.Value = afterData.Enabled
+			var protoValue bool
+			protoValue = dataValue.(types.Bool).ValueBool()
+			proto.Enabled = protoValue
+		}
+	}
+	if !afterData.Name.Equal(beforeData.Name) {
+		proto.UpdateMask.Append(proto, "name")
+		if !afterData.Name.IsUnknown() && !afterData.Name.IsNull() {
+			var dataValue attr.Value = afterData.Name
+			var protoValue string
+			protoValue = dataValue.(types.String).ValueString()
+			proto.Name = protoValue
+		}
+	}
+	return proto, diags
+}
+
+func NewUpdateOrganizationPolicyRuleRequest(ctx context.Context, beforeData, afterData *OrganizationPolicyRuleResourceModel) (*configv1.UpdateOrganizationPolicyRuleRequest, diag.Diagnostics) {
+	var diags diag.Diagnostics
+	proto := &configv1.UpdateOrganizationPolicyRuleRequest{}
+	proto.UpdateMask, _ = fieldmaskpb.New(proto)
+	proto.Id = beforeData.Id.ValueString()
+	if !afterData.Action.Equal(beforeData.Action) {
+		proto.UpdateMask.Append(proto, "action")
+		if !afterData.Action.IsUnknown() && !afterData.Action.IsNull() {
+			var dataValue attr.Value = afterData.Action
+			var protoValue string
+			protoValue = dataValue.(types.String).ValueString()
+			proto.Action = protoValue
+		}
+	}
+	if !afterData.Description.Equal(beforeData.Description) {
+		proto.UpdateMask.Append(proto, "description")
+		if !afterData.Description.IsUnknown() && !afterData.Description.IsNull() {
+			var dataValue attr.Value = afterData.Description
+			var protoValue string
+			protoValue = dataValue.(types.String).ValueString()
+			proto.Description = &protoValue
+		}
+	}
+	if !afterData.FromIpListIds.Equal(beforeData.FromIpListIds) {
+		proto.UpdateMask.Append(proto, "from_ip_list_ids")
+		if !afterData.FromIpListIds.IsUnknown() && !afterData.FromIpListIds.IsNull() {
+			var dataValue attr.Value = afterData.FromIpListIds
+			var protoValue []string
+			{
+				dataElements := dataValue.(types.List).Elements()
+				protoValues := make([]string, 0, len(dataElements))
+				for _, dataElement := range dataElements {
+					var dataValue attr.Value = dataElement
+					var protoValue string
+					protoValue = dataValue.(types.String).ValueString()
+					protoValues = append(protoValues, protoValue)
+				}
+				protoValue = protoValues
+			}
+			proto.FromIpListIds = protoValue
+		}
+	}
+	if !afterData.FromLabels.Equal(beforeData.FromLabels) {
+		proto.UpdateMask.Append(proto, "from_labels")
+		if !afterData.FromLabels.IsUnknown() && !afterData.FromLabels.IsNull() {
+			var dataValue attr.Value = afterData.FromLabels
+			var protoValue []*configv1.OrganizationPolicyRule_FromLabels
+			{
+				dataElements := dataValue.(types.List).Elements()
+				protoValues := make([]*configv1.OrganizationPolicyRule_FromLabels, 0, len(dataElements))
+				for _, dataElement := range dataElements {
+					var dataValue attr.Value = dataElement
+					var protoValue *configv1.OrganizationPolicyRule_FromLabels
+					protoValue, newDiags := ConvertDataValueToOrganizationPolicyRule_FromLabelsProto(ctx, dataValue)
+					diags.Append(newDiags...)
+					if diags.HasError() {
+						return nil, diags
+					}
+					protoValues = append(protoValues, protoValue)
+				}
+				protoValue = protoValues
+			}
+			proto.FromLabels = protoValue
+		}
+	}
+	if !afterData.OrganizationPolicyId.Equal(beforeData.OrganizationPolicyId) {
+		proto.UpdateMask.Append(proto, "organization_policy_id")
+		if !afterData.OrganizationPolicyId.IsUnknown() && !afterData.OrganizationPolicyId.IsNull() {
+			var dataValue attr.Value = afterData.OrganizationPolicyId
+			var protoValue string
+			protoValue = dataValue.(types.String).ValueString()
+			proto.OrganizationPolicyId = protoValue
+		}
+	}
+	if !afterData.ToIpListIds.Equal(beforeData.ToIpListIds) {
+		proto.UpdateMask.Append(proto, "to_ip_list_ids")
+		if !afterData.ToIpListIds.IsUnknown() && !afterData.ToIpListIds.IsNull() {
+			var dataValue attr.Value = afterData.ToIpListIds
+			var protoValue []string
+			{
+				dataElements := dataValue.(types.List).Elements()
+				protoValues := make([]string, 0, len(dataElements))
+				for _, dataElement := range dataElements {
+					var dataValue attr.Value = dataElement
+					var protoValue string
+					protoValue = dataValue.(types.String).ValueString()
+					protoValues = append(protoValues, protoValue)
+				}
+				protoValue = protoValues
+			}
+			proto.ToIpListIds = protoValue
+		}
+	}
+	if !afterData.ToLabels.Equal(beforeData.ToLabels) {
+		proto.UpdateMask.Append(proto, "to_labels")
+		if !afterData.ToLabels.IsUnknown() && !afterData.ToLabels.IsNull() {
+			var dataValue attr.Value = afterData.ToLabels
+			var protoValue []*configv1.OrganizationPolicyRule_ToLabels
+			{
+				dataElements := dataValue.(types.List).Elements()
+				protoValues := make([]*configv1.OrganizationPolicyRule_ToLabels, 0, len(dataElements))
+				for _, dataElement := range dataElements {
+					var dataValue attr.Value = dataElement
+					var protoValue *configv1.OrganizationPolicyRule_ToLabels
+					protoValue, newDiags := ConvertDataValueToOrganizationPolicyRule_ToLabelsProto(ctx, dataValue)
+					diags.Append(newDiags...)
+					if diags.HasError() {
+						return nil, diags
+					}
+					protoValues = append(protoValues, protoValue)
+				}
+				protoValue = protoValues
+			}
+			proto.ToLabels = protoValue
+		}
+	}
+	if !afterData.ToPortRanges.Equal(beforeData.ToPortRanges) {
+		proto.UpdateMask.Append(proto, "to_port_ranges")
+		if !afterData.ToPortRanges.IsUnknown() && !afterData.ToPortRanges.IsNull() {
+			var dataValue attr.Value = afterData.ToPortRanges
+			var protoValue []*configv1.OrganizationPolicyRule_ToPortRanges
+			{
+				dataElements := dataValue.(types.List).Elements()
+				protoValues := make([]*configv1.OrganizationPolicyRule_ToPortRanges, 0, len(dataElements))
+				for _, dataElement := range dataElements {
+					var dataValue attr.Value = dataElement
+					var protoValue *configv1.OrganizationPolicyRule_ToPortRanges
+					protoValue, newDiags := ConvertDataValueToOrganizationPolicyRule_ToPortRangesProto(ctx, dataValue)
+					diags.Append(newDiags...)
+					if diags.HasError() {
+						return nil, diags
+					}
+					protoValues = append(protoValues, protoValue)
+				}
+				protoValue = protoValues
+			}
+			proto.ToPortRanges = protoValue
 		}
 	}
 	return proto, diags
@@ -9158,6 +9934,375 @@ func CopyUpdateK8SClusterOnboardingCredentialResponse(dst *K8SClusterOnboardingC
 	dst.IllumioRegion = types.StringValue(src.IllumioRegion)
 	dst.Name = types.StringValue(src.Name)
 }
+func CopyCreateOrganizationPolicyResponse(dst *OrganizationPolicyResourceModel, src *configv1.CreateOrganizationPolicyResponse) {
+	dst.Id = types.StringValue(src.Id)
+	dst.Description = types.StringPointerValue(src.Description)
+	dst.Enabled = types.BoolValue(src.Enabled)
+	dst.Name = types.StringValue(src.Name)
+}
+func CopyReadOrganizationPolicyResponse(dst *OrganizationPolicyResourceModel, src *configv1.ReadOrganizationPolicyResponse) {
+	dst.Id = types.StringValue(src.Id)
+	dst.Description = types.StringPointerValue(src.Description)
+	dst.Enabled = types.BoolValue(src.Enabled)
+	dst.Name = types.StringValue(src.Name)
+}
+func CopyUpdateOrganizationPolicyResponse(dst *OrganizationPolicyResourceModel, src *configv1.UpdateOrganizationPolicyResponse) {
+	dst.Id = types.StringValue(src.Id)
+	dst.Description = types.StringPointerValue(src.Description)
+	dst.Enabled = types.BoolValue(src.Enabled)
+	dst.Name = types.StringValue(src.Name)
+}
+func CopyCreateOrganizationPolicyRuleResponse(dst *OrganizationPolicyRuleResourceModel, src *configv1.CreateOrganizationPolicyRuleResponse) {
+	dst.Id = types.StringValue(src.Id)
+	dst.Action = types.StringValue(src.Action)
+	dst.Description = types.StringPointerValue(src.Description)
+	{
+		protoValue := src.FromIpListIds
+		var dataValue types.List
+		{
+			dataElementType := types.StringType
+			protoElements := protoValue
+			if protoElements == nil {
+				dataValue = types.ListNull(dataElementType)
+			} else {
+				dataValues := make([]attr.Value, 0, len(protoElements))
+				for _, protoElement := range protoElements {
+					var protoValue string = protoElement
+					var dataValue attr.Value
+					dataValue = types.StringValue(protoValue)
+					dataValues = append(dataValues, dataValue)
+				}
+				dataValue = types.ListValueMust(dataElementType, dataValues)
+			}
+		}
+		dst.FromIpListIds = dataValue
+	}
+	{
+		protoValue := src.FromLabels
+		var dataValue types.List
+		{
+			dataElementType := types.ObjectType{
+				AttrTypes: GetTypeAttrsForOrganizationPolicyRule_FromLabels(),
+			}
+			protoElements := protoValue
+			if protoElements == nil {
+				dataValue = types.ListNull(dataElementType)
+			} else {
+				dataValues := make([]attr.Value, 0, len(protoElements))
+				for _, protoElement := range protoElements {
+					var protoValue *configv1.OrganizationPolicyRule_FromLabels = protoElement
+					var dataValue attr.Value
+					dataValue = ConvertOrganizationPolicyRule_FromLabelsToObjectValueFromProto(protoValue)
+					dataValues = append(dataValues, dataValue)
+				}
+				dataValue = types.ListValueMust(dataElementType, dataValues)
+			}
+		}
+		dst.FromLabels = dataValue
+	}
+	dst.OrganizationPolicyId = types.StringValue(src.OrganizationPolicyId)
+	{
+		protoValue := src.ToIpListIds
+		var dataValue types.List
+		{
+			dataElementType := types.StringType
+			protoElements := protoValue
+			if protoElements == nil {
+				dataValue = types.ListNull(dataElementType)
+			} else {
+				dataValues := make([]attr.Value, 0, len(protoElements))
+				for _, protoElement := range protoElements {
+					var protoValue string = protoElement
+					var dataValue attr.Value
+					dataValue = types.StringValue(protoValue)
+					dataValues = append(dataValues, dataValue)
+				}
+				dataValue = types.ListValueMust(dataElementType, dataValues)
+			}
+		}
+		dst.ToIpListIds = dataValue
+	}
+	{
+		protoValue := src.ToLabels
+		var dataValue types.List
+		{
+			dataElementType := types.ObjectType{
+				AttrTypes: GetTypeAttrsForOrganizationPolicyRule_ToLabels(),
+			}
+			protoElements := protoValue
+			if protoElements == nil {
+				dataValue = types.ListNull(dataElementType)
+			} else {
+				dataValues := make([]attr.Value, 0, len(protoElements))
+				for _, protoElement := range protoElements {
+					var protoValue *configv1.OrganizationPolicyRule_ToLabels = protoElement
+					var dataValue attr.Value
+					dataValue = ConvertOrganizationPolicyRule_ToLabelsToObjectValueFromProto(protoValue)
+					dataValues = append(dataValues, dataValue)
+				}
+				dataValue = types.ListValueMust(dataElementType, dataValues)
+			}
+		}
+		dst.ToLabels = dataValue
+	}
+	{
+		protoValue := src.ToPortRanges
+		var dataValue types.List
+		{
+			dataElementType := types.ObjectType{
+				AttrTypes: GetTypeAttrsForOrganizationPolicyRule_ToPortRanges(),
+			}
+			protoElements := protoValue
+			if protoElements == nil {
+				dataValue = types.ListNull(dataElementType)
+			} else {
+				dataValues := make([]attr.Value, 0, len(protoElements))
+				for _, protoElement := range protoElements {
+					var protoValue *configv1.OrganizationPolicyRule_ToPortRanges = protoElement
+					var dataValue attr.Value
+					dataValue = ConvertOrganizationPolicyRule_ToPortRangesToObjectValueFromProto(protoValue)
+					dataValues = append(dataValues, dataValue)
+				}
+				dataValue = types.ListValueMust(dataElementType, dataValues)
+			}
+		}
+		dst.ToPortRanges = dataValue
+	}
+}
+func CopyReadOrganizationPolicyRuleResponse(dst *OrganizationPolicyRuleResourceModel, src *configv1.ReadOrganizationPolicyRuleResponse) {
+	dst.Id = types.StringValue(src.Id)
+	dst.Action = types.StringValue(src.Action)
+	dst.Description = types.StringPointerValue(src.Description)
+	{
+		protoValue := src.FromIpListIds
+		var dataValue types.List
+		{
+			dataElementType := types.StringType
+			protoElements := protoValue
+			if protoElements == nil {
+				dataValue = types.ListNull(dataElementType)
+			} else {
+				dataValues := make([]attr.Value, 0, len(protoElements))
+				for _, protoElement := range protoElements {
+					var protoValue string = protoElement
+					var dataValue attr.Value
+					dataValue = types.StringValue(protoValue)
+					dataValues = append(dataValues, dataValue)
+				}
+				dataValue = types.ListValueMust(dataElementType, dataValues)
+			}
+		}
+		dst.FromIpListIds = dataValue
+	}
+	{
+		protoValue := src.FromLabels
+		var dataValue types.List
+		{
+			dataElementType := types.ObjectType{
+				AttrTypes: GetTypeAttrsForOrganizationPolicyRule_FromLabels(),
+			}
+			protoElements := protoValue
+			if protoElements == nil {
+				dataValue = types.ListNull(dataElementType)
+			} else {
+				dataValues := make([]attr.Value, 0, len(protoElements))
+				for _, protoElement := range protoElements {
+					var protoValue *configv1.OrganizationPolicyRule_FromLabels = protoElement
+					var dataValue attr.Value
+					dataValue = ConvertOrganizationPolicyRule_FromLabelsToObjectValueFromProto(protoValue)
+					dataValues = append(dataValues, dataValue)
+				}
+				dataValue = types.ListValueMust(dataElementType, dataValues)
+			}
+		}
+		dst.FromLabels = dataValue
+	}
+	dst.OrganizationPolicyId = types.StringValue(src.OrganizationPolicyId)
+	{
+		protoValue := src.ToIpListIds
+		var dataValue types.List
+		{
+			dataElementType := types.StringType
+			protoElements := protoValue
+			if protoElements == nil {
+				dataValue = types.ListNull(dataElementType)
+			} else {
+				dataValues := make([]attr.Value, 0, len(protoElements))
+				for _, protoElement := range protoElements {
+					var protoValue string = protoElement
+					var dataValue attr.Value
+					dataValue = types.StringValue(protoValue)
+					dataValues = append(dataValues, dataValue)
+				}
+				dataValue = types.ListValueMust(dataElementType, dataValues)
+			}
+		}
+		dst.ToIpListIds = dataValue
+	}
+	{
+		protoValue := src.ToLabels
+		var dataValue types.List
+		{
+			dataElementType := types.ObjectType{
+				AttrTypes: GetTypeAttrsForOrganizationPolicyRule_ToLabels(),
+			}
+			protoElements := protoValue
+			if protoElements == nil {
+				dataValue = types.ListNull(dataElementType)
+			} else {
+				dataValues := make([]attr.Value, 0, len(protoElements))
+				for _, protoElement := range protoElements {
+					var protoValue *configv1.OrganizationPolicyRule_ToLabels = protoElement
+					var dataValue attr.Value
+					dataValue = ConvertOrganizationPolicyRule_ToLabelsToObjectValueFromProto(protoValue)
+					dataValues = append(dataValues, dataValue)
+				}
+				dataValue = types.ListValueMust(dataElementType, dataValues)
+			}
+		}
+		dst.ToLabels = dataValue
+	}
+	{
+		protoValue := src.ToPortRanges
+		var dataValue types.List
+		{
+			dataElementType := types.ObjectType{
+				AttrTypes: GetTypeAttrsForOrganizationPolicyRule_ToPortRanges(),
+			}
+			protoElements := protoValue
+			if protoElements == nil {
+				dataValue = types.ListNull(dataElementType)
+			} else {
+				dataValues := make([]attr.Value, 0, len(protoElements))
+				for _, protoElement := range protoElements {
+					var protoValue *configv1.OrganizationPolicyRule_ToPortRanges = protoElement
+					var dataValue attr.Value
+					dataValue = ConvertOrganizationPolicyRule_ToPortRangesToObjectValueFromProto(protoValue)
+					dataValues = append(dataValues, dataValue)
+				}
+				dataValue = types.ListValueMust(dataElementType, dataValues)
+			}
+		}
+		dst.ToPortRanges = dataValue
+	}
+}
+func CopyUpdateOrganizationPolicyRuleResponse(dst *OrganizationPolicyRuleResourceModel, src *configv1.UpdateOrganizationPolicyRuleResponse) {
+	dst.Id = types.StringValue(src.Id)
+	dst.Action = types.StringValue(src.Action)
+	dst.Description = types.StringPointerValue(src.Description)
+	{
+		protoValue := src.FromIpListIds
+		var dataValue types.List
+		{
+			dataElementType := types.StringType
+			protoElements := protoValue
+			if protoElements == nil {
+				dataValue = types.ListNull(dataElementType)
+			} else {
+				dataValues := make([]attr.Value, 0, len(protoElements))
+				for _, protoElement := range protoElements {
+					var protoValue string = protoElement
+					var dataValue attr.Value
+					dataValue = types.StringValue(protoValue)
+					dataValues = append(dataValues, dataValue)
+				}
+				dataValue = types.ListValueMust(dataElementType, dataValues)
+			}
+		}
+		dst.FromIpListIds = dataValue
+	}
+	{
+		protoValue := src.FromLabels
+		var dataValue types.List
+		{
+			dataElementType := types.ObjectType{
+				AttrTypes: GetTypeAttrsForOrganizationPolicyRule_FromLabels(),
+			}
+			protoElements := protoValue
+			if protoElements == nil {
+				dataValue = types.ListNull(dataElementType)
+			} else {
+				dataValues := make([]attr.Value, 0, len(protoElements))
+				for _, protoElement := range protoElements {
+					var protoValue *configv1.OrganizationPolicyRule_FromLabels = protoElement
+					var dataValue attr.Value
+					dataValue = ConvertOrganizationPolicyRule_FromLabelsToObjectValueFromProto(protoValue)
+					dataValues = append(dataValues, dataValue)
+				}
+				dataValue = types.ListValueMust(dataElementType, dataValues)
+			}
+		}
+		dst.FromLabels = dataValue
+	}
+	dst.OrganizationPolicyId = types.StringValue(src.OrganizationPolicyId)
+	{
+		protoValue := src.ToIpListIds
+		var dataValue types.List
+		{
+			dataElementType := types.StringType
+			protoElements := protoValue
+			if protoElements == nil {
+				dataValue = types.ListNull(dataElementType)
+			} else {
+				dataValues := make([]attr.Value, 0, len(protoElements))
+				for _, protoElement := range protoElements {
+					var protoValue string = protoElement
+					var dataValue attr.Value
+					dataValue = types.StringValue(protoValue)
+					dataValues = append(dataValues, dataValue)
+				}
+				dataValue = types.ListValueMust(dataElementType, dataValues)
+			}
+		}
+		dst.ToIpListIds = dataValue
+	}
+	{
+		protoValue := src.ToLabels
+		var dataValue types.List
+		{
+			dataElementType := types.ObjectType{
+				AttrTypes: GetTypeAttrsForOrganizationPolicyRule_ToLabels(),
+			}
+			protoElements := protoValue
+			if protoElements == nil {
+				dataValue = types.ListNull(dataElementType)
+			} else {
+				dataValues := make([]attr.Value, 0, len(protoElements))
+				for _, protoElement := range protoElements {
+					var protoValue *configv1.OrganizationPolicyRule_ToLabels = protoElement
+					var dataValue attr.Value
+					dataValue = ConvertOrganizationPolicyRule_ToLabelsToObjectValueFromProto(protoValue)
+					dataValues = append(dataValues, dataValue)
+				}
+				dataValue = types.ListValueMust(dataElementType, dataValues)
+			}
+		}
+		dst.ToLabels = dataValue
+	}
+	{
+		protoValue := src.ToPortRanges
+		var dataValue types.List
+		{
+			dataElementType := types.ObjectType{
+				AttrTypes: GetTypeAttrsForOrganizationPolicyRule_ToPortRanges(),
+			}
+			protoElements := protoValue
+			if protoElements == nil {
+				dataValue = types.ListNull(dataElementType)
+			} else {
+				dataValues := make([]attr.Value, 0, len(protoElements))
+				for _, protoElement := range protoElements {
+					var protoValue *configv1.OrganizationPolicyRule_ToPortRanges = protoElement
+					var dataValue attr.Value
+					dataValue = ConvertOrganizationPolicyRule_ToPortRangesToObjectValueFromProto(protoValue)
+					dataValues = append(dataValues, dataValue)
+				}
+				dataValue = types.ListValueMust(dataElementType, dataValues)
+			}
+		}
+		dst.ToPortRanges = dataValue
+	}
+}
 func CopyCreateTagToLabelResponse(dst *TagToLabelResourceModel, src *configv1.CreateTagToLabelResponse) {
 	dst.Id = types.StringValue(src.Id)
 	{
@@ -9546,6 +10691,112 @@ func ConvertDataValueToIpList_IpRangesProto(ctx context.Context, dataValue attr.
 	proto.Exclusion = pv.Exclusion.ValueBool()
 	proto.FromIpAddress = pv.FromIpAddress.ValueString()
 	proto.ToIpAddress = pv.ToIpAddress.ValueString()
+	return proto, diags
+}
+
+type OrganizationPolicyRule_FromLabels struct {
+	Key   types.String `tfsdk:"key"`
+	Value types.String `tfsdk:"value"`
+}
+
+func GetTypeAttrsForOrganizationPolicyRule_FromLabels() map[string]attr.Type {
+	return map[string]attr.Type{
+		"key":   types.StringType,
+		"value": types.StringType,
+	}
+}
+
+func ConvertOrganizationPolicyRule_FromLabelsToObjectValueFromProto(proto *configv1.OrganizationPolicyRule_FromLabels) basetypes.ObjectValue {
+	return types.ObjectValueMust(
+		GetTypeAttrsForOrganizationPolicyRule_FromLabels(),
+		map[string]attr.Value{
+			"key":   types.StringValue(proto.Key),
+			"value": types.StringValue(proto.Value),
+		},
+	)
+}
+
+func ConvertDataValueToOrganizationPolicyRule_FromLabelsProto(ctx context.Context, dataValue attr.Value) (*configv1.OrganizationPolicyRule_FromLabels, diag.Diagnostics) {
+	pv := OrganizationPolicyRule_FromLabels{}
+	diags := tfsdk.ValueAs(ctx, dataValue, &pv)
+	if diags.HasError() {
+		return nil, diags
+	}
+	proto := &configv1.OrganizationPolicyRule_FromLabels{}
+	proto.Key = pv.Key.ValueString()
+	proto.Value = pv.Value.ValueString()
+	return proto, diags
+}
+
+type OrganizationPolicyRule_ToLabels struct {
+	Key   types.String `tfsdk:"key"`
+	Value types.String `tfsdk:"value"`
+}
+
+func GetTypeAttrsForOrganizationPolicyRule_ToLabels() map[string]attr.Type {
+	return map[string]attr.Type{
+		"key":   types.StringType,
+		"value": types.StringType,
+	}
+}
+
+func ConvertOrganizationPolicyRule_ToLabelsToObjectValueFromProto(proto *configv1.OrganizationPolicyRule_ToLabels) basetypes.ObjectValue {
+	return types.ObjectValueMust(
+		GetTypeAttrsForOrganizationPolicyRule_ToLabels(),
+		map[string]attr.Value{
+			"key":   types.StringValue(proto.Key),
+			"value": types.StringValue(proto.Value),
+		},
+	)
+}
+
+func ConvertDataValueToOrganizationPolicyRule_ToLabelsProto(ctx context.Context, dataValue attr.Value) (*configv1.OrganizationPolicyRule_ToLabels, diag.Diagnostics) {
+	pv := OrganizationPolicyRule_ToLabels{}
+	diags := tfsdk.ValueAs(ctx, dataValue, &pv)
+	if diags.HasError() {
+		return nil, diags
+	}
+	proto := &configv1.OrganizationPolicyRule_ToLabels{}
+	proto.Key = pv.Key.ValueString()
+	proto.Value = pv.Value.ValueString()
+	return proto, diags
+}
+
+type OrganizationPolicyRule_ToPortRanges struct {
+	FromPort types.Int64  `tfsdk:"from_port"`
+	Protocol types.String `tfsdk:"protocol"`
+	ToPort   types.Int64  `tfsdk:"to_port"`
+}
+
+func GetTypeAttrsForOrganizationPolicyRule_ToPortRanges() map[string]attr.Type {
+	return map[string]attr.Type{
+		"from_port": types.Int64Type,
+		"protocol":  types.StringType,
+		"to_port":   types.Int64Type,
+	}
+}
+
+func ConvertOrganizationPolicyRule_ToPortRangesToObjectValueFromProto(proto *configv1.OrganizationPolicyRule_ToPortRanges) basetypes.ObjectValue {
+	return types.ObjectValueMust(
+		GetTypeAttrsForOrganizationPolicyRule_ToPortRanges(),
+		map[string]attr.Value{
+			"from_port": types.Int64Value(proto.FromPort),
+			"protocol":  types.StringValue(proto.Protocol),
+			"to_port":   types.Int64Value(proto.ToPort),
+		},
+	)
+}
+
+func ConvertDataValueToOrganizationPolicyRule_ToPortRangesProto(ctx context.Context, dataValue attr.Value) (*configv1.OrganizationPolicyRule_ToPortRanges, diag.Diagnostics) {
+	pv := OrganizationPolicyRule_ToPortRanges{}
+	diags := tfsdk.ValueAs(ctx, dataValue, &pv)
+	if diags.HasError() {
+		return nil, diags
+	}
+	proto := &configv1.OrganizationPolicyRule_ToPortRanges{}
+	proto.FromPort = pv.FromPort.ValueInt64()
+	proto.Protocol = pv.Protocol.ValueString()
+	proto.ToPort = pv.ToPort.ValueInt64()
 	return proto, diags
 }
 

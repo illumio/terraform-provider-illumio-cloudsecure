@@ -44,6 +44,10 @@ type FakeConfigServer struct {
 	K8SClusterMutex                     sync.RWMutex
 	K8SClusterOnboardingCredentialMap   map[string]*K8SClusterOnboardingCredential
 	K8SClusterOnboardingCredentialMutex sync.RWMutex
+	OrganizationPolicyMap               map[string]*OrganizationPolicy
+	OrganizationPolicyMutex             sync.RWMutex
+	OrganizationPolicyRuleMap           map[string]*OrganizationPolicyRule
+	OrganizationPolicyRuleMutex         sync.RWMutex
 	TagToLabelMap                       map[string]*TagToLabel
 	TagToLabelMutex                     sync.RWMutex
 }
@@ -66,6 +70,8 @@ func NewFakeConfigServer(logger *zap.Logger) configv1.ConfigServiceServer {
 		IpListMap:                         make(map[string]*IpList),
 		K8SClusterMap:                     make(map[string]*K8SCluster),
 		K8SClusterOnboardingCredentialMap: make(map[string]*K8SClusterOnboardingCredential),
+		OrganizationPolicyMap:             make(map[string]*OrganizationPolicy),
+		OrganizationPolicyRuleMap:         make(map[string]*OrganizationPolicyRule),
 		TagToLabelMap:                     make(map[string]*TagToLabel),
 	}
 }
@@ -208,6 +214,25 @@ type K8SClusterOnboardingCredential struct {
 	Description   *string
 	IllumioRegion string
 	Name          string
+}
+
+type OrganizationPolicy struct {
+	Id          string
+	Description *string
+	Enabled     bool
+	Name        string
+}
+
+type OrganizationPolicyRule struct {
+	Id                   string
+	Action               string
+	Description          *string
+	FromIpListIds        []string
+	FromLabels           []*configv1.OrganizationPolicyRule_FromLabels
+	OrganizationPolicyId string
+	ToIpListIds          []string
+	ToLabels             []*configv1.OrganizationPolicyRule_ToLabels
+	ToPortRanges         []*configv1.OrganizationPolicyRule_ToPortRanges
 }
 
 type TagToLabel struct {
@@ -2033,6 +2058,294 @@ func (s *FakeConfigServer) DeleteK8SClusterOnboardingCredential(ctx context.Cont
 	s.Logger.Info("deleted resource",
 		zap.String("type", "k8s_cluster_onboarding_credential"),
 		zap.String("method", "DeleteK8SClusterOnboardingCredential"),
+		zap.String("id", id),
+	)
+	return &emptypb.Empty{}, nil
+}
+func (s *FakeConfigServer) CreateOrganizationPolicy(ctx context.Context, req *configv1.CreateOrganizationPolicyRequest) (*configv1.CreateOrganizationPolicyResponse, error) {
+	id := uuid.New().String()
+	model := &OrganizationPolicy{
+		Id:          id,
+		Description: req.Description,
+		Enabled:     req.Enabled,
+		Name:        req.Name,
+	}
+	resp := &configv1.CreateOrganizationPolicyResponse{
+		Id:          id,
+		Description: model.Description,
+		Enabled:     model.Enabled,
+		Name:        model.Name,
+	}
+	s.OrganizationPolicyMutex.Lock()
+	s.OrganizationPolicyMap[id] = model
+	s.OrganizationPolicyMutex.Unlock()
+	s.Logger.Info("created resource",
+		zap.String("type", "organization_policy"),
+		zap.String("method", "CreateOrganizationPolicy"),
+		zap.String("id", id),
+	)
+	return resp, nil
+}
+
+func (s *FakeConfigServer) ReadOrganizationPolicy(ctx context.Context, req *configv1.ReadOrganizationPolicyRequest) (*configv1.ReadOrganizationPolicyResponse, error) {
+	id := req.Id
+	s.OrganizationPolicyMutex.RLock()
+	model, found := s.OrganizationPolicyMap[id]
+	if !found {
+		s.OrganizationPolicyMutex.RUnlock()
+		s.Logger.Error("attempted to read resource with unknown id",
+			zap.String("type", "organization_policy"),
+			zap.String("method", "ReadOrganizationPolicy"),
+			zap.String("id", id),
+		)
+		return nil, status.Errorf(codes.NotFound, "no organization_policy found with id %s", id)
+	}
+	resp := &configv1.ReadOrganizationPolicyResponse{
+		Id:          id,
+		Description: model.Description,
+		Enabled:     model.Enabled,
+		Name:        model.Name,
+	}
+	s.OrganizationPolicyMutex.RUnlock()
+	s.Logger.Info("read resource",
+		zap.String("type", "organization_policy"),
+		zap.String("method", "ReadOrganizationPolicy"),
+		zap.String("id", id),
+	)
+	return resp, nil
+}
+
+func (s *FakeConfigServer) UpdateOrganizationPolicy(ctx context.Context, req *configv1.UpdateOrganizationPolicyRequest) (*configv1.UpdateOrganizationPolicyResponse, error) {
+	id := req.Id
+	s.OrganizationPolicyMutex.Lock()
+	model, found := s.OrganizationPolicyMap[id]
+	if !found {
+		s.OrganizationPolicyMutex.Unlock()
+		s.Logger.Error("attempted to update resource with unknown id",
+			zap.String("type", "organization_policy"),
+			zap.String("method", "UpdateOrganizationPolicy"),
+			zap.String("id", id),
+		)
+		return nil, status.Errorf(codes.NotFound, "no organization_policy found with id %s", id)
+	}
+	updateMask := req.UpdateMask
+	var updateMaskPaths []string
+	if updateMask != nil {
+		updateMaskPaths = updateMask.Paths
+	}
+	for _, path := range updateMaskPaths {
+		switch path {
+		case "description":
+			model.Description = req.Description
+		case "enabled":
+			model.Enabled = req.Enabled
+		case "name":
+			model.Name = req.Name
+		default:
+			s.AwsAccountMutex.Unlock()
+			s.Logger.Error("attempted to update resource using invalid update_mask path",
+				zap.String("type", "organization_policy"),
+				zap.String("method", "UpdateOrganizationPolicy"),
+				zap.String("id", id),
+				zap.Strings("updateMaskPaths", updateMaskPaths),
+				zap.String("invalidUpdateMaskPath", path),
+			)
+			return nil, status.Errorf(codes.InvalidArgument, "invalid path in update_mask for organization_policy: %s", path)
+		}
+	}
+	resp := &configv1.UpdateOrganizationPolicyResponse{
+		Id:          id,
+		Description: model.Description,
+		Enabled:     model.Enabled,
+		Name:        model.Name,
+	}
+	s.OrganizationPolicyMutex.Unlock()
+	s.Logger.Info("updated resource",
+		zap.String("type", "organization_policy"),
+		zap.String("method", "UpdateOrganizationPolicy"),
+		zap.String("id", id),
+		zap.Strings("updateMaskPaths", updateMaskPaths),
+	)
+	return resp, nil
+}
+
+func (s *FakeConfigServer) DeleteOrganizationPolicy(ctx context.Context, req *configv1.DeleteOrganizationPolicyRequest) (*emptypb.Empty, error) {
+	id := req.Id
+	s.OrganizationPolicyMutex.Lock()
+	_, found := s.OrganizationPolicyMap[id]
+	if !found {
+		s.OrganizationPolicyMutex.Unlock()
+		s.Logger.Error("attempted to delete resource with unknown id",
+			zap.String("type", "organization_policy"),
+			zap.String("method", "DeleteOrganizationPolicy"),
+			zap.String("id", id),
+		)
+		return nil, status.Errorf(codes.NotFound, "no organization_policy found with id %s", id)
+	}
+	delete(s.OrganizationPolicyMap, id)
+	s.OrganizationPolicyMutex.Unlock()
+	s.Logger.Info("deleted resource",
+		zap.String("type", "organization_policy"),
+		zap.String("method", "DeleteOrganizationPolicy"),
+		zap.String("id", id),
+	)
+	return &emptypb.Empty{}, nil
+}
+func (s *FakeConfigServer) CreateOrganizationPolicyRule(ctx context.Context, req *configv1.CreateOrganizationPolicyRuleRequest) (*configv1.CreateOrganizationPolicyRuleResponse, error) {
+	id := uuid.New().String()
+	model := &OrganizationPolicyRule{
+		Id:                   id,
+		Action:               req.Action,
+		Description:          req.Description,
+		FromIpListIds:        req.FromIpListIds,
+		FromLabels:           req.FromLabels,
+		OrganizationPolicyId: req.OrganizationPolicyId,
+		ToIpListIds:          req.ToIpListIds,
+		ToLabels:             req.ToLabels,
+		ToPortRanges:         req.ToPortRanges,
+	}
+	resp := &configv1.CreateOrganizationPolicyRuleResponse{
+		Id:                   id,
+		Action:               model.Action,
+		Description:          model.Description,
+		FromIpListIds:        model.FromIpListIds,
+		FromLabels:           model.FromLabels,
+		OrganizationPolicyId: model.OrganizationPolicyId,
+		ToIpListIds:          model.ToIpListIds,
+		ToLabels:             model.ToLabels,
+		ToPortRanges:         model.ToPortRanges,
+	}
+	s.OrganizationPolicyRuleMutex.Lock()
+	s.OrganizationPolicyRuleMap[id] = model
+	s.OrganizationPolicyRuleMutex.Unlock()
+	s.Logger.Info("created resource",
+		zap.String("type", "organization_policy_rule"),
+		zap.String("method", "CreateOrganizationPolicyRule"),
+		zap.String("id", id),
+	)
+	return resp, nil
+}
+
+func (s *FakeConfigServer) ReadOrganizationPolicyRule(ctx context.Context, req *configv1.ReadOrganizationPolicyRuleRequest) (*configv1.ReadOrganizationPolicyRuleResponse, error) {
+	id := req.Id
+	s.OrganizationPolicyRuleMutex.RLock()
+	model, found := s.OrganizationPolicyRuleMap[id]
+	if !found {
+		s.OrganizationPolicyRuleMutex.RUnlock()
+		s.Logger.Error("attempted to read resource with unknown id",
+			zap.String("type", "organization_policy_rule"),
+			zap.String("method", "ReadOrganizationPolicyRule"),
+			zap.String("id", id),
+		)
+		return nil, status.Errorf(codes.NotFound, "no organization_policy_rule found with id %s", id)
+	}
+	resp := &configv1.ReadOrganizationPolicyRuleResponse{
+		Id:                   id,
+		Action:               model.Action,
+		Description:          model.Description,
+		FromIpListIds:        model.FromIpListIds,
+		FromLabels:           model.FromLabels,
+		OrganizationPolicyId: model.OrganizationPolicyId,
+		ToIpListIds:          model.ToIpListIds,
+		ToLabels:             model.ToLabels,
+		ToPortRanges:         model.ToPortRanges,
+	}
+	s.OrganizationPolicyRuleMutex.RUnlock()
+	s.Logger.Info("read resource",
+		zap.String("type", "organization_policy_rule"),
+		zap.String("method", "ReadOrganizationPolicyRule"),
+		zap.String("id", id),
+	)
+	return resp, nil
+}
+
+func (s *FakeConfigServer) UpdateOrganizationPolicyRule(ctx context.Context, req *configv1.UpdateOrganizationPolicyRuleRequest) (*configv1.UpdateOrganizationPolicyRuleResponse, error) {
+	id := req.Id
+	s.OrganizationPolicyRuleMutex.Lock()
+	model, found := s.OrganizationPolicyRuleMap[id]
+	if !found {
+		s.OrganizationPolicyRuleMutex.Unlock()
+		s.Logger.Error("attempted to update resource with unknown id",
+			zap.String("type", "organization_policy_rule"),
+			zap.String("method", "UpdateOrganizationPolicyRule"),
+			zap.String("id", id),
+		)
+		return nil, status.Errorf(codes.NotFound, "no organization_policy_rule found with id %s", id)
+	}
+	updateMask := req.UpdateMask
+	var updateMaskPaths []string
+	if updateMask != nil {
+		updateMaskPaths = updateMask.Paths
+	}
+	for _, path := range updateMaskPaths {
+		switch path {
+		case "action":
+			model.Action = req.Action
+		case "description":
+			model.Description = req.Description
+		case "from_ip_list_ids":
+			model.FromIpListIds = req.FromIpListIds
+		case "from_labels":
+			model.FromLabels = req.FromLabels
+		case "organization_policy_id":
+			model.OrganizationPolicyId = req.OrganizationPolicyId
+		case "to_ip_list_ids":
+			model.ToIpListIds = req.ToIpListIds
+		case "to_labels":
+			model.ToLabels = req.ToLabels
+		case "to_port_ranges":
+			model.ToPortRanges = req.ToPortRanges
+		default:
+			s.AwsAccountMutex.Unlock()
+			s.Logger.Error("attempted to update resource using invalid update_mask path",
+				zap.String("type", "organization_policy_rule"),
+				zap.String("method", "UpdateOrganizationPolicyRule"),
+				zap.String("id", id),
+				zap.Strings("updateMaskPaths", updateMaskPaths),
+				zap.String("invalidUpdateMaskPath", path),
+			)
+			return nil, status.Errorf(codes.InvalidArgument, "invalid path in update_mask for organization_policy_rule: %s", path)
+		}
+	}
+	resp := &configv1.UpdateOrganizationPolicyRuleResponse{
+		Id:                   id,
+		Action:               model.Action,
+		Description:          model.Description,
+		FromIpListIds:        model.FromIpListIds,
+		FromLabels:           model.FromLabels,
+		OrganizationPolicyId: model.OrganizationPolicyId,
+		ToIpListIds:          model.ToIpListIds,
+		ToLabels:             model.ToLabels,
+		ToPortRanges:         model.ToPortRanges,
+	}
+	s.OrganizationPolicyRuleMutex.Unlock()
+	s.Logger.Info("updated resource",
+		zap.String("type", "organization_policy_rule"),
+		zap.String("method", "UpdateOrganizationPolicyRule"),
+		zap.String("id", id),
+		zap.Strings("updateMaskPaths", updateMaskPaths),
+	)
+	return resp, nil
+}
+
+func (s *FakeConfigServer) DeleteOrganizationPolicyRule(ctx context.Context, req *configv1.DeleteOrganizationPolicyRuleRequest) (*emptypb.Empty, error) {
+	id := req.Id
+	s.OrganizationPolicyRuleMutex.Lock()
+	_, found := s.OrganizationPolicyRuleMap[id]
+	if !found {
+		s.OrganizationPolicyRuleMutex.Unlock()
+		s.Logger.Error("attempted to delete resource with unknown id",
+			zap.String("type", "organization_policy_rule"),
+			zap.String("method", "DeleteOrganizationPolicyRule"),
+			zap.String("id", id),
+		)
+		return nil, status.Errorf(codes.NotFound, "no organization_policy_rule found with id %s", id)
+	}
+	delete(s.OrganizationPolicyRuleMap, id)
+	s.OrganizationPolicyRuleMutex.Unlock()
+	s.Logger.Info("deleted resource",
+		zap.String("type", "organization_policy_rule"),
+		zap.String("method", "DeleteOrganizationPolicyRule"),
 		zap.String("id", id),
 	)
 	return &emptypb.Empty{}, nil
