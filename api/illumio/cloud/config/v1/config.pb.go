@@ -8162,6 +8162,7 @@ type CreateOrganizationPolicyRuleRequest struct {
 	state                protoimpl.MessageState                 `protogen:"open.v1"`
 	Action               string                                 `protobuf:"bytes,2,opt,name=action,proto3" json:"action,omitempty"`
 	Description          *string                                `protobuf:"bytes,3,opt,name=description,proto3,oneof" json:"description,omitempty"`
+	Enabled              bool                                   `protobuf:"varint,11,opt,name=enabled,proto3" json:"enabled,omitempty"`
 	FromIpListIds        []string                               `protobuf:"bytes,4,rep,name=from_ip_list_ids,json=fromIpListIds,proto3" json:"from_ip_list_ids,omitempty"`
 	FromLabels           []*OrganizationPolicyRule_FromLabels   `protobuf:"bytes,5,rep,name=from_labels,json=fromLabels,proto3" json:"from_labels,omitempty"`
 	OrganizationPolicyId string                                 `protobuf:"bytes,6,opt,name=organization_policy_id,json=organizationPolicyId,proto3" json:"organization_policy_id,omitempty"`
@@ -8216,6 +8217,13 @@ func (x *CreateOrganizationPolicyRuleRequest) GetDescription() string {
 	return ""
 }
 
+func (x *CreateOrganizationPolicyRuleRequest) GetEnabled() bool {
+	if x != nil {
+		return x.Enabled
+	}
+	return false
+}
+
 func (x *CreateOrganizationPolicyRuleRequest) GetFromIpListIds() []string {
 	if x != nil {
 		return x.FromIpListIds
@@ -8263,6 +8271,7 @@ type CreateOrganizationPolicyRuleResponse struct {
 	Id                   string                                 `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
 	Action               string                                 `protobuf:"bytes,2,opt,name=action,proto3" json:"action,omitempty"`
 	Description          *string                                `protobuf:"bytes,3,opt,name=description,proto3,oneof" json:"description,omitempty"`
+	Enabled              bool                                   `protobuf:"varint,11,opt,name=enabled,proto3" json:"enabled,omitempty"`
 	FromIpListIds        []string                               `protobuf:"bytes,4,rep,name=from_ip_list_ids,json=fromIpListIds,proto3" json:"from_ip_list_ids,omitempty"`
 	FromLabels           []*OrganizationPolicyRule_FromLabels   `protobuf:"bytes,5,rep,name=from_labels,json=fromLabels,proto3" json:"from_labels,omitempty"`
 	OrganizationPolicyId string                                 `protobuf:"bytes,6,opt,name=organization_policy_id,json=organizationPolicyId,proto3" json:"organization_policy_id,omitempty"`
@@ -8322,6 +8331,13 @@ func (x *CreateOrganizationPolicyRuleResponse) GetDescription() string {
 		return *x.Description
 	}
 	return ""
+}
+
+func (x *CreateOrganizationPolicyRuleResponse) GetEnabled() bool {
+	if x != nil {
+		return x.Enabled
+	}
+	return false
 }
 
 func (x *CreateOrganizationPolicyRuleResponse) GetFromIpListIds() []string {
@@ -8415,6 +8431,7 @@ type ReadOrganizationPolicyRuleResponse struct {
 	Id                   string                                 `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
 	Action               string                                 `protobuf:"bytes,2,opt,name=action,proto3" json:"action,omitempty"`
 	Description          *string                                `protobuf:"bytes,3,opt,name=description,proto3,oneof" json:"description,omitempty"`
+	Enabled              bool                                   `protobuf:"varint,11,opt,name=enabled,proto3" json:"enabled,omitempty"`
 	FromIpListIds        []string                               `protobuf:"bytes,4,rep,name=from_ip_list_ids,json=fromIpListIds,proto3" json:"from_ip_list_ids,omitempty"`
 	FromLabels           []*OrganizationPolicyRule_FromLabels   `protobuf:"bytes,5,rep,name=from_labels,json=fromLabels,proto3" json:"from_labels,omitempty"`
 	OrganizationPolicyId string                                 `protobuf:"bytes,6,opt,name=organization_policy_id,json=organizationPolicyId,proto3" json:"organization_policy_id,omitempty"`
@@ -8476,6 +8493,13 @@ func (x *ReadOrganizationPolicyRuleResponse) GetDescription() string {
 	return ""
 }
 
+func (x *ReadOrganizationPolicyRuleResponse) GetEnabled() bool {
+	if x != nil {
+		return x.Enabled
+	}
+	return false
+}
+
 func (x *ReadOrganizationPolicyRuleResponse) GetFromIpListIds() []string {
 	if x != nil {
 		return x.FromIpListIds
@@ -8523,6 +8547,7 @@ type UpdateOrganizationPolicyRuleRequest struct {
 	Id                   string                                 `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
 	Action               string                                 `protobuf:"bytes,2,opt,name=action,proto3" json:"action,omitempty"`
 	Description          *string                                `protobuf:"bytes,3,opt,name=description,proto3,oneof" json:"description,omitempty"`
+	Enabled              bool                                   `protobuf:"varint,11,opt,name=enabled,proto3" json:"enabled,omitempty"`
 	FromIpListIds        []string                               `protobuf:"bytes,4,rep,name=from_ip_list_ids,json=fromIpListIds,proto3" json:"from_ip_list_ids,omitempty"`
 	FromLabels           []*OrganizationPolicyRule_FromLabels   `protobuf:"bytes,5,rep,name=from_labels,json=fromLabels,proto3" json:"from_labels,omitempty"`
 	OrganizationPolicyId string                                 `protobuf:"bytes,6,opt,name=organization_policy_id,json=organizationPolicyId,proto3" json:"organization_policy_id,omitempty"`
@@ -8585,6 +8610,13 @@ func (x *UpdateOrganizationPolicyRuleRequest) GetDescription() string {
 	return ""
 }
 
+func (x *UpdateOrganizationPolicyRuleRequest) GetEnabled() bool {
+	if x != nil {
+		return x.Enabled
+	}
+	return false
+}
+
 func (x *UpdateOrganizationPolicyRuleRequest) GetFromIpListIds() []string {
 	if x != nil {
 		return x.FromIpListIds
@@ -8639,6 +8671,7 @@ type UpdateOrganizationPolicyRuleResponse struct {
 	Id                   string                                 `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
 	Action               string                                 `protobuf:"bytes,2,opt,name=action,proto3" json:"action,omitempty"`
 	Description          *string                                `protobuf:"bytes,3,opt,name=description,proto3,oneof" json:"description,omitempty"`
+	Enabled              bool                                   `protobuf:"varint,11,opt,name=enabled,proto3" json:"enabled,omitempty"`
 	FromIpListIds        []string                               `protobuf:"bytes,4,rep,name=from_ip_list_ids,json=fromIpListIds,proto3" json:"from_ip_list_ids,omitempty"`
 	FromLabels           []*OrganizationPolicyRule_FromLabels   `protobuf:"bytes,5,rep,name=from_labels,json=fromLabels,proto3" json:"from_labels,omitempty"`
 	OrganizationPolicyId string                                 `protobuf:"bytes,6,opt,name=organization_policy_id,json=organizationPolicyId,proto3" json:"organization_policy_id,omitempty"`
@@ -8698,6 +8731,13 @@ func (x *UpdateOrganizationPolicyRuleResponse) GetDescription() string {
 		return *x.Description
 	}
 	return ""
+}
+
+func (x *UpdateOrganizationPolicyRuleResponse) GetEnabled() bool {
+	if x != nil {
+		return x.Enabled
+	}
+	return false
 }
 
 func (x *UpdateOrganizationPolicyRuleResponse) GetFromIpListIds() []string {
@@ -10121,10 +10161,11 @@ const file_illumio_cloud_config_v1_config_proto_rawDesc = "" +
 	"#OrganizationPolicyRule_ToPortRanges\x12\x1b\n" +
 	"\tfrom_port\x18\x01 \x01(\x03R\bfromPort\x12\x1a\n" +
 	"\bprotocol\x18\x02 \x01(\tR\bprotocol\x12\x17\n" +
-	"\ato_port\x18\x03 \x01(\x03R\x06toPort\"\x90\x04\n" +
+	"\ato_port\x18\x03 \x01(\x03R\x06toPort\"\xaa\x04\n" +
 	"#CreateOrganizationPolicyRuleRequest\x12\x16\n" +
 	"\x06action\x18\x02 \x01(\tR\x06action\x12%\n" +
-	"\vdescription\x18\x03 \x01(\tH\x00R\vdescription\x88\x01\x01\x12'\n" +
+	"\vdescription\x18\x03 \x01(\tH\x00R\vdescription\x88\x01\x01\x12\x18\n" +
+	"\aenabled\x18\v \x01(\bR\aenabled\x12'\n" +
 	"\x10from_ip_list_ids\x18\x04 \x03(\tR\rfromIpListIds\x12[\n" +
 	"\vfrom_labels\x18\x05 \x03(\v2:.illumio.cloud.config.v1.OrganizationPolicyRule_FromLabelsR\n" +
 	"fromLabels\x124\n" +
@@ -10132,11 +10173,12 @@ const file_illumio_cloud_config_v1_config_proto_rawDesc = "" +
 	"\x0eto_ip_list_ids\x18\a \x03(\tR\vtoIpListIds\x12U\n" +
 	"\tto_labels\x18\b \x03(\v28.illumio.cloud.config.v1.OrganizationPolicyRule_ToLabelsR\btoLabels\x12b\n" +
 	"\x0eto_port_ranges\x18\t \x03(\v2<.illumio.cloud.config.v1.OrganizationPolicyRule_ToPortRangesR\ftoPortRangesB\x0e\n" +
-	"\f_description\"\xa1\x04\n" +
+	"\f_description\"\xbb\x04\n" +
 	"$CreateOrganizationPolicyRuleResponse\x12\x0e\n" +
 	"\x02id\x18\x01 \x01(\tR\x02id\x12\x16\n" +
 	"\x06action\x18\x02 \x01(\tR\x06action\x12%\n" +
-	"\vdescription\x18\x03 \x01(\tH\x00R\vdescription\x88\x01\x01\x12'\n" +
+	"\vdescription\x18\x03 \x01(\tH\x00R\vdescription\x88\x01\x01\x12\x18\n" +
+	"\aenabled\x18\v \x01(\bR\aenabled\x12'\n" +
 	"\x10from_ip_list_ids\x18\x04 \x03(\tR\rfromIpListIds\x12[\n" +
 	"\vfrom_labels\x18\x05 \x03(\v2:.illumio.cloud.config.v1.OrganizationPolicyRule_FromLabelsR\n" +
 	"fromLabels\x124\n" +
@@ -10146,11 +10188,12 @@ const file_illumio_cloud_config_v1_config_proto_rawDesc = "" +
 	"\x0eto_port_ranges\x18\t \x03(\v2<.illumio.cloud.config.v1.OrganizationPolicyRule_ToPortRangesR\ftoPortRangesB\x0e\n" +
 	"\f_description\"3\n" +
 	"!ReadOrganizationPolicyRuleRequest\x12\x0e\n" +
-	"\x02id\x18\x01 \x01(\tR\x02id\"\x9f\x04\n" +
+	"\x02id\x18\x01 \x01(\tR\x02id\"\xb9\x04\n" +
 	"\"ReadOrganizationPolicyRuleResponse\x12\x0e\n" +
 	"\x02id\x18\x01 \x01(\tR\x02id\x12\x16\n" +
 	"\x06action\x18\x02 \x01(\tR\x06action\x12%\n" +
-	"\vdescription\x18\x03 \x01(\tH\x00R\vdescription\x88\x01\x01\x12'\n" +
+	"\vdescription\x18\x03 \x01(\tH\x00R\vdescription\x88\x01\x01\x12\x18\n" +
+	"\aenabled\x18\v \x01(\bR\aenabled\x12'\n" +
 	"\x10from_ip_list_ids\x18\x04 \x03(\tR\rfromIpListIds\x12[\n" +
 	"\vfrom_labels\x18\x05 \x03(\v2:.illumio.cloud.config.v1.OrganizationPolicyRule_FromLabelsR\n" +
 	"fromLabels\x124\n" +
@@ -10158,11 +10201,12 @@ const file_illumio_cloud_config_v1_config_proto_rawDesc = "" +
 	"\x0eto_ip_list_ids\x18\a \x03(\tR\vtoIpListIds\x12U\n" +
 	"\tto_labels\x18\b \x03(\v28.illumio.cloud.config.v1.OrganizationPolicyRule_ToLabelsR\btoLabels\x12b\n" +
 	"\x0eto_port_ranges\x18\t \x03(\v2<.illumio.cloud.config.v1.OrganizationPolicyRule_ToPortRangesR\ftoPortRangesB\x0e\n" +
-	"\f_description\"\xdd\x04\n" +
+	"\f_description\"\xf7\x04\n" +
 	"#UpdateOrganizationPolicyRuleRequest\x12\x0e\n" +
 	"\x02id\x18\x01 \x01(\tR\x02id\x12\x16\n" +
 	"\x06action\x18\x02 \x01(\tR\x06action\x12%\n" +
-	"\vdescription\x18\x03 \x01(\tH\x00R\vdescription\x88\x01\x01\x12'\n" +
+	"\vdescription\x18\x03 \x01(\tH\x00R\vdescription\x88\x01\x01\x12\x18\n" +
+	"\aenabled\x18\v \x01(\bR\aenabled\x12'\n" +
 	"\x10from_ip_list_ids\x18\x04 \x03(\tR\rfromIpListIds\x12[\n" +
 	"\vfrom_labels\x18\x05 \x03(\v2:.illumio.cloud.config.v1.OrganizationPolicyRule_FromLabelsR\n" +
 	"fromLabels\x124\n" +
@@ -10173,11 +10217,12 @@ const file_illumio_cloud_config_v1_config_proto_rawDesc = "" +
 	"\vupdate_mask\x18\n" +
 	" \x01(\v2\x1a.google.protobuf.FieldMaskR\n" +
 	"updateMaskB\x0e\n" +
-	"\f_description\"\xa1\x04\n" +
+	"\f_description\"\xbb\x04\n" +
 	"$UpdateOrganizationPolicyRuleResponse\x12\x0e\n" +
 	"\x02id\x18\x01 \x01(\tR\x02id\x12\x16\n" +
 	"\x06action\x18\x02 \x01(\tR\x06action\x12%\n" +
-	"\vdescription\x18\x03 \x01(\tH\x00R\vdescription\x88\x01\x01\x12'\n" +
+	"\vdescription\x18\x03 \x01(\tH\x00R\vdescription\x88\x01\x01\x12\x18\n" +
+	"\aenabled\x18\v \x01(\bR\aenabled\x12'\n" +
 	"\x10from_ip_list_ids\x18\x04 \x03(\tR\rfromIpListIds\x12[\n" +
 	"\vfrom_labels\x18\x05 \x03(\v2:.illumio.cloud.config.v1.OrganizationPolicyRule_FromLabelsR\n" +
 	"fromLabels\x124\n" +

@@ -3,12 +3,12 @@
 page_title: "illumio-cloudsecure_organization_policy_rule Resource - illumio-cloudsecure"
 subcategory: ""
 description: |-
-  Manages policy rules on CloudSecure organization policy.
+  Manages policy rules in CloudSecure organization policies.
 ---
 
 # illumio-cloudsecure_organization_policy_rule (Resource)
 
-Manages policy rules on CloudSecure organization policy.
+Manages policy rules in CloudSecure organization policies.
 
 
 
@@ -24,6 +24,7 @@ Manages policy rules on CloudSecure organization policy.
 ### Optional
 
 - `description` (String) Description of the organization policy rule.
+- `enabled` (Boolean) Indicates whether the organization policy rule is enabled.
 - `from_ip_list_ids` (List of String) List of IDs of IP lists to allow/deny traffic from.
 - `from_labels` (List of Object) List of CloudSecure labels of sources to allow/deny traffic from. (see [below for nested schema](#nestedatt--from_labels))
 - `to_ip_list_ids` (List of String) List of IDs of IP lists to allow/deny traffic to.
