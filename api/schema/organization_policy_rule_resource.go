@@ -6,6 +6,7 @@ package schema
 import (
 	"github.com/hashicorp/terraform-plugin-framework-validators/stringvalidator"
 	resource_schema "github.com/hashicorp/terraform-plugin-framework/resource/schema"
+	"github.com/hashicorp/terraform-plugin-framework/resource/schema/booldefault"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/planmodifier"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/stringplanmodifier"
 	"github.com/hashicorp/terraform-plugin-framework/schema/validator"
@@ -38,6 +39,12 @@ var (
 				"description": resource_schema.StringAttribute{
 					Description: "Description of the organization policy rule.",
 					Optional:    true,
+				},
+				"enabled": resource_schema.BoolAttribute{
+					Description: "Indicates whether the organization policy rule is enabled.",
+					Optional:    true,
+					Computed:    true,
+					Default:     booldefault.StaticBool(true),
 				},
 				"from_ip_list_ids": resource_schema.ListAttribute{
 					Description: "List of IDs of IP lists to allow/deny traffic from.",

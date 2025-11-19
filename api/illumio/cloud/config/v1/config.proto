@@ -834,6 +834,7 @@ message OrganizationPolicyRule_ToPortRanges {
 message CreateOrganizationPolicyRuleRequest {
   string action = 2;
   optional string description = 3;
+  bool enabled = 11;
   repeated string from_ip_list_ids = 4;
   repeated OrganizationPolicyRule_FromLabels from_labels = 5;
   string organization_policy_id = 6;
@@ -845,6 +846,7 @@ message CreateOrganizationPolicyRuleResponse {
   string id = 1;
   string action = 2;
   optional string description = 3;
+  bool enabled = 11;
   repeated string from_ip_list_ids = 4;
   repeated OrganizationPolicyRule_FromLabels from_labels = 5;
   string organization_policy_id = 6;
@@ -859,6 +861,7 @@ message ReadOrganizationPolicyRuleResponse {
   string id = 1;
   string action = 2;
   optional string description = 3;
+  bool enabled = 11;
   repeated string from_ip_list_ids = 4;
   repeated OrganizationPolicyRule_FromLabels from_labels = 5;
   string organization_policy_id = 6;
@@ -870,6 +873,7 @@ message UpdateOrganizationPolicyRuleRequest {
   string id = 1;
   string action = 2;
   optional string description = 3;
+  bool enabled = 11;
   repeated string from_ip_list_ids = 4;
   repeated OrganizationPolicyRule_FromLabels from_labels = 5;
   string organization_policy_id = 6;
@@ -882,6 +886,7 @@ message UpdateOrganizationPolicyRuleResponse {
   string id = 1;
   string action = 2;
   optional string description = 3;
+  bool enabled = 11;
   repeated string from_ip_list_ids = 4;
   repeated OrganizationPolicyRule_FromLabels from_labels = 5;
   string organization_policy_id = 6;
