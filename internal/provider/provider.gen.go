@@ -56,6 +56,8 @@ func (p *Provider) Resources(ctx context.Context) []func() resource.Resource {
 			resp = append(resp, func() resource.Resource { return NewAzureSubscriptionResource(r.Schema) })
 		case "deployment":
 			resp = append(resp, func() resource.Resource { return NewDeploymentResource(r.Schema) })
+		case "gcp_project":
+			resp = append(resp, func() resource.Resource { return NewGcpProjectResource(r.Schema) })
 		case "ip_list":
 			resp = append(resp, func() resource.Resource { return NewIpListResource(r.Schema) })
 		case "k8s_cluster":
@@ -1825,6 +1827,200 @@ func (r *DeploymentResource) ImportState(ctx context.Context, req resource.Impor
 	// TODO
 }
 
+// GcpProjectResource implements the gcp_project resource.
+type GcpProjectResource struct {
+	// schema is the schema of the gcp_project resource.
+	schema resource_schema.Schema
+
+	// providerData is the provider configuration.
+	config ProviderData
+}
+
+var _ resource.ResourceWithConfigure = &GcpProjectResource{}
+var _ resource.ResourceWithImportState = &GcpProjectResource{}
+
+// NewGcpProjectResource returns a new gcp_project resource.
+func NewGcpProjectResource(schema resource_schema.Schema) resource.Resource {
+	return &GcpProjectResource{
+		schema: schema,
+	}
+}
+
+func (r *GcpProjectResource) Metadata(ctx context.Context, req resource.MetadataRequest, resp *resource.MetadataResponse) {
+	resp.TypeName = req.ProviderTypeName + "_gcp_project"
+}
+
+func (r *GcpProjectResource) Schema(ctx context.Context, req resource.SchemaRequest, resp *resource.SchemaResponse) {
+	resp.Schema = r.schema
+}
+
+func (r *GcpProjectResource) Configure(ctx context.Context, req resource.ConfigureRequest, resp *resource.ConfigureResponse) {
+	if req.ProviderData == nil {
+		return
+	}
+
+	providerData, ok := req.ProviderData.(ProviderData)
+	if !ok {
+		resp.Diagnostics.AddError(
+			"Unexpected Resource Configure Type",
+			fmt.Sprintf("Expected ProviderData, got: %T. Please report this issue to the provider developers.", req.ProviderData),
+		)
+
+		return
+	}
+
+	r.config = providerData
+}
+
+func (r *GcpProjectResource) Create(ctx context.Context, req resource.CreateRequest, resp *resource.CreateResponse) {
+	var data GcpProjectResourceModel
+
+	resp.Diagnostics.Append(req.Plan.Get(ctx, &data)...)
+	if resp.Diagnostics.HasError() {
+		return
+	}
+
+	protoReq, diagReq := NewCreateGcpProjectRequest(ctx, &data)
+	resp.Diagnostics.Append(diagReq...)
+	if resp.Diagnostics.HasError() {
+		return
+	}
+
+	tflog.Trace(ctx, "creating a resource", map[string]any{"type": "gcp_project"})
+
+	rpcCtx, rpcCancel := context.WithTimeout(ctx, r.config.RequestTimeout())
+	protoResp, err := r.config.Client().CreateGcpProject(rpcCtx, protoReq)
+	rpcCancel()
+	if err != nil {
+		resp.Diagnostics.AddError("Config API Error", fmt.Sprintf("Unable to create gcp_project, got error: %s", err))
+		return
+	}
+
+	CopyCreateGcpProjectResponse(&data, protoResp)
+
+	tflog.Trace(ctx, "created a resource", map[string]any{"type": "gcp_project", "id": protoResp.Id})
+
+	resp.Diagnostics.Append(resp.State.Set(ctx, &data)...)
+}
+
+func (r *GcpProjectResource) Read(ctx context.Context, req resource.ReadRequest, resp *resource.ReadResponse) {
+	var data GcpProjectResourceModel
+
+	resp.Diagnostics.Append(req.State.Get(ctx, &data)...)
+	if resp.Diagnostics.HasError() {
+		return
+	}
+
+	protoReq, diagsReq := NewReadGcpProjectRequest(ctx, &data)
+	resp.Diagnostics.Append(diagsReq...)
+	if resp.Diagnostics.HasError() {
+		return
+	}
+
+	tflog.Trace(ctx, "reading a resource", map[string]any{"type": "gcp_project", "id": protoReq.Id})
+
+	rpcCtx, rpcCancel := context.WithTimeout(ctx, r.config.RequestTimeout())
+	protoResp, err := r.config.Client().ReadGcpProject(rpcCtx, protoReq)
+	rpcCancel()
+	if err != nil {
+		switch status.Code(err) {
+		case codes.NotFound:
+			resp.Diagnostics.AddWarning("Resource Not Found", fmt.Sprintf("No gcp_project found with id %s", protoReq.Id))
+			resp.State.RemoveResource(ctx)
+			return
+		default:
+			resp.Diagnostics.AddError("Config API Error", fmt.Sprintf("Unable to read gcp_project, got error: %s", err))
+			return
+		}
+	}
+
+	CopyReadGcpProjectResponse(&data, protoResp)
+
+	tflog.Trace(ctx, "read a resource", map[string]any{"type": "gcp_project", "id": protoResp.Id})
+
+	resp.Diagnostics.Append(resp.State.Set(ctx, &data)...)
+}
+
+func (r *GcpProjectResource) Update(ctx context.Context, req resource.UpdateRequest, resp *resource.UpdateResponse) {
+	var beforeData GcpProjectResourceModel
+	var afterData GcpProjectResourceModel
+
+	resp.Diagnostics.Append(req.State.Get(ctx, &beforeData)...)
+	if resp.Diagnostics.HasError() {
+		return
+	}
+
+	resp.Diagnostics.Append(req.Plan.Get(ctx, &afterData)...)
+	if resp.Diagnostics.HasError() {
+		return
+	}
+
+	protoReq, diags := NewUpdateGcpProjectRequest(ctx, &beforeData, &afterData)
+	resp.Diagnostics.Append(diags...)
+	if resp.Diagnostics.HasError() {
+		return
+	}
+
+	tflog.Trace(ctx, "updating a resource", map[string]any{"type": "gcp_project", "id": protoReq.Id, "update_mask": protoReq.UpdateMask.Paths})
+
+	rpcCtx, rpcCancel := context.WithTimeout(ctx, r.config.RequestTimeout())
+	protoResp, err := r.config.Client().UpdateGcpProject(rpcCtx, protoReq)
+	rpcCancel()
+	if err != nil {
+		switch status.Code(err) {
+		case codes.NotFound:
+			resp.Diagnostics.AddError("Resource Not Found", fmt.Sprintf("No gcp_project found with id %s", protoReq.Id))
+			resp.State.RemoveResource(ctx)
+			return
+		default:
+			resp.Diagnostics.AddError("Config API Error", fmt.Sprintf("Unable to update gcp_project, got error: %s", err))
+			return
+		}
+	}
+
+	CopyUpdateGcpProjectResponse(&afterData, protoResp)
+
+	tflog.Trace(ctx, "updated a resource", map[string]any{"type": "gcp_project", "id": protoResp.Id})
+
+	resp.Diagnostics.Append(resp.State.Set(ctx, &afterData)...)
+}
+
+func (r *GcpProjectResource) Delete(ctx context.Context, req resource.DeleteRequest, resp *resource.DeleteResponse) {
+	var data GcpProjectResourceModel
+
+	resp.Diagnostics.Append(req.State.Get(ctx, &data)...)
+	if resp.Diagnostics.HasError() {
+		return
+	}
+
+	protoReq, diags := NewDeleteGcpProjectRequest(ctx, &data)
+	resp.Diagnostics.Append(diags...)
+	if resp.Diagnostics.HasError() {
+		return
+	}
+
+	tflog.Trace(ctx, "deleting a resource", map[string]any{"type": "gcp_project", "id": protoReq.Id})
+
+	rpcCtx, rpcCancel := context.WithTimeout(ctx, r.config.RequestTimeout())
+	_, err := r.config.Client().DeleteGcpProject(rpcCtx, protoReq)
+	rpcCancel()
+	if err != nil {
+		switch status.Code(err) {
+		case codes.NotFound:
+			tflog.Trace(ctx, "resource was already deleted", map[string]any{"type": "gcp_project", "id": protoReq.Id})
+		default:
+			resp.Diagnostics.AddError("Config API Error", fmt.Sprintf("Unable to delete gcp_project, got error: %s", err))
+			return
+		}
+	}
+
+	tflog.Trace(ctx, "deleted a resource", map[string]any{"type": "gcp_project", "id": protoReq.Id})
+}
+
+func (r *GcpProjectResource) ImportState(ctx context.Context, req resource.ImportStateRequest, resp *resource.ImportStateResponse) {
+	// TODO
+}
+
 // IpListResource implements the ip_list resource.
 type IpListResource struct {
 	// schema is the schema of the ip_list resource.
@@ -3101,6 +3297,17 @@ type DeploymentResourceModel struct {
 	AzureVnetIds         types.List   `tfsdk:"azure_vnet_ids"`
 	Description          types.String `tfsdk:"description"`
 	Name                 types.String `tfsdk:"name"`
+}
+
+type GcpProjectResourceModel struct {
+	Id                  types.String `tfsdk:"id"`
+	AccountId           types.String `tfsdk:"account_id"`
+	EnableProjects      types.Bool   `tfsdk:"enable_projects"`
+	Mode                types.String `tfsdk:"mode"`
+	Name                types.String `tfsdk:"name"`
+	OrganizationId      types.String `tfsdk:"organization_id"`
+	ServiceAccountEmail types.String `tfsdk:"service_account_email"`
+	Type                types.String `tfsdk:"type"`
 }
 
 type IpListResourceModel struct {
@@ -4500,6 +4707,78 @@ func NewReadDeploymentRequest(ctx context.Context, data *DeploymentResourceModel
 func NewDeleteDeploymentRequest(ctx context.Context, data *DeploymentResourceModel) (*configv1.DeleteDeploymentRequest, diag.Diagnostics) {
 	var diags diag.Diagnostics
 	proto := &configv1.DeleteDeploymentRequest{}
+	if !data.Id.IsUnknown() && !data.Id.IsNull() {
+		var dataValue attr.Value = data.Id
+		var protoValue string
+		protoValue = dataValue.(types.String).ValueString()
+		proto.Id = protoValue
+	}
+	return proto, diags
+}
+
+func NewCreateGcpProjectRequest(ctx context.Context, data *GcpProjectResourceModel) (*configv1.CreateGcpProjectRequest, diag.Diagnostics) {
+	var diags diag.Diagnostics
+	proto := &configv1.CreateGcpProjectRequest{}
+	if !data.AccountId.IsUnknown() && !data.AccountId.IsNull() {
+		var dataValue attr.Value = data.AccountId
+		var protoValue string
+		protoValue = dataValue.(types.String).ValueString()
+		proto.AccountId = protoValue
+	}
+	if !data.EnableProjects.IsUnknown() && !data.EnableProjects.IsNull() {
+		var dataValue attr.Value = data.EnableProjects
+		var protoValue bool
+		protoValue = dataValue.(types.Bool).ValueBool()
+		proto.EnableProjects = protoValue
+	}
+	if !data.Mode.IsUnknown() && !data.Mode.IsNull() {
+		var dataValue attr.Value = data.Mode
+		var protoValue string
+		protoValue = dataValue.(types.String).ValueString()
+		proto.Mode = protoValue
+	}
+	if !data.Name.IsUnknown() && !data.Name.IsNull() {
+		var dataValue attr.Value = data.Name
+		var protoValue string
+		protoValue = dataValue.(types.String).ValueString()
+		proto.Name = protoValue
+	}
+	if !data.OrganizationId.IsUnknown() && !data.OrganizationId.IsNull() {
+		var dataValue attr.Value = data.OrganizationId
+		var protoValue string
+		protoValue = dataValue.(types.String).ValueString()
+		proto.OrganizationId = protoValue
+	}
+	if !data.ServiceAccountEmail.IsUnknown() && !data.ServiceAccountEmail.IsNull() {
+		var dataValue attr.Value = data.ServiceAccountEmail
+		var protoValue string
+		protoValue = dataValue.(types.String).ValueString()
+		proto.ServiceAccountEmail = protoValue
+	}
+	if !data.Type.IsUnknown() && !data.Type.IsNull() {
+		var dataValue attr.Value = data.Type
+		var protoValue string
+		protoValue = dataValue.(types.String).ValueString()
+		proto.Type = protoValue
+	}
+	return proto, diags
+}
+
+func NewReadGcpProjectRequest(ctx context.Context, data *GcpProjectResourceModel) (*configv1.ReadGcpProjectRequest, diag.Diagnostics) {
+	var diags diag.Diagnostics
+	proto := &configv1.ReadGcpProjectRequest{}
+	if !data.Id.IsUnknown() && !data.Id.IsNull() {
+		var dataValue attr.Value = data.Id
+		var protoValue string
+		protoValue = dataValue.(types.String).ValueString()
+		proto.Id = protoValue
+	}
+	return proto, diags
+}
+
+func NewDeleteGcpProjectRequest(ctx context.Context, data *GcpProjectResourceModel) (*configv1.DeleteGcpProjectRequest, diag.Diagnostics) {
+	var diags diag.Diagnostics
+	proto := &configv1.DeleteGcpProjectRequest{}
 	if !data.Id.IsUnknown() && !data.Id.IsNull() {
 		var dataValue attr.Value = data.Id
 		var protoValue string
@@ -6088,6 +6367,50 @@ func NewUpdateDeploymentRequest(ctx context.Context, beforeData, afterData *Depl
 			var protoValue string
 			protoValue = dataValue.(types.String).ValueString()
 			proto.Name = protoValue
+		}
+	}
+	return proto, diags
+}
+
+func NewUpdateGcpProjectRequest(ctx context.Context, beforeData, afterData *GcpProjectResourceModel) (*configv1.UpdateGcpProjectRequest, diag.Diagnostics) {
+	var diags diag.Diagnostics
+	proto := &configv1.UpdateGcpProjectRequest{}
+	proto.UpdateMask, _ = fieldmaskpb.New(proto)
+	proto.Id = beforeData.Id.ValueString()
+	if !afterData.EnableProjects.Equal(beforeData.EnableProjects) {
+		proto.UpdateMask.Append(proto, "enable_projects")
+		if !afterData.EnableProjects.IsUnknown() && !afterData.EnableProjects.IsNull() {
+			var dataValue attr.Value = afterData.EnableProjects
+			var protoValue bool
+			protoValue = dataValue.(types.Bool).ValueBool()
+			proto.EnableProjects = protoValue
+		}
+	}
+	if !afterData.Name.Equal(beforeData.Name) {
+		proto.UpdateMask.Append(proto, "name")
+		if !afterData.Name.IsUnknown() && !afterData.Name.IsNull() {
+			var dataValue attr.Value = afterData.Name
+			var protoValue string
+			protoValue = dataValue.(types.String).ValueString()
+			proto.Name = protoValue
+		}
+	}
+	if !afterData.ServiceAccountEmail.Equal(beforeData.ServiceAccountEmail) {
+		proto.UpdateMask.Append(proto, "service_account_email")
+		if !afterData.ServiceAccountEmail.IsUnknown() && !afterData.ServiceAccountEmail.IsNull() {
+			var dataValue attr.Value = afterData.ServiceAccountEmail
+			var protoValue string
+			protoValue = dataValue.(types.String).ValueString()
+			proto.ServiceAccountEmail = protoValue
+		}
+	}
+	if !afterData.Type.Equal(beforeData.Type) {
+		proto.UpdateMask.Append(proto, "type")
+		if !afterData.Type.IsUnknown() && !afterData.Type.IsNull() {
+			var dataValue attr.Value = afterData.Type
+			var protoValue string
+			protoValue = dataValue.(types.String).ValueString()
+			proto.Type = protoValue
 		}
 	}
 	return proto, diags
@@ -9736,6 +10059,36 @@ func CopyUpdateDeploymentResponse(dst *DeploymentResourceModel, src *configv1.Up
 	}
 	dst.Description = types.StringPointerValue(src.Description)
 	dst.Name = types.StringValue(src.Name)
+}
+func CopyCreateGcpProjectResponse(dst *GcpProjectResourceModel, src *configv1.CreateGcpProjectResponse) {
+	dst.Id = types.StringValue(src.Id)
+	dst.AccountId = types.StringValue(src.AccountId)
+	dst.EnableProjects = types.BoolValue(src.EnableProjects)
+	dst.Mode = types.StringValue(src.Mode)
+	dst.Name = types.StringValue(src.Name)
+	dst.OrganizationId = types.StringValue(src.OrganizationId)
+	dst.ServiceAccountEmail = types.StringValue(src.ServiceAccountEmail)
+	dst.Type = types.StringValue(src.Type)
+}
+func CopyReadGcpProjectResponse(dst *GcpProjectResourceModel, src *configv1.ReadGcpProjectResponse) {
+	dst.Id = types.StringValue(src.Id)
+	dst.AccountId = types.StringValue(src.AccountId)
+	dst.EnableProjects = types.BoolValue(src.EnableProjects)
+	dst.Mode = types.StringValue(src.Mode)
+	dst.Name = types.StringValue(src.Name)
+	dst.OrganizationId = types.StringValue(src.OrganizationId)
+	dst.ServiceAccountEmail = types.StringValue(src.ServiceAccountEmail)
+	dst.Type = types.StringValue(src.Type)
+}
+func CopyUpdateGcpProjectResponse(dst *GcpProjectResourceModel, src *configv1.UpdateGcpProjectResponse) {
+	dst.Id = types.StringValue(src.Id)
+	dst.AccountId = types.StringValue(src.AccountId)
+	dst.EnableProjects = types.BoolValue(src.EnableProjects)
+	dst.Mode = types.StringValue(src.Mode)
+	dst.Name = types.StringValue(src.Name)
+	dst.OrganizationId = types.StringValue(src.OrganizationId)
+	dst.ServiceAccountEmail = types.StringValue(src.ServiceAccountEmail)
+	dst.Type = types.StringValue(src.Type)
 }
 func CopyCreateIpListResponse(dst *IpListResourceModel, src *configv1.CreateIpListResponse) {
 	dst.Id = types.StringValue(src.Id)

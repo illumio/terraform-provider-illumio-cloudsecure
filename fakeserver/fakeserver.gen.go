@@ -38,6 +38,8 @@ type FakeConfigServer struct {
 	AzureSubscriptionMutex              sync.RWMutex
 	DeploymentMap                       map[string]*Deployment
 	DeploymentMutex                     sync.RWMutex
+	GcpProjectMap                       map[string]*GcpProject
+	GcpProjectMutex                     sync.RWMutex
 	IpListMap                           map[string]*IpList
 	IpListMutex                         sync.RWMutex
 	K8SClusterMap                       map[string]*K8SCluster
@@ -67,6 +69,7 @@ func NewFakeConfigServer(logger *zap.Logger) configv1.ConfigServiceServer {
 		AzureFlowLogsStorageAccountMap:    make(map[string]*AzureFlowLogsStorageAccount),
 		AzureSubscriptionMap:              make(map[string]*AzureSubscription),
 		DeploymentMap:                     make(map[string]*Deployment),
+		GcpProjectMap:                     make(map[string]*GcpProject),
 		IpListMap:                         make(map[string]*IpList),
 		K8SClusterMap:                     make(map[string]*K8SCluster),
 		K8SClusterOnboardingCredentialMap: make(map[string]*K8SClusterOnboardingCredential),
@@ -188,6 +191,17 @@ type Deployment struct {
 	AzureVnetIds         []string
 	Description          *string
 	Name                 string
+}
+
+type GcpProject struct {
+	Id                  string
+	AccountId           string
+	EnableProjects      bool
+	Mode                string
+	Name                string
+	OrganizationId      string
+	ServiceAccountEmail string
+	Type                string
 }
 
 type IpList struct {
@@ -1664,6 +1678,153 @@ func (s *FakeConfigServer) DeleteDeployment(ctx context.Context, req *configv1.D
 	s.Logger.Info("deleted resource",
 		zap.String("type", "deployment"),
 		zap.String("method", "DeleteDeployment"),
+		zap.String("id", id),
+	)
+	return &emptypb.Empty{}, nil
+}
+func (s *FakeConfigServer) CreateGcpProject(ctx context.Context, req *configv1.CreateGcpProjectRequest) (*configv1.CreateGcpProjectResponse, error) {
+	id := uuid.New().String()
+	model := &GcpProject{
+		Id:                  id,
+		AccountId:           req.AccountId,
+		EnableProjects:      req.EnableProjects,
+		Mode:                req.Mode,
+		Name:                req.Name,
+		OrganizationId:      req.OrganizationId,
+		ServiceAccountEmail: req.ServiceAccountEmail,
+		Type:                req.Type,
+	}
+	resp := &configv1.CreateGcpProjectResponse{
+		Id:                  id,
+		AccountId:           model.AccountId,
+		EnableProjects:      model.EnableProjects,
+		Mode:                model.Mode,
+		Name:                model.Name,
+		OrganizationId:      model.OrganizationId,
+		ServiceAccountEmail: model.ServiceAccountEmail,
+		Type:                model.Type,
+	}
+	s.GcpProjectMutex.Lock()
+	s.GcpProjectMap[id] = model
+	s.GcpProjectMutex.Unlock()
+	s.Logger.Info("created resource",
+		zap.String("type", "gcp_project"),
+		zap.String("method", "CreateGcpProject"),
+		zap.String("id", id),
+	)
+	return resp, nil
+}
+
+func (s *FakeConfigServer) ReadGcpProject(ctx context.Context, req *configv1.ReadGcpProjectRequest) (*configv1.ReadGcpProjectResponse, error) {
+	id := req.Id
+	s.GcpProjectMutex.RLock()
+	model, found := s.GcpProjectMap[id]
+	if !found {
+		s.GcpProjectMutex.RUnlock()
+		s.Logger.Error("attempted to read resource with unknown id",
+			zap.String("type", "gcp_project"),
+			zap.String("method", "ReadGcpProject"),
+			zap.String("id", id),
+		)
+		return nil, status.Errorf(codes.NotFound, "no gcp_project found with id %s", id)
+	}
+	resp := &configv1.ReadGcpProjectResponse{
+		Id:                  id,
+		AccountId:           model.AccountId,
+		EnableProjects:      model.EnableProjects,
+		Mode:                model.Mode,
+		Name:                model.Name,
+		OrganizationId:      model.OrganizationId,
+		ServiceAccountEmail: model.ServiceAccountEmail,
+		Type:                model.Type,
+	}
+	s.GcpProjectMutex.RUnlock()
+	s.Logger.Info("read resource",
+		zap.String("type", "gcp_project"),
+		zap.String("method", "ReadGcpProject"),
+		zap.String("id", id),
+	)
+	return resp, nil
+}
+
+func (s *FakeConfigServer) UpdateGcpProject(ctx context.Context, req *configv1.UpdateGcpProjectRequest) (*configv1.UpdateGcpProjectResponse, error) {
+	id := req.Id
+	s.GcpProjectMutex.Lock()
+	model, found := s.GcpProjectMap[id]
+	if !found {
+		s.GcpProjectMutex.Unlock()
+		s.Logger.Error("attempted to update resource with unknown id",
+			zap.String("type", "gcp_project"),
+			zap.String("method", "UpdateGcpProject"),
+			zap.String("id", id),
+		)
+		return nil, status.Errorf(codes.NotFound, "no gcp_project found with id %s", id)
+	}
+	updateMask := req.UpdateMask
+	var updateMaskPaths []string
+	if updateMask != nil {
+		updateMaskPaths = updateMask.Paths
+	}
+	for _, path := range updateMaskPaths {
+		switch path {
+		case "enable_projects":
+			model.EnableProjects = req.EnableProjects
+		case "name":
+			model.Name = req.Name
+		case "service_account_email":
+			model.ServiceAccountEmail = req.ServiceAccountEmail
+		case "type":
+			model.Type = req.Type
+		default:
+			s.AwsAccountMutex.Unlock()
+			s.Logger.Error("attempted to update resource using invalid update_mask path",
+				zap.String("type", "gcp_project"),
+				zap.String("method", "UpdateGcpProject"),
+				zap.String("id", id),
+				zap.Strings("updateMaskPaths", updateMaskPaths),
+				zap.String("invalidUpdateMaskPath", path),
+			)
+			return nil, status.Errorf(codes.InvalidArgument, "invalid path in update_mask for gcp_project: %s", path)
+		}
+	}
+	resp := &configv1.UpdateGcpProjectResponse{
+		Id:                  id,
+		AccountId:           model.AccountId,
+		EnableProjects:      model.EnableProjects,
+		Mode:                model.Mode,
+		Name:                model.Name,
+		OrganizationId:      model.OrganizationId,
+		ServiceAccountEmail: model.ServiceAccountEmail,
+		Type:                model.Type,
+	}
+	s.GcpProjectMutex.Unlock()
+	s.Logger.Info("updated resource",
+		zap.String("type", "gcp_project"),
+		zap.String("method", "UpdateGcpProject"),
+		zap.String("id", id),
+		zap.Strings("updateMaskPaths", updateMaskPaths),
+	)
+	return resp, nil
+}
+
+func (s *FakeConfigServer) DeleteGcpProject(ctx context.Context, req *configv1.DeleteGcpProjectRequest) (*emptypb.Empty, error) {
+	id := req.Id
+	s.GcpProjectMutex.Lock()
+	_, found := s.GcpProjectMap[id]
+	if !found {
+		s.GcpProjectMutex.Unlock()
+		s.Logger.Error("attempted to delete resource with unknown id",
+			zap.String("type", "gcp_project"),
+			zap.String("method", "DeleteGcpProject"),
+			zap.String("id", id),
+		)
+		return nil, status.Errorf(codes.NotFound, "no gcp_project found with id %s", id)
+	}
+	delete(s.GcpProjectMap, id)
+	s.GcpProjectMutex.Unlock()
+	s.Logger.Info("deleted resource",
+		zap.String("type", "gcp_project"),
+		zap.String("method", "DeleteGcpProject"),
 		zap.String("id", id),
 	)
 	return &emptypb.Empty{}, nil
