@@ -1687,12 +1687,10 @@ func (s *FakeConfigServer) CreateGcpProject(ctx context.Context, req *configv1.C
 	model := &GcpProject{
 		Id:                  id,
 		AccountId:           req.AccountId,
-		EnableProjects:      req.EnableProjects,
 		Mode:                req.Mode,
 		Name:                req.Name,
 		OrganizationId:      req.OrganizationId,
 		ServiceAccountEmail: req.ServiceAccountEmail,
-		Type:                req.Type,
 	}
 	resp := &configv1.CreateGcpProjectResponse{
 		Id:                  id,
@@ -1767,12 +1765,8 @@ func (s *FakeConfigServer) UpdateGcpProject(ctx context.Context, req *configv1.U
 	}
 	for _, path := range updateMaskPaths {
 		switch path {
-		case "enable_projects":
-			model.EnableProjects = req.EnableProjects
 		case "name":
 			model.Name = req.Name
-		case "type":
-			model.Type = req.Type
 		default:
 			s.AwsAccountMutex.Unlock()
 			s.Logger.Error("attempted to update resource using invalid update_mask path",

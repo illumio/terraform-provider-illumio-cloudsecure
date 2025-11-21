@@ -662,12 +662,10 @@ message DeleteDeploymentRequest {
 }
 message CreateGcpProjectRequest {
   string account_id = 2;
-  bool enable_projects = 3;
   string mode = 4;
   string name = 5;
   string organization_id = 6;
   string service_account_email = 7;
-  string type = 8;
 }
 message CreateGcpProjectResponse {
   string id = 1;
@@ -694,9 +692,7 @@ message ReadGcpProjectResponse {
 }
 message UpdateGcpProjectRequest {
   string id = 1;
-  bool enable_projects = 3;
   string name = 5;
-  string type = 8;
   google.protobuf.FieldMask update_mask = 9;
 }
 message UpdateGcpProjectResponse {

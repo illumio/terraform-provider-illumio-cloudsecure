@@ -6,9 +6,7 @@ package schema
 import (
 	"github.com/hashicorp/terraform-plugin-framework-validators/stringvalidator"
 	resource_schema "github.com/hashicorp/terraform-plugin-framework/resource/schema"
-	"github.com/hashicorp/terraform-plugin-framework/resource/schema/booldefault"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/planmodifier"
-	"github.com/hashicorp/terraform-plugin-framework/resource/schema/stringdefault"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/stringplanmodifier"
 	"github.com/hashicorp/terraform-plugin-framework/schema/validator"
 )
@@ -79,26 +77,19 @@ var (
 				"type": StringResourceAttributeWithMode{
 					StringAttribute: resource_schema.StringAttribute{
 						Description: "Onboarding type, fixed to `\"GcpProject\"`.",
-						Optional:    true,
 						Computed:    true,
-						Default:     stringdefault.StaticString("GcpProject"),
-						Validators: []validator.String{
-							stringvalidator.OneOf("GcpProject"),
-						},
 					},
 					attributeWithMode: attributeWithMode{
-						Mode: ReadWriteAttributeMode,
+						Mode: ReadOnlyAttributeMode,
 					},
 				},
 				"enable_projects": BoolResourceAttributeWithMode{
 					BoolAttribute: resource_schema.BoolAttribute{
-						Description: "Whether project onboarding is enabled, fixed to true.",
-						Optional:    true,
+						Description: "Whether child project onboarding is enabled, fixed to true.",
 						Computed:    true,
-						Default:     booldefault.StaticBool(true),
 					},
 					attributeWithMode: attributeWithMode{
-						Mode: ReadWriteAttributeMode,
+						Mode: ReadOnlyAttributeMode,
 					},
 				},
 			},

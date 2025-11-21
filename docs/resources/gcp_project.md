@@ -49,11 +49,8 @@ resource "illumio-cloudsecure_gcp_project" "managed_gcp_project" {
 - `organization_id` (String) ID of the GCP organization.
 - `service_account_email` (String) Service account email that Illumio will impersonate.
 
-### Optional
-
-- `enable_projects` (Boolean) Whether project onboarding is enabled, fixed to true.
-- `type` (String) Onboarding type, fixed to `"GcpProject"`.
-
 ### Read-Only
 
+- `enable_projects` (Boolean) Whether child project onboarding is enabled, fixed to true.
 - `id` (String) CloudSecure ID.
+- `type` (String) Onboarding type, fixed to `"GcpProject"`.

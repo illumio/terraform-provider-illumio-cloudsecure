@@ -4725,12 +4725,6 @@ func NewCreateGcpProjectRequest(ctx context.Context, data *GcpProjectResourceMod
 		protoValue = dataValue.(types.String).ValueString()
 		proto.AccountId = protoValue
 	}
-	if !data.EnableProjects.IsUnknown() && !data.EnableProjects.IsNull() {
-		var dataValue attr.Value = data.EnableProjects
-		var protoValue bool
-		protoValue = dataValue.(types.Bool).ValueBool()
-		proto.EnableProjects = protoValue
-	}
 	if !data.Mode.IsUnknown() && !data.Mode.IsNull() {
 		var dataValue attr.Value = data.Mode
 		var protoValue string
@@ -4754,12 +4748,6 @@ func NewCreateGcpProjectRequest(ctx context.Context, data *GcpProjectResourceMod
 		var protoValue string
 		protoValue = dataValue.(types.String).ValueString()
 		proto.ServiceAccountEmail = protoValue
-	}
-	if !data.Type.IsUnknown() && !data.Type.IsNull() {
-		var dataValue attr.Value = data.Type
-		var protoValue string
-		protoValue = dataValue.(types.String).ValueString()
-		proto.Type = protoValue
 	}
 	return proto, diags
 }
@@ -6377,15 +6365,6 @@ func NewUpdateGcpProjectRequest(ctx context.Context, beforeData, afterData *GcpP
 	proto := &configv1.UpdateGcpProjectRequest{}
 	proto.UpdateMask, _ = fieldmaskpb.New(proto)
 	proto.Id = beforeData.Id.ValueString()
-	if !afterData.EnableProjects.Equal(beforeData.EnableProjects) {
-		proto.UpdateMask.Append(proto, "enable_projects")
-		if !afterData.EnableProjects.IsUnknown() && !afterData.EnableProjects.IsNull() {
-			var dataValue attr.Value = afterData.EnableProjects
-			var protoValue bool
-			protoValue = dataValue.(types.Bool).ValueBool()
-			proto.EnableProjects = protoValue
-		}
-	}
 	if !afterData.Name.Equal(beforeData.Name) {
 		proto.UpdateMask.Append(proto, "name")
 		if !afterData.Name.IsUnknown() && !afterData.Name.IsNull() {
@@ -6393,15 +6372,6 @@ func NewUpdateGcpProjectRequest(ctx context.Context, beforeData, afterData *GcpP
 			var protoValue string
 			protoValue = dataValue.(types.String).ValueString()
 			proto.Name = protoValue
-		}
-	}
-	if !afterData.Type.Equal(beforeData.Type) {
-		proto.UpdateMask.Append(proto, "type")
-		if !afterData.Type.IsUnknown() && !afterData.Type.IsNull() {
-			var dataValue attr.Value = afterData.Type
-			var protoValue string
-			protoValue = dataValue.(types.String).ValueString()
-			proto.Type = protoValue
 		}
 	}
 	return proto, diags
