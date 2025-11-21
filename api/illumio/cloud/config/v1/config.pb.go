@@ -6435,15 +6435,14 @@ func (x *ReadGcpProjectResponse) GetType() string {
 }
 
 type UpdateGcpProjectRequest struct {
-	state               protoimpl.MessageState `protogen:"open.v1"`
-	Id                  string                 `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
-	EnableProjects      bool                   `protobuf:"varint,3,opt,name=enable_projects,json=enableProjects,proto3" json:"enable_projects,omitempty"`
-	Name                string                 `protobuf:"bytes,5,opt,name=name,proto3" json:"name,omitempty"`
-	ServiceAccountEmail string                 `protobuf:"bytes,7,opt,name=service_account_email,json=serviceAccountEmail,proto3" json:"service_account_email,omitempty"`
-	Type                string                 `protobuf:"bytes,8,opt,name=type,proto3" json:"type,omitempty"`
-	UpdateMask          *fieldmaskpb.FieldMask `protobuf:"bytes,9,opt,name=update_mask,json=updateMask,proto3" json:"update_mask,omitempty"`
-	unknownFields       protoimpl.UnknownFields
-	sizeCache           protoimpl.SizeCache
+	state          protoimpl.MessageState `protogen:"open.v1"`
+	Id             string                 `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
+	EnableProjects bool                   `protobuf:"varint,3,opt,name=enable_projects,json=enableProjects,proto3" json:"enable_projects,omitempty"`
+	Name           string                 `protobuf:"bytes,5,opt,name=name,proto3" json:"name,omitempty"`
+	Type           string                 `protobuf:"bytes,8,opt,name=type,proto3" json:"type,omitempty"`
+	UpdateMask     *fieldmaskpb.FieldMask `protobuf:"bytes,9,opt,name=update_mask,json=updateMask,proto3" json:"update_mask,omitempty"`
+	unknownFields  protoimpl.UnknownFields
+	sizeCache      protoimpl.SizeCache
 }
 
 func (x *UpdateGcpProjectRequest) Reset() {
@@ -6493,13 +6492,6 @@ func (x *UpdateGcpProjectRequest) GetEnableProjects() bool {
 func (x *UpdateGcpProjectRequest) GetName() string {
 	if x != nil {
 		return x.Name
-	}
-	return ""
-}
-
-func (x *UpdateGcpProjectRequest) GetServiceAccountEmail() string {
-	if x != nil {
-		return x.ServiceAccountEmail
 	}
 	return ""
 }
@@ -10551,12 +10543,11 @@ const file_illumio_cloud_config_v1_config_proto_rawDesc = "" +
 	"\x04name\x18\x05 \x01(\tR\x04name\x12'\n" +
 	"\x0forganization_id\x18\x06 \x01(\tR\x0eorganizationId\x122\n" +
 	"\x15service_account_email\x18\a \x01(\tR\x13serviceAccountEmail\x12\x12\n" +
-	"\x04type\x18\b \x01(\tR\x04type\"\xeb\x01\n" +
+	"\x04type\x18\b \x01(\tR\x04type\"\xb7\x01\n" +
 	"\x17UpdateGcpProjectRequest\x12\x0e\n" +
 	"\x02id\x18\x01 \x01(\tR\x02id\x12'\n" +
 	"\x0fenable_projects\x18\x03 \x01(\bR\x0eenableProjects\x12\x12\n" +
-	"\x04name\x18\x05 \x01(\tR\x04name\x122\n" +
-	"\x15service_account_email\x18\a \x01(\tR\x13serviceAccountEmail\x12\x12\n" +
+	"\x04name\x18\x05 \x01(\tR\x04name\x12\x12\n" +
 	"\x04type\x18\b \x01(\tR\x04type\x12;\n" +
 	"\vupdate_mask\x18\t \x01(\v2\x1a.google.protobuf.FieldMaskR\n" +
 	"updateMask\"\x8b\x02\n" +

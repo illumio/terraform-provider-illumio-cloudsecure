@@ -6395,15 +6395,6 @@ func NewUpdateGcpProjectRequest(ctx context.Context, beforeData, afterData *GcpP
 			proto.Name = protoValue
 		}
 	}
-	if !afterData.ServiceAccountEmail.Equal(beforeData.ServiceAccountEmail) {
-		proto.UpdateMask.Append(proto, "service_account_email")
-		if !afterData.ServiceAccountEmail.IsUnknown() && !afterData.ServiceAccountEmail.IsNull() {
-			var dataValue attr.Value = afterData.ServiceAccountEmail
-			var protoValue string
-			protoValue = dataValue.(types.String).ValueString()
-			proto.ServiceAccountEmail = protoValue
-		}
-	}
 	if !afterData.Type.Equal(beforeData.Type) {
 		proto.UpdateMask.Append(proto, "type")
 		if !afterData.Type.IsUnknown() && !afterData.Type.IsNull() {

@@ -1771,8 +1771,6 @@ func (s *FakeConfigServer) UpdateGcpProject(ctx context.Context, req *configv1.U
 			model.EnableProjects = req.EnableProjects
 		case "name":
 			model.Name = req.Name
-		case "service_account_email":
-			model.ServiceAccountEmail = req.ServiceAccountEmail
 		case "type":
 			model.Type = req.Type
 		default:

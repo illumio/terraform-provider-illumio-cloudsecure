@@ -64,9 +64,17 @@ var (
 					Description: "Display name for the GCP project.",
 					Required:    true,
 				},
-				"service_account_email": resource_schema.StringAttribute{
-					Description: "Service account email that Illumio will impersonate.",
-					Required:    true,
+				"service_account_email": StringResourceAttributeWithMode{
+					StringAttribute: resource_schema.StringAttribute{
+						Description: "Service account email that Illumio will impersonate.",
+						Required:    true,
+						PlanModifiers: []planmodifier.String{
+							stringplanmodifier.RequiresReplace(),
+						},
+					},
+					attributeWithMode: attributeWithMode{
+						Mode: ImmutableAttributeMode,
+					},
 				},
 				"type": StringResourceAttributeWithMode{
 					StringAttribute: resource_schema.StringAttribute{
