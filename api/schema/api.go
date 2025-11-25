@@ -38,7 +38,7 @@ type DataSource struct {
 	Schema datasource_schema.Schema
 }
 
-// Resources is a list of Resource elements.
+// DataSources is a list of Resource elements.
 // The TypeName of each Resource must be unique.
 type DataSources []DataSource
 
@@ -78,24 +78,28 @@ func AttributeToAttrType(attrSchema resource_schema.Attribute) (attr.Type, error
 		if err != nil {
 			return nil, err
 		}
+
 		return objType, nil
 	case resource_schema.ListNestedAttribute:
 		objType, err := nestedObjectToObjectType(v.NestedObject.Attributes)
 		if err != nil {
 			return nil, err
 		}
+
 		return types.ListType{ElemType: objType}, nil
 	case resource_schema.SetNestedAttribute:
 		objType, err := nestedObjectToObjectType(v.NestedObject.Attributes)
 		if err != nil {
 			return nil, err
 		}
+
 		return types.SetType{ElemType: objType}, nil
 	case resource_schema.MapNestedAttribute:
 		objType, err := nestedObjectToObjectType(v.NestedObject.Attributes)
 		if err != nil {
 			return nil, err
 		}
+
 		return types.MapType{ElemType: objType}, nil
 	default:
 		return nil, fmt.Errorf("unsupported attribute type %T for type inference", attrSchema)
@@ -110,7 +114,9 @@ func nestedObjectToObjectType(attrs map[string]resource_schema.Attribute) (types
 		if err != nil {
 			return types.ObjectType{}, err
 		}
+
 		attrTypes[name] = t
 	}
+
 	return types.ObjectType{AttrTypes: attrTypes}, nil
 }

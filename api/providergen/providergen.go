@@ -717,9 +717,11 @@ func AddResourceToProviderTemplateData(resource *schema.Resource, data *provider
 		attrSchema := resource.Schema.Attributes[attrName]
 
 		var attrType attr.Type
+
 		attrType = attrSchema.GetType()
 		if attrType == nil {
 			var err error
+
 			attrType, err = schema.AttributeToAttrType(attrSchema)
 			if err != nil {
 				return fmt.Errorf("failed to resolve type for attribute %s in resource %s: %w", attrName, resourceMessageName, err)
@@ -868,6 +870,7 @@ func TerraformAttributeTypeToProtoType(nestedMessageNamePrefix, attrName string,
 		if err != nil {
 			return fieldType{}, err
 		}
+
 		return fieldType{
 			ModelTypeName:         "Map",
 			ProtoTypeName:         protoTypeName,
@@ -960,6 +963,7 @@ func TerraformRepeatedAttributeTypeToProtoType(nestedMessageNamePrefix, attrName
 // TerraformMapAttributeTypeToProtoType converts a Terraform map attribute type into the corresponding Protocol Buffer Golang type.
 func TerraformMapAttributeTypeToProtoType(nestedMessageNamePrefix, attrName string, elementType attr.Type) (protoTypeName string, elemProtoType fieldType, err error) {
 	camelCasedAttrName := schema.ProtoMessageName(attrName)
+
 	wrapperMessageName := nestedMessageNamePrefix
 	if !strings.HasSuffix(wrapperMessageName, "_"+camelCasedAttrName) {
 		wrapperMessageName = nestedMessageNamePrefix + "_" + camelCasedAttrName
