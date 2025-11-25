@@ -6,10 +6,9 @@ package schema
 import (
 	"fmt"
 
+	"github.com/hashicorp/terraform-plugin-framework/attr"
 	datasource_schema "github.com/hashicorp/terraform-plugin-framework/datasource/schema"
 	resource_schema "github.com/hashicorp/terraform-plugin-framework/resource/schema"
-
-	"github.com/hashicorp/terraform-plugin-framework/attr"
 	"github.com/hashicorp/terraform-plugin-framework/types"
 )
 
