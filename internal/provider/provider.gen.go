@@ -3134,6 +3134,7 @@ type OrganizationPolicyResourceModel struct {
 	Description types.String `tfsdk:"description"`
 	Enabled     types.Bool   `tfsdk:"enabled"`
 	Name        types.String `tfsdk:"name"`
+	Scopes      types.Set    `tfsdk:"scopes"`
 }
 
 type OrganizationPolicyRuleResourceModel struct {
@@ -4703,6 +4704,26 @@ func NewCreateOrganizationPolicyRequest(ctx context.Context, data *OrganizationP
 		protoValue = dataValue.(types.String).ValueString()
 		proto.Name = protoValue
 	}
+	if !data.Scopes.IsUnknown() && !data.Scopes.IsNull() {
+		var dataValue attr.Value = data.Scopes
+		var protoValue []*configv1.OrganizationPolicy_Scopes
+		{
+			dataElements := dataValue.(types.Set).Elements()
+			protoValues := make([]*configv1.OrganizationPolicy_Scopes, 0, len(dataElements))
+			for _, dataElement := range dataElements {
+				var dataValue attr.Value = dataElement
+				var protoValue *configv1.OrganizationPolicy_Scopes
+				protoValue, newDiags := ConvertDataValueToOrganizationPolicy_ScopesProto(ctx, dataValue)
+				diags.Append(newDiags...)
+				if diags.HasError() {
+					return nil, diags
+				}
+				protoValues = append(protoValues, protoValue)
+			}
+			protoValue = protoValues
+		}
+		proto.Scopes = protoValue
+	}
 	return proto, diags
 }
 
@@ -6245,6 +6266,29 @@ func NewUpdateOrganizationPolicyRequest(ctx context.Context, beforeData, afterDa
 			var protoValue string
 			protoValue = dataValue.(types.String).ValueString()
 			proto.Name = protoValue
+		}
+	}
+	if !afterData.Scopes.Equal(beforeData.Scopes) {
+		proto.UpdateMask.Append(proto, "scopes")
+		if !afterData.Scopes.IsUnknown() && !afterData.Scopes.IsNull() {
+			var dataValue attr.Value = afterData.Scopes
+			var protoValue []*configv1.OrganizationPolicy_Scopes
+			{
+				dataElements := dataValue.(types.Set).Elements()
+				protoValues := make([]*configv1.OrganizationPolicy_Scopes, 0, len(dataElements))
+				for _, dataElement := range dataElements {
+					var dataValue attr.Value = dataElement
+					var protoValue *configv1.OrganizationPolicy_Scopes
+					protoValue, newDiags := ConvertDataValueToOrganizationPolicy_ScopesProto(ctx, dataValue)
+					diags.Append(newDiags...)
+					if diags.HasError() {
+						return nil, diags
+					}
+					protoValues = append(protoValues, protoValue)
+				}
+				protoValue = protoValues
+			}
+			proto.Scopes = protoValue
 		}
 	}
 	return proto, diags
@@ -9955,18 +9999,87 @@ func CopyCreateOrganizationPolicyResponse(dst *OrganizationPolicyResourceModel, 
 	dst.Description = types.StringPointerValue(src.Description)
 	dst.Enabled = types.BoolValue(src.Enabled)
 	dst.Name = types.StringValue(src.Name)
+	{
+		protoValue := src.Scopes
+		var dataValue types.Set
+		{
+			dataElementType := types.ObjectType{
+				AttrTypes: GetTypeAttrsForOrganizationPolicy_Scopes(),
+			}
+			protoElements := protoValue
+			if protoElements == nil {
+				dataValue = types.SetNull(dataElementType)
+			} else {
+				dataValues := make([]attr.Value, 0, len(protoElements))
+				for _, protoElement := range protoElements {
+					var protoValue *configv1.OrganizationPolicy_Scopes = protoElement
+					var dataValue attr.Value
+					dataValue = ConvertOrganizationPolicy_ScopesToObjectValueFromProto(protoValue)
+					dataValues = append(dataValues, dataValue)
+				}
+				dataValue = types.SetValueMust(dataElementType, dataValues)
+			}
+		}
+		dst.Scopes = dataValue
+	}
 }
 func CopyReadOrganizationPolicyResponse(dst *OrganizationPolicyResourceModel, src *configv1.ReadOrganizationPolicyResponse) {
 	dst.Id = types.StringValue(src.Id)
 	dst.Description = types.StringPointerValue(src.Description)
 	dst.Enabled = types.BoolValue(src.Enabled)
 	dst.Name = types.StringValue(src.Name)
+	{
+		protoValue := src.Scopes
+		var dataValue types.Set
+		{
+			dataElementType := types.ObjectType{
+				AttrTypes: GetTypeAttrsForOrganizationPolicy_Scopes(),
+			}
+			protoElements := protoValue
+			if protoElements == nil {
+				dataValue = types.SetNull(dataElementType)
+			} else {
+				dataValues := make([]attr.Value, 0, len(protoElements))
+				for _, protoElement := range protoElements {
+					var protoValue *configv1.OrganizationPolicy_Scopes = protoElement
+					var dataValue attr.Value
+					dataValue = ConvertOrganizationPolicy_ScopesToObjectValueFromProto(protoValue)
+					dataValues = append(dataValues, dataValue)
+				}
+				dataValue = types.SetValueMust(dataElementType, dataValues)
+			}
+		}
+		dst.Scopes = dataValue
+	}
 }
 func CopyUpdateOrganizationPolicyResponse(dst *OrganizationPolicyResourceModel, src *configv1.UpdateOrganizationPolicyResponse) {
 	dst.Id = types.StringValue(src.Id)
 	dst.Description = types.StringPointerValue(src.Description)
 	dst.Enabled = types.BoolValue(src.Enabled)
 	dst.Name = types.StringValue(src.Name)
+	{
+		protoValue := src.Scopes
+		var dataValue types.Set
+		{
+			dataElementType := types.ObjectType{
+				AttrTypes: GetTypeAttrsForOrganizationPolicy_Scopes(),
+			}
+			protoElements := protoValue
+			if protoElements == nil {
+				dataValue = types.SetNull(dataElementType)
+			} else {
+				dataValues := make([]attr.Value, 0, len(protoElements))
+				for _, protoElement := range protoElements {
+					var protoValue *configv1.OrganizationPolicy_Scopes = protoElement
+					var dataValue attr.Value
+					dataValue = ConvertOrganizationPolicy_ScopesToObjectValueFromProto(protoValue)
+					dataValues = append(dataValues, dataValue)
+				}
+				dataValue = types.SetValueMust(dataElementType, dataValues)
+			}
+		}
+		dst.Scopes = dataValue
+	}
 }
 func CopyCreateOrganizationPolicyRuleResponse(dst *OrganizationPolicyRuleResourceModel, src *configv1.CreateOrganizationPolicyRuleResponse) {
 	dst.Id = types.StringValue(src.Id)
@@ -10480,12 +10593,12 @@ func GetTypeAttrsForApplicationPolicyRule_FromLabels() map[string]attr.Type {
 }
 
 func ConvertApplicationPolicyRule_FromLabelsToObjectValueFromProto(proto *configv1.ApplicationPolicyRule_FromLabels) basetypes.ObjectValue {
+	vals := map[string]attr.Value{}
+	vals["key"] = types.StringValue(proto.Key)
+	vals["value"] = types.StringValue(proto.Value)
 	return types.ObjectValueMust(
 		GetTypeAttrsForApplicationPolicyRule_FromLabels(),
-		map[string]attr.Value{
-			"key":   types.StringValue(proto.Key),
-			"value": types.StringValue(proto.Value),
-		},
+		vals,
 	)
 }
 
@@ -10514,12 +10627,12 @@ func GetTypeAttrsForApplicationPolicyRule_ToLabels() map[string]attr.Type {
 }
 
 func ConvertApplicationPolicyRule_ToLabelsToObjectValueFromProto(proto *configv1.ApplicationPolicyRule_ToLabels) basetypes.ObjectValue {
+	vals := map[string]attr.Value{}
+	vals["key"] = types.StringValue(proto.Key)
+	vals["value"] = types.StringValue(proto.Value)
 	return types.ObjectValueMust(
 		GetTypeAttrsForApplicationPolicyRule_ToLabels(),
-		map[string]attr.Value{
-			"key":   types.StringValue(proto.Key),
-			"value": types.StringValue(proto.Value),
-		},
+		vals,
 	)
 }
 
@@ -10550,13 +10663,13 @@ func GetTypeAttrsForApplicationPolicyRule_ToPortRanges() map[string]attr.Type {
 }
 
 func ConvertApplicationPolicyRule_ToPortRangesToObjectValueFromProto(proto *configv1.ApplicationPolicyRule_ToPortRanges) basetypes.ObjectValue {
+	vals := map[string]attr.Value{}
+	vals["from_port"] = types.Int64Value(proto.FromPort)
+	vals["protocol"] = types.StringValue(proto.Protocol)
+	vals["to_port"] = types.Int64Value(proto.ToPort)
 	return types.ObjectValueMust(
 		GetTypeAttrsForApplicationPolicyRule_ToPortRanges(),
-		map[string]attr.Value{
-			"from_port": types.Int64Value(proto.FromPort),
-			"protocol":  types.StringValue(proto.Protocol),
-			"to_port":   types.Int64Value(proto.ToPort),
-		},
+		vals,
 	)
 }
 
@@ -10586,12 +10699,12 @@ func GetTypeAttrsForDeployment_AwsTags() map[string]attr.Type {
 }
 
 func ConvertDeployment_AwsTagsToObjectValueFromProto(proto *configv1.Deployment_AwsTags) basetypes.ObjectValue {
+	vals := map[string]attr.Value{}
+	vals["key"] = types.StringValue(proto.Key)
+	vals["value"] = types.StringValue(proto.Value)
 	return types.ObjectValueMust(
 		GetTypeAttrsForDeployment_AwsTags(),
-		map[string]attr.Value{
-			"key":   types.StringValue(proto.Key),
-			"value": types.StringValue(proto.Value),
-		},
+		vals,
 	)
 }
 
@@ -10620,12 +10733,12 @@ func GetTypeAttrsForDeployment_AzureTags() map[string]attr.Type {
 }
 
 func ConvertDeployment_AzureTagsToObjectValueFromProto(proto *configv1.Deployment_AzureTags) basetypes.ObjectValue {
+	vals := map[string]attr.Value{}
+	vals["key"] = types.StringValue(proto.Key)
+	vals["value"] = types.StringValue(proto.Value)
 	return types.ObjectValueMust(
 		GetTypeAttrsForDeployment_AzureTags(),
-		map[string]attr.Value{
-			"key":   types.StringValue(proto.Key),
-			"value": types.StringValue(proto.Value),
-		},
+		vals,
 	)
 }
 
@@ -10654,12 +10767,12 @@ func GetTypeAttrsForIpList_IpAddresses() map[string]attr.Type {
 }
 
 func ConvertIpList_IpAddressesToObjectValueFromProto(proto *configv1.IpList_IpAddresses) basetypes.ObjectValue {
+	vals := map[string]attr.Value{}
+	vals["exclusion"] = types.BoolValue(proto.Exclusion)
+	vals["ip_address"] = types.StringValue(proto.IpAddress)
 	return types.ObjectValueMust(
 		GetTypeAttrsForIpList_IpAddresses(),
-		map[string]attr.Value{
-			"exclusion":  types.BoolValue(proto.Exclusion),
-			"ip_address": types.StringValue(proto.IpAddress),
-		},
+		vals,
 	)
 }
 
@@ -10690,13 +10803,13 @@ func GetTypeAttrsForIpList_IpRanges() map[string]attr.Type {
 }
 
 func ConvertIpList_IpRangesToObjectValueFromProto(proto *configv1.IpList_IpRanges) basetypes.ObjectValue {
+	vals := map[string]attr.Value{}
+	vals["exclusion"] = types.BoolValue(proto.Exclusion)
+	vals["from_ip_address"] = types.StringValue(proto.FromIpAddress)
+	vals["to_ip_address"] = types.StringValue(proto.ToIpAddress)
 	return types.ObjectValueMust(
 		GetTypeAttrsForIpList_IpRanges(),
-		map[string]attr.Value{
-			"exclusion":       types.BoolValue(proto.Exclusion),
-			"from_ip_address": types.StringValue(proto.FromIpAddress),
-			"to_ip_address":   types.StringValue(proto.ToIpAddress),
-		},
+		vals,
 	)
 }
 
@@ -10713,6 +10826,118 @@ func ConvertDataValueToIpList_IpRangesProto(ctx context.Context, dataValue attr.
 	return proto, diags
 }
 
+type OrganizationPolicy_Scopes struct {
+	Scope types.List `tfsdk:"scope"`
+}
+
+func GetTypeAttrsForOrganizationPolicy_Scopes() map[string]attr.Type {
+	return map[string]attr.Type{
+		"scope": types.ListType{ElemType: types.ObjectType{
+			AttrTypes: GetTypeAttrsForOrganizationPolicy_Scopes_Scope(),
+		}},
+	}
+}
+
+func ConvertOrganizationPolicy_ScopesToObjectValueFromProto(proto *configv1.OrganizationPolicy_Scopes) basetypes.ObjectValue {
+	vals := map[string]attr.Value{}
+	{
+		protoValue := proto.Scope
+		var dataValue types.List
+
+		{
+			dataElementType :=
+				types.ObjectType{
+					AttrTypes: GetTypeAttrsForOrganizationPolicy_Scopes_Scope(),
+				}
+			protoElements := protoValue
+			if protoElements == nil {
+				dataValue = types.ListNull(dataElementType)
+			} else {
+				dataValues := make([]attr.Value, 0, len(protoElements))
+				for _, protoElement := range protoElements {
+					var protoValue *configv1.OrganizationPolicy_Scopes_Scope = protoElement
+					var dataValue attr.Value
+
+					dataValue = ConvertOrganizationPolicy_Scopes_ScopeToObjectValueFromProto(protoValue)
+					dataValues = append(dataValues, dataValue)
+				}
+				dataValue = types.ListValueMust(dataElementType, dataValues)
+			}
+		}
+		vals["scope"] = dataValue
+	}
+	return types.ObjectValueMust(
+		GetTypeAttrsForOrganizationPolicy_Scopes(),
+		vals,
+	)
+}
+
+func ConvertDataValueToOrganizationPolicy_ScopesProto(ctx context.Context, dataValue attr.Value) (*configv1.OrganizationPolicy_Scopes, diag.Diagnostics) {
+	pv := OrganizationPolicy_Scopes{}
+	diags := tfsdk.ValueAs(ctx, dataValue, &pv)
+	if diags.HasError() {
+		return nil, diags
+	}
+	proto := &configv1.OrganizationPolicy_Scopes{}
+	{
+		var dataValue attr.Value = pv.Scope
+		var protoValue []*configv1.OrganizationPolicy_Scopes_Scope
+
+		{
+			dataElements := dataValue.(types.List).Elements()
+			protoValues := make([]*configv1.OrganizationPolicy_Scopes_Scope, 0, len(dataElements))
+			for _, dataElement := range dataElements {
+				var dataValue attr.Value = dataElement
+				var protoValue *configv1.OrganizationPolicy_Scopes_Scope
+
+				protoValue, newDiags := ConvertDataValueToOrganizationPolicy_Scopes_ScopeProto(ctx, dataValue)
+				diags.Append(newDiags...)
+				if diags.HasError() {
+					return nil, diags
+				}
+				protoValues = append(protoValues, protoValue)
+			}
+			protoValue = protoValues
+		}
+		proto.Scope = protoValue
+	}
+	return proto, diags
+}
+
+type OrganizationPolicy_Scopes_Scope struct {
+	Label types.String `tfsdk:"label"`
+	Type  types.String `tfsdk:"type"`
+}
+
+func GetTypeAttrsForOrganizationPolicy_Scopes_Scope() map[string]attr.Type {
+	return map[string]attr.Type{
+		"label": types.StringType,
+		"type":  types.StringType,
+	}
+}
+
+func ConvertOrganizationPolicy_Scopes_ScopeToObjectValueFromProto(proto *configv1.OrganizationPolicy_Scopes_Scope) basetypes.ObjectValue {
+	vals := map[string]attr.Value{}
+	vals["label"] = types.StringValue(proto.Label)
+	vals["type"] = types.StringValue(proto.Type)
+	return types.ObjectValueMust(
+		GetTypeAttrsForOrganizationPolicy_Scopes_Scope(),
+		vals,
+	)
+}
+
+func ConvertDataValueToOrganizationPolicy_Scopes_ScopeProto(ctx context.Context, dataValue attr.Value) (*configv1.OrganizationPolicy_Scopes_Scope, diag.Diagnostics) {
+	pv := OrganizationPolicy_Scopes_Scope{}
+	diags := tfsdk.ValueAs(ctx, dataValue, &pv)
+	if diags.HasError() {
+		return nil, diags
+	}
+	proto := &configv1.OrganizationPolicy_Scopes_Scope{}
+	proto.Label = pv.Label.ValueString()
+	proto.Type = pv.Type.ValueString()
+	return proto, diags
+}
+
 type OrganizationPolicyRule_FromLabels struct {
 	Key   types.String `tfsdk:"key"`
 	Value types.String `tfsdk:"value"`
@@ -10726,12 +10951,12 @@ func GetTypeAttrsForOrganizationPolicyRule_FromLabels() map[string]attr.Type {
 }
 
 func ConvertOrganizationPolicyRule_FromLabelsToObjectValueFromProto(proto *configv1.OrganizationPolicyRule_FromLabels) basetypes.ObjectValue {
+	vals := map[string]attr.Value{}
+	vals["key"] = types.StringValue(proto.Key)
+	vals["value"] = types.StringValue(proto.Value)
 	return types.ObjectValueMust(
 		GetTypeAttrsForOrganizationPolicyRule_FromLabels(),
-		map[string]attr.Value{
-			"key":   types.StringValue(proto.Key),
-			"value": types.StringValue(proto.Value),
-		},
+		vals,
 	)
 }
 
@@ -10760,12 +10985,12 @@ func GetTypeAttrsForOrganizationPolicyRule_ToLabels() map[string]attr.Type {
 }
 
 func ConvertOrganizationPolicyRule_ToLabelsToObjectValueFromProto(proto *configv1.OrganizationPolicyRule_ToLabels) basetypes.ObjectValue {
+	vals := map[string]attr.Value{}
+	vals["key"] = types.StringValue(proto.Key)
+	vals["value"] = types.StringValue(proto.Value)
 	return types.ObjectValueMust(
 		GetTypeAttrsForOrganizationPolicyRule_ToLabels(),
-		map[string]attr.Value{
-			"key":   types.StringValue(proto.Key),
-			"value": types.StringValue(proto.Value),
-		},
+		vals,
 	)
 }
 
@@ -10796,13 +11021,13 @@ func GetTypeAttrsForOrganizationPolicyRule_ToPortRanges() map[string]attr.Type {
 }
 
 func ConvertOrganizationPolicyRule_ToPortRangesToObjectValueFromProto(proto *configv1.OrganizationPolicyRule_ToPortRanges) basetypes.ObjectValue {
+	vals := map[string]attr.Value{}
+	vals["from_port"] = types.Int64Value(proto.FromPort)
+	vals["protocol"] = types.StringValue(proto.Protocol)
+	vals["to_port"] = types.Int64Value(proto.ToPort)
 	return types.ObjectValueMust(
 		GetTypeAttrsForOrganizationPolicyRule_ToPortRanges(),
-		map[string]attr.Value{
-			"from_port": types.Int64Value(proto.FromPort),
-			"protocol":  types.StringValue(proto.Protocol),
-			"to_port":   types.Int64Value(proto.ToPort),
-		},
+		vals,
 	)
 }
 
@@ -10834,13 +11059,13 @@ func GetTypeAttrsForTagToLabel_Icon() map[string]attr.Type {
 }
 
 func ConvertTagToLabel_IconToObjectValueFromProto(proto *configv1.TagToLabel_Icon) basetypes.ObjectValue {
+	vals := map[string]attr.Value{}
+	vals["background_color"] = types.StringValue(proto.BackgroundColor)
+	vals["foreground_color"] = types.StringValue(proto.ForegroundColor)
+	vals["name"] = types.StringValue(proto.Name)
 	return types.ObjectValueMust(
 		GetTypeAttrsForTagToLabel_Icon(),
-		map[string]attr.Value{
-			"background_color": types.StringValue(proto.BackgroundColor),
-			"foreground_color": types.StringValue(proto.ForegroundColor),
-			"name":             types.StringValue(proto.Name),
-		},
+		vals,
 	)
 }
 

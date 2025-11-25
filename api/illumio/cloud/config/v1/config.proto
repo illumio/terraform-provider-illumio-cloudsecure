@@ -782,16 +782,25 @@ message UpdateK8SClusterOnboardingCredentialResponse {
 message DeleteK8SClusterOnboardingCredentialRequest {
   string id = 1;
 }
+message OrganizationPolicy_Scopes {
+  message Scope {
+    string label = 1;
+    string type = 2;
+  }
+  repeated Scope scope = 1;
+}
 message CreateOrganizationPolicyRequest {
   optional string description = 2;
   bool enabled = 3;
   string name = 4;
+  repeated OrganizationPolicy_Scopes scopes = 6;
 }
 message CreateOrganizationPolicyResponse {
   string id = 1;
   optional string description = 2;
   bool enabled = 3;
   string name = 4;
+  repeated OrganizationPolicy_Scopes scopes = 6;
 }
 message ReadOrganizationPolicyRequest {
   string id = 1;
@@ -801,12 +810,14 @@ message ReadOrganizationPolicyResponse {
   optional string description = 2;
   bool enabled = 3;
   string name = 4;
+  repeated OrganizationPolicy_Scopes scopes = 6;
 }
 message UpdateOrganizationPolicyRequest {
   string id = 1;
   optional string description = 2;
   bool enabled = 3;
   string name = 4;
+  repeated OrganizationPolicy_Scopes scopes = 6;
   google.protobuf.FieldMask update_mask = 5;
 }
 message UpdateOrganizationPolicyResponse {
@@ -814,6 +825,7 @@ message UpdateOrganizationPolicyResponse {
   optional string description = 2;
   bool enabled = 3;
   string name = 4;
+  repeated OrganizationPolicy_Scopes scopes = 6;
 }
 message DeleteOrganizationPolicyRequest {
   string id = 1;

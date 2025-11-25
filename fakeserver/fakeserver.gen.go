@@ -221,6 +221,7 @@ type OrganizationPolicy struct {
 	Description *string
 	Enabled     bool
 	Name        string
+	Scopes      []*configv1.OrganizationPolicy_Scopes
 }
 
 type OrganizationPolicyRule struct {
@@ -2070,12 +2071,14 @@ func (s *FakeConfigServer) CreateOrganizationPolicy(ctx context.Context, req *co
 		Description: req.Description,
 		Enabled:     req.Enabled,
 		Name:        req.Name,
+		Scopes:      req.Scopes,
 	}
 	resp := &configv1.CreateOrganizationPolicyResponse{
 		Id:          id,
 		Description: model.Description,
 		Enabled:     model.Enabled,
 		Name:        model.Name,
+		Scopes:      model.Scopes,
 	}
 	s.OrganizationPolicyMutex.Lock()
 	s.OrganizationPolicyMap[id] = model
@@ -2106,6 +2109,7 @@ func (s *FakeConfigServer) ReadOrganizationPolicy(ctx context.Context, req *conf
 		Description: model.Description,
 		Enabled:     model.Enabled,
 		Name:        model.Name,
+		Scopes:      model.Scopes,
 	}
 	s.OrganizationPolicyMutex.RUnlock()
 	s.Logger.Info("read resource",
@@ -2142,6 +2146,8 @@ func (s *FakeConfigServer) UpdateOrganizationPolicy(ctx context.Context, req *co
 			model.Enabled = req.Enabled
 		case "name":
 			model.Name = req.Name
+		case "scopes":
+			model.Scopes = req.Scopes
 		default:
 			s.AwsAccountMutex.Unlock()
 			s.Logger.Error("attempted to update resource using invalid update_mask path",
@@ -2159,6 +2165,7 @@ func (s *FakeConfigServer) UpdateOrganizationPolicy(ctx context.Context, req *co
 		Description: model.Description,
 		Enabled:     model.Enabled,
 		Name:        model.Name,
+		Scopes:      model.Scopes,
 	}
 	s.OrganizationPolicyMutex.Unlock()
 	s.Logger.Info("updated resource",
