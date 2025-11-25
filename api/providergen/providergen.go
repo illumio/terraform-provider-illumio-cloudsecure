@@ -6,6 +6,7 @@ package main
 import (
 	"fmt"
 	"io"
+	"strings"
 	"text/template" // nosemgrep: go.lang.security.audit.xss.import-text-template.import-text-template
 
 	"github.com/hashicorp/terraform-plugin-framework/attr"
@@ -291,6 +292,22 @@ type {{.Name}} struct {
 		}
 	{{- else if eq .CollectionElementType nil}}
 		protoValue = dataValue.(types.{{.ModelTypeName}}).Value{{.ModelTypeName}}()
+	{{- else if eq .ModelTypeName "Map"}}
+		{
+			dataElements := dataValue.(types.Map).Elements()
+			protoValues := make({{.ProtoTypeName}}, len(dataElements))
+			for k, dataElement := range dataElements {
+				var dataValue attr.Value = dataElement
+				{{- if eq .CollectionElementType.NestedModel nil}}
+				var protoValue {{.CollectionElementType.ProtoTypeName}}
+				{{- else}}
+				var protoValue *{{.CollectionElementType.ProtoTypeName}}
+				{{- end}}
+				{{- template "convertDataValueToProto" .CollectionElementType}}
+				protoValues[k] = {{if ne .WrapProtoValueElementExpr nil}}{{.WrapProtoValueElementExpr}}{{else}}protoValue{{end}}
+			}
+			protoValue = protoValues
+		}
 	{{- else}}
 		{
 			dataElements := dataValue.(types.{{.ModelTypeName}}).Elements()
@@ -386,6 +403,27 @@ types.{{.ModelTypeName}}Type{ElemType: {{- template "modelDataType" .CollectionE
 		dataValue = Convert{{.NestedModel.Name}}ToObjectValueFromProto(protoValue)
 	{{- else if eq .CollectionElementType nil}}
 		dataValue = types.{{.ModelTypeName}}Value(protoValue)
+	{{- else if eq .ModelTypeName "Map"}}
+		{
+			dataElementType := {{template "modelDataType" .CollectionElementType}}
+			protoElements := protoValue
+			if protoElements == nil {
+				dataValue = types.MapNull(dataElementType)
+			} else {
+				dataValues := make(map[string]attr.Value, len(protoElements))
+				for k, protoElement := range protoElements {
+					{{- if ne .CollectionElementType.NestedModel nil}}
+					var protoValue *{{.CollectionElementType.ProtoTypeName}} = {{if ne .UnwrapProtoValueElementExpr nil}}{{.UnwrapProtoValueElementExpr}}{{else}}protoElement{{end}}
+					{{- else}}
+					var protoValue {{.CollectionElementType.ProtoTypeName}} = {{if ne .UnwrapProtoValueElementExpr nil}}{{.UnwrapProtoValueElementExpr}}{{else}}protoElement{{end}}
+					{{- end}}
+					var dataValue attr.Value
+					{{- template "convertRepeatedProtoValueToData" .CollectionElementType}}
+					dataValues[k] = dataValue
+				}
+				dataValue = types.MapValueMust(dataElementType, dataValues)
+			}
+		}
 	{{- else}}
 		{
 			dataElementType := {{template "modelDataType" .CollectionElementType}}
@@ -678,7 +716,17 @@ func AddResourceToProviderTemplateData(resource *schema.Resource, data *provider
 	for _, attrName := range attrNames {
 		attrSchema := resource.Schema.Attributes[attrName]
 
-		t, err := TerraformAttributeTypeToProtoType("configv1."+resourceMessageName, attrName, attrSchema.GetType(), true)
+		var attrType attr.Type
+		attrType = attrSchema.GetType()
+		if attrType == nil {
+			var err error
+			attrType, err = schema.AttributeToAttrType(attrSchema)
+			if err != nil {
+				return fmt.Errorf("failed to resolve type for attribute %s in resource %s: %w", attrName, resourceMessageName, err)
+			}
+		}
+
+		t, err := TerraformAttributeTypeToProtoType("configv1."+resourceMessageName, attrName, attrType, true)
 		if err != nil {
 			return fmt.Errorf("failed to parse field %s in resource %s: %w", attrName, resourceMessageName, err)
 		}
@@ -815,6 +863,16 @@ func TerraformAttributeTypeToProtoType(nestedMessageNamePrefix, attrName string,
 			WrapProtoValueElementExpr:   wrapProtoValueElementExpr,
 			UnwrapProtoValueElementExpr: unwrapProtoValueElementExpr,
 		}, nil
+	case types.MapType:
+		protoTypeName, elementProtoType, err := TerraformMapAttributeTypeToProtoType(nestedMessageNamePrefix, attrName, v.ElementType())
+		if err != nil {
+			return fieldType{}, err
+		}
+		return fieldType{
+			ModelTypeName:         "Map",
+			ProtoTypeName:         protoTypeName,
+			CollectionElementType: &elementProtoType,
+		}, nil
 	case types.ObjectType:
 		protoTypeName, objModel, err := TerraformObjectAttributeTypeToProtoType(nestedMessageNamePrefix, attrName, v, isRoot)
 		if err != nil {
@@ -835,7 +893,12 @@ func TerraformAttributeTypeToProtoType(nestedMessageNamePrefix, attrName string,
 func TerraformObjectAttributeTypeToProtoType(nestedMessageNamePrefix, attrName string, object types.ObjectType, isRoot bool) (protoTypeName string, nestedModel *model, err error) {
 	protoAttrName := schema.ProtoMessageName(attrName)
 	fields := make([]field, 0, len(object.AttrTypes))
-	wrappedMessageName := nestedMessageNamePrefix + "_" + protoAttrName
+
+	// Determine the wrapper prefix for nested fields within this object.
+	wrappedMessageName := nestedMessageNamePrefix
+	if !strings.HasSuffix(wrappedMessageName, "_"+protoAttrName) {
+		wrappedMessageName = nestedMessageNamePrefix + "_" + protoAttrName
+	}
 
 	attrs := schema.SortObjectAttributes(object.AttrTypes)
 
@@ -855,6 +918,7 @@ func TerraformObjectAttributeTypeToProtoType(nestedMessageNamePrefix, attrName s
 		})
 	}
 
+	// Only append the current attribute name to the type name if this object is the root for this attribute.
 	if isRoot {
 		nestedMessageNamePrefix += "_" + schema.ProtoMessageName(attrName)
 	}
@@ -869,7 +933,11 @@ func TerraformObjectAttributeTypeToProtoType(nestedMessageNamePrefix, attrName s
 
 func TerraformRepeatedAttributeTypeToProtoType(nestedMessageNamePrefix, attrName string, elementType attr.Type) (protoTypeName string, wrapProtoValueElementExpr, unwrapProtoValueElementExpr *string, elemProtoType fieldType, err error) {
 	camelCasedAttrName := schema.ProtoMessageName(attrName)
-	wrapperMessageName := nestedMessageNamePrefix + "_" + camelCasedAttrName
+	// Avoid duplicating the attribute name when nested callers already appended it.
+	wrapperMessageName := nestedMessageNamePrefix
+	if !strings.HasSuffix(wrapperMessageName, "_"+camelCasedAttrName) {
+		wrapperMessageName = nestedMessageNamePrefix + "_" + camelCasedAttrName
+	}
 
 	elemType, err := TerraformAttributeTypeToProtoType(wrapperMessageName, attrName, elementType, false)
 
@@ -887,4 +955,20 @@ func TerraformRepeatedAttributeTypeToProtoType(nestedMessageNamePrefix, attrName
 	default: // The element type is not repeated. Normal case.
 		return "[]" + elemType.ProtoTypeName, nil, nil, elemType, nil
 	}
+}
+
+// TerraformMapAttributeTypeToProtoType converts a Terraform map attribute type into the corresponding Protocol Buffer Golang type.
+func TerraformMapAttributeTypeToProtoType(nestedMessageNamePrefix, attrName string, elementType attr.Type) (protoTypeName string, elemProtoType fieldType, err error) {
+	camelCasedAttrName := schema.ProtoMessageName(attrName)
+	wrapperMessageName := nestedMessageNamePrefix
+	if !strings.HasSuffix(wrapperMessageName, "_"+camelCasedAttrName) {
+		wrapperMessageName = nestedMessageNamePrefix + "_" + camelCasedAttrName
+	}
+
+	elemType, err := TerraformAttributeTypeToProtoType(wrapperMessageName, attrName, elementType, false)
+	if err != nil {
+		return "", fieldType{}, fmt.Errorf("unsupported map element type %s: %w", elementType.String(), err)
+	}
+
+	return "map[string]" + elemType.ProtoTypeName, elemType, nil
 }

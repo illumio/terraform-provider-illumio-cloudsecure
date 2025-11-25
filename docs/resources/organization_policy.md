@@ -31,7 +31,23 @@ resource "illumio-cloudsecure_organization_policy" "example" {
 
 - `description` (String) Description of the CloudSecure organization policy.
 - `enabled` (Boolean) Indicates whether the organization policy is enabled.
+- `scopes` (Attributes Set) A list of lists of policy items. (see [below for nested schema](#nestedatt--scopes))
 
 ### Read-Only
 
 - `id` (String) CloudSecure ID.
+
+<a id="nestedatt--scopes"></a>
+### Nested Schema for `scopes`
+
+Required:
+
+- `scope` (List of Object) Inner list of policy items. (see [below for nested schema](#nestedatt--scopes--scope))
+
+<a id="nestedatt--scopes--scope"></a>
+### Nested Schema for `scopes.scope`
+
+Optional:
+
+- `label` (String)
+- `type` (String)

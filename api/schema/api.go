@@ -4,8 +4,13 @@
 package schema
 
 import (
+	"fmt"
+
 	datasource_schema "github.com/hashicorp/terraform-plugin-framework/datasource/schema"
 	resource_schema "github.com/hashicorp/terraform-plugin-framework/resource/schema"
+
+	"github.com/hashicorp/terraform-plugin-framework/attr"
+	"github.com/hashicorp/terraform-plugin-framework/types"
 )
 
 // Resource is the complete definition of a resource type.
@@ -57,4 +62,56 @@ type Schema interface {
 
 	// DataSources returns the list of data sources provided by the provider sorted by TypeName.
 	DataSources() DataSources
+}
+
+// AttributeToAttrType returns the Terraform attr.Type for the given attribute schema,
+// including for nested attribute variants (ListNestedAttribute, SetNestedAttribute, MapNestedAttribute, SingleNestedAttribute).
+func AttributeToAttrType(attrSchema resource_schema.Attribute) (attr.Type, error) {
+	// If the attribute already exposes a type, return it directly.
+	typeGetter, ok := any(attrSchema).(interface{ GetType() attr.Type })
+	if ok {
+		return typeGetter.GetType(), nil
+	}
+
+	switch v := attrSchema.(type) {
+	case resource_schema.SingleNestedAttribute:
+		objType, err := nestedObjectToObjectType(v.Attributes)
+		if err != nil {
+			return nil, err
+		}
+		return objType, nil
+	case resource_schema.ListNestedAttribute:
+		objType, err := nestedObjectToObjectType(v.NestedObject.Attributes)
+		if err != nil {
+			return nil, err
+		}
+		return types.ListType{ElemType: objType}, nil
+	case resource_schema.SetNestedAttribute:
+		objType, err := nestedObjectToObjectType(v.NestedObject.Attributes)
+		if err != nil {
+			return nil, err
+		}
+		return types.SetType{ElemType: objType}, nil
+	case resource_schema.MapNestedAttribute:
+		objType, err := nestedObjectToObjectType(v.NestedObject.Attributes)
+		if err != nil {
+			return nil, err
+		}
+		return types.MapType{ElemType: objType}, nil
+	default:
+		return nil, fmt.Errorf("unsupported attribute type %T for type inference", attrSchema)
+	}
+}
+
+// nestedObjectToObjectType converts a map of nested attributes into a types.ObjectType, recursively resolving child attribute types.
+func nestedObjectToObjectType(attrs map[string]resource_schema.Attribute) (types.ObjectType, error) {
+	attrTypes := make(map[string]attr.Type, len(attrs))
+	for name, a := range attrs {
+		t, err := AttributeToAttrType(a)
+		if err != nil {
+			return types.ObjectType{}, err
+		}
+		attrTypes[name] = t
+	}
+	return types.ObjectType{AttrTypes: attrTypes}, nil
 }

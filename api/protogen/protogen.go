@@ -156,7 +156,17 @@ func GenerateGRPCAPISpec(dst io.Writer, src schema.Schema, tagger *apiSpecTagger
 		for _, attrName := range attrNames {
 			attrSchema := resource.Schema.Attributes[attrName]
 
-			repeated, t, msg, err := terraformAttributeTypeToProtoType(resourceName, attrName, attrSchema.GetType(), tagger)
+			// Resolve attr.Type for both plain and nested attributes.
+			attrType := attrSchema.GetType()
+			if attrType == nil {
+				var err error
+				attrType, err = schema.AttributeToAttrType(attrSchema)
+				if err != nil {
+					return fmt.Errorf("failed to resolve type for attribute %s in resource %s: %w", attrName, resourceMessageName, err)
+				}
+			}
+
+			repeated, t, msg, err := terraformAttributeTypeToProtoType(resourceName, attrName, attrType, tagger)
 			if err != nil {
 				return fmt.Errorf("failed to parse field %s in resource %s: %w", attrName, resourceMessageName, err)
 			}
@@ -272,6 +282,8 @@ func terraformAttributeTypeToProtoType(messageNamePrefix, attrName string, attrT
 		return terraformRepeatedAttributeTypeToProtoType(messageNamePrefix, attrName, v.ElementType(), tagger)
 	case types.SetType:
 		return terraformRepeatedAttributeTypeToProtoType(messageNamePrefix, attrName, v.ElementType(), tagger)
+	case types.MapType:
+		return terraformMapAttributeTypeToProtoType(messageNamePrefix, attrName, v.ElementType(), tagger)
 	case types.ObjectType:
 		return terraformObjectAttributeTypeToProtoType(messageNamePrefix, attrName, v, tagger)
 
@@ -349,4 +361,17 @@ func terraformRepeatedAttributeTypeToProtoType(messageNamePrefix, attrName strin
 	default: // The element type is not repeated. Normal case.
 		return true, elemProtoType, elemMessage, nil
 	}
+}
+
+// terraformMapAttributeTypeToProtoType converts a Terraform map attribute type into the corresponding Protocol Buffer type.
+func terraformMapAttributeTypeToProtoType(messageNamePrefix, attrName string, elementType attr.Type, tagger *apiSpecTagger) (repeated bool, protoType string, nestedMessage *message, err error) {
+	elemRepeated, elemProtoType, elemMessage, err := terraformAttributeTypeToProtoType(messageNamePrefix, attrName, elementType, tagger)
+	if err != nil {
+		return false, "", nil, fmt.Errorf("unsupported map element type %s: %w", elementType.String(), err)
+	}
+	if elemRepeated {
+		return false, "", nil, fmt.Errorf("unsupported map element type: element itself cannot be repeated")
+	}
+	// In proto3, map<key, value> where key type is string.
+	return false, "map<string, " + elemProtoType + ">", elemMessage, nil
 }
