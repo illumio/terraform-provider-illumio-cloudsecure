@@ -55,7 +55,7 @@ var (
 				},
 				"project_id": StringResourceAttributeWithMode{
 					StringAttribute: resource_schema.StringAttribute{
-						Description: "GCP project ID.",
+						Description: "ID of the GCP project.",
 						Required:    true,
 						PlanModifiers: []planmodifier.String{
 							stringplanmodifier.RequiresReplace(),
