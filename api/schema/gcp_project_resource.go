@@ -33,8 +33,10 @@ var (
 				},
 				"mode": StringResourceAttributeWithMode{
 					StringAttribute: resource_schema.StringAttribute{
-						Description: "Access mode, must be `\"ReadWrite\"` or `\"Read\"`.",
-						Required:    true,
+						Description: "Access mode, must be `\"ReadWrite\"` (default) or `\"Read\"`.",
+						Optional:   true,
+						Computed:    true,
+						Default:     stringdefault.StaticString("ReadWrite"),
 						Validators: []validator.String{
 							stringvalidator.OneOf("ReadWrite", "Read"),
 						},
