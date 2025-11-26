@@ -203,7 +203,6 @@ type K8SCluster struct {
 	ClientId      string
 	ClientSecret  string
 	IllumioRegion string
-	LogLevel      string
 }
 
 type K8SClusterOnboardingCredential struct {
@@ -1809,14 +1808,12 @@ func (s *FakeConfigServer) CreateK8SCluster(ctx context.Context, req *configv1.C
 	model := &K8SCluster{
 		Id:            id,
 		IllumioRegion: req.IllumioRegion,
-		LogLevel:      req.LogLevel,
 	}
 	resp := &configv1.CreateK8SClusterResponse{
 		Id:            id,
 		ClientId:      model.ClientId,
 		ClientSecret:  model.ClientSecret,
 		IllumioRegion: model.IllumioRegion,
-		LogLevel:      model.LogLevel,
 	}
 	s.K8SClusterMutex.Lock()
 	s.K8SClusterMap[id] = model
@@ -1846,7 +1843,6 @@ func (s *FakeConfigServer) ReadK8SCluster(ctx context.Context, req *configv1.Rea
 		Id:            id,
 		ClientId:      model.ClientId,
 		IllumioRegion: model.IllumioRegion,
-		LogLevel:      model.LogLevel,
 	}
 	s.K8SClusterMutex.RUnlock()
 	s.Logger.Info("read resource",
@@ -1877,8 +1873,6 @@ func (s *FakeConfigServer) UpdateK8SCluster(ctx context.Context, req *configv1.U
 	}
 	for _, path := range updateMaskPaths {
 		switch path {
-		case "log_level":
-			model.LogLevel = req.LogLevel
 		default:
 			s.AwsAccountMutex.Unlock()
 			s.Logger.Error("attempted to update resource using invalid update_mask path",
@@ -1895,7 +1889,6 @@ func (s *FakeConfigServer) UpdateK8SCluster(ctx context.Context, req *configv1.U
 		Id:            id,
 		ClientId:      model.ClientId,
 		IllumioRegion: model.IllumioRegion,
-		LogLevel:      model.LogLevel,
 	}
 	s.K8SClusterMutex.Unlock()
 	s.Logger.Info("updated resource",
