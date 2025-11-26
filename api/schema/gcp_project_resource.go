@@ -67,7 +67,7 @@ var (
 				},
 				"service_account_email": StringResourceAttributeWithMode{
 					StringAttribute: resource_schema.StringAttribute{
-						Description: "Service account email that Illumio will impersonate.",
+						Description: "Email address of the service account to be impersonated by CloudSecure to manage this project.",
 						Required:    true,
 						PlanModifiers: []planmodifier.String{
 							stringplanmodifier.RequiresReplace(),
