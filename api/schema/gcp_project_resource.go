@@ -74,24 +74,6 @@ var (
 						Mode: ImmutableAttributeMode,
 					},
 				},
-				"type": StringResourceAttributeWithMode{
-					StringAttribute: resource_schema.StringAttribute{
-						Description: "Onboarding type, fixed to `\"GcpProject\"`.",
-						Computed:    true,
-					},
-					attributeWithMode: attributeWithMode{
-						Mode: ReadOnlyAttributeMode,
-					},
-				},
-				"enable_projects": BoolResourceAttributeWithMode{
-					BoolAttribute: resource_schema.BoolAttribute{
-						Description: "Whether child project onboarding is enabled, fixed to true.",
-						Computed:    true,
-					},
-					attributeWithMode: attributeWithMode{
-						Mode: ReadOnlyAttributeMode,
-					},
-				},
 			},
 		},
 	}

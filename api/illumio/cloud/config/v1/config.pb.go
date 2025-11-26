@@ -6178,12 +6178,10 @@ type CreateGcpProjectResponse struct {
 	state               protoimpl.MessageState `protogen:"open.v1"`
 	Id                  string                 `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
 	AccountId           string                 `protobuf:"bytes,2,opt,name=account_id,json=accountId,proto3" json:"account_id,omitempty"`
-	EnableProjects      bool                   `protobuf:"varint,3,opt,name=enable_projects,json=enableProjects,proto3" json:"enable_projects,omitempty"`
 	Mode                string                 `protobuf:"bytes,4,opt,name=mode,proto3" json:"mode,omitempty"`
 	Name                string                 `protobuf:"bytes,5,opt,name=name,proto3" json:"name,omitempty"`
 	OrganizationId      string                 `protobuf:"bytes,6,opt,name=organization_id,json=organizationId,proto3" json:"organization_id,omitempty"`
 	ServiceAccountEmail string                 `protobuf:"bytes,7,opt,name=service_account_email,json=serviceAccountEmail,proto3" json:"service_account_email,omitempty"`
-	Type                string                 `protobuf:"bytes,8,opt,name=type,proto3" json:"type,omitempty"`
 	unknownFields       protoimpl.UnknownFields
 	sizeCache           protoimpl.SizeCache
 }
@@ -6232,13 +6230,6 @@ func (x *CreateGcpProjectResponse) GetAccountId() string {
 	return ""
 }
 
-func (x *CreateGcpProjectResponse) GetEnableProjects() bool {
-	if x != nil {
-		return x.EnableProjects
-	}
-	return false
-}
-
 func (x *CreateGcpProjectResponse) GetMode() string {
 	if x != nil {
 		return x.Mode
@@ -6263,13 +6254,6 @@ func (x *CreateGcpProjectResponse) GetOrganizationId() string {
 func (x *CreateGcpProjectResponse) GetServiceAccountEmail() string {
 	if x != nil {
 		return x.ServiceAccountEmail
-	}
-	return ""
-}
-
-func (x *CreateGcpProjectResponse) GetType() string {
-	if x != nil {
-		return x.Type
 	}
 	return ""
 }
@@ -6322,12 +6306,10 @@ type ReadGcpProjectResponse struct {
 	state               protoimpl.MessageState `protogen:"open.v1"`
 	Id                  string                 `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
 	AccountId           string                 `protobuf:"bytes,2,opt,name=account_id,json=accountId,proto3" json:"account_id,omitempty"`
-	EnableProjects      bool                   `protobuf:"varint,3,opt,name=enable_projects,json=enableProjects,proto3" json:"enable_projects,omitempty"`
 	Mode                string                 `protobuf:"bytes,4,opt,name=mode,proto3" json:"mode,omitempty"`
 	Name                string                 `protobuf:"bytes,5,opt,name=name,proto3" json:"name,omitempty"`
 	OrganizationId      string                 `protobuf:"bytes,6,opt,name=organization_id,json=organizationId,proto3" json:"organization_id,omitempty"`
 	ServiceAccountEmail string                 `protobuf:"bytes,7,opt,name=service_account_email,json=serviceAccountEmail,proto3" json:"service_account_email,omitempty"`
-	Type                string                 `protobuf:"bytes,8,opt,name=type,proto3" json:"type,omitempty"`
 	unknownFields       protoimpl.UnknownFields
 	sizeCache           protoimpl.SizeCache
 }
@@ -6376,13 +6358,6 @@ func (x *ReadGcpProjectResponse) GetAccountId() string {
 	return ""
 }
 
-func (x *ReadGcpProjectResponse) GetEnableProjects() bool {
-	if x != nil {
-		return x.EnableProjects
-	}
-	return false
-}
-
 func (x *ReadGcpProjectResponse) GetMode() string {
 	if x != nil {
 		return x.Mode
@@ -6407,13 +6382,6 @@ func (x *ReadGcpProjectResponse) GetOrganizationId() string {
 func (x *ReadGcpProjectResponse) GetServiceAccountEmail() string {
 	if x != nil {
 		return x.ServiceAccountEmail
-	}
-	return ""
-}
-
-func (x *ReadGcpProjectResponse) GetType() string {
-	if x != nil {
-		return x.Type
 	}
 	return ""
 }
@@ -6482,12 +6450,10 @@ type UpdateGcpProjectResponse struct {
 	state               protoimpl.MessageState `protogen:"open.v1"`
 	Id                  string                 `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
 	AccountId           string                 `protobuf:"bytes,2,opt,name=account_id,json=accountId,proto3" json:"account_id,omitempty"`
-	EnableProjects      bool                   `protobuf:"varint,3,opt,name=enable_projects,json=enableProjects,proto3" json:"enable_projects,omitempty"`
 	Mode                string                 `protobuf:"bytes,4,opt,name=mode,proto3" json:"mode,omitempty"`
 	Name                string                 `protobuf:"bytes,5,opt,name=name,proto3" json:"name,omitempty"`
 	OrganizationId      string                 `protobuf:"bytes,6,opt,name=organization_id,json=organizationId,proto3" json:"organization_id,omitempty"`
 	ServiceAccountEmail string                 `protobuf:"bytes,7,opt,name=service_account_email,json=serviceAccountEmail,proto3" json:"service_account_email,omitempty"`
-	Type                string                 `protobuf:"bytes,8,opt,name=type,proto3" json:"type,omitempty"`
 	unknownFields       protoimpl.UnknownFields
 	sizeCache           protoimpl.SizeCache
 }
@@ -6536,13 +6502,6 @@ func (x *UpdateGcpProjectResponse) GetAccountId() string {
 	return ""
 }
 
-func (x *UpdateGcpProjectResponse) GetEnableProjects() bool {
-	if x != nil {
-		return x.EnableProjects
-	}
-	return false
-}
-
 func (x *UpdateGcpProjectResponse) GetMode() string {
 	if x != nil {
 		return x.Mode
@@ -6567,13 +6526,6 @@ func (x *UpdateGcpProjectResponse) GetOrganizationId() string {
 func (x *UpdateGcpProjectResponse) GetServiceAccountEmail() string {
 	if x != nil {
 		return x.ServiceAccountEmail
-	}
-	return ""
-}
-
-func (x *UpdateGcpProjectResponse) GetType() string {
-	if x != nil {
-		return x.Type
 	}
 	return ""
 }
@@ -10487,44 +10439,38 @@ const file_illumio_cloud_config_v1_config_proto_rawDesc = "" +
 	"\x04mode\x18\x04 \x01(\tR\x04mode\x12\x12\n" +
 	"\x04name\x18\x05 \x01(\tR\x04name\x12'\n" +
 	"\x0forganization_id\x18\x06 \x01(\tR\x0eorganizationId\x122\n" +
-	"\x15service_account_email\x18\a \x01(\tR\x13serviceAccountEmail\"\x8b\x02\n" +
+	"\x15service_account_email\x18\a \x01(\tR\x13serviceAccountEmail\"\xce\x01\n" +
 	"\x18CreateGcpProjectResponse\x12\x0e\n" +
 	"\x02id\x18\x01 \x01(\tR\x02id\x12\x1d\n" +
 	"\n" +
-	"account_id\x18\x02 \x01(\tR\taccountId\x12'\n" +
-	"\x0fenable_projects\x18\x03 \x01(\bR\x0eenableProjects\x12\x12\n" +
+	"account_id\x18\x02 \x01(\tR\taccountId\x12\x12\n" +
 	"\x04mode\x18\x04 \x01(\tR\x04mode\x12\x12\n" +
 	"\x04name\x18\x05 \x01(\tR\x04name\x12'\n" +
 	"\x0forganization_id\x18\x06 \x01(\tR\x0eorganizationId\x122\n" +
-	"\x15service_account_email\x18\a \x01(\tR\x13serviceAccountEmail\x12\x12\n" +
-	"\x04type\x18\b \x01(\tR\x04type\"'\n" +
+	"\x15service_account_email\x18\a \x01(\tR\x13serviceAccountEmail\"'\n" +
 	"\x15ReadGcpProjectRequest\x12\x0e\n" +
-	"\x02id\x18\x01 \x01(\tR\x02id\"\x89\x02\n" +
+	"\x02id\x18\x01 \x01(\tR\x02id\"\xcc\x01\n" +
 	"\x16ReadGcpProjectResponse\x12\x0e\n" +
 	"\x02id\x18\x01 \x01(\tR\x02id\x12\x1d\n" +
 	"\n" +
-	"account_id\x18\x02 \x01(\tR\taccountId\x12'\n" +
-	"\x0fenable_projects\x18\x03 \x01(\bR\x0eenableProjects\x12\x12\n" +
+	"account_id\x18\x02 \x01(\tR\taccountId\x12\x12\n" +
 	"\x04mode\x18\x04 \x01(\tR\x04mode\x12\x12\n" +
 	"\x04name\x18\x05 \x01(\tR\x04name\x12'\n" +
 	"\x0forganization_id\x18\x06 \x01(\tR\x0eorganizationId\x122\n" +
-	"\x15service_account_email\x18\a \x01(\tR\x13serviceAccountEmail\x12\x12\n" +
-	"\x04type\x18\b \x01(\tR\x04type\"z\n" +
+	"\x15service_account_email\x18\a \x01(\tR\x13serviceAccountEmail\"z\n" +
 	"\x17UpdateGcpProjectRequest\x12\x0e\n" +
 	"\x02id\x18\x01 \x01(\tR\x02id\x12\x12\n" +
 	"\x04name\x18\x05 \x01(\tR\x04name\x12;\n" +
 	"\vupdate_mask\x18\t \x01(\v2\x1a.google.protobuf.FieldMaskR\n" +
-	"updateMask\"\x8b\x02\n" +
+	"updateMask\"\xce\x01\n" +
 	"\x18UpdateGcpProjectResponse\x12\x0e\n" +
 	"\x02id\x18\x01 \x01(\tR\x02id\x12\x1d\n" +
 	"\n" +
-	"account_id\x18\x02 \x01(\tR\taccountId\x12'\n" +
-	"\x0fenable_projects\x18\x03 \x01(\bR\x0eenableProjects\x12\x12\n" +
+	"account_id\x18\x02 \x01(\tR\taccountId\x12\x12\n" +
 	"\x04mode\x18\x04 \x01(\tR\x04mode\x12\x12\n" +
 	"\x04name\x18\x05 \x01(\tR\x04name\x12'\n" +
 	"\x0forganization_id\x18\x06 \x01(\tR\x0eorganizationId\x122\n" +
-	"\x15service_account_email\x18\a \x01(\tR\x13serviceAccountEmail\x12\x12\n" +
-	"\x04type\x18\b \x01(\tR\x04type\")\n" +
+	"\x15service_account_email\x18\a \x01(\tR\x13serviceAccountEmail\")\n" +
 	"\x17DeleteGcpProjectRequest\x12\x0e\n" +
 	"\x02id\x18\x01 \x01(\tR\x02id\"Q\n" +
 	"\x12IpList_IpAddresses\x12\x1c\n" +

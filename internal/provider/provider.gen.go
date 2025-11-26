@@ -3302,12 +3302,10 @@ type DeploymentResourceModel struct {
 type GcpProjectResourceModel struct {
 	Id                  types.String `tfsdk:"id"`
 	AccountId           types.String `tfsdk:"account_id"`
-	EnableProjects      types.Bool   `tfsdk:"enable_projects"`
 	Mode                types.String `tfsdk:"mode"`
 	Name                types.String `tfsdk:"name"`
 	OrganizationId      types.String `tfsdk:"organization_id"`
 	ServiceAccountEmail types.String `tfsdk:"service_account_email"`
-	Type                types.String `tfsdk:"type"`
 }
 
 type IpListResourceModel struct {
@@ -10024,32 +10022,26 @@ func CopyUpdateDeploymentResponse(dst *DeploymentResourceModel, src *configv1.Up
 func CopyCreateGcpProjectResponse(dst *GcpProjectResourceModel, src *configv1.CreateGcpProjectResponse) {
 	dst.Id = types.StringValue(src.Id)
 	dst.AccountId = types.StringValue(src.AccountId)
-	dst.EnableProjects = types.BoolValue(src.EnableProjects)
 	dst.Mode = types.StringValue(src.Mode)
 	dst.Name = types.StringValue(src.Name)
 	dst.OrganizationId = types.StringValue(src.OrganizationId)
 	dst.ServiceAccountEmail = types.StringValue(src.ServiceAccountEmail)
-	dst.Type = types.StringValue(src.Type)
 }
 func CopyReadGcpProjectResponse(dst *GcpProjectResourceModel, src *configv1.ReadGcpProjectResponse) {
 	dst.Id = types.StringValue(src.Id)
 	dst.AccountId = types.StringValue(src.AccountId)
-	dst.EnableProjects = types.BoolValue(src.EnableProjects)
 	dst.Mode = types.StringValue(src.Mode)
 	dst.Name = types.StringValue(src.Name)
 	dst.OrganizationId = types.StringValue(src.OrganizationId)
 	dst.ServiceAccountEmail = types.StringValue(src.ServiceAccountEmail)
-	dst.Type = types.StringValue(src.Type)
 }
 func CopyUpdateGcpProjectResponse(dst *GcpProjectResourceModel, src *configv1.UpdateGcpProjectResponse) {
 	dst.Id = types.StringValue(src.Id)
 	dst.AccountId = types.StringValue(src.AccountId)
-	dst.EnableProjects = types.BoolValue(src.EnableProjects)
 	dst.Mode = types.StringValue(src.Mode)
 	dst.Name = types.StringValue(src.Name)
 	dst.OrganizationId = types.StringValue(src.OrganizationId)
 	dst.ServiceAccountEmail = types.StringValue(src.ServiceAccountEmail)
-	dst.Type = types.StringValue(src.Type)
 }
 func CopyCreateIpListResponse(dst *IpListResourceModel, src *configv1.CreateIpListResponse) {
 	dst.Id = types.StringValue(src.Id)

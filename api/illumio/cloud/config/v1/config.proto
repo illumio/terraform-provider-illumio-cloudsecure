@@ -670,12 +670,10 @@ message CreateGcpProjectRequest {
 message CreateGcpProjectResponse {
   string id = 1;
   string account_id = 2;
-  bool enable_projects = 3;
   string mode = 4;
   string name = 5;
   string organization_id = 6;
   string service_account_email = 7;
-  string type = 8;
 }
 message ReadGcpProjectRequest {
   string id = 1;
@@ -683,12 +681,10 @@ message ReadGcpProjectRequest {
 message ReadGcpProjectResponse {
   string id = 1;
   string account_id = 2;
-  bool enable_projects = 3;
   string mode = 4;
   string name = 5;
   string organization_id = 6;
   string service_account_email = 7;
-  string type = 8;
 }
 message UpdateGcpProjectRequest {
   string id = 1;
@@ -698,12 +694,10 @@ message UpdateGcpProjectRequest {
 message UpdateGcpProjectResponse {
   string id = 1;
   string account_id = 2;
-  bool enable_projects = 3;
   string mode = 4;
   string name = 5;
   string organization_id = 6;
   string service_account_email = 7;
-  string type = 8;
 }
 message DeleteGcpProjectRequest {
   string id = 1;

@@ -51,6 +51,4 @@ resource "illumio-cloudsecure_gcp_project" "managed_gcp_project" {
 
 ### Read-Only
 
-- `enable_projects` (Boolean) Whether child project onboarding is enabled, fixed to true.
 - `id` (String) CloudSecure ID.
-- `type` (String) Onboarding type, fixed to `"GcpProject"`.

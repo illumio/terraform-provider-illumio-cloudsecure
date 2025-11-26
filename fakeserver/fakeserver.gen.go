@@ -196,12 +196,10 @@ type Deployment struct {
 type GcpProject struct {
 	Id                  string
 	AccountId           string
-	EnableProjects      bool
 	Mode                string
 	Name                string
 	OrganizationId      string
 	ServiceAccountEmail string
-	Type                string
 }
 
 type IpList struct {
@@ -1695,12 +1693,10 @@ func (s *FakeConfigServer) CreateGcpProject(ctx context.Context, req *configv1.C
 	resp := &configv1.CreateGcpProjectResponse{
 		Id:                  id,
 		AccountId:           model.AccountId,
-		EnableProjects:      model.EnableProjects,
 		Mode:                model.Mode,
 		Name:                model.Name,
 		OrganizationId:      model.OrganizationId,
 		ServiceAccountEmail: model.ServiceAccountEmail,
-		Type:                model.Type,
 	}
 	s.GcpProjectMutex.Lock()
 	s.GcpProjectMap[id] = model
@@ -1729,12 +1725,10 @@ func (s *FakeConfigServer) ReadGcpProject(ctx context.Context, req *configv1.Rea
 	resp := &configv1.ReadGcpProjectResponse{
 		Id:                  id,
 		AccountId:           model.AccountId,
-		EnableProjects:      model.EnableProjects,
 		Mode:                model.Mode,
 		Name:                model.Name,
 		OrganizationId:      model.OrganizationId,
 		ServiceAccountEmail: model.ServiceAccountEmail,
-		Type:                model.Type,
 	}
 	s.GcpProjectMutex.RUnlock()
 	s.Logger.Info("read resource",
@@ -1782,12 +1776,10 @@ func (s *FakeConfigServer) UpdateGcpProject(ctx context.Context, req *configv1.U
 	resp := &configv1.UpdateGcpProjectResponse{
 		Id:                  id,
 		AccountId:           model.AccountId,
-		EnableProjects:      model.EnableProjects,
 		Mode:                model.Mode,
 		Name:                model.Name,
 		OrganizationId:      model.OrganizationId,
 		ServiceAccountEmail: model.ServiceAccountEmail,
-		Type:                model.Type,
 	}
 	s.GcpProjectMutex.Unlock()
 	s.Logger.Info("updated resource",
