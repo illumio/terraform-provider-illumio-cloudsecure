@@ -6681,6 +6681,7 @@ func (x *DeleteIpListRequest) GetId() string {
 type CreateK8SClusterRequest struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
 	IllumioRegion string                 `protobuf:"bytes,4,opt,name=illumio_region,json=illumioRegion,proto3" json:"illumio_region,omitempty"`
+	LogLevel      string                 `protobuf:"bytes,6,opt,name=log_level,json=logLevel,proto3" json:"log_level,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -6722,12 +6723,20 @@ func (x *CreateK8SClusterRequest) GetIllumioRegion() string {
 	return ""
 }
 
+func (x *CreateK8SClusterRequest) GetLogLevel() string {
+	if x != nil {
+		return x.LogLevel
+	}
+	return ""
+}
+
 type CreateK8SClusterResponse struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
 	Id            string                 `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
 	ClientId      string                 `protobuf:"bytes,2,opt,name=client_id,json=clientId,proto3" json:"client_id,omitempty"`
 	ClientSecret  string                 `protobuf:"bytes,3,opt,name=client_secret,json=clientSecret,proto3" json:"client_secret,omitempty"`
 	IllumioRegion string                 `protobuf:"bytes,4,opt,name=illumio_region,json=illumioRegion,proto3" json:"illumio_region,omitempty"`
+	LogLevel      string                 `protobuf:"bytes,6,opt,name=log_level,json=logLevel,proto3" json:"log_level,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -6790,6 +6799,13 @@ func (x *CreateK8SClusterResponse) GetIllumioRegion() string {
 	return ""
 }
 
+func (x *CreateK8SClusterResponse) GetLogLevel() string {
+	if x != nil {
+		return x.LogLevel
+	}
+	return ""
+}
+
 type ReadK8SClusterRequest struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
 	Id            string                 `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
@@ -6839,6 +6855,7 @@ type ReadK8SClusterResponse struct {
 	Id            string                 `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
 	ClientId      string                 `protobuf:"bytes,2,opt,name=client_id,json=clientId,proto3" json:"client_id,omitempty"`
 	IllumioRegion string                 `protobuf:"bytes,4,opt,name=illumio_region,json=illumioRegion,proto3" json:"illumio_region,omitempty"`
+	LogLevel      string                 `protobuf:"bytes,6,opt,name=log_level,json=logLevel,proto3" json:"log_level,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -6894,9 +6911,17 @@ func (x *ReadK8SClusterResponse) GetIllumioRegion() string {
 	return ""
 }
 
+func (x *ReadK8SClusterResponse) GetLogLevel() string {
+	if x != nil {
+		return x.LogLevel
+	}
+	return ""
+}
+
 type UpdateK8SClusterRequest struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
 	Id            string                 `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
+	LogLevel      string                 `protobuf:"bytes,6,opt,name=log_level,json=logLevel,proto3" json:"log_level,omitempty"`
 	UpdateMask    *fieldmaskpb.FieldMask `protobuf:"bytes,5,opt,name=update_mask,json=updateMask,proto3" json:"update_mask,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
@@ -6939,6 +6964,13 @@ func (x *UpdateK8SClusterRequest) GetId() string {
 	return ""
 }
 
+func (x *UpdateK8SClusterRequest) GetLogLevel() string {
+	if x != nil {
+		return x.LogLevel
+	}
+	return ""
+}
+
 func (x *UpdateK8SClusterRequest) GetUpdateMask() *fieldmaskpb.FieldMask {
 	if x != nil {
 		return x.UpdateMask
@@ -6951,6 +6983,7 @@ type UpdateK8SClusterResponse struct {
 	Id            string                 `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
 	ClientId      string                 `protobuf:"bytes,2,opt,name=client_id,json=clientId,proto3" json:"client_id,omitempty"`
 	IllumioRegion string                 `protobuf:"bytes,4,opt,name=illumio_region,json=illumioRegion,proto3" json:"illumio_region,omitempty"`
+	LogLevel      string                 `protobuf:"bytes,6,opt,name=log_level,json=logLevel,proto3" json:"log_level,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -7002,6 +7035,13 @@ func (x *UpdateK8SClusterResponse) GetClientId() string {
 func (x *UpdateK8SClusterResponse) GetIllumioRegion() string {
 	if x != nil {
 		return x.IllumioRegion
+	}
+	return ""
+}
+
+func (x *UpdateK8SClusterResponse) GetLogLevel() string {
+	if x != nil {
+		return x.LogLevel
 	}
 	return ""
 }
@@ -10004,28 +10044,33 @@ const file_illumio_cloud_config_v1_config_proto_rawDesc = "" +
 	"\x04name\x18\x04 \x01(\tR\x04nameB\x0e\n" +
 	"\f_description\"%\n" +
 	"\x13DeleteIpListRequest\x12\x0e\n" +
-	"\x02id\x18\x01 \x01(\tR\x02id\"@\n" +
+	"\x02id\x18\x01 \x01(\tR\x02id\"]\n" +
 	"\x17CreateK8SClusterRequest\x12%\n" +
-	"\x0eillumio_region\x18\x04 \x01(\tR\rillumioRegion\"\x93\x01\n" +
+	"\x0eillumio_region\x18\x04 \x01(\tR\rillumioRegion\x12\x1b\n" +
+	"\tlog_level\x18\x06 \x01(\tR\blogLevel\"\xb0\x01\n" +
 	"\x18CreateK8SClusterResponse\x12\x0e\n" +
 	"\x02id\x18\x01 \x01(\tR\x02id\x12\x1b\n" +
 	"\tclient_id\x18\x02 \x01(\tR\bclientId\x12#\n" +
 	"\rclient_secret\x18\x03 \x01(\tR\fclientSecret\x12%\n" +
-	"\x0eillumio_region\x18\x04 \x01(\tR\rillumioRegion\"'\n" +
+	"\x0eillumio_region\x18\x04 \x01(\tR\rillumioRegion\x12\x1b\n" +
+	"\tlog_level\x18\x06 \x01(\tR\blogLevel\"'\n" +
 	"\x15ReadK8SClusterRequest\x12\x0e\n" +
-	"\x02id\x18\x01 \x01(\tR\x02id\"l\n" +
+	"\x02id\x18\x01 \x01(\tR\x02id\"\x89\x01\n" +
 	"\x16ReadK8SClusterResponse\x12\x0e\n" +
 	"\x02id\x18\x01 \x01(\tR\x02id\x12\x1b\n" +
 	"\tclient_id\x18\x02 \x01(\tR\bclientId\x12%\n" +
-	"\x0eillumio_region\x18\x04 \x01(\tR\rillumioRegion\"f\n" +
+	"\x0eillumio_region\x18\x04 \x01(\tR\rillumioRegion\x12\x1b\n" +
+	"\tlog_level\x18\x06 \x01(\tR\blogLevel\"\x83\x01\n" +
 	"\x17UpdateK8SClusterRequest\x12\x0e\n" +
-	"\x02id\x18\x01 \x01(\tR\x02id\x12;\n" +
+	"\x02id\x18\x01 \x01(\tR\x02id\x12\x1b\n" +
+	"\tlog_level\x18\x06 \x01(\tR\blogLevel\x12;\n" +
 	"\vupdate_mask\x18\x05 \x01(\v2\x1a.google.protobuf.FieldMaskR\n" +
-	"updateMask\"n\n" +
+	"updateMask\"\x8b\x01\n" +
 	"\x18UpdateK8SClusterResponse\x12\x0e\n" +
 	"\x02id\x18\x01 \x01(\tR\x02id\x12\x1b\n" +
 	"\tclient_id\x18\x02 \x01(\tR\bclientId\x12%\n" +
-	"\x0eillumio_region\x18\x04 \x01(\tR\rillumioRegion\")\n" +
+	"\x0eillumio_region\x18\x04 \x01(\tR\rillumioRegion\x12\x1b\n" +
+	"\tlog_level\x18\x06 \x01(\tR\blogLevel\")\n" +
 	"\x17DeleteK8SClusterRequest\x12\x0e\n" +
 	"\x02id\x18\x01 \x01(\tR\x02id\"\x9f\x01\n" +
 	"+CreateK8SClusterOnboardingCredentialRequest\x12%\n" +
