@@ -6100,11 +6100,11 @@ func (x *DeleteDeploymentRequest) GetId() string {
 
 type CreateGcpProjectRequest struct {
 	state               protoimpl.MessageState `protogen:"open.v1"`
-	Mode                string                 `protobuf:"bytes,4,opt,name=mode,proto3" json:"mode,omitempty"`
-	Name                string                 `protobuf:"bytes,5,opt,name=name,proto3" json:"name,omitempty"`
-	OrganizationId      string                 `protobuf:"bytes,6,opt,name=organization_id,json=organizationId,proto3" json:"organization_id,omitempty"`
-	ProjectId           string                 `protobuf:"bytes,10,opt,name=project_id,json=projectId,proto3" json:"project_id,omitempty"`
-	ServiceAccountEmail string                 `protobuf:"bytes,7,opt,name=service_account_email,json=serviceAccountEmail,proto3" json:"service_account_email,omitempty"`
+	Mode                string                 `protobuf:"bytes,2,opt,name=mode,proto3" json:"mode,omitempty"`
+	Name                string                 `protobuf:"bytes,3,opt,name=name,proto3" json:"name,omitempty"`
+	OrganizationId      string                 `protobuf:"bytes,4,opt,name=organization_id,json=organizationId,proto3" json:"organization_id,omitempty"`
+	ProjectId           string                 `protobuf:"bytes,5,opt,name=project_id,json=projectId,proto3" json:"project_id,omitempty"`
+	ServiceAccountEmail string                 `protobuf:"bytes,6,opt,name=service_account_email,json=serviceAccountEmail,proto3" json:"service_account_email,omitempty"`
 	unknownFields       protoimpl.UnknownFields
 	sizeCache           protoimpl.SizeCache
 }
@@ -6177,11 +6177,11 @@ func (x *CreateGcpProjectRequest) GetServiceAccountEmail() string {
 type CreateGcpProjectResponse struct {
 	state               protoimpl.MessageState `protogen:"open.v1"`
 	Id                  string                 `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
-	Mode                string                 `protobuf:"bytes,4,opt,name=mode,proto3" json:"mode,omitempty"`
-	Name                string                 `protobuf:"bytes,5,opt,name=name,proto3" json:"name,omitempty"`
-	OrganizationId      string                 `protobuf:"bytes,6,opt,name=organization_id,json=organizationId,proto3" json:"organization_id,omitempty"`
-	ProjectId           string                 `protobuf:"bytes,10,opt,name=project_id,json=projectId,proto3" json:"project_id,omitempty"`
-	ServiceAccountEmail string                 `protobuf:"bytes,7,opt,name=service_account_email,json=serviceAccountEmail,proto3" json:"service_account_email,omitempty"`
+	Mode                string                 `protobuf:"bytes,2,opt,name=mode,proto3" json:"mode,omitempty"`
+	Name                string                 `protobuf:"bytes,3,opt,name=name,proto3" json:"name,omitempty"`
+	OrganizationId      string                 `protobuf:"bytes,4,opt,name=organization_id,json=organizationId,proto3" json:"organization_id,omitempty"`
+	ProjectId           string                 `protobuf:"bytes,5,opt,name=project_id,json=projectId,proto3" json:"project_id,omitempty"`
+	ServiceAccountEmail string                 `protobuf:"bytes,6,opt,name=service_account_email,json=serviceAccountEmail,proto3" json:"service_account_email,omitempty"`
 	unknownFields       protoimpl.UnknownFields
 	sizeCache           protoimpl.SizeCache
 }
@@ -6305,11 +6305,11 @@ func (x *ReadGcpProjectRequest) GetId() string {
 type ReadGcpProjectResponse struct {
 	state               protoimpl.MessageState `protogen:"open.v1"`
 	Id                  string                 `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
-	Mode                string                 `protobuf:"bytes,4,opt,name=mode,proto3" json:"mode,omitempty"`
-	Name                string                 `protobuf:"bytes,5,opt,name=name,proto3" json:"name,omitempty"`
-	OrganizationId      string                 `protobuf:"bytes,6,opt,name=organization_id,json=organizationId,proto3" json:"organization_id,omitempty"`
-	ProjectId           string                 `protobuf:"bytes,10,opt,name=project_id,json=projectId,proto3" json:"project_id,omitempty"`
-	ServiceAccountEmail string                 `protobuf:"bytes,7,opt,name=service_account_email,json=serviceAccountEmail,proto3" json:"service_account_email,omitempty"`
+	Mode                string                 `protobuf:"bytes,2,opt,name=mode,proto3" json:"mode,omitempty"`
+	Name                string                 `protobuf:"bytes,3,opt,name=name,proto3" json:"name,omitempty"`
+	OrganizationId      string                 `protobuf:"bytes,4,opt,name=organization_id,json=organizationId,proto3" json:"organization_id,omitempty"`
+	ProjectId           string                 `protobuf:"bytes,5,opt,name=project_id,json=projectId,proto3" json:"project_id,omitempty"`
+	ServiceAccountEmail string                 `protobuf:"bytes,6,opt,name=service_account_email,json=serviceAccountEmail,proto3" json:"service_account_email,omitempty"`
 	unknownFields       protoimpl.UnknownFields
 	sizeCache           protoimpl.SizeCache
 }
@@ -6389,8 +6389,8 @@ func (x *ReadGcpProjectResponse) GetServiceAccountEmail() string {
 type UpdateGcpProjectRequest struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
 	Id            string                 `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
-	Name          string                 `protobuf:"bytes,5,opt,name=name,proto3" json:"name,omitempty"`
-	UpdateMask    *fieldmaskpb.FieldMask `protobuf:"bytes,9,opt,name=update_mask,json=updateMask,proto3" json:"update_mask,omitempty"`
+	Name          string                 `protobuf:"bytes,3,opt,name=name,proto3" json:"name,omitempty"`
+	UpdateMask    *fieldmaskpb.FieldMask `protobuf:"bytes,7,opt,name=update_mask,json=updateMask,proto3" json:"update_mask,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -6449,11 +6449,11 @@ func (x *UpdateGcpProjectRequest) GetUpdateMask() *fieldmaskpb.FieldMask {
 type UpdateGcpProjectResponse struct {
 	state               protoimpl.MessageState `protogen:"open.v1"`
 	Id                  string                 `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
-	Mode                string                 `protobuf:"bytes,4,opt,name=mode,proto3" json:"mode,omitempty"`
-	Name                string                 `protobuf:"bytes,5,opt,name=name,proto3" json:"name,omitempty"`
-	OrganizationId      string                 `protobuf:"bytes,6,opt,name=organization_id,json=organizationId,proto3" json:"organization_id,omitempty"`
-	ProjectId           string                 `protobuf:"bytes,10,opt,name=project_id,json=projectId,proto3" json:"project_id,omitempty"`
-	ServiceAccountEmail string                 `protobuf:"bytes,7,opt,name=service_account_email,json=serviceAccountEmail,proto3" json:"service_account_email,omitempty"`
+	Mode                string                 `protobuf:"bytes,2,opt,name=mode,proto3" json:"mode,omitempty"`
+	Name                string                 `protobuf:"bytes,3,opt,name=name,proto3" json:"name,omitempty"`
+	OrganizationId      string                 `protobuf:"bytes,4,opt,name=organization_id,json=organizationId,proto3" json:"organization_id,omitempty"`
+	ProjectId           string                 `protobuf:"bytes,5,opt,name=project_id,json=projectId,proto3" json:"project_id,omitempty"`
+	ServiceAccountEmail string                 `protobuf:"bytes,6,opt,name=service_account_email,json=serviceAccountEmail,proto3" json:"service_account_email,omitempty"`
 	unknownFields       protoimpl.UnknownFields
 	sizeCache           protoimpl.SizeCache
 }
@@ -10474,47 +10474,43 @@ const file_illumio_cloud_config_v1_config_proto_rawDesc = "" +
 	"\x17DeleteDeploymentRequest\x12\x0e\n" +
 	"\x02id\x18\x01 \x01(\tR\x02id\"\xbd\x01\n" +
 	"\x17CreateGcpProjectRequest\x12\x12\n" +
-	"\x04mode\x18\x04 \x01(\tR\x04mode\x12\x12\n" +
-	"\x04name\x18\x05 \x01(\tR\x04name\x12'\n" +
-	"\x0forganization_id\x18\x06 \x01(\tR\x0eorganizationId\x12\x1d\n" +
+	"\x04mode\x18\x02 \x01(\tR\x04mode\x12\x12\n" +
+	"\x04name\x18\x03 \x01(\tR\x04name\x12'\n" +
+	"\x0forganization_id\x18\x04 \x01(\tR\x0eorganizationId\x12\x1d\n" +
 	"\n" +
-	"project_id\x18\n" +
-	" \x01(\tR\tprojectId\x122\n" +
-	"\x15service_account_email\x18\a \x01(\tR\x13serviceAccountEmail\"\xce\x01\n" +
+	"project_id\x18\x05 \x01(\tR\tprojectId\x122\n" +
+	"\x15service_account_email\x18\x06 \x01(\tR\x13serviceAccountEmail\"\xce\x01\n" +
 	"\x18CreateGcpProjectResponse\x12\x0e\n" +
 	"\x02id\x18\x01 \x01(\tR\x02id\x12\x12\n" +
-	"\x04mode\x18\x04 \x01(\tR\x04mode\x12\x12\n" +
-	"\x04name\x18\x05 \x01(\tR\x04name\x12'\n" +
-	"\x0forganization_id\x18\x06 \x01(\tR\x0eorganizationId\x12\x1d\n" +
+	"\x04mode\x18\x02 \x01(\tR\x04mode\x12\x12\n" +
+	"\x04name\x18\x03 \x01(\tR\x04name\x12'\n" +
+	"\x0forganization_id\x18\x04 \x01(\tR\x0eorganizationId\x12\x1d\n" +
 	"\n" +
-	"project_id\x18\n" +
-	" \x01(\tR\tprojectId\x122\n" +
-	"\x15service_account_email\x18\a \x01(\tR\x13serviceAccountEmail\"'\n" +
+	"project_id\x18\x05 \x01(\tR\tprojectId\x122\n" +
+	"\x15service_account_email\x18\x06 \x01(\tR\x13serviceAccountEmail\"'\n" +
 	"\x15ReadGcpProjectRequest\x12\x0e\n" +
 	"\x02id\x18\x01 \x01(\tR\x02id\"\xcc\x01\n" +
 	"\x16ReadGcpProjectResponse\x12\x0e\n" +
 	"\x02id\x18\x01 \x01(\tR\x02id\x12\x12\n" +
-	"\x04mode\x18\x04 \x01(\tR\x04mode\x12\x12\n" +
-	"\x04name\x18\x05 \x01(\tR\x04name\x12'\n" +
-	"\x0forganization_id\x18\x06 \x01(\tR\x0eorganizationId\x12\x1d\n" +
+	"\x04mode\x18\x02 \x01(\tR\x04mode\x12\x12\n" +
+	"\x04name\x18\x03 \x01(\tR\x04name\x12'\n" +
+	"\x0forganization_id\x18\x04 \x01(\tR\x0eorganizationId\x12\x1d\n" +
 	"\n" +
-	"project_id\x18\n" +
-	" \x01(\tR\tprojectId\x122\n" +
-	"\x15service_account_email\x18\a \x01(\tR\x13serviceAccountEmail\"z\n" +
+	"project_id\x18\x05 \x01(\tR\tprojectId\x122\n" +
+	"\x15service_account_email\x18\x06 \x01(\tR\x13serviceAccountEmail\"z\n" +
 	"\x17UpdateGcpProjectRequest\x12\x0e\n" +
 	"\x02id\x18\x01 \x01(\tR\x02id\x12\x12\n" +
-	"\x04name\x18\x05 \x01(\tR\x04name\x12;\n" +
-	"\vupdate_mask\x18\t \x01(\v2\x1a.google.protobuf.FieldMaskR\n" +
+	"\x04name\x18\x03 \x01(\tR\x04name\x12;\n" +
+	"\vupdate_mask\x18\a \x01(\v2\x1a.google.protobuf.FieldMaskR\n" +
 	"updateMask\"\xce\x01\n" +
 	"\x18UpdateGcpProjectResponse\x12\x0e\n" +
 	"\x02id\x18\x01 \x01(\tR\x02id\x12\x12\n" +
-	"\x04mode\x18\x04 \x01(\tR\x04mode\x12\x12\n" +
-	"\x04name\x18\x05 \x01(\tR\x04name\x12'\n" +
-	"\x0forganization_id\x18\x06 \x01(\tR\x0eorganizationId\x12\x1d\n" +
+	"\x04mode\x18\x02 \x01(\tR\x04mode\x12\x12\n" +
+	"\x04name\x18\x03 \x01(\tR\x04name\x12'\n" +
+	"\x0forganization_id\x18\x04 \x01(\tR\x0eorganizationId\x12\x1d\n" +
 	"\n" +
-	"project_id\x18\n" +
-	" \x01(\tR\tprojectId\x122\n" +
-	"\x15service_account_email\x18\a \x01(\tR\x13serviceAccountEmail\")\n" +
+	"project_id\x18\x05 \x01(\tR\tprojectId\x122\n" +
+	"\x15service_account_email\x18\x06 \x01(\tR\x13serviceAccountEmail\")\n" +
 	"\x17DeleteGcpProjectRequest\x12\x0e\n" +
 	"\x02id\x18\x01 \x01(\tR\x02id\"Q\n" +
 	"\x12IpList_IpAddresses\x12\x1c\n" +
