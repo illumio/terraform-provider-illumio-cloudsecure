@@ -239,6 +239,7 @@ type OrganizationPolicyRule struct {
 	Id                   string
 	Action               string
 	Description          *string
+	Enabled              bool
 	FromIpListIds        []string
 	FromLabels           []*configv1.OrganizationPolicyRule_FromLabels
 	OrganizationPolicyId string
@@ -2342,6 +2343,7 @@ func (s *FakeConfigServer) CreateOrganizationPolicyRule(ctx context.Context, req
 		Id:                   id,
 		Action:               req.Action,
 		Description:          req.Description,
+		Enabled:              req.Enabled,
 		FromIpListIds:        req.FromIpListIds,
 		FromLabels:           req.FromLabels,
 		OrganizationPolicyId: req.OrganizationPolicyId,
@@ -2353,6 +2355,7 @@ func (s *FakeConfigServer) CreateOrganizationPolicyRule(ctx context.Context, req
 		Id:                   id,
 		Action:               model.Action,
 		Description:          model.Description,
+		Enabled:              model.Enabled,
 		FromIpListIds:        model.FromIpListIds,
 		FromLabels:           model.FromLabels,
 		OrganizationPolicyId: model.OrganizationPolicyId,
@@ -2388,6 +2391,7 @@ func (s *FakeConfigServer) ReadOrganizationPolicyRule(ctx context.Context, req *
 		Id:                   id,
 		Action:               model.Action,
 		Description:          model.Description,
+		Enabled:              model.Enabled,
 		FromIpListIds:        model.FromIpListIds,
 		FromLabels:           model.FromLabels,
 		OrganizationPolicyId: model.OrganizationPolicyId,
@@ -2428,6 +2432,8 @@ func (s *FakeConfigServer) UpdateOrganizationPolicyRule(ctx context.Context, req
 			model.Action = req.Action
 		case "description":
 			model.Description = req.Description
+		case "enabled":
+			model.Enabled = req.Enabled
 		case "from_ip_list_ids":
 			model.FromIpListIds = req.FromIpListIds
 		case "from_labels":
@@ -2456,6 +2462,7 @@ func (s *FakeConfigServer) UpdateOrganizationPolicyRule(ctx context.Context, req
 		Id:                   id,
 		Action:               model.Action,
 		Description:          model.Description,
+		Enabled:              model.Enabled,
 		FromIpListIds:        model.FromIpListIds,
 		FromLabels:           model.FromLabels,
 		OrganizationPolicyId: model.OrganizationPolicyId,
