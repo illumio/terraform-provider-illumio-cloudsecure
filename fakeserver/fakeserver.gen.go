@@ -195,10 +195,10 @@ type Deployment struct {
 
 type GcpProject struct {
 	Id                  string
-	AccountId           string
 	Mode                string
 	Name                string
 	OrganizationId      string
+	ProjectId           string
 	ServiceAccountEmail string
 }
 
@@ -1685,18 +1685,18 @@ func (s *FakeConfigServer) CreateGcpProject(ctx context.Context, req *configv1.C
 	id := uuid.New().String()
 	model := &GcpProject{
 		Id:                  id,
-		AccountId:           req.AccountId,
 		Mode:                req.Mode,
 		Name:                req.Name,
 		OrganizationId:      req.OrganizationId,
+		ProjectId:           req.ProjectId,
 		ServiceAccountEmail: req.ServiceAccountEmail,
 	}
 	resp := &configv1.CreateGcpProjectResponse{
 		Id:                  id,
-		AccountId:           model.AccountId,
 		Mode:                model.Mode,
 		Name:                model.Name,
 		OrganizationId:      model.OrganizationId,
+		ProjectId:           model.ProjectId,
 		ServiceAccountEmail: model.ServiceAccountEmail,
 	}
 	s.GcpProjectMutex.Lock()
@@ -1725,10 +1725,10 @@ func (s *FakeConfigServer) ReadGcpProject(ctx context.Context, req *configv1.Rea
 	}
 	resp := &configv1.ReadGcpProjectResponse{
 		Id:                  id,
-		AccountId:           model.AccountId,
 		Mode:                model.Mode,
 		Name:                model.Name,
 		OrganizationId:      model.OrganizationId,
+		ProjectId:           model.ProjectId,
 		ServiceAccountEmail: model.ServiceAccountEmail,
 	}
 	s.GcpProjectMutex.RUnlock()
@@ -1776,10 +1776,10 @@ func (s *FakeConfigServer) UpdateGcpProject(ctx context.Context, req *configv1.U
 	}
 	resp := &configv1.UpdateGcpProjectResponse{
 		Id:                  id,
-		AccountId:           model.AccountId,
 		Mode:                model.Mode,
 		Name:                model.Name,
 		OrganizationId:      model.OrganizationId,
+		ProjectId:           model.ProjectId,
 		ServiceAccountEmail: model.ServiceAccountEmail,
 	}
 	s.GcpProjectMutex.Unlock()

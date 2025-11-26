@@ -24,7 +24,7 @@ Manages a GCP project in CloudSecure.
 */
 
 resource "illumio-cloudsecure_gcp_project" "managed_gcp_project" {
-  account_id            = "123456789012"
+  project_id            = "my-dev-project"
   name                  = "Development GCP Project"
   mode                  = "ReadWrite"
   organization_id       = "organizations/123456789012"
@@ -43,10 +43,10 @@ resource "illumio-cloudsecure_gcp_project" "managed_gcp_project" {
 
 ### Required
 
-- `account_id` (String) GCP account ID.
 - `mode` (String) Access mode, must be `"ReadWrite"` or `"Read"`.
 - `name` (String) Display name for the GCP project.
 - `organization_id` (String) ID of the GCP organization.
+- `project_id` (String) GCP project ID.
 - `service_account_email` (String) Service account email that Illumio will impersonate.
 
 ### Read-Only

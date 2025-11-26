@@ -9,7 +9,7 @@
 */
 
 resource "illumio-cloudsecure_gcp_project" "managed_gcp_project" {
-  account_id            = "123456789012"
+  project_id            = "my-dev-project"
   name                  = "Development GCP Project"
   mode                  = "ReadWrite"
   organization_id       = "organizations/123456789012"

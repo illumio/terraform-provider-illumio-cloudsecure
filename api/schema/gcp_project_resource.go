@@ -19,9 +19,9 @@ var (
 			Description: "Manages a GCP project in CloudSecure.",
 			Attributes: map[string]resource_schema.Attribute{
 				IDFieldName: idAttribute,
-				"account_id": StringResourceAttributeWithMode{
+				"project_id": StringResourceAttributeWithMode{
 					StringAttribute: resource_schema.StringAttribute{
-						Description: "GCP account ID.",
+						Description: "GCP project ID.",
 						Required:    true,
 						PlanModifiers: []planmodifier.String{
 							stringplanmodifier.RequiresReplace(),

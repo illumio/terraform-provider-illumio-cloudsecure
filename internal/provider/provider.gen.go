@@ -3301,10 +3301,10 @@ type DeploymentResourceModel struct {
 
 type GcpProjectResourceModel struct {
 	Id                  types.String `tfsdk:"id"`
-	AccountId           types.String `tfsdk:"account_id"`
 	Mode                types.String `tfsdk:"mode"`
 	Name                types.String `tfsdk:"name"`
 	OrganizationId      types.String `tfsdk:"organization_id"`
+	ProjectId           types.String `tfsdk:"project_id"`
 	ServiceAccountEmail types.String `tfsdk:"service_account_email"`
 }
 
@@ -4718,12 +4718,6 @@ func NewDeleteDeploymentRequest(ctx context.Context, data *DeploymentResourceMod
 func NewCreateGcpProjectRequest(ctx context.Context, data *GcpProjectResourceModel) (*configv1.CreateGcpProjectRequest, diag.Diagnostics) {
 	var diags diag.Diagnostics
 	proto := &configv1.CreateGcpProjectRequest{}
-	if !data.AccountId.IsUnknown() && !data.AccountId.IsNull() {
-		var dataValue attr.Value = data.AccountId
-		var protoValue string
-		protoValue = dataValue.(types.String).ValueString()
-		proto.AccountId = protoValue
-	}
 	if !data.Mode.IsUnknown() && !data.Mode.IsNull() {
 		var dataValue attr.Value = data.Mode
 		var protoValue string
@@ -4741,6 +4735,12 @@ func NewCreateGcpProjectRequest(ctx context.Context, data *GcpProjectResourceMod
 		var protoValue string
 		protoValue = dataValue.(types.String).ValueString()
 		proto.OrganizationId = protoValue
+	}
+	if !data.ProjectId.IsUnknown() && !data.ProjectId.IsNull() {
+		var dataValue attr.Value = data.ProjectId
+		var protoValue string
+		protoValue = dataValue.(types.String).ValueString()
+		proto.ProjectId = protoValue
 	}
 	if !data.ServiceAccountEmail.IsUnknown() && !data.ServiceAccountEmail.IsNull() {
 		var dataValue attr.Value = data.ServiceAccountEmail
@@ -10037,26 +10037,26 @@ func CopyUpdateDeploymentResponse(dst *DeploymentResourceModel, src *configv1.Up
 }
 func CopyCreateGcpProjectResponse(dst *GcpProjectResourceModel, src *configv1.CreateGcpProjectResponse) {
 	dst.Id = types.StringValue(src.Id)
-	dst.AccountId = types.StringValue(src.AccountId)
 	dst.Mode = types.StringValue(src.Mode)
 	dst.Name = types.StringValue(src.Name)
 	dst.OrganizationId = types.StringValue(src.OrganizationId)
+	dst.ProjectId = types.StringValue(src.ProjectId)
 	dst.ServiceAccountEmail = types.StringValue(src.ServiceAccountEmail)
 }
 func CopyReadGcpProjectResponse(dst *GcpProjectResourceModel, src *configv1.ReadGcpProjectResponse) {
 	dst.Id = types.StringValue(src.Id)
-	dst.AccountId = types.StringValue(src.AccountId)
 	dst.Mode = types.StringValue(src.Mode)
 	dst.Name = types.StringValue(src.Name)
 	dst.OrganizationId = types.StringValue(src.OrganizationId)
+	dst.ProjectId = types.StringValue(src.ProjectId)
 	dst.ServiceAccountEmail = types.StringValue(src.ServiceAccountEmail)
 }
 func CopyUpdateGcpProjectResponse(dst *GcpProjectResourceModel, src *configv1.UpdateGcpProjectResponse) {
 	dst.Id = types.StringValue(src.Id)
-	dst.AccountId = types.StringValue(src.AccountId)
 	dst.Mode = types.StringValue(src.Mode)
 	dst.Name = types.StringValue(src.Name)
 	dst.OrganizationId = types.StringValue(src.OrganizationId)
+	dst.ProjectId = types.StringValue(src.ProjectId)
 	dst.ServiceAccountEmail = types.StringValue(src.ServiceAccountEmail)
 }
 func CopyCreateIpListResponse(dst *IpListResourceModel, src *configv1.CreateIpListResponse) {

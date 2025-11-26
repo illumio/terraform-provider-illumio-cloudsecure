@@ -661,18 +661,18 @@ message DeleteDeploymentRequest {
   string id = 1;
 }
 message CreateGcpProjectRequest {
-  string account_id = 2;
   string mode = 4;
   string name = 5;
   string organization_id = 6;
+  string project_id = 10;
   string service_account_email = 7;
 }
 message CreateGcpProjectResponse {
   string id = 1;
-  string account_id = 2;
   string mode = 4;
   string name = 5;
   string organization_id = 6;
+  string project_id = 10;
   string service_account_email = 7;
 }
 message ReadGcpProjectRequest {
@@ -680,10 +680,10 @@ message ReadGcpProjectRequest {
 }
 message ReadGcpProjectResponse {
   string id = 1;
-  string account_id = 2;
   string mode = 4;
   string name = 5;
   string organization_id = 6;
+  string project_id = 10;
   string service_account_email = 7;
 }
 message UpdateGcpProjectRequest {
@@ -693,10 +693,10 @@ message UpdateGcpProjectRequest {
 }
 message UpdateGcpProjectResponse {
   string id = 1;
-  string account_id = 2;
   string mode = 4;
   string name = 5;
   string organization_id = 6;
+  string project_id = 10;
   string service_account_email = 7;
 }
 message DeleteGcpProjectRequest {
