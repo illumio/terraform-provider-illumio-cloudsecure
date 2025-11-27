@@ -42,6 +42,10 @@ service ConfigService {
   rpc ReadDeployment(ReadDeploymentRequest) returns (ReadDeploymentResponse);
   rpc UpdateDeployment(UpdateDeploymentRequest) returns (UpdateDeploymentResponse);
   rpc DeleteDeployment(DeleteDeploymentRequest) returns (google.protobuf.Empty);
+  rpc CreateGcpProject(CreateGcpProjectRequest) returns (CreateGcpProjectResponse);
+  rpc ReadGcpProject(ReadGcpProjectRequest) returns (ReadGcpProjectResponse);
+  rpc UpdateGcpProject(UpdateGcpProjectRequest) returns (UpdateGcpProjectResponse);
+  rpc DeleteGcpProject(DeleteGcpProjectRequest) returns (google.protobuf.Empty);
   rpc CreateIpList(CreateIpListRequest) returns (CreateIpListResponse);
   rpc ReadIpList(ReadIpListRequest) returns (ReadIpListResponse);
   rpc UpdateIpList(UpdateIpListRequest) returns (UpdateIpListResponse);
@@ -654,6 +658,48 @@ message UpdateDeploymentResponse {
   string name = 13;
 }
 message DeleteDeploymentRequest {
+  string id = 1;
+}
+message CreateGcpProjectRequest {
+  string mode = 2;
+  string name = 3;
+  string organization_id = 4;
+  string project_id = 5;
+  string service_account_email = 6;
+}
+message CreateGcpProjectResponse {
+  string id = 1;
+  string mode = 2;
+  string name = 3;
+  string organization_id = 4;
+  string project_id = 5;
+  string service_account_email = 6;
+}
+message ReadGcpProjectRequest {
+  string id = 1;
+}
+message ReadGcpProjectResponse {
+  string id = 1;
+  string mode = 2;
+  string name = 3;
+  string organization_id = 4;
+  string project_id = 5;
+  string service_account_email = 6;
+}
+message UpdateGcpProjectRequest {
+  string id = 1;
+  string name = 3;
+  google.protobuf.FieldMask update_mask = 7;
+}
+message UpdateGcpProjectResponse {
+  string id = 1;
+  string mode = 2;
+  string name = 3;
+  string organization_id = 4;
+  string project_id = 5;
+  string service_account_email = 6;
+}
+message DeleteGcpProjectRequest {
   string id = 1;
 }
 message IpList_IpAddresses {

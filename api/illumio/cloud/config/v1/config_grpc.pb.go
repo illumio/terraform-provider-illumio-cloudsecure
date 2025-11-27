@@ -59,6 +59,10 @@ const (
 	ConfigService_ReadDeployment_FullMethodName                       = "/illumio.cloud.config.v1.ConfigService/ReadDeployment"
 	ConfigService_UpdateDeployment_FullMethodName                     = "/illumio.cloud.config.v1.ConfigService/UpdateDeployment"
 	ConfigService_DeleteDeployment_FullMethodName                     = "/illumio.cloud.config.v1.ConfigService/DeleteDeployment"
+	ConfigService_CreateGcpProject_FullMethodName                     = "/illumio.cloud.config.v1.ConfigService/CreateGcpProject"
+	ConfigService_ReadGcpProject_FullMethodName                       = "/illumio.cloud.config.v1.ConfigService/ReadGcpProject"
+	ConfigService_UpdateGcpProject_FullMethodName                     = "/illumio.cloud.config.v1.ConfigService/UpdateGcpProject"
+	ConfigService_DeleteGcpProject_FullMethodName                     = "/illumio.cloud.config.v1.ConfigService/DeleteGcpProject"
 	ConfigService_CreateIpList_FullMethodName                         = "/illumio.cloud.config.v1.ConfigService/CreateIpList"
 	ConfigService_ReadIpList_FullMethodName                           = "/illumio.cloud.config.v1.ConfigService/ReadIpList"
 	ConfigService_UpdateIpList_FullMethodName                         = "/illumio.cloud.config.v1.ConfigService/UpdateIpList"
@@ -125,6 +129,10 @@ type ConfigServiceClient interface {
 	ReadDeployment(ctx context.Context, in *ReadDeploymentRequest, opts ...grpc.CallOption) (*ReadDeploymentResponse, error)
 	UpdateDeployment(ctx context.Context, in *UpdateDeploymentRequest, opts ...grpc.CallOption) (*UpdateDeploymentResponse, error)
 	DeleteDeployment(ctx context.Context, in *DeleteDeploymentRequest, opts ...grpc.CallOption) (*emptypb.Empty, error)
+	CreateGcpProject(ctx context.Context, in *CreateGcpProjectRequest, opts ...grpc.CallOption) (*CreateGcpProjectResponse, error)
+	ReadGcpProject(ctx context.Context, in *ReadGcpProjectRequest, opts ...grpc.CallOption) (*ReadGcpProjectResponse, error)
+	UpdateGcpProject(ctx context.Context, in *UpdateGcpProjectRequest, opts ...grpc.CallOption) (*UpdateGcpProjectResponse, error)
+	DeleteGcpProject(ctx context.Context, in *DeleteGcpProjectRequest, opts ...grpc.CallOption) (*emptypb.Empty, error)
 	CreateIpList(ctx context.Context, in *CreateIpListRequest, opts ...grpc.CallOption) (*CreateIpListResponse, error)
 	ReadIpList(ctx context.Context, in *ReadIpListRequest, opts ...grpc.CallOption) (*ReadIpListResponse, error)
 	UpdateIpList(ctx context.Context, in *UpdateIpListRequest, opts ...grpc.CallOption) (*UpdateIpListResponse, error)
@@ -519,6 +527,46 @@ func (c *configServiceClient) DeleteDeployment(ctx context.Context, in *DeleteDe
 	return out, nil
 }
 
+func (c *configServiceClient) CreateGcpProject(ctx context.Context, in *CreateGcpProjectRequest, opts ...grpc.CallOption) (*CreateGcpProjectResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(CreateGcpProjectResponse)
+	err := c.cc.Invoke(ctx, ConfigService_CreateGcpProject_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *configServiceClient) ReadGcpProject(ctx context.Context, in *ReadGcpProjectRequest, opts ...grpc.CallOption) (*ReadGcpProjectResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(ReadGcpProjectResponse)
+	err := c.cc.Invoke(ctx, ConfigService_ReadGcpProject_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *configServiceClient) UpdateGcpProject(ctx context.Context, in *UpdateGcpProjectRequest, opts ...grpc.CallOption) (*UpdateGcpProjectResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(UpdateGcpProjectResponse)
+	err := c.cc.Invoke(ctx, ConfigService_UpdateGcpProject_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *configServiceClient) DeleteGcpProject(ctx context.Context, in *DeleteGcpProjectRequest, opts ...grpc.CallOption) (*emptypb.Empty, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(emptypb.Empty)
+	err := c.cc.Invoke(ctx, ConfigService_DeleteGcpProject_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 func (c *configServiceClient) CreateIpList(ctx context.Context, in *CreateIpListRequest, opts ...grpc.CallOption) (*CreateIpListResponse, error) {
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
 	out := new(CreateIpListResponse)
@@ -799,6 +847,10 @@ type ConfigServiceServer interface {
 	ReadDeployment(context.Context, *ReadDeploymentRequest) (*ReadDeploymentResponse, error)
 	UpdateDeployment(context.Context, *UpdateDeploymentRequest) (*UpdateDeploymentResponse, error)
 	DeleteDeployment(context.Context, *DeleteDeploymentRequest) (*emptypb.Empty, error)
+	CreateGcpProject(context.Context, *CreateGcpProjectRequest) (*CreateGcpProjectResponse, error)
+	ReadGcpProject(context.Context, *ReadGcpProjectRequest) (*ReadGcpProjectResponse, error)
+	UpdateGcpProject(context.Context, *UpdateGcpProjectRequest) (*UpdateGcpProjectResponse, error)
+	DeleteGcpProject(context.Context, *DeleteGcpProjectRequest) (*emptypb.Empty, error)
 	CreateIpList(context.Context, *CreateIpListRequest) (*CreateIpListResponse, error)
 	ReadIpList(context.Context, *ReadIpListRequest) (*ReadIpListResponse, error)
 	UpdateIpList(context.Context, *UpdateIpListRequest) (*UpdateIpListResponse, error)
@@ -940,6 +992,18 @@ func (UnimplementedConfigServiceServer) UpdateDeployment(context.Context, *Updat
 }
 func (UnimplementedConfigServiceServer) DeleteDeployment(context.Context, *DeleteDeploymentRequest) (*emptypb.Empty, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method DeleteDeployment not implemented")
+}
+func (UnimplementedConfigServiceServer) CreateGcpProject(context.Context, *CreateGcpProjectRequest) (*CreateGcpProjectResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method CreateGcpProject not implemented")
+}
+func (UnimplementedConfigServiceServer) ReadGcpProject(context.Context, *ReadGcpProjectRequest) (*ReadGcpProjectResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method ReadGcpProject not implemented")
+}
+func (UnimplementedConfigServiceServer) UpdateGcpProject(context.Context, *UpdateGcpProjectRequest) (*UpdateGcpProjectResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method UpdateGcpProject not implemented")
+}
+func (UnimplementedConfigServiceServer) DeleteGcpProject(context.Context, *DeleteGcpProjectRequest) (*emptypb.Empty, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method DeleteGcpProject not implemented")
 }
 func (UnimplementedConfigServiceServer) CreateIpList(context.Context, *CreateIpListRequest) (*CreateIpListResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method CreateIpList not implemented")
@@ -1682,6 +1746,78 @@ func _ConfigService_DeleteDeployment_Handler(srv interface{}, ctx context.Contex
 	return interceptor(ctx, in, info, handler)
 }
 
+func _ConfigService_CreateGcpProject_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(CreateGcpProjectRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(ConfigServiceServer).CreateGcpProject(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: ConfigService_CreateGcpProject_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(ConfigServiceServer).CreateGcpProject(ctx, req.(*CreateGcpProjectRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _ConfigService_ReadGcpProject_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(ReadGcpProjectRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(ConfigServiceServer).ReadGcpProject(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: ConfigService_ReadGcpProject_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(ConfigServiceServer).ReadGcpProject(ctx, req.(*ReadGcpProjectRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _ConfigService_UpdateGcpProject_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(UpdateGcpProjectRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(ConfigServiceServer).UpdateGcpProject(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: ConfigService_UpdateGcpProject_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(ConfigServiceServer).UpdateGcpProject(ctx, req.(*UpdateGcpProjectRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _ConfigService_DeleteGcpProject_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(DeleteGcpProjectRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(ConfigServiceServer).DeleteGcpProject(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: ConfigService_DeleteGcpProject_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(ConfigServiceServer).DeleteGcpProject(ctx, req.(*DeleteGcpProjectRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 func _ConfigService_CreateIpList_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(CreateIpListRequest)
 	if err := dec(in); err != nil {
@@ -2264,6 +2400,22 @@ var ConfigService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "DeleteDeployment",
 			Handler:    _ConfigService_DeleteDeployment_Handler,
+		},
+		{
+			MethodName: "CreateGcpProject",
+			Handler:    _ConfigService_CreateGcpProject_Handler,
+		},
+		{
+			MethodName: "ReadGcpProject",
+			Handler:    _ConfigService_ReadGcpProject_Handler,
+		},
+		{
+			MethodName: "UpdateGcpProject",
+			Handler:    _ConfigService_UpdateGcpProject_Handler,
+		},
+		{
+			MethodName: "DeleteGcpProject",
+			Handler:    _ConfigService_DeleteGcpProject_Handler,
 		},
 		{
 			MethodName: "CreateIpList",
