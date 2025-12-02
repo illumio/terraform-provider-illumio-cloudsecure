@@ -45,8 +45,8 @@ resource "illumio-cloudsecure_gcp_project" "managed_gcp_project" {
 
 - `name` (String) Display name for the GCP project.
 - `organization_id` (String) ID of the GCP organization.
-- `project_id` (String) GCP project ID.
-- `service_account_email` (String) Service account email that Illumio will impersonate.
+- `project_id` (String) ID of the GCP project.
+- `service_account_email` (String) Email address of the service account to be impersonated by CloudSecure to manage this project.
 
 ### Optional
 
