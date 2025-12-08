@@ -38,6 +38,8 @@ type FakeConfigServer struct {
 	AzureSubscriptionMutex              sync.RWMutex
 	DeploymentMap                       map[string]*Deployment
 	DeploymentMutex                     sync.RWMutex
+	GcpFlowLogsStorageAccountMap        map[string]*GcpFlowLogsStorageAccount
+	GcpFlowLogsStorageAccountMutex      sync.RWMutex
 	GcpProjectMap                       map[string]*GcpProject
 	GcpProjectMutex                     sync.RWMutex
 	IpListMap                           map[string]*IpList
@@ -69,6 +71,7 @@ func NewFakeConfigServer(logger *zap.Logger) configv1.ConfigServiceServer {
 		AzureFlowLogsStorageAccountMap:    make(map[string]*AzureFlowLogsStorageAccount),
 		AzureSubscriptionMap:              make(map[string]*AzureSubscription),
 		DeploymentMap:                     make(map[string]*Deployment),
+		GcpFlowLogsStorageAccountMap:      make(map[string]*GcpFlowLogsStorageAccount),
 		GcpProjectMap:                     make(map[string]*GcpProject),
 		IpListMap:                         make(map[string]*IpList),
 		K8SClusterMap:                     make(map[string]*K8SCluster),
@@ -191,6 +194,12 @@ type Deployment struct {
 	AzureVnetIds         []string
 	Description          *string
 	Name                 string
+}
+
+type GcpFlowLogsStorageAccount struct {
+	Id                       string
+	ProjectId                string
+	StorageAccountResourceId string
 }
 
 type GcpProject struct {
@@ -1677,6 +1686,125 @@ func (s *FakeConfigServer) DeleteDeployment(ctx context.Context, req *configv1.D
 	s.Logger.Info("deleted resource",
 		zap.String("type", "deployment"),
 		zap.String("method", "DeleteDeployment"),
+		zap.String("id", id),
+	)
+	return &emptypb.Empty{}, nil
+}
+func (s *FakeConfigServer) CreateGcpFlowLogsStorageAccount(ctx context.Context, req *configv1.CreateGcpFlowLogsStorageAccountRequest) (*configv1.CreateGcpFlowLogsStorageAccountResponse, error) {
+	id := uuid.New().String()
+	model := &GcpFlowLogsStorageAccount{
+		Id:                       id,
+		ProjectId:                req.ProjectId,
+		StorageAccountResourceId: req.StorageAccountResourceId,
+	}
+	resp := &configv1.CreateGcpFlowLogsStorageAccountResponse{
+		Id:                       id,
+		ProjectId:                model.ProjectId,
+		StorageAccountResourceId: model.StorageAccountResourceId,
+	}
+	s.GcpFlowLogsStorageAccountMutex.Lock()
+	s.GcpFlowLogsStorageAccountMap[id] = model
+	s.GcpFlowLogsStorageAccountMutex.Unlock()
+	s.Logger.Info("created resource",
+		zap.String("type", "gcp_flow_logs_storage_account"),
+		zap.String("method", "CreateGcpFlowLogsStorageAccount"),
+		zap.String("id", id),
+	)
+	return resp, nil
+}
+
+func (s *FakeConfigServer) ReadGcpFlowLogsStorageAccount(ctx context.Context, req *configv1.ReadGcpFlowLogsStorageAccountRequest) (*configv1.ReadGcpFlowLogsStorageAccountResponse, error) {
+	id := req.Id
+	s.GcpFlowLogsStorageAccountMutex.RLock()
+	model, found := s.GcpFlowLogsStorageAccountMap[id]
+	if !found {
+		s.GcpFlowLogsStorageAccountMutex.RUnlock()
+		s.Logger.Error("attempted to read resource with unknown id",
+			zap.String("type", "gcp_flow_logs_storage_account"),
+			zap.String("method", "ReadGcpFlowLogsStorageAccount"),
+			zap.String("id", id),
+		)
+		return nil, status.Errorf(codes.NotFound, "no gcp_flow_logs_storage_account found with id %s", id)
+	}
+	resp := &configv1.ReadGcpFlowLogsStorageAccountResponse{
+		Id:                       id,
+		ProjectId:                model.ProjectId,
+		StorageAccountResourceId: model.StorageAccountResourceId,
+	}
+	s.GcpFlowLogsStorageAccountMutex.RUnlock()
+	s.Logger.Info("read resource",
+		zap.String("type", "gcp_flow_logs_storage_account"),
+		zap.String("method", "ReadGcpFlowLogsStorageAccount"),
+		zap.String("id", id),
+	)
+	return resp, nil
+}
+
+func (s *FakeConfigServer) UpdateGcpFlowLogsStorageAccount(ctx context.Context, req *configv1.UpdateGcpFlowLogsStorageAccountRequest) (*configv1.UpdateGcpFlowLogsStorageAccountResponse, error) {
+	id := req.Id
+	s.GcpFlowLogsStorageAccountMutex.Lock()
+	model, found := s.GcpFlowLogsStorageAccountMap[id]
+	if !found {
+		s.GcpFlowLogsStorageAccountMutex.Unlock()
+		s.Logger.Error("attempted to update resource with unknown id",
+			zap.String("type", "gcp_flow_logs_storage_account"),
+			zap.String("method", "UpdateGcpFlowLogsStorageAccount"),
+			zap.String("id", id),
+		)
+		return nil, status.Errorf(codes.NotFound, "no gcp_flow_logs_storage_account found with id %s", id)
+	}
+	updateMask := req.UpdateMask
+	var updateMaskPaths []string
+	if updateMask != nil {
+		updateMaskPaths = updateMask.Paths
+	}
+	for _, path := range updateMaskPaths {
+		switch path {
+		default:
+			s.AwsAccountMutex.Unlock()
+			s.Logger.Error("attempted to update resource using invalid update_mask path",
+				zap.String("type", "gcp_flow_logs_storage_account"),
+				zap.String("method", "UpdateGcpFlowLogsStorageAccount"),
+				zap.String("id", id),
+				zap.Strings("updateMaskPaths", updateMaskPaths),
+				zap.String("invalidUpdateMaskPath", path),
+			)
+			return nil, status.Errorf(codes.InvalidArgument, "invalid path in update_mask for gcp_flow_logs_storage_account: %s", path)
+		}
+	}
+	resp := &configv1.UpdateGcpFlowLogsStorageAccountResponse{
+		Id:                       id,
+		ProjectId:                model.ProjectId,
+		StorageAccountResourceId: model.StorageAccountResourceId,
+	}
+	s.GcpFlowLogsStorageAccountMutex.Unlock()
+	s.Logger.Info("updated resource",
+		zap.String("type", "gcp_flow_logs_storage_account"),
+		zap.String("method", "UpdateGcpFlowLogsStorageAccount"),
+		zap.String("id", id),
+		zap.Strings("updateMaskPaths", updateMaskPaths),
+	)
+	return resp, nil
+}
+
+func (s *FakeConfigServer) DeleteGcpFlowLogsStorageAccount(ctx context.Context, req *configv1.DeleteGcpFlowLogsStorageAccountRequest) (*emptypb.Empty, error) {
+	id := req.Id
+	s.GcpFlowLogsStorageAccountMutex.Lock()
+	_, found := s.GcpFlowLogsStorageAccountMap[id]
+	if !found {
+		s.GcpFlowLogsStorageAccountMutex.Unlock()
+		s.Logger.Error("attempted to delete resource with unknown id",
+			zap.String("type", "gcp_flow_logs_storage_account"),
+			zap.String("method", "DeleteGcpFlowLogsStorageAccount"),
+			zap.String("id", id),
+		)
+		return nil, status.Errorf(codes.NotFound, "no gcp_flow_logs_storage_account found with id %s", id)
+	}
+	delete(s.GcpFlowLogsStorageAccountMap, id)
+	s.GcpFlowLogsStorageAccountMutex.Unlock()
+	s.Logger.Info("deleted resource",
+		zap.String("type", "gcp_flow_logs_storage_account"),
+		zap.String("method", "DeleteGcpFlowLogsStorageAccount"),
 		zap.String("id", id),
 	)
 	return &emptypb.Empty{}, nil

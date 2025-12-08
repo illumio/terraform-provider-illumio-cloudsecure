@@ -42,6 +42,10 @@ service ConfigService {
   rpc ReadDeployment(ReadDeploymentRequest) returns (ReadDeploymentResponse);
   rpc UpdateDeployment(UpdateDeploymentRequest) returns (UpdateDeploymentResponse);
   rpc DeleteDeployment(DeleteDeploymentRequest) returns (google.protobuf.Empty);
+  rpc CreateGcpFlowLogsStorageAccount(CreateGcpFlowLogsStorageAccountRequest) returns (CreateGcpFlowLogsStorageAccountResponse);
+  rpc ReadGcpFlowLogsStorageAccount(ReadGcpFlowLogsStorageAccountRequest) returns (ReadGcpFlowLogsStorageAccountResponse);
+  rpc UpdateGcpFlowLogsStorageAccount(UpdateGcpFlowLogsStorageAccountRequest) returns (UpdateGcpFlowLogsStorageAccountResponse);
+  rpc DeleteGcpFlowLogsStorageAccount(DeleteGcpFlowLogsStorageAccountRequest) returns (google.protobuf.Empty);
   rpc CreateGcpProject(CreateGcpProjectRequest) returns (CreateGcpProjectResponse);
   rpc ReadGcpProject(ReadGcpProjectRequest) returns (ReadGcpProjectResponse);
   rpc UpdateGcpProject(UpdateGcpProjectRequest) returns (UpdateGcpProjectResponse);
@@ -658,6 +662,35 @@ message UpdateDeploymentResponse {
   string name = 13;
 }
 message DeleteDeploymentRequest {
+  string id = 1;
+}
+message CreateGcpFlowLogsStorageAccountRequest {
+  string project_id = 2;
+  string storage_account_resource_id = 3;
+}
+message CreateGcpFlowLogsStorageAccountResponse {
+  string id = 1;
+  string project_id = 2;
+  string storage_account_resource_id = 3;
+}
+message ReadGcpFlowLogsStorageAccountRequest {
+  string id = 1;
+}
+message ReadGcpFlowLogsStorageAccountResponse {
+  string id = 1;
+  string project_id = 2;
+  string storage_account_resource_id = 3;
+}
+message UpdateGcpFlowLogsStorageAccountRequest {
+  string id = 1;
+  google.protobuf.FieldMask update_mask = 4;
+}
+message UpdateGcpFlowLogsStorageAccountResponse {
+  string id = 1;
+  string project_id = 2;
+  string storage_account_resource_id = 3;
+}
+message DeleteGcpFlowLogsStorageAccountRequest {
   string id = 1;
 }
 message CreateGcpProjectRequest {

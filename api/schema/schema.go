@@ -26,6 +26,7 @@ func (c *cloudSecureSchema) Resources() Resources {
 		azureFlowLogsStorageAccountResource,
 		azureSubscriptionResource,
 		deploymentResource,
+		gcpFlowLogsStorageAccountResource,
 		gcpProjectResource,
 		ipListResource,
 		k8sClusterOnboardingCredentialResource,
