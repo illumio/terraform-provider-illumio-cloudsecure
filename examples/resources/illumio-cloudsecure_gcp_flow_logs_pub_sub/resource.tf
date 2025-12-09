@@ -12,3 +12,9 @@ resource "illumio-cloudsecure_gcp_flow_logs_pub_sub" "managed_flow_log_pub_sub" 
   project_id                = "my-gcp-project-id"
   pub_sub_topic_resource_id = "projects/my-gcp-project-id/topics/my-flow-logs-topic"
 }
+
+/*
+  ✅ Recommended Approach: Use the official Illumio CloudSecure module for GCP flow log onboarding.
+  This module standardizes prerequisite IAM roles, project-level permissions,
+  and resource registration for secure, repeatable adoption.
+*/
