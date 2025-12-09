@@ -59,10 +59,10 @@ const (
 	ConfigService_ReadDeployment_FullMethodName                       = "/illumio.cloud.config.v1.ConfigService/ReadDeployment"
 	ConfigService_UpdateDeployment_FullMethodName                     = "/illumio.cloud.config.v1.ConfigService/UpdateDeployment"
 	ConfigService_DeleteDeployment_FullMethodName                     = "/illumio.cloud.config.v1.ConfigService/DeleteDeployment"
-	ConfigService_CreateGcpFlowLogsStorageAccount_FullMethodName      = "/illumio.cloud.config.v1.ConfigService/CreateGcpFlowLogsStorageAccount"
-	ConfigService_ReadGcpFlowLogsStorageAccount_FullMethodName        = "/illumio.cloud.config.v1.ConfigService/ReadGcpFlowLogsStorageAccount"
-	ConfigService_UpdateGcpFlowLogsStorageAccount_FullMethodName      = "/illumio.cloud.config.v1.ConfigService/UpdateGcpFlowLogsStorageAccount"
-	ConfigService_DeleteGcpFlowLogsStorageAccount_FullMethodName      = "/illumio.cloud.config.v1.ConfigService/DeleteGcpFlowLogsStorageAccount"
+	ConfigService_CreateGcpFlowLogsPubSub_FullMethodName              = "/illumio.cloud.config.v1.ConfigService/CreateGcpFlowLogsPubSub"
+	ConfigService_ReadGcpFlowLogsPubSub_FullMethodName                = "/illumio.cloud.config.v1.ConfigService/ReadGcpFlowLogsPubSub"
+	ConfigService_UpdateGcpFlowLogsPubSub_FullMethodName              = "/illumio.cloud.config.v1.ConfigService/UpdateGcpFlowLogsPubSub"
+	ConfigService_DeleteGcpFlowLogsPubSub_FullMethodName              = "/illumio.cloud.config.v1.ConfigService/DeleteGcpFlowLogsPubSub"
 	ConfigService_CreateGcpProject_FullMethodName                     = "/illumio.cloud.config.v1.ConfigService/CreateGcpProject"
 	ConfigService_ReadGcpProject_FullMethodName                       = "/illumio.cloud.config.v1.ConfigService/ReadGcpProject"
 	ConfigService_UpdateGcpProject_FullMethodName                     = "/illumio.cloud.config.v1.ConfigService/UpdateGcpProject"
@@ -133,10 +133,10 @@ type ConfigServiceClient interface {
 	ReadDeployment(ctx context.Context, in *ReadDeploymentRequest, opts ...grpc.CallOption) (*ReadDeploymentResponse, error)
 	UpdateDeployment(ctx context.Context, in *UpdateDeploymentRequest, opts ...grpc.CallOption) (*UpdateDeploymentResponse, error)
 	DeleteDeployment(ctx context.Context, in *DeleteDeploymentRequest, opts ...grpc.CallOption) (*emptypb.Empty, error)
-	CreateGcpFlowLogsStorageAccount(ctx context.Context, in *CreateGcpFlowLogsStorageAccountRequest, opts ...grpc.CallOption) (*CreateGcpFlowLogsStorageAccountResponse, error)
-	ReadGcpFlowLogsStorageAccount(ctx context.Context, in *ReadGcpFlowLogsStorageAccountRequest, opts ...grpc.CallOption) (*ReadGcpFlowLogsStorageAccountResponse, error)
-	UpdateGcpFlowLogsStorageAccount(ctx context.Context, in *UpdateGcpFlowLogsStorageAccountRequest, opts ...grpc.CallOption) (*UpdateGcpFlowLogsStorageAccountResponse, error)
-	DeleteGcpFlowLogsStorageAccount(ctx context.Context, in *DeleteGcpFlowLogsStorageAccountRequest, opts ...grpc.CallOption) (*emptypb.Empty, error)
+	CreateGcpFlowLogsPubSub(ctx context.Context, in *CreateGcpFlowLogsPubSubRequest, opts ...grpc.CallOption) (*CreateGcpFlowLogsPubSubResponse, error)
+	ReadGcpFlowLogsPubSub(ctx context.Context, in *ReadGcpFlowLogsPubSubRequest, opts ...grpc.CallOption) (*ReadGcpFlowLogsPubSubResponse, error)
+	UpdateGcpFlowLogsPubSub(ctx context.Context, in *UpdateGcpFlowLogsPubSubRequest, opts ...grpc.CallOption) (*UpdateGcpFlowLogsPubSubResponse, error)
+	DeleteGcpFlowLogsPubSub(ctx context.Context, in *DeleteGcpFlowLogsPubSubRequest, opts ...grpc.CallOption) (*emptypb.Empty, error)
 	CreateGcpProject(ctx context.Context, in *CreateGcpProjectRequest, opts ...grpc.CallOption) (*CreateGcpProjectResponse, error)
 	ReadGcpProject(ctx context.Context, in *ReadGcpProjectRequest, opts ...grpc.CallOption) (*ReadGcpProjectResponse, error)
 	UpdateGcpProject(ctx context.Context, in *UpdateGcpProjectRequest, opts ...grpc.CallOption) (*UpdateGcpProjectResponse, error)
@@ -535,40 +535,40 @@ func (c *configServiceClient) DeleteDeployment(ctx context.Context, in *DeleteDe
 	return out, nil
 }
 
-func (c *configServiceClient) CreateGcpFlowLogsStorageAccount(ctx context.Context, in *CreateGcpFlowLogsStorageAccountRequest, opts ...grpc.CallOption) (*CreateGcpFlowLogsStorageAccountResponse, error) {
+func (c *configServiceClient) CreateGcpFlowLogsPubSub(ctx context.Context, in *CreateGcpFlowLogsPubSubRequest, opts ...grpc.CallOption) (*CreateGcpFlowLogsPubSubResponse, error) {
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
-	out := new(CreateGcpFlowLogsStorageAccountResponse)
-	err := c.cc.Invoke(ctx, ConfigService_CreateGcpFlowLogsStorageAccount_FullMethodName, in, out, cOpts...)
+	out := new(CreateGcpFlowLogsPubSubResponse)
+	err := c.cc.Invoke(ctx, ConfigService_CreateGcpFlowLogsPubSub_FullMethodName, in, out, cOpts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-func (c *configServiceClient) ReadGcpFlowLogsStorageAccount(ctx context.Context, in *ReadGcpFlowLogsStorageAccountRequest, opts ...grpc.CallOption) (*ReadGcpFlowLogsStorageAccountResponse, error) {
+func (c *configServiceClient) ReadGcpFlowLogsPubSub(ctx context.Context, in *ReadGcpFlowLogsPubSubRequest, opts ...grpc.CallOption) (*ReadGcpFlowLogsPubSubResponse, error) {
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
-	out := new(ReadGcpFlowLogsStorageAccountResponse)
-	err := c.cc.Invoke(ctx, ConfigService_ReadGcpFlowLogsStorageAccount_FullMethodName, in, out, cOpts...)
+	out := new(ReadGcpFlowLogsPubSubResponse)
+	err := c.cc.Invoke(ctx, ConfigService_ReadGcpFlowLogsPubSub_FullMethodName, in, out, cOpts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-func (c *configServiceClient) UpdateGcpFlowLogsStorageAccount(ctx context.Context, in *UpdateGcpFlowLogsStorageAccountRequest, opts ...grpc.CallOption) (*UpdateGcpFlowLogsStorageAccountResponse, error) {
+func (c *configServiceClient) UpdateGcpFlowLogsPubSub(ctx context.Context, in *UpdateGcpFlowLogsPubSubRequest, opts ...grpc.CallOption) (*UpdateGcpFlowLogsPubSubResponse, error) {
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
-	out := new(UpdateGcpFlowLogsStorageAccountResponse)
-	err := c.cc.Invoke(ctx, ConfigService_UpdateGcpFlowLogsStorageAccount_FullMethodName, in, out, cOpts...)
+	out := new(UpdateGcpFlowLogsPubSubResponse)
+	err := c.cc.Invoke(ctx, ConfigService_UpdateGcpFlowLogsPubSub_FullMethodName, in, out, cOpts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-func (c *configServiceClient) DeleteGcpFlowLogsStorageAccount(ctx context.Context, in *DeleteGcpFlowLogsStorageAccountRequest, opts ...grpc.CallOption) (*emptypb.Empty, error) {
+func (c *configServiceClient) DeleteGcpFlowLogsPubSub(ctx context.Context, in *DeleteGcpFlowLogsPubSubRequest, opts ...grpc.CallOption) (*emptypb.Empty, error) {
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
 	out := new(emptypb.Empty)
-	err := c.cc.Invoke(ctx, ConfigService_DeleteGcpFlowLogsStorageAccount_FullMethodName, in, out, cOpts...)
+	err := c.cc.Invoke(ctx, ConfigService_DeleteGcpFlowLogsPubSub_FullMethodName, in, out, cOpts...)
 	if err != nil {
 		return nil, err
 	}
@@ -895,10 +895,10 @@ type ConfigServiceServer interface {
 	ReadDeployment(context.Context, *ReadDeploymentRequest) (*ReadDeploymentResponse, error)
 	UpdateDeployment(context.Context, *UpdateDeploymentRequest) (*UpdateDeploymentResponse, error)
 	DeleteDeployment(context.Context, *DeleteDeploymentRequest) (*emptypb.Empty, error)
-	CreateGcpFlowLogsStorageAccount(context.Context, *CreateGcpFlowLogsStorageAccountRequest) (*CreateGcpFlowLogsStorageAccountResponse, error)
-	ReadGcpFlowLogsStorageAccount(context.Context, *ReadGcpFlowLogsStorageAccountRequest) (*ReadGcpFlowLogsStorageAccountResponse, error)
-	UpdateGcpFlowLogsStorageAccount(context.Context, *UpdateGcpFlowLogsStorageAccountRequest) (*UpdateGcpFlowLogsStorageAccountResponse, error)
-	DeleteGcpFlowLogsStorageAccount(context.Context, *DeleteGcpFlowLogsStorageAccountRequest) (*emptypb.Empty, error)
+	CreateGcpFlowLogsPubSub(context.Context, *CreateGcpFlowLogsPubSubRequest) (*CreateGcpFlowLogsPubSubResponse, error)
+	ReadGcpFlowLogsPubSub(context.Context, *ReadGcpFlowLogsPubSubRequest) (*ReadGcpFlowLogsPubSubResponse, error)
+	UpdateGcpFlowLogsPubSub(context.Context, *UpdateGcpFlowLogsPubSubRequest) (*UpdateGcpFlowLogsPubSubResponse, error)
+	DeleteGcpFlowLogsPubSub(context.Context, *DeleteGcpFlowLogsPubSubRequest) (*emptypb.Empty, error)
 	CreateGcpProject(context.Context, *CreateGcpProjectRequest) (*CreateGcpProjectResponse, error)
 	ReadGcpProject(context.Context, *ReadGcpProjectRequest) (*ReadGcpProjectResponse, error)
 	UpdateGcpProject(context.Context, *UpdateGcpProjectRequest) (*UpdateGcpProjectResponse, error)
@@ -1045,17 +1045,17 @@ func (UnimplementedConfigServiceServer) UpdateDeployment(context.Context, *Updat
 func (UnimplementedConfigServiceServer) DeleteDeployment(context.Context, *DeleteDeploymentRequest) (*emptypb.Empty, error) {
 	return nil, status.Error(codes.Unimplemented, "method DeleteDeployment not implemented")
 }
-func (UnimplementedConfigServiceServer) CreateGcpFlowLogsStorageAccount(context.Context, *CreateGcpFlowLogsStorageAccountRequest) (*CreateGcpFlowLogsStorageAccountResponse, error) {
-	return nil, status.Error(codes.Unimplemented, "method CreateGcpFlowLogsStorageAccount not implemented")
+func (UnimplementedConfigServiceServer) CreateGcpFlowLogsPubSub(context.Context, *CreateGcpFlowLogsPubSubRequest) (*CreateGcpFlowLogsPubSubResponse, error) {
+	return nil, status.Error(codes.Unimplemented, "method CreateGcpFlowLogsPubSub not implemented")
 }
-func (UnimplementedConfigServiceServer) ReadGcpFlowLogsStorageAccount(context.Context, *ReadGcpFlowLogsStorageAccountRequest) (*ReadGcpFlowLogsStorageAccountResponse, error) {
-	return nil, status.Error(codes.Unimplemented, "method ReadGcpFlowLogsStorageAccount not implemented")
+func (UnimplementedConfigServiceServer) ReadGcpFlowLogsPubSub(context.Context, *ReadGcpFlowLogsPubSubRequest) (*ReadGcpFlowLogsPubSubResponse, error) {
+	return nil, status.Error(codes.Unimplemented, "method ReadGcpFlowLogsPubSub not implemented")
 }
-func (UnimplementedConfigServiceServer) UpdateGcpFlowLogsStorageAccount(context.Context, *UpdateGcpFlowLogsStorageAccountRequest) (*UpdateGcpFlowLogsStorageAccountResponse, error) {
-	return nil, status.Error(codes.Unimplemented, "method UpdateGcpFlowLogsStorageAccount not implemented")
+func (UnimplementedConfigServiceServer) UpdateGcpFlowLogsPubSub(context.Context, *UpdateGcpFlowLogsPubSubRequest) (*UpdateGcpFlowLogsPubSubResponse, error) {
+	return nil, status.Error(codes.Unimplemented, "method UpdateGcpFlowLogsPubSub not implemented")
 }
-func (UnimplementedConfigServiceServer) DeleteGcpFlowLogsStorageAccount(context.Context, *DeleteGcpFlowLogsStorageAccountRequest) (*emptypb.Empty, error) {
-	return nil, status.Error(codes.Unimplemented, "method DeleteGcpFlowLogsStorageAccount not implemented")
+func (UnimplementedConfigServiceServer) DeleteGcpFlowLogsPubSub(context.Context, *DeleteGcpFlowLogsPubSubRequest) (*emptypb.Empty, error) {
+	return nil, status.Error(codes.Unimplemented, "method DeleteGcpFlowLogsPubSub not implemented")
 }
 func (UnimplementedConfigServiceServer) CreateGcpProject(context.Context, *CreateGcpProjectRequest) (*CreateGcpProjectResponse, error) {
 	return nil, status.Error(codes.Unimplemented, "method CreateGcpProject not implemented")
@@ -1810,74 +1810,74 @@ func _ConfigService_DeleteDeployment_Handler(srv interface{}, ctx context.Contex
 	return interceptor(ctx, in, info, handler)
 }
 
-func _ConfigService_CreateGcpFlowLogsStorageAccount_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(CreateGcpFlowLogsStorageAccountRequest)
+func _ConfigService_CreateGcpFlowLogsPubSub_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(CreateGcpFlowLogsPubSubRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(ConfigServiceServer).CreateGcpFlowLogsStorageAccount(ctx, in)
+		return srv.(ConfigServiceServer).CreateGcpFlowLogsPubSub(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: ConfigService_CreateGcpFlowLogsStorageAccount_FullMethodName,
+		FullMethod: ConfigService_CreateGcpFlowLogsPubSub_FullMethodName,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(ConfigServiceServer).CreateGcpFlowLogsStorageAccount(ctx, req.(*CreateGcpFlowLogsStorageAccountRequest))
+		return srv.(ConfigServiceServer).CreateGcpFlowLogsPubSub(ctx, req.(*CreateGcpFlowLogsPubSubRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-func _ConfigService_ReadGcpFlowLogsStorageAccount_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(ReadGcpFlowLogsStorageAccountRequest)
+func _ConfigService_ReadGcpFlowLogsPubSub_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(ReadGcpFlowLogsPubSubRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(ConfigServiceServer).ReadGcpFlowLogsStorageAccount(ctx, in)
+		return srv.(ConfigServiceServer).ReadGcpFlowLogsPubSub(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: ConfigService_ReadGcpFlowLogsStorageAccount_FullMethodName,
+		FullMethod: ConfigService_ReadGcpFlowLogsPubSub_FullMethodName,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(ConfigServiceServer).ReadGcpFlowLogsStorageAccount(ctx, req.(*ReadGcpFlowLogsStorageAccountRequest))
+		return srv.(ConfigServiceServer).ReadGcpFlowLogsPubSub(ctx, req.(*ReadGcpFlowLogsPubSubRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-func _ConfigService_UpdateGcpFlowLogsStorageAccount_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(UpdateGcpFlowLogsStorageAccountRequest)
+func _ConfigService_UpdateGcpFlowLogsPubSub_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(UpdateGcpFlowLogsPubSubRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(ConfigServiceServer).UpdateGcpFlowLogsStorageAccount(ctx, in)
+		return srv.(ConfigServiceServer).UpdateGcpFlowLogsPubSub(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: ConfigService_UpdateGcpFlowLogsStorageAccount_FullMethodName,
+		FullMethod: ConfigService_UpdateGcpFlowLogsPubSub_FullMethodName,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(ConfigServiceServer).UpdateGcpFlowLogsStorageAccount(ctx, req.(*UpdateGcpFlowLogsStorageAccountRequest))
+		return srv.(ConfigServiceServer).UpdateGcpFlowLogsPubSub(ctx, req.(*UpdateGcpFlowLogsPubSubRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-func _ConfigService_DeleteGcpFlowLogsStorageAccount_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(DeleteGcpFlowLogsStorageAccountRequest)
+func _ConfigService_DeleteGcpFlowLogsPubSub_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(DeleteGcpFlowLogsPubSubRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(ConfigServiceServer).DeleteGcpFlowLogsStorageAccount(ctx, in)
+		return srv.(ConfigServiceServer).DeleteGcpFlowLogsPubSub(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: ConfigService_DeleteGcpFlowLogsStorageAccount_FullMethodName,
+		FullMethod: ConfigService_DeleteGcpFlowLogsPubSub_FullMethodName,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(ConfigServiceServer).DeleteGcpFlowLogsStorageAccount(ctx, req.(*DeleteGcpFlowLogsStorageAccountRequest))
+		return srv.(ConfigServiceServer).DeleteGcpFlowLogsPubSub(ctx, req.(*DeleteGcpFlowLogsPubSubRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -2538,20 +2538,20 @@ var ConfigService_ServiceDesc = grpc.ServiceDesc{
 			Handler:    _ConfigService_DeleteDeployment_Handler,
 		},
 		{
-			MethodName: "CreateGcpFlowLogsStorageAccount",
-			Handler:    _ConfigService_CreateGcpFlowLogsStorageAccount_Handler,
+			MethodName: "CreateGcpFlowLogsPubSub",
+			Handler:    _ConfigService_CreateGcpFlowLogsPubSub_Handler,
 		},
 		{
-			MethodName: "ReadGcpFlowLogsStorageAccount",
-			Handler:    _ConfigService_ReadGcpFlowLogsStorageAccount_Handler,
+			MethodName: "ReadGcpFlowLogsPubSub",
+			Handler:    _ConfigService_ReadGcpFlowLogsPubSub_Handler,
 		},
 		{
-			MethodName: "UpdateGcpFlowLogsStorageAccount",
-			Handler:    _ConfigService_UpdateGcpFlowLogsStorageAccount_Handler,
+			MethodName: "UpdateGcpFlowLogsPubSub",
+			Handler:    _ConfigService_UpdateGcpFlowLogsPubSub_Handler,
 		},
 		{
-			MethodName: "DeleteGcpFlowLogsStorageAccount",
-			Handler:    _ConfigService_DeleteGcpFlowLogsStorageAccount_Handler,
+			MethodName: "DeleteGcpFlowLogsPubSub",
+			Handler:    _ConfigService_DeleteGcpFlowLogsPubSub_Handler,
 		},
 		{
 			MethodName: "CreateGcpProject",

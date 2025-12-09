@@ -42,10 +42,10 @@ service ConfigService {
   rpc ReadDeployment(ReadDeploymentRequest) returns (ReadDeploymentResponse);
   rpc UpdateDeployment(UpdateDeploymentRequest) returns (UpdateDeploymentResponse);
   rpc DeleteDeployment(DeleteDeploymentRequest) returns (google.protobuf.Empty);
-  rpc CreateGcpFlowLogsStorageAccount(CreateGcpFlowLogsStorageAccountRequest) returns (CreateGcpFlowLogsStorageAccountResponse);
-  rpc ReadGcpFlowLogsStorageAccount(ReadGcpFlowLogsStorageAccountRequest) returns (ReadGcpFlowLogsStorageAccountResponse);
-  rpc UpdateGcpFlowLogsStorageAccount(UpdateGcpFlowLogsStorageAccountRequest) returns (UpdateGcpFlowLogsStorageAccountResponse);
-  rpc DeleteGcpFlowLogsStorageAccount(DeleteGcpFlowLogsStorageAccountRequest) returns (google.protobuf.Empty);
+  rpc CreateGcpFlowLogsPubSub(CreateGcpFlowLogsPubSubRequest) returns (CreateGcpFlowLogsPubSubResponse);
+  rpc ReadGcpFlowLogsPubSub(ReadGcpFlowLogsPubSubRequest) returns (ReadGcpFlowLogsPubSubResponse);
+  rpc UpdateGcpFlowLogsPubSub(UpdateGcpFlowLogsPubSubRequest) returns (UpdateGcpFlowLogsPubSubResponse);
+  rpc DeleteGcpFlowLogsPubSub(DeleteGcpFlowLogsPubSubRequest) returns (google.protobuf.Empty);
   rpc CreateGcpProject(CreateGcpProjectRequest) returns (CreateGcpProjectResponse);
   rpc ReadGcpProject(ReadGcpProjectRequest) returns (ReadGcpProjectResponse);
   rpc UpdateGcpProject(UpdateGcpProjectRequest) returns (UpdateGcpProjectResponse);
@@ -664,33 +664,33 @@ message UpdateDeploymentResponse {
 message DeleteDeploymentRequest {
   string id = 1;
 }
-message CreateGcpFlowLogsStorageAccountRequest {
+message CreateGcpFlowLogsPubSubRequest {
   string project_id = 2;
-  string storage_account_resource_id = 3;
+  string pub_sub_topic_resource_id = 5;
 }
-message CreateGcpFlowLogsStorageAccountResponse {
+message CreateGcpFlowLogsPubSubResponse {
   string id = 1;
   string project_id = 2;
-  string storage_account_resource_id = 3;
+  string pub_sub_topic_resource_id = 5;
 }
-message ReadGcpFlowLogsStorageAccountRequest {
+message ReadGcpFlowLogsPubSubRequest {
   string id = 1;
 }
-message ReadGcpFlowLogsStorageAccountResponse {
+message ReadGcpFlowLogsPubSubResponse {
   string id = 1;
   string project_id = 2;
-  string storage_account_resource_id = 3;
+  string pub_sub_topic_resource_id = 5;
 }
-message UpdateGcpFlowLogsStorageAccountRequest {
+message UpdateGcpFlowLogsPubSubRequest {
   string id = 1;
   google.protobuf.FieldMask update_mask = 4;
 }
-message UpdateGcpFlowLogsStorageAccountResponse {
+message UpdateGcpFlowLogsPubSubResponse {
   string id = 1;
   string project_id = 2;
-  string storage_account_resource_id = 3;
+  string pub_sub_topic_resource_id = 5;
 }
-message DeleteGcpFlowLogsStorageAccountRequest {
+message DeleteGcpFlowLogsPubSubRequest {
   string id = 1;
 }
 message CreateGcpProjectRequest {

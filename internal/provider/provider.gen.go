@@ -56,8 +56,8 @@ func (p *Provider) Resources(ctx context.Context) []func() resource.Resource {
 			resp = append(resp, func() resource.Resource { return NewAzureSubscriptionResource(r.Schema) })
 		case "deployment":
 			resp = append(resp, func() resource.Resource { return NewDeploymentResource(r.Schema) })
-		case "gcp_flow_logs_storage_account":
-			resp = append(resp, func() resource.Resource { return NewGcpFlowLogsStorageAccountResource(r.Schema) })
+		case "gcp_flow_logs_pub_sub":
+			resp = append(resp, func() resource.Resource { return NewGcpFlowLogsPubSubResource(r.Schema) })
 		case "gcp_project":
 			resp = append(resp, func() resource.Resource { return NewGcpProjectResource(r.Schema) })
 		case "ip_list":
@@ -1829,34 +1829,34 @@ func (r *DeploymentResource) ImportState(ctx context.Context, req resource.Impor
 	// TODO
 }
 
-// GcpFlowLogsStorageAccountResource implements the gcp_flow_logs_storage_account resource.
-type GcpFlowLogsStorageAccountResource struct {
-	// schema is the schema of the gcp_flow_logs_storage_account resource.
+// GcpFlowLogsPubSubResource implements the gcp_flow_logs_pub_sub resource.
+type GcpFlowLogsPubSubResource struct {
+	// schema is the schema of the gcp_flow_logs_pub_sub resource.
 	schema resource_schema.Schema
 
 	// providerData is the provider configuration.
 	config ProviderData
 }
 
-var _ resource.ResourceWithConfigure = &GcpFlowLogsStorageAccountResource{}
-var _ resource.ResourceWithImportState = &GcpFlowLogsStorageAccountResource{}
+var _ resource.ResourceWithConfigure = &GcpFlowLogsPubSubResource{}
+var _ resource.ResourceWithImportState = &GcpFlowLogsPubSubResource{}
 
-// NewGcpFlowLogsStorageAccountResource returns a new gcp_flow_logs_storage_account resource.
-func NewGcpFlowLogsStorageAccountResource(schema resource_schema.Schema) resource.Resource {
-	return &GcpFlowLogsStorageAccountResource{
+// NewGcpFlowLogsPubSubResource returns a new gcp_flow_logs_pub_sub resource.
+func NewGcpFlowLogsPubSubResource(schema resource_schema.Schema) resource.Resource {
+	return &GcpFlowLogsPubSubResource{
 		schema: schema,
 	}
 }
 
-func (r *GcpFlowLogsStorageAccountResource) Metadata(ctx context.Context, req resource.MetadataRequest, resp *resource.MetadataResponse) {
-	resp.TypeName = req.ProviderTypeName + "_gcp_flow_logs_storage_account"
+func (r *GcpFlowLogsPubSubResource) Metadata(ctx context.Context, req resource.MetadataRequest, resp *resource.MetadataResponse) {
+	resp.TypeName = req.ProviderTypeName + "_gcp_flow_logs_pub_sub"
 }
 
-func (r *GcpFlowLogsStorageAccountResource) Schema(ctx context.Context, req resource.SchemaRequest, resp *resource.SchemaResponse) {
+func (r *GcpFlowLogsPubSubResource) Schema(ctx context.Context, req resource.SchemaRequest, resp *resource.SchemaResponse) {
 	resp.Schema = r.schema
 }
 
-func (r *GcpFlowLogsStorageAccountResource) Configure(ctx context.Context, req resource.ConfigureRequest, resp *resource.ConfigureResponse) {
+func (r *GcpFlowLogsPubSubResource) Configure(ctx context.Context, req resource.ConfigureRequest, resp *resource.ConfigureResponse) {
 	if req.ProviderData == nil {
 		return
 	}
@@ -1874,78 +1874,78 @@ func (r *GcpFlowLogsStorageAccountResource) Configure(ctx context.Context, req r
 	r.config = providerData
 }
 
-func (r *GcpFlowLogsStorageAccountResource) Create(ctx context.Context, req resource.CreateRequest, resp *resource.CreateResponse) {
-	var data GcpFlowLogsStorageAccountResourceModel
+func (r *GcpFlowLogsPubSubResource) Create(ctx context.Context, req resource.CreateRequest, resp *resource.CreateResponse) {
+	var data GcpFlowLogsPubSubResourceModel
 
 	resp.Diagnostics.Append(req.Plan.Get(ctx, &data)...)
 	if resp.Diagnostics.HasError() {
 		return
 	}
 
-	protoReq, diagReq := NewCreateGcpFlowLogsStorageAccountRequest(ctx, &data)
+	protoReq, diagReq := NewCreateGcpFlowLogsPubSubRequest(ctx, &data)
 	resp.Diagnostics.Append(diagReq...)
 	if resp.Diagnostics.HasError() {
 		return
 	}
 
-	tflog.Trace(ctx, "creating a resource", map[string]any{"type": "gcp_flow_logs_storage_account"})
+	tflog.Trace(ctx, "creating a resource", map[string]any{"type": "gcp_flow_logs_pub_sub"})
 
 	rpcCtx, rpcCancel := context.WithTimeout(ctx, r.config.RequestTimeout())
-	protoResp, err := r.config.Client().CreateGcpFlowLogsStorageAccount(rpcCtx, protoReq)
+	protoResp, err := r.config.Client().CreateGcpFlowLogsPubSub(rpcCtx, protoReq)
 	rpcCancel()
 	if err != nil {
-		resp.Diagnostics.AddError("Config API Error", fmt.Sprintf("Unable to create gcp_flow_logs_storage_account, got error: %s", err))
+		resp.Diagnostics.AddError("Config API Error", fmt.Sprintf("Unable to create gcp_flow_logs_pub_sub, got error: %s", err))
 		return
 	}
 
-	CopyCreateGcpFlowLogsStorageAccountResponse(&data, protoResp)
+	CopyCreateGcpFlowLogsPubSubResponse(&data, protoResp)
 
-	tflog.Trace(ctx, "created a resource", map[string]any{"type": "gcp_flow_logs_storage_account", "id": protoResp.Id})
+	tflog.Trace(ctx, "created a resource", map[string]any{"type": "gcp_flow_logs_pub_sub", "id": protoResp.Id})
 
 	resp.Diagnostics.Append(resp.State.Set(ctx, &data)...)
 }
 
-func (r *GcpFlowLogsStorageAccountResource) Read(ctx context.Context, req resource.ReadRequest, resp *resource.ReadResponse) {
-	var data GcpFlowLogsStorageAccountResourceModel
+func (r *GcpFlowLogsPubSubResource) Read(ctx context.Context, req resource.ReadRequest, resp *resource.ReadResponse) {
+	var data GcpFlowLogsPubSubResourceModel
 
 	resp.Diagnostics.Append(req.State.Get(ctx, &data)...)
 	if resp.Diagnostics.HasError() {
 		return
 	}
 
-	protoReq, diagsReq := NewReadGcpFlowLogsStorageAccountRequest(ctx, &data)
+	protoReq, diagsReq := NewReadGcpFlowLogsPubSubRequest(ctx, &data)
 	resp.Diagnostics.Append(diagsReq...)
 	if resp.Diagnostics.HasError() {
 		return
 	}
 
-	tflog.Trace(ctx, "reading a resource", map[string]any{"type": "gcp_flow_logs_storage_account", "id": protoReq.Id})
+	tflog.Trace(ctx, "reading a resource", map[string]any{"type": "gcp_flow_logs_pub_sub", "id": protoReq.Id})
 
 	rpcCtx, rpcCancel := context.WithTimeout(ctx, r.config.RequestTimeout())
-	protoResp, err := r.config.Client().ReadGcpFlowLogsStorageAccount(rpcCtx, protoReq)
+	protoResp, err := r.config.Client().ReadGcpFlowLogsPubSub(rpcCtx, protoReq)
 	rpcCancel()
 	if err != nil {
 		switch status.Code(err) {
 		case codes.NotFound:
-			resp.Diagnostics.AddWarning("Resource Not Found", fmt.Sprintf("No gcp_flow_logs_storage_account found with id %s", protoReq.Id))
+			resp.Diagnostics.AddWarning("Resource Not Found", fmt.Sprintf("No gcp_flow_logs_pub_sub found with id %s", protoReq.Id))
 			resp.State.RemoveResource(ctx)
 			return
 		default:
-			resp.Diagnostics.AddError("Config API Error", fmt.Sprintf("Unable to read gcp_flow_logs_storage_account, got error: %s", err))
+			resp.Diagnostics.AddError("Config API Error", fmt.Sprintf("Unable to read gcp_flow_logs_pub_sub, got error: %s", err))
 			return
 		}
 	}
 
-	CopyReadGcpFlowLogsStorageAccountResponse(&data, protoResp)
+	CopyReadGcpFlowLogsPubSubResponse(&data, protoResp)
 
-	tflog.Trace(ctx, "read a resource", map[string]any{"type": "gcp_flow_logs_storage_account", "id": protoResp.Id})
+	tflog.Trace(ctx, "read a resource", map[string]any{"type": "gcp_flow_logs_pub_sub", "id": protoResp.Id})
 
 	resp.Diagnostics.Append(resp.State.Set(ctx, &data)...)
 }
 
-func (r *GcpFlowLogsStorageAccountResource) Update(ctx context.Context, req resource.UpdateRequest, resp *resource.UpdateResponse) {
-	var beforeData GcpFlowLogsStorageAccountResourceModel
-	var afterData GcpFlowLogsStorageAccountResourceModel
+func (r *GcpFlowLogsPubSubResource) Update(ctx context.Context, req resource.UpdateRequest, resp *resource.UpdateResponse) {
+	var beforeData GcpFlowLogsPubSubResourceModel
+	var afterData GcpFlowLogsPubSubResourceModel
 
 	resp.Diagnostics.Append(req.State.Get(ctx, &beforeData)...)
 	if resp.Diagnostics.HasError() {
@@ -1957,69 +1957,69 @@ func (r *GcpFlowLogsStorageAccountResource) Update(ctx context.Context, req reso
 		return
 	}
 
-	protoReq, diags := NewUpdateGcpFlowLogsStorageAccountRequest(ctx, &beforeData, &afterData)
+	protoReq, diags := NewUpdateGcpFlowLogsPubSubRequest(ctx, &beforeData, &afterData)
 	resp.Diagnostics.Append(diags...)
 	if resp.Diagnostics.HasError() {
 		return
 	}
 
-	tflog.Trace(ctx, "updating a resource", map[string]any{"type": "gcp_flow_logs_storage_account", "id": protoReq.Id, "update_mask": protoReq.UpdateMask.Paths})
+	tflog.Trace(ctx, "updating a resource", map[string]any{"type": "gcp_flow_logs_pub_sub", "id": protoReq.Id, "update_mask": protoReq.UpdateMask.Paths})
 
 	rpcCtx, rpcCancel := context.WithTimeout(ctx, r.config.RequestTimeout())
-	protoResp, err := r.config.Client().UpdateGcpFlowLogsStorageAccount(rpcCtx, protoReq)
+	protoResp, err := r.config.Client().UpdateGcpFlowLogsPubSub(rpcCtx, protoReq)
 	rpcCancel()
 	if err != nil {
 		switch status.Code(err) {
 		case codes.NotFound:
-			resp.Diagnostics.AddError("Resource Not Found", fmt.Sprintf("No gcp_flow_logs_storage_account found with id %s", protoReq.Id))
+			resp.Diagnostics.AddError("Resource Not Found", fmt.Sprintf("No gcp_flow_logs_pub_sub found with id %s", protoReq.Id))
 			resp.State.RemoveResource(ctx)
 			return
 		default:
-			resp.Diagnostics.AddError("Config API Error", fmt.Sprintf("Unable to update gcp_flow_logs_storage_account, got error: %s", err))
+			resp.Diagnostics.AddError("Config API Error", fmt.Sprintf("Unable to update gcp_flow_logs_pub_sub, got error: %s", err))
 			return
 		}
 	}
 
-	CopyUpdateGcpFlowLogsStorageAccountResponse(&afterData, protoResp)
+	CopyUpdateGcpFlowLogsPubSubResponse(&afterData, protoResp)
 
-	tflog.Trace(ctx, "updated a resource", map[string]any{"type": "gcp_flow_logs_storage_account", "id": protoResp.Id})
+	tflog.Trace(ctx, "updated a resource", map[string]any{"type": "gcp_flow_logs_pub_sub", "id": protoResp.Id})
 
 	resp.Diagnostics.Append(resp.State.Set(ctx, &afterData)...)
 }
 
-func (r *GcpFlowLogsStorageAccountResource) Delete(ctx context.Context, req resource.DeleteRequest, resp *resource.DeleteResponse) {
-	var data GcpFlowLogsStorageAccountResourceModel
+func (r *GcpFlowLogsPubSubResource) Delete(ctx context.Context, req resource.DeleteRequest, resp *resource.DeleteResponse) {
+	var data GcpFlowLogsPubSubResourceModel
 
 	resp.Diagnostics.Append(req.State.Get(ctx, &data)...)
 	if resp.Diagnostics.HasError() {
 		return
 	}
 
-	protoReq, diags := NewDeleteGcpFlowLogsStorageAccountRequest(ctx, &data)
+	protoReq, diags := NewDeleteGcpFlowLogsPubSubRequest(ctx, &data)
 	resp.Diagnostics.Append(diags...)
 	if resp.Diagnostics.HasError() {
 		return
 	}
 
-	tflog.Trace(ctx, "deleting a resource", map[string]any{"type": "gcp_flow_logs_storage_account", "id": protoReq.Id})
+	tflog.Trace(ctx, "deleting a resource", map[string]any{"type": "gcp_flow_logs_pub_sub", "id": protoReq.Id})
 
 	rpcCtx, rpcCancel := context.WithTimeout(ctx, r.config.RequestTimeout())
-	_, err := r.config.Client().DeleteGcpFlowLogsStorageAccount(rpcCtx, protoReq)
+	_, err := r.config.Client().DeleteGcpFlowLogsPubSub(rpcCtx, protoReq)
 	rpcCancel()
 	if err != nil {
 		switch status.Code(err) {
 		case codes.NotFound:
-			tflog.Trace(ctx, "resource was already deleted", map[string]any{"type": "gcp_flow_logs_storage_account", "id": protoReq.Id})
+			tflog.Trace(ctx, "resource was already deleted", map[string]any{"type": "gcp_flow_logs_pub_sub", "id": protoReq.Id})
 		default:
-			resp.Diagnostics.AddError("Config API Error", fmt.Sprintf("Unable to delete gcp_flow_logs_storage_account, got error: %s", err))
+			resp.Diagnostics.AddError("Config API Error", fmt.Sprintf("Unable to delete gcp_flow_logs_pub_sub, got error: %s", err))
 			return
 		}
 	}
 
-	tflog.Trace(ctx, "deleted a resource", map[string]any{"type": "gcp_flow_logs_storage_account", "id": protoReq.Id})
+	tflog.Trace(ctx, "deleted a resource", map[string]any{"type": "gcp_flow_logs_pub_sub", "id": protoReq.Id})
 }
 
-func (r *GcpFlowLogsStorageAccountResource) ImportState(ctx context.Context, req resource.ImportStateRequest, resp *resource.ImportStateResponse) {
+func (r *GcpFlowLogsPubSubResource) ImportState(ctx context.Context, req resource.ImportStateRequest, resp *resource.ImportStateResponse) {
 	// TODO
 }
 
@@ -3495,10 +3495,10 @@ type DeploymentResourceModel struct {
 	Name                 types.String `tfsdk:"name"`
 }
 
-type GcpFlowLogsStorageAccountResourceModel struct {
-	Id                       types.String `tfsdk:"id"`
-	ProjectId                types.String `tfsdk:"project_id"`
-	StorageAccountResourceId types.String `tfsdk:"storage_account_resource_id"`
+type GcpFlowLogsPubSubResourceModel struct {
+	Id                    types.String `tfsdk:"id"`
+	ProjectId             types.String `tfsdk:"project_id"`
+	PubSubTopicResourceId types.String `tfsdk:"pub_sub_topic_resource_id"`
 }
 
 type GcpProjectResourceModel struct {
@@ -4917,27 +4917,27 @@ func NewDeleteDeploymentRequest(ctx context.Context, data *DeploymentResourceMod
 	return proto, diags
 }
 
-func NewCreateGcpFlowLogsStorageAccountRequest(ctx context.Context, data *GcpFlowLogsStorageAccountResourceModel) (*configv1.CreateGcpFlowLogsStorageAccountRequest, diag.Diagnostics) {
+func NewCreateGcpFlowLogsPubSubRequest(ctx context.Context, data *GcpFlowLogsPubSubResourceModel) (*configv1.CreateGcpFlowLogsPubSubRequest, diag.Diagnostics) {
 	var diags diag.Diagnostics
-	proto := &configv1.CreateGcpFlowLogsStorageAccountRequest{}
+	proto := &configv1.CreateGcpFlowLogsPubSubRequest{}
 	if !data.ProjectId.IsUnknown() && !data.ProjectId.IsNull() {
 		var dataValue attr.Value = data.ProjectId
 		var protoValue string
 		protoValue = dataValue.(types.String).ValueString()
 		proto.ProjectId = protoValue
 	}
-	if !data.StorageAccountResourceId.IsUnknown() && !data.StorageAccountResourceId.IsNull() {
-		var dataValue attr.Value = data.StorageAccountResourceId
+	if !data.PubSubTopicResourceId.IsUnknown() && !data.PubSubTopicResourceId.IsNull() {
+		var dataValue attr.Value = data.PubSubTopicResourceId
 		var protoValue string
 		protoValue = dataValue.(types.String).ValueString()
-		proto.StorageAccountResourceId = protoValue
+		proto.PubSubTopicResourceId = protoValue
 	}
 	return proto, diags
 }
 
-func NewReadGcpFlowLogsStorageAccountRequest(ctx context.Context, data *GcpFlowLogsStorageAccountResourceModel) (*configv1.ReadGcpFlowLogsStorageAccountRequest, diag.Diagnostics) {
+func NewReadGcpFlowLogsPubSubRequest(ctx context.Context, data *GcpFlowLogsPubSubResourceModel) (*configv1.ReadGcpFlowLogsPubSubRequest, diag.Diagnostics) {
 	var diags diag.Diagnostics
-	proto := &configv1.ReadGcpFlowLogsStorageAccountRequest{}
+	proto := &configv1.ReadGcpFlowLogsPubSubRequest{}
 	if !data.Id.IsUnknown() && !data.Id.IsNull() {
 		var dataValue attr.Value = data.Id
 		var protoValue string
@@ -4947,9 +4947,9 @@ func NewReadGcpFlowLogsStorageAccountRequest(ctx context.Context, data *GcpFlowL
 	return proto, diags
 }
 
-func NewDeleteGcpFlowLogsStorageAccountRequest(ctx context.Context, data *GcpFlowLogsStorageAccountResourceModel) (*configv1.DeleteGcpFlowLogsStorageAccountRequest, diag.Diagnostics) {
+func NewDeleteGcpFlowLogsPubSubRequest(ctx context.Context, data *GcpFlowLogsPubSubResourceModel) (*configv1.DeleteGcpFlowLogsPubSubRequest, diag.Diagnostics) {
 	var diags diag.Diagnostics
-	proto := &configv1.DeleteGcpFlowLogsStorageAccountRequest{}
+	proto := &configv1.DeleteGcpFlowLogsPubSubRequest{}
 	if !data.Id.IsUnknown() && !data.Id.IsNull() {
 		var dataValue attr.Value = data.Id
 		var protoValue string
@@ -6609,9 +6609,9 @@ func NewUpdateDeploymentRequest(ctx context.Context, beforeData, afterData *Depl
 	return proto, diags
 }
 
-func NewUpdateGcpFlowLogsStorageAccountRequest(ctx context.Context, beforeData, afterData *GcpFlowLogsStorageAccountResourceModel) (*configv1.UpdateGcpFlowLogsStorageAccountRequest, diag.Diagnostics) {
+func NewUpdateGcpFlowLogsPubSubRequest(ctx context.Context, beforeData, afterData *GcpFlowLogsPubSubResourceModel) (*configv1.UpdateGcpFlowLogsPubSubRequest, diag.Diagnostics) {
 	var diags diag.Diagnostics
-	proto := &configv1.UpdateGcpFlowLogsStorageAccountRequest{}
+	proto := &configv1.UpdateGcpFlowLogsPubSubRequest{}
 	proto.UpdateMask, _ = fieldmaskpb.New(proto)
 	proto.Id = beforeData.Id.ValueString()
 	return proto, diags
@@ -10287,20 +10287,20 @@ func CopyUpdateDeploymentResponse(dst *DeploymentResourceModel, src *configv1.Up
 	dst.Description = types.StringPointerValue(src.Description)
 	dst.Name = types.StringValue(src.Name)
 }
-func CopyCreateGcpFlowLogsStorageAccountResponse(dst *GcpFlowLogsStorageAccountResourceModel, src *configv1.CreateGcpFlowLogsStorageAccountResponse) {
+func CopyCreateGcpFlowLogsPubSubResponse(dst *GcpFlowLogsPubSubResourceModel, src *configv1.CreateGcpFlowLogsPubSubResponse) {
 	dst.Id = types.StringValue(src.Id)
 	dst.ProjectId = types.StringValue(src.ProjectId)
-	dst.StorageAccountResourceId = types.StringValue(src.StorageAccountResourceId)
+	dst.PubSubTopicResourceId = types.StringValue(src.PubSubTopicResourceId)
 }
-func CopyReadGcpFlowLogsStorageAccountResponse(dst *GcpFlowLogsStorageAccountResourceModel, src *configv1.ReadGcpFlowLogsStorageAccountResponse) {
+func CopyReadGcpFlowLogsPubSubResponse(dst *GcpFlowLogsPubSubResourceModel, src *configv1.ReadGcpFlowLogsPubSubResponse) {
 	dst.Id = types.StringValue(src.Id)
 	dst.ProjectId = types.StringValue(src.ProjectId)
-	dst.StorageAccountResourceId = types.StringValue(src.StorageAccountResourceId)
+	dst.PubSubTopicResourceId = types.StringValue(src.PubSubTopicResourceId)
 }
-func CopyUpdateGcpFlowLogsStorageAccountResponse(dst *GcpFlowLogsStorageAccountResourceModel, src *configv1.UpdateGcpFlowLogsStorageAccountResponse) {
+func CopyUpdateGcpFlowLogsPubSubResponse(dst *GcpFlowLogsPubSubResourceModel, src *configv1.UpdateGcpFlowLogsPubSubResponse) {
 	dst.Id = types.StringValue(src.Id)
 	dst.ProjectId = types.StringValue(src.ProjectId)
-	dst.StorageAccountResourceId = types.StringValue(src.StorageAccountResourceId)
+	dst.PubSubTopicResourceId = types.StringValue(src.PubSubTopicResourceId)
 }
 func CopyCreateGcpProjectResponse(dst *GcpProjectResourceModel, src *configv1.CreateGcpProjectResponse) {
 	dst.Id = types.StringValue(src.Id)

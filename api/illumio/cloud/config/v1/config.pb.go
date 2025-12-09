@@ -6098,28 +6098,28 @@ func (x *DeleteDeploymentRequest) GetId() string {
 	return ""
 }
 
-type CreateGcpFlowLogsStorageAccountRequest struct {
-	state                    protoimpl.MessageState `protogen:"open.v1"`
-	ProjectId                string                 `protobuf:"bytes,2,opt,name=project_id,json=projectId,proto3" json:"project_id,omitempty"`
-	StorageAccountResourceId string                 `protobuf:"bytes,3,opt,name=storage_account_resource_id,json=storageAccountResourceId,proto3" json:"storage_account_resource_id,omitempty"`
-	unknownFields            protoimpl.UnknownFields
-	sizeCache                protoimpl.SizeCache
+type CreateGcpFlowLogsPubSubRequest struct {
+	state                 protoimpl.MessageState `protogen:"open.v1"`
+	ProjectId             string                 `protobuf:"bytes,2,opt,name=project_id,json=projectId,proto3" json:"project_id,omitempty"`
+	PubSubTopicResourceId string                 `protobuf:"bytes,5,opt,name=pub_sub_topic_resource_id,json=pubSubTopicResourceId,proto3" json:"pub_sub_topic_resource_id,omitempty"`
+	unknownFields         protoimpl.UnknownFields
+	sizeCache             protoimpl.SizeCache
 }
 
-func (x *CreateGcpFlowLogsStorageAccountRequest) Reset() {
-	*x = CreateGcpFlowLogsStorageAccountRequest{}
+func (x *CreateGcpFlowLogsPubSubRequest) Reset() {
+	*x = CreateGcpFlowLogsPubSubRequest{}
 	mi := &file_illumio_cloud_config_v1_config_proto_msgTypes[68]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *CreateGcpFlowLogsStorageAccountRequest) String() string {
+func (x *CreateGcpFlowLogsPubSubRequest) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*CreateGcpFlowLogsStorageAccountRequest) ProtoMessage() {}
+func (*CreateGcpFlowLogsPubSubRequest) ProtoMessage() {}
 
-func (x *CreateGcpFlowLogsStorageAccountRequest) ProtoReflect() protoreflect.Message {
+func (x *CreateGcpFlowLogsPubSubRequest) ProtoReflect() protoreflect.Message {
 	mi := &file_illumio_cloud_config_v1_config_proto_msgTypes[68]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -6131,48 +6131,48 @@ func (x *CreateGcpFlowLogsStorageAccountRequest) ProtoReflect() protoreflect.Mes
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use CreateGcpFlowLogsStorageAccountRequest.ProtoReflect.Descriptor instead.
-func (*CreateGcpFlowLogsStorageAccountRequest) Descriptor() ([]byte, []int) {
+// Deprecated: Use CreateGcpFlowLogsPubSubRequest.ProtoReflect.Descriptor instead.
+func (*CreateGcpFlowLogsPubSubRequest) Descriptor() ([]byte, []int) {
 	return file_illumio_cloud_config_v1_config_proto_rawDescGZIP(), []int{68}
 }
 
-func (x *CreateGcpFlowLogsStorageAccountRequest) GetProjectId() string {
+func (x *CreateGcpFlowLogsPubSubRequest) GetProjectId() string {
 	if x != nil {
 		return x.ProjectId
 	}
 	return ""
 }
 
-func (x *CreateGcpFlowLogsStorageAccountRequest) GetStorageAccountResourceId() string {
+func (x *CreateGcpFlowLogsPubSubRequest) GetPubSubTopicResourceId() string {
 	if x != nil {
-		return x.StorageAccountResourceId
+		return x.PubSubTopicResourceId
 	}
 	return ""
 }
 
-type CreateGcpFlowLogsStorageAccountResponse struct {
-	state                    protoimpl.MessageState `protogen:"open.v1"`
-	Id                       string                 `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
-	ProjectId                string                 `protobuf:"bytes,2,opt,name=project_id,json=projectId,proto3" json:"project_id,omitempty"`
-	StorageAccountResourceId string                 `protobuf:"bytes,3,opt,name=storage_account_resource_id,json=storageAccountResourceId,proto3" json:"storage_account_resource_id,omitempty"`
-	unknownFields            protoimpl.UnknownFields
-	sizeCache                protoimpl.SizeCache
+type CreateGcpFlowLogsPubSubResponse struct {
+	state                 protoimpl.MessageState `protogen:"open.v1"`
+	Id                    string                 `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
+	ProjectId             string                 `protobuf:"bytes,2,opt,name=project_id,json=projectId,proto3" json:"project_id,omitempty"`
+	PubSubTopicResourceId string                 `protobuf:"bytes,5,opt,name=pub_sub_topic_resource_id,json=pubSubTopicResourceId,proto3" json:"pub_sub_topic_resource_id,omitempty"`
+	unknownFields         protoimpl.UnknownFields
+	sizeCache             protoimpl.SizeCache
 }
 
-func (x *CreateGcpFlowLogsStorageAccountResponse) Reset() {
-	*x = CreateGcpFlowLogsStorageAccountResponse{}
+func (x *CreateGcpFlowLogsPubSubResponse) Reset() {
+	*x = CreateGcpFlowLogsPubSubResponse{}
 	mi := &file_illumio_cloud_config_v1_config_proto_msgTypes[69]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *CreateGcpFlowLogsStorageAccountResponse) String() string {
+func (x *CreateGcpFlowLogsPubSubResponse) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*CreateGcpFlowLogsStorageAccountResponse) ProtoMessage() {}
+func (*CreateGcpFlowLogsPubSubResponse) ProtoMessage() {}
 
-func (x *CreateGcpFlowLogsStorageAccountResponse) ProtoReflect() protoreflect.Message {
+func (x *CreateGcpFlowLogsPubSubResponse) ProtoReflect() protoreflect.Message {
 	mi := &file_illumio_cloud_config_v1_config_proto_msgTypes[69]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -6184,53 +6184,53 @@ func (x *CreateGcpFlowLogsStorageAccountResponse) ProtoReflect() protoreflect.Me
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use CreateGcpFlowLogsStorageAccountResponse.ProtoReflect.Descriptor instead.
-func (*CreateGcpFlowLogsStorageAccountResponse) Descriptor() ([]byte, []int) {
+// Deprecated: Use CreateGcpFlowLogsPubSubResponse.ProtoReflect.Descriptor instead.
+func (*CreateGcpFlowLogsPubSubResponse) Descriptor() ([]byte, []int) {
 	return file_illumio_cloud_config_v1_config_proto_rawDescGZIP(), []int{69}
 }
 
-func (x *CreateGcpFlowLogsStorageAccountResponse) GetId() string {
+func (x *CreateGcpFlowLogsPubSubResponse) GetId() string {
 	if x != nil {
 		return x.Id
 	}
 	return ""
 }
 
-func (x *CreateGcpFlowLogsStorageAccountResponse) GetProjectId() string {
+func (x *CreateGcpFlowLogsPubSubResponse) GetProjectId() string {
 	if x != nil {
 		return x.ProjectId
 	}
 	return ""
 }
 
-func (x *CreateGcpFlowLogsStorageAccountResponse) GetStorageAccountResourceId() string {
+func (x *CreateGcpFlowLogsPubSubResponse) GetPubSubTopicResourceId() string {
 	if x != nil {
-		return x.StorageAccountResourceId
+		return x.PubSubTopicResourceId
 	}
 	return ""
 }
 
-type ReadGcpFlowLogsStorageAccountRequest struct {
+type ReadGcpFlowLogsPubSubRequest struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
 	Id            string                 `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
 
-func (x *ReadGcpFlowLogsStorageAccountRequest) Reset() {
-	*x = ReadGcpFlowLogsStorageAccountRequest{}
+func (x *ReadGcpFlowLogsPubSubRequest) Reset() {
+	*x = ReadGcpFlowLogsPubSubRequest{}
 	mi := &file_illumio_cloud_config_v1_config_proto_msgTypes[70]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *ReadGcpFlowLogsStorageAccountRequest) String() string {
+func (x *ReadGcpFlowLogsPubSubRequest) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*ReadGcpFlowLogsStorageAccountRequest) ProtoMessage() {}
+func (*ReadGcpFlowLogsPubSubRequest) ProtoMessage() {}
 
-func (x *ReadGcpFlowLogsStorageAccountRequest) ProtoReflect() protoreflect.Message {
+func (x *ReadGcpFlowLogsPubSubRequest) ProtoReflect() protoreflect.Message {
 	mi := &file_illumio_cloud_config_v1_config_proto_msgTypes[70]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -6242,41 +6242,41 @@ func (x *ReadGcpFlowLogsStorageAccountRequest) ProtoReflect() protoreflect.Messa
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use ReadGcpFlowLogsStorageAccountRequest.ProtoReflect.Descriptor instead.
-func (*ReadGcpFlowLogsStorageAccountRequest) Descriptor() ([]byte, []int) {
+// Deprecated: Use ReadGcpFlowLogsPubSubRequest.ProtoReflect.Descriptor instead.
+func (*ReadGcpFlowLogsPubSubRequest) Descriptor() ([]byte, []int) {
 	return file_illumio_cloud_config_v1_config_proto_rawDescGZIP(), []int{70}
 }
 
-func (x *ReadGcpFlowLogsStorageAccountRequest) GetId() string {
+func (x *ReadGcpFlowLogsPubSubRequest) GetId() string {
 	if x != nil {
 		return x.Id
 	}
 	return ""
 }
 
-type ReadGcpFlowLogsStorageAccountResponse struct {
-	state                    protoimpl.MessageState `protogen:"open.v1"`
-	Id                       string                 `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
-	ProjectId                string                 `protobuf:"bytes,2,opt,name=project_id,json=projectId,proto3" json:"project_id,omitempty"`
-	StorageAccountResourceId string                 `protobuf:"bytes,3,opt,name=storage_account_resource_id,json=storageAccountResourceId,proto3" json:"storage_account_resource_id,omitempty"`
-	unknownFields            protoimpl.UnknownFields
-	sizeCache                protoimpl.SizeCache
+type ReadGcpFlowLogsPubSubResponse struct {
+	state                 protoimpl.MessageState `protogen:"open.v1"`
+	Id                    string                 `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
+	ProjectId             string                 `protobuf:"bytes,2,opt,name=project_id,json=projectId,proto3" json:"project_id,omitempty"`
+	PubSubTopicResourceId string                 `protobuf:"bytes,5,opt,name=pub_sub_topic_resource_id,json=pubSubTopicResourceId,proto3" json:"pub_sub_topic_resource_id,omitempty"`
+	unknownFields         protoimpl.UnknownFields
+	sizeCache             protoimpl.SizeCache
 }
 
-func (x *ReadGcpFlowLogsStorageAccountResponse) Reset() {
-	*x = ReadGcpFlowLogsStorageAccountResponse{}
+func (x *ReadGcpFlowLogsPubSubResponse) Reset() {
+	*x = ReadGcpFlowLogsPubSubResponse{}
 	mi := &file_illumio_cloud_config_v1_config_proto_msgTypes[71]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *ReadGcpFlowLogsStorageAccountResponse) String() string {
+func (x *ReadGcpFlowLogsPubSubResponse) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*ReadGcpFlowLogsStorageAccountResponse) ProtoMessage() {}
+func (*ReadGcpFlowLogsPubSubResponse) ProtoMessage() {}
 
-func (x *ReadGcpFlowLogsStorageAccountResponse) ProtoReflect() protoreflect.Message {
+func (x *ReadGcpFlowLogsPubSubResponse) ProtoReflect() protoreflect.Message {
 	mi := &file_illumio_cloud_config_v1_config_proto_msgTypes[71]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -6288,33 +6288,33 @@ func (x *ReadGcpFlowLogsStorageAccountResponse) ProtoReflect() protoreflect.Mess
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use ReadGcpFlowLogsStorageAccountResponse.ProtoReflect.Descriptor instead.
-func (*ReadGcpFlowLogsStorageAccountResponse) Descriptor() ([]byte, []int) {
+// Deprecated: Use ReadGcpFlowLogsPubSubResponse.ProtoReflect.Descriptor instead.
+func (*ReadGcpFlowLogsPubSubResponse) Descriptor() ([]byte, []int) {
 	return file_illumio_cloud_config_v1_config_proto_rawDescGZIP(), []int{71}
 }
 
-func (x *ReadGcpFlowLogsStorageAccountResponse) GetId() string {
+func (x *ReadGcpFlowLogsPubSubResponse) GetId() string {
 	if x != nil {
 		return x.Id
 	}
 	return ""
 }
 
-func (x *ReadGcpFlowLogsStorageAccountResponse) GetProjectId() string {
+func (x *ReadGcpFlowLogsPubSubResponse) GetProjectId() string {
 	if x != nil {
 		return x.ProjectId
 	}
 	return ""
 }
 
-func (x *ReadGcpFlowLogsStorageAccountResponse) GetStorageAccountResourceId() string {
+func (x *ReadGcpFlowLogsPubSubResponse) GetPubSubTopicResourceId() string {
 	if x != nil {
-		return x.StorageAccountResourceId
+		return x.PubSubTopicResourceId
 	}
 	return ""
 }
 
-type UpdateGcpFlowLogsStorageAccountRequest struct {
+type UpdateGcpFlowLogsPubSubRequest struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
 	Id            string                 `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
 	UpdateMask    *fieldmaskpb.FieldMask `protobuf:"bytes,4,opt,name=update_mask,json=updateMask,proto3" json:"update_mask,omitempty"`
@@ -6322,20 +6322,20 @@ type UpdateGcpFlowLogsStorageAccountRequest struct {
 	sizeCache     protoimpl.SizeCache
 }
 
-func (x *UpdateGcpFlowLogsStorageAccountRequest) Reset() {
-	*x = UpdateGcpFlowLogsStorageAccountRequest{}
+func (x *UpdateGcpFlowLogsPubSubRequest) Reset() {
+	*x = UpdateGcpFlowLogsPubSubRequest{}
 	mi := &file_illumio_cloud_config_v1_config_proto_msgTypes[72]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *UpdateGcpFlowLogsStorageAccountRequest) String() string {
+func (x *UpdateGcpFlowLogsPubSubRequest) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*UpdateGcpFlowLogsStorageAccountRequest) ProtoMessage() {}
+func (*UpdateGcpFlowLogsPubSubRequest) ProtoMessage() {}
 
-func (x *UpdateGcpFlowLogsStorageAccountRequest) ProtoReflect() protoreflect.Message {
+func (x *UpdateGcpFlowLogsPubSubRequest) ProtoReflect() protoreflect.Message {
 	mi := &file_illumio_cloud_config_v1_config_proto_msgTypes[72]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -6347,48 +6347,48 @@ func (x *UpdateGcpFlowLogsStorageAccountRequest) ProtoReflect() protoreflect.Mes
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use UpdateGcpFlowLogsStorageAccountRequest.ProtoReflect.Descriptor instead.
-func (*UpdateGcpFlowLogsStorageAccountRequest) Descriptor() ([]byte, []int) {
+// Deprecated: Use UpdateGcpFlowLogsPubSubRequest.ProtoReflect.Descriptor instead.
+func (*UpdateGcpFlowLogsPubSubRequest) Descriptor() ([]byte, []int) {
 	return file_illumio_cloud_config_v1_config_proto_rawDescGZIP(), []int{72}
 }
 
-func (x *UpdateGcpFlowLogsStorageAccountRequest) GetId() string {
+func (x *UpdateGcpFlowLogsPubSubRequest) GetId() string {
 	if x != nil {
 		return x.Id
 	}
 	return ""
 }
 
-func (x *UpdateGcpFlowLogsStorageAccountRequest) GetUpdateMask() *fieldmaskpb.FieldMask {
+func (x *UpdateGcpFlowLogsPubSubRequest) GetUpdateMask() *fieldmaskpb.FieldMask {
 	if x != nil {
 		return x.UpdateMask
 	}
 	return nil
 }
 
-type UpdateGcpFlowLogsStorageAccountResponse struct {
-	state                    protoimpl.MessageState `protogen:"open.v1"`
-	Id                       string                 `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
-	ProjectId                string                 `protobuf:"bytes,2,opt,name=project_id,json=projectId,proto3" json:"project_id,omitempty"`
-	StorageAccountResourceId string                 `protobuf:"bytes,3,opt,name=storage_account_resource_id,json=storageAccountResourceId,proto3" json:"storage_account_resource_id,omitempty"`
-	unknownFields            protoimpl.UnknownFields
-	sizeCache                protoimpl.SizeCache
+type UpdateGcpFlowLogsPubSubResponse struct {
+	state                 protoimpl.MessageState `protogen:"open.v1"`
+	Id                    string                 `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
+	ProjectId             string                 `protobuf:"bytes,2,opt,name=project_id,json=projectId,proto3" json:"project_id,omitempty"`
+	PubSubTopicResourceId string                 `protobuf:"bytes,5,opt,name=pub_sub_topic_resource_id,json=pubSubTopicResourceId,proto3" json:"pub_sub_topic_resource_id,omitempty"`
+	unknownFields         protoimpl.UnknownFields
+	sizeCache             protoimpl.SizeCache
 }
 
-func (x *UpdateGcpFlowLogsStorageAccountResponse) Reset() {
-	*x = UpdateGcpFlowLogsStorageAccountResponse{}
+func (x *UpdateGcpFlowLogsPubSubResponse) Reset() {
+	*x = UpdateGcpFlowLogsPubSubResponse{}
 	mi := &file_illumio_cloud_config_v1_config_proto_msgTypes[73]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *UpdateGcpFlowLogsStorageAccountResponse) String() string {
+func (x *UpdateGcpFlowLogsPubSubResponse) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*UpdateGcpFlowLogsStorageAccountResponse) ProtoMessage() {}
+func (*UpdateGcpFlowLogsPubSubResponse) ProtoMessage() {}
 
-func (x *UpdateGcpFlowLogsStorageAccountResponse) ProtoReflect() protoreflect.Message {
+func (x *UpdateGcpFlowLogsPubSubResponse) ProtoReflect() protoreflect.Message {
 	mi := &file_illumio_cloud_config_v1_config_proto_msgTypes[73]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -6400,53 +6400,53 @@ func (x *UpdateGcpFlowLogsStorageAccountResponse) ProtoReflect() protoreflect.Me
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use UpdateGcpFlowLogsStorageAccountResponse.ProtoReflect.Descriptor instead.
-func (*UpdateGcpFlowLogsStorageAccountResponse) Descriptor() ([]byte, []int) {
+// Deprecated: Use UpdateGcpFlowLogsPubSubResponse.ProtoReflect.Descriptor instead.
+func (*UpdateGcpFlowLogsPubSubResponse) Descriptor() ([]byte, []int) {
 	return file_illumio_cloud_config_v1_config_proto_rawDescGZIP(), []int{73}
 }
 
-func (x *UpdateGcpFlowLogsStorageAccountResponse) GetId() string {
+func (x *UpdateGcpFlowLogsPubSubResponse) GetId() string {
 	if x != nil {
 		return x.Id
 	}
 	return ""
 }
 
-func (x *UpdateGcpFlowLogsStorageAccountResponse) GetProjectId() string {
+func (x *UpdateGcpFlowLogsPubSubResponse) GetProjectId() string {
 	if x != nil {
 		return x.ProjectId
 	}
 	return ""
 }
 
-func (x *UpdateGcpFlowLogsStorageAccountResponse) GetStorageAccountResourceId() string {
+func (x *UpdateGcpFlowLogsPubSubResponse) GetPubSubTopicResourceId() string {
 	if x != nil {
-		return x.StorageAccountResourceId
+		return x.PubSubTopicResourceId
 	}
 	return ""
 }
 
-type DeleteGcpFlowLogsStorageAccountRequest struct {
+type DeleteGcpFlowLogsPubSubRequest struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
 	Id            string                 `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
 
-func (x *DeleteGcpFlowLogsStorageAccountRequest) Reset() {
-	*x = DeleteGcpFlowLogsStorageAccountRequest{}
+func (x *DeleteGcpFlowLogsPubSubRequest) Reset() {
+	*x = DeleteGcpFlowLogsPubSubRequest{}
 	mi := &file_illumio_cloud_config_v1_config_proto_msgTypes[74]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *DeleteGcpFlowLogsStorageAccountRequest) String() string {
+func (x *DeleteGcpFlowLogsPubSubRequest) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*DeleteGcpFlowLogsStorageAccountRequest) ProtoMessage() {}
+func (*DeleteGcpFlowLogsPubSubRequest) ProtoMessage() {}
 
-func (x *DeleteGcpFlowLogsStorageAccountRequest) ProtoReflect() protoreflect.Message {
+func (x *DeleteGcpFlowLogsPubSubRequest) ProtoReflect() protoreflect.Message {
 	mi := &file_illumio_cloud_config_v1_config_proto_msgTypes[74]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -6458,12 +6458,12 @@ func (x *DeleteGcpFlowLogsStorageAccountRequest) ProtoReflect() protoreflect.Mes
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use DeleteGcpFlowLogsStorageAccountRequest.ProtoReflect.Descriptor instead.
-func (*DeleteGcpFlowLogsStorageAccountRequest) Descriptor() ([]byte, []int) {
+// Deprecated: Use DeleteGcpFlowLogsPubSubRequest.ProtoReflect.Descriptor instead.
+func (*DeleteGcpFlowLogsPubSubRequest) Descriptor() ([]byte, []int) {
 	return file_illumio_cloud_config_v1_config_proto_rawDescGZIP(), []int{74}
 }
 
-func (x *DeleteGcpFlowLogsStorageAccountRequest) GetId() string {
+func (x *DeleteGcpFlowLogsPubSubRequest) GetId() string {
 	if x != nil {
 		return x.Id
 	}
@@ -10844,33 +10844,33 @@ const file_illumio_cloud_config_v1_config_proto_rawDesc = "" +
 	"\x04name\x18\r \x01(\tR\x04nameB\x0e\n" +
 	"\f_description\")\n" +
 	"\x17DeleteDeploymentRequest\x12\x0e\n" +
-	"\x02id\x18\x01 \x01(\tR\x02id\"\x86\x01\n" +
-	"&CreateGcpFlowLogsStorageAccountRequest\x12\x1d\n" +
+	"\x02id\x18\x01 \x01(\tR\x02id\"y\n" +
+	"\x1eCreateGcpFlowLogsPubSubRequest\x12\x1d\n" +
 	"\n" +
-	"project_id\x18\x02 \x01(\tR\tprojectId\x12=\n" +
-	"\x1bstorage_account_resource_id\x18\x03 \x01(\tR\x18storageAccountResourceId\"\x97\x01\n" +
-	"'CreateGcpFlowLogsStorageAccountResponse\x12\x0e\n" +
+	"project_id\x18\x02 \x01(\tR\tprojectId\x128\n" +
+	"\x19pub_sub_topic_resource_id\x18\x05 \x01(\tR\x15pubSubTopicResourceId\"\x8a\x01\n" +
+	"\x1fCreateGcpFlowLogsPubSubResponse\x12\x0e\n" +
 	"\x02id\x18\x01 \x01(\tR\x02id\x12\x1d\n" +
 	"\n" +
-	"project_id\x18\x02 \x01(\tR\tprojectId\x12=\n" +
-	"\x1bstorage_account_resource_id\x18\x03 \x01(\tR\x18storageAccountResourceId\"6\n" +
-	"$ReadGcpFlowLogsStorageAccountRequest\x12\x0e\n" +
-	"\x02id\x18\x01 \x01(\tR\x02id\"\x95\x01\n" +
-	"%ReadGcpFlowLogsStorageAccountResponse\x12\x0e\n" +
+	"project_id\x18\x02 \x01(\tR\tprojectId\x128\n" +
+	"\x19pub_sub_topic_resource_id\x18\x05 \x01(\tR\x15pubSubTopicResourceId\".\n" +
+	"\x1cReadGcpFlowLogsPubSubRequest\x12\x0e\n" +
+	"\x02id\x18\x01 \x01(\tR\x02id\"\x88\x01\n" +
+	"\x1dReadGcpFlowLogsPubSubResponse\x12\x0e\n" +
 	"\x02id\x18\x01 \x01(\tR\x02id\x12\x1d\n" +
 	"\n" +
-	"project_id\x18\x02 \x01(\tR\tprojectId\x12=\n" +
-	"\x1bstorage_account_resource_id\x18\x03 \x01(\tR\x18storageAccountResourceId\"u\n" +
-	"&UpdateGcpFlowLogsStorageAccountRequest\x12\x0e\n" +
+	"project_id\x18\x02 \x01(\tR\tprojectId\x128\n" +
+	"\x19pub_sub_topic_resource_id\x18\x05 \x01(\tR\x15pubSubTopicResourceId\"m\n" +
+	"\x1eUpdateGcpFlowLogsPubSubRequest\x12\x0e\n" +
 	"\x02id\x18\x01 \x01(\tR\x02id\x12;\n" +
 	"\vupdate_mask\x18\x04 \x01(\v2\x1a.google.protobuf.FieldMaskR\n" +
-	"updateMask\"\x97\x01\n" +
-	"'UpdateGcpFlowLogsStorageAccountResponse\x12\x0e\n" +
+	"updateMask\"\x8a\x01\n" +
+	"\x1fUpdateGcpFlowLogsPubSubResponse\x12\x0e\n" +
 	"\x02id\x18\x01 \x01(\tR\x02id\x12\x1d\n" +
 	"\n" +
-	"project_id\x18\x02 \x01(\tR\tprojectId\x12=\n" +
-	"\x1bstorage_account_resource_id\x18\x03 \x01(\tR\x18storageAccountResourceId\"8\n" +
-	"&DeleteGcpFlowLogsStorageAccountRequest\x12\x0e\n" +
+	"project_id\x18\x02 \x01(\tR\tprojectId\x128\n" +
+	"\x19pub_sub_topic_resource_id\x18\x05 \x01(\tR\x15pubSubTopicResourceId\"0\n" +
+	"\x1eDeleteGcpFlowLogsPubSubRequest\x12\x0e\n" +
 	"\x02id\x18\x01 \x01(\tR\x02id\"\xbd\x01\n" +
 	"\x17CreateGcpProjectRequest\x12\x12\n" +
 	"\x04mode\x18\x02 \x01(\tR\x04mode\x12\x12\n" +
@@ -11196,7 +11196,7 @@ const file_illumio_cloud_config_v1_config_proto_rawDesc = "" +
 	"\x03key\x18\x05 \x01(\tR\x03key\x12\x12\n" +
 	"\x04name\x18\x06 \x01(\tR\x04name\")\n" +
 	"\x17DeleteTagToLabelRequest\x12\x0e\n" +
-	"\x02id\x18\x01 \x01(\tR\x02id2\xf5F\n" +
+	"\x02id\x18\x01 \x01(\tR\x02id2\x9dF\n" +
 	"\rConfigService\x12z\n" +
 	"\x11CreateApplication\x121.illumio.cloud.config.v1.CreateApplicationRequest\x1a2.illumio.cloud.config.v1.CreateApplicationResponse\x12t\n" +
 	"\x0fReadApplication\x12/.illumio.cloud.config.v1.ReadApplicationRequest\x1a0.illumio.cloud.config.v1.ReadApplicationResponse\x12z\n" +
@@ -11233,11 +11233,11 @@ const file_illumio_cloud_config_v1_config_proto_rawDesc = "" +
 	"\x10CreateDeployment\x120.illumio.cloud.config.v1.CreateDeploymentRequest\x1a1.illumio.cloud.config.v1.CreateDeploymentResponse\x12q\n" +
 	"\x0eReadDeployment\x12..illumio.cloud.config.v1.ReadDeploymentRequest\x1a/.illumio.cloud.config.v1.ReadDeploymentResponse\x12w\n" +
 	"\x10UpdateDeployment\x120.illumio.cloud.config.v1.UpdateDeploymentRequest\x1a1.illumio.cloud.config.v1.UpdateDeploymentResponse\x12\\\n" +
-	"\x10DeleteDeployment\x120.illumio.cloud.config.v1.DeleteDeploymentRequest\x1a\x16.google.protobuf.Empty\x12\xa4\x01\n" +
-	"\x1fCreateGcpFlowLogsStorageAccount\x12?.illumio.cloud.config.v1.CreateGcpFlowLogsStorageAccountRequest\x1a@.illumio.cloud.config.v1.CreateGcpFlowLogsStorageAccountResponse\x12\x9e\x01\n" +
-	"\x1dReadGcpFlowLogsStorageAccount\x12=.illumio.cloud.config.v1.ReadGcpFlowLogsStorageAccountRequest\x1a>.illumio.cloud.config.v1.ReadGcpFlowLogsStorageAccountResponse\x12\xa4\x01\n" +
-	"\x1fUpdateGcpFlowLogsStorageAccount\x12?.illumio.cloud.config.v1.UpdateGcpFlowLogsStorageAccountRequest\x1a@.illumio.cloud.config.v1.UpdateGcpFlowLogsStorageAccountResponse\x12z\n" +
-	"\x1fDeleteGcpFlowLogsStorageAccount\x12?.illumio.cloud.config.v1.DeleteGcpFlowLogsStorageAccountRequest\x1a\x16.google.protobuf.Empty\x12w\n" +
+	"\x10DeleteDeployment\x120.illumio.cloud.config.v1.DeleteDeploymentRequest\x1a\x16.google.protobuf.Empty\x12\x8c\x01\n" +
+	"\x17CreateGcpFlowLogsPubSub\x127.illumio.cloud.config.v1.CreateGcpFlowLogsPubSubRequest\x1a8.illumio.cloud.config.v1.CreateGcpFlowLogsPubSubResponse\x12\x86\x01\n" +
+	"\x15ReadGcpFlowLogsPubSub\x125.illumio.cloud.config.v1.ReadGcpFlowLogsPubSubRequest\x1a6.illumio.cloud.config.v1.ReadGcpFlowLogsPubSubResponse\x12\x8c\x01\n" +
+	"\x17UpdateGcpFlowLogsPubSub\x127.illumio.cloud.config.v1.UpdateGcpFlowLogsPubSubRequest\x1a8.illumio.cloud.config.v1.UpdateGcpFlowLogsPubSubResponse\x12j\n" +
+	"\x17DeleteGcpFlowLogsPubSub\x127.illumio.cloud.config.v1.DeleteGcpFlowLogsPubSubRequest\x1a\x16.google.protobuf.Empty\x12w\n" +
 	"\x10CreateGcpProject\x120.illumio.cloud.config.v1.CreateGcpProjectRequest\x1a1.illumio.cloud.config.v1.CreateGcpProjectResponse\x12q\n" +
 	"\x0eReadGcpProject\x12..illumio.cloud.config.v1.ReadGcpProjectRequest\x1a/.illumio.cloud.config.v1.ReadGcpProjectResponse\x12w\n" +
 	"\x10UpdateGcpProject\x120.illumio.cloud.config.v1.UpdateGcpProjectRequest\x1a1.illumio.cloud.config.v1.UpdateGcpProjectResponse\x12\\\n" +
@@ -11351,13 +11351,13 @@ var file_illumio_cloud_config_v1_config_proto_goTypes = []any{
 	(*UpdateDeploymentRequest)(nil),                      // 65: illumio.cloud.config.v1.UpdateDeploymentRequest
 	(*UpdateDeploymentResponse)(nil),                     // 66: illumio.cloud.config.v1.UpdateDeploymentResponse
 	(*DeleteDeploymentRequest)(nil),                      // 67: illumio.cloud.config.v1.DeleteDeploymentRequest
-	(*CreateGcpFlowLogsStorageAccountRequest)(nil),       // 68: illumio.cloud.config.v1.CreateGcpFlowLogsStorageAccountRequest
-	(*CreateGcpFlowLogsStorageAccountResponse)(nil),      // 69: illumio.cloud.config.v1.CreateGcpFlowLogsStorageAccountResponse
-	(*ReadGcpFlowLogsStorageAccountRequest)(nil),         // 70: illumio.cloud.config.v1.ReadGcpFlowLogsStorageAccountRequest
-	(*ReadGcpFlowLogsStorageAccountResponse)(nil),        // 71: illumio.cloud.config.v1.ReadGcpFlowLogsStorageAccountResponse
-	(*UpdateGcpFlowLogsStorageAccountRequest)(nil),       // 72: illumio.cloud.config.v1.UpdateGcpFlowLogsStorageAccountRequest
-	(*UpdateGcpFlowLogsStorageAccountResponse)(nil),      // 73: illumio.cloud.config.v1.UpdateGcpFlowLogsStorageAccountResponse
-	(*DeleteGcpFlowLogsStorageAccountRequest)(nil),       // 74: illumio.cloud.config.v1.DeleteGcpFlowLogsStorageAccountRequest
+	(*CreateGcpFlowLogsPubSubRequest)(nil),               // 68: illumio.cloud.config.v1.CreateGcpFlowLogsPubSubRequest
+	(*CreateGcpFlowLogsPubSubResponse)(nil),              // 69: illumio.cloud.config.v1.CreateGcpFlowLogsPubSubResponse
+	(*ReadGcpFlowLogsPubSubRequest)(nil),                 // 70: illumio.cloud.config.v1.ReadGcpFlowLogsPubSubRequest
+	(*ReadGcpFlowLogsPubSubResponse)(nil),                // 71: illumio.cloud.config.v1.ReadGcpFlowLogsPubSubResponse
+	(*UpdateGcpFlowLogsPubSubRequest)(nil),               // 72: illumio.cloud.config.v1.UpdateGcpFlowLogsPubSubRequest
+	(*UpdateGcpFlowLogsPubSubResponse)(nil),              // 73: illumio.cloud.config.v1.UpdateGcpFlowLogsPubSubResponse
+	(*DeleteGcpFlowLogsPubSubRequest)(nil),               // 74: illumio.cloud.config.v1.DeleteGcpFlowLogsPubSubRequest
 	(*CreateGcpProjectRequest)(nil),                      // 75: illumio.cloud.config.v1.CreateGcpProjectRequest
 	(*CreateGcpProjectResponse)(nil),                     // 76: illumio.cloud.config.v1.CreateGcpProjectResponse
 	(*ReadGcpProjectRequest)(nil),                        // 77: illumio.cloud.config.v1.ReadGcpProjectRequest
@@ -11451,7 +11451,7 @@ var file_illumio_cloud_config_v1_config_proto_depIdxs = []int32{
 	130, // 31: illumio.cloud.config.v1.UpdateDeploymentRequest.update_mask:type_name -> google.protobuf.FieldMask
 	59,  // 32: illumio.cloud.config.v1.UpdateDeploymentResponse.aws_tags:type_name -> illumio.cloud.config.v1.Deployment_AwsTags
 	60,  // 33: illumio.cloud.config.v1.UpdateDeploymentResponse.azure_tags:type_name -> illumio.cloud.config.v1.Deployment_AzureTags
-	130, // 34: illumio.cloud.config.v1.UpdateGcpFlowLogsStorageAccountRequest.update_mask:type_name -> google.protobuf.FieldMask
+	130, // 34: illumio.cloud.config.v1.UpdateGcpFlowLogsPubSubRequest.update_mask:type_name -> google.protobuf.FieldMask
 	130, // 35: illumio.cloud.config.v1.UpdateGcpProjectRequest.update_mask:type_name -> google.protobuf.FieldMask
 	82,  // 36: illumio.cloud.config.v1.CreateIpListRequest.ip_addresses:type_name -> illumio.cloud.config.v1.IpList_IpAddresses
 	83,  // 37: illumio.cloud.config.v1.CreateIpListRequest.ip_ranges:type_name -> illumio.cloud.config.v1.IpList_IpRanges
@@ -11525,10 +11525,10 @@ var file_illumio_cloud_config_v1_config_proto_depIdxs = []int32{
 	63,  // 105: illumio.cloud.config.v1.ConfigService.ReadDeployment:input_type -> illumio.cloud.config.v1.ReadDeploymentRequest
 	65,  // 106: illumio.cloud.config.v1.ConfigService.UpdateDeployment:input_type -> illumio.cloud.config.v1.UpdateDeploymentRequest
 	67,  // 107: illumio.cloud.config.v1.ConfigService.DeleteDeployment:input_type -> illumio.cloud.config.v1.DeleteDeploymentRequest
-	68,  // 108: illumio.cloud.config.v1.ConfigService.CreateGcpFlowLogsStorageAccount:input_type -> illumio.cloud.config.v1.CreateGcpFlowLogsStorageAccountRequest
-	70,  // 109: illumio.cloud.config.v1.ConfigService.ReadGcpFlowLogsStorageAccount:input_type -> illumio.cloud.config.v1.ReadGcpFlowLogsStorageAccountRequest
-	72,  // 110: illumio.cloud.config.v1.ConfigService.UpdateGcpFlowLogsStorageAccount:input_type -> illumio.cloud.config.v1.UpdateGcpFlowLogsStorageAccountRequest
-	74,  // 111: illumio.cloud.config.v1.ConfigService.DeleteGcpFlowLogsStorageAccount:input_type -> illumio.cloud.config.v1.DeleteGcpFlowLogsStorageAccountRequest
+	68,  // 108: illumio.cloud.config.v1.ConfigService.CreateGcpFlowLogsPubSub:input_type -> illumio.cloud.config.v1.CreateGcpFlowLogsPubSubRequest
+	70,  // 109: illumio.cloud.config.v1.ConfigService.ReadGcpFlowLogsPubSub:input_type -> illumio.cloud.config.v1.ReadGcpFlowLogsPubSubRequest
+	72,  // 110: illumio.cloud.config.v1.ConfigService.UpdateGcpFlowLogsPubSub:input_type -> illumio.cloud.config.v1.UpdateGcpFlowLogsPubSubRequest
+	74,  // 111: illumio.cloud.config.v1.ConfigService.DeleteGcpFlowLogsPubSub:input_type -> illumio.cloud.config.v1.DeleteGcpFlowLogsPubSubRequest
 	75,  // 112: illumio.cloud.config.v1.ConfigService.CreateGcpProject:input_type -> illumio.cloud.config.v1.CreateGcpProjectRequest
 	77,  // 113: illumio.cloud.config.v1.ConfigService.ReadGcpProject:input_type -> illumio.cloud.config.v1.ReadGcpProjectRequest
 	79,  // 114: illumio.cloud.config.v1.ConfigService.UpdateGcpProject:input_type -> illumio.cloud.config.v1.UpdateGcpProjectRequest
@@ -11593,10 +11593,10 @@ var file_illumio_cloud_config_v1_config_proto_depIdxs = []int32{
 	64,  // 173: illumio.cloud.config.v1.ConfigService.ReadDeployment:output_type -> illumio.cloud.config.v1.ReadDeploymentResponse
 	66,  // 174: illumio.cloud.config.v1.ConfigService.UpdateDeployment:output_type -> illumio.cloud.config.v1.UpdateDeploymentResponse
 	131, // 175: illumio.cloud.config.v1.ConfigService.DeleteDeployment:output_type -> google.protobuf.Empty
-	69,  // 176: illumio.cloud.config.v1.ConfigService.CreateGcpFlowLogsStorageAccount:output_type -> illumio.cloud.config.v1.CreateGcpFlowLogsStorageAccountResponse
-	71,  // 177: illumio.cloud.config.v1.ConfigService.ReadGcpFlowLogsStorageAccount:output_type -> illumio.cloud.config.v1.ReadGcpFlowLogsStorageAccountResponse
-	73,  // 178: illumio.cloud.config.v1.ConfigService.UpdateGcpFlowLogsStorageAccount:output_type -> illumio.cloud.config.v1.UpdateGcpFlowLogsStorageAccountResponse
-	131, // 179: illumio.cloud.config.v1.ConfigService.DeleteGcpFlowLogsStorageAccount:output_type -> google.protobuf.Empty
+	69,  // 176: illumio.cloud.config.v1.ConfigService.CreateGcpFlowLogsPubSub:output_type -> illumio.cloud.config.v1.CreateGcpFlowLogsPubSubResponse
+	71,  // 177: illumio.cloud.config.v1.ConfigService.ReadGcpFlowLogsPubSub:output_type -> illumio.cloud.config.v1.ReadGcpFlowLogsPubSubResponse
+	73,  // 178: illumio.cloud.config.v1.ConfigService.UpdateGcpFlowLogsPubSub:output_type -> illumio.cloud.config.v1.UpdateGcpFlowLogsPubSubResponse
+	131, // 179: illumio.cloud.config.v1.ConfigService.DeleteGcpFlowLogsPubSub:output_type -> google.protobuf.Empty
 	76,  // 180: illumio.cloud.config.v1.ConfigService.CreateGcpProject:output_type -> illumio.cloud.config.v1.CreateGcpProjectResponse
 	78,  // 181: illumio.cloud.config.v1.ConfigService.ReadGcpProject:output_type -> illumio.cloud.config.v1.ReadGcpProjectResponse
 	80,  // 182: illumio.cloud.config.v1.ConfigService.UpdateGcpProject:output_type -> illumio.cloud.config.v1.UpdateGcpProjectResponse
