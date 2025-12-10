@@ -56,8 +56,8 @@ func (p *Provider) Resources(ctx context.Context) []func() resource.Resource {
 			resp = append(resp, func() resource.Resource { return NewAzureSubscriptionResource(r.Schema) })
 		case "deployment":
 			resp = append(resp, func() resource.Resource { return NewDeploymentResource(r.Schema) })
-		case "gcp_flow_logs_pub_sub":
-			resp = append(resp, func() resource.Resource { return NewGcpFlowLogsPubSubResource(r.Schema) })
+		case "gcp_flow_logs_pubsub_topic":
+			resp = append(resp, func() resource.Resource { return NewGcpFlowLogsPubsubTopicResource(r.Schema) })
 		case "gcp_project":
 			resp = append(resp, func() resource.Resource { return NewGcpProjectResource(r.Schema) })
 		case "ip_list":
@@ -1829,34 +1829,34 @@ func (r *DeploymentResource) ImportState(ctx context.Context, req resource.Impor
 	// TODO
 }
 
-// GcpFlowLogsPubSubResource implements the gcp_flow_logs_pub_sub resource.
-type GcpFlowLogsPubSubResource struct {
-	// schema is the schema of the gcp_flow_logs_pub_sub resource.
+// GcpFlowLogsPubsubTopicResource implements the gcp_flow_logs_pubsub_topic resource.
+type GcpFlowLogsPubsubTopicResource struct {
+	// schema is the schema of the gcp_flow_logs_pubsub_topic resource.
 	schema resource_schema.Schema
 
 	// providerData is the provider configuration.
 	config ProviderData
 }
 
-var _ resource.ResourceWithConfigure = &GcpFlowLogsPubSubResource{}
-var _ resource.ResourceWithImportState = &GcpFlowLogsPubSubResource{}
+var _ resource.ResourceWithConfigure = &GcpFlowLogsPubsubTopicResource{}
+var _ resource.ResourceWithImportState = &GcpFlowLogsPubsubTopicResource{}
 
-// NewGcpFlowLogsPubSubResource returns a new gcp_flow_logs_pub_sub resource.
-func NewGcpFlowLogsPubSubResource(schema resource_schema.Schema) resource.Resource {
-	return &GcpFlowLogsPubSubResource{
+// NewGcpFlowLogsPubsubTopicResource returns a new gcp_flow_logs_pubsub_topic resource.
+func NewGcpFlowLogsPubsubTopicResource(schema resource_schema.Schema) resource.Resource {
+	return &GcpFlowLogsPubsubTopicResource{
 		schema: schema,
 	}
 }
 
-func (r *GcpFlowLogsPubSubResource) Metadata(ctx context.Context, req resource.MetadataRequest, resp *resource.MetadataResponse) {
-	resp.TypeName = req.ProviderTypeName + "_gcp_flow_logs_pub_sub"
+func (r *GcpFlowLogsPubsubTopicResource) Metadata(ctx context.Context, req resource.MetadataRequest, resp *resource.MetadataResponse) {
+	resp.TypeName = req.ProviderTypeName + "_gcp_flow_logs_pubsub_topic"
 }
 
-func (r *GcpFlowLogsPubSubResource) Schema(ctx context.Context, req resource.SchemaRequest, resp *resource.SchemaResponse) {
+func (r *GcpFlowLogsPubsubTopicResource) Schema(ctx context.Context, req resource.SchemaRequest, resp *resource.SchemaResponse) {
 	resp.Schema = r.schema
 }
 
-func (r *GcpFlowLogsPubSubResource) Configure(ctx context.Context, req resource.ConfigureRequest, resp *resource.ConfigureResponse) {
+func (r *GcpFlowLogsPubsubTopicResource) Configure(ctx context.Context, req resource.ConfigureRequest, resp *resource.ConfigureResponse) {
 	if req.ProviderData == nil {
 		return
 	}
@@ -1874,78 +1874,78 @@ func (r *GcpFlowLogsPubSubResource) Configure(ctx context.Context, req resource.
 	r.config = providerData
 }
 
-func (r *GcpFlowLogsPubSubResource) Create(ctx context.Context, req resource.CreateRequest, resp *resource.CreateResponse) {
-	var data GcpFlowLogsPubSubResourceModel
+func (r *GcpFlowLogsPubsubTopicResource) Create(ctx context.Context, req resource.CreateRequest, resp *resource.CreateResponse) {
+	var data GcpFlowLogsPubsubTopicResourceModel
 
 	resp.Diagnostics.Append(req.Plan.Get(ctx, &data)...)
 	if resp.Diagnostics.HasError() {
 		return
 	}
 
-	protoReq, diagReq := NewCreateGcpFlowLogsPubSubRequest(ctx, &data)
+	protoReq, diagReq := NewCreateGcpFlowLogsPubsubTopicRequest(ctx, &data)
 	resp.Diagnostics.Append(diagReq...)
 	if resp.Diagnostics.HasError() {
 		return
 	}
 
-	tflog.Trace(ctx, "creating a resource", map[string]any{"type": "gcp_flow_logs_pub_sub"})
+	tflog.Trace(ctx, "creating a resource", map[string]any{"type": "gcp_flow_logs_pubsub_topic"})
 
 	rpcCtx, rpcCancel := context.WithTimeout(ctx, r.config.RequestTimeout())
-	protoResp, err := r.config.Client().CreateGcpFlowLogsPubSub(rpcCtx, protoReq)
+	protoResp, err := r.config.Client().CreateGcpFlowLogsPubsubTopic(rpcCtx, protoReq)
 	rpcCancel()
 	if err != nil {
-		resp.Diagnostics.AddError("Config API Error", fmt.Sprintf("Unable to create gcp_flow_logs_pub_sub, got error: %s", err))
+		resp.Diagnostics.AddError("Config API Error", fmt.Sprintf("Unable to create gcp_flow_logs_pubsub_topic, got error: %s", err))
 		return
 	}
 
-	CopyCreateGcpFlowLogsPubSubResponse(&data, protoResp)
+	CopyCreateGcpFlowLogsPubsubTopicResponse(&data, protoResp)
 
-	tflog.Trace(ctx, "created a resource", map[string]any{"type": "gcp_flow_logs_pub_sub", "id": protoResp.Id})
+	tflog.Trace(ctx, "created a resource", map[string]any{"type": "gcp_flow_logs_pubsub_topic", "id": protoResp.Id})
 
 	resp.Diagnostics.Append(resp.State.Set(ctx, &data)...)
 }
 
-func (r *GcpFlowLogsPubSubResource) Read(ctx context.Context, req resource.ReadRequest, resp *resource.ReadResponse) {
-	var data GcpFlowLogsPubSubResourceModel
+func (r *GcpFlowLogsPubsubTopicResource) Read(ctx context.Context, req resource.ReadRequest, resp *resource.ReadResponse) {
+	var data GcpFlowLogsPubsubTopicResourceModel
 
 	resp.Diagnostics.Append(req.State.Get(ctx, &data)...)
 	if resp.Diagnostics.HasError() {
 		return
 	}
 
-	protoReq, diagsReq := NewReadGcpFlowLogsPubSubRequest(ctx, &data)
+	protoReq, diagsReq := NewReadGcpFlowLogsPubsubTopicRequest(ctx, &data)
 	resp.Diagnostics.Append(diagsReq...)
 	if resp.Diagnostics.HasError() {
 		return
 	}
 
-	tflog.Trace(ctx, "reading a resource", map[string]any{"type": "gcp_flow_logs_pub_sub", "id": protoReq.Id})
+	tflog.Trace(ctx, "reading a resource", map[string]any{"type": "gcp_flow_logs_pubsub_topic", "id": protoReq.Id})
 
 	rpcCtx, rpcCancel := context.WithTimeout(ctx, r.config.RequestTimeout())
-	protoResp, err := r.config.Client().ReadGcpFlowLogsPubSub(rpcCtx, protoReq)
+	protoResp, err := r.config.Client().ReadGcpFlowLogsPubsubTopic(rpcCtx, protoReq)
 	rpcCancel()
 	if err != nil {
 		switch status.Code(err) {
 		case codes.NotFound:
-			resp.Diagnostics.AddWarning("Resource Not Found", fmt.Sprintf("No gcp_flow_logs_pub_sub found with id %s", protoReq.Id))
+			resp.Diagnostics.AddWarning("Resource Not Found", fmt.Sprintf("No gcp_flow_logs_pubsub_topic found with id %s", protoReq.Id))
 			resp.State.RemoveResource(ctx)
 			return
 		default:
-			resp.Diagnostics.AddError("Config API Error", fmt.Sprintf("Unable to read gcp_flow_logs_pub_sub, got error: %s", err))
+			resp.Diagnostics.AddError("Config API Error", fmt.Sprintf("Unable to read gcp_flow_logs_pubsub_topic, got error: %s", err))
 			return
 		}
 	}
 
-	CopyReadGcpFlowLogsPubSubResponse(&data, protoResp)
+	CopyReadGcpFlowLogsPubsubTopicResponse(&data, protoResp)
 
-	tflog.Trace(ctx, "read a resource", map[string]any{"type": "gcp_flow_logs_pub_sub", "id": protoResp.Id})
+	tflog.Trace(ctx, "read a resource", map[string]any{"type": "gcp_flow_logs_pubsub_topic", "id": protoResp.Id})
 
 	resp.Diagnostics.Append(resp.State.Set(ctx, &data)...)
 }
 
-func (r *GcpFlowLogsPubSubResource) Update(ctx context.Context, req resource.UpdateRequest, resp *resource.UpdateResponse) {
-	var beforeData GcpFlowLogsPubSubResourceModel
-	var afterData GcpFlowLogsPubSubResourceModel
+func (r *GcpFlowLogsPubsubTopicResource) Update(ctx context.Context, req resource.UpdateRequest, resp *resource.UpdateResponse) {
+	var beforeData GcpFlowLogsPubsubTopicResourceModel
+	var afterData GcpFlowLogsPubsubTopicResourceModel
 
 	resp.Diagnostics.Append(req.State.Get(ctx, &beforeData)...)
 	if resp.Diagnostics.HasError() {
@@ -1957,69 +1957,69 @@ func (r *GcpFlowLogsPubSubResource) Update(ctx context.Context, req resource.Upd
 		return
 	}
 
-	protoReq, diags := NewUpdateGcpFlowLogsPubSubRequest(ctx, &beforeData, &afterData)
+	protoReq, diags := NewUpdateGcpFlowLogsPubsubTopicRequest(ctx, &beforeData, &afterData)
 	resp.Diagnostics.Append(diags...)
 	if resp.Diagnostics.HasError() {
 		return
 	}
 
-	tflog.Trace(ctx, "updating a resource", map[string]any{"type": "gcp_flow_logs_pub_sub", "id": protoReq.Id, "update_mask": protoReq.UpdateMask.Paths})
+	tflog.Trace(ctx, "updating a resource", map[string]any{"type": "gcp_flow_logs_pubsub_topic", "id": protoReq.Id, "update_mask": protoReq.UpdateMask.Paths})
 
 	rpcCtx, rpcCancel := context.WithTimeout(ctx, r.config.RequestTimeout())
-	protoResp, err := r.config.Client().UpdateGcpFlowLogsPubSub(rpcCtx, protoReq)
+	protoResp, err := r.config.Client().UpdateGcpFlowLogsPubsubTopic(rpcCtx, protoReq)
 	rpcCancel()
 	if err != nil {
 		switch status.Code(err) {
 		case codes.NotFound:
-			resp.Diagnostics.AddError("Resource Not Found", fmt.Sprintf("No gcp_flow_logs_pub_sub found with id %s", protoReq.Id))
+			resp.Diagnostics.AddError("Resource Not Found", fmt.Sprintf("No gcp_flow_logs_pubsub_topic found with id %s", protoReq.Id))
 			resp.State.RemoveResource(ctx)
 			return
 		default:
-			resp.Diagnostics.AddError("Config API Error", fmt.Sprintf("Unable to update gcp_flow_logs_pub_sub, got error: %s", err))
+			resp.Diagnostics.AddError("Config API Error", fmt.Sprintf("Unable to update gcp_flow_logs_pubsub_topic, got error: %s", err))
 			return
 		}
 	}
 
-	CopyUpdateGcpFlowLogsPubSubResponse(&afterData, protoResp)
+	CopyUpdateGcpFlowLogsPubsubTopicResponse(&afterData, protoResp)
 
-	tflog.Trace(ctx, "updated a resource", map[string]any{"type": "gcp_flow_logs_pub_sub", "id": protoResp.Id})
+	tflog.Trace(ctx, "updated a resource", map[string]any{"type": "gcp_flow_logs_pubsub_topic", "id": protoResp.Id})
 
 	resp.Diagnostics.Append(resp.State.Set(ctx, &afterData)...)
 }
 
-func (r *GcpFlowLogsPubSubResource) Delete(ctx context.Context, req resource.DeleteRequest, resp *resource.DeleteResponse) {
-	var data GcpFlowLogsPubSubResourceModel
+func (r *GcpFlowLogsPubsubTopicResource) Delete(ctx context.Context, req resource.DeleteRequest, resp *resource.DeleteResponse) {
+	var data GcpFlowLogsPubsubTopicResourceModel
 
 	resp.Diagnostics.Append(req.State.Get(ctx, &data)...)
 	if resp.Diagnostics.HasError() {
 		return
 	}
 
-	protoReq, diags := NewDeleteGcpFlowLogsPubSubRequest(ctx, &data)
+	protoReq, diags := NewDeleteGcpFlowLogsPubsubTopicRequest(ctx, &data)
 	resp.Diagnostics.Append(diags...)
 	if resp.Diagnostics.HasError() {
 		return
 	}
 
-	tflog.Trace(ctx, "deleting a resource", map[string]any{"type": "gcp_flow_logs_pub_sub", "id": protoReq.Id})
+	tflog.Trace(ctx, "deleting a resource", map[string]any{"type": "gcp_flow_logs_pubsub_topic", "id": protoReq.Id})
 
 	rpcCtx, rpcCancel := context.WithTimeout(ctx, r.config.RequestTimeout())
-	_, err := r.config.Client().DeleteGcpFlowLogsPubSub(rpcCtx, protoReq)
+	_, err := r.config.Client().DeleteGcpFlowLogsPubsubTopic(rpcCtx, protoReq)
 	rpcCancel()
 	if err != nil {
 		switch status.Code(err) {
 		case codes.NotFound:
-			tflog.Trace(ctx, "resource was already deleted", map[string]any{"type": "gcp_flow_logs_pub_sub", "id": protoReq.Id})
+			tflog.Trace(ctx, "resource was already deleted", map[string]any{"type": "gcp_flow_logs_pubsub_topic", "id": protoReq.Id})
 		default:
-			resp.Diagnostics.AddError("Config API Error", fmt.Sprintf("Unable to delete gcp_flow_logs_pub_sub, got error: %s", err))
+			resp.Diagnostics.AddError("Config API Error", fmt.Sprintf("Unable to delete gcp_flow_logs_pubsub_topic, got error: %s", err))
 			return
 		}
 	}
 
-	tflog.Trace(ctx, "deleted a resource", map[string]any{"type": "gcp_flow_logs_pub_sub", "id": protoReq.Id})
+	tflog.Trace(ctx, "deleted a resource", map[string]any{"type": "gcp_flow_logs_pubsub_topic", "id": protoReq.Id})
 }
 
-func (r *GcpFlowLogsPubSubResource) ImportState(ctx context.Context, req resource.ImportStateRequest, resp *resource.ImportStateResponse) {
+func (r *GcpFlowLogsPubsubTopicResource) ImportState(ctx context.Context, req resource.ImportStateRequest, resp *resource.ImportStateResponse) {
 	// TODO
 }
 
@@ -3495,10 +3495,10 @@ type DeploymentResourceModel struct {
 	Name                 types.String `tfsdk:"name"`
 }
 
-type GcpFlowLogsPubSubResourceModel struct {
-	Id                    types.String `tfsdk:"id"`
-	ProjectId             types.String `tfsdk:"project_id"`
-	PubSubTopicResourceId types.String `tfsdk:"pub_sub_topic_resource_id"`
+type GcpFlowLogsPubsubTopicResourceModel struct {
+	Id            types.String `tfsdk:"id"`
+	ProjectId     types.String `tfsdk:"project_id"`
+	PubsubTopicId types.String `tfsdk:"pubsub_topic_id"`
 }
 
 type GcpProjectResourceModel struct {
@@ -4917,27 +4917,27 @@ func NewDeleteDeploymentRequest(ctx context.Context, data *DeploymentResourceMod
 	return proto, diags
 }
 
-func NewCreateGcpFlowLogsPubSubRequest(ctx context.Context, data *GcpFlowLogsPubSubResourceModel) (*configv1.CreateGcpFlowLogsPubSubRequest, diag.Diagnostics) {
+func NewCreateGcpFlowLogsPubsubTopicRequest(ctx context.Context, data *GcpFlowLogsPubsubTopicResourceModel) (*configv1.CreateGcpFlowLogsPubsubTopicRequest, diag.Diagnostics) {
 	var diags diag.Diagnostics
-	proto := &configv1.CreateGcpFlowLogsPubSubRequest{}
+	proto := &configv1.CreateGcpFlowLogsPubsubTopicRequest{}
 	if !data.ProjectId.IsUnknown() && !data.ProjectId.IsNull() {
 		var dataValue attr.Value = data.ProjectId
 		var protoValue string
 		protoValue = dataValue.(types.String).ValueString()
 		proto.ProjectId = protoValue
 	}
-	if !data.PubSubTopicResourceId.IsUnknown() && !data.PubSubTopicResourceId.IsNull() {
-		var dataValue attr.Value = data.PubSubTopicResourceId
+	if !data.PubsubTopicId.IsUnknown() && !data.PubsubTopicId.IsNull() {
+		var dataValue attr.Value = data.PubsubTopicId
 		var protoValue string
 		protoValue = dataValue.(types.String).ValueString()
-		proto.PubSubTopicResourceId = protoValue
+		proto.PubsubTopicId = protoValue
 	}
 	return proto, diags
 }
 
-func NewReadGcpFlowLogsPubSubRequest(ctx context.Context, data *GcpFlowLogsPubSubResourceModel) (*configv1.ReadGcpFlowLogsPubSubRequest, diag.Diagnostics) {
+func NewReadGcpFlowLogsPubsubTopicRequest(ctx context.Context, data *GcpFlowLogsPubsubTopicResourceModel) (*configv1.ReadGcpFlowLogsPubsubTopicRequest, diag.Diagnostics) {
 	var diags diag.Diagnostics
-	proto := &configv1.ReadGcpFlowLogsPubSubRequest{}
+	proto := &configv1.ReadGcpFlowLogsPubsubTopicRequest{}
 	if !data.Id.IsUnknown() && !data.Id.IsNull() {
 		var dataValue attr.Value = data.Id
 		var protoValue string
@@ -4947,9 +4947,9 @@ func NewReadGcpFlowLogsPubSubRequest(ctx context.Context, data *GcpFlowLogsPubSu
 	return proto, diags
 }
 
-func NewDeleteGcpFlowLogsPubSubRequest(ctx context.Context, data *GcpFlowLogsPubSubResourceModel) (*configv1.DeleteGcpFlowLogsPubSubRequest, diag.Diagnostics) {
+func NewDeleteGcpFlowLogsPubsubTopicRequest(ctx context.Context, data *GcpFlowLogsPubsubTopicResourceModel) (*configv1.DeleteGcpFlowLogsPubsubTopicRequest, diag.Diagnostics) {
 	var diags diag.Diagnostics
-	proto := &configv1.DeleteGcpFlowLogsPubSubRequest{}
+	proto := &configv1.DeleteGcpFlowLogsPubsubTopicRequest{}
 	if !data.Id.IsUnknown() && !data.Id.IsNull() {
 		var dataValue attr.Value = data.Id
 		var protoValue string
@@ -6609,9 +6609,9 @@ func NewUpdateDeploymentRequest(ctx context.Context, beforeData, afterData *Depl
 	return proto, diags
 }
 
-func NewUpdateGcpFlowLogsPubSubRequest(ctx context.Context, beforeData, afterData *GcpFlowLogsPubSubResourceModel) (*configv1.UpdateGcpFlowLogsPubSubRequest, diag.Diagnostics) {
+func NewUpdateGcpFlowLogsPubsubTopicRequest(ctx context.Context, beforeData, afterData *GcpFlowLogsPubsubTopicResourceModel) (*configv1.UpdateGcpFlowLogsPubsubTopicRequest, diag.Diagnostics) {
 	var diags diag.Diagnostics
-	proto := &configv1.UpdateGcpFlowLogsPubSubRequest{}
+	proto := &configv1.UpdateGcpFlowLogsPubsubTopicRequest{}
 	proto.UpdateMask, _ = fieldmaskpb.New(proto)
 	proto.Id = beforeData.Id.ValueString()
 	return proto, diags
@@ -10287,20 +10287,20 @@ func CopyUpdateDeploymentResponse(dst *DeploymentResourceModel, src *configv1.Up
 	dst.Description = types.StringPointerValue(src.Description)
 	dst.Name = types.StringValue(src.Name)
 }
-func CopyCreateGcpFlowLogsPubSubResponse(dst *GcpFlowLogsPubSubResourceModel, src *configv1.CreateGcpFlowLogsPubSubResponse) {
+func CopyCreateGcpFlowLogsPubsubTopicResponse(dst *GcpFlowLogsPubsubTopicResourceModel, src *configv1.CreateGcpFlowLogsPubsubTopicResponse) {
 	dst.Id = types.StringValue(src.Id)
 	dst.ProjectId = types.StringValue(src.ProjectId)
-	dst.PubSubTopicResourceId = types.StringValue(src.PubSubTopicResourceId)
+	dst.PubsubTopicId = types.StringValue(src.PubsubTopicId)
 }
-func CopyReadGcpFlowLogsPubSubResponse(dst *GcpFlowLogsPubSubResourceModel, src *configv1.ReadGcpFlowLogsPubSubResponse) {
+func CopyReadGcpFlowLogsPubsubTopicResponse(dst *GcpFlowLogsPubsubTopicResourceModel, src *configv1.ReadGcpFlowLogsPubsubTopicResponse) {
 	dst.Id = types.StringValue(src.Id)
 	dst.ProjectId = types.StringValue(src.ProjectId)
-	dst.PubSubTopicResourceId = types.StringValue(src.PubSubTopicResourceId)
+	dst.PubsubTopicId = types.StringValue(src.PubsubTopicId)
 }
-func CopyUpdateGcpFlowLogsPubSubResponse(dst *GcpFlowLogsPubSubResourceModel, src *configv1.UpdateGcpFlowLogsPubSubResponse) {
+func CopyUpdateGcpFlowLogsPubsubTopicResponse(dst *GcpFlowLogsPubsubTopicResourceModel, src *configv1.UpdateGcpFlowLogsPubsubTopicResponse) {
 	dst.Id = types.StringValue(src.Id)
 	dst.ProjectId = types.StringValue(src.ProjectId)
-	dst.PubSubTopicResourceId = types.StringValue(src.PubSubTopicResourceId)
+	dst.PubsubTopicId = types.StringValue(src.PubsubTopicId)
 }
 func CopyCreateGcpProjectResponse(dst *GcpProjectResourceModel, src *configv1.CreateGcpProjectResponse) {
 	dst.Id = types.StringValue(src.Id)

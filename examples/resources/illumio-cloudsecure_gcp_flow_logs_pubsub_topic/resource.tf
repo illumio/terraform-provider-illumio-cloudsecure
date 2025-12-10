@@ -8,9 +8,9 @@
   which abstract permissions and configuration for secure, consistent deployment.
 */
 
-resource "illumio-cloudsecure_gcp_flow_logs_pub_sub" "managed_flow_log_pub_sub" {
-  project_id                = "my-gcp-project-id"
-  pub_sub_topic_resource_id = "projects/my-gcp-project-id/topics/my-flow-logs-topic"
+resource "illumio-cloudsecure_gcp_flow_logs_pubsub_topic" "managed_flow_log_pubsub_topic" {
+  project_id      = "my-gcp-project-id"
+  pubsub_topic_id = "projects/my-gcp-project-id/topics/my-flow-logs-topic"
 }
 
 /*

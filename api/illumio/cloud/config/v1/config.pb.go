@@ -6098,28 +6098,28 @@ func (x *DeleteDeploymentRequest) GetId() string {
 	return ""
 }
 
-type CreateGcpFlowLogsPubSubRequest struct {
-	state                 protoimpl.MessageState `protogen:"open.v1"`
-	ProjectId             string                 `protobuf:"bytes,2,opt,name=project_id,json=projectId,proto3" json:"project_id,omitempty"`
-	PubSubTopicResourceId string                 `protobuf:"bytes,5,opt,name=pub_sub_topic_resource_id,json=pubSubTopicResourceId,proto3" json:"pub_sub_topic_resource_id,omitempty"`
-	unknownFields         protoimpl.UnknownFields
-	sizeCache             protoimpl.SizeCache
+type CreateGcpFlowLogsPubsubTopicRequest struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	ProjectId     string                 `protobuf:"bytes,2,opt,name=project_id,json=projectId,proto3" json:"project_id,omitempty"`
+	PubsubTopicId string                 `protobuf:"bytes,3,opt,name=pubsub_topic_id,json=pubsubTopicId,proto3" json:"pubsub_topic_id,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
 }
 
-func (x *CreateGcpFlowLogsPubSubRequest) Reset() {
-	*x = CreateGcpFlowLogsPubSubRequest{}
+func (x *CreateGcpFlowLogsPubsubTopicRequest) Reset() {
+	*x = CreateGcpFlowLogsPubsubTopicRequest{}
 	mi := &file_illumio_cloud_config_v1_config_proto_msgTypes[68]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *CreateGcpFlowLogsPubSubRequest) String() string {
+func (x *CreateGcpFlowLogsPubsubTopicRequest) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*CreateGcpFlowLogsPubSubRequest) ProtoMessage() {}
+func (*CreateGcpFlowLogsPubsubTopicRequest) ProtoMessage() {}
 
-func (x *CreateGcpFlowLogsPubSubRequest) ProtoReflect() protoreflect.Message {
+func (x *CreateGcpFlowLogsPubsubTopicRequest) ProtoReflect() protoreflect.Message {
 	mi := &file_illumio_cloud_config_v1_config_proto_msgTypes[68]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -6131,48 +6131,48 @@ func (x *CreateGcpFlowLogsPubSubRequest) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use CreateGcpFlowLogsPubSubRequest.ProtoReflect.Descriptor instead.
-func (*CreateGcpFlowLogsPubSubRequest) Descriptor() ([]byte, []int) {
+// Deprecated: Use CreateGcpFlowLogsPubsubTopicRequest.ProtoReflect.Descriptor instead.
+func (*CreateGcpFlowLogsPubsubTopicRequest) Descriptor() ([]byte, []int) {
 	return file_illumio_cloud_config_v1_config_proto_rawDescGZIP(), []int{68}
 }
 
-func (x *CreateGcpFlowLogsPubSubRequest) GetProjectId() string {
+func (x *CreateGcpFlowLogsPubsubTopicRequest) GetProjectId() string {
 	if x != nil {
 		return x.ProjectId
 	}
 	return ""
 }
 
-func (x *CreateGcpFlowLogsPubSubRequest) GetPubSubTopicResourceId() string {
+func (x *CreateGcpFlowLogsPubsubTopicRequest) GetPubsubTopicId() string {
 	if x != nil {
-		return x.PubSubTopicResourceId
+		return x.PubsubTopicId
 	}
 	return ""
 }
 
-type CreateGcpFlowLogsPubSubResponse struct {
-	state                 protoimpl.MessageState `protogen:"open.v1"`
-	Id                    string                 `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
-	ProjectId             string                 `protobuf:"bytes,2,opt,name=project_id,json=projectId,proto3" json:"project_id,omitempty"`
-	PubSubTopicResourceId string                 `protobuf:"bytes,5,opt,name=pub_sub_topic_resource_id,json=pubSubTopicResourceId,proto3" json:"pub_sub_topic_resource_id,omitempty"`
-	unknownFields         protoimpl.UnknownFields
-	sizeCache             protoimpl.SizeCache
+type CreateGcpFlowLogsPubsubTopicResponse struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Id            string                 `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
+	ProjectId     string                 `protobuf:"bytes,2,opt,name=project_id,json=projectId,proto3" json:"project_id,omitempty"`
+	PubsubTopicId string                 `protobuf:"bytes,3,opt,name=pubsub_topic_id,json=pubsubTopicId,proto3" json:"pubsub_topic_id,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
 }
 
-func (x *CreateGcpFlowLogsPubSubResponse) Reset() {
-	*x = CreateGcpFlowLogsPubSubResponse{}
+func (x *CreateGcpFlowLogsPubsubTopicResponse) Reset() {
+	*x = CreateGcpFlowLogsPubsubTopicResponse{}
 	mi := &file_illumio_cloud_config_v1_config_proto_msgTypes[69]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *CreateGcpFlowLogsPubSubResponse) String() string {
+func (x *CreateGcpFlowLogsPubsubTopicResponse) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*CreateGcpFlowLogsPubSubResponse) ProtoMessage() {}
+func (*CreateGcpFlowLogsPubsubTopicResponse) ProtoMessage() {}
 
-func (x *CreateGcpFlowLogsPubSubResponse) ProtoReflect() protoreflect.Message {
+func (x *CreateGcpFlowLogsPubsubTopicResponse) ProtoReflect() protoreflect.Message {
 	mi := &file_illumio_cloud_config_v1_config_proto_msgTypes[69]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -6184,53 +6184,53 @@ func (x *CreateGcpFlowLogsPubSubResponse) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use CreateGcpFlowLogsPubSubResponse.ProtoReflect.Descriptor instead.
-func (*CreateGcpFlowLogsPubSubResponse) Descriptor() ([]byte, []int) {
+// Deprecated: Use CreateGcpFlowLogsPubsubTopicResponse.ProtoReflect.Descriptor instead.
+func (*CreateGcpFlowLogsPubsubTopicResponse) Descriptor() ([]byte, []int) {
 	return file_illumio_cloud_config_v1_config_proto_rawDescGZIP(), []int{69}
 }
 
-func (x *CreateGcpFlowLogsPubSubResponse) GetId() string {
+func (x *CreateGcpFlowLogsPubsubTopicResponse) GetId() string {
 	if x != nil {
 		return x.Id
 	}
 	return ""
 }
 
-func (x *CreateGcpFlowLogsPubSubResponse) GetProjectId() string {
+func (x *CreateGcpFlowLogsPubsubTopicResponse) GetProjectId() string {
 	if x != nil {
 		return x.ProjectId
 	}
 	return ""
 }
 
-func (x *CreateGcpFlowLogsPubSubResponse) GetPubSubTopicResourceId() string {
+func (x *CreateGcpFlowLogsPubsubTopicResponse) GetPubsubTopicId() string {
 	if x != nil {
-		return x.PubSubTopicResourceId
+		return x.PubsubTopicId
 	}
 	return ""
 }
 
-type ReadGcpFlowLogsPubSubRequest struct {
+type ReadGcpFlowLogsPubsubTopicRequest struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
 	Id            string                 `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
 
-func (x *ReadGcpFlowLogsPubSubRequest) Reset() {
-	*x = ReadGcpFlowLogsPubSubRequest{}
+func (x *ReadGcpFlowLogsPubsubTopicRequest) Reset() {
+	*x = ReadGcpFlowLogsPubsubTopicRequest{}
 	mi := &file_illumio_cloud_config_v1_config_proto_msgTypes[70]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *ReadGcpFlowLogsPubSubRequest) String() string {
+func (x *ReadGcpFlowLogsPubsubTopicRequest) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*ReadGcpFlowLogsPubSubRequest) ProtoMessage() {}
+func (*ReadGcpFlowLogsPubsubTopicRequest) ProtoMessage() {}
 
-func (x *ReadGcpFlowLogsPubSubRequest) ProtoReflect() protoreflect.Message {
+func (x *ReadGcpFlowLogsPubsubTopicRequest) ProtoReflect() protoreflect.Message {
 	mi := &file_illumio_cloud_config_v1_config_proto_msgTypes[70]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -6242,41 +6242,41 @@ func (x *ReadGcpFlowLogsPubSubRequest) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use ReadGcpFlowLogsPubSubRequest.ProtoReflect.Descriptor instead.
-func (*ReadGcpFlowLogsPubSubRequest) Descriptor() ([]byte, []int) {
+// Deprecated: Use ReadGcpFlowLogsPubsubTopicRequest.ProtoReflect.Descriptor instead.
+func (*ReadGcpFlowLogsPubsubTopicRequest) Descriptor() ([]byte, []int) {
 	return file_illumio_cloud_config_v1_config_proto_rawDescGZIP(), []int{70}
 }
 
-func (x *ReadGcpFlowLogsPubSubRequest) GetId() string {
+func (x *ReadGcpFlowLogsPubsubTopicRequest) GetId() string {
 	if x != nil {
 		return x.Id
 	}
 	return ""
 }
 
-type ReadGcpFlowLogsPubSubResponse struct {
-	state                 protoimpl.MessageState `protogen:"open.v1"`
-	Id                    string                 `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
-	ProjectId             string                 `protobuf:"bytes,2,opt,name=project_id,json=projectId,proto3" json:"project_id,omitempty"`
-	PubSubTopicResourceId string                 `protobuf:"bytes,5,opt,name=pub_sub_topic_resource_id,json=pubSubTopicResourceId,proto3" json:"pub_sub_topic_resource_id,omitempty"`
-	unknownFields         protoimpl.UnknownFields
-	sizeCache             protoimpl.SizeCache
+type ReadGcpFlowLogsPubsubTopicResponse struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Id            string                 `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
+	ProjectId     string                 `protobuf:"bytes,2,opt,name=project_id,json=projectId,proto3" json:"project_id,omitempty"`
+	PubsubTopicId string                 `protobuf:"bytes,3,opt,name=pubsub_topic_id,json=pubsubTopicId,proto3" json:"pubsub_topic_id,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
 }
 
-func (x *ReadGcpFlowLogsPubSubResponse) Reset() {
-	*x = ReadGcpFlowLogsPubSubResponse{}
+func (x *ReadGcpFlowLogsPubsubTopicResponse) Reset() {
+	*x = ReadGcpFlowLogsPubsubTopicResponse{}
 	mi := &file_illumio_cloud_config_v1_config_proto_msgTypes[71]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *ReadGcpFlowLogsPubSubResponse) String() string {
+func (x *ReadGcpFlowLogsPubsubTopicResponse) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*ReadGcpFlowLogsPubSubResponse) ProtoMessage() {}
+func (*ReadGcpFlowLogsPubsubTopicResponse) ProtoMessage() {}
 
-func (x *ReadGcpFlowLogsPubSubResponse) ProtoReflect() protoreflect.Message {
+func (x *ReadGcpFlowLogsPubsubTopicResponse) ProtoReflect() protoreflect.Message {
 	mi := &file_illumio_cloud_config_v1_config_proto_msgTypes[71]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -6288,33 +6288,33 @@ func (x *ReadGcpFlowLogsPubSubResponse) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use ReadGcpFlowLogsPubSubResponse.ProtoReflect.Descriptor instead.
-func (*ReadGcpFlowLogsPubSubResponse) Descriptor() ([]byte, []int) {
+// Deprecated: Use ReadGcpFlowLogsPubsubTopicResponse.ProtoReflect.Descriptor instead.
+func (*ReadGcpFlowLogsPubsubTopicResponse) Descriptor() ([]byte, []int) {
 	return file_illumio_cloud_config_v1_config_proto_rawDescGZIP(), []int{71}
 }
 
-func (x *ReadGcpFlowLogsPubSubResponse) GetId() string {
+func (x *ReadGcpFlowLogsPubsubTopicResponse) GetId() string {
 	if x != nil {
 		return x.Id
 	}
 	return ""
 }
 
-func (x *ReadGcpFlowLogsPubSubResponse) GetProjectId() string {
+func (x *ReadGcpFlowLogsPubsubTopicResponse) GetProjectId() string {
 	if x != nil {
 		return x.ProjectId
 	}
 	return ""
 }
 
-func (x *ReadGcpFlowLogsPubSubResponse) GetPubSubTopicResourceId() string {
+func (x *ReadGcpFlowLogsPubsubTopicResponse) GetPubsubTopicId() string {
 	if x != nil {
-		return x.PubSubTopicResourceId
+		return x.PubsubTopicId
 	}
 	return ""
 }
 
-type UpdateGcpFlowLogsPubSubRequest struct {
+type UpdateGcpFlowLogsPubsubTopicRequest struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
 	Id            string                 `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
 	UpdateMask    *fieldmaskpb.FieldMask `protobuf:"bytes,4,opt,name=update_mask,json=updateMask,proto3" json:"update_mask,omitempty"`
@@ -6322,20 +6322,20 @@ type UpdateGcpFlowLogsPubSubRequest struct {
 	sizeCache     protoimpl.SizeCache
 }
 
-func (x *UpdateGcpFlowLogsPubSubRequest) Reset() {
-	*x = UpdateGcpFlowLogsPubSubRequest{}
+func (x *UpdateGcpFlowLogsPubsubTopicRequest) Reset() {
+	*x = UpdateGcpFlowLogsPubsubTopicRequest{}
 	mi := &file_illumio_cloud_config_v1_config_proto_msgTypes[72]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *UpdateGcpFlowLogsPubSubRequest) String() string {
+func (x *UpdateGcpFlowLogsPubsubTopicRequest) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*UpdateGcpFlowLogsPubSubRequest) ProtoMessage() {}
+func (*UpdateGcpFlowLogsPubsubTopicRequest) ProtoMessage() {}
 
-func (x *UpdateGcpFlowLogsPubSubRequest) ProtoReflect() protoreflect.Message {
+func (x *UpdateGcpFlowLogsPubsubTopicRequest) ProtoReflect() protoreflect.Message {
 	mi := &file_illumio_cloud_config_v1_config_proto_msgTypes[72]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -6347,48 +6347,48 @@ func (x *UpdateGcpFlowLogsPubSubRequest) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use UpdateGcpFlowLogsPubSubRequest.ProtoReflect.Descriptor instead.
-func (*UpdateGcpFlowLogsPubSubRequest) Descriptor() ([]byte, []int) {
+// Deprecated: Use UpdateGcpFlowLogsPubsubTopicRequest.ProtoReflect.Descriptor instead.
+func (*UpdateGcpFlowLogsPubsubTopicRequest) Descriptor() ([]byte, []int) {
 	return file_illumio_cloud_config_v1_config_proto_rawDescGZIP(), []int{72}
 }
 
-func (x *UpdateGcpFlowLogsPubSubRequest) GetId() string {
+func (x *UpdateGcpFlowLogsPubsubTopicRequest) GetId() string {
 	if x != nil {
 		return x.Id
 	}
 	return ""
 }
 
-func (x *UpdateGcpFlowLogsPubSubRequest) GetUpdateMask() *fieldmaskpb.FieldMask {
+func (x *UpdateGcpFlowLogsPubsubTopicRequest) GetUpdateMask() *fieldmaskpb.FieldMask {
 	if x != nil {
 		return x.UpdateMask
 	}
 	return nil
 }
 
-type UpdateGcpFlowLogsPubSubResponse struct {
-	state                 protoimpl.MessageState `protogen:"open.v1"`
-	Id                    string                 `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
-	ProjectId             string                 `protobuf:"bytes,2,opt,name=project_id,json=projectId,proto3" json:"project_id,omitempty"`
-	PubSubTopicResourceId string                 `protobuf:"bytes,5,opt,name=pub_sub_topic_resource_id,json=pubSubTopicResourceId,proto3" json:"pub_sub_topic_resource_id,omitempty"`
-	unknownFields         protoimpl.UnknownFields
-	sizeCache             protoimpl.SizeCache
+type UpdateGcpFlowLogsPubsubTopicResponse struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Id            string                 `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
+	ProjectId     string                 `protobuf:"bytes,2,opt,name=project_id,json=projectId,proto3" json:"project_id,omitempty"`
+	PubsubTopicId string                 `protobuf:"bytes,3,opt,name=pubsub_topic_id,json=pubsubTopicId,proto3" json:"pubsub_topic_id,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
 }
 
-func (x *UpdateGcpFlowLogsPubSubResponse) Reset() {
-	*x = UpdateGcpFlowLogsPubSubResponse{}
+func (x *UpdateGcpFlowLogsPubsubTopicResponse) Reset() {
+	*x = UpdateGcpFlowLogsPubsubTopicResponse{}
 	mi := &file_illumio_cloud_config_v1_config_proto_msgTypes[73]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *UpdateGcpFlowLogsPubSubResponse) String() string {
+func (x *UpdateGcpFlowLogsPubsubTopicResponse) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*UpdateGcpFlowLogsPubSubResponse) ProtoMessage() {}
+func (*UpdateGcpFlowLogsPubsubTopicResponse) ProtoMessage() {}
 
-func (x *UpdateGcpFlowLogsPubSubResponse) ProtoReflect() protoreflect.Message {
+func (x *UpdateGcpFlowLogsPubsubTopicResponse) ProtoReflect() protoreflect.Message {
 	mi := &file_illumio_cloud_config_v1_config_proto_msgTypes[73]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -6400,53 +6400,53 @@ func (x *UpdateGcpFlowLogsPubSubResponse) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use UpdateGcpFlowLogsPubSubResponse.ProtoReflect.Descriptor instead.
-func (*UpdateGcpFlowLogsPubSubResponse) Descriptor() ([]byte, []int) {
+// Deprecated: Use UpdateGcpFlowLogsPubsubTopicResponse.ProtoReflect.Descriptor instead.
+func (*UpdateGcpFlowLogsPubsubTopicResponse) Descriptor() ([]byte, []int) {
 	return file_illumio_cloud_config_v1_config_proto_rawDescGZIP(), []int{73}
 }
 
-func (x *UpdateGcpFlowLogsPubSubResponse) GetId() string {
+func (x *UpdateGcpFlowLogsPubsubTopicResponse) GetId() string {
 	if x != nil {
 		return x.Id
 	}
 	return ""
 }
 
-func (x *UpdateGcpFlowLogsPubSubResponse) GetProjectId() string {
+func (x *UpdateGcpFlowLogsPubsubTopicResponse) GetProjectId() string {
 	if x != nil {
 		return x.ProjectId
 	}
 	return ""
 }
 
-func (x *UpdateGcpFlowLogsPubSubResponse) GetPubSubTopicResourceId() string {
+func (x *UpdateGcpFlowLogsPubsubTopicResponse) GetPubsubTopicId() string {
 	if x != nil {
-		return x.PubSubTopicResourceId
+		return x.PubsubTopicId
 	}
 	return ""
 }
 
-type DeleteGcpFlowLogsPubSubRequest struct {
+type DeleteGcpFlowLogsPubsubTopicRequest struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
 	Id            string                 `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
 
-func (x *DeleteGcpFlowLogsPubSubRequest) Reset() {
-	*x = DeleteGcpFlowLogsPubSubRequest{}
+func (x *DeleteGcpFlowLogsPubsubTopicRequest) Reset() {
+	*x = DeleteGcpFlowLogsPubsubTopicRequest{}
 	mi := &file_illumio_cloud_config_v1_config_proto_msgTypes[74]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *DeleteGcpFlowLogsPubSubRequest) String() string {
+func (x *DeleteGcpFlowLogsPubsubTopicRequest) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*DeleteGcpFlowLogsPubSubRequest) ProtoMessage() {}
+func (*DeleteGcpFlowLogsPubsubTopicRequest) ProtoMessage() {}
 
-func (x *DeleteGcpFlowLogsPubSubRequest) ProtoReflect() protoreflect.Message {
+func (x *DeleteGcpFlowLogsPubsubTopicRequest) ProtoReflect() protoreflect.Message {
 	mi := &file_illumio_cloud_config_v1_config_proto_msgTypes[74]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -6458,12 +6458,12 @@ func (x *DeleteGcpFlowLogsPubSubRequest) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use DeleteGcpFlowLogsPubSubRequest.ProtoReflect.Descriptor instead.
-func (*DeleteGcpFlowLogsPubSubRequest) Descriptor() ([]byte, []int) {
+// Deprecated: Use DeleteGcpFlowLogsPubsubTopicRequest.ProtoReflect.Descriptor instead.
+func (*DeleteGcpFlowLogsPubsubTopicRequest) Descriptor() ([]byte, []int) {
 	return file_illumio_cloud_config_v1_config_proto_rawDescGZIP(), []int{74}
 }
 
-func (x *DeleteGcpFlowLogsPubSubRequest) GetId() string {
+func (x *DeleteGcpFlowLogsPubsubTopicRequest) GetId() string {
 	if x != nil {
 		return x.Id
 	}
@@ -10844,33 +10844,33 @@ const file_illumio_cloud_config_v1_config_proto_rawDesc = "" +
 	"\x04name\x18\r \x01(\tR\x04nameB\x0e\n" +
 	"\f_description\")\n" +
 	"\x17DeleteDeploymentRequest\x12\x0e\n" +
-	"\x02id\x18\x01 \x01(\tR\x02id\"y\n" +
-	"\x1eCreateGcpFlowLogsPubSubRequest\x12\x1d\n" +
+	"\x02id\x18\x01 \x01(\tR\x02id\"l\n" +
+	"#CreateGcpFlowLogsPubsubTopicRequest\x12\x1d\n" +
 	"\n" +
-	"project_id\x18\x02 \x01(\tR\tprojectId\x128\n" +
-	"\x19pub_sub_topic_resource_id\x18\x05 \x01(\tR\x15pubSubTopicResourceId\"\x8a\x01\n" +
-	"\x1fCreateGcpFlowLogsPubSubResponse\x12\x0e\n" +
+	"project_id\x18\x02 \x01(\tR\tprojectId\x12&\n" +
+	"\x0fpubsub_topic_id\x18\x03 \x01(\tR\rpubsubTopicId\"}\n" +
+	"$CreateGcpFlowLogsPubsubTopicResponse\x12\x0e\n" +
 	"\x02id\x18\x01 \x01(\tR\x02id\x12\x1d\n" +
 	"\n" +
-	"project_id\x18\x02 \x01(\tR\tprojectId\x128\n" +
-	"\x19pub_sub_topic_resource_id\x18\x05 \x01(\tR\x15pubSubTopicResourceId\".\n" +
-	"\x1cReadGcpFlowLogsPubSubRequest\x12\x0e\n" +
-	"\x02id\x18\x01 \x01(\tR\x02id\"\x88\x01\n" +
-	"\x1dReadGcpFlowLogsPubSubResponse\x12\x0e\n" +
+	"project_id\x18\x02 \x01(\tR\tprojectId\x12&\n" +
+	"\x0fpubsub_topic_id\x18\x03 \x01(\tR\rpubsubTopicId\"3\n" +
+	"!ReadGcpFlowLogsPubsubTopicRequest\x12\x0e\n" +
+	"\x02id\x18\x01 \x01(\tR\x02id\"{\n" +
+	"\"ReadGcpFlowLogsPubsubTopicResponse\x12\x0e\n" +
 	"\x02id\x18\x01 \x01(\tR\x02id\x12\x1d\n" +
 	"\n" +
-	"project_id\x18\x02 \x01(\tR\tprojectId\x128\n" +
-	"\x19pub_sub_topic_resource_id\x18\x05 \x01(\tR\x15pubSubTopicResourceId\"m\n" +
-	"\x1eUpdateGcpFlowLogsPubSubRequest\x12\x0e\n" +
+	"project_id\x18\x02 \x01(\tR\tprojectId\x12&\n" +
+	"\x0fpubsub_topic_id\x18\x03 \x01(\tR\rpubsubTopicId\"r\n" +
+	"#UpdateGcpFlowLogsPubsubTopicRequest\x12\x0e\n" +
 	"\x02id\x18\x01 \x01(\tR\x02id\x12;\n" +
 	"\vupdate_mask\x18\x04 \x01(\v2\x1a.google.protobuf.FieldMaskR\n" +
-	"updateMask\"\x8a\x01\n" +
-	"\x1fUpdateGcpFlowLogsPubSubResponse\x12\x0e\n" +
+	"updateMask\"}\n" +
+	"$UpdateGcpFlowLogsPubsubTopicResponse\x12\x0e\n" +
 	"\x02id\x18\x01 \x01(\tR\x02id\x12\x1d\n" +
 	"\n" +
-	"project_id\x18\x02 \x01(\tR\tprojectId\x128\n" +
-	"\x19pub_sub_topic_resource_id\x18\x05 \x01(\tR\x15pubSubTopicResourceId\"0\n" +
-	"\x1eDeleteGcpFlowLogsPubSubRequest\x12\x0e\n" +
+	"project_id\x18\x02 \x01(\tR\tprojectId\x12&\n" +
+	"\x0fpubsub_topic_id\x18\x03 \x01(\tR\rpubsubTopicId\"5\n" +
+	"#DeleteGcpFlowLogsPubsubTopicRequest\x12\x0e\n" +
 	"\x02id\x18\x01 \x01(\tR\x02id\"\xbd\x01\n" +
 	"\x17CreateGcpProjectRequest\x12\x12\n" +
 	"\x04mode\x18\x02 \x01(\tR\x04mode\x12\x12\n" +
@@ -11196,7 +11196,7 @@ const file_illumio_cloud_config_v1_config_proto_rawDesc = "" +
 	"\x03key\x18\x05 \x01(\tR\x03key\x12\x12\n" +
 	"\x04name\x18\x06 \x01(\tR\x04name\")\n" +
 	"\x17DeleteTagToLabelRequest\x12\x0e\n" +
-	"\x02id\x18\x01 \x01(\tR\x02id2\x9dF\n" +
+	"\x02id\x18\x01 \x01(\tR\x02id2\xd4F\n" +
 	"\rConfigService\x12z\n" +
 	"\x11CreateApplication\x121.illumio.cloud.config.v1.CreateApplicationRequest\x1a2.illumio.cloud.config.v1.CreateApplicationResponse\x12t\n" +
 	"\x0fReadApplication\x12/.illumio.cloud.config.v1.ReadApplicationRequest\x1a0.illumio.cloud.config.v1.ReadApplicationResponse\x12z\n" +
@@ -11233,11 +11233,11 @@ const file_illumio_cloud_config_v1_config_proto_rawDesc = "" +
 	"\x10CreateDeployment\x120.illumio.cloud.config.v1.CreateDeploymentRequest\x1a1.illumio.cloud.config.v1.CreateDeploymentResponse\x12q\n" +
 	"\x0eReadDeployment\x12..illumio.cloud.config.v1.ReadDeploymentRequest\x1a/.illumio.cloud.config.v1.ReadDeploymentResponse\x12w\n" +
 	"\x10UpdateDeployment\x120.illumio.cloud.config.v1.UpdateDeploymentRequest\x1a1.illumio.cloud.config.v1.UpdateDeploymentResponse\x12\\\n" +
-	"\x10DeleteDeployment\x120.illumio.cloud.config.v1.DeleteDeploymentRequest\x1a\x16.google.protobuf.Empty\x12\x8c\x01\n" +
-	"\x17CreateGcpFlowLogsPubSub\x127.illumio.cloud.config.v1.CreateGcpFlowLogsPubSubRequest\x1a8.illumio.cloud.config.v1.CreateGcpFlowLogsPubSubResponse\x12\x86\x01\n" +
-	"\x15ReadGcpFlowLogsPubSub\x125.illumio.cloud.config.v1.ReadGcpFlowLogsPubSubRequest\x1a6.illumio.cloud.config.v1.ReadGcpFlowLogsPubSubResponse\x12\x8c\x01\n" +
-	"\x17UpdateGcpFlowLogsPubSub\x127.illumio.cloud.config.v1.UpdateGcpFlowLogsPubSubRequest\x1a8.illumio.cloud.config.v1.UpdateGcpFlowLogsPubSubResponse\x12j\n" +
-	"\x17DeleteGcpFlowLogsPubSub\x127.illumio.cloud.config.v1.DeleteGcpFlowLogsPubSubRequest\x1a\x16.google.protobuf.Empty\x12w\n" +
+	"\x10DeleteDeployment\x120.illumio.cloud.config.v1.DeleteDeploymentRequest\x1a\x16.google.protobuf.Empty\x12\x9b\x01\n" +
+	"\x1cCreateGcpFlowLogsPubsubTopic\x12<.illumio.cloud.config.v1.CreateGcpFlowLogsPubsubTopicRequest\x1a=.illumio.cloud.config.v1.CreateGcpFlowLogsPubsubTopicResponse\x12\x95\x01\n" +
+	"\x1aReadGcpFlowLogsPubsubTopic\x12:.illumio.cloud.config.v1.ReadGcpFlowLogsPubsubTopicRequest\x1a;.illumio.cloud.config.v1.ReadGcpFlowLogsPubsubTopicResponse\x12\x9b\x01\n" +
+	"\x1cUpdateGcpFlowLogsPubsubTopic\x12<.illumio.cloud.config.v1.UpdateGcpFlowLogsPubsubTopicRequest\x1a=.illumio.cloud.config.v1.UpdateGcpFlowLogsPubsubTopicResponse\x12t\n" +
+	"\x1cDeleteGcpFlowLogsPubsubTopic\x12<.illumio.cloud.config.v1.DeleteGcpFlowLogsPubsubTopicRequest\x1a\x16.google.protobuf.Empty\x12w\n" +
 	"\x10CreateGcpProject\x120.illumio.cloud.config.v1.CreateGcpProjectRequest\x1a1.illumio.cloud.config.v1.CreateGcpProjectResponse\x12q\n" +
 	"\x0eReadGcpProject\x12..illumio.cloud.config.v1.ReadGcpProjectRequest\x1a/.illumio.cloud.config.v1.ReadGcpProjectResponse\x12w\n" +
 	"\x10UpdateGcpProject\x120.illumio.cloud.config.v1.UpdateGcpProjectRequest\x1a1.illumio.cloud.config.v1.UpdateGcpProjectResponse\x12\\\n" +
@@ -11351,13 +11351,13 @@ var file_illumio_cloud_config_v1_config_proto_goTypes = []any{
 	(*UpdateDeploymentRequest)(nil),                      // 65: illumio.cloud.config.v1.UpdateDeploymentRequest
 	(*UpdateDeploymentResponse)(nil),                     // 66: illumio.cloud.config.v1.UpdateDeploymentResponse
 	(*DeleteDeploymentRequest)(nil),                      // 67: illumio.cloud.config.v1.DeleteDeploymentRequest
-	(*CreateGcpFlowLogsPubSubRequest)(nil),               // 68: illumio.cloud.config.v1.CreateGcpFlowLogsPubSubRequest
-	(*CreateGcpFlowLogsPubSubResponse)(nil),              // 69: illumio.cloud.config.v1.CreateGcpFlowLogsPubSubResponse
-	(*ReadGcpFlowLogsPubSubRequest)(nil),                 // 70: illumio.cloud.config.v1.ReadGcpFlowLogsPubSubRequest
-	(*ReadGcpFlowLogsPubSubResponse)(nil),                // 71: illumio.cloud.config.v1.ReadGcpFlowLogsPubSubResponse
-	(*UpdateGcpFlowLogsPubSubRequest)(nil),               // 72: illumio.cloud.config.v1.UpdateGcpFlowLogsPubSubRequest
-	(*UpdateGcpFlowLogsPubSubResponse)(nil),              // 73: illumio.cloud.config.v1.UpdateGcpFlowLogsPubSubResponse
-	(*DeleteGcpFlowLogsPubSubRequest)(nil),               // 74: illumio.cloud.config.v1.DeleteGcpFlowLogsPubSubRequest
+	(*CreateGcpFlowLogsPubsubTopicRequest)(nil),          // 68: illumio.cloud.config.v1.CreateGcpFlowLogsPubsubTopicRequest
+	(*CreateGcpFlowLogsPubsubTopicResponse)(nil),         // 69: illumio.cloud.config.v1.CreateGcpFlowLogsPubsubTopicResponse
+	(*ReadGcpFlowLogsPubsubTopicRequest)(nil),            // 70: illumio.cloud.config.v1.ReadGcpFlowLogsPubsubTopicRequest
+	(*ReadGcpFlowLogsPubsubTopicResponse)(nil),           // 71: illumio.cloud.config.v1.ReadGcpFlowLogsPubsubTopicResponse
+	(*UpdateGcpFlowLogsPubsubTopicRequest)(nil),          // 72: illumio.cloud.config.v1.UpdateGcpFlowLogsPubsubTopicRequest
+	(*UpdateGcpFlowLogsPubsubTopicResponse)(nil),         // 73: illumio.cloud.config.v1.UpdateGcpFlowLogsPubsubTopicResponse
+	(*DeleteGcpFlowLogsPubsubTopicRequest)(nil),          // 74: illumio.cloud.config.v1.DeleteGcpFlowLogsPubsubTopicRequest
 	(*CreateGcpProjectRequest)(nil),                      // 75: illumio.cloud.config.v1.CreateGcpProjectRequest
 	(*CreateGcpProjectResponse)(nil),                     // 76: illumio.cloud.config.v1.CreateGcpProjectResponse
 	(*ReadGcpProjectRequest)(nil),                        // 77: illumio.cloud.config.v1.ReadGcpProjectRequest
@@ -11451,7 +11451,7 @@ var file_illumio_cloud_config_v1_config_proto_depIdxs = []int32{
 	130, // 31: illumio.cloud.config.v1.UpdateDeploymentRequest.update_mask:type_name -> google.protobuf.FieldMask
 	59,  // 32: illumio.cloud.config.v1.UpdateDeploymentResponse.aws_tags:type_name -> illumio.cloud.config.v1.Deployment_AwsTags
 	60,  // 33: illumio.cloud.config.v1.UpdateDeploymentResponse.azure_tags:type_name -> illumio.cloud.config.v1.Deployment_AzureTags
-	130, // 34: illumio.cloud.config.v1.UpdateGcpFlowLogsPubSubRequest.update_mask:type_name -> google.protobuf.FieldMask
+	130, // 34: illumio.cloud.config.v1.UpdateGcpFlowLogsPubsubTopicRequest.update_mask:type_name -> google.protobuf.FieldMask
 	130, // 35: illumio.cloud.config.v1.UpdateGcpProjectRequest.update_mask:type_name -> google.protobuf.FieldMask
 	82,  // 36: illumio.cloud.config.v1.CreateIpListRequest.ip_addresses:type_name -> illumio.cloud.config.v1.IpList_IpAddresses
 	83,  // 37: illumio.cloud.config.v1.CreateIpListRequest.ip_ranges:type_name -> illumio.cloud.config.v1.IpList_IpRanges
@@ -11525,10 +11525,10 @@ var file_illumio_cloud_config_v1_config_proto_depIdxs = []int32{
 	63,  // 105: illumio.cloud.config.v1.ConfigService.ReadDeployment:input_type -> illumio.cloud.config.v1.ReadDeploymentRequest
 	65,  // 106: illumio.cloud.config.v1.ConfigService.UpdateDeployment:input_type -> illumio.cloud.config.v1.UpdateDeploymentRequest
 	67,  // 107: illumio.cloud.config.v1.ConfigService.DeleteDeployment:input_type -> illumio.cloud.config.v1.DeleteDeploymentRequest
-	68,  // 108: illumio.cloud.config.v1.ConfigService.CreateGcpFlowLogsPubSub:input_type -> illumio.cloud.config.v1.CreateGcpFlowLogsPubSubRequest
-	70,  // 109: illumio.cloud.config.v1.ConfigService.ReadGcpFlowLogsPubSub:input_type -> illumio.cloud.config.v1.ReadGcpFlowLogsPubSubRequest
-	72,  // 110: illumio.cloud.config.v1.ConfigService.UpdateGcpFlowLogsPubSub:input_type -> illumio.cloud.config.v1.UpdateGcpFlowLogsPubSubRequest
-	74,  // 111: illumio.cloud.config.v1.ConfigService.DeleteGcpFlowLogsPubSub:input_type -> illumio.cloud.config.v1.DeleteGcpFlowLogsPubSubRequest
+	68,  // 108: illumio.cloud.config.v1.ConfigService.CreateGcpFlowLogsPubsubTopic:input_type -> illumio.cloud.config.v1.CreateGcpFlowLogsPubsubTopicRequest
+	70,  // 109: illumio.cloud.config.v1.ConfigService.ReadGcpFlowLogsPubsubTopic:input_type -> illumio.cloud.config.v1.ReadGcpFlowLogsPubsubTopicRequest
+	72,  // 110: illumio.cloud.config.v1.ConfigService.UpdateGcpFlowLogsPubsubTopic:input_type -> illumio.cloud.config.v1.UpdateGcpFlowLogsPubsubTopicRequest
+	74,  // 111: illumio.cloud.config.v1.ConfigService.DeleteGcpFlowLogsPubsubTopic:input_type -> illumio.cloud.config.v1.DeleteGcpFlowLogsPubsubTopicRequest
 	75,  // 112: illumio.cloud.config.v1.ConfigService.CreateGcpProject:input_type -> illumio.cloud.config.v1.CreateGcpProjectRequest
 	77,  // 113: illumio.cloud.config.v1.ConfigService.ReadGcpProject:input_type -> illumio.cloud.config.v1.ReadGcpProjectRequest
 	79,  // 114: illumio.cloud.config.v1.ConfigService.UpdateGcpProject:input_type -> illumio.cloud.config.v1.UpdateGcpProjectRequest
@@ -11593,10 +11593,10 @@ var file_illumio_cloud_config_v1_config_proto_depIdxs = []int32{
 	64,  // 173: illumio.cloud.config.v1.ConfigService.ReadDeployment:output_type -> illumio.cloud.config.v1.ReadDeploymentResponse
 	66,  // 174: illumio.cloud.config.v1.ConfigService.UpdateDeployment:output_type -> illumio.cloud.config.v1.UpdateDeploymentResponse
 	131, // 175: illumio.cloud.config.v1.ConfigService.DeleteDeployment:output_type -> google.protobuf.Empty
-	69,  // 176: illumio.cloud.config.v1.ConfigService.CreateGcpFlowLogsPubSub:output_type -> illumio.cloud.config.v1.CreateGcpFlowLogsPubSubResponse
-	71,  // 177: illumio.cloud.config.v1.ConfigService.ReadGcpFlowLogsPubSub:output_type -> illumio.cloud.config.v1.ReadGcpFlowLogsPubSubResponse
-	73,  // 178: illumio.cloud.config.v1.ConfigService.UpdateGcpFlowLogsPubSub:output_type -> illumio.cloud.config.v1.UpdateGcpFlowLogsPubSubResponse
-	131, // 179: illumio.cloud.config.v1.ConfigService.DeleteGcpFlowLogsPubSub:output_type -> google.protobuf.Empty
+	69,  // 176: illumio.cloud.config.v1.ConfigService.CreateGcpFlowLogsPubsubTopic:output_type -> illumio.cloud.config.v1.CreateGcpFlowLogsPubsubTopicResponse
+	71,  // 177: illumio.cloud.config.v1.ConfigService.ReadGcpFlowLogsPubsubTopic:output_type -> illumio.cloud.config.v1.ReadGcpFlowLogsPubsubTopicResponse
+	73,  // 178: illumio.cloud.config.v1.ConfigService.UpdateGcpFlowLogsPubsubTopic:output_type -> illumio.cloud.config.v1.UpdateGcpFlowLogsPubsubTopicResponse
+	131, // 179: illumio.cloud.config.v1.ConfigService.DeleteGcpFlowLogsPubsubTopic:output_type -> google.protobuf.Empty
 	76,  // 180: illumio.cloud.config.v1.ConfigService.CreateGcpProject:output_type -> illumio.cloud.config.v1.CreateGcpProjectResponse
 	78,  // 181: illumio.cloud.config.v1.ConfigService.ReadGcpProject:output_type -> illumio.cloud.config.v1.ReadGcpProjectResponse
 	80,  // 182: illumio.cloud.config.v1.ConfigService.UpdateGcpProject:output_type -> illumio.cloud.config.v1.UpdateGcpProjectResponse

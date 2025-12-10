@@ -10,16 +10,16 @@ import (
 )
 
 var (
-	gcpFlowLogsPubSubResource = Resource{
-		TypeName: "gcp_flow_logs_pub_sub",
+	gcpFlowLogsPubsubTopicResource = Resource{
+		TypeName: "gcp_flow_logs_pubsub_topic",
 		Schema: resource_schema.Schema{
 			Version:     1,
-			Description: "Manages CloudSecure access to flow logs in a GCP Pub/Sub.",
+			Description: "Manages CloudSecure access to flow logs in a GCP Pub/Sub topic.",
 			Attributes: map[string]resource_schema.Attribute{
 				IDFieldName: idAttribute,
 				"project_id": StringResourceAttributeWithMode{
 					StringAttribute: resource_schema.StringAttribute{
-						MarkdownDescription: "GCP project ID.",
+						Description: "ID of the GCP project.",
 						Required:            true,
 						PlanModifiers: []planmodifier.String{
 							stringplanmodifier.RequiresReplace(),
@@ -29,7 +29,7 @@ var (
 						Mode: ImmutableAttributeMode,
 					},
 				},
-				"pub_sub_topic_resource_id": StringResourceAttributeWithMode{
+				"pubsub_topic_id": StringResourceAttributeWithMode{
 					StringAttribute: resource_schema.StringAttribute{
 						Description: "Resource ID of the GCP Pub/Sub topic containing flow logs.",
 						Required:    true,
