@@ -59,6 +59,10 @@ const (
 	ConfigService_ReadDeployment_FullMethodName                       = "/illumio.cloud.config.v1.ConfigService/ReadDeployment"
 	ConfigService_UpdateDeployment_FullMethodName                     = "/illumio.cloud.config.v1.ConfigService/UpdateDeployment"
 	ConfigService_DeleteDeployment_FullMethodName                     = "/illumio.cloud.config.v1.ConfigService/DeleteDeployment"
+	ConfigService_CreateGcpFlowLogsPubsubTopic_FullMethodName         = "/illumio.cloud.config.v1.ConfigService/CreateGcpFlowLogsPubsubTopic"
+	ConfigService_ReadGcpFlowLogsPubsubTopic_FullMethodName           = "/illumio.cloud.config.v1.ConfigService/ReadGcpFlowLogsPubsubTopic"
+	ConfigService_UpdateGcpFlowLogsPubsubTopic_FullMethodName         = "/illumio.cloud.config.v1.ConfigService/UpdateGcpFlowLogsPubsubTopic"
+	ConfigService_DeleteGcpFlowLogsPubsubTopic_FullMethodName         = "/illumio.cloud.config.v1.ConfigService/DeleteGcpFlowLogsPubsubTopic"
 	ConfigService_CreateGcpProject_FullMethodName                     = "/illumio.cloud.config.v1.ConfigService/CreateGcpProject"
 	ConfigService_ReadGcpProject_FullMethodName                       = "/illumio.cloud.config.v1.ConfigService/ReadGcpProject"
 	ConfigService_UpdateGcpProject_FullMethodName                     = "/illumio.cloud.config.v1.ConfigService/UpdateGcpProject"
@@ -129,6 +133,10 @@ type ConfigServiceClient interface {
 	ReadDeployment(ctx context.Context, in *ReadDeploymentRequest, opts ...grpc.CallOption) (*ReadDeploymentResponse, error)
 	UpdateDeployment(ctx context.Context, in *UpdateDeploymentRequest, opts ...grpc.CallOption) (*UpdateDeploymentResponse, error)
 	DeleteDeployment(ctx context.Context, in *DeleteDeploymentRequest, opts ...grpc.CallOption) (*emptypb.Empty, error)
+	CreateGcpFlowLogsPubsubTopic(ctx context.Context, in *CreateGcpFlowLogsPubsubTopicRequest, opts ...grpc.CallOption) (*CreateGcpFlowLogsPubsubTopicResponse, error)
+	ReadGcpFlowLogsPubsubTopic(ctx context.Context, in *ReadGcpFlowLogsPubsubTopicRequest, opts ...grpc.CallOption) (*ReadGcpFlowLogsPubsubTopicResponse, error)
+	UpdateGcpFlowLogsPubsubTopic(ctx context.Context, in *UpdateGcpFlowLogsPubsubTopicRequest, opts ...grpc.CallOption) (*UpdateGcpFlowLogsPubsubTopicResponse, error)
+	DeleteGcpFlowLogsPubsubTopic(ctx context.Context, in *DeleteGcpFlowLogsPubsubTopicRequest, opts ...grpc.CallOption) (*emptypb.Empty, error)
 	CreateGcpProject(ctx context.Context, in *CreateGcpProjectRequest, opts ...grpc.CallOption) (*CreateGcpProjectResponse, error)
 	ReadGcpProject(ctx context.Context, in *ReadGcpProjectRequest, opts ...grpc.CallOption) (*ReadGcpProjectResponse, error)
 	UpdateGcpProject(ctx context.Context, in *UpdateGcpProjectRequest, opts ...grpc.CallOption) (*UpdateGcpProjectResponse, error)
@@ -527,6 +535,46 @@ func (c *configServiceClient) DeleteDeployment(ctx context.Context, in *DeleteDe
 	return out, nil
 }
 
+func (c *configServiceClient) CreateGcpFlowLogsPubsubTopic(ctx context.Context, in *CreateGcpFlowLogsPubsubTopicRequest, opts ...grpc.CallOption) (*CreateGcpFlowLogsPubsubTopicResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(CreateGcpFlowLogsPubsubTopicResponse)
+	err := c.cc.Invoke(ctx, ConfigService_CreateGcpFlowLogsPubsubTopic_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *configServiceClient) ReadGcpFlowLogsPubsubTopic(ctx context.Context, in *ReadGcpFlowLogsPubsubTopicRequest, opts ...grpc.CallOption) (*ReadGcpFlowLogsPubsubTopicResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(ReadGcpFlowLogsPubsubTopicResponse)
+	err := c.cc.Invoke(ctx, ConfigService_ReadGcpFlowLogsPubsubTopic_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *configServiceClient) UpdateGcpFlowLogsPubsubTopic(ctx context.Context, in *UpdateGcpFlowLogsPubsubTopicRequest, opts ...grpc.CallOption) (*UpdateGcpFlowLogsPubsubTopicResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(UpdateGcpFlowLogsPubsubTopicResponse)
+	err := c.cc.Invoke(ctx, ConfigService_UpdateGcpFlowLogsPubsubTopic_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *configServiceClient) DeleteGcpFlowLogsPubsubTopic(ctx context.Context, in *DeleteGcpFlowLogsPubsubTopicRequest, opts ...grpc.CallOption) (*emptypb.Empty, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(emptypb.Empty)
+	err := c.cc.Invoke(ctx, ConfigService_DeleteGcpFlowLogsPubsubTopic_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 func (c *configServiceClient) CreateGcpProject(ctx context.Context, in *CreateGcpProjectRequest, opts ...grpc.CallOption) (*CreateGcpProjectResponse, error) {
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
 	out := new(CreateGcpProjectResponse)
@@ -847,6 +895,10 @@ type ConfigServiceServer interface {
 	ReadDeployment(context.Context, *ReadDeploymentRequest) (*ReadDeploymentResponse, error)
 	UpdateDeployment(context.Context, *UpdateDeploymentRequest) (*UpdateDeploymentResponse, error)
 	DeleteDeployment(context.Context, *DeleteDeploymentRequest) (*emptypb.Empty, error)
+	CreateGcpFlowLogsPubsubTopic(context.Context, *CreateGcpFlowLogsPubsubTopicRequest) (*CreateGcpFlowLogsPubsubTopicResponse, error)
+	ReadGcpFlowLogsPubsubTopic(context.Context, *ReadGcpFlowLogsPubsubTopicRequest) (*ReadGcpFlowLogsPubsubTopicResponse, error)
+	UpdateGcpFlowLogsPubsubTopic(context.Context, *UpdateGcpFlowLogsPubsubTopicRequest) (*UpdateGcpFlowLogsPubsubTopicResponse, error)
+	DeleteGcpFlowLogsPubsubTopic(context.Context, *DeleteGcpFlowLogsPubsubTopicRequest) (*emptypb.Empty, error)
 	CreateGcpProject(context.Context, *CreateGcpProjectRequest) (*CreateGcpProjectResponse, error)
 	ReadGcpProject(context.Context, *ReadGcpProjectRequest) (*ReadGcpProjectResponse, error)
 	UpdateGcpProject(context.Context, *UpdateGcpProjectRequest) (*UpdateGcpProjectResponse, error)
@@ -992,6 +1044,18 @@ func (UnimplementedConfigServiceServer) UpdateDeployment(context.Context, *Updat
 }
 func (UnimplementedConfigServiceServer) DeleteDeployment(context.Context, *DeleteDeploymentRequest) (*emptypb.Empty, error) {
 	return nil, status.Error(codes.Unimplemented, "method DeleteDeployment not implemented")
+}
+func (UnimplementedConfigServiceServer) CreateGcpFlowLogsPubsubTopic(context.Context, *CreateGcpFlowLogsPubsubTopicRequest) (*CreateGcpFlowLogsPubsubTopicResponse, error) {
+	return nil, status.Error(codes.Unimplemented, "method CreateGcpFlowLogsPubsubTopic not implemented")
+}
+func (UnimplementedConfigServiceServer) ReadGcpFlowLogsPubsubTopic(context.Context, *ReadGcpFlowLogsPubsubTopicRequest) (*ReadGcpFlowLogsPubsubTopicResponse, error) {
+	return nil, status.Error(codes.Unimplemented, "method ReadGcpFlowLogsPubsubTopic not implemented")
+}
+func (UnimplementedConfigServiceServer) UpdateGcpFlowLogsPubsubTopic(context.Context, *UpdateGcpFlowLogsPubsubTopicRequest) (*UpdateGcpFlowLogsPubsubTopicResponse, error) {
+	return nil, status.Error(codes.Unimplemented, "method UpdateGcpFlowLogsPubsubTopic not implemented")
+}
+func (UnimplementedConfigServiceServer) DeleteGcpFlowLogsPubsubTopic(context.Context, *DeleteGcpFlowLogsPubsubTopicRequest) (*emptypb.Empty, error) {
+	return nil, status.Error(codes.Unimplemented, "method DeleteGcpFlowLogsPubsubTopic not implemented")
 }
 func (UnimplementedConfigServiceServer) CreateGcpProject(context.Context, *CreateGcpProjectRequest) (*CreateGcpProjectResponse, error) {
 	return nil, status.Error(codes.Unimplemented, "method CreateGcpProject not implemented")
@@ -1746,6 +1810,78 @@ func _ConfigService_DeleteDeployment_Handler(srv interface{}, ctx context.Contex
 	return interceptor(ctx, in, info, handler)
 }
 
+func _ConfigService_CreateGcpFlowLogsPubsubTopic_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(CreateGcpFlowLogsPubsubTopicRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(ConfigServiceServer).CreateGcpFlowLogsPubsubTopic(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: ConfigService_CreateGcpFlowLogsPubsubTopic_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(ConfigServiceServer).CreateGcpFlowLogsPubsubTopic(ctx, req.(*CreateGcpFlowLogsPubsubTopicRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _ConfigService_ReadGcpFlowLogsPubsubTopic_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(ReadGcpFlowLogsPubsubTopicRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(ConfigServiceServer).ReadGcpFlowLogsPubsubTopic(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: ConfigService_ReadGcpFlowLogsPubsubTopic_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(ConfigServiceServer).ReadGcpFlowLogsPubsubTopic(ctx, req.(*ReadGcpFlowLogsPubsubTopicRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _ConfigService_UpdateGcpFlowLogsPubsubTopic_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(UpdateGcpFlowLogsPubsubTopicRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(ConfigServiceServer).UpdateGcpFlowLogsPubsubTopic(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: ConfigService_UpdateGcpFlowLogsPubsubTopic_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(ConfigServiceServer).UpdateGcpFlowLogsPubsubTopic(ctx, req.(*UpdateGcpFlowLogsPubsubTopicRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _ConfigService_DeleteGcpFlowLogsPubsubTopic_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(DeleteGcpFlowLogsPubsubTopicRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(ConfigServiceServer).DeleteGcpFlowLogsPubsubTopic(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: ConfigService_DeleteGcpFlowLogsPubsubTopic_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(ConfigServiceServer).DeleteGcpFlowLogsPubsubTopic(ctx, req.(*DeleteGcpFlowLogsPubsubTopicRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 func _ConfigService_CreateGcpProject_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(CreateGcpProjectRequest)
 	if err := dec(in); err != nil {
@@ -2400,6 +2536,22 @@ var ConfigService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "DeleteDeployment",
 			Handler:    _ConfigService_DeleteDeployment_Handler,
+		},
+		{
+			MethodName: "CreateGcpFlowLogsPubsubTopic",
+			Handler:    _ConfigService_CreateGcpFlowLogsPubsubTopic_Handler,
+		},
+		{
+			MethodName: "ReadGcpFlowLogsPubsubTopic",
+			Handler:    _ConfigService_ReadGcpFlowLogsPubsubTopic_Handler,
+		},
+		{
+			MethodName: "UpdateGcpFlowLogsPubsubTopic",
+			Handler:    _ConfigService_UpdateGcpFlowLogsPubsubTopic_Handler,
+		},
+		{
+			MethodName: "DeleteGcpFlowLogsPubsubTopic",
+			Handler:    _ConfigService_DeleteGcpFlowLogsPubsubTopic_Handler,
 		},
 		{
 			MethodName: "CreateGcpProject",

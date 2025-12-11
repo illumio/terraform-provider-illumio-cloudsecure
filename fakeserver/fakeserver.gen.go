@@ -38,6 +38,8 @@ type FakeConfigServer struct {
 	AzureSubscriptionMutex              sync.RWMutex
 	DeploymentMap                       map[string]*Deployment
 	DeploymentMutex                     sync.RWMutex
+	GcpFlowLogsPubsubTopicMap           map[string]*GcpFlowLogsPubsubTopic
+	GcpFlowLogsPubsubTopicMutex         sync.RWMutex
 	GcpProjectMap                       map[string]*GcpProject
 	GcpProjectMutex                     sync.RWMutex
 	IpListMap                           map[string]*IpList
@@ -69,6 +71,7 @@ func NewFakeConfigServer(logger *zap.Logger) configv1.ConfigServiceServer {
 		AzureFlowLogsStorageAccountMap:    make(map[string]*AzureFlowLogsStorageAccount),
 		AzureSubscriptionMap:              make(map[string]*AzureSubscription),
 		DeploymentMap:                     make(map[string]*Deployment),
+		GcpFlowLogsPubsubTopicMap:         make(map[string]*GcpFlowLogsPubsubTopic),
 		GcpProjectMap:                     make(map[string]*GcpProject),
 		IpListMap:                         make(map[string]*IpList),
 		K8SClusterMap:                     make(map[string]*K8SCluster),
@@ -191,6 +194,12 @@ type Deployment struct {
 	AzureVnetIds         []string
 	Description          *string
 	Name                 string
+}
+
+type GcpFlowLogsPubsubTopic struct {
+	Id            string
+	ProjectId     string
+	PubsubTopicId string
 }
 
 type GcpProject struct {
@@ -1677,6 +1686,125 @@ func (s *FakeConfigServer) DeleteDeployment(ctx context.Context, req *configv1.D
 	s.Logger.Info("deleted resource",
 		zap.String("type", "deployment"),
 		zap.String("method", "DeleteDeployment"),
+		zap.String("id", id),
+	)
+	return &emptypb.Empty{}, nil
+}
+func (s *FakeConfigServer) CreateGcpFlowLogsPubsubTopic(ctx context.Context, req *configv1.CreateGcpFlowLogsPubsubTopicRequest) (*configv1.CreateGcpFlowLogsPubsubTopicResponse, error) {
+	id := uuid.New().String()
+	model := &GcpFlowLogsPubsubTopic{
+		Id:            id,
+		ProjectId:     req.ProjectId,
+		PubsubTopicId: req.PubsubTopicId,
+	}
+	resp := &configv1.CreateGcpFlowLogsPubsubTopicResponse{
+		Id:            id,
+		ProjectId:     model.ProjectId,
+		PubsubTopicId: model.PubsubTopicId,
+	}
+	s.GcpFlowLogsPubsubTopicMutex.Lock()
+	s.GcpFlowLogsPubsubTopicMap[id] = model
+	s.GcpFlowLogsPubsubTopicMutex.Unlock()
+	s.Logger.Info("created resource",
+		zap.String("type", "gcp_flow_logs_pubsub_topic"),
+		zap.String("method", "CreateGcpFlowLogsPubsubTopic"),
+		zap.String("id", id),
+	)
+	return resp, nil
+}
+
+func (s *FakeConfigServer) ReadGcpFlowLogsPubsubTopic(ctx context.Context, req *configv1.ReadGcpFlowLogsPubsubTopicRequest) (*configv1.ReadGcpFlowLogsPubsubTopicResponse, error) {
+	id := req.Id
+	s.GcpFlowLogsPubsubTopicMutex.RLock()
+	model, found := s.GcpFlowLogsPubsubTopicMap[id]
+	if !found {
+		s.GcpFlowLogsPubsubTopicMutex.RUnlock()
+		s.Logger.Error("attempted to read resource with unknown id",
+			zap.String("type", "gcp_flow_logs_pubsub_topic"),
+			zap.String("method", "ReadGcpFlowLogsPubsubTopic"),
+			zap.String("id", id),
+		)
+		return nil, status.Errorf(codes.NotFound, "no gcp_flow_logs_pubsub_topic found with id %s", id)
+	}
+	resp := &configv1.ReadGcpFlowLogsPubsubTopicResponse{
+		Id:            id,
+		ProjectId:     model.ProjectId,
+		PubsubTopicId: model.PubsubTopicId,
+	}
+	s.GcpFlowLogsPubsubTopicMutex.RUnlock()
+	s.Logger.Info("read resource",
+		zap.String("type", "gcp_flow_logs_pubsub_topic"),
+		zap.String("method", "ReadGcpFlowLogsPubsubTopic"),
+		zap.String("id", id),
+	)
+	return resp, nil
+}
+
+func (s *FakeConfigServer) UpdateGcpFlowLogsPubsubTopic(ctx context.Context, req *configv1.UpdateGcpFlowLogsPubsubTopicRequest) (*configv1.UpdateGcpFlowLogsPubsubTopicResponse, error) {
+	id := req.Id
+	s.GcpFlowLogsPubsubTopicMutex.Lock()
+	model, found := s.GcpFlowLogsPubsubTopicMap[id]
+	if !found {
+		s.GcpFlowLogsPubsubTopicMutex.Unlock()
+		s.Logger.Error("attempted to update resource with unknown id",
+			zap.String("type", "gcp_flow_logs_pubsub_topic"),
+			zap.String("method", "UpdateGcpFlowLogsPubsubTopic"),
+			zap.String("id", id),
+		)
+		return nil, status.Errorf(codes.NotFound, "no gcp_flow_logs_pubsub_topic found with id %s", id)
+	}
+	updateMask := req.UpdateMask
+	var updateMaskPaths []string
+	if updateMask != nil {
+		updateMaskPaths = updateMask.Paths
+	}
+	for _, path := range updateMaskPaths {
+		switch path {
+		default:
+			s.AwsAccountMutex.Unlock()
+			s.Logger.Error("attempted to update resource using invalid update_mask path",
+				zap.String("type", "gcp_flow_logs_pubsub_topic"),
+				zap.String("method", "UpdateGcpFlowLogsPubsubTopic"),
+				zap.String("id", id),
+				zap.Strings("updateMaskPaths", updateMaskPaths),
+				zap.String("invalidUpdateMaskPath", path),
+			)
+			return nil, status.Errorf(codes.InvalidArgument, "invalid path in update_mask for gcp_flow_logs_pubsub_topic: %s", path)
+		}
+	}
+	resp := &configv1.UpdateGcpFlowLogsPubsubTopicResponse{
+		Id:            id,
+		ProjectId:     model.ProjectId,
+		PubsubTopicId: model.PubsubTopicId,
+	}
+	s.GcpFlowLogsPubsubTopicMutex.Unlock()
+	s.Logger.Info("updated resource",
+		zap.String("type", "gcp_flow_logs_pubsub_topic"),
+		zap.String("method", "UpdateGcpFlowLogsPubsubTopic"),
+		zap.String("id", id),
+		zap.Strings("updateMaskPaths", updateMaskPaths),
+	)
+	return resp, nil
+}
+
+func (s *FakeConfigServer) DeleteGcpFlowLogsPubsubTopic(ctx context.Context, req *configv1.DeleteGcpFlowLogsPubsubTopicRequest) (*emptypb.Empty, error) {
+	id := req.Id
+	s.GcpFlowLogsPubsubTopicMutex.Lock()
+	_, found := s.GcpFlowLogsPubsubTopicMap[id]
+	if !found {
+		s.GcpFlowLogsPubsubTopicMutex.Unlock()
+		s.Logger.Error("attempted to delete resource with unknown id",
+			zap.String("type", "gcp_flow_logs_pubsub_topic"),
+			zap.String("method", "DeleteGcpFlowLogsPubsubTopic"),
+			zap.String("id", id),
+		)
+		return nil, status.Errorf(codes.NotFound, "no gcp_flow_logs_pubsub_topic found with id %s", id)
+	}
+	delete(s.GcpFlowLogsPubsubTopicMap, id)
+	s.GcpFlowLogsPubsubTopicMutex.Unlock()
+	s.Logger.Info("deleted resource",
+		zap.String("type", "gcp_flow_logs_pubsub_topic"),
+		zap.String("method", "DeleteGcpFlowLogsPubsubTopic"),
 		zap.String("id", id),
 	)
 	return &emptypb.Empty{}, nil
