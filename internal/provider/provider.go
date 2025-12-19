@@ -82,7 +82,7 @@ const (
 	DefaultTokenEndpoint = "https://cloud.illum.io/api/v1/authenticate" //nolint:gosec // This URL is not a credential.
 
 	// DefaultRequestTimeout is the default CloudConfig Config API request timeout.
-	DefaultRequestTimeout = "10s"
+	DefaultRequestTimeout = "30s"
 )
 
 func (p *Provider) Schema(_ context.Context, _ provider.SchemaRequest, resp *provider.SchemaResponse) {
