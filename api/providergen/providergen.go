@@ -27,6 +27,7 @@ import (
 	"fmt"
 	"time"
 
+	"github.com/hashicorp/terraform-plugin-framework-timeouts/resource/timeouts"
 	"github.com/hashicorp/terraform-plugin-framework/attr"
 	"github.com/hashicorp/terraform-plugin-framework/datasource"
 	"github.com/hashicorp/terraform-plugin-framework/diag"
@@ -135,7 +136,13 @@ func (r *{{.TypeName}}) Create(ctx context.Context, req resource.CreateRequest, 
 
 	tflog.Trace(ctx, "creating a resource", map[string]any{"type": "{{.Name}}"})
 
-	rpcCtx, rpcCancel := context.WithTimeout(ctx, r.config.RequestTimeout())
+	requestTimeout, diagRequestTimeout := data.Timeouts.Create(ctx, r.config.RequestTimeout())
+	resp.Diagnostics.Append(diagRequestTimeout...)
+	if resp.Diagnostics.HasError() {
+		return
+	}
+
+	rpcCtx, rpcCancel := context.WithTimeout(ctx, requestTimeout)
 	protoResp, err := r.config.Client().{{.RPCNameForCreate}}(rpcCtx, protoReq)
 	rpcCancel()
 	if err != nil {
@@ -166,7 +173,13 @@ func (r *{{.TypeName}}) Read(ctx context.Context, req resource.ReadRequest, resp
 
 	tflog.Trace(ctx, "reading a resource", map[string]any{"type": "{{.Name}}", "id": protoReq.{{.IdFieldName}}})
 
-	rpcCtx, rpcCancel := context.WithTimeout(ctx, r.config.RequestTimeout())
+	requestTimeout, diagRequestTimeout := data.Timeouts.Read(ctx, r.config.RequestTimeout())
+	resp.Diagnostics.Append(diagRequestTimeout...)
+	if resp.Diagnostics.HasError() {
+		return
+	}
+
+	rpcCtx, rpcCancel := context.WithTimeout(ctx, requestTimeout)
 	protoResp, err := r.config.Client().{{.RPCNameForRead}}(rpcCtx, protoReq)
 	rpcCancel()
 	if err != nil {
@@ -210,7 +223,13 @@ func (r *{{.TypeName}}) Update(ctx context.Context, req resource.UpdateRequest, 
 
 	tflog.Trace(ctx, "updating a resource", map[string]any{"type": "{{.Name}}", "id": protoReq.{{.IdFieldName}}, "update_mask": protoReq.{{.UpdateMaskFieldName}}.Paths})
 
-	rpcCtx, rpcCancel := context.WithTimeout(ctx, r.config.RequestTimeout())
+	requestTimeout, diagRequestTimeout := afterData.Timeouts.Update(ctx, r.config.RequestTimeout())
+	resp.Diagnostics.Append(diagRequestTimeout...)
+	if resp.Diagnostics.HasError() {
+		return
+	}
+
+	rpcCtx, rpcCancel := context.WithTimeout(ctx, requestTimeout)
 	protoResp, err := r.config.Client().{{.RPCNameForUpdate}}(rpcCtx, protoReq)
 	rpcCancel()
 	if err != nil {
@@ -248,7 +267,13 @@ func (r *{{.TypeName}}) Delete(ctx context.Context, req resource.DeleteRequest, 
 
 	tflog.Trace(ctx, "deleting a resource", map[string]any{"type": "{{.Name}}", "id": protoReq.{{.IdFieldName}}})
 
-	rpcCtx, rpcCancel := context.WithTimeout(ctx, r.config.RequestTimeout())
+	requestTimeout, diagRequestTimeout := data.Timeouts.Delete(ctx, r.config.RequestTimeout())
+	resp.Diagnostics.Append(diagRequestTimeout...)
+	if resp.Diagnostics.HasError() {
+		return
+	}
+
+	rpcCtx, rpcCancel := context.WithTimeout(ctx, requestTimeout)
 	_, err := r.config.Client().{{.RPCNameForDelete}}(rpcCtx, protoReq)
 	rpcCancel()
 	if err != nil {
@@ -277,6 +302,7 @@ type {{.Name}} struct {
 	{{- range $field := .Fields}}
 	{{$field.Name}} types.{{$field.Type.ModelTypeName}} ` + "`" + `tfsdk:"{{$field.AttributeName}}"` + "`" + `
 	{{- end}}
+	Timeouts timeouts.Value ` + "`" + `tfsdk:"timeouts"` + "`" + `
 }
 {{- end}}
 {{- range $model := .Models}}
