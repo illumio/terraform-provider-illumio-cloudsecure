@@ -23,12 +23,16 @@ const (
 		`Must be a string that can be [parsed as a duration](https://pkg.go.dev/time#ParseDuration) ` +
 		`consisting of numbers and unit suffixes, such as "30s" or "2h45m". Valid time units are ` +
 		`"s" (seconds), "m" (minutes), "h" (hours).`
+
 	createRequestTimeoutDescription = `Maximum duration of each Create API request for this resource. ` +
 		commonRequestTimeoutDescription
+
 	readRequestTimeoutDescription = `Maximum duration of each Read API request for this resource. ` +
 		commonRequestTimeoutDescription
+
 	updateRequestTimeoutDescription = `Maximum duration of each Update API request for this resource. ` +
 		commonRequestTimeoutDescription
+
 	deleteRequestTimeoutDescription = `Maximum duration of each Delete API request for this resource. ` +
 		commonRequestTimeoutDescription +
 		` Setting a timeout for Delete API requests is only applicable if ` +
