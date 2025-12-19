@@ -118,5 +118,5 @@ provider "illumio-cloudsecure" {
 - `client_id` (String) OAuth 2 client identifier used to authenticate against the CloudSecure Config API. Either `client_id`+`client_secret` or `access_token` must be specified.
 - `client_secret` (String, Sensitive) OAuth 2 client secret used to authenticate against the CloudSecure Config API. Either `client_id`+`client_secret` or `access_token` must be specified.
 - `insecure_tls` (Boolean) Disables TLS server certificate verification for all requests to the CloudSecure Config API and Token endpoints. Server certificate verification is enabled by default. Should only be used for testing the provider.
-- `request_timeout` (String) Maximum duration of each API request, defaults to 10s.
+- `request_timeout` (String) Maximum duration of each API request, defaults to 30s.
 - `token_endpoint` (String) CloudSecure OAuth 2 Token endpoint, defaults to `https://cloud.illum.io/api/v1/authenticate`.
