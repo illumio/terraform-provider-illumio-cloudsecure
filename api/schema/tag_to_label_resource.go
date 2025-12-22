@@ -363,12 +363,12 @@ var (
 				IDFieldName: idAttribute,
 				"aws_tag_keys": resource_schema.SetAttribute{
 					Description: "Sets of keys of AWS resource tags to map to CloudSecure labels with the same keys. The values of the created labels correspond to the values of the tags.",
-					Required:    true,
+					Optional:    true,
 					ElementType: types.StringType,
 				},
 				"azure_tag_keys": resource_schema.SetAttribute{
 					Description: "Set of keys of Azure resource tags to map to CloudSecure labels with the same keys. The values of the created labels correspond to the values of the tags.",
-					Required:    true,
+					Optional:    true,
 					ElementType: types.StringType,
 				},
 				"icon": resource_schema.ObjectAttribute{
