@@ -4,12 +4,9 @@
 package schema
 
 import (
-	"github.com/hashicorp/terraform-plugin-framework-validators/stringvalidator"
 	resource_schema "github.com/hashicorp/terraform-plugin-framework/resource/schema"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/planmodifier"
-	"github.com/hashicorp/terraform-plugin-framework/resource/schema/stringdefault"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/stringplanmodifier"
-	"github.com/hashicorp/terraform-plugin-framework/schema/validator"
 )
 
 var (
@@ -55,16 +52,6 @@ var (
 					},
 					attributeWithMode: attributeWithMode{
 						Mode: ImmutableAttributeMode,
-					},
-				},
-				"log_level": resource_schema.StringAttribute{
-					MarkdownDescription: "Verbosity of the logs produced by the CloudSecure k8s operator. " +
-						"Must be one of: `Debug`, `Info`, `Warn`, or `Error`.",
-					Optional: true,
-					Computed: true,
-					Default:  stringdefault.StaticString("Info"),
-					Validators: []validator.String{
-						stringvalidator.OneOf("Debug", "Info", "Warn", "Error"),
 					},
 				},
 			},
