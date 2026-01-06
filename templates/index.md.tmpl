@@ -95,4 +95,43 @@ provider "illumio-cloudsecure" {
 % terraform plan  
 ```
 
+## API Request Timeouts
+
+The maximum duration (timeout) of each Create/Read/Update/Delete API request
+performed by the provider to the CloudSecure Config API can be configured
+for all requests globally by setting the provider's `request_timeout`
+attribute:
+
+```terraform
+provider "illumio-cloudsecure" {
+  // ...
+  request_timeout = "60s"
+}
+```
+
+This provider-wide `request_timeout` can be overriden for each API request
+individually in each resource by setting the optional
+[`timeouts` block](https://developer.hashicorp.com/terraform/plugin/framework/resources/timeouts)
+in some resources:
+
+```terraform
+resource "illumio-cloudsecure_aws_account" "account1" {
+  // ...
+  timeouts {
+    create = "35s"
+    delete = "35s"
+  }
+}
+
+resource "illumio-cloudsecure_aws_account" "accounts" {
+  // ...
+  timeouts {
+    create = "40s"
+    read   = "40s"
+    update = "40s"
+    delete = "40s"
+  }
+}
+```
+
 {{ .SchemaMarkdown | trimspace }}
