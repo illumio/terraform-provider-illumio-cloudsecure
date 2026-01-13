@@ -73,6 +73,7 @@ resource "illumio-cloudsecure_organization_policy_rule" "example" {
 - `enabled` (Boolean) Indicates whether the organization policy rule is enabled.
 - `from_ip_list_ids` (List of String) List of IDs of IP lists to allow/deny traffic from.
 - `from_labels` (List of Object) List of CloudSecure labels of sources to allow/deny traffic from. (see [below for nested schema](#nestedatt--from_labels))
+- `timeouts` (Block, Optional) (see [below for nested schema](#nestedblock--timeouts))
 - `to_ip_list_ids` (List of String) List of IDs of IP lists to allow/deny traffic to.
 - `to_labels` (List of Object) List of CloudSecure labels of destinations to allow/deny traffic to. (see [below for nested schema](#nestedatt--to_labels))
 
@@ -97,6 +98,17 @@ Optional:
 
 - `key` (String)
 - `value` (String)
+
+
+<a id="nestedblock--timeouts"></a>
+### Nested Schema for `timeouts`
+
+Optional:
+
+- `create` (String) Maximum duration of each Create API request for this resource. If not specified, defaults to the provider's "request_timeout" attribute. Must be a string that can be [parsed as a duration](https://pkg.go.dev/time#ParseDuration) consisting of numbers and unit suffixes, such as "30s" or "2h45m". Valid time units are "s" (seconds), "m" (minutes), "h" (hours).
+- `delete` (String) Maximum duration of each Delete API request for this resource. If not specified, defaults to the provider's "request_timeout" attribute. Must be a string that can be [parsed as a duration](https://pkg.go.dev/time#ParseDuration) consisting of numbers and unit suffixes, such as "30s" or "2h45m". Valid time units are "s" (seconds), "m" (minutes), "h" (hours). Setting a timeout for Delete API requests is only applicable if changes are saved into state before the destroy operation occurs.
+- `read` (String) Maximum duration of each Read API request for this resource. If not specified, defaults to the provider's "request_timeout" attribute. Must be a string that can be [parsed as a duration](https://pkg.go.dev/time#ParseDuration) consisting of numbers and unit suffixes, such as "30s" or "2h45m". Valid time units are "s" (seconds), "m" (minutes), "h" (hours).
+- `update` (String) Maximum duration of each Update API request for this resource. If not specified, defaults to the provider's "request_timeout" attribute. Must be a string that can be [parsed as a duration](https://pkg.go.dev/time#ParseDuration) consisting of numbers and unit suffixes, such as "30s" or "2h45m". Valid time units are "s" (seconds), "m" (minutes), "h" (hours).
 
 
 <a id="nestedatt--to_labels"></a>

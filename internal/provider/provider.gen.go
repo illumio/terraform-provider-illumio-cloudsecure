@@ -9,6 +9,7 @@ import (
 	"fmt"
 	"time"
 
+	"github.com/hashicorp/terraform-plugin-framework-timeouts/resource/timeouts"
 	"github.com/hashicorp/terraform-plugin-framework/attr"
 	"github.com/hashicorp/terraform-plugin-framework/datasource"
 	"github.com/hashicorp/terraform-plugin-framework/diag"
@@ -144,7 +145,13 @@ func (r *ApplicationResource) Create(ctx context.Context, req resource.CreateReq
 
 	tflog.Trace(ctx, "creating a resource", map[string]any{"type": "application"})
 
-	rpcCtx, rpcCancel := context.WithTimeout(ctx, r.config.RequestTimeout())
+	requestTimeout, diagRequestTimeout := data.Timeouts.Create(ctx, r.config.RequestTimeout())
+	resp.Diagnostics.Append(diagRequestTimeout...)
+	if resp.Diagnostics.HasError() {
+		return
+	}
+
+	rpcCtx, rpcCancel := context.WithTimeout(ctx, requestTimeout)
 	protoResp, err := r.config.Client().CreateApplication(rpcCtx, protoReq)
 	rpcCancel()
 	if err != nil {
@@ -175,7 +182,13 @@ func (r *ApplicationResource) Read(ctx context.Context, req resource.ReadRequest
 
 	tflog.Trace(ctx, "reading a resource", map[string]any{"type": "application", "id": protoReq.Id})
 
-	rpcCtx, rpcCancel := context.WithTimeout(ctx, r.config.RequestTimeout())
+	requestTimeout, diagRequestTimeout := data.Timeouts.Read(ctx, r.config.RequestTimeout())
+	resp.Diagnostics.Append(diagRequestTimeout...)
+	if resp.Diagnostics.HasError() {
+		return
+	}
+
+	rpcCtx, rpcCancel := context.WithTimeout(ctx, requestTimeout)
 	protoResp, err := r.config.Client().ReadApplication(rpcCtx, protoReq)
 	rpcCancel()
 	if err != nil {
@@ -219,7 +232,13 @@ func (r *ApplicationResource) Update(ctx context.Context, req resource.UpdateReq
 
 	tflog.Trace(ctx, "updating a resource", map[string]any{"type": "application", "id": protoReq.Id, "update_mask": protoReq.UpdateMask.Paths})
 
-	rpcCtx, rpcCancel := context.WithTimeout(ctx, r.config.RequestTimeout())
+	requestTimeout, diagRequestTimeout := afterData.Timeouts.Update(ctx, r.config.RequestTimeout())
+	resp.Diagnostics.Append(diagRequestTimeout...)
+	if resp.Diagnostics.HasError() {
+		return
+	}
+
+	rpcCtx, rpcCancel := context.WithTimeout(ctx, requestTimeout)
 	protoResp, err := r.config.Client().UpdateApplication(rpcCtx, protoReq)
 	rpcCancel()
 	if err != nil {
@@ -257,7 +276,13 @@ func (r *ApplicationResource) Delete(ctx context.Context, req resource.DeleteReq
 
 	tflog.Trace(ctx, "deleting a resource", map[string]any{"type": "application", "id": protoReq.Id})
 
-	rpcCtx, rpcCancel := context.WithTimeout(ctx, r.config.RequestTimeout())
+	requestTimeout, diagRequestTimeout := data.Timeouts.Delete(ctx, r.config.RequestTimeout())
+	resp.Diagnostics.Append(diagRequestTimeout...)
+	if resp.Diagnostics.HasError() {
+		return
+	}
+
+	rpcCtx, rpcCancel := context.WithTimeout(ctx, requestTimeout)
 	_, err := r.config.Client().DeleteApplication(rpcCtx, protoReq)
 	rpcCancel()
 	if err != nil {
@@ -338,7 +363,13 @@ func (r *ApplicationAwsResourcesResource) Create(ctx context.Context, req resour
 
 	tflog.Trace(ctx, "creating a resource", map[string]any{"type": "application_aws_resources"})
 
-	rpcCtx, rpcCancel := context.WithTimeout(ctx, r.config.RequestTimeout())
+	requestTimeout, diagRequestTimeout := data.Timeouts.Create(ctx, r.config.RequestTimeout())
+	resp.Diagnostics.Append(diagRequestTimeout...)
+	if resp.Diagnostics.HasError() {
+		return
+	}
+
+	rpcCtx, rpcCancel := context.WithTimeout(ctx, requestTimeout)
 	protoResp, err := r.config.Client().CreateApplicationAwsResources(rpcCtx, protoReq)
 	rpcCancel()
 	if err != nil {
@@ -369,7 +400,13 @@ func (r *ApplicationAwsResourcesResource) Read(ctx context.Context, req resource
 
 	tflog.Trace(ctx, "reading a resource", map[string]any{"type": "application_aws_resources", "id": protoReq.Id})
 
-	rpcCtx, rpcCancel := context.WithTimeout(ctx, r.config.RequestTimeout())
+	requestTimeout, diagRequestTimeout := data.Timeouts.Read(ctx, r.config.RequestTimeout())
+	resp.Diagnostics.Append(diagRequestTimeout...)
+	if resp.Diagnostics.HasError() {
+		return
+	}
+
+	rpcCtx, rpcCancel := context.WithTimeout(ctx, requestTimeout)
 	protoResp, err := r.config.Client().ReadApplicationAwsResources(rpcCtx, protoReq)
 	rpcCancel()
 	if err != nil {
@@ -413,7 +450,13 @@ func (r *ApplicationAwsResourcesResource) Update(ctx context.Context, req resour
 
 	tflog.Trace(ctx, "updating a resource", map[string]any{"type": "application_aws_resources", "id": protoReq.Id, "update_mask": protoReq.UpdateMask.Paths})
 
-	rpcCtx, rpcCancel := context.WithTimeout(ctx, r.config.RequestTimeout())
+	requestTimeout, diagRequestTimeout := afterData.Timeouts.Update(ctx, r.config.RequestTimeout())
+	resp.Diagnostics.Append(diagRequestTimeout...)
+	if resp.Diagnostics.HasError() {
+		return
+	}
+
+	rpcCtx, rpcCancel := context.WithTimeout(ctx, requestTimeout)
 	protoResp, err := r.config.Client().UpdateApplicationAwsResources(rpcCtx, protoReq)
 	rpcCancel()
 	if err != nil {
@@ -451,7 +494,13 @@ func (r *ApplicationAwsResourcesResource) Delete(ctx context.Context, req resour
 
 	tflog.Trace(ctx, "deleting a resource", map[string]any{"type": "application_aws_resources", "id": protoReq.Id})
 
-	rpcCtx, rpcCancel := context.WithTimeout(ctx, r.config.RequestTimeout())
+	requestTimeout, diagRequestTimeout := data.Timeouts.Delete(ctx, r.config.RequestTimeout())
+	resp.Diagnostics.Append(diagRequestTimeout...)
+	if resp.Diagnostics.HasError() {
+		return
+	}
+
+	rpcCtx, rpcCancel := context.WithTimeout(ctx, requestTimeout)
 	_, err := r.config.Client().DeleteApplicationAwsResources(rpcCtx, protoReq)
 	rpcCancel()
 	if err != nil {
@@ -532,7 +581,13 @@ func (r *ApplicationAzureResourcesResource) Create(ctx context.Context, req reso
 
 	tflog.Trace(ctx, "creating a resource", map[string]any{"type": "application_azure_resources"})
 
-	rpcCtx, rpcCancel := context.WithTimeout(ctx, r.config.RequestTimeout())
+	requestTimeout, diagRequestTimeout := data.Timeouts.Create(ctx, r.config.RequestTimeout())
+	resp.Diagnostics.Append(diagRequestTimeout...)
+	if resp.Diagnostics.HasError() {
+		return
+	}
+
+	rpcCtx, rpcCancel := context.WithTimeout(ctx, requestTimeout)
 	protoResp, err := r.config.Client().CreateApplicationAzureResources(rpcCtx, protoReq)
 	rpcCancel()
 	if err != nil {
@@ -563,7 +618,13 @@ func (r *ApplicationAzureResourcesResource) Read(ctx context.Context, req resour
 
 	tflog.Trace(ctx, "reading a resource", map[string]any{"type": "application_azure_resources", "id": protoReq.Id})
 
-	rpcCtx, rpcCancel := context.WithTimeout(ctx, r.config.RequestTimeout())
+	requestTimeout, diagRequestTimeout := data.Timeouts.Read(ctx, r.config.RequestTimeout())
+	resp.Diagnostics.Append(diagRequestTimeout...)
+	if resp.Diagnostics.HasError() {
+		return
+	}
+
+	rpcCtx, rpcCancel := context.WithTimeout(ctx, requestTimeout)
 	protoResp, err := r.config.Client().ReadApplicationAzureResources(rpcCtx, protoReq)
 	rpcCancel()
 	if err != nil {
@@ -607,7 +668,13 @@ func (r *ApplicationAzureResourcesResource) Update(ctx context.Context, req reso
 
 	tflog.Trace(ctx, "updating a resource", map[string]any{"type": "application_azure_resources", "id": protoReq.Id, "update_mask": protoReq.UpdateMask.Paths})
 
-	rpcCtx, rpcCancel := context.WithTimeout(ctx, r.config.RequestTimeout())
+	requestTimeout, diagRequestTimeout := afterData.Timeouts.Update(ctx, r.config.RequestTimeout())
+	resp.Diagnostics.Append(diagRequestTimeout...)
+	if resp.Diagnostics.HasError() {
+		return
+	}
+
+	rpcCtx, rpcCancel := context.WithTimeout(ctx, requestTimeout)
 	protoResp, err := r.config.Client().UpdateApplicationAzureResources(rpcCtx, protoReq)
 	rpcCancel()
 	if err != nil {
@@ -645,7 +712,13 @@ func (r *ApplicationAzureResourcesResource) Delete(ctx context.Context, req reso
 
 	tflog.Trace(ctx, "deleting a resource", map[string]any{"type": "application_azure_resources", "id": protoReq.Id})
 
-	rpcCtx, rpcCancel := context.WithTimeout(ctx, r.config.RequestTimeout())
+	requestTimeout, diagRequestTimeout := data.Timeouts.Delete(ctx, r.config.RequestTimeout())
+	resp.Diagnostics.Append(diagRequestTimeout...)
+	if resp.Diagnostics.HasError() {
+		return
+	}
+
+	rpcCtx, rpcCancel := context.WithTimeout(ctx, requestTimeout)
 	_, err := r.config.Client().DeleteApplicationAzureResources(rpcCtx, protoReq)
 	rpcCancel()
 	if err != nil {
@@ -726,7 +799,13 @@ func (r *ApplicationPolicyRuleResource) Create(ctx context.Context, req resource
 
 	tflog.Trace(ctx, "creating a resource", map[string]any{"type": "application_policy_rule"})
 
-	rpcCtx, rpcCancel := context.WithTimeout(ctx, r.config.RequestTimeout())
+	requestTimeout, diagRequestTimeout := data.Timeouts.Create(ctx, r.config.RequestTimeout())
+	resp.Diagnostics.Append(diagRequestTimeout...)
+	if resp.Diagnostics.HasError() {
+		return
+	}
+
+	rpcCtx, rpcCancel := context.WithTimeout(ctx, requestTimeout)
 	protoResp, err := r.config.Client().CreateApplicationPolicyRule(rpcCtx, protoReq)
 	rpcCancel()
 	if err != nil {
@@ -757,7 +836,13 @@ func (r *ApplicationPolicyRuleResource) Read(ctx context.Context, req resource.R
 
 	tflog.Trace(ctx, "reading a resource", map[string]any{"type": "application_policy_rule", "id": protoReq.Id})
 
-	rpcCtx, rpcCancel := context.WithTimeout(ctx, r.config.RequestTimeout())
+	requestTimeout, diagRequestTimeout := data.Timeouts.Read(ctx, r.config.RequestTimeout())
+	resp.Diagnostics.Append(diagRequestTimeout...)
+	if resp.Diagnostics.HasError() {
+		return
+	}
+
+	rpcCtx, rpcCancel := context.WithTimeout(ctx, requestTimeout)
 	protoResp, err := r.config.Client().ReadApplicationPolicyRule(rpcCtx, protoReq)
 	rpcCancel()
 	if err != nil {
@@ -801,7 +886,13 @@ func (r *ApplicationPolicyRuleResource) Update(ctx context.Context, req resource
 
 	tflog.Trace(ctx, "updating a resource", map[string]any{"type": "application_policy_rule", "id": protoReq.Id, "update_mask": protoReq.UpdateMask.Paths})
 
-	rpcCtx, rpcCancel := context.WithTimeout(ctx, r.config.RequestTimeout())
+	requestTimeout, diagRequestTimeout := afterData.Timeouts.Update(ctx, r.config.RequestTimeout())
+	resp.Diagnostics.Append(diagRequestTimeout...)
+	if resp.Diagnostics.HasError() {
+		return
+	}
+
+	rpcCtx, rpcCancel := context.WithTimeout(ctx, requestTimeout)
 	protoResp, err := r.config.Client().UpdateApplicationPolicyRule(rpcCtx, protoReq)
 	rpcCancel()
 	if err != nil {
@@ -839,7 +930,13 @@ func (r *ApplicationPolicyRuleResource) Delete(ctx context.Context, req resource
 
 	tflog.Trace(ctx, "deleting a resource", map[string]any{"type": "application_policy_rule", "id": protoReq.Id})
 
-	rpcCtx, rpcCancel := context.WithTimeout(ctx, r.config.RequestTimeout())
+	requestTimeout, diagRequestTimeout := data.Timeouts.Delete(ctx, r.config.RequestTimeout())
+	resp.Diagnostics.Append(diagRequestTimeout...)
+	if resp.Diagnostics.HasError() {
+		return
+	}
+
+	rpcCtx, rpcCancel := context.WithTimeout(ctx, requestTimeout)
 	_, err := r.config.Client().DeleteApplicationPolicyRule(rpcCtx, protoReq)
 	rpcCancel()
 	if err != nil {
@@ -920,7 +1017,13 @@ func (r *AwsAccountResource) Create(ctx context.Context, req resource.CreateRequ
 
 	tflog.Trace(ctx, "creating a resource", map[string]any{"type": "aws_account"})
 
-	rpcCtx, rpcCancel := context.WithTimeout(ctx, r.config.RequestTimeout())
+	requestTimeout, diagRequestTimeout := data.Timeouts.Create(ctx, r.config.RequestTimeout())
+	resp.Diagnostics.Append(diagRequestTimeout...)
+	if resp.Diagnostics.HasError() {
+		return
+	}
+
+	rpcCtx, rpcCancel := context.WithTimeout(ctx, requestTimeout)
 	protoResp, err := r.config.Client().CreateAwsAccount(rpcCtx, protoReq)
 	rpcCancel()
 	if err != nil {
@@ -951,7 +1054,13 @@ func (r *AwsAccountResource) Read(ctx context.Context, req resource.ReadRequest,
 
 	tflog.Trace(ctx, "reading a resource", map[string]any{"type": "aws_account", "id": protoReq.Id})
 
-	rpcCtx, rpcCancel := context.WithTimeout(ctx, r.config.RequestTimeout())
+	requestTimeout, diagRequestTimeout := data.Timeouts.Read(ctx, r.config.RequestTimeout())
+	resp.Diagnostics.Append(diagRequestTimeout...)
+	if resp.Diagnostics.HasError() {
+		return
+	}
+
+	rpcCtx, rpcCancel := context.WithTimeout(ctx, requestTimeout)
 	protoResp, err := r.config.Client().ReadAwsAccount(rpcCtx, protoReq)
 	rpcCancel()
 	if err != nil {
@@ -995,7 +1104,13 @@ func (r *AwsAccountResource) Update(ctx context.Context, req resource.UpdateRequ
 
 	tflog.Trace(ctx, "updating a resource", map[string]any{"type": "aws_account", "id": protoReq.Id, "update_mask": protoReq.UpdateMask.Paths})
 
-	rpcCtx, rpcCancel := context.WithTimeout(ctx, r.config.RequestTimeout())
+	requestTimeout, diagRequestTimeout := afterData.Timeouts.Update(ctx, r.config.RequestTimeout())
+	resp.Diagnostics.Append(diagRequestTimeout...)
+	if resp.Diagnostics.HasError() {
+		return
+	}
+
+	rpcCtx, rpcCancel := context.WithTimeout(ctx, requestTimeout)
 	protoResp, err := r.config.Client().UpdateAwsAccount(rpcCtx, protoReq)
 	rpcCancel()
 	if err != nil {
@@ -1033,7 +1148,13 @@ func (r *AwsAccountResource) Delete(ctx context.Context, req resource.DeleteRequ
 
 	tflog.Trace(ctx, "deleting a resource", map[string]any{"type": "aws_account", "id": protoReq.Id})
 
-	rpcCtx, rpcCancel := context.WithTimeout(ctx, r.config.RequestTimeout())
+	requestTimeout, diagRequestTimeout := data.Timeouts.Delete(ctx, r.config.RequestTimeout())
+	resp.Diagnostics.Append(diagRequestTimeout...)
+	if resp.Diagnostics.HasError() {
+		return
+	}
+
+	rpcCtx, rpcCancel := context.WithTimeout(ctx, requestTimeout)
 	_, err := r.config.Client().DeleteAwsAccount(rpcCtx, protoReq)
 	rpcCancel()
 	if err != nil {
@@ -1114,7 +1235,13 @@ func (r *AwsFlowLogsS3BucketResource) Create(ctx context.Context, req resource.C
 
 	tflog.Trace(ctx, "creating a resource", map[string]any{"type": "aws_flow_logs_s3_bucket"})
 
-	rpcCtx, rpcCancel := context.WithTimeout(ctx, r.config.RequestTimeout())
+	requestTimeout, diagRequestTimeout := data.Timeouts.Create(ctx, r.config.RequestTimeout())
+	resp.Diagnostics.Append(diagRequestTimeout...)
+	if resp.Diagnostics.HasError() {
+		return
+	}
+
+	rpcCtx, rpcCancel := context.WithTimeout(ctx, requestTimeout)
 	protoResp, err := r.config.Client().CreateAwsFlowLogsS3Bucket(rpcCtx, protoReq)
 	rpcCancel()
 	if err != nil {
@@ -1145,7 +1272,13 @@ func (r *AwsFlowLogsS3BucketResource) Read(ctx context.Context, req resource.Rea
 
 	tflog.Trace(ctx, "reading a resource", map[string]any{"type": "aws_flow_logs_s3_bucket", "id": protoReq.Id})
 
-	rpcCtx, rpcCancel := context.WithTimeout(ctx, r.config.RequestTimeout())
+	requestTimeout, diagRequestTimeout := data.Timeouts.Read(ctx, r.config.RequestTimeout())
+	resp.Diagnostics.Append(diagRequestTimeout...)
+	if resp.Diagnostics.HasError() {
+		return
+	}
+
+	rpcCtx, rpcCancel := context.WithTimeout(ctx, requestTimeout)
 	protoResp, err := r.config.Client().ReadAwsFlowLogsS3Bucket(rpcCtx, protoReq)
 	rpcCancel()
 	if err != nil {
@@ -1189,7 +1322,13 @@ func (r *AwsFlowLogsS3BucketResource) Update(ctx context.Context, req resource.U
 
 	tflog.Trace(ctx, "updating a resource", map[string]any{"type": "aws_flow_logs_s3_bucket", "id": protoReq.Id, "update_mask": protoReq.UpdateMask.Paths})
 
-	rpcCtx, rpcCancel := context.WithTimeout(ctx, r.config.RequestTimeout())
+	requestTimeout, diagRequestTimeout := afterData.Timeouts.Update(ctx, r.config.RequestTimeout())
+	resp.Diagnostics.Append(diagRequestTimeout...)
+	if resp.Diagnostics.HasError() {
+		return
+	}
+
+	rpcCtx, rpcCancel := context.WithTimeout(ctx, requestTimeout)
 	protoResp, err := r.config.Client().UpdateAwsFlowLogsS3Bucket(rpcCtx, protoReq)
 	rpcCancel()
 	if err != nil {
@@ -1227,7 +1366,13 @@ func (r *AwsFlowLogsS3BucketResource) Delete(ctx context.Context, req resource.D
 
 	tflog.Trace(ctx, "deleting a resource", map[string]any{"type": "aws_flow_logs_s3_bucket", "id": protoReq.Id})
 
-	rpcCtx, rpcCancel := context.WithTimeout(ctx, r.config.RequestTimeout())
+	requestTimeout, diagRequestTimeout := data.Timeouts.Delete(ctx, r.config.RequestTimeout())
+	resp.Diagnostics.Append(diagRequestTimeout...)
+	if resp.Diagnostics.HasError() {
+		return
+	}
+
+	rpcCtx, rpcCancel := context.WithTimeout(ctx, requestTimeout)
 	_, err := r.config.Client().DeleteAwsFlowLogsS3Bucket(rpcCtx, protoReq)
 	rpcCancel()
 	if err != nil {
@@ -1308,7 +1453,13 @@ func (r *AzureFlowLogsStorageAccountResource) Create(ctx context.Context, req re
 
 	tflog.Trace(ctx, "creating a resource", map[string]any{"type": "azure_flow_logs_storage_account"})
 
-	rpcCtx, rpcCancel := context.WithTimeout(ctx, r.config.RequestTimeout())
+	requestTimeout, diagRequestTimeout := data.Timeouts.Create(ctx, r.config.RequestTimeout())
+	resp.Diagnostics.Append(diagRequestTimeout...)
+	if resp.Diagnostics.HasError() {
+		return
+	}
+
+	rpcCtx, rpcCancel := context.WithTimeout(ctx, requestTimeout)
 	protoResp, err := r.config.Client().CreateAzureFlowLogsStorageAccount(rpcCtx, protoReq)
 	rpcCancel()
 	if err != nil {
@@ -1339,7 +1490,13 @@ func (r *AzureFlowLogsStorageAccountResource) Read(ctx context.Context, req reso
 
 	tflog.Trace(ctx, "reading a resource", map[string]any{"type": "azure_flow_logs_storage_account", "id": protoReq.Id})
 
-	rpcCtx, rpcCancel := context.WithTimeout(ctx, r.config.RequestTimeout())
+	requestTimeout, diagRequestTimeout := data.Timeouts.Read(ctx, r.config.RequestTimeout())
+	resp.Diagnostics.Append(diagRequestTimeout...)
+	if resp.Diagnostics.HasError() {
+		return
+	}
+
+	rpcCtx, rpcCancel := context.WithTimeout(ctx, requestTimeout)
 	protoResp, err := r.config.Client().ReadAzureFlowLogsStorageAccount(rpcCtx, protoReq)
 	rpcCancel()
 	if err != nil {
@@ -1383,7 +1540,13 @@ func (r *AzureFlowLogsStorageAccountResource) Update(ctx context.Context, req re
 
 	tflog.Trace(ctx, "updating a resource", map[string]any{"type": "azure_flow_logs_storage_account", "id": protoReq.Id, "update_mask": protoReq.UpdateMask.Paths})
 
-	rpcCtx, rpcCancel := context.WithTimeout(ctx, r.config.RequestTimeout())
+	requestTimeout, diagRequestTimeout := afterData.Timeouts.Update(ctx, r.config.RequestTimeout())
+	resp.Diagnostics.Append(diagRequestTimeout...)
+	if resp.Diagnostics.HasError() {
+		return
+	}
+
+	rpcCtx, rpcCancel := context.WithTimeout(ctx, requestTimeout)
 	protoResp, err := r.config.Client().UpdateAzureFlowLogsStorageAccount(rpcCtx, protoReq)
 	rpcCancel()
 	if err != nil {
@@ -1421,7 +1584,13 @@ func (r *AzureFlowLogsStorageAccountResource) Delete(ctx context.Context, req re
 
 	tflog.Trace(ctx, "deleting a resource", map[string]any{"type": "azure_flow_logs_storage_account", "id": protoReq.Id})
 
-	rpcCtx, rpcCancel := context.WithTimeout(ctx, r.config.RequestTimeout())
+	requestTimeout, diagRequestTimeout := data.Timeouts.Delete(ctx, r.config.RequestTimeout())
+	resp.Diagnostics.Append(diagRequestTimeout...)
+	if resp.Diagnostics.HasError() {
+		return
+	}
+
+	rpcCtx, rpcCancel := context.WithTimeout(ctx, requestTimeout)
 	_, err := r.config.Client().DeleteAzureFlowLogsStorageAccount(rpcCtx, protoReq)
 	rpcCancel()
 	if err != nil {
@@ -1502,7 +1671,13 @@ func (r *AzureSubscriptionResource) Create(ctx context.Context, req resource.Cre
 
 	tflog.Trace(ctx, "creating a resource", map[string]any{"type": "azure_subscription"})
 
-	rpcCtx, rpcCancel := context.WithTimeout(ctx, r.config.RequestTimeout())
+	requestTimeout, diagRequestTimeout := data.Timeouts.Create(ctx, r.config.RequestTimeout())
+	resp.Diagnostics.Append(diagRequestTimeout...)
+	if resp.Diagnostics.HasError() {
+		return
+	}
+
+	rpcCtx, rpcCancel := context.WithTimeout(ctx, requestTimeout)
 	protoResp, err := r.config.Client().CreateAzureSubscription(rpcCtx, protoReq)
 	rpcCancel()
 	if err != nil {
@@ -1533,7 +1708,13 @@ func (r *AzureSubscriptionResource) Read(ctx context.Context, req resource.ReadR
 
 	tflog.Trace(ctx, "reading a resource", map[string]any{"type": "azure_subscription", "id": protoReq.Id})
 
-	rpcCtx, rpcCancel := context.WithTimeout(ctx, r.config.RequestTimeout())
+	requestTimeout, diagRequestTimeout := data.Timeouts.Read(ctx, r.config.RequestTimeout())
+	resp.Diagnostics.Append(diagRequestTimeout...)
+	if resp.Diagnostics.HasError() {
+		return
+	}
+
+	rpcCtx, rpcCancel := context.WithTimeout(ctx, requestTimeout)
 	protoResp, err := r.config.Client().ReadAzureSubscription(rpcCtx, protoReq)
 	rpcCancel()
 	if err != nil {
@@ -1577,7 +1758,13 @@ func (r *AzureSubscriptionResource) Update(ctx context.Context, req resource.Upd
 
 	tflog.Trace(ctx, "updating a resource", map[string]any{"type": "azure_subscription", "id": protoReq.Id, "update_mask": protoReq.UpdateMask.Paths})
 
-	rpcCtx, rpcCancel := context.WithTimeout(ctx, r.config.RequestTimeout())
+	requestTimeout, diagRequestTimeout := afterData.Timeouts.Update(ctx, r.config.RequestTimeout())
+	resp.Diagnostics.Append(diagRequestTimeout...)
+	if resp.Diagnostics.HasError() {
+		return
+	}
+
+	rpcCtx, rpcCancel := context.WithTimeout(ctx, requestTimeout)
 	protoResp, err := r.config.Client().UpdateAzureSubscription(rpcCtx, protoReq)
 	rpcCancel()
 	if err != nil {
@@ -1615,7 +1802,13 @@ func (r *AzureSubscriptionResource) Delete(ctx context.Context, req resource.Del
 
 	tflog.Trace(ctx, "deleting a resource", map[string]any{"type": "azure_subscription", "id": protoReq.Id})
 
-	rpcCtx, rpcCancel := context.WithTimeout(ctx, r.config.RequestTimeout())
+	requestTimeout, diagRequestTimeout := data.Timeouts.Delete(ctx, r.config.RequestTimeout())
+	resp.Diagnostics.Append(diagRequestTimeout...)
+	if resp.Diagnostics.HasError() {
+		return
+	}
+
+	rpcCtx, rpcCancel := context.WithTimeout(ctx, requestTimeout)
 	_, err := r.config.Client().DeleteAzureSubscription(rpcCtx, protoReq)
 	rpcCancel()
 	if err != nil {
@@ -1696,7 +1889,13 @@ func (r *DeploymentResource) Create(ctx context.Context, req resource.CreateRequ
 
 	tflog.Trace(ctx, "creating a resource", map[string]any{"type": "deployment"})
 
-	rpcCtx, rpcCancel := context.WithTimeout(ctx, r.config.RequestTimeout())
+	requestTimeout, diagRequestTimeout := data.Timeouts.Create(ctx, r.config.RequestTimeout())
+	resp.Diagnostics.Append(diagRequestTimeout...)
+	if resp.Diagnostics.HasError() {
+		return
+	}
+
+	rpcCtx, rpcCancel := context.WithTimeout(ctx, requestTimeout)
 	protoResp, err := r.config.Client().CreateDeployment(rpcCtx, protoReq)
 	rpcCancel()
 	if err != nil {
@@ -1727,7 +1926,13 @@ func (r *DeploymentResource) Read(ctx context.Context, req resource.ReadRequest,
 
 	tflog.Trace(ctx, "reading a resource", map[string]any{"type": "deployment", "id": protoReq.Id})
 
-	rpcCtx, rpcCancel := context.WithTimeout(ctx, r.config.RequestTimeout())
+	requestTimeout, diagRequestTimeout := data.Timeouts.Read(ctx, r.config.RequestTimeout())
+	resp.Diagnostics.Append(diagRequestTimeout...)
+	if resp.Diagnostics.HasError() {
+		return
+	}
+
+	rpcCtx, rpcCancel := context.WithTimeout(ctx, requestTimeout)
 	protoResp, err := r.config.Client().ReadDeployment(rpcCtx, protoReq)
 	rpcCancel()
 	if err != nil {
@@ -1771,7 +1976,13 @@ func (r *DeploymentResource) Update(ctx context.Context, req resource.UpdateRequ
 
 	tflog.Trace(ctx, "updating a resource", map[string]any{"type": "deployment", "id": protoReq.Id, "update_mask": protoReq.UpdateMask.Paths})
 
-	rpcCtx, rpcCancel := context.WithTimeout(ctx, r.config.RequestTimeout())
+	requestTimeout, diagRequestTimeout := afterData.Timeouts.Update(ctx, r.config.RequestTimeout())
+	resp.Diagnostics.Append(diagRequestTimeout...)
+	if resp.Diagnostics.HasError() {
+		return
+	}
+
+	rpcCtx, rpcCancel := context.WithTimeout(ctx, requestTimeout)
 	protoResp, err := r.config.Client().UpdateDeployment(rpcCtx, protoReq)
 	rpcCancel()
 	if err != nil {
@@ -1809,7 +2020,13 @@ func (r *DeploymentResource) Delete(ctx context.Context, req resource.DeleteRequ
 
 	tflog.Trace(ctx, "deleting a resource", map[string]any{"type": "deployment", "id": protoReq.Id})
 
-	rpcCtx, rpcCancel := context.WithTimeout(ctx, r.config.RequestTimeout())
+	requestTimeout, diagRequestTimeout := data.Timeouts.Delete(ctx, r.config.RequestTimeout())
+	resp.Diagnostics.Append(diagRequestTimeout...)
+	if resp.Diagnostics.HasError() {
+		return
+	}
+
+	rpcCtx, rpcCancel := context.WithTimeout(ctx, requestTimeout)
 	_, err := r.config.Client().DeleteDeployment(rpcCtx, protoReq)
 	rpcCancel()
 	if err != nil {
@@ -1890,7 +2107,13 @@ func (r *GcpFlowLogsPubsubTopicResource) Create(ctx context.Context, req resourc
 
 	tflog.Trace(ctx, "creating a resource", map[string]any{"type": "gcp_flow_logs_pubsub_topic"})
 
-	rpcCtx, rpcCancel := context.WithTimeout(ctx, r.config.RequestTimeout())
+	requestTimeout, diagRequestTimeout := data.Timeouts.Create(ctx, r.config.RequestTimeout())
+	resp.Diagnostics.Append(diagRequestTimeout...)
+	if resp.Diagnostics.HasError() {
+		return
+	}
+
+	rpcCtx, rpcCancel := context.WithTimeout(ctx, requestTimeout)
 	protoResp, err := r.config.Client().CreateGcpFlowLogsPubsubTopic(rpcCtx, protoReq)
 	rpcCancel()
 	if err != nil {
@@ -1921,7 +2144,13 @@ func (r *GcpFlowLogsPubsubTopicResource) Read(ctx context.Context, req resource.
 
 	tflog.Trace(ctx, "reading a resource", map[string]any{"type": "gcp_flow_logs_pubsub_topic", "id": protoReq.Id})
 
-	rpcCtx, rpcCancel := context.WithTimeout(ctx, r.config.RequestTimeout())
+	requestTimeout, diagRequestTimeout := data.Timeouts.Read(ctx, r.config.RequestTimeout())
+	resp.Diagnostics.Append(diagRequestTimeout...)
+	if resp.Diagnostics.HasError() {
+		return
+	}
+
+	rpcCtx, rpcCancel := context.WithTimeout(ctx, requestTimeout)
 	protoResp, err := r.config.Client().ReadGcpFlowLogsPubsubTopic(rpcCtx, protoReq)
 	rpcCancel()
 	if err != nil {
@@ -1965,7 +2194,13 @@ func (r *GcpFlowLogsPubsubTopicResource) Update(ctx context.Context, req resourc
 
 	tflog.Trace(ctx, "updating a resource", map[string]any{"type": "gcp_flow_logs_pubsub_topic", "id": protoReq.Id, "update_mask": protoReq.UpdateMask.Paths})
 
-	rpcCtx, rpcCancel := context.WithTimeout(ctx, r.config.RequestTimeout())
+	requestTimeout, diagRequestTimeout := afterData.Timeouts.Update(ctx, r.config.RequestTimeout())
+	resp.Diagnostics.Append(diagRequestTimeout...)
+	if resp.Diagnostics.HasError() {
+		return
+	}
+
+	rpcCtx, rpcCancel := context.WithTimeout(ctx, requestTimeout)
 	protoResp, err := r.config.Client().UpdateGcpFlowLogsPubsubTopic(rpcCtx, protoReq)
 	rpcCancel()
 	if err != nil {
@@ -2003,7 +2238,13 @@ func (r *GcpFlowLogsPubsubTopicResource) Delete(ctx context.Context, req resourc
 
 	tflog.Trace(ctx, "deleting a resource", map[string]any{"type": "gcp_flow_logs_pubsub_topic", "id": protoReq.Id})
 
-	rpcCtx, rpcCancel := context.WithTimeout(ctx, r.config.RequestTimeout())
+	requestTimeout, diagRequestTimeout := data.Timeouts.Delete(ctx, r.config.RequestTimeout())
+	resp.Diagnostics.Append(diagRequestTimeout...)
+	if resp.Diagnostics.HasError() {
+		return
+	}
+
+	rpcCtx, rpcCancel := context.WithTimeout(ctx, requestTimeout)
 	_, err := r.config.Client().DeleteGcpFlowLogsPubsubTopic(rpcCtx, protoReq)
 	rpcCancel()
 	if err != nil {
@@ -2084,7 +2325,13 @@ func (r *GcpProjectResource) Create(ctx context.Context, req resource.CreateRequ
 
 	tflog.Trace(ctx, "creating a resource", map[string]any{"type": "gcp_project"})
 
-	rpcCtx, rpcCancel := context.WithTimeout(ctx, r.config.RequestTimeout())
+	requestTimeout, diagRequestTimeout := data.Timeouts.Create(ctx, r.config.RequestTimeout())
+	resp.Diagnostics.Append(diagRequestTimeout...)
+	if resp.Diagnostics.HasError() {
+		return
+	}
+
+	rpcCtx, rpcCancel := context.WithTimeout(ctx, requestTimeout)
 	protoResp, err := r.config.Client().CreateGcpProject(rpcCtx, protoReq)
 	rpcCancel()
 	if err != nil {
@@ -2115,7 +2362,13 @@ func (r *GcpProjectResource) Read(ctx context.Context, req resource.ReadRequest,
 
 	tflog.Trace(ctx, "reading a resource", map[string]any{"type": "gcp_project", "id": protoReq.Id})
 
-	rpcCtx, rpcCancel := context.WithTimeout(ctx, r.config.RequestTimeout())
+	requestTimeout, diagRequestTimeout := data.Timeouts.Read(ctx, r.config.RequestTimeout())
+	resp.Diagnostics.Append(diagRequestTimeout...)
+	if resp.Diagnostics.HasError() {
+		return
+	}
+
+	rpcCtx, rpcCancel := context.WithTimeout(ctx, requestTimeout)
 	protoResp, err := r.config.Client().ReadGcpProject(rpcCtx, protoReq)
 	rpcCancel()
 	if err != nil {
@@ -2159,7 +2412,13 @@ func (r *GcpProjectResource) Update(ctx context.Context, req resource.UpdateRequ
 
 	tflog.Trace(ctx, "updating a resource", map[string]any{"type": "gcp_project", "id": protoReq.Id, "update_mask": protoReq.UpdateMask.Paths})
 
-	rpcCtx, rpcCancel := context.WithTimeout(ctx, r.config.RequestTimeout())
+	requestTimeout, diagRequestTimeout := afterData.Timeouts.Update(ctx, r.config.RequestTimeout())
+	resp.Diagnostics.Append(diagRequestTimeout...)
+	if resp.Diagnostics.HasError() {
+		return
+	}
+
+	rpcCtx, rpcCancel := context.WithTimeout(ctx, requestTimeout)
 	protoResp, err := r.config.Client().UpdateGcpProject(rpcCtx, protoReq)
 	rpcCancel()
 	if err != nil {
@@ -2197,7 +2456,13 @@ func (r *GcpProjectResource) Delete(ctx context.Context, req resource.DeleteRequ
 
 	tflog.Trace(ctx, "deleting a resource", map[string]any{"type": "gcp_project", "id": protoReq.Id})
 
-	rpcCtx, rpcCancel := context.WithTimeout(ctx, r.config.RequestTimeout())
+	requestTimeout, diagRequestTimeout := data.Timeouts.Delete(ctx, r.config.RequestTimeout())
+	resp.Diagnostics.Append(diagRequestTimeout...)
+	if resp.Diagnostics.HasError() {
+		return
+	}
+
+	rpcCtx, rpcCancel := context.WithTimeout(ctx, requestTimeout)
 	_, err := r.config.Client().DeleteGcpProject(rpcCtx, protoReq)
 	rpcCancel()
 	if err != nil {
@@ -2278,7 +2543,13 @@ func (r *IpListResource) Create(ctx context.Context, req resource.CreateRequest,
 
 	tflog.Trace(ctx, "creating a resource", map[string]any{"type": "ip_list"})
 
-	rpcCtx, rpcCancel := context.WithTimeout(ctx, r.config.RequestTimeout())
+	requestTimeout, diagRequestTimeout := data.Timeouts.Create(ctx, r.config.RequestTimeout())
+	resp.Diagnostics.Append(diagRequestTimeout...)
+	if resp.Diagnostics.HasError() {
+		return
+	}
+
+	rpcCtx, rpcCancel := context.WithTimeout(ctx, requestTimeout)
 	protoResp, err := r.config.Client().CreateIpList(rpcCtx, protoReq)
 	rpcCancel()
 	if err != nil {
@@ -2309,7 +2580,13 @@ func (r *IpListResource) Read(ctx context.Context, req resource.ReadRequest, res
 
 	tflog.Trace(ctx, "reading a resource", map[string]any{"type": "ip_list", "id": protoReq.Id})
 
-	rpcCtx, rpcCancel := context.WithTimeout(ctx, r.config.RequestTimeout())
+	requestTimeout, diagRequestTimeout := data.Timeouts.Read(ctx, r.config.RequestTimeout())
+	resp.Diagnostics.Append(diagRequestTimeout...)
+	if resp.Diagnostics.HasError() {
+		return
+	}
+
+	rpcCtx, rpcCancel := context.WithTimeout(ctx, requestTimeout)
 	protoResp, err := r.config.Client().ReadIpList(rpcCtx, protoReq)
 	rpcCancel()
 	if err != nil {
@@ -2353,7 +2630,13 @@ func (r *IpListResource) Update(ctx context.Context, req resource.UpdateRequest,
 
 	tflog.Trace(ctx, "updating a resource", map[string]any{"type": "ip_list", "id": protoReq.Id, "update_mask": protoReq.UpdateMask.Paths})
 
-	rpcCtx, rpcCancel := context.WithTimeout(ctx, r.config.RequestTimeout())
+	requestTimeout, diagRequestTimeout := afterData.Timeouts.Update(ctx, r.config.RequestTimeout())
+	resp.Diagnostics.Append(diagRequestTimeout...)
+	if resp.Diagnostics.HasError() {
+		return
+	}
+
+	rpcCtx, rpcCancel := context.WithTimeout(ctx, requestTimeout)
 	protoResp, err := r.config.Client().UpdateIpList(rpcCtx, protoReq)
 	rpcCancel()
 	if err != nil {
@@ -2391,7 +2674,13 @@ func (r *IpListResource) Delete(ctx context.Context, req resource.DeleteRequest,
 
 	tflog.Trace(ctx, "deleting a resource", map[string]any{"type": "ip_list", "id": protoReq.Id})
 
-	rpcCtx, rpcCancel := context.WithTimeout(ctx, r.config.RequestTimeout())
+	requestTimeout, diagRequestTimeout := data.Timeouts.Delete(ctx, r.config.RequestTimeout())
+	resp.Diagnostics.Append(diagRequestTimeout...)
+	if resp.Diagnostics.HasError() {
+		return
+	}
+
+	rpcCtx, rpcCancel := context.WithTimeout(ctx, requestTimeout)
 	_, err := r.config.Client().DeleteIpList(rpcCtx, protoReq)
 	rpcCancel()
 	if err != nil {
@@ -2472,7 +2761,13 @@ func (r *K8SClusterResource) Create(ctx context.Context, req resource.CreateRequ
 
 	tflog.Trace(ctx, "creating a resource", map[string]any{"type": "k8s_cluster"})
 
-	rpcCtx, rpcCancel := context.WithTimeout(ctx, r.config.RequestTimeout())
+	requestTimeout, diagRequestTimeout := data.Timeouts.Create(ctx, r.config.RequestTimeout())
+	resp.Diagnostics.Append(diagRequestTimeout...)
+	if resp.Diagnostics.HasError() {
+		return
+	}
+
+	rpcCtx, rpcCancel := context.WithTimeout(ctx, requestTimeout)
 	protoResp, err := r.config.Client().CreateK8SCluster(rpcCtx, protoReq)
 	rpcCancel()
 	if err != nil {
@@ -2503,7 +2798,13 @@ func (r *K8SClusterResource) Read(ctx context.Context, req resource.ReadRequest,
 
 	tflog.Trace(ctx, "reading a resource", map[string]any{"type": "k8s_cluster", "id": protoReq.Id})
 
-	rpcCtx, rpcCancel := context.WithTimeout(ctx, r.config.RequestTimeout())
+	requestTimeout, diagRequestTimeout := data.Timeouts.Read(ctx, r.config.RequestTimeout())
+	resp.Diagnostics.Append(diagRequestTimeout...)
+	if resp.Diagnostics.HasError() {
+		return
+	}
+
+	rpcCtx, rpcCancel := context.WithTimeout(ctx, requestTimeout)
 	protoResp, err := r.config.Client().ReadK8SCluster(rpcCtx, protoReq)
 	rpcCancel()
 	if err != nil {
@@ -2547,7 +2848,13 @@ func (r *K8SClusterResource) Update(ctx context.Context, req resource.UpdateRequ
 
 	tflog.Trace(ctx, "updating a resource", map[string]any{"type": "k8s_cluster", "id": protoReq.Id, "update_mask": protoReq.UpdateMask.Paths})
 
-	rpcCtx, rpcCancel := context.WithTimeout(ctx, r.config.RequestTimeout())
+	requestTimeout, diagRequestTimeout := afterData.Timeouts.Update(ctx, r.config.RequestTimeout())
+	resp.Diagnostics.Append(diagRequestTimeout...)
+	if resp.Diagnostics.HasError() {
+		return
+	}
+
+	rpcCtx, rpcCancel := context.WithTimeout(ctx, requestTimeout)
 	protoResp, err := r.config.Client().UpdateK8SCluster(rpcCtx, protoReq)
 	rpcCancel()
 	if err != nil {
@@ -2585,7 +2892,13 @@ func (r *K8SClusterResource) Delete(ctx context.Context, req resource.DeleteRequ
 
 	tflog.Trace(ctx, "deleting a resource", map[string]any{"type": "k8s_cluster", "id": protoReq.Id})
 
-	rpcCtx, rpcCancel := context.WithTimeout(ctx, r.config.RequestTimeout())
+	requestTimeout, diagRequestTimeout := data.Timeouts.Delete(ctx, r.config.RequestTimeout())
+	resp.Diagnostics.Append(diagRequestTimeout...)
+	if resp.Diagnostics.HasError() {
+		return
+	}
+
+	rpcCtx, rpcCancel := context.WithTimeout(ctx, requestTimeout)
 	_, err := r.config.Client().DeleteK8SCluster(rpcCtx, protoReq)
 	rpcCancel()
 	if err != nil {
@@ -2666,7 +2979,13 @@ func (r *K8SClusterOnboardingCredentialResource) Create(ctx context.Context, req
 
 	tflog.Trace(ctx, "creating a resource", map[string]any{"type": "k8s_cluster_onboarding_credential"})
 
-	rpcCtx, rpcCancel := context.WithTimeout(ctx, r.config.RequestTimeout())
+	requestTimeout, diagRequestTimeout := data.Timeouts.Create(ctx, r.config.RequestTimeout())
+	resp.Diagnostics.Append(diagRequestTimeout...)
+	if resp.Diagnostics.HasError() {
+		return
+	}
+
+	rpcCtx, rpcCancel := context.WithTimeout(ctx, requestTimeout)
 	protoResp, err := r.config.Client().CreateK8SClusterOnboardingCredential(rpcCtx, protoReq)
 	rpcCancel()
 	if err != nil {
@@ -2697,7 +3016,13 @@ func (r *K8SClusterOnboardingCredentialResource) Read(ctx context.Context, req r
 
 	tflog.Trace(ctx, "reading a resource", map[string]any{"type": "k8s_cluster_onboarding_credential", "id": protoReq.Id})
 
-	rpcCtx, rpcCancel := context.WithTimeout(ctx, r.config.RequestTimeout())
+	requestTimeout, diagRequestTimeout := data.Timeouts.Read(ctx, r.config.RequestTimeout())
+	resp.Diagnostics.Append(diagRequestTimeout...)
+	if resp.Diagnostics.HasError() {
+		return
+	}
+
+	rpcCtx, rpcCancel := context.WithTimeout(ctx, requestTimeout)
 	protoResp, err := r.config.Client().ReadK8SClusterOnboardingCredential(rpcCtx, protoReq)
 	rpcCancel()
 	if err != nil {
@@ -2741,7 +3066,13 @@ func (r *K8SClusterOnboardingCredentialResource) Update(ctx context.Context, req
 
 	tflog.Trace(ctx, "updating a resource", map[string]any{"type": "k8s_cluster_onboarding_credential", "id": protoReq.Id, "update_mask": protoReq.UpdateMask.Paths})
 
-	rpcCtx, rpcCancel := context.WithTimeout(ctx, r.config.RequestTimeout())
+	requestTimeout, diagRequestTimeout := afterData.Timeouts.Update(ctx, r.config.RequestTimeout())
+	resp.Diagnostics.Append(diagRequestTimeout...)
+	if resp.Diagnostics.HasError() {
+		return
+	}
+
+	rpcCtx, rpcCancel := context.WithTimeout(ctx, requestTimeout)
 	protoResp, err := r.config.Client().UpdateK8SClusterOnboardingCredential(rpcCtx, protoReq)
 	rpcCancel()
 	if err != nil {
@@ -2779,7 +3110,13 @@ func (r *K8SClusterOnboardingCredentialResource) Delete(ctx context.Context, req
 
 	tflog.Trace(ctx, "deleting a resource", map[string]any{"type": "k8s_cluster_onboarding_credential", "id": protoReq.Id})
 
-	rpcCtx, rpcCancel := context.WithTimeout(ctx, r.config.RequestTimeout())
+	requestTimeout, diagRequestTimeout := data.Timeouts.Delete(ctx, r.config.RequestTimeout())
+	resp.Diagnostics.Append(diagRequestTimeout...)
+	if resp.Diagnostics.HasError() {
+		return
+	}
+
+	rpcCtx, rpcCancel := context.WithTimeout(ctx, requestTimeout)
 	_, err := r.config.Client().DeleteK8SClusterOnboardingCredential(rpcCtx, protoReq)
 	rpcCancel()
 	if err != nil {
@@ -2860,7 +3197,13 @@ func (r *OrganizationPolicyResource) Create(ctx context.Context, req resource.Cr
 
 	tflog.Trace(ctx, "creating a resource", map[string]any{"type": "organization_policy"})
 
-	rpcCtx, rpcCancel := context.WithTimeout(ctx, r.config.RequestTimeout())
+	requestTimeout, diagRequestTimeout := data.Timeouts.Create(ctx, r.config.RequestTimeout())
+	resp.Diagnostics.Append(diagRequestTimeout...)
+	if resp.Diagnostics.HasError() {
+		return
+	}
+
+	rpcCtx, rpcCancel := context.WithTimeout(ctx, requestTimeout)
 	protoResp, err := r.config.Client().CreateOrganizationPolicy(rpcCtx, protoReq)
 	rpcCancel()
 	if err != nil {
@@ -2891,7 +3234,13 @@ func (r *OrganizationPolicyResource) Read(ctx context.Context, req resource.Read
 
 	tflog.Trace(ctx, "reading a resource", map[string]any{"type": "organization_policy", "id": protoReq.Id})
 
-	rpcCtx, rpcCancel := context.WithTimeout(ctx, r.config.RequestTimeout())
+	requestTimeout, diagRequestTimeout := data.Timeouts.Read(ctx, r.config.RequestTimeout())
+	resp.Diagnostics.Append(diagRequestTimeout...)
+	if resp.Diagnostics.HasError() {
+		return
+	}
+
+	rpcCtx, rpcCancel := context.WithTimeout(ctx, requestTimeout)
 	protoResp, err := r.config.Client().ReadOrganizationPolicy(rpcCtx, protoReq)
 	rpcCancel()
 	if err != nil {
@@ -2935,7 +3284,13 @@ func (r *OrganizationPolicyResource) Update(ctx context.Context, req resource.Up
 
 	tflog.Trace(ctx, "updating a resource", map[string]any{"type": "organization_policy", "id": protoReq.Id, "update_mask": protoReq.UpdateMask.Paths})
 
-	rpcCtx, rpcCancel := context.WithTimeout(ctx, r.config.RequestTimeout())
+	requestTimeout, diagRequestTimeout := afterData.Timeouts.Update(ctx, r.config.RequestTimeout())
+	resp.Diagnostics.Append(diagRequestTimeout...)
+	if resp.Diagnostics.HasError() {
+		return
+	}
+
+	rpcCtx, rpcCancel := context.WithTimeout(ctx, requestTimeout)
 	protoResp, err := r.config.Client().UpdateOrganizationPolicy(rpcCtx, protoReq)
 	rpcCancel()
 	if err != nil {
@@ -2973,7 +3328,13 @@ func (r *OrganizationPolicyResource) Delete(ctx context.Context, req resource.De
 
 	tflog.Trace(ctx, "deleting a resource", map[string]any{"type": "organization_policy", "id": protoReq.Id})
 
-	rpcCtx, rpcCancel := context.WithTimeout(ctx, r.config.RequestTimeout())
+	requestTimeout, diagRequestTimeout := data.Timeouts.Delete(ctx, r.config.RequestTimeout())
+	resp.Diagnostics.Append(diagRequestTimeout...)
+	if resp.Diagnostics.HasError() {
+		return
+	}
+
+	rpcCtx, rpcCancel := context.WithTimeout(ctx, requestTimeout)
 	_, err := r.config.Client().DeleteOrganizationPolicy(rpcCtx, protoReq)
 	rpcCancel()
 	if err != nil {
@@ -3054,7 +3415,13 @@ func (r *OrganizationPolicyRuleResource) Create(ctx context.Context, req resourc
 
 	tflog.Trace(ctx, "creating a resource", map[string]any{"type": "organization_policy_rule"})
 
-	rpcCtx, rpcCancel := context.WithTimeout(ctx, r.config.RequestTimeout())
+	requestTimeout, diagRequestTimeout := data.Timeouts.Create(ctx, r.config.RequestTimeout())
+	resp.Diagnostics.Append(diagRequestTimeout...)
+	if resp.Diagnostics.HasError() {
+		return
+	}
+
+	rpcCtx, rpcCancel := context.WithTimeout(ctx, requestTimeout)
 	protoResp, err := r.config.Client().CreateOrganizationPolicyRule(rpcCtx, protoReq)
 	rpcCancel()
 	if err != nil {
@@ -3085,7 +3452,13 @@ func (r *OrganizationPolicyRuleResource) Read(ctx context.Context, req resource.
 
 	tflog.Trace(ctx, "reading a resource", map[string]any{"type": "organization_policy_rule", "id": protoReq.Id})
 
-	rpcCtx, rpcCancel := context.WithTimeout(ctx, r.config.RequestTimeout())
+	requestTimeout, diagRequestTimeout := data.Timeouts.Read(ctx, r.config.RequestTimeout())
+	resp.Diagnostics.Append(diagRequestTimeout...)
+	if resp.Diagnostics.HasError() {
+		return
+	}
+
+	rpcCtx, rpcCancel := context.WithTimeout(ctx, requestTimeout)
 	protoResp, err := r.config.Client().ReadOrganizationPolicyRule(rpcCtx, protoReq)
 	rpcCancel()
 	if err != nil {
@@ -3129,7 +3502,13 @@ func (r *OrganizationPolicyRuleResource) Update(ctx context.Context, req resourc
 
 	tflog.Trace(ctx, "updating a resource", map[string]any{"type": "organization_policy_rule", "id": protoReq.Id, "update_mask": protoReq.UpdateMask.Paths})
 
-	rpcCtx, rpcCancel := context.WithTimeout(ctx, r.config.RequestTimeout())
+	requestTimeout, diagRequestTimeout := afterData.Timeouts.Update(ctx, r.config.RequestTimeout())
+	resp.Diagnostics.Append(diagRequestTimeout...)
+	if resp.Diagnostics.HasError() {
+		return
+	}
+
+	rpcCtx, rpcCancel := context.WithTimeout(ctx, requestTimeout)
 	protoResp, err := r.config.Client().UpdateOrganizationPolicyRule(rpcCtx, protoReq)
 	rpcCancel()
 	if err != nil {
@@ -3167,7 +3546,13 @@ func (r *OrganizationPolicyRuleResource) Delete(ctx context.Context, req resourc
 
 	tflog.Trace(ctx, "deleting a resource", map[string]any{"type": "organization_policy_rule", "id": protoReq.Id})
 
-	rpcCtx, rpcCancel := context.WithTimeout(ctx, r.config.RequestTimeout())
+	requestTimeout, diagRequestTimeout := data.Timeouts.Delete(ctx, r.config.RequestTimeout())
+	resp.Diagnostics.Append(diagRequestTimeout...)
+	if resp.Diagnostics.HasError() {
+		return
+	}
+
+	rpcCtx, rpcCancel := context.WithTimeout(ctx, requestTimeout)
 	_, err := r.config.Client().DeleteOrganizationPolicyRule(rpcCtx, protoReq)
 	rpcCancel()
 	if err != nil {
@@ -3248,7 +3633,13 @@ func (r *TagToLabelResource) Create(ctx context.Context, req resource.CreateRequ
 
 	tflog.Trace(ctx, "creating a resource", map[string]any{"type": "tag_to_label"})
 
-	rpcCtx, rpcCancel := context.WithTimeout(ctx, r.config.RequestTimeout())
+	requestTimeout, diagRequestTimeout := data.Timeouts.Create(ctx, r.config.RequestTimeout())
+	resp.Diagnostics.Append(diagRequestTimeout...)
+	if resp.Diagnostics.HasError() {
+		return
+	}
+
+	rpcCtx, rpcCancel := context.WithTimeout(ctx, requestTimeout)
 	protoResp, err := r.config.Client().CreateTagToLabel(rpcCtx, protoReq)
 	rpcCancel()
 	if err != nil {
@@ -3279,7 +3670,13 @@ func (r *TagToLabelResource) Read(ctx context.Context, req resource.ReadRequest,
 
 	tflog.Trace(ctx, "reading a resource", map[string]any{"type": "tag_to_label", "id": protoReq.Id})
 
-	rpcCtx, rpcCancel := context.WithTimeout(ctx, r.config.RequestTimeout())
+	requestTimeout, diagRequestTimeout := data.Timeouts.Read(ctx, r.config.RequestTimeout())
+	resp.Diagnostics.Append(diagRequestTimeout...)
+	if resp.Diagnostics.HasError() {
+		return
+	}
+
+	rpcCtx, rpcCancel := context.WithTimeout(ctx, requestTimeout)
 	protoResp, err := r.config.Client().ReadTagToLabel(rpcCtx, protoReq)
 	rpcCancel()
 	if err != nil {
@@ -3323,7 +3720,13 @@ func (r *TagToLabelResource) Update(ctx context.Context, req resource.UpdateRequ
 
 	tflog.Trace(ctx, "updating a resource", map[string]any{"type": "tag_to_label", "id": protoReq.Id, "update_mask": protoReq.UpdateMask.Paths})
 
-	rpcCtx, rpcCancel := context.WithTimeout(ctx, r.config.RequestTimeout())
+	requestTimeout, diagRequestTimeout := afterData.Timeouts.Update(ctx, r.config.RequestTimeout())
+	resp.Diagnostics.Append(diagRequestTimeout...)
+	if resp.Diagnostics.HasError() {
+		return
+	}
+
+	rpcCtx, rpcCancel := context.WithTimeout(ctx, requestTimeout)
 	protoResp, err := r.config.Client().UpdateTagToLabel(rpcCtx, protoReq)
 	rpcCancel()
 	if err != nil {
@@ -3361,7 +3764,13 @@ func (r *TagToLabelResource) Delete(ctx context.Context, req resource.DeleteRequ
 
 	tflog.Trace(ctx, "deleting a resource", map[string]any{"type": "tag_to_label", "id": protoReq.Id})
 
-	rpcCtx, rpcCancel := context.WithTimeout(ctx, r.config.RequestTimeout())
+	requestTimeout, diagRequestTimeout := data.Timeouts.Delete(ctx, r.config.RequestTimeout())
+	resp.Diagnostics.Append(diagRequestTimeout...)
+	if resp.Diagnostics.HasError() {
+		return
+	}
+
+	rpcCtx, rpcCancel := context.WithTimeout(ctx, requestTimeout)
 	_, err := r.config.Client().DeleteTagToLabel(rpcCtx, protoReq)
 	rpcCancel()
 	if err != nil {
@@ -3382,187 +3791,204 @@ func (r *TagToLabelResource) ImportState(ctx context.Context, req resource.Impor
 }
 
 type ApplicationResourceModel struct {
-	Id           types.String `tfsdk:"id"`
-	DeploymentId types.String `tfsdk:"deployment_id"`
-	Description  types.String `tfsdk:"description"`
-	Name         types.String `tfsdk:"name"`
+	Id           types.String   `tfsdk:"id"`
+	DeploymentId types.String   `tfsdk:"deployment_id"`
+	Description  types.String   `tfsdk:"description"`
+	Name         types.String   `tfsdk:"name"`
+	Timeouts     timeouts.Value `tfsdk:"timeouts"`
 }
 
 type ApplicationAwsResourcesResourceModel struct {
-	Id                                     types.String `tfsdk:"id"`
-	AccountId                              types.String `tfsdk:"account_id"`
-	ApplicationId                          types.String `tfsdk:"application_id"`
-	ApplicationResourceIds                 types.List   `tfsdk:"application_resource_ids"`
-	Arns                                   types.List   `tfsdk:"arns"`
-	AwsCustomerGatewayIds                  types.List   `tfsdk:"aws_customer_gateway_ids"`
-	AwsDxConnectionIds                     types.List   `tfsdk:"aws_dx_connection_ids"`
-	AwsDxVirtualInterfaceIds               types.List   `tfsdk:"aws_dx_virtual_interface_ids"`
-	AwsEbsVolumeIds                        types.List   `tfsdk:"aws_ebs_volume_ids"`
-	AwsEc2InstanceConnectEndpointIds       types.List   `tfsdk:"aws_ec2_instance_connect_endpoint_ids"`
-	AwsEc2TransitGatewayAttachmentIds      types.List   `tfsdk:"aws_ec2_transit_gateway_attachment_ids"`
-	AwsEc2TransitGatewayIds                types.List   `tfsdk:"aws_ec2_transit_gateway_ids"`
-	AwsEc2TransitGatewayMulticastDomainIds types.List   `tfsdk:"aws_ec2_transit_gateway_multicast_domain_ids"`
-	AwsEc2TransitGatewayRouteTableIds      types.List   `tfsdk:"aws_ec2_transit_gateway_route_table_ids"`
-	AwsEgressOnlyInternetGatewayIds        types.List   `tfsdk:"aws_egress_only_internet_gateway_ids"`
-	AwsEipIds                              types.List   `tfsdk:"aws_eip_ids"`
-	AwsFlowLogIds                          types.List   `tfsdk:"aws_flow_log_ids"`
-	AwsInstancesIds                        types.List   `tfsdk:"aws_instances_ids"`
-	AwsInternetGatewayIds                  types.List   `tfsdk:"aws_internet_gateway_ids"`
-	AwsNatGatewayIds                       types.List   `tfsdk:"aws_nat_gateway_ids"`
-	AwsNetworkAclIds                       types.List   `tfsdk:"aws_network_acl_ids"`
-	AwsNetworkInterfaceIds                 types.List   `tfsdk:"aws_network_interface_ids"`
-	AwsRdsClusterIds                       types.List   `tfsdk:"aws_rds_cluster_ids"`
-	AwsRouteTableIds                       types.List   `tfsdk:"aws_route_table_ids"`
-	AwsSecurityGroupIds                    types.List   `tfsdk:"aws_security_group_ids"`
-	AwsSecurityGroupRuleIds                types.List   `tfsdk:"aws_security_group_rule_ids"`
-	AwsSpotFleetRequestIds                 types.List   `tfsdk:"aws_spot_fleet_request_ids"`
-	AwsSpotInstanceRequestIds              types.List   `tfsdk:"aws_spot_instance_request_ids"`
-	AwsSubnetIds                           types.List   `tfsdk:"aws_subnet_ids"`
-	AwsVpcEndpointIds                      types.List   `tfsdk:"aws_vpc_endpoint_ids"`
-	AwsVpcEndpointServiceIds               types.List   `tfsdk:"aws_vpc_endpoint_service_ids"`
-	AwsVpcIds                              types.List   `tfsdk:"aws_vpc_ids"`
-	AwsVpcPeeringConnectionIds             types.List   `tfsdk:"aws_vpc_peering_connection_ids"`
-	AwsVpnConnectionIds                    types.List   `tfsdk:"aws_vpn_connection_ids"`
-	AwsVpnGatewayIds                       types.List   `tfsdk:"aws_vpn_gateway_ids"`
+	Id                                     types.String   `tfsdk:"id"`
+	AccountId                              types.String   `tfsdk:"account_id"`
+	ApplicationId                          types.String   `tfsdk:"application_id"`
+	ApplicationResourceIds                 types.List     `tfsdk:"application_resource_ids"`
+	Arns                                   types.List     `tfsdk:"arns"`
+	AwsCustomerGatewayIds                  types.List     `tfsdk:"aws_customer_gateway_ids"`
+	AwsDxConnectionIds                     types.List     `tfsdk:"aws_dx_connection_ids"`
+	AwsDxVirtualInterfaceIds               types.List     `tfsdk:"aws_dx_virtual_interface_ids"`
+	AwsEbsVolumeIds                        types.List     `tfsdk:"aws_ebs_volume_ids"`
+	AwsEc2InstanceConnectEndpointIds       types.List     `tfsdk:"aws_ec2_instance_connect_endpoint_ids"`
+	AwsEc2TransitGatewayAttachmentIds      types.List     `tfsdk:"aws_ec2_transit_gateway_attachment_ids"`
+	AwsEc2TransitGatewayIds                types.List     `tfsdk:"aws_ec2_transit_gateway_ids"`
+	AwsEc2TransitGatewayMulticastDomainIds types.List     `tfsdk:"aws_ec2_transit_gateway_multicast_domain_ids"`
+	AwsEc2TransitGatewayRouteTableIds      types.List     `tfsdk:"aws_ec2_transit_gateway_route_table_ids"`
+	AwsEgressOnlyInternetGatewayIds        types.List     `tfsdk:"aws_egress_only_internet_gateway_ids"`
+	AwsEipIds                              types.List     `tfsdk:"aws_eip_ids"`
+	AwsFlowLogIds                          types.List     `tfsdk:"aws_flow_log_ids"`
+	AwsInstancesIds                        types.List     `tfsdk:"aws_instances_ids"`
+	AwsInternetGatewayIds                  types.List     `tfsdk:"aws_internet_gateway_ids"`
+	AwsNatGatewayIds                       types.List     `tfsdk:"aws_nat_gateway_ids"`
+	AwsNetworkAclIds                       types.List     `tfsdk:"aws_network_acl_ids"`
+	AwsNetworkInterfaceIds                 types.List     `tfsdk:"aws_network_interface_ids"`
+	AwsRdsClusterIds                       types.List     `tfsdk:"aws_rds_cluster_ids"`
+	AwsRouteTableIds                       types.List     `tfsdk:"aws_route_table_ids"`
+	AwsSecurityGroupIds                    types.List     `tfsdk:"aws_security_group_ids"`
+	AwsSecurityGroupRuleIds                types.List     `tfsdk:"aws_security_group_rule_ids"`
+	AwsSpotFleetRequestIds                 types.List     `tfsdk:"aws_spot_fleet_request_ids"`
+	AwsSpotInstanceRequestIds              types.List     `tfsdk:"aws_spot_instance_request_ids"`
+	AwsSubnetIds                           types.List     `tfsdk:"aws_subnet_ids"`
+	AwsVpcEndpointIds                      types.List     `tfsdk:"aws_vpc_endpoint_ids"`
+	AwsVpcEndpointServiceIds               types.List     `tfsdk:"aws_vpc_endpoint_service_ids"`
+	AwsVpcIds                              types.List     `tfsdk:"aws_vpc_ids"`
+	AwsVpcPeeringConnectionIds             types.List     `tfsdk:"aws_vpc_peering_connection_ids"`
+	AwsVpnConnectionIds                    types.List     `tfsdk:"aws_vpn_connection_ids"`
+	AwsVpnGatewayIds                       types.List     `tfsdk:"aws_vpn_gateway_ids"`
+	Timeouts                               timeouts.Value `tfsdk:"timeouts"`
 }
 
 type ApplicationAzureResourcesResourceModel struct {
-	Id                     types.String `tfsdk:"id"`
-	ApplicationId          types.String `tfsdk:"application_id"`
-	ApplicationResourceIds types.List   `tfsdk:"application_resource_ids"`
-	ResourceIds            types.List   `tfsdk:"resource_ids"`
-	SubscriptionId         types.String `tfsdk:"subscription_id"`
+	Id                     types.String   `tfsdk:"id"`
+	ApplicationId          types.String   `tfsdk:"application_id"`
+	ApplicationResourceIds types.List     `tfsdk:"application_resource_ids"`
+	ResourceIds            types.List     `tfsdk:"resource_ids"`
+	SubscriptionId         types.String   `tfsdk:"subscription_id"`
+	Timeouts               timeouts.Value `tfsdk:"timeouts"`
 }
 
 type ApplicationPolicyRuleResourceModel struct {
-	Id            types.String `tfsdk:"id"`
-	Action        types.String `tfsdk:"action"`
-	ApplicationId types.String `tfsdk:"application_id"`
-	Description   types.String `tfsdk:"description"`
-	ExternalScope types.Bool   `tfsdk:"external_scope"`
-	FromIpListIds types.List   `tfsdk:"from_ip_list_ids"`
-	FromLabels    types.List   `tfsdk:"from_labels"`
-	ToIpListIds   types.List   `tfsdk:"to_ip_list_ids"`
-	ToLabels      types.List   `tfsdk:"to_labels"`
-	ToPortRanges  types.List   `tfsdk:"to_port_ranges"`
+	Id            types.String   `tfsdk:"id"`
+	Action        types.String   `tfsdk:"action"`
+	ApplicationId types.String   `tfsdk:"application_id"`
+	Description   types.String   `tfsdk:"description"`
+	ExternalScope types.Bool     `tfsdk:"external_scope"`
+	FromIpListIds types.List     `tfsdk:"from_ip_list_ids"`
+	FromLabels    types.List     `tfsdk:"from_labels"`
+	ToIpListIds   types.List     `tfsdk:"to_ip_list_ids"`
+	ToLabels      types.List     `tfsdk:"to_labels"`
+	ToPortRanges  types.List     `tfsdk:"to_port_ranges"`
+	Timeouts      timeouts.Value `tfsdk:"timeouts"`
 }
 
 type AwsAccountResourceModel struct {
-	Id             types.String `tfsdk:"id"`
-	AccountId      types.String `tfsdk:"account_id"`
-	Mode           types.String `tfsdk:"mode"`
-	Name           types.String `tfsdk:"name"`
-	OrganizationId types.String `tfsdk:"organization_id"`
-	RoleArn        types.String `tfsdk:"role_arn"`
-	RoleExternalId types.String `tfsdk:"role_external_id"`
+	Id             types.String   `tfsdk:"id"`
+	AccountId      types.String   `tfsdk:"account_id"`
+	Mode           types.String   `tfsdk:"mode"`
+	Name           types.String   `tfsdk:"name"`
+	OrganizationId types.String   `tfsdk:"organization_id"`
+	RoleArn        types.String   `tfsdk:"role_arn"`
+	RoleExternalId types.String   `tfsdk:"role_external_id"`
+	Timeouts       timeouts.Value `tfsdk:"timeouts"`
 }
 
 type AwsFlowLogsS3BucketResourceModel struct {
-	Id          types.String `tfsdk:"id"`
-	AccountId   types.String `tfsdk:"account_id"`
-	S3BucketArn types.String `tfsdk:"s3_bucket_arn"`
+	Id          types.String   `tfsdk:"id"`
+	AccountId   types.String   `tfsdk:"account_id"`
+	S3BucketArn types.String   `tfsdk:"s3_bucket_arn"`
+	Timeouts    timeouts.Value `tfsdk:"timeouts"`
 }
 
 type AzureFlowLogsStorageAccountResourceModel struct {
-	Id                       types.String `tfsdk:"id"`
-	StorageAccountResourceId types.String `tfsdk:"storage_account_resource_id"`
-	SubscriptionId           types.String `tfsdk:"subscription_id"`
+	Id                       types.String   `tfsdk:"id"`
+	StorageAccountResourceId types.String   `tfsdk:"storage_account_resource_id"`
+	SubscriptionId           types.String   `tfsdk:"subscription_id"`
+	Timeouts                 timeouts.Value `tfsdk:"timeouts"`
 }
 
 type AzureSubscriptionResourceModel struct {
-	Id             types.String `tfsdk:"id"`
-	ClientId       types.String `tfsdk:"client_id"`
-	ClientSecret   types.String `tfsdk:"client_secret"`
-	Mode           types.String `tfsdk:"mode"`
-	Name           types.String `tfsdk:"name"`
-	SubscriptionId types.String `tfsdk:"subscription_id"`
-	TenantId       types.String `tfsdk:"tenant_id"`
+	Id             types.String   `tfsdk:"id"`
+	ClientId       types.String   `tfsdk:"client_id"`
+	ClientSecret   types.String   `tfsdk:"client_secret"`
+	Mode           types.String   `tfsdk:"mode"`
+	Name           types.String   `tfsdk:"name"`
+	SubscriptionId types.String   `tfsdk:"subscription_id"`
+	TenantId       types.String   `tfsdk:"tenant_id"`
+	Timeouts       timeouts.Value `tfsdk:"timeouts"`
 }
 
 type DeploymentResourceModel struct {
-	Id                   types.String `tfsdk:"id"`
-	AwsAccountIds        types.List   `tfsdk:"aws_account_ids"`
-	AwsRegions           types.List   `tfsdk:"aws_regions"`
-	AwsSubnetIds         types.List   `tfsdk:"aws_subnet_ids"`
-	AwsTags              types.List   `tfsdk:"aws_tags"`
-	AwsVpcIds            types.List   `tfsdk:"aws_vpc_ids"`
-	AzureRegions         types.List   `tfsdk:"azure_regions"`
-	AzureSubnetIds       types.List   `tfsdk:"azure_subnet_ids"`
-	AzureSubscriptionIds types.List   `tfsdk:"azure_subscription_ids"`
-	AzureTags            types.List   `tfsdk:"azure_tags"`
-	AzureVnetIds         types.List   `tfsdk:"azure_vnet_ids"`
-	Description          types.String `tfsdk:"description"`
-	Name                 types.String `tfsdk:"name"`
+	Id                   types.String   `tfsdk:"id"`
+	AwsAccountIds        types.List     `tfsdk:"aws_account_ids"`
+	AwsRegions           types.List     `tfsdk:"aws_regions"`
+	AwsSubnetIds         types.List     `tfsdk:"aws_subnet_ids"`
+	AwsTags              types.List     `tfsdk:"aws_tags"`
+	AwsVpcIds            types.List     `tfsdk:"aws_vpc_ids"`
+	AzureRegions         types.List     `tfsdk:"azure_regions"`
+	AzureSubnetIds       types.List     `tfsdk:"azure_subnet_ids"`
+	AzureSubscriptionIds types.List     `tfsdk:"azure_subscription_ids"`
+	AzureTags            types.List     `tfsdk:"azure_tags"`
+	AzureVnetIds         types.List     `tfsdk:"azure_vnet_ids"`
+	Description          types.String   `tfsdk:"description"`
+	Name                 types.String   `tfsdk:"name"`
+	Timeouts             timeouts.Value `tfsdk:"timeouts"`
 }
 
 type GcpFlowLogsPubsubTopicResourceModel struct {
-	Id            types.String `tfsdk:"id"`
-	ProjectId     types.String `tfsdk:"project_id"`
-	PubsubTopicId types.String `tfsdk:"pubsub_topic_id"`
+	Id            types.String   `tfsdk:"id"`
+	ProjectId     types.String   `tfsdk:"project_id"`
+	PubsubTopicId types.String   `tfsdk:"pubsub_topic_id"`
+	Timeouts      timeouts.Value `tfsdk:"timeouts"`
 }
 
 type GcpProjectResourceModel struct {
-	Id                  types.String `tfsdk:"id"`
-	Mode                types.String `tfsdk:"mode"`
-	Name                types.String `tfsdk:"name"`
-	OrganizationId      types.String `tfsdk:"organization_id"`
-	ProjectId           types.String `tfsdk:"project_id"`
-	ServiceAccountEmail types.String `tfsdk:"service_account_email"`
+	Id                  types.String   `tfsdk:"id"`
+	Mode                types.String   `tfsdk:"mode"`
+	Name                types.String   `tfsdk:"name"`
+	OrganizationId      types.String   `tfsdk:"organization_id"`
+	ProjectId           types.String   `tfsdk:"project_id"`
+	ServiceAccountEmail types.String   `tfsdk:"service_account_email"`
+	Timeouts            timeouts.Value `tfsdk:"timeouts"`
 }
 
 type IpListResourceModel struct {
-	Id          types.String `tfsdk:"id"`
-	Description types.String `tfsdk:"description"`
-	IpAddresses types.List   `tfsdk:"ip_addresses"`
-	IpRanges    types.List   `tfsdk:"ip_ranges"`
-	Name        types.String `tfsdk:"name"`
+	Id          types.String   `tfsdk:"id"`
+	Description types.String   `tfsdk:"description"`
+	IpAddresses types.List     `tfsdk:"ip_addresses"`
+	IpRanges    types.List     `tfsdk:"ip_ranges"`
+	Name        types.String   `tfsdk:"name"`
+	Timeouts    timeouts.Value `tfsdk:"timeouts"`
 }
 
 type K8SClusterResourceModel struct {
-	Id            types.String `tfsdk:"id"`
-	ClientId      types.String `tfsdk:"client_id"`
-	ClientSecret  types.String `tfsdk:"client_secret"`
-	IllumioRegion types.String `tfsdk:"illumio_region"`
-	LogLevel      types.String `tfsdk:"log_level"`
+	Id            types.String   `tfsdk:"id"`
+	ClientId      types.String   `tfsdk:"client_id"`
+	ClientSecret  types.String   `tfsdk:"client_secret"`
+	IllumioRegion types.String   `tfsdk:"illumio_region"`
+	LogLevel      types.String   `tfsdk:"log_level"`
+	Timeouts      timeouts.Value `tfsdk:"timeouts"`
 }
 
 type K8SClusterOnboardingCredentialResourceModel struct {
-	Id            types.String `tfsdk:"id"`
-	ClientId      types.String `tfsdk:"client_id"`
-	ClientSecret  types.String `tfsdk:"client_secret"`
-	CreatedAt     types.String `tfsdk:"created_at"`
-	Description   types.String `tfsdk:"description"`
-	IllumioRegion types.String `tfsdk:"illumio_region"`
-	Name          types.String `tfsdk:"name"`
+	Id            types.String   `tfsdk:"id"`
+	ClientId      types.String   `tfsdk:"client_id"`
+	ClientSecret  types.String   `tfsdk:"client_secret"`
+	CreatedAt     types.String   `tfsdk:"created_at"`
+	Description   types.String   `tfsdk:"description"`
+	IllumioRegion types.String   `tfsdk:"illumio_region"`
+	Name          types.String   `tfsdk:"name"`
+	Timeouts      timeouts.Value `tfsdk:"timeouts"`
 }
 
 type OrganizationPolicyResourceModel struct {
-	Id          types.String `tfsdk:"id"`
-	Description types.String `tfsdk:"description"`
-	Enabled     types.Bool   `tfsdk:"enabled"`
-	Name        types.String `tfsdk:"name"`
+	Id          types.String   `tfsdk:"id"`
+	Description types.String   `tfsdk:"description"`
+	Enabled     types.Bool     `tfsdk:"enabled"`
+	Name        types.String   `tfsdk:"name"`
+	Timeouts    timeouts.Value `tfsdk:"timeouts"`
 }
 
 type OrganizationPolicyRuleResourceModel struct {
-	Id                   types.String `tfsdk:"id"`
-	Action               types.String `tfsdk:"action"`
-	Description          types.String `tfsdk:"description"`
-	Enabled              types.Bool   `tfsdk:"enabled"`
-	FromIpListIds        types.List   `tfsdk:"from_ip_list_ids"`
-	FromLabels           types.List   `tfsdk:"from_labels"`
-	OrganizationPolicyId types.String `tfsdk:"organization_policy_id"`
-	ToIpListIds          types.List   `tfsdk:"to_ip_list_ids"`
-	ToLabels             types.List   `tfsdk:"to_labels"`
-	ToPortRanges         types.List   `tfsdk:"to_port_ranges"`
+	Id                   types.String   `tfsdk:"id"`
+	Action               types.String   `tfsdk:"action"`
+	Description          types.String   `tfsdk:"description"`
+	Enabled              types.Bool     `tfsdk:"enabled"`
+	FromIpListIds        types.List     `tfsdk:"from_ip_list_ids"`
+	FromLabels           types.List     `tfsdk:"from_labels"`
+	OrganizationPolicyId types.String   `tfsdk:"organization_policy_id"`
+	ToIpListIds          types.List     `tfsdk:"to_ip_list_ids"`
+	ToLabels             types.List     `tfsdk:"to_labels"`
+	ToPortRanges         types.List     `tfsdk:"to_port_ranges"`
+	Timeouts             timeouts.Value `tfsdk:"timeouts"`
 }
 
 type TagToLabelResourceModel struct {
-	Id           types.String `tfsdk:"id"`
-	AwsTagKeys   types.Set    `tfsdk:"aws_tag_keys"`
-	AzureTagKeys types.Set    `tfsdk:"azure_tag_keys"`
-	Icon         types.Object `tfsdk:"icon"`
-	Key          types.String `tfsdk:"key"`
-	Name         types.String `tfsdk:"name"`
+	Id           types.String   `tfsdk:"id"`
+	AwsTagKeys   types.Set      `tfsdk:"aws_tag_keys"`
+	AzureTagKeys types.Set      `tfsdk:"azure_tag_keys"`
+	Icon         types.Object   `tfsdk:"icon"`
+	Key          types.String   `tfsdk:"key"`
+	Name         types.String   `tfsdk:"name"`
+	Timeouts     timeouts.Value `tfsdk:"timeouts"`
 }
 
 func NewCreateApplicationRequest(ctx context.Context, data *ApplicationResourceModel) (*configv1.CreateApplicationRequest, diag.Diagnostics) {

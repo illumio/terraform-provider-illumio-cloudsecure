@@ -44,6 +44,7 @@ resource "illumio-cloudsecure_deployment" "test_deployment" {
 - `azure_tags` (List of Object) Azure tags included in this deployment. (see [below for nested schema](#nestedatt--azure_tags))
 - `azure_vnet_ids` (List of String) IDs of Azure VNets included in this deployment.
 - `description` (String) Description of Cloudsecure deployment.
+- `timeouts` (Block, Optional) (see [below for nested schema](#nestedblock--timeouts))
 
 ### Read-Only
 
@@ -65,3 +66,14 @@ Optional:
 
 - `key` (String)
 - `value` (String)
+
+
+<a id="nestedblock--timeouts"></a>
+### Nested Schema for `timeouts`
+
+Optional:
+
+- `create` (String) Maximum duration of each Create API request for this resource. If not specified, defaults to the provider's "request_timeout" attribute. Must be a string that can be [parsed as a duration](https://pkg.go.dev/time#ParseDuration) consisting of numbers and unit suffixes, such as "30s" or "2h45m". Valid time units are "s" (seconds), "m" (minutes), "h" (hours).
+- `delete` (String) Maximum duration of each Delete API request for this resource. If not specified, defaults to the provider's "request_timeout" attribute. Must be a string that can be [parsed as a duration](https://pkg.go.dev/time#ParseDuration) consisting of numbers and unit suffixes, such as "30s" or "2h45m". Valid time units are "s" (seconds), "m" (minutes), "h" (hours). Setting a timeout for Delete API requests is only applicable if changes are saved into state before the destroy operation occurs.
+- `read` (String) Maximum duration of each Read API request for this resource. If not specified, defaults to the provider's "request_timeout" attribute. Must be a string that can be [parsed as a duration](https://pkg.go.dev/time#ParseDuration) consisting of numbers and unit suffixes, such as "30s" or "2h45m". Valid time units are "s" (seconds), "m" (minutes), "h" (hours).
+- `update` (String) Maximum duration of each Update API request for this resource. If not specified, defaults to the provider's "request_timeout" attribute. Must be a string that can be [parsed as a duration](https://pkg.go.dev/time#ParseDuration) consisting of numbers and unit suffixes, such as "30s" or "2h45m". Valid time units are "s" (seconds), "m" (minutes), "h" (hours).
