@@ -984,6 +984,7 @@ message TagToLabel_Icon {
 message CreateTagToLabelRequest {
   repeated string aws_tag_keys = 2;
   repeated string azure_tag_keys = 3;
+  repeated string gcp_label_keys = 8;
   TagToLabel_Icon icon = 4;
   string key = 5;
   string name = 6;
@@ -992,6 +993,7 @@ message CreateTagToLabelResponse {
   string id = 1;
   repeated string aws_tag_keys = 2;
   repeated string azure_tag_keys = 3;
+  repeated string gcp_label_keys = 8;
   TagToLabel_Icon icon = 4;
   string key = 5;
   string name = 6;
@@ -1003,6 +1005,7 @@ message ReadTagToLabelResponse {
   string id = 1;
   repeated string aws_tag_keys = 2;
   repeated string azure_tag_keys = 3;
+  repeated string gcp_label_keys = 8;
   TagToLabel_Icon icon = 4;
   string key = 5;
   string name = 6;
@@ -1011,6 +1014,7 @@ message UpdateTagToLabelRequest {
   string id = 1;
   repeated string aws_tag_keys = 2;
   repeated string azure_tag_keys = 3;
+  repeated string gcp_label_keys = 8;
   TagToLabel_Icon icon = 4;
   string key = 5;
   string name = 6;
@@ -1020,6 +1024,7 @@ message UpdateTagToLabelResponse {
   string id = 1;
   repeated string aws_tag_keys = 2;
   repeated string azure_tag_keys = 3;
+  repeated string gcp_label_keys = 8;
   TagToLabel_Icon icon = 4;
   string key = 5;
   string name = 6;
