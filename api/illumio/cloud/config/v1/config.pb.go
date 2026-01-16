@@ -9738,7 +9738,7 @@ type CreateTagToLabelRequest struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
 	AwsTagKeys    []string               `protobuf:"bytes,2,rep,name=aws_tag_keys,json=awsTagKeys,proto3" json:"aws_tag_keys,omitempty"`
 	AzureTagKeys  []string               `protobuf:"bytes,3,rep,name=azure_tag_keys,json=azureTagKeys,proto3" json:"azure_tag_keys,omitempty"`
-	GcpLabelKeys  []string               `protobuf:"bytes,8,rep,name=gcp_label_keys,json=gcpLabelKeys,proto3" json:"gcp_label_keys,omitempty"`
+	GcpTagKeys    []string               `protobuf:"bytes,9,rep,name=gcp_tag_keys,json=gcpTagKeys,proto3" json:"gcp_tag_keys,omitempty"`
 	Icon          *TagToLabel_Icon       `protobuf:"bytes,4,opt,name=icon,proto3" json:"icon,omitempty"`
 	Key           string                 `protobuf:"bytes,5,opt,name=key,proto3" json:"key,omitempty"`
 	Name          string                 `protobuf:"bytes,6,opt,name=name,proto3" json:"name,omitempty"`
@@ -9790,9 +9790,9 @@ func (x *CreateTagToLabelRequest) GetAzureTagKeys() []string {
 	return nil
 }
 
-func (x *CreateTagToLabelRequest) GetGcpLabelKeys() []string {
+func (x *CreateTagToLabelRequest) GetGcpTagKeys() []string {
 	if x != nil {
-		return x.GcpLabelKeys
+		return x.GcpTagKeys
 	}
 	return nil
 }
@@ -9823,7 +9823,7 @@ type CreateTagToLabelResponse struct {
 	Id            string                 `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
 	AwsTagKeys    []string               `protobuf:"bytes,2,rep,name=aws_tag_keys,json=awsTagKeys,proto3" json:"aws_tag_keys,omitempty"`
 	AzureTagKeys  []string               `protobuf:"bytes,3,rep,name=azure_tag_keys,json=azureTagKeys,proto3" json:"azure_tag_keys,omitempty"`
-	GcpLabelKeys  []string               `protobuf:"bytes,8,rep,name=gcp_label_keys,json=gcpLabelKeys,proto3" json:"gcp_label_keys,omitempty"`
+	GcpTagKeys    []string               `protobuf:"bytes,9,rep,name=gcp_tag_keys,json=gcpTagKeys,proto3" json:"gcp_tag_keys,omitempty"`
 	Icon          *TagToLabel_Icon       `protobuf:"bytes,4,opt,name=icon,proto3" json:"icon,omitempty"`
 	Key           string                 `protobuf:"bytes,5,opt,name=key,proto3" json:"key,omitempty"`
 	Name          string                 `protobuf:"bytes,6,opt,name=name,proto3" json:"name,omitempty"`
@@ -9882,9 +9882,9 @@ func (x *CreateTagToLabelResponse) GetAzureTagKeys() []string {
 	return nil
 }
 
-func (x *CreateTagToLabelResponse) GetGcpLabelKeys() []string {
+func (x *CreateTagToLabelResponse) GetGcpTagKeys() []string {
 	if x != nil {
-		return x.GcpLabelKeys
+		return x.GcpTagKeys
 	}
 	return nil
 }
@@ -9959,7 +9959,7 @@ type ReadTagToLabelResponse struct {
 	Id            string                 `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
 	AwsTagKeys    []string               `protobuf:"bytes,2,rep,name=aws_tag_keys,json=awsTagKeys,proto3" json:"aws_tag_keys,omitempty"`
 	AzureTagKeys  []string               `protobuf:"bytes,3,rep,name=azure_tag_keys,json=azureTagKeys,proto3" json:"azure_tag_keys,omitempty"`
-	GcpLabelKeys  []string               `protobuf:"bytes,8,rep,name=gcp_label_keys,json=gcpLabelKeys,proto3" json:"gcp_label_keys,omitempty"`
+	GcpTagKeys    []string               `protobuf:"bytes,9,rep,name=gcp_tag_keys,json=gcpTagKeys,proto3" json:"gcp_tag_keys,omitempty"`
 	Icon          *TagToLabel_Icon       `protobuf:"bytes,4,opt,name=icon,proto3" json:"icon,omitempty"`
 	Key           string                 `protobuf:"bytes,5,opt,name=key,proto3" json:"key,omitempty"`
 	Name          string                 `protobuf:"bytes,6,opt,name=name,proto3" json:"name,omitempty"`
@@ -10018,9 +10018,9 @@ func (x *ReadTagToLabelResponse) GetAzureTagKeys() []string {
 	return nil
 }
 
-func (x *ReadTagToLabelResponse) GetGcpLabelKeys() []string {
+func (x *ReadTagToLabelResponse) GetGcpTagKeys() []string {
 	if x != nil {
-		return x.GcpLabelKeys
+		return x.GcpTagKeys
 	}
 	return nil
 }
@@ -10051,7 +10051,7 @@ type UpdateTagToLabelRequest struct {
 	Id            string                 `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
 	AwsTagKeys    []string               `protobuf:"bytes,2,rep,name=aws_tag_keys,json=awsTagKeys,proto3" json:"aws_tag_keys,omitempty"`
 	AzureTagKeys  []string               `protobuf:"bytes,3,rep,name=azure_tag_keys,json=azureTagKeys,proto3" json:"azure_tag_keys,omitempty"`
-	GcpLabelKeys  []string               `protobuf:"bytes,8,rep,name=gcp_label_keys,json=gcpLabelKeys,proto3" json:"gcp_label_keys,omitempty"`
+	GcpTagKeys    []string               `protobuf:"bytes,9,rep,name=gcp_tag_keys,json=gcpTagKeys,proto3" json:"gcp_tag_keys,omitempty"`
 	Icon          *TagToLabel_Icon       `protobuf:"bytes,4,opt,name=icon,proto3" json:"icon,omitempty"`
 	Key           string                 `protobuf:"bytes,5,opt,name=key,proto3" json:"key,omitempty"`
 	Name          string                 `protobuf:"bytes,6,opt,name=name,proto3" json:"name,omitempty"`
@@ -10111,9 +10111,9 @@ func (x *UpdateTagToLabelRequest) GetAzureTagKeys() []string {
 	return nil
 }
 
-func (x *UpdateTagToLabelRequest) GetGcpLabelKeys() []string {
+func (x *UpdateTagToLabelRequest) GetGcpTagKeys() []string {
 	if x != nil {
-		return x.GcpLabelKeys
+		return x.GcpTagKeys
 	}
 	return nil
 }
@@ -10151,7 +10151,7 @@ type UpdateTagToLabelResponse struct {
 	Id            string                 `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
 	AwsTagKeys    []string               `protobuf:"bytes,2,rep,name=aws_tag_keys,json=awsTagKeys,proto3" json:"aws_tag_keys,omitempty"`
 	AzureTagKeys  []string               `protobuf:"bytes,3,rep,name=azure_tag_keys,json=azureTagKeys,proto3" json:"azure_tag_keys,omitempty"`
-	GcpLabelKeys  []string               `protobuf:"bytes,8,rep,name=gcp_label_keys,json=gcpLabelKeys,proto3" json:"gcp_label_keys,omitempty"`
+	GcpTagKeys    []string               `protobuf:"bytes,9,rep,name=gcp_tag_keys,json=gcpTagKeys,proto3" json:"gcp_tag_keys,omitempty"`
 	Icon          *TagToLabel_Icon       `protobuf:"bytes,4,opt,name=icon,proto3" json:"icon,omitempty"`
 	Key           string                 `protobuf:"bytes,5,opt,name=key,proto3" json:"key,omitempty"`
 	Name          string                 `protobuf:"bytes,6,opt,name=name,proto3" json:"name,omitempty"`
@@ -10210,9 +10210,9 @@ func (x *UpdateTagToLabelResponse) GetAzureTagKeys() []string {
 	return nil
 }
 
-func (x *UpdateTagToLabelResponse) GetGcpLabelKeys() []string {
+func (x *UpdateTagToLabelResponse) GetGcpTagKeys() []string {
 	if x != nil {
-		return x.GcpLabelKeys
+		return x.GcpTagKeys
 	}
 	return nil
 }
@@ -11191,52 +11191,57 @@ const file_illumio_cloud_config_v1_config_proto_rawDesc = "" +
 	"\x0fTagToLabel_Icon\x12)\n" +
 	"\x10background_color\x18\x01 \x01(\tR\x0fbackgroundColor\x12)\n" +
 	"\x10foreground_color\x18\x02 \x01(\tR\x0fforegroundColor\x12\x12\n" +
-	"\x04name\x18\x03 \x01(\tR\x04name\"\xeb\x01\n" +
+	"\x04name\x18\x03 \x01(\tR\x04name\"\xe7\x01\n" +
 	"\x17CreateTagToLabelRequest\x12 \n" +
 	"\faws_tag_keys\x18\x02 \x03(\tR\n" +
 	"awsTagKeys\x12$\n" +
-	"\x0eazure_tag_keys\x18\x03 \x03(\tR\fazureTagKeys\x12$\n" +
-	"\x0egcp_label_keys\x18\b \x03(\tR\fgcpLabelKeys\x12<\n" +
+	"\x0eazure_tag_keys\x18\x03 \x03(\tR\fazureTagKeys\x12 \n" +
+	"\fgcp_tag_keys\x18\t \x03(\tR\n" +
+	"gcpTagKeys\x12<\n" +
 	"\x04icon\x18\x04 \x01(\v2(.illumio.cloud.config.v1.TagToLabel_IconR\x04icon\x12\x10\n" +
 	"\x03key\x18\x05 \x01(\tR\x03key\x12\x12\n" +
-	"\x04name\x18\x06 \x01(\tR\x04name\"\xfc\x01\n" +
+	"\x04name\x18\x06 \x01(\tR\x04name\"\xf8\x01\n" +
 	"\x18CreateTagToLabelResponse\x12\x0e\n" +
 	"\x02id\x18\x01 \x01(\tR\x02id\x12 \n" +
 	"\faws_tag_keys\x18\x02 \x03(\tR\n" +
 	"awsTagKeys\x12$\n" +
-	"\x0eazure_tag_keys\x18\x03 \x03(\tR\fazureTagKeys\x12$\n" +
-	"\x0egcp_label_keys\x18\b \x03(\tR\fgcpLabelKeys\x12<\n" +
+	"\x0eazure_tag_keys\x18\x03 \x03(\tR\fazureTagKeys\x12 \n" +
+	"\fgcp_tag_keys\x18\t \x03(\tR\n" +
+	"gcpTagKeys\x12<\n" +
 	"\x04icon\x18\x04 \x01(\v2(.illumio.cloud.config.v1.TagToLabel_IconR\x04icon\x12\x10\n" +
 	"\x03key\x18\x05 \x01(\tR\x03key\x12\x12\n" +
 	"\x04name\x18\x06 \x01(\tR\x04name\"'\n" +
 	"\x15ReadTagToLabelRequest\x12\x0e\n" +
-	"\x02id\x18\x01 \x01(\tR\x02id\"\xfa\x01\n" +
+	"\x02id\x18\x01 \x01(\tR\x02id\"\xf6\x01\n" +
 	"\x16ReadTagToLabelResponse\x12\x0e\n" +
 	"\x02id\x18\x01 \x01(\tR\x02id\x12 \n" +
 	"\faws_tag_keys\x18\x02 \x03(\tR\n" +
 	"awsTagKeys\x12$\n" +
-	"\x0eazure_tag_keys\x18\x03 \x03(\tR\fazureTagKeys\x12$\n" +
-	"\x0egcp_label_keys\x18\b \x03(\tR\fgcpLabelKeys\x12<\n" +
+	"\x0eazure_tag_keys\x18\x03 \x03(\tR\fazureTagKeys\x12 \n" +
+	"\fgcp_tag_keys\x18\t \x03(\tR\n" +
+	"gcpTagKeys\x12<\n" +
 	"\x04icon\x18\x04 \x01(\v2(.illumio.cloud.config.v1.TagToLabel_IconR\x04icon\x12\x10\n" +
 	"\x03key\x18\x05 \x01(\tR\x03key\x12\x12\n" +
-	"\x04name\x18\x06 \x01(\tR\x04name\"\xb8\x02\n" +
+	"\x04name\x18\x06 \x01(\tR\x04name\"\xb4\x02\n" +
 	"\x17UpdateTagToLabelRequest\x12\x0e\n" +
 	"\x02id\x18\x01 \x01(\tR\x02id\x12 \n" +
 	"\faws_tag_keys\x18\x02 \x03(\tR\n" +
 	"awsTagKeys\x12$\n" +
-	"\x0eazure_tag_keys\x18\x03 \x03(\tR\fazureTagKeys\x12$\n" +
-	"\x0egcp_label_keys\x18\b \x03(\tR\fgcpLabelKeys\x12<\n" +
+	"\x0eazure_tag_keys\x18\x03 \x03(\tR\fazureTagKeys\x12 \n" +
+	"\fgcp_tag_keys\x18\t \x03(\tR\n" +
+	"gcpTagKeys\x12<\n" +
 	"\x04icon\x18\x04 \x01(\v2(.illumio.cloud.config.v1.TagToLabel_IconR\x04icon\x12\x10\n" +
 	"\x03key\x18\x05 \x01(\tR\x03key\x12\x12\n" +
 	"\x04name\x18\x06 \x01(\tR\x04name\x12;\n" +
 	"\vupdate_mask\x18\a \x01(\v2\x1a.google.protobuf.FieldMaskR\n" +
-	"updateMask\"\xfc\x01\n" +
+	"updateMask\"\xf8\x01\n" +
 	"\x18UpdateTagToLabelResponse\x12\x0e\n" +
 	"\x02id\x18\x01 \x01(\tR\x02id\x12 \n" +
 	"\faws_tag_keys\x18\x02 \x03(\tR\n" +
 	"awsTagKeys\x12$\n" +
-	"\x0eazure_tag_keys\x18\x03 \x03(\tR\fazureTagKeys\x12$\n" +
-	"\x0egcp_label_keys\x18\b \x03(\tR\fgcpLabelKeys\x12<\n" +
+	"\x0eazure_tag_keys\x18\x03 \x03(\tR\fazureTagKeys\x12 \n" +
+	"\fgcp_tag_keys\x18\t \x03(\tR\n" +
+	"gcpTagKeys\x12<\n" +
 	"\x04icon\x18\x04 \x01(\v2(.illumio.cloud.config.v1.TagToLabel_IconR\x04icon\x12\x10\n" +
 	"\x03key\x18\x05 \x01(\tR\x03key\x12\x12\n" +
 	"\x04name\x18\x06 \x01(\tR\x04name\")\n" +

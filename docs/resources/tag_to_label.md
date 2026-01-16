@@ -42,7 +42,7 @@ resource "illumio-cloudsecure_tag_to_label" "cloud_tag_environment" {
 
 - `aws_tag_keys` (Set of String) Sets of keys of AWS resource tags to map to CloudSecure labels with the same keys. The values of the created labels correspond to the values of the tags.
 - `azure_tag_keys` (Set of String) Set of keys of Azure resource tags to map to CloudSecure labels with the same keys. The values of the created labels correspond to the values of the tags.
-- `gcp_label_keys` (Set of String) Set of keys of GCP resource labels to map to CloudSecure labels with the same keys. The values of the created labels correspond to the values of the labels.
+- `gcp_tag_keys` (Set of String) Set of keys of GCP resource labels to map to CloudSecure labels with the same keys. The values of the created labels correspond to the values of the labels.
 
 ### Read-Only
 
