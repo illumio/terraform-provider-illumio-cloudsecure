@@ -261,6 +261,7 @@ type TagToLabel struct {
 	Id           string
 	AwsTagKeys   []string
 	AzureTagKeys []string
+	GcpLabelKeys []string
 	Icon         *configv1.TagToLabel_Icon
 	Key          string
 	Name         string
@@ -2636,6 +2637,7 @@ func (s *FakeConfigServer) CreateTagToLabel(ctx context.Context, req *configv1.C
 		Id:           id,
 		AwsTagKeys:   req.AwsTagKeys,
 		AzureTagKeys: req.AzureTagKeys,
+		GcpLabelKeys: req.GcpLabelKeys,
 		Icon:         req.Icon,
 		Key:          req.Key,
 		Name:         req.Name,
@@ -2644,6 +2646,7 @@ func (s *FakeConfigServer) CreateTagToLabel(ctx context.Context, req *configv1.C
 		Id:           id,
 		AwsTagKeys:   model.AwsTagKeys,
 		AzureTagKeys: model.AzureTagKeys,
+		GcpLabelKeys: model.GcpLabelKeys,
 		Icon:         model.Icon,
 		Key:          model.Key,
 		Name:         model.Name,
@@ -2676,6 +2679,7 @@ func (s *FakeConfigServer) ReadTagToLabel(ctx context.Context, req *configv1.Rea
 		Id:           id,
 		AwsTagKeys:   model.AwsTagKeys,
 		AzureTagKeys: model.AzureTagKeys,
+		GcpLabelKeys: model.GcpLabelKeys,
 		Icon:         model.Icon,
 		Key:          model.Key,
 		Name:         model.Name,
@@ -2713,6 +2717,8 @@ func (s *FakeConfigServer) UpdateTagToLabel(ctx context.Context, req *configv1.U
 			model.AwsTagKeys = req.AwsTagKeys
 		case "azure_tag_keys":
 			model.AzureTagKeys = req.AzureTagKeys
+		case "gcp_label_keys":
+			model.GcpLabelKeys = req.GcpLabelKeys
 		case "icon":
 			model.Icon = req.Icon
 		case "key":
@@ -2735,6 +2741,7 @@ func (s *FakeConfigServer) UpdateTagToLabel(ctx context.Context, req *configv1.U
 		Id:           id,
 		AwsTagKeys:   model.AwsTagKeys,
 		AzureTagKeys: model.AzureTagKeys,
+		GcpLabelKeys: model.GcpLabelKeys,
 		Icon:         model.Icon,
 		Key:          model.Key,
 		Name:         model.Name,

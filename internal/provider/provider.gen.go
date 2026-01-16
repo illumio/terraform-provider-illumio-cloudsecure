@@ -3560,6 +3560,7 @@ type TagToLabelResourceModel struct {
 	Id           types.String `tfsdk:"id"`
 	AwsTagKeys   types.Set    `tfsdk:"aws_tag_keys"`
 	AzureTagKeys types.Set    `tfsdk:"azure_tag_keys"`
+	GcpLabelKeys types.Set    `tfsdk:"gcp_label_keys"`
 	Icon         types.Object `tfsdk:"icon"`
 	Key          types.String `tfsdk:"key"`
 	Name         types.String `tfsdk:"name"`
@@ -5420,6 +5421,22 @@ func NewCreateTagToLabelRequest(ctx context.Context, data *TagToLabelResourceMod
 		}
 		proto.AzureTagKeys = protoValue
 	}
+	if !data.GcpLabelKeys.IsUnknown() && !data.GcpLabelKeys.IsNull() {
+		var dataValue attr.Value = data.GcpLabelKeys
+		var protoValue []string
+		{
+			dataElements := dataValue.(types.Set).Elements()
+			protoValues := make([]string, 0, len(dataElements))
+			for _, dataElement := range dataElements {
+				var dataValue attr.Value = dataElement
+				var protoValue string
+				protoValue = dataValue.(types.String).ValueString()
+				protoValues = append(protoValues, protoValue)
+			}
+			protoValue = protoValues
+		}
+		proto.GcpLabelKeys = protoValue
+	}
 	if !data.Icon.IsUnknown() && !data.Icon.IsNull() {
 		var dataValue attr.Value = data.Icon
 		var protoValue *configv1.TagToLabel_Icon
@@ -6976,6 +6993,25 @@ func NewUpdateTagToLabelRequest(ctx context.Context, beforeData, afterData *TagT
 				protoValue = protoValues
 			}
 			proto.AzureTagKeys = protoValue
+		}
+	}
+	if !afterData.GcpLabelKeys.Equal(beforeData.GcpLabelKeys) {
+		proto.UpdateMask.Append(proto, "gcp_label_keys")
+		if !afterData.GcpLabelKeys.IsUnknown() && !afterData.GcpLabelKeys.IsNull() {
+			var dataValue attr.Value = afterData.GcpLabelKeys
+			var protoValue []string
+			{
+				dataElements := dataValue.(types.Set).Elements()
+				protoValues := make([]string, 0, len(dataElements))
+				for _, dataElement := range dataElements {
+					var dataValue attr.Value = dataElement
+					var protoValue string
+					protoValue = dataValue.(types.String).ValueString()
+					protoValues = append(protoValues, protoValue)
+				}
+				protoValue = protoValues
+			}
+			proto.GcpLabelKeys = protoValue
 		}
 	}
 	if !afterData.Icon.Equal(beforeData.Icon) {
@@ -10939,6 +10975,27 @@ func CopyCreateTagToLabelResponse(dst *TagToLabelResourceModel, src *configv1.Cr
 		}
 		dst.AzureTagKeys = dataValue
 	}
+	{
+		protoValue := src.GcpLabelKeys
+		var dataValue types.Set
+		{
+			dataElementType := types.StringType
+			protoElements := protoValue
+			if protoElements == nil {
+				dataValue = types.SetNull(dataElementType)
+			} else {
+				dataValues := make([]attr.Value, 0, len(protoElements))
+				for _, protoElement := range protoElements {
+					var protoValue string = protoElement
+					var dataValue attr.Value
+					dataValue = types.StringValue(protoValue)
+					dataValues = append(dataValues, dataValue)
+				}
+				dataValue = types.SetValueMust(dataElementType, dataValues)
+			}
+		}
+		dst.GcpLabelKeys = dataValue
+	}
 	dst.Icon = ConvertTagToLabel_IconToObjectValueFromProto(src.Icon)
 	dst.Key = types.StringValue(src.Key)
 	dst.Name = types.StringValue(src.Name)
@@ -10987,6 +11044,27 @@ func CopyReadTagToLabelResponse(dst *TagToLabelResourceModel, src *configv1.Read
 		}
 		dst.AzureTagKeys = dataValue
 	}
+	{
+		protoValue := src.GcpLabelKeys
+		var dataValue types.Set
+		{
+			dataElementType := types.StringType
+			protoElements := protoValue
+			if protoElements == nil {
+				dataValue = types.SetNull(dataElementType)
+			} else {
+				dataValues := make([]attr.Value, 0, len(protoElements))
+				for _, protoElement := range protoElements {
+					var protoValue string = protoElement
+					var dataValue attr.Value
+					dataValue = types.StringValue(protoValue)
+					dataValues = append(dataValues, dataValue)
+				}
+				dataValue = types.SetValueMust(dataElementType, dataValues)
+			}
+		}
+		dst.GcpLabelKeys = dataValue
+	}
 	dst.Icon = ConvertTagToLabel_IconToObjectValueFromProto(src.Icon)
 	dst.Key = types.StringValue(src.Key)
 	dst.Name = types.StringValue(src.Name)
@@ -11034,6 +11112,27 @@ func CopyUpdateTagToLabelResponse(dst *TagToLabelResourceModel, src *configv1.Up
 			}
 		}
 		dst.AzureTagKeys = dataValue
+	}
+	{
+		protoValue := src.GcpLabelKeys
+		var dataValue types.Set
+		{
+			dataElementType := types.StringType
+			protoElements := protoValue
+			if protoElements == nil {
+				dataValue = types.SetNull(dataElementType)
+			} else {
+				dataValues := make([]attr.Value, 0, len(protoElements))
+				for _, protoElement := range protoElements {
+					var protoValue string = protoElement
+					var dataValue attr.Value
+					dataValue = types.StringValue(protoValue)
+					dataValues = append(dataValues, dataValue)
+				}
+				dataValue = types.SetValueMust(dataElementType, dataValues)
+			}
+		}
+		dst.GcpLabelKeys = dataValue
 	}
 	dst.Icon = ConvertTagToLabel_IconToObjectValueFromProto(src.Icon)
 	dst.Key = types.StringValue(src.Key)
