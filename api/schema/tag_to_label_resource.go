@@ -371,8 +371,8 @@ var (
 					Optional:    true,
 					ElementType: types.StringType,
 				},
-				"gcp_label_keys": resource_schema.SetAttribute{
-					Description: "Set of keys of GCP resource labels to map to CloudSecure labels with the same keys. The values of the created labels correspond to the values of the labels.",
+				"gcp_tag_keys": resource_schema.SetAttribute{
+					Description: "Set of keys of GCP resource tags to map to CloudSecure labels with the same keys. The values of the created labels correspond to the values of the tags.",
 					Optional:    true,
 					ElementType: types.StringType,
 				},

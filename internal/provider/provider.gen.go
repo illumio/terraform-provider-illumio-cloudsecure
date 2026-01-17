@@ -3560,7 +3560,7 @@ type TagToLabelResourceModel struct {
 	Id           types.String `tfsdk:"id"`
 	AwsTagKeys   types.Set    `tfsdk:"aws_tag_keys"`
 	AzureTagKeys types.Set    `tfsdk:"azure_tag_keys"`
-	GcpLabelKeys types.Set    `tfsdk:"gcp_label_keys"`
+	GcpTagKeys   types.Set    `tfsdk:"gcp_tag_keys"`
 	Icon         types.Object `tfsdk:"icon"`
 	Key          types.String `tfsdk:"key"`
 	Name         types.String `tfsdk:"name"`
@@ -5421,8 +5421,8 @@ func NewCreateTagToLabelRequest(ctx context.Context, data *TagToLabelResourceMod
 		}
 		proto.AzureTagKeys = protoValue
 	}
-	if !data.GcpLabelKeys.IsUnknown() && !data.GcpLabelKeys.IsNull() {
-		var dataValue attr.Value = data.GcpLabelKeys
+	if !data.GcpTagKeys.IsUnknown() && !data.GcpTagKeys.IsNull() {
+		var dataValue attr.Value = data.GcpTagKeys
 		var protoValue []string
 		{
 			dataElements := dataValue.(types.Set).Elements()
@@ -5435,7 +5435,7 @@ func NewCreateTagToLabelRequest(ctx context.Context, data *TagToLabelResourceMod
 			}
 			protoValue = protoValues
 		}
-		proto.GcpLabelKeys = protoValue
+		proto.GcpTagKeys = protoValue
 	}
 	if !data.Icon.IsUnknown() && !data.Icon.IsNull() {
 		var dataValue attr.Value = data.Icon
@@ -6995,10 +6995,10 @@ func NewUpdateTagToLabelRequest(ctx context.Context, beforeData, afterData *TagT
 			proto.AzureTagKeys = protoValue
 		}
 	}
-	if !afterData.GcpLabelKeys.Equal(beforeData.GcpLabelKeys) {
-		proto.UpdateMask.Append(proto, "gcp_label_keys")
-		if !afterData.GcpLabelKeys.IsUnknown() && !afterData.GcpLabelKeys.IsNull() {
-			var dataValue attr.Value = afterData.GcpLabelKeys
+	if !afterData.GcpTagKeys.Equal(beforeData.GcpTagKeys) {
+		proto.UpdateMask.Append(proto, "gcp_tag_keys")
+		if !afterData.GcpTagKeys.IsUnknown() && !afterData.GcpTagKeys.IsNull() {
+			var dataValue attr.Value = afterData.GcpTagKeys
 			var protoValue []string
 			{
 				dataElements := dataValue.(types.Set).Elements()
@@ -7011,7 +7011,7 @@ func NewUpdateTagToLabelRequest(ctx context.Context, beforeData, afterData *TagT
 				}
 				protoValue = protoValues
 			}
-			proto.GcpLabelKeys = protoValue
+			proto.GcpTagKeys = protoValue
 		}
 	}
 	if !afterData.Icon.Equal(beforeData.Icon) {
@@ -10976,7 +10976,7 @@ func CopyCreateTagToLabelResponse(dst *TagToLabelResourceModel, src *configv1.Cr
 		dst.AzureTagKeys = dataValue
 	}
 	{
-		protoValue := src.GcpLabelKeys
+		protoValue := src.GcpTagKeys
 		var dataValue types.Set
 		{
 			dataElementType := types.StringType
@@ -10994,7 +10994,7 @@ func CopyCreateTagToLabelResponse(dst *TagToLabelResourceModel, src *configv1.Cr
 				dataValue = types.SetValueMust(dataElementType, dataValues)
 			}
 		}
-		dst.GcpLabelKeys = dataValue
+		dst.GcpTagKeys = dataValue
 	}
 	dst.Icon = ConvertTagToLabel_IconToObjectValueFromProto(src.Icon)
 	dst.Key = types.StringValue(src.Key)
@@ -11045,7 +11045,7 @@ func CopyReadTagToLabelResponse(dst *TagToLabelResourceModel, src *configv1.Read
 		dst.AzureTagKeys = dataValue
 	}
 	{
-		protoValue := src.GcpLabelKeys
+		protoValue := src.GcpTagKeys
 		var dataValue types.Set
 		{
 			dataElementType := types.StringType
@@ -11063,7 +11063,7 @@ func CopyReadTagToLabelResponse(dst *TagToLabelResourceModel, src *configv1.Read
 				dataValue = types.SetValueMust(dataElementType, dataValues)
 			}
 		}
-		dst.GcpLabelKeys = dataValue
+		dst.GcpTagKeys = dataValue
 	}
 	dst.Icon = ConvertTagToLabel_IconToObjectValueFromProto(src.Icon)
 	dst.Key = types.StringValue(src.Key)
@@ -11114,7 +11114,7 @@ func CopyUpdateTagToLabelResponse(dst *TagToLabelResourceModel, src *configv1.Up
 		dst.AzureTagKeys = dataValue
 	}
 	{
-		protoValue := src.GcpLabelKeys
+		protoValue := src.GcpTagKeys
 		var dataValue types.Set
 		{
 			dataElementType := types.StringType
@@ -11132,7 +11132,7 @@ func CopyUpdateTagToLabelResponse(dst *TagToLabelResourceModel, src *configv1.Up
 				dataValue = types.SetValueMust(dataElementType, dataValues)
 			}
 		}
-		dst.GcpLabelKeys = dataValue
+		dst.GcpTagKeys = dataValue
 	}
 	dst.Icon = ConvertTagToLabel_IconToObjectValueFromProto(src.Icon)
 	dst.Key = types.StringValue(src.Key)
