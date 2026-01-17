@@ -9738,7 +9738,7 @@ type CreateTagToLabelRequest struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
 	AwsTagKeys    []string               `protobuf:"bytes,2,rep,name=aws_tag_keys,json=awsTagKeys,proto3" json:"aws_tag_keys,omitempty"`
 	AzureTagKeys  []string               `protobuf:"bytes,3,rep,name=azure_tag_keys,json=azureTagKeys,proto3" json:"azure_tag_keys,omitempty"`
-	GcpTagKeys    []string               `protobuf:"bytes,9,rep,name=gcp_tag_keys,json=gcpTagKeys,proto3" json:"gcp_tag_keys,omitempty"`
+	GcpTagKeys    []string               `protobuf:"bytes,8,rep,name=gcp_tag_keys,json=gcpTagKeys,proto3" json:"gcp_tag_keys,omitempty"`
 	Icon          *TagToLabel_Icon       `protobuf:"bytes,4,opt,name=icon,proto3" json:"icon,omitempty"`
 	Key           string                 `protobuf:"bytes,5,opt,name=key,proto3" json:"key,omitempty"`
 	Name          string                 `protobuf:"bytes,6,opt,name=name,proto3" json:"name,omitempty"`
@@ -9823,7 +9823,7 @@ type CreateTagToLabelResponse struct {
 	Id            string                 `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
 	AwsTagKeys    []string               `protobuf:"bytes,2,rep,name=aws_tag_keys,json=awsTagKeys,proto3" json:"aws_tag_keys,omitempty"`
 	AzureTagKeys  []string               `protobuf:"bytes,3,rep,name=azure_tag_keys,json=azureTagKeys,proto3" json:"azure_tag_keys,omitempty"`
-	GcpTagKeys    []string               `protobuf:"bytes,9,rep,name=gcp_tag_keys,json=gcpTagKeys,proto3" json:"gcp_tag_keys,omitempty"`
+	GcpTagKeys    []string               `protobuf:"bytes,8,rep,name=gcp_tag_keys,json=gcpTagKeys,proto3" json:"gcp_tag_keys,omitempty"`
 	Icon          *TagToLabel_Icon       `protobuf:"bytes,4,opt,name=icon,proto3" json:"icon,omitempty"`
 	Key           string                 `protobuf:"bytes,5,opt,name=key,proto3" json:"key,omitempty"`
 	Name          string                 `protobuf:"bytes,6,opt,name=name,proto3" json:"name,omitempty"`
@@ -9959,7 +9959,7 @@ type ReadTagToLabelResponse struct {
 	Id            string                 `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
 	AwsTagKeys    []string               `protobuf:"bytes,2,rep,name=aws_tag_keys,json=awsTagKeys,proto3" json:"aws_tag_keys,omitempty"`
 	AzureTagKeys  []string               `protobuf:"bytes,3,rep,name=azure_tag_keys,json=azureTagKeys,proto3" json:"azure_tag_keys,omitempty"`
-	GcpTagKeys    []string               `protobuf:"bytes,9,rep,name=gcp_tag_keys,json=gcpTagKeys,proto3" json:"gcp_tag_keys,omitempty"`
+	GcpTagKeys    []string               `protobuf:"bytes,8,rep,name=gcp_tag_keys,json=gcpTagKeys,proto3" json:"gcp_tag_keys,omitempty"`
 	Icon          *TagToLabel_Icon       `protobuf:"bytes,4,opt,name=icon,proto3" json:"icon,omitempty"`
 	Key           string                 `protobuf:"bytes,5,opt,name=key,proto3" json:"key,omitempty"`
 	Name          string                 `protobuf:"bytes,6,opt,name=name,proto3" json:"name,omitempty"`
@@ -10051,7 +10051,7 @@ type UpdateTagToLabelRequest struct {
 	Id            string                 `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
 	AwsTagKeys    []string               `protobuf:"bytes,2,rep,name=aws_tag_keys,json=awsTagKeys,proto3" json:"aws_tag_keys,omitempty"`
 	AzureTagKeys  []string               `protobuf:"bytes,3,rep,name=azure_tag_keys,json=azureTagKeys,proto3" json:"azure_tag_keys,omitempty"`
-	GcpTagKeys    []string               `protobuf:"bytes,9,rep,name=gcp_tag_keys,json=gcpTagKeys,proto3" json:"gcp_tag_keys,omitempty"`
+	GcpTagKeys    []string               `protobuf:"bytes,8,rep,name=gcp_tag_keys,json=gcpTagKeys,proto3" json:"gcp_tag_keys,omitempty"`
 	Icon          *TagToLabel_Icon       `protobuf:"bytes,4,opt,name=icon,proto3" json:"icon,omitempty"`
 	Key           string                 `protobuf:"bytes,5,opt,name=key,proto3" json:"key,omitempty"`
 	Name          string                 `protobuf:"bytes,6,opt,name=name,proto3" json:"name,omitempty"`
@@ -10151,7 +10151,7 @@ type UpdateTagToLabelResponse struct {
 	Id            string                 `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
 	AwsTagKeys    []string               `protobuf:"bytes,2,rep,name=aws_tag_keys,json=awsTagKeys,proto3" json:"aws_tag_keys,omitempty"`
 	AzureTagKeys  []string               `protobuf:"bytes,3,rep,name=azure_tag_keys,json=azureTagKeys,proto3" json:"azure_tag_keys,omitempty"`
-	GcpTagKeys    []string               `protobuf:"bytes,9,rep,name=gcp_tag_keys,json=gcpTagKeys,proto3" json:"gcp_tag_keys,omitempty"`
+	GcpTagKeys    []string               `protobuf:"bytes,8,rep,name=gcp_tag_keys,json=gcpTagKeys,proto3" json:"gcp_tag_keys,omitempty"`
 	Icon          *TagToLabel_Icon       `protobuf:"bytes,4,opt,name=icon,proto3" json:"icon,omitempty"`
 	Key           string                 `protobuf:"bytes,5,opt,name=key,proto3" json:"key,omitempty"`
 	Name          string                 `protobuf:"bytes,6,opt,name=name,proto3" json:"name,omitempty"`
@@ -11196,7 +11196,7 @@ const file_illumio_cloud_config_v1_config_proto_rawDesc = "" +
 	"\faws_tag_keys\x18\x02 \x03(\tR\n" +
 	"awsTagKeys\x12$\n" +
 	"\x0eazure_tag_keys\x18\x03 \x03(\tR\fazureTagKeys\x12 \n" +
-	"\fgcp_tag_keys\x18\t \x03(\tR\n" +
+	"\fgcp_tag_keys\x18\b \x03(\tR\n" +
 	"gcpTagKeys\x12<\n" +
 	"\x04icon\x18\x04 \x01(\v2(.illumio.cloud.config.v1.TagToLabel_IconR\x04icon\x12\x10\n" +
 	"\x03key\x18\x05 \x01(\tR\x03key\x12\x12\n" +
@@ -11206,7 +11206,7 @@ const file_illumio_cloud_config_v1_config_proto_rawDesc = "" +
 	"\faws_tag_keys\x18\x02 \x03(\tR\n" +
 	"awsTagKeys\x12$\n" +
 	"\x0eazure_tag_keys\x18\x03 \x03(\tR\fazureTagKeys\x12 \n" +
-	"\fgcp_tag_keys\x18\t \x03(\tR\n" +
+	"\fgcp_tag_keys\x18\b \x03(\tR\n" +
 	"gcpTagKeys\x12<\n" +
 	"\x04icon\x18\x04 \x01(\v2(.illumio.cloud.config.v1.TagToLabel_IconR\x04icon\x12\x10\n" +
 	"\x03key\x18\x05 \x01(\tR\x03key\x12\x12\n" +
@@ -11218,7 +11218,7 @@ const file_illumio_cloud_config_v1_config_proto_rawDesc = "" +
 	"\faws_tag_keys\x18\x02 \x03(\tR\n" +
 	"awsTagKeys\x12$\n" +
 	"\x0eazure_tag_keys\x18\x03 \x03(\tR\fazureTagKeys\x12 \n" +
-	"\fgcp_tag_keys\x18\t \x03(\tR\n" +
+	"\fgcp_tag_keys\x18\b \x03(\tR\n" +
 	"gcpTagKeys\x12<\n" +
 	"\x04icon\x18\x04 \x01(\v2(.illumio.cloud.config.v1.TagToLabel_IconR\x04icon\x12\x10\n" +
 	"\x03key\x18\x05 \x01(\tR\x03key\x12\x12\n" +
@@ -11228,7 +11228,7 @@ const file_illumio_cloud_config_v1_config_proto_rawDesc = "" +
 	"\faws_tag_keys\x18\x02 \x03(\tR\n" +
 	"awsTagKeys\x12$\n" +
 	"\x0eazure_tag_keys\x18\x03 \x03(\tR\fazureTagKeys\x12 \n" +
-	"\fgcp_tag_keys\x18\t \x03(\tR\n" +
+	"\fgcp_tag_keys\x18\b \x03(\tR\n" +
 	"gcpTagKeys\x12<\n" +
 	"\x04icon\x18\x04 \x01(\v2(.illumio.cloud.config.v1.TagToLabel_IconR\x04icon\x12\x10\n" +
 	"\x03key\x18\x05 \x01(\tR\x03key\x12\x12\n" +
@@ -11240,7 +11240,7 @@ const file_illumio_cloud_config_v1_config_proto_rawDesc = "" +
 	"\faws_tag_keys\x18\x02 \x03(\tR\n" +
 	"awsTagKeys\x12$\n" +
 	"\x0eazure_tag_keys\x18\x03 \x03(\tR\fazureTagKeys\x12 \n" +
-	"\fgcp_tag_keys\x18\t \x03(\tR\n" +
+	"\fgcp_tag_keys\x18\b \x03(\tR\n" +
 	"gcpTagKeys\x12<\n" +
 	"\x04icon\x18\x04 \x01(\v2(.illumio.cloud.config.v1.TagToLabel_IconR\x04icon\x12\x10\n" +
 	"\x03key\x18\x05 \x01(\tR\x03key\x12\x12\n" +
