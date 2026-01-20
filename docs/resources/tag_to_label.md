@@ -19,6 +19,7 @@ resource "illumio-cloudsecure_tag_to_label" "cloud_tag_environment" {
 
   aws_tag_keys   = ["Environment", "Env"]
   azure_tag_keys = ["Environment"]
+  gcp_tag_keys   = ["environment"]
 
   icon = {
     name             = "access"
