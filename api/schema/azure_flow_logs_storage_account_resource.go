@@ -17,10 +17,10 @@ var (
 			Description: "Manages CloudSecure access to flow logs in an Azure Storage Account.",
 			Attributes: map[string]resource_schema.Attribute{
 				IDFieldName: idAttribute,
-				"subscription_id": StringResourceAttributeWithMode{
+				"storage_account_resource_id": StringResourceAttributeWithMode{
 					StringAttribute: resource_schema.StringAttribute{
-						MarkdownDescription: "Azure subscription ID.",
-						Required:            true,
+						Description: "Resource ID of the Azure Storage Account containing flow logs.",
+						Required:    true,
 						PlanModifiers: []planmodifier.String{
 							stringplanmodifier.RequiresReplace(),
 						},
@@ -29,10 +29,10 @@ var (
 						Mode: ImmutableAttributeMode,
 					},
 				},
-				"storage_account_resource_id": StringResourceAttributeWithMode{
+				"subscription_id": StringResourceAttributeWithMode{
 					StringAttribute: resource_schema.StringAttribute{
-						Description: "Resource ID of the Azure Storage Account containing flow logs.",
-						Required:    true,
+						MarkdownDescription: "Azure subscription ID.",
+						Required:            true,
 						PlanModifiers: []planmodifier.String{
 							stringplanmodifier.RequiresReplace(),
 						},
