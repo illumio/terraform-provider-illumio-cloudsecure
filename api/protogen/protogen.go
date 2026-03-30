@@ -322,6 +322,7 @@ func terraformRepeatedAttributeTypeToProtoType(messageNamePrefix, attrName strin
 	// This ensures each nesting level gets a unique message name instead of repeating the same name.
 	// E.g., Set{Set{Object}} produces "Items" (wrapper) and "ItemsElem" (object) instead of "Items" and "Items".
 	innerAttrName := attrName
+
 	switch elementType.(type) {
 	case types.ListType, types.SetType:
 		innerAttrName = attrName + "_elem"

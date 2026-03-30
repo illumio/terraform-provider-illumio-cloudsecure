@@ -161,7 +161,7 @@ func (suite *GenerateProviderTestSuite) TestListOfObjects() {
 
 // TestNestedListAttributeNaming verifies that nested objects within ListNestedAttribute
 // generate correct proto type names.
-// Schema: rules (ListNestedAttribute) -> destination (SingleNestedAttribute) -> k8s (SingleNestedAttribute)
+// Schema: rules (ListNestedAttribute) -> destination (SingleNestedAttribute) -> k8s (SingleNestedAttribute).
 func (suite *GenerateProviderTestSuite) TestNestedListAttributeNaming() {
 	testResource := schema.Resource{
 		TypeName: "policy_version",
@@ -224,12 +224,15 @@ func (suite *GenerateProviderTestSuite) TestNestedListAttributeNaming() {
 
 	// Find the "rules" field
 	var rulesField *field
+
 	for i := range resourceModel.Fields {
 		if resourceModel.Fields[i].AttributeName == "rules" {
 			rulesField = &resourceModel.Fields[i]
+
 			break
 		}
 	}
+
 	suite.Require().NotNil(rulesField, "Should have 'rules' field")
 
 	// rules is a List, so check CollectionElementType for the nested object
@@ -240,26 +243,34 @@ func (suite *GenerateProviderTestSuite) TestNestedListAttributeNaming() {
 
 	// Find "destination" inside the rules model
 	rulesModel := rulesElemType.NestedModel
+
 	var destField *field
+
 	for i := range rulesModel.Fields {
 		if rulesModel.Fields[i].AttributeName == "destination" {
 			destField = &rulesModel.Fields[i]
+
 			break
 		}
 	}
+
 	suite.Require().NotNil(destField, "Should have 'destination' field in rules")
 	suite.Require().NotNil(destField.Type.NestedModel, "destination should have NestedModel")
 	suite.Equal("PolicyVersion_Rules_Destination", destField.Type.NestedModel.Name, "destination model name")
 
 	// Find "k8s" inside the destination model
 	destModel := destField.Type.NestedModel
+
 	var k8sField *field
+
 	for i := range destModel.Fields {
 		if destModel.Fields[i].AttributeName == "k8s" {
 			k8sField = &destModel.Fields[i]
+
 			break
 		}
 	}
+
 	suite.Require().NotNil(k8sField, "Should have 'k8s' field in destination")
 	suite.Require().NotNil(k8sField.Type.NestedModel, "k8s should have NestedModel")
 	suite.Equal("PolicyVersion_Rules_Destination_K8S", k8sField.Type.NestedModel.Name, "k8s model name")
@@ -330,12 +341,15 @@ func (suite *GenerateProviderTestSuite) TestNestedCollectionsOfObjects() {
 
 	// Find the "items" field (Set of Sets of Objects)
 	var itemsField *field
+
 	for i := range resourceModel.Fields {
 		if resourceModel.Fields[i].AttributeName == "items" {
 			itemsField = &resourceModel.Fields[i]
+
 			break
 		}
 	}
+
 	suite.Require().NotNil(itemsField, "Should have 'items' field")
 
 	// For Set of Sets of Objects (attr "items"):
@@ -364,12 +378,15 @@ func (suite *GenerateProviderTestSuite) TestNestedCollectionsOfObjects() {
 
 	// Find the "records" field (List of Lists of Objects)
 	var recordsField *field
+
 	for i := range resourceModel.Fields {
 		if resourceModel.Fields[i].AttributeName == "records" {
 			recordsField = &resourceModel.Fields[i]
+
 			break
 		}
 	}
+
 	suite.Require().NotNil(recordsField, "Should have 'records' field")
 
 	// Check outer List type name

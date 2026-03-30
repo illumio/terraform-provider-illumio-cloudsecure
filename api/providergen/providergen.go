@@ -876,6 +876,7 @@ func TerraformRepeatedAttributeTypeToProtoType(nestedMessageNamePrefix, attrName
 	// E.g., Set{Set{Object}} produces "Items" (wrapper) and "ItemsElem" (object) instead of duplicate "Items".
 	// This matches the naming convention used by protogen.
 	innerAttrName := attrName
+
 	switch elementType.(type) {
 	case types.ListType, types.SetType:
 		innerAttrName = attrName + "_elem"
