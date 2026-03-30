@@ -95,19 +95,19 @@ func (suite *GenerateTestSuite) TestTerraformAttributeTypeToProtoType() {
 				Fields: []field{
 					{
 						Repeated: true,
-						Type:     "TheField",
+						Type:     "TheFieldElem",
 						Name:     "the_field",
 						Tag:      1,
 					},
 				},
 				Messages: []message{
 					{
-						Name: "TheField",
+						Name: "TheFieldElem",
 						Fields: []field{
 							{
 								Repeated: true,
 								Type:     "string",
-								Name:     "the_field",
+								Name:     "the_field_elem",
 								Tag:      1,
 							},
 						},
@@ -252,7 +252,7 @@ func (suite *GenerateTestSuite) TestTerraformAttributeTypeToProtoType() {
 				Name: "TheField",
 				Messages: []message{
 					{
-						Name:     "TheField",
+						Name:     "TheFieldElem",
 						Messages: nil,
 						Fields: []field{
 							{
@@ -270,7 +270,7 @@ func (suite *GenerateTestSuite) TestTerraformAttributeTypeToProtoType() {
 				},
 				Fields: []field{
 					{
-						Type:     "TheField",
+						Type:     "TheFieldElem",
 						Name:     "the_field",
 						Tag:      1,
 						Repeated: true,

@@ -318,7 +318,16 @@ func terraformObjectAttributeTypeToProtoType(messageNamePrefix, attrName string,
 
 // terraformRepeatedAttributeTypeToProtoType converts a Terraform repeated attribute type into the corresponding Protocol Buffer type, and optionally additional Protocol Buffer messages that represent nested types.
 func terraformRepeatedAttributeTypeToProtoType(messageNamePrefix, attrName string, elementType attr.Type, tagger *apiSpecTagger) (repeated bool, protoType string, nestedMessage *message, err error) {
-	elemRepeated, elemProtoType, elemMessage, err := terraformAttributeTypeToProtoType(messageNamePrefix, attrName, elementType, tagger)
+	// For nested collections (List of Lists, Set of Sets, etc.), use a distinct name for the inner element.
+	// This ensures each nesting level gets a unique message name instead of repeating the same name.
+	// E.g., Set{Set{Object}} produces "Items" (wrapper) and "ItemsElem" (object) instead of "Items" and "Items".
+	innerAttrName := attrName
+	switch elementType.(type) {
+	case types.ListType, types.SetType:
+		innerAttrName = attrName + "_elem"
+	}
+
+	elemRepeated, elemProtoType, elemMessage, err := terraformAttributeTypeToProtoType(messageNamePrefix, innerAttrName, elementType, tagger)
 
 	switch {
 	case err != nil:
