@@ -304,19 +304,59 @@ func (suite *GenerateProviderTestSuite) TestListNestedAttribute() {
 	suite.Require().NoError(err, "ProviderConvertersTemplate.Execute should not return an error")
 
 	output := dst.String()
-	suite.NotEmpty(output, "Generated converters output should not be empty")
 
-	// GetTypeAttrsFor* should specify element type for List of objects
-	suite.Contains(output, `types.ListType{ElemType:`,
-		"GetTypeAttrsFor should specify ListType with ElemType for list of objects")
+	// Verify GetTypeAttrsFor generates correct List type with nested object element type
+	expectedGetTypeAttrs := `
+func GetTypeAttrsForPolicyVersion_Spec() map[string]attr.Type {
+	return map[string]attr.Type{
+		"rules": types.ListType{ElemType: types.ObjectType{
+			AttrTypes: GetTypeAttrsForPolicyVersion_Spec_Rules(),
+		}},
+	}
+}
+`
+	suite.Contains(output, expectedGetTypeAttrs)
 
-	// Convert*ToObjectValueFromProto should iterate and call nested converter
-	suite.Contains(output, `ConvertPolicyVersion_Spec_RulesToObjectValueFromProto(item)`,
-		"ConvertToObjectValueFromProto should call nested converter for each element")
+	// Verify ConvertToObjectValueFromProto iterates over list and calls nested converter for each element
+	expectedConvertToObjectValue := `
+func ConvertPolicyVersion_SpecToObjectValueFromProto(proto *configv1.PolicyVersion_Spec) basetypes.ObjectValue  {
+	rulesValues := make([]attr.Value, 0, len(proto.Rules))
+	for _, item := range proto.Rules {
+		rulesValues = append(rulesValues, ConvertPolicyVersion_Spec_RulesToObjectValueFromProto(item))
+	}
+	return types.ObjectValueMust(
+		GetTypeAttrsForPolicyVersion_Spec(),
+		map[string]attr.Value{
+			"rules": types.ListValueMust(types.ObjectType{AttrTypes: GetTypeAttrsForPolicyVersion_Spec_Rules()}, rulesValues),
+		},
+	)
+}
+`
+	suite.Contains(output, expectedConvertToObjectValue)
 
-	// ConvertDataValueTo*Proto should use Elements() and iterate
-	suite.Contains(output, `.Elements()`,
-		"ConvertDataValueToProto should use Elements() for list of objects")
+	// Verify ConvertDataValueToProto uses Elements() and iterates to convert each element back to proto
+	expectedConvertDataValue := `
+func ConvertDataValueToPolicyVersion_SpecProto(ctx context.Context, dataValue attr.Value) (*configv1.PolicyVersion_Spec, diag.Diagnostics) {
+	pv := PolicyVersion_Spec{}
+	diags := tfsdk.ValueAs(ctx, dataValue, &pv)
+	if diags.HasError() {
+		return nil, diags
+	}
+	proto := &configv1.PolicyVersion_Spec{}
+	rulesElems := pv.Rules.Elements()
+	proto.Rules = make([]*configv1.PolicyVersion_Spec_Rules, 0, len(rulesElems))
+	for _, elem := range rulesElems {
+		rulesElemProto, rulesElemDiags := ConvertDataValueToPolicyVersion_Spec_RulesProto(ctx, elem)
+		diags.Append(rulesElemDiags...)
+		if diags.HasError() {
+			return nil, diags
+		}
+		proto.Rules = append(proto.Rules, rulesElemProto)
+	}
+	return proto, diags
+}
+`
+	suite.Contains(output, expectedConvertDataValue)
 }
 
 // TestNestedCollectionsOfObjects verifies that nested collections (Set of Sets, List of Lists)
@@ -503,19 +543,57 @@ func (suite *GenerateProviderTestSuite) TestListPrimitiveAttribute() {
 	suite.Require().NoError(err, "ProviderConvertersTemplate.Execute should not return an error")
 
 	output := dst.String()
-	suite.NotEmpty(output, "Generated converters output should not be empty")
 
-	// Test 1: GetTypeAttrsFor* should specify element type for List of primitives
-	suite.Contains(output, `types.ListType{ElemType: types.StringType}`,
-		"GetTypeAttrsFor should specify ListType with ElemType for list of primitives")
+	// Verify GetTypeAttrsFor generates correct List type with primitive element type
+	expectedGetTypeAttrs := `
+func GetTypeAttrsForTestResource_Config() map[string]attr.Type {
+	return map[string]attr.Type{
+		"name": types.StringType,
+		"tags": types.ListType{ElemType: types.StringType},
+	}
+}
+`
+	suite.Contains(output, expectedGetTypeAttrs)
 
-	// Test 2: Convert*ToObjectValueFromProto should iterate and convert each element
-	suite.Contains(output, `types.StringValue(item)`,
-		"ConvertToObjectValueFromProto should convert each primitive element")
+	// Verify ConvertToObjectValueFromProto iterates and converts each primitive
+	expectedToProto := `
+func ConvertTestResource_ConfigToObjectValueFromProto(proto *configv1.TestResource_Config) basetypes.ObjectValue  {
+	tagsValues := make([]attr.Value, 0, len(proto.Tags))
+	for _, item := range proto.Tags {
+		tagsValues = append(tagsValues, types.StringValue(item))
+	}
+	return types.ObjectValueMust(
+		GetTypeAttrsForTestResource_Config(),
+		map[string]attr.Value{
+			"name": types.StringValue(proto.Name),
+			"tags": types.ListValueMust(types.StringType, tagsValues),
+		},
+	)
+}
+`
+	suite.Contains(output, expectedToProto)
 
-	// Test 3: ConvertDataValueTo*Proto should use ElementsAs for primitives
-	suite.Contains(output, `.ElementsAs(ctx,`,
-		"ConvertDataValueToProto should use ElementsAs for list of primitives")
+	// Verify ConvertDataValueToProto uses ElementsAs for primitives
+	expectedFromProto := `
+func ConvertDataValueToTestResource_ConfigProto(ctx context.Context, dataValue attr.Value) (*configv1.TestResource_Config, diag.Diagnostics) {
+	pv := TestResource_Config{}
+	diags := tfsdk.ValueAs(ctx, dataValue, &pv)
+	if diags.HasError() {
+		return nil, diags
+	}
+	proto := &configv1.TestResource_Config{}
+	proto.Name = pv.Name.ValueString()
+	var tagsSlice []string
+	tagsDiags := pv.Tags.ElementsAs(ctx, &tagsSlice, false)
+	diags.Append(tagsDiags...)
+	if diags.HasError() {
+		return nil, diags
+	}
+	proto.Tags = tagsSlice
+	return proto, diags
+}
+`
+	suite.Contains(output, expectedFromProto)
 }
 
 func (suite *GenerateProviderTestSuite) TestSetsAndMore() {
