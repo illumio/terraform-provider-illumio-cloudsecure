@@ -159,6 +159,254 @@ func (suite *GenerateProviderTestSuite) TestListOfObjects() {
 	suite.Require().NoError(err, "AddResourceToProviderTemplateData should not return an error")
 }
 
+// TestNestedListAttributeNaming verifies that nested objects within ListNestedAttribute
+// generate correct proto type names.
+// Schema: rules (ListNestedAttribute) -> destination (SingleNestedAttribute) -> k8s (SingleNestedAttribute).
+func (suite *GenerateProviderTestSuite) TestNestedListAttributeNaming() {
+	testResource := schema.Resource{
+		TypeName: "policy_version",
+		Schema: resource_schema.Schema{
+			Version:     1,
+			Description: "Manages a policy version.",
+			Attributes: map[string]resource_schema.Attribute{
+				"id": resource_schema.StringAttribute{
+					Description: "Policy version ID.",
+					Computed:    true,
+				},
+				"rules": resource_schema.ListNestedAttribute{
+					Description: "List of rules.",
+					Required:    true,
+					NestedObject: resource_schema.NestedAttributeObject{
+						Attributes: map[string]resource_schema.Attribute{
+							"action": resource_schema.StringAttribute{
+								Description: "Action to take.",
+								Required:    true,
+							},
+							"destination": resource_schema.SingleNestedAttribute{
+								Description: "Traffic destination.",
+								Optional:    true,
+								Attributes: map[string]resource_schema.Attribute{
+									"k8s": resource_schema.SingleNestedAttribute{
+										Description: "K8s workload selector.",
+										Optional:    true,
+										Attributes: map[string]resource_schema.Attribute{
+											"cluster_name": resource_schema.StringAttribute{
+												Description: "Cluster name.",
+												Optional:    true,
+											},
+										},
+									},
+								},
+							},
+						},
+					},
+				},
+			},
+		},
+	}
+
+	data := providerTemplateData{
+		Package:               "testpkg",
+		ProviderTypeName:      "Provider",
+		Models:                make([]model, 0),
+		NewRequestFuncs:       make([]convertFunc, 0, 3),
+		NewUpdateRequestFuncs: make([]convertFunc, 0, 1),
+		CopyResponseFuncs:     make([]convertFunc, 0, 3),
+		Resources:             make([]resourceData, 0, 1),
+	}
+
+	err := AddResourceToProviderTemplateData(&testResource, &data, "PolicyVersion", "PolicyVersion")
+	suite.Require().NoError(err, "AddResourceToProviderTemplateData should not return an error")
+
+	// Verify the model was created
+	suite.Require().Len(data.Models, 1, "Should have one resource model")
+	resourceModel := data.Models[0]
+
+	// Find the "rules" field
+	var rulesField *field
+
+	for i := range resourceModel.Fields {
+		if resourceModel.Fields[i].AttributeName == "rules" {
+			rulesField = &resourceModel.Fields[i]
+
+			break
+		}
+	}
+
+	suite.Require().NotNil(rulesField, "Should have 'rules' field")
+
+	// rules is a List, so check CollectionElementType for the nested object
+	suite.Require().NotNil(rulesField.Type.CollectionElementType, "rules should have CollectionElementType")
+	rulesElemType := rulesField.Type.CollectionElementType
+	suite.Require().NotNil(rulesElemType.NestedModel, "rules element should have NestedModel")
+	suite.Equal("PolicyVersion_Rules", rulesElemType.NestedModel.Name, "rules element model name")
+
+	// Find "destination" inside the rules model
+	rulesModel := rulesElemType.NestedModel
+
+	var destField *field
+
+	for i := range rulesModel.Fields {
+		if rulesModel.Fields[i].AttributeName == "destination" {
+			destField = &rulesModel.Fields[i]
+
+			break
+		}
+	}
+
+	suite.Require().NotNil(destField, "Should have 'destination' field in rules")
+	suite.Require().NotNil(destField.Type.NestedModel, "destination should have NestedModel")
+	suite.Equal("PolicyVersion_Rules_Destination", destField.Type.NestedModel.Name, "destination model name")
+
+	// Find "k8s" inside the destination model
+	destModel := destField.Type.NestedModel
+
+	var k8sField *field
+
+	for i := range destModel.Fields {
+		if destModel.Fields[i].AttributeName == "k8s" {
+			k8sField = &destModel.Fields[i]
+
+			break
+		}
+	}
+
+	suite.Require().NotNil(k8sField, "Should have 'k8s' field in destination")
+	suite.Require().NotNil(k8sField.Type.NestedModel, "k8s should have NestedModel")
+	suite.Equal("PolicyVersion_Rules_Destination_K8S", k8sField.Type.NestedModel.Name, "k8s model name")
+}
+
+// TestNestedCollectionsOfObjects verifies that nested collections (Set of Sets, List of Lists)
+// containing objects generate correct proto type names with proper nesting depth.
+// For Set of Sets of Objects, the naming uses "_elem" suffix to distinguish nesting levels:
+//
+//	Resource_Items (outer wrapper) -> Resource_ItemsElem (inner object)
+func (suite *GenerateProviderTestSuite) TestNestedCollectionsOfObjects() {
+	// Schema: Set of Sets of Objects
+	testResource := schema.Resource{
+		TypeName: "nested_collection_test",
+		Schema: resource_schema.Schema{
+			Version:     1,
+			Description: "Test resource for nested collections of objects.",
+			Attributes: map[string]resource_schema.Attribute{
+				"id": resource_schema.StringAttribute{
+					Description: "Resource ID.",
+					Computed:    true,
+				},
+				// Set of Sets of Objects
+				"items": resource_schema.SetAttribute{
+					Description: "Nested set of sets of objects.",
+					Required:    true,
+					ElementType: types.SetType{
+						ElemType: types.ObjectType{
+							AttrTypes: map[string]attr.Type{
+								"name":  types.StringType,
+								"value": types.Int64Type,
+							},
+						},
+					},
+				},
+				// List of Lists of Objects (similar pattern)
+				"records": resource_schema.ListAttribute{
+					Description: "Nested list of lists of objects.",
+					Optional:    true,
+					ElementType: types.ListType{
+						ElemType: types.ObjectType{
+							AttrTypes: map[string]attr.Type{
+								"key": types.StringType,
+							},
+						},
+					},
+				},
+			},
+		},
+	}
+
+	data := providerTemplateData{
+		Package:               "testpkg",
+		ProviderTypeName:      "Provider",
+		Models:                make([]model, 0),
+		NewRequestFuncs:       make([]convertFunc, 0, 3),
+		NewUpdateRequestFuncs: make([]convertFunc, 0, 1),
+		CopyResponseFuncs:     make([]convertFunc, 0, 3),
+		Resources:             make([]resourceData, 0, 1),
+	}
+
+	err := AddResourceToProviderTemplateData(&testResource, &data, "NestedCollectionTest", "NestedCollectionTest")
+	suite.Require().NoError(err, "AddResourceToProviderTemplateData should not return an error")
+
+	// Verify the model was created
+	suite.Require().Len(data.Models, 1, "Should have one resource model")
+	resourceModel := data.Models[0]
+
+	// Find the "items" field (Set of Sets of Objects)
+	var itemsField *field
+
+	for i := range resourceModel.Fields {
+		if resourceModel.Fields[i].AttributeName == "items" {
+			itemsField = &resourceModel.Fields[i]
+
+			break
+		}
+	}
+
+	suite.Require().NotNil(itemsField, "Should have 'items' field")
+
+	// For Set of Sets of Objects (attr "items"):
+	// - Outer wrapper type: []*configv1.NestedCollectionTest_Items
+	// - Object model: NestedCollectionTest_ItemsElem (uses _elem suffix for inner element)
+	//
+	// The _elem suffix distinguishes nested collection elements from the outer wrapper,
+	// matching the naming convention used by protogen.
+
+	// Check outer collection type name
+	suite.Equal("[]*configv1.NestedCollectionTest_Items", itemsField.Type.ProtoTypeName,
+		"Outer Set should have correct wrapper type name")
+
+	// Check inner collection (first level of CollectionElementType)
+	suite.Require().NotNil(itemsField.Type.CollectionElementType, "Should have CollectionElementType for outer Set")
+	innerSetType := itemsField.Type.CollectionElementType
+	suite.Equal("[]*configv1.NestedCollectionTest_ItemsElem", innerSetType.ProtoTypeName,
+		"Inner Set should have _Elem suffix to distinguish from outer wrapper")
+
+	// Check object (inside inner CollectionElementType)
+	suite.Require().NotNil(innerSetType.CollectionElementType, "Should have CollectionElementType for inner Set")
+	objectType := innerSetType.CollectionElementType
+	suite.Require().NotNil(objectType.NestedModel, "Inner Set element should have NestedModel for the Object")
+	suite.Equal("NestedCollectionTest_ItemsElem", objectType.NestedModel.Name,
+		"Object should use _Elem suffix matching inner collection element name")
+
+	// Find the "records" field (List of Lists of Objects)
+	var recordsField *field
+
+	for i := range resourceModel.Fields {
+		if resourceModel.Fields[i].AttributeName == "records" {
+			recordsField = &resourceModel.Fields[i]
+
+			break
+		}
+	}
+
+	suite.Require().NotNil(recordsField, "Should have 'records' field")
+
+	// Check outer List type name
+	suite.Equal("[]*configv1.NestedCollectionTest_Records", recordsField.Type.ProtoTypeName,
+		"Outer List should have correct wrapper type name")
+
+	// Check inner List
+	suite.Require().NotNil(recordsField.Type.CollectionElementType, "Should have CollectionElementType for outer List")
+	innerListType := recordsField.Type.CollectionElementType
+	suite.Equal("[]*configv1.NestedCollectionTest_RecordsElem", innerListType.ProtoTypeName,
+		"Inner List should have _Elem suffix")
+
+	// Check object in inner List
+	suite.Require().NotNil(innerListType.CollectionElementType, "Should have CollectionElementType for inner List")
+	recordObjectType := innerListType.CollectionElementType
+	suite.Require().NotNil(recordObjectType.NestedModel, "Inner List element should have NestedModel")
+	suite.Equal("NestedCollectionTest_RecordsElem", recordObjectType.NestedModel.Name,
+		"Object should use _Elem suffix")
+}
+
 func (suite *GenerateProviderTestSuite) TestSetsAndMore() {
 	var cloudTagsAttribute = resource_schema.ListAttribute{
 		ElementType: types.ObjectType{
