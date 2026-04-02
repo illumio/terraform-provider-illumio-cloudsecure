@@ -1,6 +1,6 @@
 module github.com/illumio/terraform-provider-illumio-cloudsecure
 
-go 1.24.1
+go 1.25.8
 
 require (
 	github.com/gogo/protobuf v1.3.2
