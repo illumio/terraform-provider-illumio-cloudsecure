@@ -14,7 +14,6 @@ RUN export DEBIAN_FRONTEND=noninteractive \
     bash-completion \
     git \
     gnupg \
-    software-properties-common \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/*
 
