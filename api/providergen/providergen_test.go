@@ -159,10 +159,11 @@ func (suite *GenerateProviderTestSuite) TestListOfObjects() {
 	suite.Require().NoError(err, "AddResourceToProviderTemplateData should not return an error")
 }
 
-// TestNestedListAttributeNaming verifies that nested objects within ListNestedAttribute
-// generate correct proto type names.
-// Schema: rules (ListNestedAttribute) -> destination (SingleNestedAttribute) -> k8s (SingleNestedAttribute).
-func (suite *GenerateProviderTestSuite) TestNestedListAttributeNaming() {
+// TestListNestedAttribute verifies that ListNestedAttribute generates correct:
+// 1. Proto type names for nested objects
+// 2. Converter code for List/Set of objects
+// Schema: spec (SingleNestedAttribute) -> rules (ListNestedAttribute) -> destination (SingleNestedAttribute) -> k8s (SingleNestedAttribute).
+func (suite *GenerateProviderTestSuite) TestListNestedAttribute() {
 	testResource := schema.Resource{
 		TypeName: "policy_version",
 		Schema: resource_schema.Schema{
@@ -173,26 +174,32 @@ func (suite *GenerateProviderTestSuite) TestNestedListAttributeNaming() {
 					Description: "Policy version ID.",
 					Computed:    true,
 				},
-				"rules": resource_schema.ListNestedAttribute{
-					Description: "List of rules.",
+				"spec": resource_schema.SingleNestedAttribute{
+					Description: "Policy specification.",
 					Required:    true,
-					NestedObject: resource_schema.NestedAttributeObject{
-						Attributes: map[string]resource_schema.Attribute{
-							"action": resource_schema.StringAttribute{
-								Description: "Action to take.",
-								Required:    true,
-							},
-							"destination": resource_schema.SingleNestedAttribute{
-								Description: "Traffic destination.",
-								Optional:    true,
+					Attributes: map[string]resource_schema.Attribute{
+						"rules": resource_schema.ListNestedAttribute{
+							Description: "List of rules.",
+							Required:    true,
+							NestedObject: resource_schema.NestedAttributeObject{
 								Attributes: map[string]resource_schema.Attribute{
-									"k8s": resource_schema.SingleNestedAttribute{
-										Description: "K8s workload selector.",
+									"action": resource_schema.StringAttribute{
+										Description: "Action to take.",
+										Required:    true,
+									},
+									"destination": resource_schema.SingleNestedAttribute{
+										Description: "Traffic destination.",
 										Optional:    true,
 										Attributes: map[string]resource_schema.Attribute{
-											"cluster_name": resource_schema.StringAttribute{
-												Description: "Cluster name.",
+											"k8s": resource_schema.SingleNestedAttribute{
+												Description: "K8s workload selector.",
 												Optional:    true,
+												Attributes: map[string]resource_schema.Attribute{
+													"cluster_name": resource_schema.StringAttribute{
+														Description: "Cluster name.",
+														Optional:    true,
+													},
+												},
 											},
 										},
 									},
@@ -222,24 +229,40 @@ func (suite *GenerateProviderTestSuite) TestNestedListAttributeNaming() {
 	suite.Require().Len(data.Models, 1, "Should have one resource model")
 	resourceModel := data.Models[0]
 
-	// Find the "rules" field
-	var rulesField *field
+	// Find the "spec" field
+	var specField *field
 
 	for i := range resourceModel.Fields {
-		if resourceModel.Fields[i].AttributeName == "rules" {
-			rulesField = &resourceModel.Fields[i]
+		if resourceModel.Fields[i].AttributeName == "spec" {
+			specField = &resourceModel.Fields[i]
 
 			break
 		}
 	}
 
-	suite.Require().NotNil(rulesField, "Should have 'rules' field")
+	suite.Require().NotNil(specField, "Should have 'spec' field")
+	suite.Require().NotNil(specField.Type.NestedModel, "spec should have NestedModel")
+	specModel := specField.Type.NestedModel
+	suite.Equal("PolicyVersion_Spec", specModel.Name, "spec model name")
+
+	// Find the "rules" field inside spec
+	var rulesField *field
+
+	for i := range specModel.Fields {
+		if specModel.Fields[i].AttributeName == "rules" {
+			rulesField = &specModel.Fields[i]
+
+			break
+		}
+	}
+
+	suite.Require().NotNil(rulesField, "Should have 'rules' field in spec")
 
 	// rules is a List, so check CollectionElementType for the nested object
 	suite.Require().NotNil(rulesField.Type.CollectionElementType, "rules should have CollectionElementType")
 	rulesElemType := rulesField.Type.CollectionElementType
 	suite.Require().NotNil(rulesElemType.NestedModel, "rules element should have NestedModel")
-	suite.Equal("PolicyVersion_Rules", rulesElemType.NestedModel.Name, "rules element model name")
+	suite.Equal("PolicyVersion_Spec_Rules", rulesElemType.NestedModel.Name, "rules element model name")
 
 	// Find "destination" inside the rules model
 	rulesModel := rulesElemType.NestedModel
@@ -256,7 +279,7 @@ func (suite *GenerateProviderTestSuite) TestNestedListAttributeNaming() {
 
 	suite.Require().NotNil(destField, "Should have 'destination' field in rules")
 	suite.Require().NotNil(destField.Type.NestedModel, "destination should have NestedModel")
-	suite.Equal("PolicyVersion_Rules_Destination", destField.Type.NestedModel.Name, "destination model name")
+	suite.Equal("PolicyVersion_Spec_Rules_Destination", destField.Type.NestedModel.Name, "destination model name")
 
 	// Find "k8s" inside the destination model
 	destModel := destField.Type.NestedModel
@@ -273,7 +296,67 @@ func (suite *GenerateProviderTestSuite) TestNestedListAttributeNaming() {
 
 	suite.Require().NotNil(k8sField, "Should have 'k8s' field in destination")
 	suite.Require().NotNil(k8sField.Type.NestedModel, "k8s should have NestedModel")
-	suite.Equal("PolicyVersion_Rules_Destination_K8S", k8sField.Type.NestedModel.Name, "k8s model name")
+	suite.Equal("PolicyVersion_Spec_Rules_Destination_K8S", k8sField.Type.NestedModel.Name, "k8s model name")
+
+	// Test converter generation
+	dst := new(bytes.Buffer)
+	err = ProviderConvertersTemplate.Execute(dst, &data)
+	suite.Require().NoError(err, "ProviderConvertersTemplate.Execute should not return an error")
+
+	output := dst.String()
+
+	// Verify GetTypeAttrsFor generates correct List type with nested object element type
+	expectedGetTypeAttrs := `
+func GetTypeAttrsForPolicyVersion_Spec() map[string]attr.Type {
+	return map[string]attr.Type{
+		"rules": types.ListType{ElemType: types.ObjectType{
+			AttrTypes: GetTypeAttrsForPolicyVersion_Spec_Rules(),
+		}},
+	}
+}
+`
+	suite.Contains(output, expectedGetTypeAttrs)
+
+	// Verify ConvertToObjectValueFromProto iterates over list and calls nested converter for each element
+	expectedConvertToObjectValue := `
+func ConvertPolicyVersion_SpecToObjectValueFromProto(proto *configv1.PolicyVersion_Spec) basetypes.ObjectValue  {
+	rulesValues := make([]attr.Value, 0, len(proto.Rules))
+	for _, item := range proto.Rules {
+		rulesValues = append(rulesValues, ConvertPolicyVersion_Spec_RulesToObjectValueFromProto(item))
+	}
+	return types.ObjectValueMust(
+		GetTypeAttrsForPolicyVersion_Spec(),
+		map[string]attr.Value{
+			"rules": types.ListValueMust(types.ObjectType{AttrTypes: GetTypeAttrsForPolicyVersion_Spec_Rules()}, rulesValues),
+		},
+	)
+}
+`
+	suite.Contains(output, expectedConvertToObjectValue)
+
+	// Verify ConvertDataValueToProto uses Elements() and iterates to convert each element back to proto
+	expectedConvertDataValue := `
+func ConvertDataValueToPolicyVersion_SpecProto(ctx context.Context, dataValue attr.Value) (*configv1.PolicyVersion_Spec, diag.Diagnostics) {
+	pv := PolicyVersion_Spec{}
+	diags := tfsdk.ValueAs(ctx, dataValue, &pv)
+	if diags.HasError() {
+		return nil, diags
+	}
+	proto := &configv1.PolicyVersion_Spec{}
+	rulesElems := pv.Rules.Elements()
+	proto.Rules = make([]*configv1.PolicyVersion_Spec_Rules, 0, len(rulesElems))
+	for _, elem := range rulesElems {
+		rulesElemProto, rulesElemDiags := ConvertDataValueToPolicyVersion_Spec_RulesProto(ctx, elem)
+		diags.Append(rulesElemDiags...)
+		if diags.HasError() {
+			return nil, diags
+		}
+		proto.Rules = append(proto.Rules, rulesElemProto)
+	}
+	return proto, diags
+}
+`
+	suite.Contains(output, expectedConvertDataValue)
 }
 
 // TestNestedCollectionsOfObjects verifies that nested collections (Set of Sets, List of Lists)
@@ -405,6 +488,112 @@ func (suite *GenerateProviderTestSuite) TestNestedCollectionsOfObjects() {
 	suite.Require().NotNil(recordObjectType.NestedModel, "Inner List element should have NestedModel")
 	suite.Equal("NestedCollectionTest_RecordsElem", recordObjectType.NestedModel.Name,
 		"Object should use _Elem suffix")
+}
+
+// TestListPrimitiveAttribute verifies that ListAttribute with primitive element types
+// (e.g., list of strings) generates correct converter code.
+func (suite *GenerateProviderTestSuite) TestListPrimitiveAttribute() {
+	testResource := schema.Resource{
+		TypeName: "test_resource",
+		Schema: resource_schema.Schema{
+			Version:     1,
+			Description: "Test resource.",
+			Attributes: map[string]resource_schema.Attribute{
+				"id": resource_schema.StringAttribute{
+					Description: "Resource ID.",
+					Computed:    true,
+				},
+				// Outer object containing a list of primitives
+				"config": resource_schema.SingleNestedAttribute{
+					Description: "Configuration.",
+					Required:    true,
+					Attributes: map[string]resource_schema.Attribute{
+						"name": resource_schema.StringAttribute{
+							Description: "Config name.",
+							Required:    true,
+						},
+						// List of strings inside the nested object
+						"tags": resource_schema.ListAttribute{
+							Description: "List of tags.",
+							Required:    true,
+							ElementType: types.StringType,
+						},
+					},
+				},
+			},
+		},
+	}
+
+	data := providerTemplateData{
+		Package:               "testpkg",
+		ProviderTypeName:      "Provider",
+		Models:                make([]model, 0),
+		NewRequestFuncs:       make([]convertFunc, 0, 3),
+		NewUpdateRequestFuncs: make([]convertFunc, 0, 1),
+		CopyResponseFuncs:     make([]convertFunc, 0, 3),
+		Resources:             make([]resourceData, 0, 1),
+	}
+
+	err := AddResourceToProviderTemplateData(&testResource, &data, "TestResource", "TestResource")
+	suite.Require().NoError(err, "AddResourceToProviderTemplateData should not return an error")
+
+	// Generate the converters code
+	dst := new(bytes.Buffer)
+	err = ProviderConvertersTemplate.Execute(dst, &data)
+	suite.Require().NoError(err, "ProviderConvertersTemplate.Execute should not return an error")
+
+	output := dst.String()
+
+	// Verify GetTypeAttrsFor generates correct List type with primitive element type
+	expectedGetTypeAttrs := `
+func GetTypeAttrsForTestResource_Config() map[string]attr.Type {
+	return map[string]attr.Type{
+		"name": types.StringType,
+		"tags": types.ListType{ElemType: types.StringType},
+	}
+}
+`
+	suite.Contains(output, expectedGetTypeAttrs)
+
+	// Verify ConvertToObjectValueFromProto iterates and converts each primitive
+	expectedToProto := `
+func ConvertTestResource_ConfigToObjectValueFromProto(proto *configv1.TestResource_Config) basetypes.ObjectValue  {
+	tagsValues := make([]attr.Value, 0, len(proto.Tags))
+	for _, item := range proto.Tags {
+		tagsValues = append(tagsValues, types.StringValue(item))
+	}
+	return types.ObjectValueMust(
+		GetTypeAttrsForTestResource_Config(),
+		map[string]attr.Value{
+			"name": types.StringValue(proto.Name),
+			"tags": types.ListValueMust(types.StringType, tagsValues),
+		},
+	)
+}
+`
+	suite.Contains(output, expectedToProto)
+
+	// Verify ConvertDataValueToProto uses ElementsAs for primitives
+	expectedFromProto := `
+func ConvertDataValueToTestResource_ConfigProto(ctx context.Context, dataValue attr.Value) (*configv1.TestResource_Config, diag.Diagnostics) {
+	pv := TestResource_Config{}
+	diags := tfsdk.ValueAs(ctx, dataValue, &pv)
+	if diags.HasError() {
+		return nil, diags
+	}
+	proto := &configv1.TestResource_Config{}
+	proto.Name = pv.Name.ValueString()
+	var tagsSlice []string
+	tagsDiags := pv.Tags.ElementsAs(ctx, &tagsSlice, false)
+	diags.Append(tagsDiags...)
+	if diags.HasError() {
+		return nil, diags
+	}
+	proto.Tags = tagsSlice
+	return proto, diags
+}
+`
+	suite.Contains(output, expectedFromProto)
 }
 
 func (suite *GenerateProviderTestSuite) TestSetsAndMore() {
