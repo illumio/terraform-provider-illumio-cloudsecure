@@ -320,6 +320,32 @@ func terraformObjectAttributeTypeToProtoType(messageNamePrefix, attrName string,
 
 // terraformRepeatedAttributeTypeToProtoType converts a Terraform repeated attribute type into the corresponding Protocol Buffer type, and optionally additional Protocol Buffer messages that represent nested types.
 func terraformRepeatedAttributeTypeToProtoType(messageNamePrefix, attrName string, elementType attr.Type, tagger *apiSpecTagger) (repeated bool, protoType string, nestedMessage *message, err error) {
+	elemProtoType, elemMessage, err := terraformCollectionAttributeTypeToProtoType(messageNamePrefix, attrName, elementType, tagger)
+
+	if err != nil {
+		return false, "", nil, fmt.Errorf("unsupported element type %s: %w", elementType.String(), err)
+	}
+
+	return true, elemProtoType, elemMessage, nil
+}
+
+// terraformMapAttributeTypeToProtoType converts a Terraform MapAttribute into a Protocol Buffer map type.
+func terraformMapAttributeTypeToProtoType(messageNamePrefix, attrName string, elementType attr.Type, tagger *apiSpecTagger) (repeated bool, protoType string, nestedMessage *message, err error) {
+	elemProtoType, elemMessage, err := terraformCollectionAttributeTypeToProtoType(messageNamePrefix, attrName, elementType, tagger)
+
+	if err != nil {
+		return false, "", nil, fmt.Errorf("unsupported element type %s: %w", elementType.String(), err)
+	}
+
+	// Proto map syntax: map<key_type, value_type>
+	// Terraform maps always have string keys.
+	elemProtoType = fmt.Sprintf("map<string, %s>", elemProtoType)
+
+	return false, elemProtoType, elemMessage, nil
+}
+
+// terraformRepeatedAttributeTypeToProtoType converts a Terraform repeated attribute type into the corresponding Protocol Buffer type, and optionally additional Protocol Buffer messages that represent nested types.
+func terraformCollectionAttributeTypeToProtoType(messageNamePrefix, attrName string, elementType attr.Type, tagger *apiSpecTagger) (protoType string, nestedMessage *message, err error) {
 	// For nested collections (List of Lists, Set of Sets, etc.), use a distinct name for the inner element.
 	// This ensures each nesting level gets a unique message name instead of repeating the same name.
 	// E.g., Set{Set{Object}} produces "Items" (wrapper) and "ItemsElem" (object) instead of "Items" and "Items".
@@ -334,10 +360,10 @@ func terraformRepeatedAttributeTypeToProtoType(messageNamePrefix, attrName strin
 
 	switch {
 	case err != nil:
-		return false, "", nil, fmt.Errorf("unsupported element type %s: %w", elementType.String(), err)
+		return "", nil, fmt.Errorf("unsupported element type %s: %w", elementType.String(), err)
 
 	case elemRepeated: // The element type itself is repeated.
-		// The attribute is a set of lists or a set of sets. This must be modeled in Protocol Buffer as a repeated field of a message type, which itself contains a repeated field.
+		// The attribute is a list/set of lists/sets. This must be modeled in Protocol Buffer as a repeated field of a message type, which itself contains a repeated field.
 		// In case an extra message is created for a nested field type, it will be named with the CamelCased attribute name.
 		wrapperMessageName := schema.ProtoMessageName(attrName)
 
@@ -356,25 +382,9 @@ func terraformRepeatedAttributeTypeToProtoType(messageNamePrefix, attrName strin
 			wrapperMessage.Messages = []message{*elemMessage}
 		}
 
-		return true, wrapperMessageName, wrapperMessage, nil
+		return wrapperMessageName, wrapperMessage, nil
 
 	default: // The element type is not repeated. Normal case.
-		return true, elemProtoType, elemMessage, nil
+		return elemProtoType, elemMessage, nil
 	}
-}
-
-// terraformMapAttributeTypeToProtoType converts a Terraform MapAttribute into a Protocol Buffer map type.
-func terraformMapAttributeTypeToProtoType(messageNamePrefix, attrName string, elementType attr.Type, tagger *apiSpecTagger) (repeated bool, protoType string, nestedMessage *message, err error) {
-	_, protoType, elemMessage, err := terraformRepeatedAttributeTypeToProtoType(messageNamePrefix, attrName, elementType, tagger)
-
-	if err != nil {
-		return false, "", nil, fmt.Errorf("unsupported element type %s: %w", elementType.String(), err)
-	}
-
-	// Proto map syntax: map<key_type, value_type>
-	// Terraform maps always have string keys
-	protoType = fmt.Sprintf("map<string, %s>", protoType)
-
-	// Maps cannot be repeated in proto3
-	return false, protoType, elemMessage, nil
 }
