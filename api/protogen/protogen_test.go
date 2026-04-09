@@ -278,6 +278,20 @@ func (suite *GenerateTestSuite) TestTerraformAttributeTypeToProtoType() {
 				},
 			},
 		},
+		"map-string-string": {
+			tfType: types.MapType{
+				ElemType: types.StringType,
+			},
+			expectedRepeated: false,
+			expectedType:     "map<string, string>",
+		},
+		"map-string-int64": {
+			tfType: types.MapType{
+				ElemType: types.Int64Type,
+			},
+			expectedRepeated: false,
+			expectedType:     "map<string, int64>",
+		},
 	}
 
 	for name, tc := range tests {

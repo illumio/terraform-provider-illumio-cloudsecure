@@ -826,6 +826,21 @@ func TerraformAttributeTypeToProtoType(nestedMessageNamePrefix, attrName string,
 			ProtoTypeName: protoTypeName,
 			NestedModel:   objModel,
 		}, nil
+	case types.MapType:
+		valueType, err := TerraformAttributeTypeToProtoType(nestedMessageNamePrefix, attrName, v.ElemType)
+
+		// Only support primitive value types for now
+		// MapNestedAttribute (map of objects) and nested collections are not supported
+		if err != nil {
+			return fieldType{}, fmt.Errorf("unsupported map value type: %s", v.ElemType.String())
+		}
+
+		// Terraform maps always have string keys
+		return fieldType{
+			ModelTypeName:         "Map",
+			ProtoTypeName:         "map[string]" + valueType.ProtoTypeName,
+			CollectionElementType: &valueType,
+		}, nil
 	default:
 		return fieldType{}, fmt.Errorf("unsupported Terraform type: %s", attrType.String())
 	}

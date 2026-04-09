@@ -110,9 +110,9 @@ func (suite *GenerateProviderTestSuite) TestGenerateProviderDataGenerator() {
 	suite.Contains(data.Models[0].Name, "TestObjectResourceModel", "Generated provider should include the correct resource model name")
 }
 
-func (suite *GenerateProviderTestSuite) TestListOfObjects() {
+func (suite *GenerateProviderTestSuite) TestConvertCollectionsOfObjectsSucceeds() {
 	testResource := schema.Resource{
-		TypeName: "aws_tag_to_label",
+		TypeName: "dummy",
 		Schema: resource_schema.Schema{
 			Version:     1,
 			Description: "Manages an AWS account in CloudSecure.",
@@ -130,8 +130,14 @@ func (suite *GenerateProviderTestSuite) TestListOfObjects() {
 					Description: "Icon details.",
 				},
 				"cloud_tags": resource_schema.ListAttribute{
-					Required:    true,
-					Description: "List of AWS account tags to map to the CloudSecure label.",
+					ElementType: types.ObjectType{
+						AttrTypes: map[string]attr.Type{
+							"key":   types.StringType,
+							"cloud": types.StringType,
+						},
+					},
+				},
+				"labels": resource_schema.MapAttribute{
 					ElementType: types.ObjectType{
 						AttrTypes: map[string]attr.Type{
 							"key":   types.StringType,
@@ -154,8 +160,8 @@ func (suite *GenerateProviderTestSuite) TestListOfObjects() {
 		Resources:             make([]resourceData, 0, countCount),
 	}
 
-	err := AddResourceToProviderTemplateData(&testResource, &data, "AwsTagToLabel", "AwsTagToLabel")
-	// Assert no error
+	err := AddResourceToProviderTemplateData(&testResource, &data, "Dummy", "Dummy")
+
 	suite.Require().NoError(err, "AddResourceToProviderTemplateData should not return an error")
 }
 
@@ -590,6 +596,112 @@ func ConvertDataValueToTestResource_ConfigProto(ctx context.Context, dataValue a
 		return nil, diags
 	}
 	proto.Tags = tagsSlice
+	return proto, diags
+}
+`
+	suite.Contains(output, expectedFromProto)
+}
+
+// TestMapPrimitiveAttribute verifies that MapAttribute with primitive element types
+// (e.g., map of strings) generates correct converter code.
+func (suite *GenerateProviderTestSuite) TestMapPrimitiveAttribute() {
+	testResource := schema.Resource{
+		TypeName: "test_map_resource",
+		Schema: resource_schema.Schema{
+			Version:     1,
+			Description: "Test resource with map attribute.",
+			Attributes: map[string]resource_schema.Attribute{
+				"id": resource_schema.StringAttribute{
+					Description: "Resource ID.",
+					Computed:    true,
+				},
+				// Outer object containing a map of strings
+				"metadata": resource_schema.SingleNestedAttribute{
+					Description: "Metadata configuration.",
+					Required:    true,
+					Attributes: map[string]resource_schema.Attribute{
+						"name": resource_schema.StringAttribute{
+							Description: "Metadata name.",
+							Required:    true,
+						},
+						// Map of string to string
+						"labels": resource_schema.MapAttribute{
+							Description: "Key-value labels.",
+							Required:    true,
+							ElementType: types.StringType,
+						},
+					},
+				},
+			},
+		},
+	}
+
+	data := providerTemplateData{
+		Package:               "testpkg",
+		ProviderTypeName:      "Provider",
+		Models:                make([]model, 0),
+		NewRequestFuncs:       make([]convertFunc, 0, 3),
+		NewUpdateRequestFuncs: make([]convertFunc, 0, 1),
+		CopyResponseFuncs:     make([]convertFunc, 0, 3),
+		Resources:             make([]resourceData, 0, 1),
+	}
+
+	err := AddResourceToProviderTemplateData(&testResource, &data, "TestMapResource", "TestMapResource")
+	suite.Require().NoError(err, "AddResourceToProviderTemplateData should not return an error")
+
+	// Generate the converters code
+	dst := new(bytes.Buffer)
+	err = ProviderConvertersTemplate.Execute(dst, &data)
+	suite.Require().NoError(err, "ProviderConvertersTemplate.Execute should not return an error")
+
+	output := dst.String()
+
+	// Verify GetTypeAttrsFor generates correct Map type with primitive element type
+	expectedGetTypeAttrs := `
+func GetTypeAttrsForTestMapResource_Metadata() map[string]attr.Type {
+	return map[string]attr.Type{
+		"labels": types.MapType{ElemType: types.StringType},
+		"name": types.StringType,
+	}
+}
+`
+	suite.Contains(output, expectedGetTypeAttrs)
+
+	// Verify ConvertToObjectValueFromProto iterates map and converts each value
+	expectedToProto := `
+func ConvertTestMapResource_MetadataToObjectValueFromProto(proto *configv1.TestMapResource_Metadata) basetypes.ObjectValue  {
+	labelsValues := make(map[string]attr.Value, len(proto.Labels))
+	for key, item := range proto.Labels {
+		labelsValues[key] = types.StringValue(item)
+	}
+	return types.ObjectValueMust(
+		GetTypeAttrsForTestMapResource_Metadata(),
+		map[string]attr.Value{
+			"labels": types.MapValueMust(types.StringType, labelsValues),
+			"name": types.StringValue(proto.Name),
+		},
+	)
+}
+`
+	suite.Contains(output, expectedToProto)
+
+	// Verify ConvertDataValueToProto uses ElementsAs for map
+	expectedFromProto := `
+func ConvertDataValueToTestMapResource_MetadataProto(ctx context.Context, dataValue attr.Value) (*configv1.TestMapResource_Metadata, diag.Diagnostics) {
+	pv := TestMapResource_Metadata{}
+	diags := tfsdk.ValueAs(ctx, dataValue, &pv)
+	if diags.HasError() {
+		return nil, diags
+	}
+	proto := &configv1.TestMapResource_Metadata{}
+	var labelsMap map[string]string
+	labelsDiags := pv.Labels.ElementsAs(ctx, &labelsMap, false)
+	diags.Append(labelsDiags...)
+	if diags.HasError() {
+		return nil, diags
+	}
+	proto.Labels = labelsMap
+	proto.Name = pv.Name.ValueString()
 	return proto, diags
 }
 `
