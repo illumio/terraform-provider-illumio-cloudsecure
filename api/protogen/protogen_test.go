@@ -292,6 +292,34 @@ func (suite *GenerateTestSuite) TestTerraformAttributeTypeToProtoType() {
 			expectedRepeated: false,
 			expectedType:     "map<string, int64>",
 		},
+		"map-nested-objects": {
+			tfType: types.MapType{
+				ElemType: types.ObjectType{
+					AttrTypes: map[string]attr.Type{
+						"email": types.StringType,
+						"name":  types.StringType,
+					},
+				},
+			},
+			expectedRepeated: false,
+			expectedType:     "map<string, TheField>",
+			expectedMessage: &message{
+				Name:     "TheField",
+				Messages: nil,
+				Fields: []field{
+					{
+						Type: "string",
+						Name: "email",
+						Tag:  1,
+					},
+					{
+						Type: "string",
+						Name: "name",
+						Tag:  2,
+					},
+				},
+			},
+		},
 	}
 
 	for name, tc := range tests {
@@ -646,6 +674,46 @@ func (suite *GenerateTestSuite) TestGRPCAPISpecTemplateMessage() { //nolint:main
 						string city = 2;
 					}
 					repeated Address addresses = 1;
+				}
+			`,
+		},
+		"map_of_nested_messages": {
+			message: message{
+				Name: "TopLevel",
+				Messages: []message{
+					{
+						Name: "Address",
+						Fields: []field{
+							{
+								Type: "string",
+								Name: "state",
+								Tag:  1,
+							},
+							{
+								Type: "string",
+								Name: "city",
+								Tag:  2,
+							},
+						},
+					},
+				},
+				Fields: []field{
+					{
+						Repeated: false,
+						Type:     "map<string, Address>",
+						Optional: true,
+						Name:     "addresses",
+						Tag:      1,
+					},
+				},
+			},
+			output: `
+				message TopLevel {
+					message Address {
+						string state = 1;
+						string city = 2;
+					}
+					optional map<string, Address> addresses = 1;
 				}
 			`,
 		},
