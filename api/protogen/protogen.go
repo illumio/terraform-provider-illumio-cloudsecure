@@ -344,7 +344,7 @@ func terraformMapAttributeTypeToProtoType(messageNamePrefix, attrName string, el
 	return false, elemProtoType, elemMessage, nil
 }
 
-// terraformRepeatedAttributeTypeToProtoType converts a Terraform repeated attribute type into the corresponding Protocol Buffer type, and optionally additional Protocol Buffer messages that represent nested types.
+// terraformCollectionAttributeTypeToProtoType converts a Terraform collection attribute type into the corresponding Protocol Buffer type, and optionally additional Protocol Buffer messages that represent nested types.
 func terraformCollectionAttributeTypeToProtoType(messageNamePrefix, attrName string, elementType attr.Type, tagger *apiSpecTagger) (protoType string, nestedMessage *message, err error) {
 	// For nested collections (List of Lists, Set of Sets, etc.), use a distinct name for the inner element.
 	// This ensures each nesting level gets a unique message name instead of repeating the same name.
@@ -363,7 +363,7 @@ func terraformCollectionAttributeTypeToProtoType(messageNamePrefix, attrName str
 		return "", nil, fmt.Errorf("unsupported element type %s: %w", elementType.String(), err)
 
 	case elemRepeated: // The element type itself is repeated.
-		// The attribute is a list/set of lists/sets. This must be modeled in Protocol Buffer as a repeated field of a message type, which itself contains a repeated field.
+		// The attribute is a list/set/map of lists/sets. This must be modeled in Protocol Buffer as a repeated field of a message type, which itself contains a repeated field.
 		// In case an extra message is created for a nested field type, it will be named with the CamelCased attribute name.
 		wrapperMessageName := schema.ProtoMessageName(attrName)
 
