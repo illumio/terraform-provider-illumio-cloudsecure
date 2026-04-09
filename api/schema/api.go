@@ -34,8 +34,8 @@ type DataSource struct {
 	Schema datasource_schema.Schema
 }
 
-// Resources is a list of Resource elements.
-// The TypeName of each Resource must be unique.
+// DataSources is a list of DataSources elements.
+// The TypeName of each DataSources must be unique.
 type DataSources []DataSource
 
 func (r DataSources) Len() int           { return len(r) }
