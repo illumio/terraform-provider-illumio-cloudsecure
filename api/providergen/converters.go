@@ -56,7 +56,7 @@ func Convert{{.Name}}ToObjectValueFromProto(proto *configv1.{{.Name}}) basetypes
 		{{$field.AttributeName}}Values = append({{$field.AttributeName}}Values, types.{{$field.Type.CollectionElementType.ModelTypeName}}Value(item))
 	}
 	{{- else if eq $field.Type.ModelTypeName "Map"}}
-	{{$field.AttributeName}}Values := make(map[string]attr.Value, 0, len(proto.{{$field.Name}}))
+	{{$field.AttributeName}}Values := make(map[string]attr.Value, len(proto.{{$field.Name}}))
 	for key, item := range proto.{{$field.Name}} {
 		{{$field.AttributeName}}Values[key] = types.{{$field.Type.CollectionElementType.ModelTypeName}}Value(item)
 	}
