@@ -478,9 +478,6 @@ type field struct {
 	// Name is the name of the field.
 	Name string
 
-	// LowercaseName is the Name starting in lowercase.
-	LowercaseName string
-
 	// AttributeName is the name of the Terraform attribute corresponding to the field.
 	AttributeName string
 
