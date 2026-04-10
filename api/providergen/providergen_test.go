@@ -166,9 +166,9 @@ func (suite *GenerateProviderTestSuite) TestConvertCollectionsOfObjectsSucceeds(
 }
 
 // TestListAndMapNestedAttribute verifies that ListNestedAttribute and MapNestedAttribute generate correct:
-// 1. Proto type names for nested objects
-// 2. Converter code for List/Set/Map of objects
-func (suite *GenerateProviderTestSuite) TestListAndMapNestedAttribute() {
+// 1. Proto type names for nested objects.
+// 2. Converter code for List/Set/Map of objects.
+func (suite *GenerateProviderTestSuite) TestListAndMapNestedAttribute() { //nolint:maintidx
 	testResource := schema.Resource{
 		TypeName: "policy_version",
 		Schema: resource_schema.Schema{

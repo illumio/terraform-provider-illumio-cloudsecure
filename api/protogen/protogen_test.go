@@ -21,7 +21,7 @@ func TestGenerateTestSuite(t *testing.T) {
 	suite.Run(t, new(GenerateTestSuite))
 }
 
-func (suite *GenerateTestSuite) TestTerraformAttributeTypeToProtoType() {
+func (suite *GenerateTestSuite) TestTerraformAttributeTypeToProtoType() { //nolint:maintidx
 	fieldName := "the_field"
 	tests := map[string]struct {
 		tfType           attr.Type

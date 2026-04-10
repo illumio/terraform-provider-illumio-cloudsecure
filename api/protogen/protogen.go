@@ -321,7 +321,6 @@ func terraformObjectAttributeTypeToProtoType(messageNamePrefix, attrName string,
 // terraformRepeatedAttributeTypeToProtoType converts a Terraform repeated attribute type into the corresponding Protocol Buffer type, and optionally additional Protocol Buffer messages that represent nested types.
 func terraformRepeatedAttributeTypeToProtoType(messageNamePrefix, attrName string, elementType attr.Type, tagger *apiSpecTagger) (repeated bool, protoType string, nestedMessage *message, err error) {
 	elemProtoType, elemMessage, err := terraformCollectionAttributeTypeToProtoType(messageNamePrefix, attrName, elementType, tagger)
-
 	if err != nil {
 		return false, "", nil, fmt.Errorf("unsupported element type %s: %w", elementType.String(), err)
 	}
@@ -332,7 +331,6 @@ func terraformRepeatedAttributeTypeToProtoType(messageNamePrefix, attrName strin
 // terraformMapAttributeTypeToProtoType converts a Terraform MapAttribute into a Protocol Buffer map type.
 func terraformMapAttributeTypeToProtoType(messageNamePrefix, attrName string, elementType attr.Type, tagger *apiSpecTagger) (repeated bool, protoType string, nestedMessage *message, err error) {
 	elemProtoType, elemMessage, err := terraformCollectionAttributeTypeToProtoType(messageNamePrefix, attrName, elementType, tagger)
-
 	if err != nil {
 		return false, "", nil, fmt.Errorf("unsupported element type %s: %w", elementType.String(), err)
 	}
