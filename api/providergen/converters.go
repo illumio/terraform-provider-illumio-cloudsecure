@@ -98,9 +98,9 @@ func ConvertDataValueTo{{.Name}}Proto(ctx context.Context, dataValue attr.Value)
 	proto.{{$field.Name}} = pvModel{{$field.Name}}
 	{{- else if and (ne $field.Type.CollectionElementType nil) (ne $field.Type.CollectionElementType.NestedModel nil)}}
 	{{- if eq $field.Type.ModelTypeName "List"}}
-	pvModel{{$field.Name}}Elements := pv.{{$field.Name}}.Elements()
-	proto.{{$field.Name}} = make([]*configv1.{{$field.Type.CollectionElementType.NestedModel.Name}}, 0, len(pvModel{{$field.Name}}Elements))
-	for _, elem := range pvModel{{$field.Name}}Elements {
+	pvElemModel{{$field.Name}} := pv.{{$field.Name}}.Elements()
+	proto.{{$field.Name}} = make([]*configv1.{{$field.Type.CollectionElementType.NestedModel.Name}}, 0, len(pvElemModel{{$field.Name}}))
+	for _, elem := range pvElemModel{{$field.Name}} {
 		pvModel, dvDiags := ConvertDataValueTo{{$field.Type.CollectionElementType.NestedModel.Name}}Proto(ctx, elem)
 		diags.Append(dvDiags...)
 		if diags.HasError() {
@@ -109,9 +109,9 @@ func ConvertDataValueTo{{.Name}}Proto(ctx context.Context, dataValue attr.Value)
 		proto.{{$field.Name}} = append(proto.{{$field.Name}}, pvModel)
 	}
 	{{- else if eq $field.Type.ModelTypeName "Map"}}
-	pvModel{{$field.Name}}Elements := pv.{{$field.Name}}.Elements()
-	proto.{{$field.Name}} = make(map[string]*configv1.{{$field.Type.CollectionElementType.NestedModel.Name}}, len(pvModel{{$field.Name}}Elements))
-	for key, elem := range pvModel{{$field.Name}}Elements {
+	pvElemModel{{$field.Name}} := pv.{{$field.Name}}.Elements()
+	proto.{{$field.Name}} = make(map[string]*configv1.{{$field.Type.CollectionElementType.NestedModel.Name}}, len(pvElemModel{{$field.Name}}))
+	for key, elem := range pvElemModel{{$field.Name}} {
 		pvModel, dvDiags := ConvertDataValueTo{{$field.Type.CollectionElementType.NestedModel.Name}}Proto(ctx, elem)
 		diags.Append(dvDiags...)
 		if diags.HasError() {

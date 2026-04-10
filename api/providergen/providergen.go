@@ -478,6 +478,9 @@ type field struct {
 	// Name is the name of the field.
 	Name string
 
+	// LowercaseName is the Name starting in lowercase.
+	LowercaseName string
+
 	// AttributeName is the name of the Terraform attribute corresponding to the field.
 	AttributeName string
 
@@ -854,17 +857,17 @@ func TerraformObjectAttributeTypeToProtoType(nestedMessageNamePrefix, attrName s
 
 	attrs := schema.SortObjectAttributes(object.AttrTypes)
 
-	for _, fieldName := range attrs {
-		fieldType := object.AttrTypes[fieldName]
+	for _, attrName := range attrs {
+		fieldType := object.AttrTypes[attrName]
 
-		t, err := TerraformAttributeTypeToProtoType(wrappedMessageName, fieldName, fieldType)
+		t, err := TerraformAttributeTypeToProtoType(wrappedMessageName, attrName, fieldType)
 		if err != nil {
-			return "", nil, fmt.Errorf("failed to transform field %s in object %s: %w", fieldName, nestedMessageNamePrefix, err)
+			return "", nil, fmt.Errorf("failed to transform field %s in object %s: %w", attrName, nestedMessageNamePrefix, err)
 		}
 
 		fields = append(fields, field{
-			Name:          schema.ProtoMessageName(fieldName),
-			AttributeName: fieldName,
+			Name:          schema.ProtoMessageName(attrName),
+			AttributeName: attrName,
 			Type:          t,
 			Optional:      false,
 		})
