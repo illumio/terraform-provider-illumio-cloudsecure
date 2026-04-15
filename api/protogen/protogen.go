@@ -337,9 +337,7 @@ func terraformMapAttributeTypeToProtoType(messageNamePrefix, attrName string, el
 
 	// Proto map syntax: map<key_type, value_type>
 	// Terraform maps always have string keys.
-	elemProtoType = fmt.Sprintf("map<string, %s>", elemProtoType)
-
-	return false, elemProtoType, elemMessage, nil
+	return false, fmt.Sprintf("map<string, %s>", elemProtoType), elemMessage, nil
 }
 
 // terraformCollectionAttributeTypeToProtoType converts a Terraform collection attribute type into the corresponding Protocol Buffer type, and optionally additional Protocol Buffer messages that represent nested types.
