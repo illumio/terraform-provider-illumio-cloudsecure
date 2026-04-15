@@ -492,7 +492,7 @@ type field struct {
 //
 // TODO: Support nested objects.
 type fieldType struct {
-	// ModelTypeName is the name of the Golang type of the field in the Terraform model, e.g., "Bool", "String", "List", "Set", etc.
+	// ModelTypeName is the name of the Golang type of the field in the Terraform model, e.g., "Bool", "String", "List", "Set", "Map", etc.
 	ModelTypeName string
 
 	// ProtoTypeName is the name of the Golang type of the field in the Protocol Buffer message, e.g., "string" or "[]string".
