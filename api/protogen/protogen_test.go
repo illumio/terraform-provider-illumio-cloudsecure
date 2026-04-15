@@ -21,14 +21,15 @@ func TestGenerateTestSuite(t *testing.T) {
 	suite.Run(t, new(GenerateTestSuite))
 }
 
-func (suite *GenerateTestSuite) TestTerraformAttributeTypeToProtoType() {
+func (suite *GenerateTestSuite) TestTerraformAttributeTypeToProtoType() { //nolint:maintidx
 	fieldName := "the_field"
 	tests := map[string]struct {
-		tfType           attr.Type
-		expectedRepeated bool
-		expectedType     string
-		expectedMessage  *message
-		expectedErr      error
+		tfType                     attr.Type
+		expectedExplicitlyRepeated bool
+		expectedImplicitlyRepeated bool
+		expectedType               string
+		expectedMessage            *message
+		expectedErr                error
 	}{
 		"bool": {
 			tfType:       types.BoolType,
@@ -50,15 +51,15 @@ func (suite *GenerateTestSuite) TestTerraformAttributeTypeToProtoType() {
 			tfType: types.ListType{
 				ElemType: types.StringType,
 			},
-			expectedRepeated: true,
-			expectedType:     "string",
+			expectedExplicitlyRepeated: true,
+			expectedType:               "string",
 		},
 		"repeated-set-string": {
 			tfType: types.SetType{
 				ElemType: types.StringType,
 			},
-			expectedRepeated: true,
-			expectedType:     "string",
+			expectedExplicitlyRepeated: true,
+			expectedType:               "string",
 		},
 		"repeated-set-set-string": {
 			tfType: types.SetType{
@@ -66,8 +67,8 @@ func (suite *GenerateTestSuite) TestTerraformAttributeTypeToProtoType() {
 					ElemType: types.StringType,
 				},
 			},
-			expectedRepeated: true,
-			expectedType:     "TheField",
+			expectedExplicitlyRepeated: true,
+			expectedType:               "TheField",
 			expectedMessage: &message{
 				Name: "TheField",
 				Fields: []field{
@@ -88,8 +89,8 @@ func (suite *GenerateTestSuite) TestTerraformAttributeTypeToProtoType() {
 					},
 				},
 			},
-			expectedRepeated: true,
-			expectedType:     "TheField",
+			expectedExplicitlyRepeated: true,
+			expectedType:               "TheField",
 			expectedMessage: &message{
 				Name: "TheField",
 				Fields: []field{
@@ -188,8 +189,8 @@ func (suite *GenerateTestSuite) TestTerraformAttributeTypeToProtoType() {
 					},
 				},
 			},
-			expectedRepeated: true,
-			expectedType:     "TheField",
+			expectedExplicitlyRepeated: true,
+			expectedType:               "TheField",
 			expectedMessage: &message{
 				Name:     "TheField",
 				Messages: nil,
@@ -216,8 +217,8 @@ func (suite *GenerateTestSuite) TestTerraformAttributeTypeToProtoType() {
 					},
 				},
 			},
-			expectedRepeated: true,
-			expectedType:     "TheField",
+			expectedExplicitlyRepeated: true,
+			expectedType:               "TheField",
 			expectedMessage: &message{
 				Name:     "TheField",
 				Messages: nil,
@@ -246,8 +247,8 @@ func (suite *GenerateTestSuite) TestTerraformAttributeTypeToProtoType() {
 					},
 				},
 			},
-			expectedRepeated: true,
-			expectedType:     "TheField",
+			expectedExplicitlyRepeated: true,
+			expectedType:               "TheField",
 			expectedMessage: &message{
 				Name: "TheField",
 				Messages: []message{
@@ -278,14 +279,96 @@ func (suite *GenerateTestSuite) TestTerraformAttributeTypeToProtoType() {
 				},
 			},
 		},
+		"map-string-string": {
+			tfType: types.MapType{
+				ElemType: types.StringType,
+			},
+			expectedImplicitlyRepeated: true,
+			expectedType:               "map<string, string>",
+		},
+		"map-string-int64": {
+			tfType: types.MapType{
+				ElemType: types.Int64Type,
+			},
+			expectedImplicitlyRepeated: true,
+			expectedType:               "map<string, int64>",
+		},
+		"map-nested-objects": {
+			tfType: types.MapType{
+				ElemType: types.ObjectType{
+					AttrTypes: map[string]attr.Type{
+						"email": types.StringType,
+						"name":  types.StringType,
+					},
+				},
+			},
+			expectedImplicitlyRepeated: true,
+			expectedType:               "map<string, TheField>",
+			expectedMessage: &message{
+				Name:     "TheField",
+				Messages: nil,
+				Fields: []field{
+					{
+						Type: "string",
+						Name: "email",
+						Tag:  1,
+					},
+					{
+						Type: "string",
+						Name: "name",
+						Tag:  2,
+					},
+				},
+			},
+		},
+		"list-map-string-string": {
+			tfType: types.ListType{
+				ElemType: types.MapType{
+					ElemType: types.StringType,
+				},
+			},
+			expectedExplicitlyRepeated: true,
+			expectedType:               "TheField",
+			expectedMessage: &message{
+				Name: "TheField",
+				Fields: []field{
+					{
+						Type: "map<string, string>",
+						Name: "the_field",
+						Tag:  1,
+					},
+				},
+			},
+		},
+		"map-list-string": {
+			tfType: types.MapType{
+				ElemType: types.ListType{
+					ElemType: types.StringType,
+				},
+			},
+			expectedImplicitlyRepeated: true,
+			expectedType:               "map<string, TheField>",
+			expectedMessage: &message{
+				Name: "TheField",
+				Fields: []field{
+					{
+						Repeated: true,
+						Type:     "string",
+						Name:     "the_field",
+						Tag:      1,
+					},
+				},
+			},
+		},
 	}
 
 	for name, tc := range tests {
 		tagger := newAPISpecTagger()
 
 		suite.Run(name, func() {
-			gotRepeated, gotType, gotMessages, gotErr := terraformAttributeTypeToProtoType("Dummy", fieldName, tc.tfType, tagger)
-			suite.Equal(tc.expectedRepeated, gotRepeated, "Protocol Buffer repeated flag should match")
+			gotExplicitlyRepeated, gotImplicitlyRepeated, gotType, gotMessages, gotErr := terraformAttributeTypeToProtoType("Dummy", fieldName, tc.tfType, tagger)
+			suite.Equal(tc.expectedExplicitlyRepeated, gotExplicitlyRepeated, "Protocol Buffer explicitly repeated flag should match")
+			suite.Equal(tc.expectedImplicitlyRepeated, gotImplicitlyRepeated, "Protocol Buffer implicitly repeated flag should match")
 			suite.Equal(tc.expectedType, gotType, "Protocol Buffer type should match")
 			suite.Equal(tc.expectedMessage, gotMessages, "Messages should match")
 			suite.Equal(tc.expectedErr, gotErr, "Error should match")
@@ -632,6 +715,46 @@ func (suite *GenerateTestSuite) TestGRPCAPISpecTemplateMessage() { //nolint:main
 						string city = 2;
 					}
 					repeated Address addresses = 1;
+				}
+			`,
+		},
+		"map_of_nested_messages": {
+			message: message{
+				Name: "TopLevel",
+				Messages: []message{
+					{
+						Name: "Address",
+						Fields: []field{
+							{
+								Type: "string",
+								Name: "state",
+								Tag:  1,
+							},
+							{
+								Type: "string",
+								Name: "city",
+								Tag:  2,
+							},
+						},
+					},
+				},
+				Fields: []field{
+					{
+						Repeated: false,
+						Type:     "map<string, Address>",
+						Optional: true,
+						Name:     "addresses",
+						Tag:      1,
+					},
+				},
+			},
+			output: `
+				message TopLevel {
+					message Address {
+						string state = 1;
+						string city = 2;
+					}
+					optional map<string, Address> addresses = 1;
 				}
 			`,
 		},

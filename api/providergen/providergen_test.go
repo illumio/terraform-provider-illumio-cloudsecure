@@ -110,9 +110,9 @@ func (suite *GenerateProviderTestSuite) TestGenerateProviderDataGenerator() {
 	suite.Contains(data.Models[0].Name, "TestObjectResourceModel", "Generated provider should include the correct resource model name")
 }
 
-func (suite *GenerateProviderTestSuite) TestListOfObjects() {
+func (suite *GenerateProviderTestSuite) TestConvertCollectionsOfObjectsSucceeds() {
 	testResource := schema.Resource{
-		TypeName: "aws_tag_to_label",
+		TypeName: "dummy",
 		Schema: resource_schema.Schema{
 			Version:     1,
 			Description: "Manages an AWS account in CloudSecure.",
@@ -130,8 +130,14 @@ func (suite *GenerateProviderTestSuite) TestListOfObjects() {
 					Description: "Icon details.",
 				},
 				"cloud_tags": resource_schema.ListAttribute{
-					Required:    true,
-					Description: "List of AWS account tags to map to the CloudSecure label.",
+					ElementType: types.ObjectType{
+						AttrTypes: map[string]attr.Type{
+							"key":   types.StringType,
+							"cloud": types.StringType,
+						},
+					},
+				},
+				"labels": resource_schema.MapAttribute{
 					ElementType: types.ObjectType{
 						AttrTypes: map[string]attr.Type{
 							"key":   types.StringType,
@@ -154,16 +160,15 @@ func (suite *GenerateProviderTestSuite) TestListOfObjects() {
 		Resources:             make([]resourceData, 0, countCount),
 	}
 
-	err := AddResourceToProviderTemplateData(&testResource, &data, "AwsTagToLabel", "AwsTagToLabel")
-	// Assert no error
+	err := AddResourceToProviderTemplateData(&testResource, &data, "Dummy", "Dummy")
+
 	suite.Require().NoError(err, "AddResourceToProviderTemplateData should not return an error")
 }
 
-// TestListNestedAttribute verifies that ListNestedAttribute generates correct:
-// 1. Proto type names for nested objects
-// 2. Converter code for List/Set of objects
-// Schema: spec (SingleNestedAttribute) -> rules (ListNestedAttribute) -> destination (SingleNestedAttribute) -> k8s (SingleNestedAttribute).
-func (suite *GenerateProviderTestSuite) TestListNestedAttribute() {
+// TestListAndMapNestedAttribute verifies that ListNestedAttribute and MapNestedAttribute generate correct:
+// 1. Proto type names for nested objects.
+// 2. Converter code for List/Set/Map of objects.
+func (suite *GenerateProviderTestSuite) TestListAndMapNestedAttribute() { //nolint:maintidx
 	testResource := schema.Resource{
 		TypeName: "policy_version",
 		Schema: resource_schema.Schema{
@@ -180,7 +185,35 @@ func (suite *GenerateProviderTestSuite) TestListNestedAttribute() {
 					Attributes: map[string]resource_schema.Attribute{
 						"rules": resource_schema.ListNestedAttribute{
 							Description: "List of rules.",
-							Required:    true,
+							Optional:    true,
+							NestedObject: resource_schema.NestedAttributeObject{
+								Attributes: map[string]resource_schema.Attribute{
+									"action": resource_schema.StringAttribute{
+										Description: "Action to take.",
+										Required:    true,
+									},
+									"destination": resource_schema.SingleNestedAttribute{
+										Description: "Traffic destination.",
+										Optional:    true,
+										Attributes: map[string]resource_schema.Attribute{
+											"k8s": resource_schema.SingleNestedAttribute{
+												Description: "K8s workload selector.",
+												Optional:    true,
+												Attributes: map[string]resource_schema.Attribute{
+													"cluster_name": resource_schema.StringAttribute{
+														Description: "Cluster name.",
+														Optional:    true,
+													},
+												},
+											},
+										},
+									},
+								},
+							},
+						},
+						"rules_by_name": resource_schema.MapNestedAttribute{
+							Description: "Map",
+							Optional:    true,
 							NestedObject: resource_schema.NestedAttributeObject{
 								Attributes: map[string]resource_schema.Attribute{
 									"action": resource_schema.StringAttribute{
@@ -298,6 +331,55 @@ func (suite *GenerateProviderTestSuite) TestListNestedAttribute() {
 	suite.Require().NotNil(k8sField.Type.NestedModel, "k8s should have NestedModel")
 	suite.Equal("PolicyVersion_Spec_Rules_Destination_K8S", k8sField.Type.NestedModel.Name, "k8s model name")
 
+	// Find the "rules_by_name" field inside spec
+	var rulesByNameField *field
+
+	for i := range specModel.Fields {
+		if specModel.Fields[i].AttributeName == "rules_by_name" {
+			rulesByNameField = &specModel.Fields[i]
+
+			break
+		}
+	}
+
+	suite.Require().NotNil(rulesByNameField, "Should have 'rules_by_name' field in spec")
+
+	// rules_by_name is a Map, so check CollectionElementType for the nested object
+	suite.Require().NotNil(rulesByNameField.Type.CollectionElementType, "rules_by_name should have CollectionElementType")
+	rulesByNameElemType := rulesByNameField.Type.CollectionElementType
+	suite.Require().NotNil(rulesByNameElemType.NestedModel, "rules_by_name element should have NestedModel")
+	suite.Equal("PolicyVersion_Spec_RulesByName", rulesByNameElemType.NestedModel.Name, "rules_by_name element model name")
+
+	// Find "destination" inside the rules_by_name model
+	rulesByNameModel := rulesByNameElemType.NestedModel
+
+	for i := range rulesByNameModel.Fields {
+		if rulesByNameModel.Fields[i].AttributeName == "destination" {
+			destField = &rulesByNameModel.Fields[i]
+
+			break
+		}
+	}
+
+	suite.Require().NotNil(destField, "Should have 'destination' field in rules")
+	suite.Require().NotNil(destField.Type.NestedModel, "destination should have NestedModel")
+	suite.Equal("PolicyVersion_Spec_RulesByName_Destination", destField.Type.NestedModel.Name, "destination model name")
+
+	// Find "k8s" inside the destination model
+	destModel = destField.Type.NestedModel
+
+	for i := range destModel.Fields {
+		if destModel.Fields[i].AttributeName == "k8s" {
+			k8sField = &destModel.Fields[i]
+
+			break
+		}
+	}
+
+	suite.Require().NotNil(k8sField, "Should have 'k8s' field in destination")
+	suite.Require().NotNil(k8sField.Type.NestedModel, "k8s should have NestedModel")
+	suite.Equal("PolicyVersion_Spec_RulesByName_Destination_K8S", k8sField.Type.NestedModel.Name, "k8s model name")
+
 	// Test converter generation
 	dst := new(bytes.Buffer)
 	err = ProviderConvertersTemplate.Execute(dst, &data)
@@ -312,22 +394,30 @@ func GetTypeAttrsForPolicyVersion_Spec() map[string]attr.Type {
 		"rules": types.ListType{ElemType: types.ObjectType{
 			AttrTypes: GetTypeAttrsForPolicyVersion_Spec_Rules(),
 		}},
+		"rules_by_name": types.MapType{ElemType: types.ObjectType{
+			AttrTypes: GetTypeAttrsForPolicyVersion_Spec_RulesByName(),
+		}},
 	}
-}
 `
+
 	suite.Contains(output, expectedGetTypeAttrs)
 
 	// Verify ConvertToObjectValueFromProto iterates over list and calls nested converter for each element
 	expectedConvertToObjectValue := `
 func ConvertPolicyVersion_SpecToObjectValueFromProto(proto *configv1.PolicyVersion_Spec) basetypes.ObjectValue  {
-	rulesValues := make([]attr.Value, 0, len(proto.Rules))
+	elementsInRules := make([]attr.Value, 0, len(proto.Rules))
 	for _, item := range proto.Rules {
-		rulesValues = append(rulesValues, ConvertPolicyVersion_Spec_RulesToObjectValueFromProto(item))
+		elementsInRules = append(elementsInRules, ConvertPolicyVersion_Spec_RulesToObjectValueFromProto(item))
+	}
+	elementsInRulesByName := make(map[string]attr.Value, len(proto.RulesByName))
+	for key, item := range proto.RulesByName {
+		elementsInRulesByName[key] = ConvertPolicyVersion_Spec_RulesByNameToObjectValueFromProto(item)
 	}
 	return types.ObjectValueMust(
 		GetTypeAttrsForPolicyVersion_Spec(),
 		map[string]attr.Value{
-			"rules": types.ListValueMust(types.ObjectType{AttrTypes: GetTypeAttrsForPolicyVersion_Spec_Rules()}, rulesValues),
+			"rules": types.ListValueMust(types.ObjectType{AttrTypes: GetTypeAttrsForPolicyVersion_Spec_Rules()}, elementsInRules),
+			"rules_by_name": types.MapValueMust(types.ObjectType{AttrTypes: GetTypeAttrsForPolicyVersion_Spec_RulesByName()}, elementsInRulesByName),
 		},
 	)
 }
@@ -343,15 +433,25 @@ func ConvertDataValueToPolicyVersion_SpecProto(ctx context.Context, dataValue at
 		return nil, diags
 	}
 	proto := &configv1.PolicyVersion_Spec{}
-	rulesElems := pv.Rules.Elements()
-	proto.Rules = make([]*configv1.PolicyVersion_Spec_Rules, 0, len(rulesElems))
-	for _, elem := range rulesElems {
-		rulesElemProto, rulesElemDiags := ConvertDataValueToPolicyVersion_Spec_RulesProto(ctx, elem)
-		diags.Append(rulesElemDiags...)
+	pvElemModelRules := pv.Rules.Elements()
+	proto.Rules = make([]*configv1.PolicyVersion_Spec_Rules, 0, len(pvElemModelRules))
+	for _, elem := range pvElemModelRules {
+		pvModel, dvDiags := ConvertDataValueToPolicyVersion_Spec_RulesProto(ctx, elem)
+		diags.Append(dvDiags...)
 		if diags.HasError() {
 			return nil, diags
 		}
-		proto.Rules = append(proto.Rules, rulesElemProto)
+		proto.Rules = append(proto.Rules, pvModel)
+	}
+	pvElemModelRulesByName := pv.RulesByName.Elements()
+	proto.RulesByName = make(map[string]*configv1.PolicyVersion_Spec_RulesByName, len(pvElemModelRulesByName))
+	for key, elem := range pvElemModelRulesByName {
+		pvModel, dvDiags := ConvertDataValueToPolicyVersion_Spec_RulesByNameProto(ctx, elem)
+		diags.Append(dvDiags...)
+		if diags.HasError() {
+			return nil, diags
+		}
+		proto.RulesByName[key] = pvModel
 	}
 	return proto, diags
 }
@@ -558,15 +658,15 @@ func GetTypeAttrsForTestResource_Config() map[string]attr.Type {
 	// Verify ConvertToObjectValueFromProto iterates and converts each primitive
 	expectedToProto := `
 func ConvertTestResource_ConfigToObjectValueFromProto(proto *configv1.TestResource_Config) basetypes.ObjectValue  {
-	tagsValues := make([]attr.Value, 0, len(proto.Tags))
+	elementsInTags := make([]attr.Value, 0, len(proto.Tags))
 	for _, item := range proto.Tags {
-		tagsValues = append(tagsValues, types.StringValue(item))
+		elementsInTags = append(elementsInTags, types.StringValue(item))
 	}
 	return types.ObjectValueMust(
 		GetTypeAttrsForTestResource_Config(),
 		map[string]attr.Value{
 			"name": types.StringValue(proto.Name),
-			"tags": types.ListValueMust(types.StringType, tagsValues),
+			"tags": types.ListValueMust(types.StringType, elementsInTags),
 		},
 	)
 }
@@ -583,13 +683,119 @@ func ConvertDataValueToTestResource_ConfigProto(ctx context.Context, dataValue a
 	}
 	proto := &configv1.TestResource_Config{}
 	proto.Name = pv.Name.ValueString()
-	var tagsSlice []string
-	tagsDiags := pv.Tags.ElementsAs(ctx, &tagsSlice, false)
-	diags.Append(tagsDiags...)
+	var pvModelTags []string
+	dvDiagsTags := pv.Tags.ElementsAs(ctx, &pvModelTags, false)
+	diags.Append(dvDiagsTags...)
 	if diags.HasError() {
 		return nil, diags
 	}
-	proto.Tags = tagsSlice
+	proto.Tags = pvModelTags
+	return proto, diags
+}
+`
+	suite.Contains(output, expectedFromProto)
+}
+
+// TestMapPrimitiveAttribute verifies that MapAttribute with primitive element types
+// (e.g., map of strings) generates correct converter code.
+func (suite *GenerateProviderTestSuite) TestMapPrimitiveAttribute() {
+	testResource := schema.Resource{
+		TypeName: "test_map_resource",
+		Schema: resource_schema.Schema{
+			Version:     1,
+			Description: "Test resource with map attribute.",
+			Attributes: map[string]resource_schema.Attribute{
+				"id": resource_schema.StringAttribute{
+					Description: "Resource ID.",
+					Computed:    true,
+				},
+				// Outer object containing a map of strings
+				"metadata": resource_schema.SingleNestedAttribute{
+					Description: "Metadata configuration.",
+					Required:    true,
+					Attributes: map[string]resource_schema.Attribute{
+						"name": resource_schema.StringAttribute{
+							Description: "Metadata name.",
+							Required:    true,
+						},
+						// Map of string to string
+						"labels": resource_schema.MapAttribute{
+							Description: "Key-value labels.",
+							Required:    true,
+							ElementType: types.StringType,
+						},
+					},
+				},
+			},
+		},
+	}
+
+	data := providerTemplateData{
+		Package:               "testpkg",
+		ProviderTypeName:      "Provider",
+		Models:                make([]model, 0),
+		NewRequestFuncs:       make([]convertFunc, 0, 3),
+		NewUpdateRequestFuncs: make([]convertFunc, 0, 1),
+		CopyResponseFuncs:     make([]convertFunc, 0, 3),
+		Resources:             make([]resourceData, 0, 1),
+	}
+
+	err := AddResourceToProviderTemplateData(&testResource, &data, "TestMapResource", "TestMapResource")
+	suite.Require().NoError(err, "AddResourceToProviderTemplateData should not return an error")
+
+	// Generate the converters code
+	dst := new(bytes.Buffer)
+	err = ProviderConvertersTemplate.Execute(dst, &data)
+	suite.Require().NoError(err, "ProviderConvertersTemplate.Execute should not return an error")
+
+	output := dst.String()
+
+	// Verify GetTypeAttrsFor generates correct Map type with primitive element type
+	expectedGetTypeAttrs := `
+func GetTypeAttrsForTestMapResource_Metadata() map[string]attr.Type {
+	return map[string]attr.Type{
+		"labels": types.MapType{ElemType: types.StringType},
+		"name": types.StringType,
+	}
+}
+`
+	suite.Contains(output, expectedGetTypeAttrs)
+
+	// Verify ConvertToObjectValueFromProto iterates map and converts each value
+	expectedToProto := `
+func ConvertTestMapResource_MetadataToObjectValueFromProto(proto *configv1.TestMapResource_Metadata) basetypes.ObjectValue  {
+	elementsInLabels := make(map[string]attr.Value, len(proto.Labels))
+	for key, item := range proto.Labels {
+		elementsInLabels[key] = types.StringValue(item)
+	}
+	return types.ObjectValueMust(
+		GetTypeAttrsForTestMapResource_Metadata(),
+		map[string]attr.Value{
+			"labels": types.MapValueMust(types.StringType, elementsInLabels),
+			"name": types.StringValue(proto.Name),
+		},
+	)
+}
+`
+	suite.Contains(output, expectedToProto)
+
+	// Verify ConvertDataValueToProto uses ElementsAs for map
+	expectedFromProto := `
+func ConvertDataValueToTestMapResource_MetadataProto(ctx context.Context, dataValue attr.Value) (*configv1.TestMapResource_Metadata, diag.Diagnostics) {
+	pv := TestMapResource_Metadata{}
+	diags := tfsdk.ValueAs(ctx, dataValue, &pv)
+	if diags.HasError() {
+		return nil, diags
+	}
+	proto := &configv1.TestMapResource_Metadata{}
+	var pvModelLabels map[string]string
+	dvDiagsLabels := pv.Labels.ElementsAs(ctx, &pvModelLabels, false)
+	diags.Append(dvDiagsLabels...)
+	if diags.HasError() {
+		return nil, diags
+	}
+	proto.Labels = pvModelLabels
+	proto.Name = pv.Name.ValueString()
 	return proto, diags
 }
 `

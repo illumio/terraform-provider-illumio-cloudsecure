@@ -492,7 +492,7 @@ type field struct {
 //
 // TODO: Support nested objects.
 type fieldType struct {
-	// ModelTypeName is the name of the Golang type of the field in the Terraform model, e.g., "Bool", "String", "List", "Set", etc.
+	// ModelTypeName is the name of the Golang type of the field in the Terraform model, e.g., "Bool", "String", "List", "Set", "Map", etc.
 	ModelTypeName string
 
 	// ProtoTypeName is the name of the Golang type of the field in the Protocol Buffer message, e.g., "string" or "[]string".
@@ -826,6 +826,21 @@ func TerraformAttributeTypeToProtoType(nestedMessageNamePrefix, attrName string,
 			ProtoTypeName: protoTypeName,
 			NestedModel:   objModel,
 		}, nil
+	case types.MapType:
+		valueType, err := TerraformAttributeTypeToProtoType(nestedMessageNamePrefix, attrName, v.ElemType)
+
+		// Only support primitive value types for now
+		// MapNestedAttribute (map of objects) and nested collections are not supported
+		if err != nil {
+			return fieldType{}, fmt.Errorf("unsupported map value type: %s", v.ElemType.String())
+		}
+
+		// Terraform maps always have string keys
+		return fieldType{
+			ModelTypeName:         "Map",
+			ProtoTypeName:         "map[string]" + valueType.ProtoTypeName,
+			CollectionElementType: &valueType,
+		}, nil
 	default:
 		return fieldType{}, fmt.Errorf("unsupported Terraform type: %s", attrType.String())
 	}
@@ -839,17 +854,17 @@ func TerraformObjectAttributeTypeToProtoType(nestedMessageNamePrefix, attrName s
 
 	attrs := schema.SortObjectAttributes(object.AttrTypes)
 
-	for _, fieldName := range attrs {
-		fieldType := object.AttrTypes[fieldName]
+	for _, attrName := range attrs {
+		fieldType := object.AttrTypes[attrName]
 
-		t, err := TerraformAttributeTypeToProtoType(wrappedMessageName, fieldName, fieldType)
+		t, err := TerraformAttributeTypeToProtoType(wrappedMessageName, attrName, fieldType)
 		if err != nil {
-			return "", nil, fmt.Errorf("failed to transform field %s in object %s: %w", fieldName, nestedMessageNamePrefix, err)
+			return "", nil, fmt.Errorf("failed to transform field %s in object %s: %w", attrName, nestedMessageNamePrefix, err)
 		}
 
 		fields = append(fields, field{
-			Name:          schema.ProtoMessageName(fieldName),
-			AttributeName: fieldName,
+			Name:          schema.ProtoMessageName(attrName),
+			AttributeName: attrName,
 			Type:          t,
 			Optional:      false,
 		})

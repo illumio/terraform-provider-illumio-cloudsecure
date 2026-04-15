@@ -156,7 +156,7 @@ func GenerateGRPCAPISpec(dst io.Writer, src schema.Schema, tagger *apiSpecTagger
 		for _, attrName := range attrNames {
 			attrSchema := resource.Schema.Attributes[attrName]
 
-			repeated, t, msg, err := terraformAttributeTypeToProtoType(resourceName, attrName, attrSchema.GetType(), tagger)
+			repeated, _, t, msg, err := terraformAttributeTypeToProtoType(resourceName, attrName, attrSchema.GetType(), tagger)
 			if err != nil {
 				return fmt.Errorf("failed to parse field %s in resource %s: %w", attrName, resourceMessageName, err)
 			}
@@ -258,30 +258,100 @@ func GenerateGRPCAPISpec(dst io.Writer, src schema.Schema, tagger *apiSpecTagger
 }
 
 // terraformAttributeTypeToProtoType converts a Terraform attribute type into the corresponding Protocol Buffer type, and optionally additional Protocol Buffer messages that represent nested types.
-func terraformAttributeTypeToProtoType(messageNamePrefix, attrName string, attrType attr.Type, tagger *apiSpecTagger) (repeated bool, protoType string, nestedMessage *message, err error) {
+func terraformAttributeTypeToProtoType(messageNamePrefix, attrName string, attrType attr.Type, tagger *apiSpecTagger) (explicitlyRepeated, implicitlyRepeated bool, protoType string, nestedMessage *message, err error) {
 	switch v := attrType.(type) {
 	case basetypes.BoolType:
-		return false, "bool", nil, nil
+		return false, false, "bool", nil, nil
 	case basetypes.Float64Type:
-		return false, "double", nil, nil
+		return false, false, "double", nil, nil
 	case basetypes.Int64Type:
-		return false, "int64", nil, nil
+		return false, false, "int64", nil, nil
 	case basetypes.StringType:
-		return false, "string", nil, nil
+		return false, false, "string", nil, nil
 	case types.ListType:
 		return terraformRepeatedAttributeTypeToProtoType(messageNamePrefix, attrName, v.ElementType(), tagger)
 	case types.SetType:
 		return terraformRepeatedAttributeTypeToProtoType(messageNamePrefix, attrName, v.ElementType(), tagger)
+	case types.MapType:
+		return terraformMapAttributeTypeToProtoType(messageNamePrefix, attrName, v.ElementType(), tagger)
 	case types.ObjectType:
 		return terraformObjectAttributeTypeToProtoType(messageNamePrefix, attrName, v, tagger)
 
 	default:
-		return false, "", nil, fmt.Errorf("unsupported Terraform type: %s", attrType.String())
+		return false, false, "", nil, fmt.Errorf("unsupported Terraform type: %s", attrType.String())
+	}
+}
+
+// terraformRepeatedAttributeTypeToProtoType converts a Terraform explicitly repeated attribute type into the corresponding Protocol Buffer type, and optionally additional Protocol Buffer messages that represent nested types.
+func terraformRepeatedAttributeTypeToProtoType(messageNamePrefix, attrName string, elementType attr.Type, tagger *apiSpecTagger) (explicitlyRepeated, implicitlyRepeated bool, protoType string, nestedMessage *message, err error) {
+	elemProtoType, elemMessage, err := terraformCollectionAttributeTypeToProtoType(messageNamePrefix, attrName, elementType, tagger)
+	if err != nil {
+		return false, false, "", nil, fmt.Errorf("unsupported element type %s: %w", elementType.String(), err)
+	}
+
+	return true, false, elemProtoType, elemMessage, nil
+}
+
+// terraformMapAttributeTypeToProtoType converts a Terraform MapAttribute into a Protocol Buffer map type.
+func terraformMapAttributeTypeToProtoType(messageNamePrefix, attrName string, elementType attr.Type, tagger *apiSpecTagger) (explicitlyRepeated, implicitlyRepeated bool, protoType string, nestedMessage *message, err error) {
+	elemProtoType, elemMessage, err := terraformCollectionAttributeTypeToProtoType(messageNamePrefix, attrName, elementType, tagger)
+	if err != nil {
+		return false, false, "", nil, fmt.Errorf("unsupported element type %s: %w", elementType.String(), err)
+	}
+
+	// Proto map syntax: map<key_type, value_type>
+	// Terraform maps always have string keys.
+	// A Protocol Buffer map field is implicitly repeated, and can't be explicitly declared "repeated", cf. https://protobuf.dev/programming-guides/proto3/#maps.
+	return false, true, fmt.Sprintf("map<string, %s>", elemProtoType), elemMessage, nil
+}
+
+// terraformCollectionAttributeTypeToProtoType converts a Terraform collection attribute type into the corresponding Protocol Buffer type, and optionally additional Protocol Buffer messages that represent nested types.
+func terraformCollectionAttributeTypeToProtoType(messageNamePrefix, attrName string, elementType attr.Type, tagger *apiSpecTagger) (protoType string, nestedMessage *message, err error) {
+	// For nested collections (List of Lists, Set of Sets, etc.), use a distinct name for the inner element.
+	// This ensures each nesting level gets a unique message name instead of repeating the same name.
+	// E.g., Set{Set{Object}} produces "Items" (wrapper) and "ItemsElem" (object) instead of "Items" and "Items".
+	innerAttrName := attrName
+
+	switch elementType.(type) {
+	case types.ListType, types.SetType:
+		innerAttrName = attrName + "_elem"
+	}
+
+	elemExplicitlyRepeated, elemImplicitlyRepeated, elemProtoType, elemMessage, err := terraformAttributeTypeToProtoType(messageNamePrefix, innerAttrName, elementType, tagger)
+
+	switch {
+	case err != nil:
+		return "", nil, fmt.Errorf("unsupported element type %s: %w", elementType.String(), err)
+
+	case elemExplicitlyRepeated, elemImplicitlyRepeated: // The element type itself is repeated, explicitly or implicitly.
+		// The attribute is a list/set/map of lists/sets/maps. This must be modeled in Protocol Buffer as a repeated field of a message type, which itself contains a repeated field.
+		// In case an extra message is created for a nested field type, it will be named with the CamelCased attribute name.
+		wrapperMessageName := schema.ProtoMessageName(attrName)
+
+		wrapperMessage := &message{
+			Name: wrapperMessageName,
+			Fields: []field{
+				{
+					Repeated: elemExplicitlyRepeated,
+					Type:     elemProtoType,
+					Name:     attrName,
+					Tag:      1,
+				},
+			},
+		}
+		if elemMessage != nil {
+			wrapperMessage.Messages = []message{*elemMessage}
+		}
+
+		return wrapperMessageName, wrapperMessage, nil
+
+	default: // The element type is not repeated. Normal case.
+		return elemProtoType, elemMessage, nil
 	}
 }
 
 // terraformObjectAttributeTypeToProtoType converts a Terraform object attribute into a Protocol Buffer message type.
-func terraformObjectAttributeTypeToProtoType(messageNamePrefix, attrName string, obj types.ObjectType, tagger *apiSpecTagger) (repeated bool, protoType string, nestedMessage *message, err error) {
+func terraformObjectAttributeTypeToProtoType(messageNamePrefix, attrName string, obj types.ObjectType, tagger *apiSpecTagger) (explicitlyRepeated, implicitlyRepeated bool, protoType string, nestedMessage *message, err error) {
 	messageName := schema.ProtoMessageName(attrName)
 
 	newMessage := &message{
@@ -295,13 +365,13 @@ func terraformObjectAttributeTypeToProtoType(messageNamePrefix, attrName string,
 	for _, name := range attrs {
 		attrType := obj.AttrTypes[name]
 
-		isRepeated, t, msg, err := terraformAttributeTypeToProtoType(wrappedMessageName, name, attrType, tagger)
+		isExplicitlyRepeated, _, t, msg, err := terraformAttributeTypeToProtoType(wrappedMessageName, name, attrType, tagger)
 		if err != nil {
-			return false, "", nil, fmt.Errorf("failed to convert field %s in object %s: %w", name, attrName, err)
+			return false, false, "", nil, fmt.Errorf("failed to convert field %s in object %s: %w", name, attrName, err)
 		}
 
 		newMessage.Fields = append(newMessage.Fields, field{
-			Repeated: isRepeated,
+			Repeated: isExplicitlyRepeated,
 			Type:     t,
 			Name:     name,
 			Tag:      tagger.AssignTag("resource/"+wrappedMessageName, name),
@@ -313,50 +383,5 @@ func terraformObjectAttributeTypeToProtoType(messageNamePrefix, attrName string,
 		}
 	}
 
-	return false, messageName, newMessage, nil
-}
-
-// terraformRepeatedAttributeTypeToProtoType converts a Terraform repeated attribute type into the corresponding Protocol Buffer type, and optionally additional Protocol Buffer messages that represent nested types.
-func terraformRepeatedAttributeTypeToProtoType(messageNamePrefix, attrName string, elementType attr.Type, tagger *apiSpecTagger) (repeated bool, protoType string, nestedMessage *message, err error) {
-	// For nested collections (List of Lists, Set of Sets, etc.), use a distinct name for the inner element.
-	// This ensures each nesting level gets a unique message name instead of repeating the same name.
-	// E.g., Set{Set{Object}} produces "Items" (wrapper) and "ItemsElem" (object) instead of "Items" and "Items".
-	innerAttrName := attrName
-
-	switch elementType.(type) {
-	case types.ListType, types.SetType:
-		innerAttrName = attrName + "_elem"
-	}
-
-	elemRepeated, elemProtoType, elemMessage, err := terraformAttributeTypeToProtoType(messageNamePrefix, innerAttrName, elementType, tagger)
-
-	switch {
-	case err != nil:
-		return false, "", nil, fmt.Errorf("unsupported element type %s: %w", elementType.String(), err)
-
-	case elemRepeated: // The element type itself is repeated.
-		// The attribute is a set of lists or a set of sets. This must be modeled in Protocol Buffer as a repeated field of a message type, which itself contains a repeated field.
-		// In case an extra message is created for a nested field type, it will be named with the CamelCased attribute name.
-		wrapperMessageName := schema.ProtoMessageName(attrName)
-
-		wrapperMessage := &message{
-			Name: wrapperMessageName,
-			Fields: []field{
-				{
-					Repeated: true,
-					Type:     elemProtoType,
-					Name:     attrName,
-					Tag:      1,
-				},
-			},
-		}
-		if elemMessage != nil {
-			wrapperMessage.Messages = []message{*elemMessage}
-		}
-
-		return true, wrapperMessageName, wrapperMessage, nil
-
-	default: // The element type is not repeated. Normal case.
-		return true, elemProtoType, elemMessage, nil
-	}
+	return false, false, messageName, newMessage, nil
 }
