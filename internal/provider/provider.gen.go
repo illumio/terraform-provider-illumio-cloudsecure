@@ -11068,24 +11068,24 @@ func ConvertDataValueToPolicyVersion_Rules_Destination_IllumioLabelsProto(ctx co
 }
 
 type PolicyVersion_Rules_Destination_IpList struct {
-	Cidrs types.List `tfsdk:"cidrs"`
+	Ids types.List `tfsdk:"ids"`
 }
 
 func GetTypeAttrsForPolicyVersion_Rules_Destination_IpList() map[string]attr.Type {
 	return map[string]attr.Type{
-		"cidrs": types.ListType{ElemType: types.StringType},
+		"ids": types.ListType{ElemType: types.StringType},
 	}
 }
 
 func ConvertPolicyVersion_Rules_Destination_IpListToObjectValueFromProto(proto *configv1.PolicyVersion_Rules_Destination_IpList) basetypes.ObjectValue {
-	elementsInCidrs := make([]attr.Value, 0, len(proto.Cidrs))
-	for _, item := range proto.Cidrs {
-		elementsInCidrs = append(elementsInCidrs, types.StringValue(item))
+	elementsInIds := make([]attr.Value, 0, len(proto.Ids))
+	for _, item := range proto.Ids {
+		elementsInIds = append(elementsInIds, types.StringValue(item))
 	}
 	return types.ObjectValueMust(
 		GetTypeAttrsForPolicyVersion_Rules_Destination_IpList(),
 		map[string]attr.Value{
-			"cidrs": types.ListValueMust(types.StringType, elementsInCidrs),
+			"ids": types.ListValueMust(types.StringType, elementsInIds),
 		},
 	)
 }
@@ -11097,13 +11097,13 @@ func ConvertDataValueToPolicyVersion_Rules_Destination_IpListProto(ctx context.C
 		return nil, diags
 	}
 	proto := &configv1.PolicyVersion_Rules_Destination_IpList{}
-	var pvModelCidrs []string
-	dvDiagsCidrs := pv.Cidrs.ElementsAs(ctx, &pvModelCidrs, false)
-	diags.Append(dvDiagsCidrs...)
+	var pvModelIds []string
+	dvDiagsIds := pv.Ids.ElementsAs(ctx, &pvModelIds, false)
+	diags.Append(dvDiagsIds...)
 	if diags.HasError() {
 		return nil, diags
 	}
-	proto.Cidrs = pvModelCidrs
+	proto.Ids = pvModelIds
 	return proto, diags
 }
 
@@ -11859,24 +11859,24 @@ func ConvertDataValueToPolicyVersion_Rules_Source_IllumioLabelsProto(ctx context
 }
 
 type PolicyVersion_Rules_Source_IpList struct {
-	Cidrs types.List `tfsdk:"cidrs"`
+	Ids types.List `tfsdk:"ids"`
 }
 
 func GetTypeAttrsForPolicyVersion_Rules_Source_IpList() map[string]attr.Type {
 	return map[string]attr.Type{
-		"cidrs": types.ListType{ElemType: types.StringType},
+		"ids": types.ListType{ElemType: types.StringType},
 	}
 }
 
 func ConvertPolicyVersion_Rules_Source_IpListToObjectValueFromProto(proto *configv1.PolicyVersion_Rules_Source_IpList) basetypes.ObjectValue {
-	elementsInCidrs := make([]attr.Value, 0, len(proto.Cidrs))
-	for _, item := range proto.Cidrs {
-		elementsInCidrs = append(elementsInCidrs, types.StringValue(item))
+	elementsInIds := make([]attr.Value, 0, len(proto.Ids))
+	for _, item := range proto.Ids {
+		elementsInIds = append(elementsInIds, types.StringValue(item))
 	}
 	return types.ObjectValueMust(
 		GetTypeAttrsForPolicyVersion_Rules_Source_IpList(),
 		map[string]attr.Value{
-			"cidrs": types.ListValueMust(types.StringType, elementsInCidrs),
+			"ids": types.ListValueMust(types.StringType, elementsInIds),
 		},
 	)
 }
@@ -11888,13 +11888,13 @@ func ConvertDataValueToPolicyVersion_Rules_Source_IpListProto(ctx context.Contex
 		return nil, diags
 	}
 	proto := &configv1.PolicyVersion_Rules_Source_IpList{}
-	var pvModelCidrs []string
-	dvDiagsCidrs := pv.Cidrs.ElementsAs(ctx, &pvModelCidrs, false)
-	diags.Append(dvDiagsCidrs...)
+	var pvModelIds []string
+	dvDiagsIds := pv.Ids.ElementsAs(ctx, &pvModelIds, false)
+	diags.Append(dvDiagsIds...)
 	if diags.HasError() {
 		return nil, diags
 	}
-	proto.Cidrs = pvModelCidrs
+	proto.Ids = pvModelIds
 	return proto, diags
 }
 

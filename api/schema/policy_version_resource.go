@@ -155,10 +155,10 @@ var k8sSelectorAttributes = map[string]resource_schema.Attribute{
 	},
 }
 
-// ipSelectorAttributes is reused for source.ip and destination.ip.
+// ipSelectorAttributes is reused for source.ip_list and destination.ip_list.
 var ipSelectorAttributes = map[string]resource_schema.Attribute{
-	"cidrs": resource_schema.ListAttribute{
-		Description: "List of IP CIDRs (e.g., 10.0.0.0/8).",
+	"ids": resource_schema.ListAttribute{
+		Description: "List of ip_list resource IDs. Traffic matching any list is selected (OR logic).",
 		Required:    true,
 		ElementType: types.StringType,
 	},
@@ -245,7 +245,7 @@ var (
 										},
 									},
 									"ip_list": resource_schema.SingleNestedAttribute{
-										Description: "IP CIDR selector.",
+										Description: "IP list reference selector.",
 										Optional:    true,
 										Attributes:  ipSelectorAttributes,
 										Validators: []validator.Object{
@@ -304,7 +304,7 @@ var (
 										},
 									},
 									"ip_list": resource_schema.SingleNestedAttribute{
-										Description: "IP CIDR selector.",
+										Description: "IP list reference selector.",
 										Optional:    true,
 										Attributes:  ipSelectorAttributes,
 										Validators: []validator.Object{

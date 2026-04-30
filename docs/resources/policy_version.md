@@ -60,7 +60,7 @@ Optional:
 - `cloud` (Attributes) Cloud resource selector (e.g., VMs, instances). Not yet implemented. (see [below for nested schema](#nestedatt--rules--destination--cloud))
 - `fqdns` (Attributes) FQDN selector. (see [below for nested schema](#nestedatt--rules--destination--fqdns))
 - `illumio_labels` (Attributes) Illumio label selector. Not yet implemented. (see [below for nested schema](#nestedatt--rules--destination--illumio_labels))
-- `ip_list` (Attributes) IP CIDR selector. (see [below for nested schema](#nestedatt--rules--destination--ip_list))
+- `ip_list` (Attributes) IP list reference selector. (see [below for nested schema](#nestedatt--rules--destination--ip_list))
 - `k8s` (Attributes) K8s workload selector. (see [below for nested schema](#nestedatt--rules--destination--k8s))
 
 <a id="nestedatt--rules--destination--cloud"></a>
@@ -84,7 +84,7 @@ Required:
 
 Required:
 
-- `cidrs` (List of String) List of IP CIDRs (e.g., 10.0.0.0/8).
+- `ids` (List of String) List of ip_list resource IDs. Traffic matching any list is selected (OR logic).
 
 
 <a id="nestedatt--rules--destination--k8s"></a>
@@ -219,7 +219,7 @@ Optional:
 
 - `cloud` (Attributes) Cloud resource selector (e.g., VMs, instances). Not yet implemented. (see [below for nested schema](#nestedatt--rules--source--cloud))
 - `illumio_labels` (Attributes) Illumio label selector. Not yet implemented. (see [below for nested schema](#nestedatt--rules--source--illumio_labels))
-- `ip_list` (Attributes) IP CIDR selector. (see [below for nested schema](#nestedatt--rules--source--ip_list))
+- `ip_list` (Attributes) IP list reference selector. (see [below for nested schema](#nestedatt--rules--source--ip_list))
 - `k8s` (Attributes) K8s workload selector. (see [below for nested schema](#nestedatt--rules--source--k8s))
 
 <a id="nestedatt--rules--source--cloud"></a>
@@ -235,7 +235,7 @@ Optional:
 
 Required:
 
-- `cidrs` (List of String) List of IP CIDRs (e.g., 10.0.0.0/8).
+- `ids` (List of String) List of ip_list resource IDs. Traffic matching any list is selected (OR logic).
 
 
 <a id="nestedatt--rules--source--k8s"></a>
