@@ -35,22 +35,9 @@ Manages an immutable policy version on CloudSecure. Each version contains a set 
 Required:
 
 - `action` (String) Action to take: Allow or Deny.
-- `port_ranges` (Attributes List) List of port ranges for the rule. (see [below for nested schema](#nestedatt--rules--port_ranges))
-
-Optional:
-
 - `destination` (Attributes) Traffic destination selector. (see [below for nested schema](#nestedatt--rules--destination))
+- `port_ranges` (Attributes List) List of port ranges for the rule. (see [below for nested schema](#nestedatt--rules--port_ranges))
 - `source` (Attributes) Traffic source selector. (see [below for nested schema](#nestedatt--rules--source))
-
-<a id="nestedatt--rules--port_ranges"></a>
-### Nested Schema for `rules.port_ranges`
-
-Required:
-
-- `from_port` (Number) Start port number.
-- `protocol` (String) Transport protocol: TCP or UDP.
-- `to_port` (Number) End port number.
-
 
 <a id="nestedatt--rules--destination"></a>
 ### Nested Schema for `rules.destination`
@@ -90,11 +77,11 @@ Required:
 <a id="nestedatt--rules--destination--k8s"></a>
 ### Nested Schema for `rules.destination.k8s`
 
-Optional:
+Required:
 
 - `clusters` (Attributes List) List of K8s clusters. Each entry identifies one cluster. Any cluster matches (OR logic). (see [below for nested schema](#nestedatt--rules--destination--k8s--clusters))
-- `namespace_selector` (Attributes) Label selector for K8s namespaces. (see [below for nested schema](#nestedatt--rules--destination--k8s--namespace_selector))
-- `workload_selector` (Attributes) Label selector for K8s workloads (pods). (see [below for nested schema](#nestedatt--rules--destination--k8s--workload_selector))
+- `namespace_selector` (Attributes) Label selector for K8s namespaces. Use empty {} to match all namespaces. (see [below for nested schema](#nestedatt--rules--destination--k8s--namespace_selector))
+- `workload_selector` (Attributes) Label selector for K8s workloads (pods). Use empty {} to match all pods. (see [below for nested schema](#nestedatt--rules--destination--k8s--workload_selector))
 
 <a id="nestedatt--rules--destination--k8s--clusters"></a>
 ### Nested Schema for `rules.destination.k8s.clusters`
@@ -212,6 +199,16 @@ Required:
 
 
 
+<a id="nestedatt--rules--port_ranges"></a>
+### Nested Schema for `rules.port_ranges`
+
+Required:
+
+- `from_port` (Number) Start port number.
+- `protocol` (String) Transport protocol: TCP or UDP.
+- `to_port` (Number) End port number.
+
+
 <a id="nestedatt--rules--source"></a>
 ### Nested Schema for `rules.source`
 
@@ -241,11 +238,11 @@ Required:
 <a id="nestedatt--rules--source--k8s"></a>
 ### Nested Schema for `rules.source.k8s`
 
-Optional:
+Required:
 
 - `clusters` (Attributes List) List of K8s clusters. Each entry identifies one cluster. Any cluster matches (OR logic). (see [below for nested schema](#nestedatt--rules--source--k8s--clusters))
-- `namespace_selector` (Attributes) Label selector for K8s namespaces. (see [below for nested schema](#nestedatt--rules--source--k8s--namespace_selector))
-- `workload_selector` (Attributes) Label selector for K8s workloads (pods). (see [below for nested schema](#nestedatt--rules--source--k8s--workload_selector))
+- `namespace_selector` (Attributes) Label selector for K8s namespaces. Use empty {} to match all namespaces. (see [below for nested schema](#nestedatt--rules--source--k8s--namespace_selector))
+- `workload_selector` (Attributes) Label selector for K8s workloads (pods). Use empty {} to match all pods. (see [below for nested schema](#nestedatt--rules--source--k8s--workload_selector))
 
 <a id="nestedatt--rules--source--k8s--clusters"></a>
 ### Nested Schema for `rules.source.k8s.clusters`

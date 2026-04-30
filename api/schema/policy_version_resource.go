@@ -65,7 +65,7 @@ var labelSelectorAttributes = map[string]resource_schema.Attribute{
 var k8sSelectorAttributes = map[string]resource_schema.Attribute{
 	"clusters": resource_schema.ListNestedAttribute{
 		Description: "List of K8s clusters. Each entry identifies one cluster. Any cluster matches (OR logic).",
-		Optional:    true,
+		Required:    true,
 		NestedObject: resource_schema.NestedAttributeObject{
 			Attributes: map[string]resource_schema.Attribute{
 				"aws": resource_schema.SingleNestedAttribute{
@@ -144,13 +144,13 @@ var k8sSelectorAttributes = map[string]resource_schema.Attribute{
 		},
 	},
 	"namespace_selector": resource_schema.SingleNestedAttribute{
-		Description: "Label selector for K8s namespaces.",
-		Optional:    true,
+		Description: "Label selector for K8s namespaces. Use empty {} to match all namespaces.",
+		Required:    true,
 		Attributes:  labelSelectorAttributes,
 	},
 	"workload_selector": resource_schema.SingleNestedAttribute{
-		Description: "Label selector for K8s workloads (pods).",
-		Optional:    true,
+		Description: "Label selector for K8s workloads (pods). Use empty {} to match all pods.",
+		Required:    true,
 		Attributes:  workloadSelectorAttributes,
 	},
 }
@@ -229,7 +229,7 @@ var (
 							},
 							"source": resource_schema.SingleNestedAttribute{
 								Description: "Traffic source selector.",
-								Optional:    true,
+								Required:    true,
 								Attributes: map[string]resource_schema.Attribute{
 									"k8s": resource_schema.SingleNestedAttribute{
 										Description: "K8s workload selector.",
@@ -287,7 +287,7 @@ var (
 							},
 							"destination": resource_schema.SingleNestedAttribute{
 								Description: "Traffic destination selector.",
-								Optional:    true,
+								Required:    true,
 								Attributes: map[string]resource_schema.Attribute{
 									"k8s": resource_schema.SingleNestedAttribute{
 										Description: "K8s workload selector.",
