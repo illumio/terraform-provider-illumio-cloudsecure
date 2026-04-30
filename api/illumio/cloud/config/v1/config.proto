@@ -1053,7 +1053,7 @@ message PolicyVersion_Rules {
     }
     message IllumioLabels {}
     message IpList {
-      repeated string cidrs = 1;
+      repeated string ids = 2;
     }
     message K8S {
       message Clusters {
@@ -1128,7 +1128,7 @@ message PolicyVersion_Rules {
     message Cloud {}
     message IllumioLabels {}
     message IpList {
-      repeated string cidrs = 1;
+      repeated string ids = 2;
     }
     message K8S {
       message Clusters {

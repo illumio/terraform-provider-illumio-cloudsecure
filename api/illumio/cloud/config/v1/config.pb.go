@@ -11860,7 +11860,7 @@ func (*PolicyVersion_Rules_Destination_IllumioLabels) Descriptor() ([]byte, []in
 
 type PolicyVersion_Rules_Destination_IpList struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
-	Cidrs         []string               `protobuf:"bytes,1,rep,name=cidrs,proto3" json:"cidrs,omitempty"`
+	Ids           []string               `protobuf:"bytes,2,rep,name=ids,proto3" json:"ids,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -11895,9 +11895,9 @@ func (*PolicyVersion_Rules_Destination_IpList) Descriptor() ([]byte, []int) {
 	return file_illumio_cloud_config_v1_config_proto_rawDescGZIP(), []int{136, 0, 3}
 }
 
-func (x *PolicyVersion_Rules_Destination_IpList) GetCidrs() []string {
+func (x *PolicyVersion_Rules_Destination_IpList) GetIds() []string {
 	if x != nil {
-		return x.Cidrs
+		return x.Ids
 	}
 	return nil
 }
@@ -12680,7 +12680,7 @@ func (*PolicyVersion_Rules_Source_IllumioLabels) Descriptor() ([]byte, []int) {
 
 type PolicyVersion_Rules_Source_IpList struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
-	Cidrs         []string               `protobuf:"bytes,1,rep,name=cidrs,proto3" json:"cidrs,omitempty"`
+	Ids           []string               `protobuf:"bytes,2,rep,name=ids,proto3" json:"ids,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -12715,9 +12715,9 @@ func (*PolicyVersion_Rules_Source_IpList) Descriptor() ([]byte, []int) {
 	return file_illumio_cloud_config_v1_config_proto_rawDescGZIP(), []int{136, 2, 2}
 }
 
-func (x *PolicyVersion_Rules_Source_IpList) GetCidrs() []string {
+func (x *PolicyVersion_Rules_Source_IpList) GetIds() []string {
 	if x != nil {
-		return x.Cidrs
+		return x.Ids
 	}
 	return nil
 }
@@ -14381,13 +14381,13 @@ const file_illumio_cloud_config_v1_config_proto_rawDesc = "" +
 	"\x02id\x18\x01 \x01(\tR\x02id\x12*\n" +
 	"\x11policy_version_id\x18\x05 \x01(\tR\x0fpolicyVersionId\".\n" +
 	"\x1cDeletePolicyProvisionRequest\x12\x0e\n" +
-	"\x02id\x18\x01 \x01(\tR\x02id\"\xfb*\n" +
+	"\x02id\x18\x01 \x01(\tR\x02id\"\xf3*\n" +
 	"\x13PolicyVersion_Rules\x12\x16\n" +
 	"\x06action\x18\x01 \x01(\tR\x06action\x12Z\n" +
 	"\vdestination\x18\x02 \x01(\v28.illumio.cloud.config.v1.PolicyVersion_Rules.DestinationR\vdestination\x12X\n" +
 	"\vport_ranges\x18\x03 \x03(\v27.illumio.cloud.config.v1.PolicyVersion_Rules.PortRangesR\n" +
 	"portRanges\x12K\n" +
-	"\x06source\x18\x04 \x01(\v23.illumio.cloud.config.v1.PolicyVersion_Rules.SourceR\x06source\x1a\xd5\x14\n" +
+	"\x06source\x18\x04 \x01(\v23.illumio.cloud.config.v1.PolicyVersion_Rules.SourceR\x06source\x1a\xd1\x14\n" +
 	"\vDestination\x12T\n" +
 	"\x05cloud\x18\x01 \x01(\v2>.illumio.cloud.config.v1.PolicyVersion_Rules.Destination.CloudR\x05cloud\x12T\n" +
 	"\x05fqdns\x18\x02 \x01(\v2>.illumio.cloud.config.v1.PolicyVersion_Rules.Destination.FqdnsR\x05fqdns\x12m\n" +
@@ -14397,9 +14397,9 @@ const file_illumio_cloud_config_v1_config_proto_rawDesc = "" +
 	"\x05Cloud\x1a\x1d\n" +
 	"\x05Fqdns\x12\x14\n" +
 	"\x05names\x18\x01 \x03(\tR\x05names\x1a\x0f\n" +
-	"\rIllumioLabels\x1a\x1e\n" +
-	"\x06IpList\x12\x14\n" +
-	"\x05cidrs\x18\x01 \x03(\tR\x05cidrs\x1a\xa7\x10\n" +
+	"\rIllumioLabels\x1a\x1a\n" +
+	"\x06IpList\x12\x10\n" +
+	"\x03ids\x18\x02 \x03(\tR\x03ids\x1a\xa7\x10\n" +
 	"\x03K8S\x12a\n" +
 	"\bclusters\x18\x01 \x03(\v2E.illumio.cloud.config.v1.PolicyVersion_Rules.Destination.K8S.ClustersR\bclusters\x12}\n" +
 	"\x12namespace_selector\x18\x02 \x01(\v2N.illumio.cloud.config.v1.PolicyVersion_Rules.Destination.K8S.NamespaceSelectorR\x11namespaceSelector\x12z\n" +
@@ -14452,16 +14452,16 @@ const file_illumio_cloud_config_v1_config_proto_rawDesc = "" +
 	"PortRanges\x12\x1b\n" +
 	"\tfrom_port\x18\x01 \x01(\x03R\bfromPort\x12\x1a\n" +
 	"\bprotocol\x18\x02 \x01(\tR\bprotocol\x12\x17\n" +
-	"\ato_port\x18\x03 \x01(\x03R\x06toPort\x1a\x90\x13\n" +
+	"\ato_port\x18\x03 \x01(\x03R\x06toPort\x1a\x8c\x13\n" +
 	"\x06Source\x12O\n" +
 	"\x05cloud\x18\x01 \x01(\v29.illumio.cloud.config.v1.PolicyVersion_Rules.Source.CloudR\x05cloud\x12h\n" +
 	"\x0eillumio_labels\x18\x02 \x01(\v2A.illumio.cloud.config.v1.PolicyVersion_Rules.Source.IllumioLabelsR\rillumioLabels\x12S\n" +
 	"\aip_list\x18\x03 \x01(\v2:.illumio.cloud.config.v1.PolicyVersion_Rules.Source.IpListR\x06ipList\x12I\n" +
 	"\x03k8s\x18\x04 \x01(\v27.illumio.cloud.config.v1.PolicyVersion_Rules.Source.K8SR\x03k8s\x1a\a\n" +
 	"\x05Cloud\x1a\x0f\n" +
-	"\rIllumioLabels\x1a\x1e\n" +
-	"\x06IpList\x12\x14\n" +
-	"\x05cidrs\x18\x01 \x03(\tR\x05cidrs\x1a\xf0\x0f\n" +
+	"\rIllumioLabels\x1a\x1a\n" +
+	"\x06IpList\x12\x10\n" +
+	"\x03ids\x18\x02 \x03(\tR\x03ids\x1a\xf0\x0f\n" +
 	"\x03K8S\x12\\\n" +
 	"\bclusters\x18\x01 \x03(\v2@.illumio.cloud.config.v1.PolicyVersion_Rules.Source.K8S.ClustersR\bclusters\x12x\n" +
 	"\x12namespace_selector\x18\x02 \x01(\v2I.illumio.cloud.config.v1.PolicyVersion_Rules.Source.K8S.NamespaceSelectorR\x11namespaceSelector\x12u\n" +
