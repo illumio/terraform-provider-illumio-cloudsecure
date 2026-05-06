@@ -214,185 +214,185 @@ var (
 				},
 				"rules": ListNestedResourceAttributeWithMode{
 					ListNestedAttribute: resource_schema.ListNestedAttribute{
-					MarkdownDescription: "List of rules in this policy version. Each rule specifies an action (Allow/Deny), source, destination, and port ranges. Multiple rules use OR logic for allows; deny takes precedence.",
-					Required:            true,
-					PlanModifiers: []planmodifier.List{
-						listplanmodifier.RequiresReplace(),
-					},
-					NestedObject: resource_schema.NestedAttributeObject{
-						Attributes: map[string]resource_schema.Attribute{
-							"action": resource_schema.StringAttribute{
-								Description: "Action to take: Allow or Deny.",
-								Required:    true,
-								Validators: []validator.String{
-									stringvalidator.OneOf("Allow", "Deny"),
-								},
-							},
-							"source": resource_schema.SingleNestedAttribute{
-								Description: "Traffic source selector.",
-								Required:    true,
-								Attributes: map[string]resource_schema.Attribute{
-									"k8s": resource_schema.SingleNestedAttribute{
-										Description: "K8s workload selector.",
-										Optional:    true,
-										Attributes:  k8sSelectorAttributes,
-										Validators: []validator.Object{
-											objectvalidator.ExactlyOneOf(
-												path.MatchRelative().AtParent().AtName("k8s"),
-												path.MatchRelative().AtParent().AtName("ip_list"),
-												path.MatchRelative().AtParent().AtName("cloud"),
-												path.MatchRelative().AtParent().AtName("illumio_labels"),
-											),
-										},
-									},
-									"ip_list": resource_schema.SingleNestedAttribute{
-										Description: "IP list reference selector.",
-										Optional:    true,
-										Attributes:  ipSelectorAttributes,
-										Validators: []validator.Object{
-											objectvalidator.ExactlyOneOf(
-												path.MatchRelative().AtParent().AtName("k8s"),
-												path.MatchRelative().AtParent().AtName("ip_list"),
-												path.MatchRelative().AtParent().AtName("cloud"),
-												path.MatchRelative().AtParent().AtName("illumio_labels"),
-											),
-										},
-									},
-									"cloud": resource_schema.SingleNestedAttribute{
-										Description: "Cloud resource selector (e.g., VMs, instances). Not yet implemented.",
-										Optional:    true,
-										Attributes:  map[string]resource_schema.Attribute{},
-										Validators: []validator.Object{
-											objectvalidator.ExactlyOneOf(
-												path.MatchRelative().AtParent().AtName("k8s"),
-												path.MatchRelative().AtParent().AtName("ip_list"),
-												path.MatchRelative().AtParent().AtName("cloud"),
-												path.MatchRelative().AtParent().AtName("illumio_labels"),
-											),
-										},
-									},
-									"illumio_labels": resource_schema.SingleNestedAttribute{
-										Description: "Illumio label selector. Not yet implemented.",
-										Optional:    true,
-										Attributes:  map[string]resource_schema.Attribute{},
-										Validators: []validator.Object{
-											objectvalidator.ExactlyOneOf(
-												path.MatchRelative().AtParent().AtName("k8s"),
-												path.MatchRelative().AtParent().AtName("ip_list"),
-												path.MatchRelative().AtParent().AtName("cloud"),
-												path.MatchRelative().AtParent().AtName("illumio_labels"),
-											),
-										},
+						MarkdownDescription: "List of rules in this policy version. Each rule specifies an action (Allow/Deny), source, destination, and port ranges. Multiple rules use OR logic for allows; deny takes precedence.",
+						Required:            true,
+						PlanModifiers: []planmodifier.List{
+							listplanmodifier.RequiresReplace(),
+						},
+						NestedObject: resource_schema.NestedAttributeObject{
+							Attributes: map[string]resource_schema.Attribute{
+								"action": resource_schema.StringAttribute{
+									Description: "Action to take: Allow or Deny.",
+									Required:    true,
+									Validators: []validator.String{
+										stringvalidator.OneOf("Allow", "Deny"),
 									},
 								},
-							},
-							"destination": resource_schema.SingleNestedAttribute{
-								Description: "Traffic destination selector.",
-								Required:    true,
-								Attributes: map[string]resource_schema.Attribute{
-									"k8s": resource_schema.SingleNestedAttribute{
-										Description: "K8s workload selector.",
-										Optional:    true,
-										Attributes:  k8sSelectorAttributes,
-										Validators: []validator.Object{
-											objectvalidator.ExactlyOneOf(
-												path.MatchRelative().AtParent().AtName("k8s"),
-												path.MatchRelative().AtParent().AtName("ip_list"),
-												path.MatchRelative().AtParent().AtName("fqdns"),
-												path.MatchRelative().AtParent().AtName("cloud"),
-												path.MatchRelative().AtParent().AtName("illumio_labels"),
-											),
-										},
-									},
-									"ip_list": resource_schema.SingleNestedAttribute{
-										Description: "IP list reference selector.",
-										Optional:    true,
-										Attributes:  ipSelectorAttributes,
-										Validators: []validator.Object{
-											objectvalidator.ExactlyOneOf(
-												path.MatchRelative().AtParent().AtName("k8s"),
-												path.MatchRelative().AtParent().AtName("ip_list"),
-												path.MatchRelative().AtParent().AtName("fqdns"),
-												path.MatchRelative().AtParent().AtName("cloud"),
-												path.MatchRelative().AtParent().AtName("illumio_labels"),
-											),
-										},
-									},
-									"fqdns": resource_schema.SingleNestedAttribute{
-										Description: "FQDN selector.",
-										Optional:    true,
-										Attributes: map[string]resource_schema.Attribute{
-											"names": resource_schema.ListAttribute{
-												Description: "List of FQDNs (e.g., api.example.com, *.googleapis.com).",
-												Required:    true,
-												ElementType: types.StringType,
-											},
-										},
-										Validators: []validator.Object{
-											objectvalidator.ExactlyOneOf(
-												path.MatchRelative().AtParent().AtName("k8s"),
-												path.MatchRelative().AtParent().AtName("ip_list"),
-												path.MatchRelative().AtParent().AtName("fqdns"),
-												path.MatchRelative().AtParent().AtName("cloud"),
-												path.MatchRelative().AtParent().AtName("illumio_labels"),
-											),
-										},
-									},
-									"cloud": resource_schema.SingleNestedAttribute{
-										Description: "Cloud resource selector (e.g., VMs, instances). Not yet implemented.",
-										Optional:    true,
-										Attributes:  map[string]resource_schema.Attribute{},
-										Validators: []validator.Object{
-											objectvalidator.ExactlyOneOf(
-												path.MatchRelative().AtParent().AtName("k8s"),
-												path.MatchRelative().AtParent().AtName("ip_list"),
-												path.MatchRelative().AtParent().AtName("fqdns"),
-												path.MatchRelative().AtParent().AtName("cloud"),
-												path.MatchRelative().AtParent().AtName("illumio_labels"),
-											),
-										},
-									},
-									"illumio_labels": resource_schema.SingleNestedAttribute{
-										Description: "Illumio label selector. Not yet implemented.",
-										Optional:    true,
-										Attributes:  map[string]resource_schema.Attribute{},
-										Validators: []validator.Object{
-											objectvalidator.ExactlyOneOf(
-												path.MatchRelative().AtParent().AtName("k8s"),
-												path.MatchRelative().AtParent().AtName("ip_list"),
-												path.MatchRelative().AtParent().AtName("fqdns"),
-												path.MatchRelative().AtParent().AtName("cloud"),
-												path.MatchRelative().AtParent().AtName("illumio_labels"),
-											),
-										},
-									},
-								},
-							},
-							"port_ranges": resource_schema.ListNestedAttribute{
-								Description: "List of port ranges for the rule.",
-								Required:    true,
-								NestedObject: resource_schema.NestedAttributeObject{
+								"source": resource_schema.SingleNestedAttribute{
+									Description: "Traffic source selector.",
+									Required:    true,
 									Attributes: map[string]resource_schema.Attribute{
-										"protocol": resource_schema.StringAttribute{
-											Description: "Transport protocol: TCP or UDP.",
-											Required:    true,
-											Validators: []validator.String{
-												stringvalidator.OneOf("TCP", "UDP"),
+										"k8s": resource_schema.SingleNestedAttribute{
+											Description: "K8s workload selector.",
+											Optional:    true,
+											Attributes:  k8sSelectorAttributes,
+											Validators: []validator.Object{
+												objectvalidator.ExactlyOneOf(
+													path.MatchRelative().AtParent().AtName("k8s"),
+													path.MatchRelative().AtParent().AtName("ip_list"),
+													path.MatchRelative().AtParent().AtName("cloud"),
+													path.MatchRelative().AtParent().AtName("illumio_labels"),
+												),
 											},
 										},
-										"from_port": resource_schema.Int64Attribute{
-											Description: "Start port number.",
-											Required:    true,
+										"ip_list": resource_schema.SingleNestedAttribute{
+											Description: "IP list reference selector.",
+											Optional:    true,
+											Attributes:  ipSelectorAttributes,
+											Validators: []validator.Object{
+												objectvalidator.ExactlyOneOf(
+													path.MatchRelative().AtParent().AtName("k8s"),
+													path.MatchRelative().AtParent().AtName("ip_list"),
+													path.MatchRelative().AtParent().AtName("cloud"),
+													path.MatchRelative().AtParent().AtName("illumio_labels"),
+												),
+											},
 										},
-										"to_port": resource_schema.Int64Attribute{
-											Description: "End port number.",
-											Required:    true,
+										"cloud": resource_schema.SingleNestedAttribute{
+											Description: "Cloud resource selector (e.g., VMs, instances). Not yet implemented.",
+											Optional:    true,
+											Attributes:  map[string]resource_schema.Attribute{},
+											Validators: []validator.Object{
+												objectvalidator.ExactlyOneOf(
+													path.MatchRelative().AtParent().AtName("k8s"),
+													path.MatchRelative().AtParent().AtName("ip_list"),
+													path.MatchRelative().AtParent().AtName("cloud"),
+													path.MatchRelative().AtParent().AtName("illumio_labels"),
+												),
+											},
+										},
+										"illumio_labels": resource_schema.SingleNestedAttribute{
+											Description: "Illumio label selector. Not yet implemented.",
+											Optional:    true,
+											Attributes:  map[string]resource_schema.Attribute{},
+											Validators: []validator.Object{
+												objectvalidator.ExactlyOneOf(
+													path.MatchRelative().AtParent().AtName("k8s"),
+													path.MatchRelative().AtParent().AtName("ip_list"),
+													path.MatchRelative().AtParent().AtName("cloud"),
+													path.MatchRelative().AtParent().AtName("illumio_labels"),
+												),
+											},
+										},
+									},
+								},
+								"destination": resource_schema.SingleNestedAttribute{
+									Description: "Traffic destination selector.",
+									Required:    true,
+									Attributes: map[string]resource_schema.Attribute{
+										"k8s": resource_schema.SingleNestedAttribute{
+											Description: "K8s workload selector.",
+											Optional:    true,
+											Attributes:  k8sSelectorAttributes,
+											Validators: []validator.Object{
+												objectvalidator.ExactlyOneOf(
+													path.MatchRelative().AtParent().AtName("k8s"),
+													path.MatchRelative().AtParent().AtName("ip_list"),
+													path.MatchRelative().AtParent().AtName("fqdns"),
+													path.MatchRelative().AtParent().AtName("cloud"),
+													path.MatchRelative().AtParent().AtName("illumio_labels"),
+												),
+											},
+										},
+										"ip_list": resource_schema.SingleNestedAttribute{
+											Description: "IP list reference selector.",
+											Optional:    true,
+											Attributes:  ipSelectorAttributes,
+											Validators: []validator.Object{
+												objectvalidator.ExactlyOneOf(
+													path.MatchRelative().AtParent().AtName("k8s"),
+													path.MatchRelative().AtParent().AtName("ip_list"),
+													path.MatchRelative().AtParent().AtName("fqdns"),
+													path.MatchRelative().AtParent().AtName("cloud"),
+													path.MatchRelative().AtParent().AtName("illumio_labels"),
+												),
+											},
+										},
+										"fqdns": resource_schema.SingleNestedAttribute{
+											Description: "FQDN selector.",
+											Optional:    true,
+											Attributes: map[string]resource_schema.Attribute{
+												"names": resource_schema.ListAttribute{
+													Description: "List of FQDNs (e.g., api.example.com, *.googleapis.com).",
+													Required:    true,
+													ElementType: types.StringType,
+												},
+											},
+											Validators: []validator.Object{
+												objectvalidator.ExactlyOneOf(
+													path.MatchRelative().AtParent().AtName("k8s"),
+													path.MatchRelative().AtParent().AtName("ip_list"),
+													path.MatchRelative().AtParent().AtName("fqdns"),
+													path.MatchRelative().AtParent().AtName("cloud"),
+													path.MatchRelative().AtParent().AtName("illumio_labels"),
+												),
+											},
+										},
+										"cloud": resource_schema.SingleNestedAttribute{
+											Description: "Cloud resource selector (e.g., VMs, instances). Not yet implemented.",
+											Optional:    true,
+											Attributes:  map[string]resource_schema.Attribute{},
+											Validators: []validator.Object{
+												objectvalidator.ExactlyOneOf(
+													path.MatchRelative().AtParent().AtName("k8s"),
+													path.MatchRelative().AtParent().AtName("ip_list"),
+													path.MatchRelative().AtParent().AtName("fqdns"),
+													path.MatchRelative().AtParent().AtName("cloud"),
+													path.MatchRelative().AtParent().AtName("illumio_labels"),
+												),
+											},
+										},
+										"illumio_labels": resource_schema.SingleNestedAttribute{
+											Description: "Illumio label selector. Not yet implemented.",
+											Optional:    true,
+											Attributes:  map[string]resource_schema.Attribute{},
+											Validators: []validator.Object{
+												objectvalidator.ExactlyOneOf(
+													path.MatchRelative().AtParent().AtName("k8s"),
+													path.MatchRelative().AtParent().AtName("ip_list"),
+													path.MatchRelative().AtParent().AtName("fqdns"),
+													path.MatchRelative().AtParent().AtName("cloud"),
+													path.MatchRelative().AtParent().AtName("illumio_labels"),
+												),
+											},
+										},
+									},
+								},
+								"port_ranges": resource_schema.ListNestedAttribute{
+									Description: "List of port ranges for the rule.",
+									Required:    true,
+									NestedObject: resource_schema.NestedAttributeObject{
+										Attributes: map[string]resource_schema.Attribute{
+											"protocol": resource_schema.StringAttribute{
+												Description: "Transport protocol: TCP or UDP.",
+												Required:    true,
+												Validators: []validator.String{
+													stringvalidator.OneOf("TCP", "UDP"),
+												},
+											},
+											"from_port": resource_schema.Int64Attribute{
+												Description: "Start port number.",
+												Required:    true,
+											},
+											"to_port": resource_schema.Int64Attribute{
+												Description: "End port number.",
+												Required:    true,
+											},
 										},
 									},
 								},
 							},
 						},
-					},
 					},
 					attributeWithMode: attributeWithMode{
 						Mode: ImmutableAttributeMode,
