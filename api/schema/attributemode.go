@@ -146,26 +146,16 @@ type Int64ResourceAttributeWithMode struct {
 	attributeWithMode
 }
 
+// ListNestedResourceAttributeWithMode is a ListNestedAttribute with an explicit attribute mode.
+type ListNestedResourceAttributeWithMode struct {
+	resource_schema.ListNestedAttribute
+	attributeWithMode
+}
+
 // ListResourceAttributeWithMode is a ListAttribute with an explicit attribute mode.
 type ListResourceAttributeWithMode struct {
 	resource_schema.ListAttribute
 	attributeWithMode
-}
-
-// ListNestedResourceAttributeWithMode is a ListNestedAttribute with an explicit attribute mode.
-type ListNestedResourceAttributeWithMode struct {
-	resource_schema.ListNestedAttribute
-	attributeWithMode
-// ListNestedResourceAttributeWithMode is a ListNestedAttribute with an explicit attribute mode.
-type ListNestedResourceAttributeWithMode struct {
-	resource_schema.ListNestedAttribute
-	attributeWithMode
-}
-
-// ListResourceAttributeWithMode is a ListAttribute with an explicit attribute mode.
-type ListResourceAttributeWithMode struct {
-resource_schema.ListAttribute
-attributeWithMode
 }
 
 // MapResourceAttributeWithMode is a MapAttribute with an explicit attribute mode.
