@@ -2975,8 +2975,6 @@ func (s *FakeConfigServer) UpdatePolicyVersion(ctx context.Context, req *configv
 	}
 	for _, path := range updateMaskPaths {
 		switch path {
-		case "rules":
-			model.Rules = req.Rules
 		case "version_number":
 			model.VersionNumber = req.VersionNumber
 		default:

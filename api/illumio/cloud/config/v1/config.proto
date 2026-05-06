@@ -1223,7 +1223,6 @@ message ReadPolicyVersionResponse {
 }
 message UpdatePolicyVersionRequest {
   string id = 1;
-  repeated PolicyVersion_Rules rules = 5;
   int64 version_number = 6;
   google.protobuf.FieldMask update_mask = 4;
 }

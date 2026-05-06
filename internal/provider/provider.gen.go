@@ -7753,29 +7753,6 @@ func NewUpdatePolicyVersionRequest(ctx context.Context, beforeData, afterData *P
 	proto := &configv1.UpdatePolicyVersionRequest{}
 	proto.UpdateMask, _ = fieldmaskpb.New(proto)
 	proto.Id = beforeData.Id.ValueString()
-	if !afterData.Rules.Equal(beforeData.Rules) {
-		proto.UpdateMask.Append(proto, "rules")
-		if !afterData.Rules.IsUnknown() && !afterData.Rules.IsNull() {
-			var dataValue attr.Value = afterData.Rules
-			var protoValue []*configv1.PolicyVersion_Rules
-			{
-				dataElements := dataValue.(types.List).Elements()
-				protoValues := make([]*configv1.PolicyVersion_Rules, 0, len(dataElements))
-				for _, dataElement := range dataElements {
-					var dataValue attr.Value = dataElement
-					var protoValue *configv1.PolicyVersion_Rules
-					protoValue, newDiags := ConvertDataValueToPolicyVersion_RulesProto(ctx, dataValue)
-					diags.Append(newDiags...)
-					if diags.HasError() {
-						return nil, diags
-					}
-					protoValues = append(protoValues, protoValue)
-				}
-				protoValue = protoValues
-			}
-			proto.Rules = protoValue
-		}
-	}
 	if !afterData.VersionNumber.Equal(beforeData.VersionNumber) {
 		proto.UpdateMask.Append(proto, "version_number")
 		if !afterData.VersionNumber.IsUnknown() && !afterData.VersionNumber.IsNull() {

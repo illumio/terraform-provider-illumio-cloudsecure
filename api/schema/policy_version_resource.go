@@ -212,7 +212,8 @@ var (
 					Description: "Sequential version number within the policy, for display purposes.",
 					Computed:    true,
 				},
-				"rules": resource_schema.ListNestedAttribute{
+				"rules": ListNestedResourceAttributeWithMode{
+					ListNestedAttribute: resource_schema.ListNestedAttribute{
 					MarkdownDescription: "List of rules in this policy version. Each rule specifies an action (Allow/Deny), source, destination, and port ranges. Multiple rules use OR logic for allows; deny takes precedence.",
 					Required:            true,
 					PlanModifiers: []planmodifier.List{
@@ -391,6 +392,10 @@ var (
 								},
 							},
 						},
+					},
+					},
+					attributeWithMode: attributeWithMode{
+						Mode: ImmutableAttributeMode,
 					},
 				},
 			},
