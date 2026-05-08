@@ -84,7 +84,7 @@ resource "illumio-cloudsecure_application_aws_resources" "aws_rds_cluster_resour
 
 ### Optional
 
-- `arns` (List of String) ARNs of AWS resources to associate with the CloudSecure application
+- `arns` (List of String) ARNs of AWS resources to associate with the CloudSecure application. Non-enforceable resource types cannot be assigned to applications.
 - `aws_customer_gateway_ids` (List of String, Deprecated) IDs of AWS customer gateways to associate with the CloudSecure Application.
 - `aws_dx_connection_ids` (List of String, Deprecated) IDs of AWS Direct Connect connections to associate with the CloudSecure Application.
 - `aws_dx_virtual_interface_ids` (List of String, Deprecated) IDs of AWS Direct Connect virtual interfaces (public/private/hosted/transit) to associate with the CloudSecure Application.
