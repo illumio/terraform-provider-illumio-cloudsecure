@@ -44,7 +44,7 @@ var (
 				},
 				"resource_ids": resource_schema.ListAttribute{
 					ElementType: types.StringType,
-					Description: "IDs of Azure resources to associate with the CloudSecure application.",
+					Description: "IDs of Azure resources to associate with the CloudSecure application. Non-enforceable resource types cannot be assigned to applications.",
 					Optional:    true,
 				},
 				"subscription_id": StringResourceAttributeWithMode{

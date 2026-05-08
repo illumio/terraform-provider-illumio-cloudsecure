@@ -57,7 +57,7 @@ var (
 				},
 				"arns": resource_schema.ListAttribute{
 					ElementType: types.StringType,
-					Description: "ARNs of AWS resources to associate with the CloudSecure application",
+					Description: "ARNs of AWS resources to associate with the CloudSecure application. Non-enforceable resource types cannot be assigned to applications.",
 					Optional:    true,
 				},
 				"aws_customer_gateway_ids": resource_schema.ListAttribute{
