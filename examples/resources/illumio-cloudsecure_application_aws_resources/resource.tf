@@ -26,36 +26,34 @@ resource "illumio-cloudsecure_application_aws_resources" "aws_security_group_res
   ]
 }
 
-resource "illumio-cloudsecure_application_aws_resources" "aws_arn_resources_and_internet_gateways" {
+resource "illumio-cloudsecure_application_aws_resources" "aws_arn_and_instance_resources" {
   application_id = illumio-cloudsecure_application.test_application.id
   account_id     = data.aws_caller_identity.current.account_id
   arns = [
-    "arn:aws:kms:us-east-1:600325505726:key/6c44f35b-d3b5-4cef-9944-36b7df5d86c0",
-    "arn:aws:s3bucketpolicy:::mys3bucketpolicy"
+    "arn:aws:ec2:us-east-1:600325505726:instance/i-0a1b2c3d4e5f67890",
+    "arn:aws:rds:us-east-1:600325505726:cluster:my-database-cluster"
   ]
-  aws_internet_gateway_ids = [
-    "igw-0510c5ae3d648b857",
-    "igw-0aa0dfc78b498845b"
+  aws_instances_ids = [
+    "i-0a1b2c3d4e5f67890",
+    "i-0b2c3d4e5f6a78901"
   ]
 }
 
 
-# Create an S3 bucket and add it to the application
+# Create an RDS cluster and add it to the application
 
-resource "aws_s3_bucket" "example_bucket" {
-  bucket = "my-tf-test-bucket"
-
-  tags = {
-    Name        = "My bucket"
-    Environment = "Dev"
-  }
+resource "aws_rds_cluster" "example_cluster" {
+  cluster_identifier = "my-tf-test-cluster"
+  engine             = "aurora-mysql"
+  master_username    = "admin"
+  master_password    = "example-password"
 }
 
 
-resource "illumio-cloudsecure_application_aws_resources" "aws_s3_bucket_resources" {
+resource "illumio-cloudsecure_application_aws_resources" "aws_rds_cluster_resources" {
   application_id = illumio-cloudsecure_application.test_application.id
   account_id     = data.aws_caller_identity.current.account_id
-  arns = [
-    aws_s3_bucket.example_bucket.arn
+  aws_rds_cluster_ids = [
+    aws_rds_cluster.example_cluster.id
   ]
 }

@@ -66,7 +66,7 @@ resource "illumio-cloudsecure_application_azure_resources" "azure_new_resources"
 
 ### Optional
 
-- `resource_ids` (List of String) IDs of Azure resources to associate with the CloudSecure application.
+- `resource_ids` (List of String) IDs of Azure resources to associate with the CloudSecure application. Non-enforceable resource types cannot be assigned to applications.
 
 ### Read-Only
 
