@@ -46,7 +46,6 @@ RUN export DEBIAN_FRONTEND=noninteractive \
     bash-completion \
     binutils \
     gnupg \
-    software-properties-common \
     wget \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/*
