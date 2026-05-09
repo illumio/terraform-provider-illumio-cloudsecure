@@ -45,19 +45,19 @@ RUN export DEBIAN_FRONTEND=noninteractive \
     && apt-get -y install --no-install-recommends \
     bash-completion \
     binutils \
+    ca-certificates \
+    curl \
     gnupg \
-    wget \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/*
 
 # Install Terraform
 
-RUN wget -q -O- https://apt.releases.hashicorp.com/gpg | \
-    gpg --dearmor > /usr/share/keyrings/hashicorp-archive-keyring.gpg \
-    && gpg --no-default-keyring \
-    --keyring /usr/share/keyrings/hashicorp-archive-keyring.gpg \
-    --fingerprint \
-    && echo "deb [signed-by=/usr/share/keyrings/hashicorp-archive-keyring.gpg] https://apt.releases.hashicorp.com $(lsb_release -cs) main" > /etc/apt/sources.list.d/hashicorp.list \
+RUN curl -s https://apt.releases.hashicorp.com/gpg | \
+    gpg --dearmor > /tmp/hashicorp.gpg \
+    && install -D -o root -g root -m 644 /tmp/hashicorp.gpg /usr/share/keyrings/hashicorp.gpg \
+    && rm -f /tmp/hashicorp.gpg \
+    && echo "deb [signed-by=/usr/share/keyrings/hashicorp.gpg] https://apt.releases.hashicorp.com trixie main" > /etc/apt/sources.list.d/hashicorp.list \
     && export DEBIAN_FRONTEND=noninteractive \
     && apt-get update \
     && apt-get -y install --no-install-recommends \
