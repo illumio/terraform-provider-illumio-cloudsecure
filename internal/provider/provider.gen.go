@@ -3389,41 +3389,22 @@ type ApplicationResourceModel struct {
 }
 
 type ApplicationAwsResourcesResourceModel struct {
-	Id                                     types.String `tfsdk:"id"`
-	AccountId                              types.String `tfsdk:"account_id"`
-	ApplicationId                          types.String `tfsdk:"application_id"`
-	ApplicationResourceIds                 types.List   `tfsdk:"application_resource_ids"`
-	Arns                                   types.List   `tfsdk:"arns"`
-	AwsCustomerGatewayIds                  types.List   `tfsdk:"aws_customer_gateway_ids"`
-	AwsDxConnectionIds                     types.List   `tfsdk:"aws_dx_connection_ids"`
-	AwsDxVirtualInterfaceIds               types.List   `tfsdk:"aws_dx_virtual_interface_ids"`
-	AwsEbsVolumeIds                        types.List   `tfsdk:"aws_ebs_volume_ids"`
-	AwsEc2InstanceConnectEndpointIds       types.List   `tfsdk:"aws_ec2_instance_connect_endpoint_ids"`
-	AwsEc2TransitGatewayAttachmentIds      types.List   `tfsdk:"aws_ec2_transit_gateway_attachment_ids"`
-	AwsEc2TransitGatewayIds                types.List   `tfsdk:"aws_ec2_transit_gateway_ids"`
-	AwsEc2TransitGatewayMulticastDomainIds types.List   `tfsdk:"aws_ec2_transit_gateway_multicast_domain_ids"`
-	AwsEc2TransitGatewayRouteTableIds      types.List   `tfsdk:"aws_ec2_transit_gateway_route_table_ids"`
-	AwsEgressOnlyInternetGatewayIds        types.List   `tfsdk:"aws_egress_only_internet_gateway_ids"`
-	AwsEipIds                              types.List   `tfsdk:"aws_eip_ids"`
-	AwsFlowLogIds                          types.List   `tfsdk:"aws_flow_log_ids"`
-	AwsInstancesIds                        types.List   `tfsdk:"aws_instances_ids"`
-	AwsInternetGatewayIds                  types.List   `tfsdk:"aws_internet_gateway_ids"`
-	AwsNatGatewayIds                       types.List   `tfsdk:"aws_nat_gateway_ids"`
-	AwsNetworkAclIds                       types.List   `tfsdk:"aws_network_acl_ids"`
-	AwsNetworkInterfaceIds                 types.List   `tfsdk:"aws_network_interface_ids"`
-	AwsRdsClusterIds                       types.List   `tfsdk:"aws_rds_cluster_ids"`
-	AwsRouteTableIds                       types.List   `tfsdk:"aws_route_table_ids"`
-	AwsSecurityGroupIds                    types.List   `tfsdk:"aws_security_group_ids"`
-	AwsSecurityGroupRuleIds                types.List   `tfsdk:"aws_security_group_rule_ids"`
-	AwsSpotFleetRequestIds                 types.List   `tfsdk:"aws_spot_fleet_request_ids"`
-	AwsSpotInstanceRequestIds              types.List   `tfsdk:"aws_spot_instance_request_ids"`
-	AwsSubnetIds                           types.List   `tfsdk:"aws_subnet_ids"`
-	AwsVpcEndpointIds                      types.List   `tfsdk:"aws_vpc_endpoint_ids"`
-	AwsVpcEndpointServiceIds               types.List   `tfsdk:"aws_vpc_endpoint_service_ids"`
-	AwsVpcIds                              types.List   `tfsdk:"aws_vpc_ids"`
-	AwsVpcPeeringConnectionIds             types.List   `tfsdk:"aws_vpc_peering_connection_ids"`
-	AwsVpnConnectionIds                    types.List   `tfsdk:"aws_vpn_connection_ids"`
-	AwsVpnGatewayIds                       types.List   `tfsdk:"aws_vpn_gateway_ids"`
+	Id                                types.String `tfsdk:"id"`
+	AccountId                         types.String `tfsdk:"account_id"`
+	ApplicationId                     types.String `tfsdk:"application_id"`
+	ApplicationResourceIds            types.List   `tfsdk:"application_resource_ids"`
+	Arns                              types.List   `tfsdk:"arns"`
+	AwsEc2TransitGatewayAttachmentIds types.List   `tfsdk:"aws_ec2_transit_gateway_attachment_ids"`
+	AwsInstancesIds                   types.List   `tfsdk:"aws_instances_ids"`
+	AwsNatGatewayIds                  types.List   `tfsdk:"aws_nat_gateway_ids"`
+	AwsNetworkAclIds                  types.List   `tfsdk:"aws_network_acl_ids"`
+	AwsNetworkInterfaceIds            types.List   `tfsdk:"aws_network_interface_ids"`
+	AwsRdsClusterIds                  types.List   `tfsdk:"aws_rds_cluster_ids"`
+	AwsSecurityGroupIds               types.List   `tfsdk:"aws_security_group_ids"`
+	AwsSubnetIds                      types.List   `tfsdk:"aws_subnet_ids"`
+	AwsVpcEndpointIds                 types.List   `tfsdk:"aws_vpc_endpoint_ids"`
+	AwsVpcIds                         types.List   `tfsdk:"aws_vpc_ids"`
+	AwsVpcPeeringConnectionIds        types.List   `tfsdk:"aws_vpc_peering_connection_ids"`
 }
 
 type ApplicationAzureResourcesResourceModel struct {
@@ -3645,86 +3626,6 @@ func NewCreateApplicationAwsResourcesRequest(ctx context.Context, data *Applicat
 		}
 		proto.Arns = protoValue
 	}
-	if !data.AwsCustomerGatewayIds.IsUnknown() && !data.AwsCustomerGatewayIds.IsNull() {
-		var dataValue attr.Value = data.AwsCustomerGatewayIds
-		var protoValue []string
-		{
-			dataElements := dataValue.(types.List).Elements()
-			protoValues := make([]string, 0, len(dataElements))
-			for _, dataElement := range dataElements {
-				var dataValue attr.Value = dataElement
-				var protoValue string
-				protoValue = dataValue.(types.String).ValueString()
-				protoValues = append(protoValues, protoValue)
-			}
-			protoValue = protoValues
-		}
-		proto.AwsCustomerGatewayIds = protoValue
-	}
-	if !data.AwsDxConnectionIds.IsUnknown() && !data.AwsDxConnectionIds.IsNull() {
-		var dataValue attr.Value = data.AwsDxConnectionIds
-		var protoValue []string
-		{
-			dataElements := dataValue.(types.List).Elements()
-			protoValues := make([]string, 0, len(dataElements))
-			for _, dataElement := range dataElements {
-				var dataValue attr.Value = dataElement
-				var protoValue string
-				protoValue = dataValue.(types.String).ValueString()
-				protoValues = append(protoValues, protoValue)
-			}
-			protoValue = protoValues
-		}
-		proto.AwsDxConnectionIds = protoValue
-	}
-	if !data.AwsDxVirtualInterfaceIds.IsUnknown() && !data.AwsDxVirtualInterfaceIds.IsNull() {
-		var dataValue attr.Value = data.AwsDxVirtualInterfaceIds
-		var protoValue []string
-		{
-			dataElements := dataValue.(types.List).Elements()
-			protoValues := make([]string, 0, len(dataElements))
-			for _, dataElement := range dataElements {
-				var dataValue attr.Value = dataElement
-				var protoValue string
-				protoValue = dataValue.(types.String).ValueString()
-				protoValues = append(protoValues, protoValue)
-			}
-			protoValue = protoValues
-		}
-		proto.AwsDxVirtualInterfaceIds = protoValue
-	}
-	if !data.AwsEbsVolumeIds.IsUnknown() && !data.AwsEbsVolumeIds.IsNull() {
-		var dataValue attr.Value = data.AwsEbsVolumeIds
-		var protoValue []string
-		{
-			dataElements := dataValue.(types.List).Elements()
-			protoValues := make([]string, 0, len(dataElements))
-			for _, dataElement := range dataElements {
-				var dataValue attr.Value = dataElement
-				var protoValue string
-				protoValue = dataValue.(types.String).ValueString()
-				protoValues = append(protoValues, protoValue)
-			}
-			protoValue = protoValues
-		}
-		proto.AwsEbsVolumeIds = protoValue
-	}
-	if !data.AwsEc2InstanceConnectEndpointIds.IsUnknown() && !data.AwsEc2InstanceConnectEndpointIds.IsNull() {
-		var dataValue attr.Value = data.AwsEc2InstanceConnectEndpointIds
-		var protoValue []string
-		{
-			dataElements := dataValue.(types.List).Elements()
-			protoValues := make([]string, 0, len(dataElements))
-			for _, dataElement := range dataElements {
-				var dataValue attr.Value = dataElement
-				var protoValue string
-				protoValue = dataValue.(types.String).ValueString()
-				protoValues = append(protoValues, protoValue)
-			}
-			protoValue = protoValues
-		}
-		proto.AwsEc2InstanceConnectEndpointIds = protoValue
-	}
 	if !data.AwsEc2TransitGatewayAttachmentIds.IsUnknown() && !data.AwsEc2TransitGatewayAttachmentIds.IsNull() {
 		var dataValue attr.Value = data.AwsEc2TransitGatewayAttachmentIds
 		var protoValue []string
@@ -3741,102 +3642,6 @@ func NewCreateApplicationAwsResourcesRequest(ctx context.Context, data *Applicat
 		}
 		proto.AwsEc2TransitGatewayAttachmentIds = protoValue
 	}
-	if !data.AwsEc2TransitGatewayIds.IsUnknown() && !data.AwsEc2TransitGatewayIds.IsNull() {
-		var dataValue attr.Value = data.AwsEc2TransitGatewayIds
-		var protoValue []string
-		{
-			dataElements := dataValue.(types.List).Elements()
-			protoValues := make([]string, 0, len(dataElements))
-			for _, dataElement := range dataElements {
-				var dataValue attr.Value = dataElement
-				var protoValue string
-				protoValue = dataValue.(types.String).ValueString()
-				protoValues = append(protoValues, protoValue)
-			}
-			protoValue = protoValues
-		}
-		proto.AwsEc2TransitGatewayIds = protoValue
-	}
-	if !data.AwsEc2TransitGatewayMulticastDomainIds.IsUnknown() && !data.AwsEc2TransitGatewayMulticastDomainIds.IsNull() {
-		var dataValue attr.Value = data.AwsEc2TransitGatewayMulticastDomainIds
-		var protoValue []string
-		{
-			dataElements := dataValue.(types.List).Elements()
-			protoValues := make([]string, 0, len(dataElements))
-			for _, dataElement := range dataElements {
-				var dataValue attr.Value = dataElement
-				var protoValue string
-				protoValue = dataValue.(types.String).ValueString()
-				protoValues = append(protoValues, protoValue)
-			}
-			protoValue = protoValues
-		}
-		proto.AwsEc2TransitGatewayMulticastDomainIds = protoValue
-	}
-	if !data.AwsEc2TransitGatewayRouteTableIds.IsUnknown() && !data.AwsEc2TransitGatewayRouteTableIds.IsNull() {
-		var dataValue attr.Value = data.AwsEc2TransitGatewayRouteTableIds
-		var protoValue []string
-		{
-			dataElements := dataValue.(types.List).Elements()
-			protoValues := make([]string, 0, len(dataElements))
-			for _, dataElement := range dataElements {
-				var dataValue attr.Value = dataElement
-				var protoValue string
-				protoValue = dataValue.(types.String).ValueString()
-				protoValues = append(protoValues, protoValue)
-			}
-			protoValue = protoValues
-		}
-		proto.AwsEc2TransitGatewayRouteTableIds = protoValue
-	}
-	if !data.AwsEgressOnlyInternetGatewayIds.IsUnknown() && !data.AwsEgressOnlyInternetGatewayIds.IsNull() {
-		var dataValue attr.Value = data.AwsEgressOnlyInternetGatewayIds
-		var protoValue []string
-		{
-			dataElements := dataValue.(types.List).Elements()
-			protoValues := make([]string, 0, len(dataElements))
-			for _, dataElement := range dataElements {
-				var dataValue attr.Value = dataElement
-				var protoValue string
-				protoValue = dataValue.(types.String).ValueString()
-				protoValues = append(protoValues, protoValue)
-			}
-			protoValue = protoValues
-		}
-		proto.AwsEgressOnlyInternetGatewayIds = protoValue
-	}
-	if !data.AwsEipIds.IsUnknown() && !data.AwsEipIds.IsNull() {
-		var dataValue attr.Value = data.AwsEipIds
-		var protoValue []string
-		{
-			dataElements := dataValue.(types.List).Elements()
-			protoValues := make([]string, 0, len(dataElements))
-			for _, dataElement := range dataElements {
-				var dataValue attr.Value = dataElement
-				var protoValue string
-				protoValue = dataValue.(types.String).ValueString()
-				protoValues = append(protoValues, protoValue)
-			}
-			protoValue = protoValues
-		}
-		proto.AwsEipIds = protoValue
-	}
-	if !data.AwsFlowLogIds.IsUnknown() && !data.AwsFlowLogIds.IsNull() {
-		var dataValue attr.Value = data.AwsFlowLogIds
-		var protoValue []string
-		{
-			dataElements := dataValue.(types.List).Elements()
-			protoValues := make([]string, 0, len(dataElements))
-			for _, dataElement := range dataElements {
-				var dataValue attr.Value = dataElement
-				var protoValue string
-				protoValue = dataValue.(types.String).ValueString()
-				protoValues = append(protoValues, protoValue)
-			}
-			protoValue = protoValues
-		}
-		proto.AwsFlowLogIds = protoValue
-	}
 	if !data.AwsInstancesIds.IsUnknown() && !data.AwsInstancesIds.IsNull() {
 		var dataValue attr.Value = data.AwsInstancesIds
 		var protoValue []string
@@ -3852,22 +3657,6 @@ func NewCreateApplicationAwsResourcesRequest(ctx context.Context, data *Applicat
 			protoValue = protoValues
 		}
 		proto.AwsInstancesIds = protoValue
-	}
-	if !data.AwsInternetGatewayIds.IsUnknown() && !data.AwsInternetGatewayIds.IsNull() {
-		var dataValue attr.Value = data.AwsInternetGatewayIds
-		var protoValue []string
-		{
-			dataElements := dataValue.(types.List).Elements()
-			protoValues := make([]string, 0, len(dataElements))
-			for _, dataElement := range dataElements {
-				var dataValue attr.Value = dataElement
-				var protoValue string
-				protoValue = dataValue.(types.String).ValueString()
-				protoValues = append(protoValues, protoValue)
-			}
-			protoValue = protoValues
-		}
-		proto.AwsInternetGatewayIds = protoValue
 	}
 	if !data.AwsNatGatewayIds.IsUnknown() && !data.AwsNatGatewayIds.IsNull() {
 		var dataValue attr.Value = data.AwsNatGatewayIds
@@ -3933,22 +3722,6 @@ func NewCreateApplicationAwsResourcesRequest(ctx context.Context, data *Applicat
 		}
 		proto.AwsRdsClusterIds = protoValue
 	}
-	if !data.AwsRouteTableIds.IsUnknown() && !data.AwsRouteTableIds.IsNull() {
-		var dataValue attr.Value = data.AwsRouteTableIds
-		var protoValue []string
-		{
-			dataElements := dataValue.(types.List).Elements()
-			protoValues := make([]string, 0, len(dataElements))
-			for _, dataElement := range dataElements {
-				var dataValue attr.Value = dataElement
-				var protoValue string
-				protoValue = dataValue.(types.String).ValueString()
-				protoValues = append(protoValues, protoValue)
-			}
-			protoValue = protoValues
-		}
-		proto.AwsRouteTableIds = protoValue
-	}
 	if !data.AwsSecurityGroupIds.IsUnknown() && !data.AwsSecurityGroupIds.IsNull() {
 		var dataValue attr.Value = data.AwsSecurityGroupIds
 		var protoValue []string
@@ -3964,54 +3737,6 @@ func NewCreateApplicationAwsResourcesRequest(ctx context.Context, data *Applicat
 			protoValue = protoValues
 		}
 		proto.AwsSecurityGroupIds = protoValue
-	}
-	if !data.AwsSecurityGroupRuleIds.IsUnknown() && !data.AwsSecurityGroupRuleIds.IsNull() {
-		var dataValue attr.Value = data.AwsSecurityGroupRuleIds
-		var protoValue []string
-		{
-			dataElements := dataValue.(types.List).Elements()
-			protoValues := make([]string, 0, len(dataElements))
-			for _, dataElement := range dataElements {
-				var dataValue attr.Value = dataElement
-				var protoValue string
-				protoValue = dataValue.(types.String).ValueString()
-				protoValues = append(protoValues, protoValue)
-			}
-			protoValue = protoValues
-		}
-		proto.AwsSecurityGroupRuleIds = protoValue
-	}
-	if !data.AwsSpotFleetRequestIds.IsUnknown() && !data.AwsSpotFleetRequestIds.IsNull() {
-		var dataValue attr.Value = data.AwsSpotFleetRequestIds
-		var protoValue []string
-		{
-			dataElements := dataValue.(types.List).Elements()
-			protoValues := make([]string, 0, len(dataElements))
-			for _, dataElement := range dataElements {
-				var dataValue attr.Value = dataElement
-				var protoValue string
-				protoValue = dataValue.(types.String).ValueString()
-				protoValues = append(protoValues, protoValue)
-			}
-			protoValue = protoValues
-		}
-		proto.AwsSpotFleetRequestIds = protoValue
-	}
-	if !data.AwsSpotInstanceRequestIds.IsUnknown() && !data.AwsSpotInstanceRequestIds.IsNull() {
-		var dataValue attr.Value = data.AwsSpotInstanceRequestIds
-		var protoValue []string
-		{
-			dataElements := dataValue.(types.List).Elements()
-			protoValues := make([]string, 0, len(dataElements))
-			for _, dataElement := range dataElements {
-				var dataValue attr.Value = dataElement
-				var protoValue string
-				protoValue = dataValue.(types.String).ValueString()
-				protoValues = append(protoValues, protoValue)
-			}
-			protoValue = protoValues
-		}
-		proto.AwsSpotInstanceRequestIds = protoValue
 	}
 	if !data.AwsSubnetIds.IsUnknown() && !data.AwsSubnetIds.IsNull() {
 		var dataValue attr.Value = data.AwsSubnetIds
@@ -4045,22 +3770,6 @@ func NewCreateApplicationAwsResourcesRequest(ctx context.Context, data *Applicat
 		}
 		proto.AwsVpcEndpointIds = protoValue
 	}
-	if !data.AwsVpcEndpointServiceIds.IsUnknown() && !data.AwsVpcEndpointServiceIds.IsNull() {
-		var dataValue attr.Value = data.AwsVpcEndpointServiceIds
-		var protoValue []string
-		{
-			dataElements := dataValue.(types.List).Elements()
-			protoValues := make([]string, 0, len(dataElements))
-			for _, dataElement := range dataElements {
-				var dataValue attr.Value = dataElement
-				var protoValue string
-				protoValue = dataValue.(types.String).ValueString()
-				protoValues = append(protoValues, protoValue)
-			}
-			protoValue = protoValues
-		}
-		proto.AwsVpcEndpointServiceIds = protoValue
-	}
 	if !data.AwsVpcIds.IsUnknown() && !data.AwsVpcIds.IsNull() {
 		var dataValue attr.Value = data.AwsVpcIds
 		var protoValue []string
@@ -4092,38 +3801,6 @@ func NewCreateApplicationAwsResourcesRequest(ctx context.Context, data *Applicat
 			protoValue = protoValues
 		}
 		proto.AwsVpcPeeringConnectionIds = protoValue
-	}
-	if !data.AwsVpnConnectionIds.IsUnknown() && !data.AwsVpnConnectionIds.IsNull() {
-		var dataValue attr.Value = data.AwsVpnConnectionIds
-		var protoValue []string
-		{
-			dataElements := dataValue.(types.List).Elements()
-			protoValues := make([]string, 0, len(dataElements))
-			for _, dataElement := range dataElements {
-				var dataValue attr.Value = dataElement
-				var protoValue string
-				protoValue = dataValue.(types.String).ValueString()
-				protoValues = append(protoValues, protoValue)
-			}
-			protoValue = protoValues
-		}
-		proto.AwsVpnConnectionIds = protoValue
-	}
-	if !data.AwsVpnGatewayIds.IsUnknown() && !data.AwsVpnGatewayIds.IsNull() {
-		var dataValue attr.Value = data.AwsVpnGatewayIds
-		var protoValue []string
-		{
-			dataElements := dataValue.(types.List).Elements()
-			protoValues := make([]string, 0, len(dataElements))
-			for _, dataElement := range dataElements {
-				var dataValue attr.Value = dataElement
-				var protoValue string
-				protoValue = dataValue.(types.String).ValueString()
-				protoValues = append(protoValues, protoValue)
-			}
-			protoValue = protoValues
-		}
-		proto.AwsVpnGatewayIds = protoValue
 	}
 	return proto, diags
 }
@@ -5573,101 +5250,6 @@ func NewUpdateApplicationAwsResourcesRequest(ctx context.Context, beforeData, af
 			proto.Arns = protoValue
 		}
 	}
-	if !afterData.AwsCustomerGatewayIds.Equal(beforeData.AwsCustomerGatewayIds) {
-		proto.UpdateMask.Append(proto, "aws_customer_gateway_ids")
-		if !afterData.AwsCustomerGatewayIds.IsUnknown() && !afterData.AwsCustomerGatewayIds.IsNull() {
-			var dataValue attr.Value = afterData.AwsCustomerGatewayIds
-			var protoValue []string
-			{
-				dataElements := dataValue.(types.List).Elements()
-				protoValues := make([]string, 0, len(dataElements))
-				for _, dataElement := range dataElements {
-					var dataValue attr.Value = dataElement
-					var protoValue string
-					protoValue = dataValue.(types.String).ValueString()
-					protoValues = append(protoValues, protoValue)
-				}
-				protoValue = protoValues
-			}
-			proto.AwsCustomerGatewayIds = protoValue
-		}
-	}
-	if !afterData.AwsDxConnectionIds.Equal(beforeData.AwsDxConnectionIds) {
-		proto.UpdateMask.Append(proto, "aws_dx_connection_ids")
-		if !afterData.AwsDxConnectionIds.IsUnknown() && !afterData.AwsDxConnectionIds.IsNull() {
-			var dataValue attr.Value = afterData.AwsDxConnectionIds
-			var protoValue []string
-			{
-				dataElements := dataValue.(types.List).Elements()
-				protoValues := make([]string, 0, len(dataElements))
-				for _, dataElement := range dataElements {
-					var dataValue attr.Value = dataElement
-					var protoValue string
-					protoValue = dataValue.(types.String).ValueString()
-					protoValues = append(protoValues, protoValue)
-				}
-				protoValue = protoValues
-			}
-			proto.AwsDxConnectionIds = protoValue
-		}
-	}
-	if !afterData.AwsDxVirtualInterfaceIds.Equal(beforeData.AwsDxVirtualInterfaceIds) {
-		proto.UpdateMask.Append(proto, "aws_dx_virtual_interface_ids")
-		if !afterData.AwsDxVirtualInterfaceIds.IsUnknown() && !afterData.AwsDxVirtualInterfaceIds.IsNull() {
-			var dataValue attr.Value = afterData.AwsDxVirtualInterfaceIds
-			var protoValue []string
-			{
-				dataElements := dataValue.(types.List).Elements()
-				protoValues := make([]string, 0, len(dataElements))
-				for _, dataElement := range dataElements {
-					var dataValue attr.Value = dataElement
-					var protoValue string
-					protoValue = dataValue.(types.String).ValueString()
-					protoValues = append(protoValues, protoValue)
-				}
-				protoValue = protoValues
-			}
-			proto.AwsDxVirtualInterfaceIds = protoValue
-		}
-	}
-	if !afterData.AwsEbsVolumeIds.Equal(beforeData.AwsEbsVolumeIds) {
-		proto.UpdateMask.Append(proto, "aws_ebs_volume_ids")
-		if !afterData.AwsEbsVolumeIds.IsUnknown() && !afterData.AwsEbsVolumeIds.IsNull() {
-			var dataValue attr.Value = afterData.AwsEbsVolumeIds
-			var protoValue []string
-			{
-				dataElements := dataValue.(types.List).Elements()
-				protoValues := make([]string, 0, len(dataElements))
-				for _, dataElement := range dataElements {
-					var dataValue attr.Value = dataElement
-					var protoValue string
-					protoValue = dataValue.(types.String).ValueString()
-					protoValues = append(protoValues, protoValue)
-				}
-				protoValue = protoValues
-			}
-			proto.AwsEbsVolumeIds = protoValue
-		}
-	}
-	if !afterData.AwsEc2InstanceConnectEndpointIds.Equal(beforeData.AwsEc2InstanceConnectEndpointIds) {
-		proto.UpdateMask.Append(proto, "aws_ec2_instance_connect_endpoint_ids")
-		if !afterData.AwsEc2InstanceConnectEndpointIds.IsUnknown() && !afterData.AwsEc2InstanceConnectEndpointIds.IsNull() {
-			var dataValue attr.Value = afterData.AwsEc2InstanceConnectEndpointIds
-			var protoValue []string
-			{
-				dataElements := dataValue.(types.List).Elements()
-				protoValues := make([]string, 0, len(dataElements))
-				for _, dataElement := range dataElements {
-					var dataValue attr.Value = dataElement
-					var protoValue string
-					protoValue = dataValue.(types.String).ValueString()
-					protoValues = append(protoValues, protoValue)
-				}
-				protoValue = protoValues
-			}
-			proto.AwsEc2InstanceConnectEndpointIds = protoValue
-		}
-	}
 	if !afterData.AwsEc2TransitGatewayAttachmentIds.Equal(beforeData.AwsEc2TransitGatewayAttachmentIds) {
 		proto.UpdateMask.Append(proto, "aws_ec2_transit_gateway_attachment_ids")
 		if !afterData.AwsEc2TransitGatewayAttachmentIds.IsUnknown() && !afterData.AwsEc2TransitGatewayAttachmentIds.IsNull() {
@@ -5687,120 +5269,6 @@ func NewUpdateApplicationAwsResourcesRequest(ctx context.Context, beforeData, af
 			proto.AwsEc2TransitGatewayAttachmentIds = protoValue
 		}
 	}
-	if !afterData.AwsEc2TransitGatewayIds.Equal(beforeData.AwsEc2TransitGatewayIds) {
-		proto.UpdateMask.Append(proto, "aws_ec2_transit_gateway_ids")
-		if !afterData.AwsEc2TransitGatewayIds.IsUnknown() && !afterData.AwsEc2TransitGatewayIds.IsNull() {
-			var dataValue attr.Value = afterData.AwsEc2TransitGatewayIds
-			var protoValue []string
-			{
-				dataElements := dataValue.(types.List).Elements()
-				protoValues := make([]string, 0, len(dataElements))
-				for _, dataElement := range dataElements {
-					var dataValue attr.Value = dataElement
-					var protoValue string
-					protoValue = dataValue.(types.String).ValueString()
-					protoValues = append(protoValues, protoValue)
-				}
-				protoValue = protoValues
-			}
-			proto.AwsEc2TransitGatewayIds = protoValue
-		}
-	}
-	if !afterData.AwsEc2TransitGatewayMulticastDomainIds.Equal(beforeData.AwsEc2TransitGatewayMulticastDomainIds) {
-		proto.UpdateMask.Append(proto, "aws_ec2_transit_gateway_multicast_domain_ids")
-		if !afterData.AwsEc2TransitGatewayMulticastDomainIds.IsUnknown() && !afterData.AwsEc2TransitGatewayMulticastDomainIds.IsNull() {
-			var dataValue attr.Value = afterData.AwsEc2TransitGatewayMulticastDomainIds
-			var protoValue []string
-			{
-				dataElements := dataValue.(types.List).Elements()
-				protoValues := make([]string, 0, len(dataElements))
-				for _, dataElement := range dataElements {
-					var dataValue attr.Value = dataElement
-					var protoValue string
-					protoValue = dataValue.(types.String).ValueString()
-					protoValues = append(protoValues, protoValue)
-				}
-				protoValue = protoValues
-			}
-			proto.AwsEc2TransitGatewayMulticastDomainIds = protoValue
-		}
-	}
-	if !afterData.AwsEc2TransitGatewayRouteTableIds.Equal(beforeData.AwsEc2TransitGatewayRouteTableIds) {
-		proto.UpdateMask.Append(proto, "aws_ec2_transit_gateway_route_table_ids")
-		if !afterData.AwsEc2TransitGatewayRouteTableIds.IsUnknown() && !afterData.AwsEc2TransitGatewayRouteTableIds.IsNull() {
-			var dataValue attr.Value = afterData.AwsEc2TransitGatewayRouteTableIds
-			var protoValue []string
-			{
-				dataElements := dataValue.(types.List).Elements()
-				protoValues := make([]string, 0, len(dataElements))
-				for _, dataElement := range dataElements {
-					var dataValue attr.Value = dataElement
-					var protoValue string
-					protoValue = dataValue.(types.String).ValueString()
-					protoValues = append(protoValues, protoValue)
-				}
-				protoValue = protoValues
-			}
-			proto.AwsEc2TransitGatewayRouteTableIds = protoValue
-		}
-	}
-	if !afterData.AwsEgressOnlyInternetGatewayIds.Equal(beforeData.AwsEgressOnlyInternetGatewayIds) {
-		proto.UpdateMask.Append(proto, "aws_egress_only_internet_gateway_ids")
-		if !afterData.AwsEgressOnlyInternetGatewayIds.IsUnknown() && !afterData.AwsEgressOnlyInternetGatewayIds.IsNull() {
-			var dataValue attr.Value = afterData.AwsEgressOnlyInternetGatewayIds
-			var protoValue []string
-			{
-				dataElements := dataValue.(types.List).Elements()
-				protoValues := make([]string, 0, len(dataElements))
-				for _, dataElement := range dataElements {
-					var dataValue attr.Value = dataElement
-					var protoValue string
-					protoValue = dataValue.(types.String).ValueString()
-					protoValues = append(protoValues, protoValue)
-				}
-				protoValue = protoValues
-			}
-			proto.AwsEgressOnlyInternetGatewayIds = protoValue
-		}
-	}
-	if !afterData.AwsEipIds.Equal(beforeData.AwsEipIds) {
-		proto.UpdateMask.Append(proto, "aws_eip_ids")
-		if !afterData.AwsEipIds.IsUnknown() && !afterData.AwsEipIds.IsNull() {
-			var dataValue attr.Value = afterData.AwsEipIds
-			var protoValue []string
-			{
-				dataElements := dataValue.(types.List).Elements()
-				protoValues := make([]string, 0, len(dataElements))
-				for _, dataElement := range dataElements {
-					var dataValue attr.Value = dataElement
-					var protoValue string
-					protoValue = dataValue.(types.String).ValueString()
-					protoValues = append(protoValues, protoValue)
-				}
-				protoValue = protoValues
-			}
-			proto.AwsEipIds = protoValue
-		}
-	}
-	if !afterData.AwsFlowLogIds.Equal(beforeData.AwsFlowLogIds) {
-		proto.UpdateMask.Append(proto, "aws_flow_log_ids")
-		if !afterData.AwsFlowLogIds.IsUnknown() && !afterData.AwsFlowLogIds.IsNull() {
-			var dataValue attr.Value = afterData.AwsFlowLogIds
-			var protoValue []string
-			{
-				dataElements := dataValue.(types.List).Elements()
-				protoValues := make([]string, 0, len(dataElements))
-				for _, dataElement := range dataElements {
-					var dataValue attr.Value = dataElement
-					var protoValue string
-					protoValue = dataValue.(types.String).ValueString()
-					protoValues = append(protoValues, protoValue)
-				}
-				protoValue = protoValues
-			}
-			proto.AwsFlowLogIds = protoValue
-		}
-	}
 	if !afterData.AwsInstancesIds.Equal(beforeData.AwsInstancesIds) {
 		proto.UpdateMask.Append(proto, "aws_instances_ids")
 		if !afterData.AwsInstancesIds.IsUnknown() && !afterData.AwsInstancesIds.IsNull() {
@@ -5818,25 +5286,6 @@ func NewUpdateApplicationAwsResourcesRequest(ctx context.Context, beforeData, af
 				protoValue = protoValues
 			}
 			proto.AwsInstancesIds = protoValue
-		}
-	}
-	if !afterData.AwsInternetGatewayIds.Equal(beforeData.AwsInternetGatewayIds) {
-		proto.UpdateMask.Append(proto, "aws_internet_gateway_ids")
-		if !afterData.AwsInternetGatewayIds.IsUnknown() && !afterData.AwsInternetGatewayIds.IsNull() {
-			var dataValue attr.Value = afterData.AwsInternetGatewayIds
-			var protoValue []string
-			{
-				dataElements := dataValue.(types.List).Elements()
-				protoValues := make([]string, 0, len(dataElements))
-				for _, dataElement := range dataElements {
-					var dataValue attr.Value = dataElement
-					var protoValue string
-					protoValue = dataValue.(types.String).ValueString()
-					protoValues = append(protoValues, protoValue)
-				}
-				protoValue = protoValues
-			}
-			proto.AwsInternetGatewayIds = protoValue
 		}
 	}
 	if !afterData.AwsNatGatewayIds.Equal(beforeData.AwsNatGatewayIds) {
@@ -5915,25 +5364,6 @@ func NewUpdateApplicationAwsResourcesRequest(ctx context.Context, beforeData, af
 			proto.AwsRdsClusterIds = protoValue
 		}
 	}
-	if !afterData.AwsRouteTableIds.Equal(beforeData.AwsRouteTableIds) {
-		proto.UpdateMask.Append(proto, "aws_route_table_ids")
-		if !afterData.AwsRouteTableIds.IsUnknown() && !afterData.AwsRouteTableIds.IsNull() {
-			var dataValue attr.Value = afterData.AwsRouteTableIds
-			var protoValue []string
-			{
-				dataElements := dataValue.(types.List).Elements()
-				protoValues := make([]string, 0, len(dataElements))
-				for _, dataElement := range dataElements {
-					var dataValue attr.Value = dataElement
-					var protoValue string
-					protoValue = dataValue.(types.String).ValueString()
-					protoValues = append(protoValues, protoValue)
-				}
-				protoValue = protoValues
-			}
-			proto.AwsRouteTableIds = protoValue
-		}
-	}
 	if !afterData.AwsSecurityGroupIds.Equal(beforeData.AwsSecurityGroupIds) {
 		proto.UpdateMask.Append(proto, "aws_security_group_ids")
 		if !afterData.AwsSecurityGroupIds.IsUnknown() && !afterData.AwsSecurityGroupIds.IsNull() {
@@ -5951,63 +5381,6 @@ func NewUpdateApplicationAwsResourcesRequest(ctx context.Context, beforeData, af
 				protoValue = protoValues
 			}
 			proto.AwsSecurityGroupIds = protoValue
-		}
-	}
-	if !afterData.AwsSecurityGroupRuleIds.Equal(beforeData.AwsSecurityGroupRuleIds) {
-		proto.UpdateMask.Append(proto, "aws_security_group_rule_ids")
-		if !afterData.AwsSecurityGroupRuleIds.IsUnknown() && !afterData.AwsSecurityGroupRuleIds.IsNull() {
-			var dataValue attr.Value = afterData.AwsSecurityGroupRuleIds
-			var protoValue []string
-			{
-				dataElements := dataValue.(types.List).Elements()
-				protoValues := make([]string, 0, len(dataElements))
-				for _, dataElement := range dataElements {
-					var dataValue attr.Value = dataElement
-					var protoValue string
-					protoValue = dataValue.(types.String).ValueString()
-					protoValues = append(protoValues, protoValue)
-				}
-				protoValue = protoValues
-			}
-			proto.AwsSecurityGroupRuleIds = protoValue
-		}
-	}
-	if !afterData.AwsSpotFleetRequestIds.Equal(beforeData.AwsSpotFleetRequestIds) {
-		proto.UpdateMask.Append(proto, "aws_spot_fleet_request_ids")
-		if !afterData.AwsSpotFleetRequestIds.IsUnknown() && !afterData.AwsSpotFleetRequestIds.IsNull() {
-			var dataValue attr.Value = afterData.AwsSpotFleetRequestIds
-			var protoValue []string
-			{
-				dataElements := dataValue.(types.List).Elements()
-				protoValues := make([]string, 0, len(dataElements))
-				for _, dataElement := range dataElements {
-					var dataValue attr.Value = dataElement
-					var protoValue string
-					protoValue = dataValue.(types.String).ValueString()
-					protoValues = append(protoValues, protoValue)
-				}
-				protoValue = protoValues
-			}
-			proto.AwsSpotFleetRequestIds = protoValue
-		}
-	}
-	if !afterData.AwsSpotInstanceRequestIds.Equal(beforeData.AwsSpotInstanceRequestIds) {
-		proto.UpdateMask.Append(proto, "aws_spot_instance_request_ids")
-		if !afterData.AwsSpotInstanceRequestIds.IsUnknown() && !afterData.AwsSpotInstanceRequestIds.IsNull() {
-			var dataValue attr.Value = afterData.AwsSpotInstanceRequestIds
-			var protoValue []string
-			{
-				dataElements := dataValue.(types.List).Elements()
-				protoValues := make([]string, 0, len(dataElements))
-				for _, dataElement := range dataElements {
-					var dataValue attr.Value = dataElement
-					var protoValue string
-					protoValue = dataValue.(types.String).ValueString()
-					protoValues = append(protoValues, protoValue)
-				}
-				protoValue = protoValues
-			}
-			proto.AwsSpotInstanceRequestIds = protoValue
 		}
 	}
 	if !afterData.AwsSubnetIds.Equal(beforeData.AwsSubnetIds) {
@@ -6048,25 +5421,6 @@ func NewUpdateApplicationAwsResourcesRequest(ctx context.Context, beforeData, af
 			proto.AwsVpcEndpointIds = protoValue
 		}
 	}
-	if !afterData.AwsVpcEndpointServiceIds.Equal(beforeData.AwsVpcEndpointServiceIds) {
-		proto.UpdateMask.Append(proto, "aws_vpc_endpoint_service_ids")
-		if !afterData.AwsVpcEndpointServiceIds.IsUnknown() && !afterData.AwsVpcEndpointServiceIds.IsNull() {
-			var dataValue attr.Value = afterData.AwsVpcEndpointServiceIds
-			var protoValue []string
-			{
-				dataElements := dataValue.(types.List).Elements()
-				protoValues := make([]string, 0, len(dataElements))
-				for _, dataElement := range dataElements {
-					var dataValue attr.Value = dataElement
-					var protoValue string
-					protoValue = dataValue.(types.String).ValueString()
-					protoValues = append(protoValues, protoValue)
-				}
-				protoValue = protoValues
-			}
-			proto.AwsVpcEndpointServiceIds = protoValue
-		}
-	}
 	if !afterData.AwsVpcIds.Equal(beforeData.AwsVpcIds) {
 		proto.UpdateMask.Append(proto, "aws_vpc_ids")
 		if !afterData.AwsVpcIds.IsUnknown() && !afterData.AwsVpcIds.IsNull() {
@@ -6103,44 +5457,6 @@ func NewUpdateApplicationAwsResourcesRequest(ctx context.Context, beforeData, af
 				protoValue = protoValues
 			}
 			proto.AwsVpcPeeringConnectionIds = protoValue
-		}
-	}
-	if !afterData.AwsVpnConnectionIds.Equal(beforeData.AwsVpnConnectionIds) {
-		proto.UpdateMask.Append(proto, "aws_vpn_connection_ids")
-		if !afterData.AwsVpnConnectionIds.IsUnknown() && !afterData.AwsVpnConnectionIds.IsNull() {
-			var dataValue attr.Value = afterData.AwsVpnConnectionIds
-			var protoValue []string
-			{
-				dataElements := dataValue.(types.List).Elements()
-				protoValues := make([]string, 0, len(dataElements))
-				for _, dataElement := range dataElements {
-					var dataValue attr.Value = dataElement
-					var protoValue string
-					protoValue = dataValue.(types.String).ValueString()
-					protoValues = append(protoValues, protoValue)
-				}
-				protoValue = protoValues
-			}
-			proto.AwsVpnConnectionIds = protoValue
-		}
-	}
-	if !afterData.AwsVpnGatewayIds.Equal(beforeData.AwsVpnGatewayIds) {
-		proto.UpdateMask.Append(proto, "aws_vpn_gateway_ids")
-		if !afterData.AwsVpnGatewayIds.IsUnknown() && !afterData.AwsVpnGatewayIds.IsNull() {
-			var dataValue attr.Value = afterData.AwsVpnGatewayIds
-			var protoValue []string
-			{
-				dataElements := dataValue.(types.List).Elements()
-				protoValues := make([]string, 0, len(dataElements))
-				for _, dataElement := range dataElements {
-					var dataValue attr.Value = dataElement
-					var protoValue string
-					protoValue = dataValue.(types.String).ValueString()
-					protoValues = append(protoValues, protoValue)
-				}
-				protoValue = protoValues
-			}
-			proto.AwsVpnGatewayIds = protoValue
 		}
 	}
 	return proto, diags
@@ -7112,111 +6428,6 @@ func CopyCreateApplicationAwsResourcesResponse(dst *ApplicationAwsResourcesResou
 		dst.Arns = dataValue
 	}
 	{
-		protoValue := src.AwsCustomerGatewayIds
-		var dataValue types.List
-		{
-			dataElementType := types.StringType
-			protoElements := protoValue
-			if protoElements == nil {
-				dataValue = types.ListNull(dataElementType)
-			} else {
-				dataValues := make([]attr.Value, 0, len(protoElements))
-				for _, protoElement := range protoElements {
-					var protoValue string = protoElement
-					var dataValue attr.Value
-					dataValue = types.StringValue(protoValue)
-					dataValues = append(dataValues, dataValue)
-				}
-				dataValue = types.ListValueMust(dataElementType, dataValues)
-			}
-		}
-		dst.AwsCustomerGatewayIds = dataValue
-	}
-	{
-		protoValue := src.AwsDxConnectionIds
-		var dataValue types.List
-		{
-			dataElementType := types.StringType
-			protoElements := protoValue
-			if protoElements == nil {
-				dataValue = types.ListNull(dataElementType)
-			} else {
-				dataValues := make([]attr.Value, 0, len(protoElements))
-				for _, protoElement := range protoElements {
-					var protoValue string = protoElement
-					var dataValue attr.Value
-					dataValue = types.StringValue(protoValue)
-					dataValues = append(dataValues, dataValue)
-				}
-				dataValue = types.ListValueMust(dataElementType, dataValues)
-			}
-		}
-		dst.AwsDxConnectionIds = dataValue
-	}
-	{
-		protoValue := src.AwsDxVirtualInterfaceIds
-		var dataValue types.List
-		{
-			dataElementType := types.StringType
-			protoElements := protoValue
-			if protoElements == nil {
-				dataValue = types.ListNull(dataElementType)
-			} else {
-				dataValues := make([]attr.Value, 0, len(protoElements))
-				for _, protoElement := range protoElements {
-					var protoValue string = protoElement
-					var dataValue attr.Value
-					dataValue = types.StringValue(protoValue)
-					dataValues = append(dataValues, dataValue)
-				}
-				dataValue = types.ListValueMust(dataElementType, dataValues)
-			}
-		}
-		dst.AwsDxVirtualInterfaceIds = dataValue
-	}
-	{
-		protoValue := src.AwsEbsVolumeIds
-		var dataValue types.List
-		{
-			dataElementType := types.StringType
-			protoElements := protoValue
-			if protoElements == nil {
-				dataValue = types.ListNull(dataElementType)
-			} else {
-				dataValues := make([]attr.Value, 0, len(protoElements))
-				for _, protoElement := range protoElements {
-					var protoValue string = protoElement
-					var dataValue attr.Value
-					dataValue = types.StringValue(protoValue)
-					dataValues = append(dataValues, dataValue)
-				}
-				dataValue = types.ListValueMust(dataElementType, dataValues)
-			}
-		}
-		dst.AwsEbsVolumeIds = dataValue
-	}
-	{
-		protoValue := src.AwsEc2InstanceConnectEndpointIds
-		var dataValue types.List
-		{
-			dataElementType := types.StringType
-			protoElements := protoValue
-			if protoElements == nil {
-				dataValue = types.ListNull(dataElementType)
-			} else {
-				dataValues := make([]attr.Value, 0, len(protoElements))
-				for _, protoElement := range protoElements {
-					var protoValue string = protoElement
-					var dataValue attr.Value
-					dataValue = types.StringValue(protoValue)
-					dataValues = append(dataValues, dataValue)
-				}
-				dataValue = types.ListValueMust(dataElementType, dataValues)
-			}
-		}
-		dst.AwsEc2InstanceConnectEndpointIds = dataValue
-	}
-	{
 		protoValue := src.AwsEc2TransitGatewayAttachmentIds
 		var dataValue types.List
 		{
@@ -7238,132 +6449,6 @@ func CopyCreateApplicationAwsResourcesResponse(dst *ApplicationAwsResourcesResou
 		dst.AwsEc2TransitGatewayAttachmentIds = dataValue
 	}
 	{
-		protoValue := src.AwsEc2TransitGatewayIds
-		var dataValue types.List
-		{
-			dataElementType := types.StringType
-			protoElements := protoValue
-			if protoElements == nil {
-				dataValue = types.ListNull(dataElementType)
-			} else {
-				dataValues := make([]attr.Value, 0, len(protoElements))
-				for _, protoElement := range protoElements {
-					var protoValue string = protoElement
-					var dataValue attr.Value
-					dataValue = types.StringValue(protoValue)
-					dataValues = append(dataValues, dataValue)
-				}
-				dataValue = types.ListValueMust(dataElementType, dataValues)
-			}
-		}
-		dst.AwsEc2TransitGatewayIds = dataValue
-	}
-	{
-		protoValue := src.AwsEc2TransitGatewayMulticastDomainIds
-		var dataValue types.List
-		{
-			dataElementType := types.StringType
-			protoElements := protoValue
-			if protoElements == nil {
-				dataValue = types.ListNull(dataElementType)
-			} else {
-				dataValues := make([]attr.Value, 0, len(protoElements))
-				for _, protoElement := range protoElements {
-					var protoValue string = protoElement
-					var dataValue attr.Value
-					dataValue = types.StringValue(protoValue)
-					dataValues = append(dataValues, dataValue)
-				}
-				dataValue = types.ListValueMust(dataElementType, dataValues)
-			}
-		}
-		dst.AwsEc2TransitGatewayMulticastDomainIds = dataValue
-	}
-	{
-		protoValue := src.AwsEc2TransitGatewayRouteTableIds
-		var dataValue types.List
-		{
-			dataElementType := types.StringType
-			protoElements := protoValue
-			if protoElements == nil {
-				dataValue = types.ListNull(dataElementType)
-			} else {
-				dataValues := make([]attr.Value, 0, len(protoElements))
-				for _, protoElement := range protoElements {
-					var protoValue string = protoElement
-					var dataValue attr.Value
-					dataValue = types.StringValue(protoValue)
-					dataValues = append(dataValues, dataValue)
-				}
-				dataValue = types.ListValueMust(dataElementType, dataValues)
-			}
-		}
-		dst.AwsEc2TransitGatewayRouteTableIds = dataValue
-	}
-	{
-		protoValue := src.AwsEgressOnlyInternetGatewayIds
-		var dataValue types.List
-		{
-			dataElementType := types.StringType
-			protoElements := protoValue
-			if protoElements == nil {
-				dataValue = types.ListNull(dataElementType)
-			} else {
-				dataValues := make([]attr.Value, 0, len(protoElements))
-				for _, protoElement := range protoElements {
-					var protoValue string = protoElement
-					var dataValue attr.Value
-					dataValue = types.StringValue(protoValue)
-					dataValues = append(dataValues, dataValue)
-				}
-				dataValue = types.ListValueMust(dataElementType, dataValues)
-			}
-		}
-		dst.AwsEgressOnlyInternetGatewayIds = dataValue
-	}
-	{
-		protoValue := src.AwsEipIds
-		var dataValue types.List
-		{
-			dataElementType := types.StringType
-			protoElements := protoValue
-			if protoElements == nil {
-				dataValue = types.ListNull(dataElementType)
-			} else {
-				dataValues := make([]attr.Value, 0, len(protoElements))
-				for _, protoElement := range protoElements {
-					var protoValue string = protoElement
-					var dataValue attr.Value
-					dataValue = types.StringValue(protoValue)
-					dataValues = append(dataValues, dataValue)
-				}
-				dataValue = types.ListValueMust(dataElementType, dataValues)
-			}
-		}
-		dst.AwsEipIds = dataValue
-	}
-	{
-		protoValue := src.AwsFlowLogIds
-		var dataValue types.List
-		{
-			dataElementType := types.StringType
-			protoElements := protoValue
-			if protoElements == nil {
-				dataValue = types.ListNull(dataElementType)
-			} else {
-				dataValues := make([]attr.Value, 0, len(protoElements))
-				for _, protoElement := range protoElements {
-					var protoValue string = protoElement
-					var dataValue attr.Value
-					dataValue = types.StringValue(protoValue)
-					dataValues = append(dataValues, dataValue)
-				}
-				dataValue = types.ListValueMust(dataElementType, dataValues)
-			}
-		}
-		dst.AwsFlowLogIds = dataValue
-	}
-	{
 		protoValue := src.AwsInstancesIds
 		var dataValue types.List
 		{
@@ -7383,27 +6468,6 @@ func CopyCreateApplicationAwsResourcesResponse(dst *ApplicationAwsResourcesResou
 			}
 		}
 		dst.AwsInstancesIds = dataValue
-	}
-	{
-		protoValue := src.AwsInternetGatewayIds
-		var dataValue types.List
-		{
-			dataElementType := types.StringType
-			protoElements := protoValue
-			if protoElements == nil {
-				dataValue = types.ListNull(dataElementType)
-			} else {
-				dataValues := make([]attr.Value, 0, len(protoElements))
-				for _, protoElement := range protoElements {
-					var protoValue string = protoElement
-					var dataValue attr.Value
-					dataValue = types.StringValue(protoValue)
-					dataValues = append(dataValues, dataValue)
-				}
-				dataValue = types.ListValueMust(dataElementType, dataValues)
-			}
-		}
-		dst.AwsInternetGatewayIds = dataValue
 	}
 	{
 		protoValue := src.AwsNatGatewayIds
@@ -7490,27 +6554,6 @@ func CopyCreateApplicationAwsResourcesResponse(dst *ApplicationAwsResourcesResou
 		dst.AwsRdsClusterIds = dataValue
 	}
 	{
-		protoValue := src.AwsRouteTableIds
-		var dataValue types.List
-		{
-			dataElementType := types.StringType
-			protoElements := protoValue
-			if protoElements == nil {
-				dataValue = types.ListNull(dataElementType)
-			} else {
-				dataValues := make([]attr.Value, 0, len(protoElements))
-				for _, protoElement := range protoElements {
-					var protoValue string = protoElement
-					var dataValue attr.Value
-					dataValue = types.StringValue(protoValue)
-					dataValues = append(dataValues, dataValue)
-				}
-				dataValue = types.ListValueMust(dataElementType, dataValues)
-			}
-		}
-		dst.AwsRouteTableIds = dataValue
-	}
-	{
 		protoValue := src.AwsSecurityGroupIds
 		var dataValue types.List
 		{
@@ -7530,69 +6573,6 @@ func CopyCreateApplicationAwsResourcesResponse(dst *ApplicationAwsResourcesResou
 			}
 		}
 		dst.AwsSecurityGroupIds = dataValue
-	}
-	{
-		protoValue := src.AwsSecurityGroupRuleIds
-		var dataValue types.List
-		{
-			dataElementType := types.StringType
-			protoElements := protoValue
-			if protoElements == nil {
-				dataValue = types.ListNull(dataElementType)
-			} else {
-				dataValues := make([]attr.Value, 0, len(protoElements))
-				for _, protoElement := range protoElements {
-					var protoValue string = protoElement
-					var dataValue attr.Value
-					dataValue = types.StringValue(protoValue)
-					dataValues = append(dataValues, dataValue)
-				}
-				dataValue = types.ListValueMust(dataElementType, dataValues)
-			}
-		}
-		dst.AwsSecurityGroupRuleIds = dataValue
-	}
-	{
-		protoValue := src.AwsSpotFleetRequestIds
-		var dataValue types.List
-		{
-			dataElementType := types.StringType
-			protoElements := protoValue
-			if protoElements == nil {
-				dataValue = types.ListNull(dataElementType)
-			} else {
-				dataValues := make([]attr.Value, 0, len(protoElements))
-				for _, protoElement := range protoElements {
-					var protoValue string = protoElement
-					var dataValue attr.Value
-					dataValue = types.StringValue(protoValue)
-					dataValues = append(dataValues, dataValue)
-				}
-				dataValue = types.ListValueMust(dataElementType, dataValues)
-			}
-		}
-		dst.AwsSpotFleetRequestIds = dataValue
-	}
-	{
-		protoValue := src.AwsSpotInstanceRequestIds
-		var dataValue types.List
-		{
-			dataElementType := types.StringType
-			protoElements := protoValue
-			if protoElements == nil {
-				dataValue = types.ListNull(dataElementType)
-			} else {
-				dataValues := make([]attr.Value, 0, len(protoElements))
-				for _, protoElement := range protoElements {
-					var protoValue string = protoElement
-					var dataValue attr.Value
-					dataValue = types.StringValue(protoValue)
-					dataValues = append(dataValues, dataValue)
-				}
-				dataValue = types.ListValueMust(dataElementType, dataValues)
-			}
-		}
-		dst.AwsSpotInstanceRequestIds = dataValue
 	}
 	{
 		protoValue := src.AwsSubnetIds
@@ -7637,27 +6617,6 @@ func CopyCreateApplicationAwsResourcesResponse(dst *ApplicationAwsResourcesResou
 		dst.AwsVpcEndpointIds = dataValue
 	}
 	{
-		protoValue := src.AwsVpcEndpointServiceIds
-		var dataValue types.List
-		{
-			dataElementType := types.StringType
-			protoElements := protoValue
-			if protoElements == nil {
-				dataValue = types.ListNull(dataElementType)
-			} else {
-				dataValues := make([]attr.Value, 0, len(protoElements))
-				for _, protoElement := range protoElements {
-					var protoValue string = protoElement
-					var dataValue attr.Value
-					dataValue = types.StringValue(protoValue)
-					dataValues = append(dataValues, dataValue)
-				}
-				dataValue = types.ListValueMust(dataElementType, dataValues)
-			}
-		}
-		dst.AwsVpcEndpointServiceIds = dataValue
-	}
-	{
 		protoValue := src.AwsVpcIds
 		var dataValue types.List
 		{
@@ -7698,48 +6657,6 @@ func CopyCreateApplicationAwsResourcesResponse(dst *ApplicationAwsResourcesResou
 			}
 		}
 		dst.AwsVpcPeeringConnectionIds = dataValue
-	}
-	{
-		protoValue := src.AwsVpnConnectionIds
-		var dataValue types.List
-		{
-			dataElementType := types.StringType
-			protoElements := protoValue
-			if protoElements == nil {
-				dataValue = types.ListNull(dataElementType)
-			} else {
-				dataValues := make([]attr.Value, 0, len(protoElements))
-				for _, protoElement := range protoElements {
-					var protoValue string = protoElement
-					var dataValue attr.Value
-					dataValue = types.StringValue(protoValue)
-					dataValues = append(dataValues, dataValue)
-				}
-				dataValue = types.ListValueMust(dataElementType, dataValues)
-			}
-		}
-		dst.AwsVpnConnectionIds = dataValue
-	}
-	{
-		protoValue := src.AwsVpnGatewayIds
-		var dataValue types.List
-		{
-			dataElementType := types.StringType
-			protoElements := protoValue
-			if protoElements == nil {
-				dataValue = types.ListNull(dataElementType)
-			} else {
-				dataValues := make([]attr.Value, 0, len(protoElements))
-				for _, protoElement := range protoElements {
-					var protoValue string = protoElement
-					var dataValue attr.Value
-					dataValue = types.StringValue(protoValue)
-					dataValues = append(dataValues, dataValue)
-				}
-				dataValue = types.ListValueMust(dataElementType, dataValues)
-			}
-		}
-		dst.AwsVpnGatewayIds = dataValue
 	}
 }
 func CopyReadApplicationAwsResourcesResponse(dst *ApplicationAwsResourcesResourceModel, src *configv1.ReadApplicationAwsResourcesResponse) {
@@ -7789,111 +6706,6 @@ func CopyReadApplicationAwsResourcesResponse(dst *ApplicationAwsResourcesResourc
 		dst.Arns = dataValue
 	}
 	{
-		protoValue := src.AwsCustomerGatewayIds
-		var dataValue types.List
-		{
-			dataElementType := types.StringType
-			protoElements := protoValue
-			if protoElements == nil {
-				dataValue = types.ListNull(dataElementType)
-			} else {
-				dataValues := make([]attr.Value, 0, len(protoElements))
-				for _, protoElement := range protoElements {
-					var protoValue string = protoElement
-					var dataValue attr.Value
-					dataValue = types.StringValue(protoValue)
-					dataValues = append(dataValues, dataValue)
-				}
-				dataValue = types.ListValueMust(dataElementType, dataValues)
-			}
-		}
-		dst.AwsCustomerGatewayIds = dataValue
-	}
-	{
-		protoValue := src.AwsDxConnectionIds
-		var dataValue types.List
-		{
-			dataElementType := types.StringType
-			protoElements := protoValue
-			if protoElements == nil {
-				dataValue = types.ListNull(dataElementType)
-			} else {
-				dataValues := make([]attr.Value, 0, len(protoElements))
-				for _, protoElement := range protoElements {
-					var protoValue string = protoElement
-					var dataValue attr.Value
-					dataValue = types.StringValue(protoValue)
-					dataValues = append(dataValues, dataValue)
-				}
-				dataValue = types.ListValueMust(dataElementType, dataValues)
-			}
-		}
-		dst.AwsDxConnectionIds = dataValue
-	}
-	{
-		protoValue := src.AwsDxVirtualInterfaceIds
-		var dataValue types.List
-		{
-			dataElementType := types.StringType
-			protoElements := protoValue
-			if protoElements == nil {
-				dataValue = types.ListNull(dataElementType)
-			} else {
-				dataValues := make([]attr.Value, 0, len(protoElements))
-				for _, protoElement := range protoElements {
-					var protoValue string = protoElement
-					var dataValue attr.Value
-					dataValue = types.StringValue(protoValue)
-					dataValues = append(dataValues, dataValue)
-				}
-				dataValue = types.ListValueMust(dataElementType, dataValues)
-			}
-		}
-		dst.AwsDxVirtualInterfaceIds = dataValue
-	}
-	{
-		protoValue := src.AwsEbsVolumeIds
-		var dataValue types.List
-		{
-			dataElementType := types.StringType
-			protoElements := protoValue
-			if protoElements == nil {
-				dataValue = types.ListNull(dataElementType)
-			} else {
-				dataValues := make([]attr.Value, 0, len(protoElements))
-				for _, protoElement := range protoElements {
-					var protoValue string = protoElement
-					var dataValue attr.Value
-					dataValue = types.StringValue(protoValue)
-					dataValues = append(dataValues, dataValue)
-				}
-				dataValue = types.ListValueMust(dataElementType, dataValues)
-			}
-		}
-		dst.AwsEbsVolumeIds = dataValue
-	}
-	{
-		protoValue := src.AwsEc2InstanceConnectEndpointIds
-		var dataValue types.List
-		{
-			dataElementType := types.StringType
-			protoElements := protoValue
-			if protoElements == nil {
-				dataValue = types.ListNull(dataElementType)
-			} else {
-				dataValues := make([]attr.Value, 0, len(protoElements))
-				for _, protoElement := range protoElements {
-					var protoValue string = protoElement
-					var dataValue attr.Value
-					dataValue = types.StringValue(protoValue)
-					dataValues = append(dataValues, dataValue)
-				}
-				dataValue = types.ListValueMust(dataElementType, dataValues)
-			}
-		}
-		dst.AwsEc2InstanceConnectEndpointIds = dataValue
-	}
-	{
 		protoValue := src.AwsEc2TransitGatewayAttachmentIds
 		var dataValue types.List
 		{
@@ -7915,132 +6727,6 @@ func CopyReadApplicationAwsResourcesResponse(dst *ApplicationAwsResourcesResourc
 		dst.AwsEc2TransitGatewayAttachmentIds = dataValue
 	}
 	{
-		protoValue := src.AwsEc2TransitGatewayIds
-		var dataValue types.List
-		{
-			dataElementType := types.StringType
-			protoElements := protoValue
-			if protoElements == nil {
-				dataValue = types.ListNull(dataElementType)
-			} else {
-				dataValues := make([]attr.Value, 0, len(protoElements))
-				for _, protoElement := range protoElements {
-					var protoValue string = protoElement
-					var dataValue attr.Value
-					dataValue = types.StringValue(protoValue)
-					dataValues = append(dataValues, dataValue)
-				}
-				dataValue = types.ListValueMust(dataElementType, dataValues)
-			}
-		}
-		dst.AwsEc2TransitGatewayIds = dataValue
-	}
-	{
-		protoValue := src.AwsEc2TransitGatewayMulticastDomainIds
-		var dataValue types.List
-		{
-			dataElementType := types.StringType
-			protoElements := protoValue
-			if protoElements == nil {
-				dataValue = types.ListNull(dataElementType)
-			} else {
-				dataValues := make([]attr.Value, 0, len(protoElements))
-				for _, protoElement := range protoElements {
-					var protoValue string = protoElement
-					var dataValue attr.Value
-					dataValue = types.StringValue(protoValue)
-					dataValues = append(dataValues, dataValue)
-				}
-				dataValue = types.ListValueMust(dataElementType, dataValues)
-			}
-		}
-		dst.AwsEc2TransitGatewayMulticastDomainIds = dataValue
-	}
-	{
-		protoValue := src.AwsEc2TransitGatewayRouteTableIds
-		var dataValue types.List
-		{
-			dataElementType := types.StringType
-			protoElements := protoValue
-			if protoElements == nil {
-				dataValue = types.ListNull(dataElementType)
-			} else {
-				dataValues := make([]attr.Value, 0, len(protoElements))
-				for _, protoElement := range protoElements {
-					var protoValue string = protoElement
-					var dataValue attr.Value
-					dataValue = types.StringValue(protoValue)
-					dataValues = append(dataValues, dataValue)
-				}
-				dataValue = types.ListValueMust(dataElementType, dataValues)
-			}
-		}
-		dst.AwsEc2TransitGatewayRouteTableIds = dataValue
-	}
-	{
-		protoValue := src.AwsEgressOnlyInternetGatewayIds
-		var dataValue types.List
-		{
-			dataElementType := types.StringType
-			protoElements := protoValue
-			if protoElements == nil {
-				dataValue = types.ListNull(dataElementType)
-			} else {
-				dataValues := make([]attr.Value, 0, len(protoElements))
-				for _, protoElement := range protoElements {
-					var protoValue string = protoElement
-					var dataValue attr.Value
-					dataValue = types.StringValue(protoValue)
-					dataValues = append(dataValues, dataValue)
-				}
-				dataValue = types.ListValueMust(dataElementType, dataValues)
-			}
-		}
-		dst.AwsEgressOnlyInternetGatewayIds = dataValue
-	}
-	{
-		protoValue := src.AwsEipIds
-		var dataValue types.List
-		{
-			dataElementType := types.StringType
-			protoElements := protoValue
-			if protoElements == nil {
-				dataValue = types.ListNull(dataElementType)
-			} else {
-				dataValues := make([]attr.Value, 0, len(protoElements))
-				for _, protoElement := range protoElements {
-					var protoValue string = protoElement
-					var dataValue attr.Value
-					dataValue = types.StringValue(protoValue)
-					dataValues = append(dataValues, dataValue)
-				}
-				dataValue = types.ListValueMust(dataElementType, dataValues)
-			}
-		}
-		dst.AwsEipIds = dataValue
-	}
-	{
-		protoValue := src.AwsFlowLogIds
-		var dataValue types.List
-		{
-			dataElementType := types.StringType
-			protoElements := protoValue
-			if protoElements == nil {
-				dataValue = types.ListNull(dataElementType)
-			} else {
-				dataValues := make([]attr.Value, 0, len(protoElements))
-				for _, protoElement := range protoElements {
-					var protoValue string = protoElement
-					var dataValue attr.Value
-					dataValue = types.StringValue(protoValue)
-					dataValues = append(dataValues, dataValue)
-				}
-				dataValue = types.ListValueMust(dataElementType, dataValues)
-			}
-		}
-		dst.AwsFlowLogIds = dataValue
-	}
-	{
 		protoValue := src.AwsInstancesIds
 		var dataValue types.List
 		{
@@ -8060,27 +6746,6 @@ func CopyReadApplicationAwsResourcesResponse(dst *ApplicationAwsResourcesResourc
 			}
 		}
 		dst.AwsInstancesIds = dataValue
-	}
-	{
-		protoValue := src.AwsInternetGatewayIds
-		var dataValue types.List
-		{
-			dataElementType := types.StringType
-			protoElements := protoValue
-			if protoElements == nil {
-				dataValue = types.ListNull(dataElementType)
-			} else {
-				dataValues := make([]attr.Value, 0, len(protoElements))
-				for _, protoElement := range protoElements {
-					var protoValue string = protoElement
-					var dataValue attr.Value
-					dataValue = types.StringValue(protoValue)
-					dataValues = append(dataValues, dataValue)
-				}
-				dataValue = types.ListValueMust(dataElementType, dataValues)
-			}
-		}
-		dst.AwsInternetGatewayIds = dataValue
 	}
 	{
 		protoValue := src.AwsNatGatewayIds
@@ -8167,27 +6832,6 @@ func CopyReadApplicationAwsResourcesResponse(dst *ApplicationAwsResourcesResourc
 		dst.AwsRdsClusterIds = dataValue
 	}
 	{
-		protoValue := src.AwsRouteTableIds
-		var dataValue types.List
-		{
-			dataElementType := types.StringType
-			protoElements := protoValue
-			if protoElements == nil {
-				dataValue = types.ListNull(dataElementType)
-			} else {
-				dataValues := make([]attr.Value, 0, len(protoElements))
-				for _, protoElement := range protoElements {
-					var protoValue string = protoElement
-					var dataValue attr.Value
-					dataValue = types.StringValue(protoValue)
-					dataValues = append(dataValues, dataValue)
-				}
-				dataValue = types.ListValueMust(dataElementType, dataValues)
-			}
-		}
-		dst.AwsRouteTableIds = dataValue
-	}
-	{
 		protoValue := src.AwsSecurityGroupIds
 		var dataValue types.List
 		{
@@ -8207,69 +6851,6 @@ func CopyReadApplicationAwsResourcesResponse(dst *ApplicationAwsResourcesResourc
 			}
 		}
 		dst.AwsSecurityGroupIds = dataValue
-	}
-	{
-		protoValue := src.AwsSecurityGroupRuleIds
-		var dataValue types.List
-		{
-			dataElementType := types.StringType
-			protoElements := protoValue
-			if protoElements == nil {
-				dataValue = types.ListNull(dataElementType)
-			} else {
-				dataValues := make([]attr.Value, 0, len(protoElements))
-				for _, protoElement := range protoElements {
-					var protoValue string = protoElement
-					var dataValue attr.Value
-					dataValue = types.StringValue(protoValue)
-					dataValues = append(dataValues, dataValue)
-				}
-				dataValue = types.ListValueMust(dataElementType, dataValues)
-			}
-		}
-		dst.AwsSecurityGroupRuleIds = dataValue
-	}
-	{
-		protoValue := src.AwsSpotFleetRequestIds
-		var dataValue types.List
-		{
-			dataElementType := types.StringType
-			protoElements := protoValue
-			if protoElements == nil {
-				dataValue = types.ListNull(dataElementType)
-			} else {
-				dataValues := make([]attr.Value, 0, len(protoElements))
-				for _, protoElement := range protoElements {
-					var protoValue string = protoElement
-					var dataValue attr.Value
-					dataValue = types.StringValue(protoValue)
-					dataValues = append(dataValues, dataValue)
-				}
-				dataValue = types.ListValueMust(dataElementType, dataValues)
-			}
-		}
-		dst.AwsSpotFleetRequestIds = dataValue
-	}
-	{
-		protoValue := src.AwsSpotInstanceRequestIds
-		var dataValue types.List
-		{
-			dataElementType := types.StringType
-			protoElements := protoValue
-			if protoElements == nil {
-				dataValue = types.ListNull(dataElementType)
-			} else {
-				dataValues := make([]attr.Value, 0, len(protoElements))
-				for _, protoElement := range protoElements {
-					var protoValue string = protoElement
-					var dataValue attr.Value
-					dataValue = types.StringValue(protoValue)
-					dataValues = append(dataValues, dataValue)
-				}
-				dataValue = types.ListValueMust(dataElementType, dataValues)
-			}
-		}
-		dst.AwsSpotInstanceRequestIds = dataValue
 	}
 	{
 		protoValue := src.AwsSubnetIds
@@ -8314,27 +6895,6 @@ func CopyReadApplicationAwsResourcesResponse(dst *ApplicationAwsResourcesResourc
 		dst.AwsVpcEndpointIds = dataValue
 	}
 	{
-		protoValue := src.AwsVpcEndpointServiceIds
-		var dataValue types.List
-		{
-			dataElementType := types.StringType
-			protoElements := protoValue
-			if protoElements == nil {
-				dataValue = types.ListNull(dataElementType)
-			} else {
-				dataValues := make([]attr.Value, 0, len(protoElements))
-				for _, protoElement := range protoElements {
-					var protoValue string = protoElement
-					var dataValue attr.Value
-					dataValue = types.StringValue(protoValue)
-					dataValues = append(dataValues, dataValue)
-				}
-				dataValue = types.ListValueMust(dataElementType, dataValues)
-			}
-		}
-		dst.AwsVpcEndpointServiceIds = dataValue
-	}
-	{
 		protoValue := src.AwsVpcIds
 		var dataValue types.List
 		{
@@ -8375,48 +6935,6 @@ func CopyReadApplicationAwsResourcesResponse(dst *ApplicationAwsResourcesResourc
 			}
 		}
 		dst.AwsVpcPeeringConnectionIds = dataValue
-	}
-	{
-		protoValue := src.AwsVpnConnectionIds
-		var dataValue types.List
-		{
-			dataElementType := types.StringType
-			protoElements := protoValue
-			if protoElements == nil {
-				dataValue = types.ListNull(dataElementType)
-			} else {
-				dataValues := make([]attr.Value, 0, len(protoElements))
-				for _, protoElement := range protoElements {
-					var protoValue string = protoElement
-					var dataValue attr.Value
-					dataValue = types.StringValue(protoValue)
-					dataValues = append(dataValues, dataValue)
-				}
-				dataValue = types.ListValueMust(dataElementType, dataValues)
-			}
-		}
-		dst.AwsVpnConnectionIds = dataValue
-	}
-	{
-		protoValue := src.AwsVpnGatewayIds
-		var dataValue types.List
-		{
-			dataElementType := types.StringType
-			protoElements := protoValue
-			if protoElements == nil {
-				dataValue = types.ListNull(dataElementType)
-			} else {
-				dataValues := make([]attr.Value, 0, len(protoElements))
-				for _, protoElement := range protoElements {
-					var protoValue string = protoElement
-					var dataValue attr.Value
-					dataValue = types.StringValue(protoValue)
-					dataValues = append(dataValues, dataValue)
-				}
-				dataValue = types.ListValueMust(dataElementType, dataValues)
-			}
-		}
-		dst.AwsVpnGatewayIds = dataValue
 	}
 }
 func CopyUpdateApplicationAwsResourcesResponse(dst *ApplicationAwsResourcesResourceModel, src *configv1.UpdateApplicationAwsResourcesResponse) {
@@ -8466,111 +6984,6 @@ func CopyUpdateApplicationAwsResourcesResponse(dst *ApplicationAwsResourcesResou
 		dst.Arns = dataValue
 	}
 	{
-		protoValue := src.AwsCustomerGatewayIds
-		var dataValue types.List
-		{
-			dataElementType := types.StringType
-			protoElements := protoValue
-			if protoElements == nil {
-				dataValue = types.ListNull(dataElementType)
-			} else {
-				dataValues := make([]attr.Value, 0, len(protoElements))
-				for _, protoElement := range protoElements {
-					var protoValue string = protoElement
-					var dataValue attr.Value
-					dataValue = types.StringValue(protoValue)
-					dataValues = append(dataValues, dataValue)
-				}
-				dataValue = types.ListValueMust(dataElementType, dataValues)
-			}
-		}
-		dst.AwsCustomerGatewayIds = dataValue
-	}
-	{
-		protoValue := src.AwsDxConnectionIds
-		var dataValue types.List
-		{
-			dataElementType := types.StringType
-			protoElements := protoValue
-			if protoElements == nil {
-				dataValue = types.ListNull(dataElementType)
-			} else {
-				dataValues := make([]attr.Value, 0, len(protoElements))
-				for _, protoElement := range protoElements {
-					var protoValue string = protoElement
-					var dataValue attr.Value
-					dataValue = types.StringValue(protoValue)
-					dataValues = append(dataValues, dataValue)
-				}
-				dataValue = types.ListValueMust(dataElementType, dataValues)
-			}
-		}
-		dst.AwsDxConnectionIds = dataValue
-	}
-	{
-		protoValue := src.AwsDxVirtualInterfaceIds
-		var dataValue types.List
-		{
-			dataElementType := types.StringType
-			protoElements := protoValue
-			if protoElements == nil {
-				dataValue = types.ListNull(dataElementType)
-			} else {
-				dataValues := make([]attr.Value, 0, len(protoElements))
-				for _, protoElement := range protoElements {
-					var protoValue string = protoElement
-					var dataValue attr.Value
-					dataValue = types.StringValue(protoValue)
-					dataValues = append(dataValues, dataValue)
-				}
-				dataValue = types.ListValueMust(dataElementType, dataValues)
-			}
-		}
-		dst.AwsDxVirtualInterfaceIds = dataValue
-	}
-	{
-		protoValue := src.AwsEbsVolumeIds
-		var dataValue types.List
-		{
-			dataElementType := types.StringType
-			protoElements := protoValue
-			if protoElements == nil {
-				dataValue = types.ListNull(dataElementType)
-			} else {
-				dataValues := make([]attr.Value, 0, len(protoElements))
-				for _, protoElement := range protoElements {
-					var protoValue string = protoElement
-					var dataValue attr.Value
-					dataValue = types.StringValue(protoValue)
-					dataValues = append(dataValues, dataValue)
-				}
-				dataValue = types.ListValueMust(dataElementType, dataValues)
-			}
-		}
-		dst.AwsEbsVolumeIds = dataValue
-	}
-	{
-		protoValue := src.AwsEc2InstanceConnectEndpointIds
-		var dataValue types.List
-		{
-			dataElementType := types.StringType
-			protoElements := protoValue
-			if protoElements == nil {
-				dataValue = types.ListNull(dataElementType)
-			} else {
-				dataValues := make([]attr.Value, 0, len(protoElements))
-				for _, protoElement := range protoElements {
-					var protoValue string = protoElement
-					var dataValue attr.Value
-					dataValue = types.StringValue(protoValue)
-					dataValues = append(dataValues, dataValue)
-				}
-				dataValue = types.ListValueMust(dataElementType, dataValues)
-			}
-		}
-		dst.AwsEc2InstanceConnectEndpointIds = dataValue
-	}
-	{
 		protoValue := src.AwsEc2TransitGatewayAttachmentIds
 		var dataValue types.List
 		{
@@ -8592,132 +7005,6 @@ func CopyUpdateApplicationAwsResourcesResponse(dst *ApplicationAwsResourcesResou
 		dst.AwsEc2TransitGatewayAttachmentIds = dataValue
 	}
 	{
-		protoValue := src.AwsEc2TransitGatewayIds
-		var dataValue types.List
-		{
-			dataElementType := types.StringType
-			protoElements := protoValue
-			if protoElements == nil {
-				dataValue = types.ListNull(dataElementType)
-			} else {
-				dataValues := make([]attr.Value, 0, len(protoElements))
-				for _, protoElement := range protoElements {
-					var protoValue string = protoElement
-					var dataValue attr.Value
-					dataValue = types.StringValue(protoValue)
-					dataValues = append(dataValues, dataValue)
-				}
-				dataValue = types.ListValueMust(dataElementType, dataValues)
-			}
-		}
-		dst.AwsEc2TransitGatewayIds = dataValue
-	}
-	{
-		protoValue := src.AwsEc2TransitGatewayMulticastDomainIds
-		var dataValue types.List
-		{
-			dataElementType := types.StringType
-			protoElements := protoValue
-			if protoElements == nil {
-				dataValue = types.ListNull(dataElementType)
-			} else {
-				dataValues := make([]attr.Value, 0, len(protoElements))
-				for _, protoElement := range protoElements {
-					var protoValue string = protoElement
-					var dataValue attr.Value
-					dataValue = types.StringValue(protoValue)
-					dataValues = append(dataValues, dataValue)
-				}
-				dataValue = types.ListValueMust(dataElementType, dataValues)
-			}
-		}
-		dst.AwsEc2TransitGatewayMulticastDomainIds = dataValue
-	}
-	{
-		protoValue := src.AwsEc2TransitGatewayRouteTableIds
-		var dataValue types.List
-		{
-			dataElementType := types.StringType
-			protoElements := protoValue
-			if protoElements == nil {
-				dataValue = types.ListNull(dataElementType)
-			} else {
-				dataValues := make([]attr.Value, 0, len(protoElements))
-				for _, protoElement := range protoElements {
-					var protoValue string = protoElement
-					var dataValue attr.Value
-					dataValue = types.StringValue(protoValue)
-					dataValues = append(dataValues, dataValue)
-				}
-				dataValue = types.ListValueMust(dataElementType, dataValues)
-			}
-		}
-		dst.AwsEc2TransitGatewayRouteTableIds = dataValue
-	}
-	{
-		protoValue := src.AwsEgressOnlyInternetGatewayIds
-		var dataValue types.List
-		{
-			dataElementType := types.StringType
-			protoElements := protoValue
-			if protoElements == nil {
-				dataValue = types.ListNull(dataElementType)
-			} else {
-				dataValues := make([]attr.Value, 0, len(protoElements))
-				for _, protoElement := range protoElements {
-					var protoValue string = protoElement
-					var dataValue attr.Value
-					dataValue = types.StringValue(protoValue)
-					dataValues = append(dataValues, dataValue)
-				}
-				dataValue = types.ListValueMust(dataElementType, dataValues)
-			}
-		}
-		dst.AwsEgressOnlyInternetGatewayIds = dataValue
-	}
-	{
-		protoValue := src.AwsEipIds
-		var dataValue types.List
-		{
-			dataElementType := types.StringType
-			protoElements := protoValue
-			if protoElements == nil {
-				dataValue = types.ListNull(dataElementType)
-			} else {
-				dataValues := make([]attr.Value, 0, len(protoElements))
-				for _, protoElement := range protoElements {
-					var protoValue string = protoElement
-					var dataValue attr.Value
-					dataValue = types.StringValue(protoValue)
-					dataValues = append(dataValues, dataValue)
-				}
-				dataValue = types.ListValueMust(dataElementType, dataValues)
-			}
-		}
-		dst.AwsEipIds = dataValue
-	}
-	{
-		protoValue := src.AwsFlowLogIds
-		var dataValue types.List
-		{
-			dataElementType := types.StringType
-			protoElements := protoValue
-			if protoElements == nil {
-				dataValue = types.ListNull(dataElementType)
-			} else {
-				dataValues := make([]attr.Value, 0, len(protoElements))
-				for _, protoElement := range protoElements {
-					var protoValue string = protoElement
-					var dataValue attr.Value
-					dataValue = types.StringValue(protoValue)
-					dataValues = append(dataValues, dataValue)
-				}
-				dataValue = types.ListValueMust(dataElementType, dataValues)
-			}
-		}
-		dst.AwsFlowLogIds = dataValue
-	}
-	{
 		protoValue := src.AwsInstancesIds
 		var dataValue types.List
 		{
@@ -8737,27 +7024,6 @@ func CopyUpdateApplicationAwsResourcesResponse(dst *ApplicationAwsResourcesResou
 			}
 		}
 		dst.AwsInstancesIds = dataValue
-	}
-	{
-		protoValue := src.AwsInternetGatewayIds
-		var dataValue types.List
-		{
-			dataElementType := types.StringType
-			protoElements := protoValue
-			if protoElements == nil {
-				dataValue = types.ListNull(dataElementType)
-			} else {
-				dataValues := make([]attr.Value, 0, len(protoElements))
-				for _, protoElement := range protoElements {
-					var protoValue string = protoElement
-					var dataValue attr.Value
-					dataValue = types.StringValue(protoValue)
-					dataValues = append(dataValues, dataValue)
-				}
-				dataValue = types.ListValueMust(dataElementType, dataValues)
-			}
-		}
-		dst.AwsInternetGatewayIds = dataValue
 	}
 	{
 		protoValue := src.AwsNatGatewayIds
@@ -8844,27 +7110,6 @@ func CopyUpdateApplicationAwsResourcesResponse(dst *ApplicationAwsResourcesResou
 		dst.AwsRdsClusterIds = dataValue
 	}
 	{
-		protoValue := src.AwsRouteTableIds
-		var dataValue types.List
-		{
-			dataElementType := types.StringType
-			protoElements := protoValue
-			if protoElements == nil {
-				dataValue = types.ListNull(dataElementType)
-			} else {
-				dataValues := make([]attr.Value, 0, len(protoElements))
-				for _, protoElement := range protoElements {
-					var protoValue string = protoElement
-					var dataValue attr.Value
-					dataValue = types.StringValue(protoValue)
-					dataValues = append(dataValues, dataValue)
-				}
-				dataValue = types.ListValueMust(dataElementType, dataValues)
-			}
-		}
-		dst.AwsRouteTableIds = dataValue
-	}
-	{
 		protoValue := src.AwsSecurityGroupIds
 		var dataValue types.List
 		{
@@ -8884,69 +7129,6 @@ func CopyUpdateApplicationAwsResourcesResponse(dst *ApplicationAwsResourcesResou
 			}
 		}
 		dst.AwsSecurityGroupIds = dataValue
-	}
-	{
-		protoValue := src.AwsSecurityGroupRuleIds
-		var dataValue types.List
-		{
-			dataElementType := types.StringType
-			protoElements := protoValue
-			if protoElements == nil {
-				dataValue = types.ListNull(dataElementType)
-			} else {
-				dataValues := make([]attr.Value, 0, len(protoElements))
-				for _, protoElement := range protoElements {
-					var protoValue string = protoElement
-					var dataValue attr.Value
-					dataValue = types.StringValue(protoValue)
-					dataValues = append(dataValues, dataValue)
-				}
-				dataValue = types.ListValueMust(dataElementType, dataValues)
-			}
-		}
-		dst.AwsSecurityGroupRuleIds = dataValue
-	}
-	{
-		protoValue := src.AwsSpotFleetRequestIds
-		var dataValue types.List
-		{
-			dataElementType := types.StringType
-			protoElements := protoValue
-			if protoElements == nil {
-				dataValue = types.ListNull(dataElementType)
-			} else {
-				dataValues := make([]attr.Value, 0, len(protoElements))
-				for _, protoElement := range protoElements {
-					var protoValue string = protoElement
-					var dataValue attr.Value
-					dataValue = types.StringValue(protoValue)
-					dataValues = append(dataValues, dataValue)
-				}
-				dataValue = types.ListValueMust(dataElementType, dataValues)
-			}
-		}
-		dst.AwsSpotFleetRequestIds = dataValue
-	}
-	{
-		protoValue := src.AwsSpotInstanceRequestIds
-		var dataValue types.List
-		{
-			dataElementType := types.StringType
-			protoElements := protoValue
-			if protoElements == nil {
-				dataValue = types.ListNull(dataElementType)
-			} else {
-				dataValues := make([]attr.Value, 0, len(protoElements))
-				for _, protoElement := range protoElements {
-					var protoValue string = protoElement
-					var dataValue attr.Value
-					dataValue = types.StringValue(protoValue)
-					dataValues = append(dataValues, dataValue)
-				}
-				dataValue = types.ListValueMust(dataElementType, dataValues)
-			}
-		}
-		dst.AwsSpotInstanceRequestIds = dataValue
 	}
 	{
 		protoValue := src.AwsSubnetIds
@@ -8991,27 +7173,6 @@ func CopyUpdateApplicationAwsResourcesResponse(dst *ApplicationAwsResourcesResou
 		dst.AwsVpcEndpointIds = dataValue
 	}
 	{
-		protoValue := src.AwsVpcEndpointServiceIds
-		var dataValue types.List
-		{
-			dataElementType := types.StringType
-			protoElements := protoValue
-			if protoElements == nil {
-				dataValue = types.ListNull(dataElementType)
-			} else {
-				dataValues := make([]attr.Value, 0, len(protoElements))
-				for _, protoElement := range protoElements {
-					var protoValue string = protoElement
-					var dataValue attr.Value
-					dataValue = types.StringValue(protoValue)
-					dataValues = append(dataValues, dataValue)
-				}
-				dataValue = types.ListValueMust(dataElementType, dataValues)
-			}
-		}
-		dst.AwsVpcEndpointServiceIds = dataValue
-	}
-	{
 		protoValue := src.AwsVpcIds
 		var dataValue types.List
 		{
@@ -9052,48 +7213,6 @@ func CopyUpdateApplicationAwsResourcesResponse(dst *ApplicationAwsResourcesResou
 			}
 		}
 		dst.AwsVpcPeeringConnectionIds = dataValue
-	}
-	{
-		protoValue := src.AwsVpnConnectionIds
-		var dataValue types.List
-		{
-			dataElementType := types.StringType
-			protoElements := protoValue
-			if protoElements == nil {
-				dataValue = types.ListNull(dataElementType)
-			} else {
-				dataValues := make([]attr.Value, 0, len(protoElements))
-				for _, protoElement := range protoElements {
-					var protoValue string = protoElement
-					var dataValue attr.Value
-					dataValue = types.StringValue(protoValue)
-					dataValues = append(dataValues, dataValue)
-				}
-				dataValue = types.ListValueMust(dataElementType, dataValues)
-			}
-		}
-		dst.AwsVpnConnectionIds = dataValue
-	}
-	{
-		protoValue := src.AwsVpnGatewayIds
-		var dataValue types.List
-		{
-			dataElementType := types.StringType
-			protoElements := protoValue
-			if protoElements == nil {
-				dataValue = types.ListNull(dataElementType)
-			} else {
-				dataValues := make([]attr.Value, 0, len(protoElements))
-				for _, protoElement := range protoElements {
-					var protoValue string = protoElement
-					var dataValue attr.Value
-					dataValue = types.StringValue(protoValue)
-					dataValues = append(dataValues, dataValue)
-				}
-				dataValue = types.ListValueMust(dataElementType, dataValues)
-			}
-		}
-		dst.AwsVpnGatewayIds = dataValue
 	}
 }
 func CopyCreateApplicationAzureResourcesResponse(dst *ApplicationAzureResourcesResourceModel, src *configv1.CreateApplicationAzureResourcesResponse) {
