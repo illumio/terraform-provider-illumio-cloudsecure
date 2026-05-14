@@ -20,13 +20,13 @@ description: |-
     "illumio-cloudsecure_k8s_cluster" }}
 {{- $moduleName := slice .Name (len "illumio-cloudsecure_") }}
 
-> [!NOTE]
-> `{{.Name}}` is a low-level resource. For most use cases, prefer [the `{{$moduleName}}` module](https://registry.terraform.io/modules/illumio/cloudsecure/illumio/latest/submodules/{{$moduleName}})
-> (see [an example](https://github.com/illumio/terraform-illumio-cloudsecure/tree/main/examples/{{$moduleName}})),
-> which combines this resource together with other resources required for onboarding.
-> This resource is intended for module authors and advanced users who need fine-grained control over
-> the configuration lifecycle, want to compose registration with custom permissions, or are building
-> higher-level abstractions on top of CloudSecure primitives.
+⚠️ This is a low-level resource. For most use cases, prefer the Illumio
+[`{{$moduleName}}`](https://registry.terraform.io/modules/illumio/cloudsecure/illumio/latest/submodules/{{$moduleName}})
+module (see [example](https://github.com/illumio/terraform-illumio-cloudsecure/tree/main/examples/{{$moduleName}})),
+which combines this resource together with other resources required for onboarding.
+This resource is intended for module authors and advanced users who need fine-grained control over
+the configuration lifecycle, want to compose registration with custom permissions, or are building
+higher-level abstractions on top of CloudSecure primitives.
 
 {{- end }}
 

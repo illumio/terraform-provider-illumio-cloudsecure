@@ -10,13 +10,13 @@ description: |-
 
 Manages a GCP project in CloudSecure.
 
-> [!NOTE]
-> `illumio-cloudsecure_gcp_project` is a low-level resource. For most use cases, prefer [the `gcp_project` module](https://registry.terraform.io/modules/illumio/cloudsecure/illumio/latest/submodules/gcp_project)
-> (see [an example](https://github.com/illumio/terraform-illumio-cloudsecure/tree/main/examples/gcp_project)),
-> which combines this resource together with other resources required for onboarding.
-> This resource is intended for module authors and advanced users who need fine-grained control over
-> the configuration lifecycle, want to compose registration with custom permissions, or are building
-> higher-level abstractions on top of CloudSecure primitives.
+⚠️ This is a low-level resource. For most use cases, prefer the Illumio
+[`gcp_project`](https://registry.terraform.io/modules/illumio/cloudsecure/illumio/latest/submodules/gcp_project)
+module (see [example](https://github.com/illumio/terraform-illumio-cloudsecure/tree/main/examples/gcp_project)),
+which combines this resource together with other resources required for onboarding.
+This resource is intended for module authors and advanced users who need fine-grained control over
+the configuration lifecycle, want to compose registration with custom permissions, or are building
+higher-level abstractions on top of CloudSecure primitives.
 
 ## Example Usage
 

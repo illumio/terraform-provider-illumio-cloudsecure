@@ -10,13 +10,13 @@ description: |-
 
 Manages an Azure subscription in CloudSecure.
 
-> [!NOTE]
-> `illumio-cloudsecure_azure_subscription` is a low-level resource. For most use cases, prefer [the `azure_subscription` module](https://registry.terraform.io/modules/illumio/cloudsecure/illumio/latest/submodules/azure_subscription)
-> (see [an example](https://github.com/illumio/terraform-illumio-cloudsecure/tree/main/examples/azure_subscription)),
-> which combines this resource together with other resources required for onboarding.
-> This resource is intended for module authors and advanced users who need fine-grained control over
-> the configuration lifecycle, want to compose registration with custom permissions, or are building
-> higher-level abstractions on top of CloudSecure primitives.
+⚠️ This is a low-level resource. For most use cases, prefer the Illumio
+[`azure_subscription`](https://registry.terraform.io/modules/illumio/cloudsecure/illumio/latest/submodules/azure_subscription)
+module (see [example](https://github.com/illumio/terraform-illumio-cloudsecure/tree/main/examples/azure_subscription)),
+which combines this resource together with other resources required for onboarding.
+This resource is intended for module authors and advanced users who need fine-grained control over
+the configuration lifecycle, want to compose registration with custom permissions, or are building
+higher-level abstractions on top of CloudSecure primitives.
 
 ## Example Usage
 

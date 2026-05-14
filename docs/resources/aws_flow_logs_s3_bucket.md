@@ -10,13 +10,13 @@ description: |-
 
 Manages CloudSecure access to flow logs in an AWS S3 bucket.
 
-> [!NOTE]
-> `illumio-cloudsecure_aws_flow_logs_s3_bucket` is a low-level resource. For most use cases, prefer [the `aws_flow_logs_s3_bucket` module](https://registry.terraform.io/modules/illumio/cloudsecure/illumio/latest/submodules/aws_flow_logs_s3_bucket)
-> (see [an example](https://github.com/illumio/terraform-illumio-cloudsecure/tree/main/examples/aws_flow_logs_s3_bucket)),
-> which combines this resource together with other resources required for onboarding.
-> This resource is intended for module authors and advanced users who need fine-grained control over
-> the configuration lifecycle, want to compose registration with custom permissions, or are building
-> higher-level abstractions on top of CloudSecure primitives.
+⚠️ This is a low-level resource. For most use cases, prefer the Illumio
+[`aws_flow_logs_s3_bucket`](https://registry.terraform.io/modules/illumio/cloudsecure/illumio/latest/submodules/aws_flow_logs_s3_bucket)
+module (see [example](https://github.com/illumio/terraform-illumio-cloudsecure/tree/main/examples/aws_flow_logs_s3_bucket)),
+which combines this resource together with other resources required for onboarding.
+This resource is intended for module authors and advanced users who need fine-grained control over
+the configuration lifecycle, want to compose registration with custom permissions, or are building
+higher-level abstractions on top of CloudSecure primitives.
 
 ## Example Usage
 
