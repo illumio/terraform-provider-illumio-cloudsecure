@@ -10,13 +10,13 @@ description: |-
 
 Manages CloudSecure access to flow logs in an Azure Storage Account.
 
-> [!NOTE]
-> `illumio-cloudsecure_azure_flow_logs_storage_account` is a low-level resource. For most use cases, prefer [the `azure_flow_logs_storage_account` module](https://registry.terraform.io/modules/illumio/cloudsecure/illumio/latest/submodules/azure_flow_logs_storage_account)
-> (see [an example](https://github.com/illumio/terraform-illumio-cloudsecure/tree/main/examples/azure_flow_logs_storage_account)),
-> which combines this resource together with other resources required for onboarding.
-> This resource is intended for module authors and advanced users who need fine-grained control over
-> the configuration lifecycle, want to compose registration with custom permissions, or are building
-> higher-level abstractions on top of CloudSecure primitives.
+⚠️ This is a low-level resource. For most use cases, prefer the Illumio
+[`azure_flow_logs_storage_account`](https://registry.terraform.io/modules/illumio/cloudsecure/illumio/latest/submodules/azure_flow_logs_storage_account)
+module (see [example](https://github.com/illumio/terraform-illumio-cloudsecure/tree/main/examples/azure_flow_logs_storage_account)),
+which combines this resource together with other resources required for onboarding.
+This resource is intended for module authors and advanced users who need fine-grained control over
+the configuration lifecycle, want to compose registration with custom permissions, or are building
+higher-level abstractions on top of CloudSecure primitives.
 
 ## Example Usage
 

@@ -10,13 +10,13 @@ description: |-
 
 Manages the onboarding of a k8s cluster on CloudSecure in a specific Illumio Region.
 
-> [!NOTE]
-> `illumio-cloudsecure_k8s_cluster` is a low-level resource. For most use cases, prefer [the `k8s_cluster` module](https://registry.terraform.io/modules/illumio/cloudsecure/illumio/latest/submodules/k8s_cluster)
-> (see [an example](https://github.com/illumio/terraform-illumio-cloudsecure/tree/main/examples/k8s_cluster)),
-> which combines this resource together with other resources required for onboarding.
-> This resource is intended for module authors and advanced users who need fine-grained control over
-> the configuration lifecycle, want to compose registration with custom permissions, or are building
-> higher-level abstractions on top of CloudSecure primitives.
+⚠️ This is a low-level resource. For most use cases, prefer the Illumio
+[`k8s_cluster`](https://registry.terraform.io/modules/illumio/cloudsecure/illumio/latest/submodules/k8s_cluster)
+module (see [example](https://github.com/illumio/terraform-illumio-cloudsecure/tree/main/examples/k8s_cluster)),
+which combines this resource together with other resources required for onboarding.
+This resource is intended for module authors and advanced users who need fine-grained control over
+the configuration lifecycle, want to compose registration with custom permissions, or are building
+higher-level abstractions on top of CloudSecure primitives.
 
 ## Example Usage
 
