@@ -1,4 +1,4 @@
-ARG VARIANT=1.25-trixie
+ARG VARIANT=1.26-trixie
 FROM mcr.microsoft.com/vscode/devcontainers/go:${VARIANT}
 
 ARG BUF_VERSION=v1.64.0
