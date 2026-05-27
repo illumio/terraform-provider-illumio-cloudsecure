@@ -88,10 +88,11 @@ Required:
 
 Optional:
 
-- `aws` (Attributes) AWS EKS cluster. Mutually exclusive with gcp, azure, and oci. (see [below for nested schema](#nestedatt--rules--destination--k8s--clusters--aws))
-- `azure` (Attributes) Azure AKS cluster. Mutually exclusive with aws, gcp, and oci. (see [below for nested schema](#nestedatt--rules--destination--k8s--clusters--azure))
-- `gcp` (Attributes) GCP GKE cluster. Mutually exclusive with aws, azure, and oci. (see [below for nested schema](#nestedatt--rules--destination--k8s--clusters--gcp))
-- `oci` (Attributes) OCI OKE cluster. Mutually exclusive with aws, gcp, and azure. (see [below for nested schema](#nestedatt--rules--destination--k8s--clusters--oci))
+- `aws` (Attributes) AWS EKS cluster. Mutually exclusive with id, gcp, azure, and oci. (see [below for nested schema](#nestedatt--rules--destination--k8s--clusters--aws))
+- `azure` (Attributes) Azure AKS cluster. Mutually exclusive with id, aws, gcp, and oci. (see [below for nested schema](#nestedatt--rules--destination--k8s--clusters--azure))
+- `gcp` (Attributes) GCP GKE cluster. Mutually exclusive with id, aws, azure, and oci. (see [below for nested schema](#nestedatt--rules--destination--k8s--clusters--gcp))
+- `id` (String) Cluster ID (from k8s_cluster resource/data source). Mutually exclusive with aws, gcp, azure, and oci.
+- `oci` (Attributes) OCI OKE cluster. Mutually exclusive with id, aws, gcp, and azure. (see [below for nested schema](#nestedatt--rules--destination--k8s--clusters--oci))
 
 <a id="nestedatt--rules--destination--k8s--clusters--aws"></a>
 ### Nested Schema for `rules.destination.k8s.clusters.aws`
@@ -249,10 +250,11 @@ Required:
 
 Optional:
 
-- `aws` (Attributes) AWS EKS cluster. Mutually exclusive with gcp, azure, and oci. (see [below for nested schema](#nestedatt--rules--source--k8s--clusters--aws))
-- `azure` (Attributes) Azure AKS cluster. Mutually exclusive with aws, gcp, and oci. (see [below for nested schema](#nestedatt--rules--source--k8s--clusters--azure))
-- `gcp` (Attributes) GCP GKE cluster. Mutually exclusive with aws, azure, and oci. (see [below for nested schema](#nestedatt--rules--source--k8s--clusters--gcp))
-- `oci` (Attributes) OCI OKE cluster. Mutually exclusive with aws, gcp, and azure. (see [below for nested schema](#nestedatt--rules--source--k8s--clusters--oci))
+- `aws` (Attributes) AWS EKS cluster. Mutually exclusive with id, gcp, azure, and oci. (see [below for nested schema](#nestedatt--rules--source--k8s--clusters--aws))
+- `azure` (Attributes) Azure AKS cluster. Mutually exclusive with id, aws, gcp, and oci. (see [below for nested schema](#nestedatt--rules--source--k8s--clusters--azure))
+- `gcp` (Attributes) GCP GKE cluster. Mutually exclusive with id, aws, azure, and oci. (see [below for nested schema](#nestedatt--rules--source--k8s--clusters--gcp))
+- `id` (String) Cluster ID (from k8s_cluster resource/data source). Mutually exclusive with aws, gcp, azure, and oci.
+- `oci` (Attributes) OCI OKE cluster. Mutually exclusive with id, aws, gcp, and azure. (see [below for nested schema](#nestedatt--rules--source--k8s--clusters--oci))
 
 <a id="nestedatt--rules--source--k8s--clusters--aws"></a>
 ### Nested Schema for `rules.source.k8s.clusters.aws`
