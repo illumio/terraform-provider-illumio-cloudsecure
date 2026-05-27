@@ -11956,6 +11956,7 @@ func (x *PolicyVersion_Rules_Destination_K8S) GetWorkloadSelector() *PolicyVersi
 
 type PolicyVersion_Rules_Destination_K8S_Clusters struct {
 	state         protoimpl.MessageState                              `protogen:"open.v1"`
+	Id            string                                              `protobuf:"bytes,5,opt,name=id,proto3" json:"id,omitempty"`
 	Aws           *PolicyVersion_Rules_Destination_K8S_Clusters_Aws   `protobuf:"bytes,1,opt,name=aws,proto3" json:"aws,omitempty"`
 	Azure         *PolicyVersion_Rules_Destination_K8S_Clusters_Azure `protobuf:"bytes,2,opt,name=azure,proto3" json:"azure,omitempty"`
 	Gcp           *PolicyVersion_Rules_Destination_K8S_Clusters_Gcp   `protobuf:"bytes,3,opt,name=gcp,proto3" json:"gcp,omitempty"`
@@ -11992,6 +11993,13 @@ func (x *PolicyVersion_Rules_Destination_K8S_Clusters) ProtoReflect() protorefle
 // Deprecated: Use PolicyVersion_Rules_Destination_K8S_Clusters.ProtoReflect.Descriptor instead.
 func (*PolicyVersion_Rules_Destination_K8S_Clusters) Descriptor() ([]byte, []int) {
 	return file_illumio_cloud_config_v1_config_proto_rawDescGZIP(), []int{136, 0, 4, 0}
+}
+
+func (x *PolicyVersion_Rules_Destination_K8S_Clusters) GetId() string {
+	if x != nil {
+		return x.Id
+	}
+	return ""
 }
 
 func (x *PolicyVersion_Rules_Destination_K8S_Clusters) GetAws() *PolicyVersion_Rules_Destination_K8S_Clusters_Aws {
@@ -12776,6 +12784,7 @@ func (x *PolicyVersion_Rules_Source_K8S) GetWorkloadSelector() *PolicyVersion_Ru
 
 type PolicyVersion_Rules_Source_K8S_Clusters struct {
 	state         protoimpl.MessageState                         `protogen:"open.v1"`
+	Id            string                                         `protobuf:"bytes,5,opt,name=id,proto3" json:"id,omitempty"`
 	Aws           *PolicyVersion_Rules_Source_K8S_Clusters_Aws   `protobuf:"bytes,1,opt,name=aws,proto3" json:"aws,omitempty"`
 	Azure         *PolicyVersion_Rules_Source_K8S_Clusters_Azure `protobuf:"bytes,2,opt,name=azure,proto3" json:"azure,omitempty"`
 	Gcp           *PolicyVersion_Rules_Source_K8S_Clusters_Gcp   `protobuf:"bytes,3,opt,name=gcp,proto3" json:"gcp,omitempty"`
@@ -12812,6 +12821,13 @@ func (x *PolicyVersion_Rules_Source_K8S_Clusters) ProtoReflect() protoreflect.Me
 // Deprecated: Use PolicyVersion_Rules_Source_K8S_Clusters.ProtoReflect.Descriptor instead.
 func (*PolicyVersion_Rules_Source_K8S_Clusters) Descriptor() ([]byte, []int) {
 	return file_illumio_cloud_config_v1_config_proto_rawDescGZIP(), []int{136, 2, 3, 0}
+}
+
+func (x *PolicyVersion_Rules_Source_K8S_Clusters) GetId() string {
+	if x != nil {
+		return x.Id
+	}
+	return ""
 }
 
 func (x *PolicyVersion_Rules_Source_K8S_Clusters) GetAws() *PolicyVersion_Rules_Source_K8S_Clusters_Aws {
@@ -14373,13 +14389,13 @@ const file_illumio_cloud_config_v1_config_proto_rawDesc = "" +
 	"\x02id\x18\x01 \x01(\tR\x02id\x12*\n" +
 	"\x11policy_version_id\x18\x05 \x01(\tR\x0fpolicyVersionId\".\n" +
 	"\x1cDeletePolicyProvisionRequest\x12\x0e\n" +
-	"\x02id\x18\x01 \x01(\tR\x02id\"\xf3*\n" +
+	"\x02id\x18\x01 \x01(\tR\x02id\"\x93+\n" +
 	"\x13PolicyVersion_Rules\x12\x16\n" +
 	"\x06action\x18\x01 \x01(\tR\x06action\x12Z\n" +
 	"\vdestination\x18\x02 \x01(\v28.illumio.cloud.config.v1.PolicyVersion_Rules.DestinationR\vdestination\x12X\n" +
 	"\vport_ranges\x18\x03 \x03(\v27.illumio.cloud.config.v1.PolicyVersion_Rules.PortRangesR\n" +
 	"portRanges\x12K\n" +
-	"\x06source\x18\x04 \x01(\v23.illumio.cloud.config.v1.PolicyVersion_Rules.SourceR\x06source\x1a\xd1\x14\n" +
+	"\x06source\x18\x04 \x01(\v23.illumio.cloud.config.v1.PolicyVersion_Rules.SourceR\x06source\x1a\xe1\x14\n" +
 	"\vDestination\x12T\n" +
 	"\x05cloud\x18\x01 \x01(\v2>.illumio.cloud.config.v1.PolicyVersion_Rules.Destination.CloudR\x05cloud\x12T\n" +
 	"\x05fqdns\x18\x02 \x01(\v2>.illumio.cloud.config.v1.PolicyVersion_Rules.Destination.FqdnsR\x05fqdns\x12m\n" +
@@ -14391,12 +14407,13 @@ const file_illumio_cloud_config_v1_config_proto_rawDesc = "" +
 	"\x05names\x18\x01 \x03(\tR\x05names\x1a\x0f\n" +
 	"\rIllumioLabels\x1a\x1a\n" +
 	"\x06IpList\x12\x10\n" +
-	"\x03ids\x18\x02 \x03(\tR\x03ids\x1a\xa7\x10\n" +
+	"\x03ids\x18\x02 \x03(\tR\x03ids\x1a\xb7\x10\n" +
 	"\x03K8S\x12a\n" +
 	"\bclusters\x18\x01 \x03(\v2E.illumio.cloud.config.v1.PolicyVersion_Rules.Destination.K8S.ClustersR\bclusters\x12}\n" +
 	"\x12namespace_selector\x18\x02 \x01(\v2N.illumio.cloud.config.v1.PolicyVersion_Rules.Destination.K8S.NamespaceSelectorR\x11namespaceSelector\x12z\n" +
-	"\x11workload_selector\x18\x03 \x01(\v2M.illumio.cloud.config.v1.PolicyVersion_Rules.Destination.K8S.WorkloadSelectorR\x10workloadSelector\x1a\xaf\x06\n" +
-	"\bClusters\x12[\n" +
+	"\x11workload_selector\x18\x03 \x01(\v2M.illumio.cloud.config.v1.PolicyVersion_Rules.Destination.K8S.WorkloadSelectorR\x10workloadSelector\x1a\xbf\x06\n" +
+	"\bClusters\x12\x0e\n" +
+	"\x02id\x18\x05 \x01(\tR\x02id\x12[\n" +
 	"\x03aws\x18\x01 \x01(\v2I.illumio.cloud.config.v1.PolicyVersion_Rules.Destination.K8S.Clusters.AwsR\x03aws\x12a\n" +
 	"\x05azure\x18\x02 \x01(\v2K.illumio.cloud.config.v1.PolicyVersion_Rules.Destination.K8S.Clusters.AzureR\x05azure\x12[\n" +
 	"\x03gcp\x18\x03 \x01(\v2I.illumio.cloud.config.v1.PolicyVersion_Rules.Destination.K8S.Clusters.GcpR\x03gcp\x12[\n" +
@@ -14444,7 +14461,7 @@ const file_illumio_cloud_config_v1_config_proto_rawDesc = "" +
 	"PortRanges\x12\x1b\n" +
 	"\tfrom_port\x18\x01 \x01(\x03R\bfromPort\x12\x1a\n" +
 	"\bprotocol\x18\x02 \x01(\tR\bprotocol\x12\x17\n" +
-	"\ato_port\x18\x03 \x01(\x03R\x06toPort\x1a\x8c\x13\n" +
+	"\ato_port\x18\x03 \x01(\x03R\x06toPort\x1a\x9c\x13\n" +
 	"\x06Source\x12O\n" +
 	"\x05cloud\x18\x01 \x01(\v29.illumio.cloud.config.v1.PolicyVersion_Rules.Source.CloudR\x05cloud\x12h\n" +
 	"\x0eillumio_labels\x18\x02 \x01(\v2A.illumio.cloud.config.v1.PolicyVersion_Rules.Source.IllumioLabelsR\rillumioLabels\x12S\n" +
@@ -14453,12 +14470,13 @@ const file_illumio_cloud_config_v1_config_proto_rawDesc = "" +
 	"\x05Cloud\x1a\x0f\n" +
 	"\rIllumioLabels\x1a\x1a\n" +
 	"\x06IpList\x12\x10\n" +
-	"\x03ids\x18\x02 \x03(\tR\x03ids\x1a\xf0\x0f\n" +
+	"\x03ids\x18\x02 \x03(\tR\x03ids\x1a\x80\x10\n" +
 	"\x03K8S\x12\\\n" +
 	"\bclusters\x18\x01 \x03(\v2@.illumio.cloud.config.v1.PolicyVersion_Rules.Source.K8S.ClustersR\bclusters\x12x\n" +
 	"\x12namespace_selector\x18\x02 \x01(\v2I.illumio.cloud.config.v1.PolicyVersion_Rules.Source.K8S.NamespaceSelectorR\x11namespaceSelector\x12u\n" +
-	"\x11workload_selector\x18\x03 \x01(\v2H.illumio.cloud.config.v1.PolicyVersion_Rules.Source.K8S.WorkloadSelectorR\x10workloadSelector\x1a\x9b\x06\n" +
-	"\bClusters\x12V\n" +
+	"\x11workload_selector\x18\x03 \x01(\v2H.illumio.cloud.config.v1.PolicyVersion_Rules.Source.K8S.WorkloadSelectorR\x10workloadSelector\x1a\xab\x06\n" +
+	"\bClusters\x12\x0e\n" +
+	"\x02id\x18\x05 \x01(\tR\x02id\x12V\n" +
 	"\x03aws\x18\x01 \x01(\v2D.illumio.cloud.config.v1.PolicyVersion_Rules.Source.K8S.Clusters.AwsR\x03aws\x12\\\n" +
 	"\x05azure\x18\x02 \x01(\v2F.illumio.cloud.config.v1.PolicyVersion_Rules.Source.K8S.Clusters.AzureR\x05azure\x12V\n" +
 	"\x03gcp\x18\x03 \x01(\v2D.illumio.cloud.config.v1.PolicyVersion_Rules.Source.K8S.Clusters.GcpR\x03gcp\x12V\n" +

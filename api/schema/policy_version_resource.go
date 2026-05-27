@@ -68,8 +68,21 @@ var k8sSelectorAttributes = map[string]resource_schema.Attribute{
 		Required:    true,
 		NestedObject: resource_schema.NestedAttributeObject{
 			Attributes: map[string]resource_schema.Attribute{
+				"id": resource_schema.StringAttribute{
+					Description: "Cluster ID (from k8s_cluster resource/data source). Mutually exclusive with aws, gcp, azure, and oci.",
+					Optional:    true,
+					Validators: []validator.String{
+						stringvalidator.ExactlyOneOf(
+							path.MatchRelative().AtParent().AtName("id"),
+							path.MatchRelative().AtParent().AtName("aws"),
+							path.MatchRelative().AtParent().AtName("gcp"),
+							path.MatchRelative().AtParent().AtName("azure"),
+							path.MatchRelative().AtParent().AtName("oci"),
+						),
+					},
+				},
 				"aws": resource_schema.SingleNestedAttribute{
-					Description: "AWS EKS cluster. Mutually exclusive with gcp, azure, and oci.",
+					Description: "AWS EKS cluster. Mutually exclusive with id, gcp, azure, and oci.",
 					Optional:    true,
 					Attributes: map[string]resource_schema.Attribute{
 						"account_id": resource_schema.StringAttribute{
@@ -85,9 +98,18 @@ var k8sSelectorAttributes = map[string]resource_schema.Attribute{
 							Required:    true,
 						},
 					},
+					Validators: []validator.Object{
+						objectvalidator.ExactlyOneOf(
+							path.MatchRelative().AtParent().AtName("id"),
+							path.MatchRelative().AtParent().AtName("aws"),
+							path.MatchRelative().AtParent().AtName("gcp"),
+							path.MatchRelative().AtParent().AtName("azure"),
+							path.MatchRelative().AtParent().AtName("oci"),
+						),
+					},
 				},
 				"gcp": resource_schema.SingleNestedAttribute{
-					Description: "GCP GKE cluster. Mutually exclusive with aws, azure, and oci.",
+					Description: "GCP GKE cluster. Mutually exclusive with id, aws, azure, and oci.",
 					Optional:    true,
 					Attributes: map[string]resource_schema.Attribute{
 						"project_id": resource_schema.StringAttribute{
@@ -103,9 +125,18 @@ var k8sSelectorAttributes = map[string]resource_schema.Attribute{
 							Required:    true,
 						},
 					},
+					Validators: []validator.Object{
+						objectvalidator.ExactlyOneOf(
+							path.MatchRelative().AtParent().AtName("id"),
+							path.MatchRelative().AtParent().AtName("aws"),
+							path.MatchRelative().AtParent().AtName("gcp"),
+							path.MatchRelative().AtParent().AtName("azure"),
+							path.MatchRelative().AtParent().AtName("oci"),
+						),
+					},
 				},
 				"azure": resource_schema.SingleNestedAttribute{
-					Description: "Azure AKS cluster. Mutually exclusive with aws, gcp, and oci.",
+					Description: "Azure AKS cluster. Mutually exclusive with id, aws, gcp, and oci.",
 					Optional:    true,
 					Attributes: map[string]resource_schema.Attribute{
 						"subscription_id": resource_schema.StringAttribute{
@@ -121,9 +152,18 @@ var k8sSelectorAttributes = map[string]resource_schema.Attribute{
 							Required:    true,
 						},
 					},
+					Validators: []validator.Object{
+						objectvalidator.ExactlyOneOf(
+							path.MatchRelative().AtParent().AtName("id"),
+							path.MatchRelative().AtParent().AtName("aws"),
+							path.MatchRelative().AtParent().AtName("gcp"),
+							path.MatchRelative().AtParent().AtName("azure"),
+							path.MatchRelative().AtParent().AtName("oci"),
+						),
+					},
 				},
 				"oci": resource_schema.SingleNestedAttribute{
-					Description: "OCI OKE cluster. Mutually exclusive with aws, gcp, and azure.",
+					Description: "OCI OKE cluster. Mutually exclusive with id, aws, gcp, and azure.",
 					Optional:    true,
 					Attributes: map[string]resource_schema.Attribute{
 						"compartment_id": resource_schema.StringAttribute{
@@ -138,6 +178,15 @@ var k8sSelectorAttributes = map[string]resource_schema.Attribute{
 							Description: "OKE cluster name.",
 							Required:    true,
 						},
+					},
+					Validators: []validator.Object{
+						objectvalidator.ExactlyOneOf(
+							path.MatchRelative().AtParent().AtName("id"),
+							path.MatchRelative().AtParent().AtName("aws"),
+							path.MatchRelative().AtParent().AtName("gcp"),
+							path.MatchRelative().AtParent().AtName("azure"),
+							path.MatchRelative().AtParent().AtName("oci"),
+						),
 					},
 				},
 			},

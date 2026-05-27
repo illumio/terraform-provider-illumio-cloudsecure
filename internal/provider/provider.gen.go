@@ -12766,6 +12766,7 @@ func ConvertDataValueToPolicyVersion_Rules_Destination_K8SProto(ctx context.Cont
 }
 
 type PolicyVersion_Rules_Destination_K8S_Clusters struct {
+	Id    types.String `tfsdk:"id"`
 	Aws   types.Object `tfsdk:"aws"`
 	Azure types.Object `tfsdk:"azure"`
 	Gcp   types.Object `tfsdk:"gcp"`
@@ -12774,6 +12775,7 @@ type PolicyVersion_Rules_Destination_K8S_Clusters struct {
 
 func GetTypeAttrsForPolicyVersion_Rules_Destination_K8S_Clusters() map[string]attr.Type {
 	return map[string]attr.Type{
+		"id": types.StringType,
 		"aws": types.ObjectType{
 			AttrTypes: GetTypeAttrsForPolicyVersion_Rules_Destination_K8S_Clusters_Aws(),
 		},
@@ -12793,6 +12795,7 @@ func ConvertPolicyVersion_Rules_Destination_K8S_ClustersToObjectValueFromProto(p
 	return types.ObjectValueMust(
 		GetTypeAttrsForPolicyVersion_Rules_Destination_K8S_Clusters(),
 		map[string]attr.Value{
+			"id":    types.StringValue(proto.Id),
 			"aws":   ConvertPolicyVersion_Rules_Destination_K8S_Clusters_AwsToObjectValueFromProto(proto.Aws),
 			"azure": ConvertPolicyVersion_Rules_Destination_K8S_Clusters_AzureToObjectValueFromProto(proto.Azure),
 			"gcp":   ConvertPolicyVersion_Rules_Destination_K8S_Clusters_GcpToObjectValueFromProto(proto.Gcp),
@@ -12808,6 +12811,7 @@ func ConvertDataValueToPolicyVersion_Rules_Destination_K8S_ClustersProto(ctx con
 		return nil, diags
 	}
 	proto := &configv1.PolicyVersion_Rules_Destination_K8S_Clusters{}
+	proto.Id = pv.Id.ValueString()
 	pvModelAws, dvDiagsAws := ConvertDataValueToPolicyVersion_Rules_Destination_K8S_Clusters_AwsProto(ctx, pv.Aws)
 	diags.Append(dvDiagsAws...)
 	if diags.HasError() {
@@ -13557,6 +13561,7 @@ func ConvertDataValueToPolicyVersion_Rules_Source_K8SProto(ctx context.Context, 
 }
 
 type PolicyVersion_Rules_Source_K8S_Clusters struct {
+	Id    types.String `tfsdk:"id"`
 	Aws   types.Object `tfsdk:"aws"`
 	Azure types.Object `tfsdk:"azure"`
 	Gcp   types.Object `tfsdk:"gcp"`
@@ -13565,6 +13570,7 @@ type PolicyVersion_Rules_Source_K8S_Clusters struct {
 
 func GetTypeAttrsForPolicyVersion_Rules_Source_K8S_Clusters() map[string]attr.Type {
 	return map[string]attr.Type{
+		"id": types.StringType,
 		"aws": types.ObjectType{
 			AttrTypes: GetTypeAttrsForPolicyVersion_Rules_Source_K8S_Clusters_Aws(),
 		},
@@ -13584,6 +13590,7 @@ func ConvertPolicyVersion_Rules_Source_K8S_ClustersToObjectValueFromProto(proto 
 	return types.ObjectValueMust(
 		GetTypeAttrsForPolicyVersion_Rules_Source_K8S_Clusters(),
 		map[string]attr.Value{
+			"id":    types.StringValue(proto.Id),
 			"aws":   ConvertPolicyVersion_Rules_Source_K8S_Clusters_AwsToObjectValueFromProto(proto.Aws),
 			"azure": ConvertPolicyVersion_Rules_Source_K8S_Clusters_AzureToObjectValueFromProto(proto.Azure),
 			"gcp":   ConvertPolicyVersion_Rules_Source_K8S_Clusters_GcpToObjectValueFromProto(proto.Gcp),
@@ -13599,6 +13606,7 @@ func ConvertDataValueToPolicyVersion_Rules_Source_K8S_ClustersProto(ctx context.
 		return nil, diags
 	}
 	proto := &configv1.PolicyVersion_Rules_Source_K8S_Clusters{}
+	proto.Id = pv.Id.ValueString()
 	pvModelAws, dvDiagsAws := ConvertDataValueToPolicyVersion_Rules_Source_K8S_Clusters_AwsProto(ctx, pv.Aws)
 	diags.Append(dvDiagsAws...)
 	if diags.HasError() {

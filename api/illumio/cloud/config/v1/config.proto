@@ -1077,6 +1077,7 @@ message PolicyVersion_Rules {
           string compartment_id = 2;
           string region = 3;
         }
+        string id = 5;
         Aws aws = 1;
         Azure azure = 2;
         Gcp gcp = 3;
@@ -1152,6 +1153,7 @@ message PolicyVersion_Rules {
           string compartment_id = 2;
           string region = 3;
         }
+        string id = 5;
         Aws aws = 1;
         Azure azure = 2;
         Gcp gcp = 3;
