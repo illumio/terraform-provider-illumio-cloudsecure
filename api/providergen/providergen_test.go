@@ -931,7 +931,7 @@ func (suite *GenerateProviderTestSuite) TestSetsAndMore() {
 // TestNilProtoHandling verifies the three null/nil handling fixes in generated converters:
 // 1. Convert...ToObjectValueFromProto returns ObjectNull when proto is nil
 // 2. ConvertDataValueTo...Proto returns nil when dataValue is null/unknown
-// 3. Collection fields return typed null (not empty) when the proto field is nil
+// 3. Collection fields return typed null (not empty) when the proto field is nil.
 func (suite *GenerateProviderTestSuite) TestNilProtoHandling() {
 	testResource := schema.Resource{
 		TypeName: "nil_test",
