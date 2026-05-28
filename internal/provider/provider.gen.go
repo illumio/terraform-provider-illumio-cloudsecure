@@ -12079,6 +12079,9 @@ func GetTypeAttrsForApplicationPolicyRule_FromLabels() map[string]attr.Type {
 }
 
 func ConvertApplicationPolicyRule_FromLabelsToObjectValueFromProto(proto *configv1.ApplicationPolicyRule_FromLabels) basetypes.ObjectValue {
+	if proto == nil {
+		return types.ObjectNull(GetTypeAttrsForApplicationPolicyRule_FromLabels())
+	}
 	return types.ObjectValueMust(
 		GetTypeAttrsForApplicationPolicyRule_FromLabels(),
 		map[string]attr.Value{
@@ -12089,6 +12092,9 @@ func ConvertApplicationPolicyRule_FromLabelsToObjectValueFromProto(proto *config
 }
 
 func ConvertDataValueToApplicationPolicyRule_FromLabelsProto(ctx context.Context, dataValue attr.Value) (*configv1.ApplicationPolicyRule_FromLabels, diag.Diagnostics) {
+	if dataValue.IsNull() || dataValue.IsUnknown() {
+		return nil, nil
+	}
 	pv := ApplicationPolicyRule_FromLabels{}
 	diags := tfsdk.ValueAs(ctx, dataValue, &pv)
 	if diags.HasError() {
@@ -12113,6 +12119,9 @@ func GetTypeAttrsForApplicationPolicyRule_ToLabels() map[string]attr.Type {
 }
 
 func ConvertApplicationPolicyRule_ToLabelsToObjectValueFromProto(proto *configv1.ApplicationPolicyRule_ToLabels) basetypes.ObjectValue {
+	if proto == nil {
+		return types.ObjectNull(GetTypeAttrsForApplicationPolicyRule_ToLabels())
+	}
 	return types.ObjectValueMust(
 		GetTypeAttrsForApplicationPolicyRule_ToLabels(),
 		map[string]attr.Value{
@@ -12123,6 +12132,9 @@ func ConvertApplicationPolicyRule_ToLabelsToObjectValueFromProto(proto *configv1
 }
 
 func ConvertDataValueToApplicationPolicyRule_ToLabelsProto(ctx context.Context, dataValue attr.Value) (*configv1.ApplicationPolicyRule_ToLabels, diag.Diagnostics) {
+	if dataValue.IsNull() || dataValue.IsUnknown() {
+		return nil, nil
+	}
 	pv := ApplicationPolicyRule_ToLabels{}
 	diags := tfsdk.ValueAs(ctx, dataValue, &pv)
 	if diags.HasError() {
@@ -12149,6 +12161,9 @@ func GetTypeAttrsForApplicationPolicyRule_ToPortRanges() map[string]attr.Type {
 }
 
 func ConvertApplicationPolicyRule_ToPortRangesToObjectValueFromProto(proto *configv1.ApplicationPolicyRule_ToPortRanges) basetypes.ObjectValue {
+	if proto == nil {
+		return types.ObjectNull(GetTypeAttrsForApplicationPolicyRule_ToPortRanges())
+	}
 	return types.ObjectValueMust(
 		GetTypeAttrsForApplicationPolicyRule_ToPortRanges(),
 		map[string]attr.Value{
@@ -12160,6 +12175,9 @@ func ConvertApplicationPolicyRule_ToPortRangesToObjectValueFromProto(proto *conf
 }
 
 func ConvertDataValueToApplicationPolicyRule_ToPortRangesProto(ctx context.Context, dataValue attr.Value) (*configv1.ApplicationPolicyRule_ToPortRanges, diag.Diagnostics) {
+	if dataValue.IsNull() || dataValue.IsUnknown() {
+		return nil, nil
+	}
 	pv := ApplicationPolicyRule_ToPortRanges{}
 	diags := tfsdk.ValueAs(ctx, dataValue, &pv)
 	if diags.HasError() {
@@ -12185,6 +12203,9 @@ func GetTypeAttrsForDeployment_AwsTags() map[string]attr.Type {
 }
 
 func ConvertDeployment_AwsTagsToObjectValueFromProto(proto *configv1.Deployment_AwsTags) basetypes.ObjectValue {
+	if proto == nil {
+		return types.ObjectNull(GetTypeAttrsForDeployment_AwsTags())
+	}
 	return types.ObjectValueMust(
 		GetTypeAttrsForDeployment_AwsTags(),
 		map[string]attr.Value{
@@ -12195,6 +12216,9 @@ func ConvertDeployment_AwsTagsToObjectValueFromProto(proto *configv1.Deployment_
 }
 
 func ConvertDataValueToDeployment_AwsTagsProto(ctx context.Context, dataValue attr.Value) (*configv1.Deployment_AwsTags, diag.Diagnostics) {
+	if dataValue.IsNull() || dataValue.IsUnknown() {
+		return nil, nil
+	}
 	pv := Deployment_AwsTags{}
 	diags := tfsdk.ValueAs(ctx, dataValue, &pv)
 	if diags.HasError() {
@@ -12219,6 +12243,9 @@ func GetTypeAttrsForDeployment_AzureTags() map[string]attr.Type {
 }
 
 func ConvertDeployment_AzureTagsToObjectValueFromProto(proto *configv1.Deployment_AzureTags) basetypes.ObjectValue {
+	if proto == nil {
+		return types.ObjectNull(GetTypeAttrsForDeployment_AzureTags())
+	}
 	return types.ObjectValueMust(
 		GetTypeAttrsForDeployment_AzureTags(),
 		map[string]attr.Value{
@@ -12229,6 +12256,9 @@ func ConvertDeployment_AzureTagsToObjectValueFromProto(proto *configv1.Deploymen
 }
 
 func ConvertDataValueToDeployment_AzureTagsProto(ctx context.Context, dataValue attr.Value) (*configv1.Deployment_AzureTags, diag.Diagnostics) {
+	if dataValue.IsNull() || dataValue.IsUnknown() {
+		return nil, nil
+	}
 	pv := Deployment_AzureTags{}
 	diags := tfsdk.ValueAs(ctx, dataValue, &pv)
 	if diags.HasError() {
@@ -12253,6 +12283,9 @@ func GetTypeAttrsForIpList_IpAddresses() map[string]attr.Type {
 }
 
 func ConvertIpList_IpAddressesToObjectValueFromProto(proto *configv1.IpList_IpAddresses) basetypes.ObjectValue {
+	if proto == nil {
+		return types.ObjectNull(GetTypeAttrsForIpList_IpAddresses())
+	}
 	return types.ObjectValueMust(
 		GetTypeAttrsForIpList_IpAddresses(),
 		map[string]attr.Value{
@@ -12263,6 +12296,9 @@ func ConvertIpList_IpAddressesToObjectValueFromProto(proto *configv1.IpList_IpAd
 }
 
 func ConvertDataValueToIpList_IpAddressesProto(ctx context.Context, dataValue attr.Value) (*configv1.IpList_IpAddresses, diag.Diagnostics) {
+	if dataValue.IsNull() || dataValue.IsUnknown() {
+		return nil, nil
+	}
 	pv := IpList_IpAddresses{}
 	diags := tfsdk.ValueAs(ctx, dataValue, &pv)
 	if diags.HasError() {
@@ -12289,6 +12325,9 @@ func GetTypeAttrsForIpList_IpRanges() map[string]attr.Type {
 }
 
 func ConvertIpList_IpRangesToObjectValueFromProto(proto *configv1.IpList_IpRanges) basetypes.ObjectValue {
+	if proto == nil {
+		return types.ObjectNull(GetTypeAttrsForIpList_IpRanges())
+	}
 	return types.ObjectValueMust(
 		GetTypeAttrsForIpList_IpRanges(),
 		map[string]attr.Value{
@@ -12300,6 +12339,9 @@ func ConvertIpList_IpRangesToObjectValueFromProto(proto *configv1.IpList_IpRange
 }
 
 func ConvertDataValueToIpList_IpRangesProto(ctx context.Context, dataValue attr.Value) (*configv1.IpList_IpRanges, diag.Diagnostics) {
+	if dataValue.IsNull() || dataValue.IsUnknown() {
+		return nil, nil
+	}
 	pv := IpList_IpRanges{}
 	diags := tfsdk.ValueAs(ctx, dataValue, &pv)
 	if diags.HasError() {
@@ -12325,6 +12367,9 @@ func GetTypeAttrsForOrganizationPolicyRule_FromLabels() map[string]attr.Type {
 }
 
 func ConvertOrganizationPolicyRule_FromLabelsToObjectValueFromProto(proto *configv1.OrganizationPolicyRule_FromLabels) basetypes.ObjectValue {
+	if proto == nil {
+		return types.ObjectNull(GetTypeAttrsForOrganizationPolicyRule_FromLabels())
+	}
 	return types.ObjectValueMust(
 		GetTypeAttrsForOrganizationPolicyRule_FromLabels(),
 		map[string]attr.Value{
@@ -12335,6 +12380,9 @@ func ConvertOrganizationPolicyRule_FromLabelsToObjectValueFromProto(proto *confi
 }
 
 func ConvertDataValueToOrganizationPolicyRule_FromLabelsProto(ctx context.Context, dataValue attr.Value) (*configv1.OrganizationPolicyRule_FromLabels, diag.Diagnostics) {
+	if dataValue.IsNull() || dataValue.IsUnknown() {
+		return nil, nil
+	}
 	pv := OrganizationPolicyRule_FromLabels{}
 	diags := tfsdk.ValueAs(ctx, dataValue, &pv)
 	if diags.HasError() {
@@ -12359,6 +12407,9 @@ func GetTypeAttrsForOrganizationPolicyRule_ToLabels() map[string]attr.Type {
 }
 
 func ConvertOrganizationPolicyRule_ToLabelsToObjectValueFromProto(proto *configv1.OrganizationPolicyRule_ToLabels) basetypes.ObjectValue {
+	if proto == nil {
+		return types.ObjectNull(GetTypeAttrsForOrganizationPolicyRule_ToLabels())
+	}
 	return types.ObjectValueMust(
 		GetTypeAttrsForOrganizationPolicyRule_ToLabels(),
 		map[string]attr.Value{
@@ -12369,6 +12420,9 @@ func ConvertOrganizationPolicyRule_ToLabelsToObjectValueFromProto(proto *configv
 }
 
 func ConvertDataValueToOrganizationPolicyRule_ToLabelsProto(ctx context.Context, dataValue attr.Value) (*configv1.OrganizationPolicyRule_ToLabels, diag.Diagnostics) {
+	if dataValue.IsNull() || dataValue.IsUnknown() {
+		return nil, nil
+	}
 	pv := OrganizationPolicyRule_ToLabels{}
 	diags := tfsdk.ValueAs(ctx, dataValue, &pv)
 	if diags.HasError() {
@@ -12395,6 +12449,9 @@ func GetTypeAttrsForOrganizationPolicyRule_ToPortRanges() map[string]attr.Type {
 }
 
 func ConvertOrganizationPolicyRule_ToPortRangesToObjectValueFromProto(proto *configv1.OrganizationPolicyRule_ToPortRanges) basetypes.ObjectValue {
+	if proto == nil {
+		return types.ObjectNull(GetTypeAttrsForOrganizationPolicyRule_ToPortRanges())
+	}
 	return types.ObjectValueMust(
 		GetTypeAttrsForOrganizationPolicyRule_ToPortRanges(),
 		map[string]attr.Value{
@@ -12406,6 +12463,9 @@ func ConvertOrganizationPolicyRule_ToPortRangesToObjectValueFromProto(proto *con
 }
 
 func ConvertDataValueToOrganizationPolicyRule_ToPortRangesProto(ctx context.Context, dataValue attr.Value) (*configv1.OrganizationPolicyRule_ToPortRanges, diag.Diagnostics) {
+	if dataValue.IsNull() || dataValue.IsUnknown() {
+		return nil, nil
+	}
 	pv := OrganizationPolicyRule_ToPortRanges{}
 	diags := tfsdk.ValueAs(ctx, dataValue, &pv)
 	if diags.HasError() {
@@ -12441,6 +12501,9 @@ func GetTypeAttrsForPolicyVersion_Rules() map[string]attr.Type {
 }
 
 func ConvertPolicyVersion_RulesToObjectValueFromProto(proto *configv1.PolicyVersion_Rules) basetypes.ObjectValue {
+	if proto == nil {
+		return types.ObjectNull(GetTypeAttrsForPolicyVersion_Rules())
+	}
 	elementsInPortRanges := make([]attr.Value, 0, len(proto.PortRanges))
 	for _, item := range proto.PortRanges {
 		elementsInPortRanges = append(elementsInPortRanges, ConvertPolicyVersion_Rules_PortRangesToObjectValueFromProto(item))
@@ -12450,13 +12513,21 @@ func ConvertPolicyVersion_RulesToObjectValueFromProto(proto *configv1.PolicyVers
 		map[string]attr.Value{
 			"action":      types.StringValue(proto.Action),
 			"destination": ConvertPolicyVersion_Rules_DestinationToObjectValueFromProto(proto.Destination),
-			"port_ranges": types.ListValueMust(types.ObjectType{AttrTypes: GetTypeAttrsForPolicyVersion_Rules_PortRanges()}, elementsInPortRanges),
-			"source":      ConvertPolicyVersion_Rules_SourceToObjectValueFromProto(proto.Source),
+			"port_ranges": func() basetypes.ListValue {
+				if proto.PortRanges == nil {
+					return types.ListNull(types.ObjectType{AttrTypes: GetTypeAttrsForPolicyVersion_Rules_PortRanges()})
+				}
+				return types.ListValueMust(types.ObjectType{AttrTypes: GetTypeAttrsForPolicyVersion_Rules_PortRanges()}, elementsInPortRanges)
+			}(),
+			"source": ConvertPolicyVersion_Rules_SourceToObjectValueFromProto(proto.Source),
 		},
 	)
 }
 
 func ConvertDataValueToPolicyVersion_RulesProto(ctx context.Context, dataValue attr.Value) (*configv1.PolicyVersion_Rules, diag.Diagnostics) {
+	if dataValue.IsNull() || dataValue.IsUnknown() {
+		return nil, nil
+	}
 	pv := PolicyVersion_Rules{}
 	diags := tfsdk.ValueAs(ctx, dataValue, &pv)
 	if diags.HasError() {
@@ -12518,6 +12589,9 @@ func GetTypeAttrsForPolicyVersion_Rules_Destination() map[string]attr.Type {
 }
 
 func ConvertPolicyVersion_Rules_DestinationToObjectValueFromProto(proto *configv1.PolicyVersion_Rules_Destination) basetypes.ObjectValue {
+	if proto == nil {
+		return types.ObjectNull(GetTypeAttrsForPolicyVersion_Rules_Destination())
+	}
 	return types.ObjectValueMust(
 		GetTypeAttrsForPolicyVersion_Rules_Destination(),
 		map[string]attr.Value{
@@ -12531,6 +12605,9 @@ func ConvertPolicyVersion_Rules_DestinationToObjectValueFromProto(proto *configv
 }
 
 func ConvertDataValueToPolicyVersion_Rules_DestinationProto(ctx context.Context, dataValue attr.Value) (*configv1.PolicyVersion_Rules_Destination, diag.Diagnostics) {
+	if dataValue.IsNull() || dataValue.IsUnknown() {
+		return nil, nil
+	}
 	pv := PolicyVersion_Rules_Destination{}
 	diags := tfsdk.ValueAs(ctx, dataValue, &pv)
 	if diags.HasError() {
@@ -12578,6 +12655,9 @@ func GetTypeAttrsForPolicyVersion_Rules_Destination_Cloud() map[string]attr.Type
 }
 
 func ConvertPolicyVersion_Rules_Destination_CloudToObjectValueFromProto(proto *configv1.PolicyVersion_Rules_Destination_Cloud) basetypes.ObjectValue {
+	if proto == nil {
+		return types.ObjectNull(GetTypeAttrsForPolicyVersion_Rules_Destination_Cloud())
+	}
 	return types.ObjectValueMust(
 		GetTypeAttrsForPolicyVersion_Rules_Destination_Cloud(),
 		map[string]attr.Value{},
@@ -12585,6 +12665,9 @@ func ConvertPolicyVersion_Rules_Destination_CloudToObjectValueFromProto(proto *c
 }
 
 func ConvertDataValueToPolicyVersion_Rules_Destination_CloudProto(ctx context.Context, dataValue attr.Value) (*configv1.PolicyVersion_Rules_Destination_Cloud, diag.Diagnostics) {
+	if dataValue.IsNull() || dataValue.IsUnknown() {
+		return nil, nil
+	}
 	pv := PolicyVersion_Rules_Destination_Cloud{}
 	diags := tfsdk.ValueAs(ctx, dataValue, &pv)
 	if diags.HasError() {
@@ -12605,6 +12688,9 @@ func GetTypeAttrsForPolicyVersion_Rules_Destination_Fqdns() map[string]attr.Type
 }
 
 func ConvertPolicyVersion_Rules_Destination_FqdnsToObjectValueFromProto(proto *configv1.PolicyVersion_Rules_Destination_Fqdns) basetypes.ObjectValue {
+	if proto == nil {
+		return types.ObjectNull(GetTypeAttrsForPolicyVersion_Rules_Destination_Fqdns())
+	}
 	elementsInNames := make([]attr.Value, 0, len(proto.Names))
 	for _, item := range proto.Names {
 		elementsInNames = append(elementsInNames, types.StringValue(item))
@@ -12612,12 +12698,20 @@ func ConvertPolicyVersion_Rules_Destination_FqdnsToObjectValueFromProto(proto *c
 	return types.ObjectValueMust(
 		GetTypeAttrsForPolicyVersion_Rules_Destination_Fqdns(),
 		map[string]attr.Value{
-			"names": types.ListValueMust(types.StringType, elementsInNames),
+			"names": func() basetypes.ListValue {
+				if proto.Names == nil {
+					return types.ListNull(types.StringType)
+				}
+				return types.ListValueMust(types.StringType, elementsInNames)
+			}(),
 		},
 	)
 }
 
 func ConvertDataValueToPolicyVersion_Rules_Destination_FqdnsProto(ctx context.Context, dataValue attr.Value) (*configv1.PolicyVersion_Rules_Destination_Fqdns, diag.Diagnostics) {
+	if dataValue.IsNull() || dataValue.IsUnknown() {
+		return nil, nil
+	}
 	pv := PolicyVersion_Rules_Destination_Fqdns{}
 	diags := tfsdk.ValueAs(ctx, dataValue, &pv)
 	if diags.HasError() {
@@ -12642,6 +12736,9 @@ func GetTypeAttrsForPolicyVersion_Rules_Destination_IllumioLabels() map[string]a
 }
 
 func ConvertPolicyVersion_Rules_Destination_IllumioLabelsToObjectValueFromProto(proto *configv1.PolicyVersion_Rules_Destination_IllumioLabels) basetypes.ObjectValue {
+	if proto == nil {
+		return types.ObjectNull(GetTypeAttrsForPolicyVersion_Rules_Destination_IllumioLabels())
+	}
 	return types.ObjectValueMust(
 		GetTypeAttrsForPolicyVersion_Rules_Destination_IllumioLabels(),
 		map[string]attr.Value{},
@@ -12649,6 +12746,9 @@ func ConvertPolicyVersion_Rules_Destination_IllumioLabelsToObjectValueFromProto(
 }
 
 func ConvertDataValueToPolicyVersion_Rules_Destination_IllumioLabelsProto(ctx context.Context, dataValue attr.Value) (*configv1.PolicyVersion_Rules_Destination_IllumioLabels, diag.Diagnostics) {
+	if dataValue.IsNull() || dataValue.IsUnknown() {
+		return nil, nil
+	}
 	pv := PolicyVersion_Rules_Destination_IllumioLabels{}
 	diags := tfsdk.ValueAs(ctx, dataValue, &pv)
 	if diags.HasError() {
@@ -12669,6 +12769,9 @@ func GetTypeAttrsForPolicyVersion_Rules_Destination_IpList() map[string]attr.Typ
 }
 
 func ConvertPolicyVersion_Rules_Destination_IpListToObjectValueFromProto(proto *configv1.PolicyVersion_Rules_Destination_IpList) basetypes.ObjectValue {
+	if proto == nil {
+		return types.ObjectNull(GetTypeAttrsForPolicyVersion_Rules_Destination_IpList())
+	}
 	elementsInIds := make([]attr.Value, 0, len(proto.Ids))
 	for _, item := range proto.Ids {
 		elementsInIds = append(elementsInIds, types.StringValue(item))
@@ -12676,12 +12779,20 @@ func ConvertPolicyVersion_Rules_Destination_IpListToObjectValueFromProto(proto *
 	return types.ObjectValueMust(
 		GetTypeAttrsForPolicyVersion_Rules_Destination_IpList(),
 		map[string]attr.Value{
-			"ids": types.ListValueMust(types.StringType, elementsInIds),
+			"ids": func() basetypes.ListValue {
+				if proto.Ids == nil {
+					return types.ListNull(types.StringType)
+				}
+				return types.ListValueMust(types.StringType, elementsInIds)
+			}(),
 		},
 	)
 }
 
 func ConvertDataValueToPolicyVersion_Rules_Destination_IpListProto(ctx context.Context, dataValue attr.Value) (*configv1.PolicyVersion_Rules_Destination_IpList, diag.Diagnostics) {
+	if dataValue.IsNull() || dataValue.IsUnknown() {
+		return nil, nil
+	}
 	pv := PolicyVersion_Rules_Destination_IpList{}
 	diags := tfsdk.ValueAs(ctx, dataValue, &pv)
 	if diags.HasError() {
@@ -12719,6 +12830,9 @@ func GetTypeAttrsForPolicyVersion_Rules_Destination_K8S() map[string]attr.Type {
 }
 
 func ConvertPolicyVersion_Rules_Destination_K8SToObjectValueFromProto(proto *configv1.PolicyVersion_Rules_Destination_K8S) basetypes.ObjectValue {
+	if proto == nil {
+		return types.ObjectNull(GetTypeAttrsForPolicyVersion_Rules_Destination_K8S())
+	}
 	elementsInClusters := make([]attr.Value, 0, len(proto.Clusters))
 	for _, item := range proto.Clusters {
 		elementsInClusters = append(elementsInClusters, ConvertPolicyVersion_Rules_Destination_K8S_ClustersToObjectValueFromProto(item))
@@ -12726,7 +12840,12 @@ func ConvertPolicyVersion_Rules_Destination_K8SToObjectValueFromProto(proto *con
 	return types.ObjectValueMust(
 		GetTypeAttrsForPolicyVersion_Rules_Destination_K8S(),
 		map[string]attr.Value{
-			"clusters":           types.ListValueMust(types.ObjectType{AttrTypes: GetTypeAttrsForPolicyVersion_Rules_Destination_K8S_Clusters()}, elementsInClusters),
+			"clusters": func() basetypes.ListValue {
+				if proto.Clusters == nil {
+					return types.ListNull(types.ObjectType{AttrTypes: GetTypeAttrsForPolicyVersion_Rules_Destination_K8S_Clusters()})
+				}
+				return types.ListValueMust(types.ObjectType{AttrTypes: GetTypeAttrsForPolicyVersion_Rules_Destination_K8S_Clusters()}, elementsInClusters)
+			}(),
 			"namespace_selector": ConvertPolicyVersion_Rules_Destination_K8S_NamespaceSelectorToObjectValueFromProto(proto.NamespaceSelector),
 			"workload_selector":  ConvertPolicyVersion_Rules_Destination_K8S_WorkloadSelectorToObjectValueFromProto(proto.WorkloadSelector),
 		},
@@ -12734,6 +12853,9 @@ func ConvertPolicyVersion_Rules_Destination_K8SToObjectValueFromProto(proto *con
 }
 
 func ConvertDataValueToPolicyVersion_Rules_Destination_K8SProto(ctx context.Context, dataValue attr.Value) (*configv1.PolicyVersion_Rules_Destination_K8S, diag.Diagnostics) {
+	if dataValue.IsNull() || dataValue.IsUnknown() {
+		return nil, nil
+	}
 	pv := PolicyVersion_Rules_Destination_K8S{}
 	diags := tfsdk.ValueAs(ctx, dataValue, &pv)
 	if diags.HasError() {
@@ -12792,6 +12914,9 @@ func GetTypeAttrsForPolicyVersion_Rules_Destination_K8S_Clusters() map[string]at
 }
 
 func ConvertPolicyVersion_Rules_Destination_K8S_ClustersToObjectValueFromProto(proto *configv1.PolicyVersion_Rules_Destination_K8S_Clusters) basetypes.ObjectValue {
+	if proto == nil {
+		return types.ObjectNull(GetTypeAttrsForPolicyVersion_Rules_Destination_K8S_Clusters())
+	}
 	return types.ObjectValueMust(
 		GetTypeAttrsForPolicyVersion_Rules_Destination_K8S_Clusters(),
 		map[string]attr.Value{
@@ -12805,6 +12930,9 @@ func ConvertPolicyVersion_Rules_Destination_K8S_ClustersToObjectValueFromProto(p
 }
 
 func ConvertDataValueToPolicyVersion_Rules_Destination_K8S_ClustersProto(ctx context.Context, dataValue attr.Value) (*configv1.PolicyVersion_Rules_Destination_K8S_Clusters, diag.Diagnostics) {
+	if dataValue.IsNull() || dataValue.IsUnknown() {
+		return nil, nil
+	}
 	pv := PolicyVersion_Rules_Destination_K8S_Clusters{}
 	diags := tfsdk.ValueAs(ctx, dataValue, &pv)
 	if diags.HasError() {
@@ -12854,6 +12982,9 @@ func GetTypeAttrsForPolicyVersion_Rules_Destination_K8S_Clusters_Aws() map[strin
 }
 
 func ConvertPolicyVersion_Rules_Destination_K8S_Clusters_AwsToObjectValueFromProto(proto *configv1.PolicyVersion_Rules_Destination_K8S_Clusters_Aws) basetypes.ObjectValue {
+	if proto == nil {
+		return types.ObjectNull(GetTypeAttrsForPolicyVersion_Rules_Destination_K8S_Clusters_Aws())
+	}
 	return types.ObjectValueMust(
 		GetTypeAttrsForPolicyVersion_Rules_Destination_K8S_Clusters_Aws(),
 		map[string]attr.Value{
@@ -12865,6 +12996,9 @@ func ConvertPolicyVersion_Rules_Destination_K8S_Clusters_AwsToObjectValueFromPro
 }
 
 func ConvertDataValueToPolicyVersion_Rules_Destination_K8S_Clusters_AwsProto(ctx context.Context, dataValue attr.Value) (*configv1.PolicyVersion_Rules_Destination_K8S_Clusters_Aws, diag.Diagnostics) {
+	if dataValue.IsNull() || dataValue.IsUnknown() {
+		return nil, nil
+	}
 	pv := PolicyVersion_Rules_Destination_K8S_Clusters_Aws{}
 	diags := tfsdk.ValueAs(ctx, dataValue, &pv)
 	if diags.HasError() {
@@ -12892,6 +13026,9 @@ func GetTypeAttrsForPolicyVersion_Rules_Destination_K8S_Clusters_Azure() map[str
 }
 
 func ConvertPolicyVersion_Rules_Destination_K8S_Clusters_AzureToObjectValueFromProto(proto *configv1.PolicyVersion_Rules_Destination_K8S_Clusters_Azure) basetypes.ObjectValue {
+	if proto == nil {
+		return types.ObjectNull(GetTypeAttrsForPolicyVersion_Rules_Destination_K8S_Clusters_Azure())
+	}
 	return types.ObjectValueMust(
 		GetTypeAttrsForPolicyVersion_Rules_Destination_K8S_Clusters_Azure(),
 		map[string]attr.Value{
@@ -12903,6 +13040,9 @@ func ConvertPolicyVersion_Rules_Destination_K8S_Clusters_AzureToObjectValueFromP
 }
 
 func ConvertDataValueToPolicyVersion_Rules_Destination_K8S_Clusters_AzureProto(ctx context.Context, dataValue attr.Value) (*configv1.PolicyVersion_Rules_Destination_K8S_Clusters_Azure, diag.Diagnostics) {
+	if dataValue.IsNull() || dataValue.IsUnknown() {
+		return nil, nil
+	}
 	pv := PolicyVersion_Rules_Destination_K8S_Clusters_Azure{}
 	diags := tfsdk.ValueAs(ctx, dataValue, &pv)
 	if diags.HasError() {
@@ -12930,6 +13070,9 @@ func GetTypeAttrsForPolicyVersion_Rules_Destination_K8S_Clusters_Gcp() map[strin
 }
 
 func ConvertPolicyVersion_Rules_Destination_K8S_Clusters_GcpToObjectValueFromProto(proto *configv1.PolicyVersion_Rules_Destination_K8S_Clusters_Gcp) basetypes.ObjectValue {
+	if proto == nil {
+		return types.ObjectNull(GetTypeAttrsForPolicyVersion_Rules_Destination_K8S_Clusters_Gcp())
+	}
 	return types.ObjectValueMust(
 		GetTypeAttrsForPolicyVersion_Rules_Destination_K8S_Clusters_Gcp(),
 		map[string]attr.Value{
@@ -12941,6 +13084,9 @@ func ConvertPolicyVersion_Rules_Destination_K8S_Clusters_GcpToObjectValueFromPro
 }
 
 func ConvertDataValueToPolicyVersion_Rules_Destination_K8S_Clusters_GcpProto(ctx context.Context, dataValue attr.Value) (*configv1.PolicyVersion_Rules_Destination_K8S_Clusters_Gcp, diag.Diagnostics) {
+	if dataValue.IsNull() || dataValue.IsUnknown() {
+		return nil, nil
+	}
 	pv := PolicyVersion_Rules_Destination_K8S_Clusters_Gcp{}
 	diags := tfsdk.ValueAs(ctx, dataValue, &pv)
 	if diags.HasError() {
@@ -12968,6 +13114,9 @@ func GetTypeAttrsForPolicyVersion_Rules_Destination_K8S_Clusters_Oci() map[strin
 }
 
 func ConvertPolicyVersion_Rules_Destination_K8S_Clusters_OciToObjectValueFromProto(proto *configv1.PolicyVersion_Rules_Destination_K8S_Clusters_Oci) basetypes.ObjectValue {
+	if proto == nil {
+		return types.ObjectNull(GetTypeAttrsForPolicyVersion_Rules_Destination_K8S_Clusters_Oci())
+	}
 	return types.ObjectValueMust(
 		GetTypeAttrsForPolicyVersion_Rules_Destination_K8S_Clusters_Oci(),
 		map[string]attr.Value{
@@ -12979,6 +13128,9 @@ func ConvertPolicyVersion_Rules_Destination_K8S_Clusters_OciToObjectValueFromPro
 }
 
 func ConvertDataValueToPolicyVersion_Rules_Destination_K8S_Clusters_OciProto(ctx context.Context, dataValue attr.Value) (*configv1.PolicyVersion_Rules_Destination_K8S_Clusters_Oci, diag.Diagnostics) {
+	if dataValue.IsNull() || dataValue.IsUnknown() {
+		return nil, nil
+	}
 	pv := PolicyVersion_Rules_Destination_K8S_Clusters_Oci{}
 	diags := tfsdk.ValueAs(ctx, dataValue, &pv)
 	if diags.HasError() {
@@ -13008,6 +13160,9 @@ func GetTypeAttrsForPolicyVersion_Rules_Destination_K8S_NamespaceSelector() map[
 }
 
 func ConvertPolicyVersion_Rules_Destination_K8S_NamespaceSelectorToObjectValueFromProto(proto *configv1.PolicyVersion_Rules_Destination_K8S_NamespaceSelector) basetypes.ObjectValue {
+	if proto == nil {
+		return types.ObjectNull(GetTypeAttrsForPolicyVersion_Rules_Destination_K8S_NamespaceSelector())
+	}
 	elementsInMatchExpressions := make([]attr.Value, 0, len(proto.MatchExpressions))
 	for _, item := range proto.MatchExpressions {
 		elementsInMatchExpressions = append(elementsInMatchExpressions, ConvertPolicyVersion_Rules_Destination_K8S_NamespaceSelector_MatchExpressionsToObjectValueFromProto(item))
@@ -13019,13 +13174,26 @@ func ConvertPolicyVersion_Rules_Destination_K8S_NamespaceSelectorToObjectValueFr
 	return types.ObjectValueMust(
 		GetTypeAttrsForPolicyVersion_Rules_Destination_K8S_NamespaceSelector(),
 		map[string]attr.Value{
-			"match_expressions": types.ListValueMust(types.ObjectType{AttrTypes: GetTypeAttrsForPolicyVersion_Rules_Destination_K8S_NamespaceSelector_MatchExpressions()}, elementsInMatchExpressions),
-			"match_labels":      types.ListValueMust(types.ObjectType{AttrTypes: GetTypeAttrsForPolicyVersion_Rules_Destination_K8S_NamespaceSelector_MatchLabels()}, elementsInMatchLabels),
+			"match_expressions": func() basetypes.ListValue {
+				if proto.MatchExpressions == nil {
+					return types.ListNull(types.ObjectType{AttrTypes: GetTypeAttrsForPolicyVersion_Rules_Destination_K8S_NamespaceSelector_MatchExpressions()})
+				}
+				return types.ListValueMust(types.ObjectType{AttrTypes: GetTypeAttrsForPolicyVersion_Rules_Destination_K8S_NamespaceSelector_MatchExpressions()}, elementsInMatchExpressions)
+			}(),
+			"match_labels": func() basetypes.ListValue {
+				if proto.MatchLabels == nil {
+					return types.ListNull(types.ObjectType{AttrTypes: GetTypeAttrsForPolicyVersion_Rules_Destination_K8S_NamespaceSelector_MatchLabels()})
+				}
+				return types.ListValueMust(types.ObjectType{AttrTypes: GetTypeAttrsForPolicyVersion_Rules_Destination_K8S_NamespaceSelector_MatchLabels()}, elementsInMatchLabels)
+			}(),
 		},
 	)
 }
 
 func ConvertDataValueToPolicyVersion_Rules_Destination_K8S_NamespaceSelectorProto(ctx context.Context, dataValue attr.Value) (*configv1.PolicyVersion_Rules_Destination_K8S_NamespaceSelector, diag.Diagnostics) {
+	if dataValue.IsNull() || dataValue.IsUnknown() {
+		return nil, nil
+	}
 	pv := PolicyVersion_Rules_Destination_K8S_NamespaceSelector{}
 	diags := tfsdk.ValueAs(ctx, dataValue, &pv)
 	if diags.HasError() {
@@ -13070,6 +13238,9 @@ func GetTypeAttrsForPolicyVersion_Rules_Destination_K8S_NamespaceSelector_MatchE
 }
 
 func ConvertPolicyVersion_Rules_Destination_K8S_NamespaceSelector_MatchExpressionsToObjectValueFromProto(proto *configv1.PolicyVersion_Rules_Destination_K8S_NamespaceSelector_MatchExpressions) basetypes.ObjectValue {
+	if proto == nil {
+		return types.ObjectNull(GetTypeAttrsForPolicyVersion_Rules_Destination_K8S_NamespaceSelector_MatchExpressions())
+	}
 	elementsInValues := make([]attr.Value, 0, len(proto.Values))
 	for _, item := range proto.Values {
 		elementsInValues = append(elementsInValues, types.StringValue(item))
@@ -13079,12 +13250,20 @@ func ConvertPolicyVersion_Rules_Destination_K8S_NamespaceSelector_MatchExpressio
 		map[string]attr.Value{
 			"key":      types.StringValue(proto.Key),
 			"operator": types.StringValue(proto.Operator),
-			"values":   types.ListValueMust(types.StringType, elementsInValues),
+			"values": func() basetypes.ListValue {
+				if proto.Values == nil {
+					return types.ListNull(types.StringType)
+				}
+				return types.ListValueMust(types.StringType, elementsInValues)
+			}(),
 		},
 	)
 }
 
 func ConvertDataValueToPolicyVersion_Rules_Destination_K8S_NamespaceSelector_MatchExpressionsProto(ctx context.Context, dataValue attr.Value) (*configv1.PolicyVersion_Rules_Destination_K8S_NamespaceSelector_MatchExpressions, diag.Diagnostics) {
+	if dataValue.IsNull() || dataValue.IsUnknown() {
+		return nil, nil
+	}
 	pv := PolicyVersion_Rules_Destination_K8S_NamespaceSelector_MatchExpressions{}
 	diags := tfsdk.ValueAs(ctx, dataValue, &pv)
 	if diags.HasError() {
@@ -13116,6 +13295,9 @@ func GetTypeAttrsForPolicyVersion_Rules_Destination_K8S_NamespaceSelector_MatchL
 }
 
 func ConvertPolicyVersion_Rules_Destination_K8S_NamespaceSelector_MatchLabelsToObjectValueFromProto(proto *configv1.PolicyVersion_Rules_Destination_K8S_NamespaceSelector_MatchLabels) basetypes.ObjectValue {
+	if proto == nil {
+		return types.ObjectNull(GetTypeAttrsForPolicyVersion_Rules_Destination_K8S_NamespaceSelector_MatchLabels())
+	}
 	return types.ObjectValueMust(
 		GetTypeAttrsForPolicyVersion_Rules_Destination_K8S_NamespaceSelector_MatchLabels(),
 		map[string]attr.Value{
@@ -13126,6 +13308,9 @@ func ConvertPolicyVersion_Rules_Destination_K8S_NamespaceSelector_MatchLabelsToO
 }
 
 func ConvertDataValueToPolicyVersion_Rules_Destination_K8S_NamespaceSelector_MatchLabelsProto(ctx context.Context, dataValue attr.Value) (*configv1.PolicyVersion_Rules_Destination_K8S_NamespaceSelector_MatchLabels, diag.Diagnostics) {
+	if dataValue.IsNull() || dataValue.IsUnknown() {
+		return nil, nil
+	}
 	pv := PolicyVersion_Rules_Destination_K8S_NamespaceSelector_MatchLabels{}
 	diags := tfsdk.ValueAs(ctx, dataValue, &pv)
 	if diags.HasError() {
@@ -13156,6 +13341,9 @@ func GetTypeAttrsForPolicyVersion_Rules_Destination_K8S_WorkloadSelector() map[s
 }
 
 func ConvertPolicyVersion_Rules_Destination_K8S_WorkloadSelectorToObjectValueFromProto(proto *configv1.PolicyVersion_Rules_Destination_K8S_WorkloadSelector) basetypes.ObjectValue {
+	if proto == nil {
+		return types.ObjectNull(GetTypeAttrsForPolicyVersion_Rules_Destination_K8S_WorkloadSelector())
+	}
 	elementsInMatchExpressions := make([]attr.Value, 0, len(proto.MatchExpressions))
 	for _, item := range proto.MatchExpressions {
 		elementsInMatchExpressions = append(elementsInMatchExpressions, ConvertPolicyVersion_Rules_Destination_K8S_WorkloadSelector_MatchExpressionsToObjectValueFromProto(item))
@@ -13171,14 +13359,32 @@ func ConvertPolicyVersion_Rules_Destination_K8S_WorkloadSelectorToObjectValueFro
 	return types.ObjectValueMust(
 		GetTypeAttrsForPolicyVersion_Rules_Destination_K8S_WorkloadSelector(),
 		map[string]attr.Value{
-			"match_expressions": types.ListValueMust(types.ObjectType{AttrTypes: GetTypeAttrsForPolicyVersion_Rules_Destination_K8S_WorkloadSelector_MatchExpressions()}, elementsInMatchExpressions),
-			"match_labels":      types.ListValueMust(types.ObjectType{AttrTypes: GetTypeAttrsForPolicyVersion_Rules_Destination_K8S_WorkloadSelector_MatchLabels()}, elementsInMatchLabels),
-			"service_accounts":  types.ListValueMust(types.StringType, elementsInServiceAccounts),
+			"match_expressions": func() basetypes.ListValue {
+				if proto.MatchExpressions == nil {
+					return types.ListNull(types.ObjectType{AttrTypes: GetTypeAttrsForPolicyVersion_Rules_Destination_K8S_WorkloadSelector_MatchExpressions()})
+				}
+				return types.ListValueMust(types.ObjectType{AttrTypes: GetTypeAttrsForPolicyVersion_Rules_Destination_K8S_WorkloadSelector_MatchExpressions()}, elementsInMatchExpressions)
+			}(),
+			"match_labels": func() basetypes.ListValue {
+				if proto.MatchLabels == nil {
+					return types.ListNull(types.ObjectType{AttrTypes: GetTypeAttrsForPolicyVersion_Rules_Destination_K8S_WorkloadSelector_MatchLabels()})
+				}
+				return types.ListValueMust(types.ObjectType{AttrTypes: GetTypeAttrsForPolicyVersion_Rules_Destination_K8S_WorkloadSelector_MatchLabels()}, elementsInMatchLabels)
+			}(),
+			"service_accounts": func() basetypes.ListValue {
+				if proto.ServiceAccounts == nil {
+					return types.ListNull(types.StringType)
+				}
+				return types.ListValueMust(types.StringType, elementsInServiceAccounts)
+			}(),
 		},
 	)
 }
 
 func ConvertDataValueToPolicyVersion_Rules_Destination_K8S_WorkloadSelectorProto(ctx context.Context, dataValue attr.Value) (*configv1.PolicyVersion_Rules_Destination_K8S_WorkloadSelector, diag.Diagnostics) {
+	if dataValue.IsNull() || dataValue.IsUnknown() {
+		return nil, nil
+	}
 	pv := PolicyVersion_Rules_Destination_K8S_WorkloadSelector{}
 	diags := tfsdk.ValueAs(ctx, dataValue, &pv)
 	if diags.HasError() {
@@ -13230,6 +13436,9 @@ func GetTypeAttrsForPolicyVersion_Rules_Destination_K8S_WorkloadSelector_MatchEx
 }
 
 func ConvertPolicyVersion_Rules_Destination_K8S_WorkloadSelector_MatchExpressionsToObjectValueFromProto(proto *configv1.PolicyVersion_Rules_Destination_K8S_WorkloadSelector_MatchExpressions) basetypes.ObjectValue {
+	if proto == nil {
+		return types.ObjectNull(GetTypeAttrsForPolicyVersion_Rules_Destination_K8S_WorkloadSelector_MatchExpressions())
+	}
 	elementsInValues := make([]attr.Value, 0, len(proto.Values))
 	for _, item := range proto.Values {
 		elementsInValues = append(elementsInValues, types.StringValue(item))
@@ -13239,12 +13448,20 @@ func ConvertPolicyVersion_Rules_Destination_K8S_WorkloadSelector_MatchExpression
 		map[string]attr.Value{
 			"key":      types.StringValue(proto.Key),
 			"operator": types.StringValue(proto.Operator),
-			"values":   types.ListValueMust(types.StringType, elementsInValues),
+			"values": func() basetypes.ListValue {
+				if proto.Values == nil {
+					return types.ListNull(types.StringType)
+				}
+				return types.ListValueMust(types.StringType, elementsInValues)
+			}(),
 		},
 	)
 }
 
 func ConvertDataValueToPolicyVersion_Rules_Destination_K8S_WorkloadSelector_MatchExpressionsProto(ctx context.Context, dataValue attr.Value) (*configv1.PolicyVersion_Rules_Destination_K8S_WorkloadSelector_MatchExpressions, diag.Diagnostics) {
+	if dataValue.IsNull() || dataValue.IsUnknown() {
+		return nil, nil
+	}
 	pv := PolicyVersion_Rules_Destination_K8S_WorkloadSelector_MatchExpressions{}
 	diags := tfsdk.ValueAs(ctx, dataValue, &pv)
 	if diags.HasError() {
@@ -13276,6 +13493,9 @@ func GetTypeAttrsForPolicyVersion_Rules_Destination_K8S_WorkloadSelector_MatchLa
 }
 
 func ConvertPolicyVersion_Rules_Destination_K8S_WorkloadSelector_MatchLabelsToObjectValueFromProto(proto *configv1.PolicyVersion_Rules_Destination_K8S_WorkloadSelector_MatchLabels) basetypes.ObjectValue {
+	if proto == nil {
+		return types.ObjectNull(GetTypeAttrsForPolicyVersion_Rules_Destination_K8S_WorkloadSelector_MatchLabels())
+	}
 	return types.ObjectValueMust(
 		GetTypeAttrsForPolicyVersion_Rules_Destination_K8S_WorkloadSelector_MatchLabels(),
 		map[string]attr.Value{
@@ -13286,6 +13506,9 @@ func ConvertPolicyVersion_Rules_Destination_K8S_WorkloadSelector_MatchLabelsToOb
 }
 
 func ConvertDataValueToPolicyVersion_Rules_Destination_K8S_WorkloadSelector_MatchLabelsProto(ctx context.Context, dataValue attr.Value) (*configv1.PolicyVersion_Rules_Destination_K8S_WorkloadSelector_MatchLabels, diag.Diagnostics) {
+	if dataValue.IsNull() || dataValue.IsUnknown() {
+		return nil, nil
+	}
 	pv := PolicyVersion_Rules_Destination_K8S_WorkloadSelector_MatchLabels{}
 	diags := tfsdk.ValueAs(ctx, dataValue, &pv)
 	if diags.HasError() {
@@ -13312,6 +13535,9 @@ func GetTypeAttrsForPolicyVersion_Rules_PortRanges() map[string]attr.Type {
 }
 
 func ConvertPolicyVersion_Rules_PortRangesToObjectValueFromProto(proto *configv1.PolicyVersion_Rules_PortRanges) basetypes.ObjectValue {
+	if proto == nil {
+		return types.ObjectNull(GetTypeAttrsForPolicyVersion_Rules_PortRanges())
+	}
 	return types.ObjectValueMust(
 		GetTypeAttrsForPolicyVersion_Rules_PortRanges(),
 		map[string]attr.Value{
@@ -13323,6 +13549,9 @@ func ConvertPolicyVersion_Rules_PortRangesToObjectValueFromProto(proto *configv1
 }
 
 func ConvertDataValueToPolicyVersion_Rules_PortRangesProto(ctx context.Context, dataValue attr.Value) (*configv1.PolicyVersion_Rules_PortRanges, diag.Diagnostics) {
+	if dataValue.IsNull() || dataValue.IsUnknown() {
+		return nil, nil
+	}
 	pv := PolicyVersion_Rules_PortRanges{}
 	diags := tfsdk.ValueAs(ctx, dataValue, &pv)
 	if diags.HasError() {
@@ -13360,6 +13589,9 @@ func GetTypeAttrsForPolicyVersion_Rules_Source() map[string]attr.Type {
 }
 
 func ConvertPolicyVersion_Rules_SourceToObjectValueFromProto(proto *configv1.PolicyVersion_Rules_Source) basetypes.ObjectValue {
+	if proto == nil {
+		return types.ObjectNull(GetTypeAttrsForPolicyVersion_Rules_Source())
+	}
 	return types.ObjectValueMust(
 		GetTypeAttrsForPolicyVersion_Rules_Source(),
 		map[string]attr.Value{
@@ -13372,6 +13604,9 @@ func ConvertPolicyVersion_Rules_SourceToObjectValueFromProto(proto *configv1.Pol
 }
 
 func ConvertDataValueToPolicyVersion_Rules_SourceProto(ctx context.Context, dataValue attr.Value) (*configv1.PolicyVersion_Rules_Source, diag.Diagnostics) {
+	if dataValue.IsNull() || dataValue.IsUnknown() {
+		return nil, nil
+	}
 	pv := PolicyVersion_Rules_Source{}
 	diags := tfsdk.ValueAs(ctx, dataValue, &pv)
 	if diags.HasError() {
@@ -13413,6 +13648,9 @@ func GetTypeAttrsForPolicyVersion_Rules_Source_Cloud() map[string]attr.Type {
 }
 
 func ConvertPolicyVersion_Rules_Source_CloudToObjectValueFromProto(proto *configv1.PolicyVersion_Rules_Source_Cloud) basetypes.ObjectValue {
+	if proto == nil {
+		return types.ObjectNull(GetTypeAttrsForPolicyVersion_Rules_Source_Cloud())
+	}
 	return types.ObjectValueMust(
 		GetTypeAttrsForPolicyVersion_Rules_Source_Cloud(),
 		map[string]attr.Value{},
@@ -13420,6 +13658,9 @@ func ConvertPolicyVersion_Rules_Source_CloudToObjectValueFromProto(proto *config
 }
 
 func ConvertDataValueToPolicyVersion_Rules_Source_CloudProto(ctx context.Context, dataValue attr.Value) (*configv1.PolicyVersion_Rules_Source_Cloud, diag.Diagnostics) {
+	if dataValue.IsNull() || dataValue.IsUnknown() {
+		return nil, nil
+	}
 	pv := PolicyVersion_Rules_Source_Cloud{}
 	diags := tfsdk.ValueAs(ctx, dataValue, &pv)
 	if diags.HasError() {
@@ -13437,6 +13678,9 @@ func GetTypeAttrsForPolicyVersion_Rules_Source_IllumioLabels() map[string]attr.T
 }
 
 func ConvertPolicyVersion_Rules_Source_IllumioLabelsToObjectValueFromProto(proto *configv1.PolicyVersion_Rules_Source_IllumioLabels) basetypes.ObjectValue {
+	if proto == nil {
+		return types.ObjectNull(GetTypeAttrsForPolicyVersion_Rules_Source_IllumioLabels())
+	}
 	return types.ObjectValueMust(
 		GetTypeAttrsForPolicyVersion_Rules_Source_IllumioLabels(),
 		map[string]attr.Value{},
@@ -13444,6 +13688,9 @@ func ConvertPolicyVersion_Rules_Source_IllumioLabelsToObjectValueFromProto(proto
 }
 
 func ConvertDataValueToPolicyVersion_Rules_Source_IllumioLabelsProto(ctx context.Context, dataValue attr.Value) (*configv1.PolicyVersion_Rules_Source_IllumioLabels, diag.Diagnostics) {
+	if dataValue.IsNull() || dataValue.IsUnknown() {
+		return nil, nil
+	}
 	pv := PolicyVersion_Rules_Source_IllumioLabels{}
 	diags := tfsdk.ValueAs(ctx, dataValue, &pv)
 	if diags.HasError() {
@@ -13464,6 +13711,9 @@ func GetTypeAttrsForPolicyVersion_Rules_Source_IpList() map[string]attr.Type {
 }
 
 func ConvertPolicyVersion_Rules_Source_IpListToObjectValueFromProto(proto *configv1.PolicyVersion_Rules_Source_IpList) basetypes.ObjectValue {
+	if proto == nil {
+		return types.ObjectNull(GetTypeAttrsForPolicyVersion_Rules_Source_IpList())
+	}
 	elementsInIds := make([]attr.Value, 0, len(proto.Ids))
 	for _, item := range proto.Ids {
 		elementsInIds = append(elementsInIds, types.StringValue(item))
@@ -13471,12 +13721,20 @@ func ConvertPolicyVersion_Rules_Source_IpListToObjectValueFromProto(proto *confi
 	return types.ObjectValueMust(
 		GetTypeAttrsForPolicyVersion_Rules_Source_IpList(),
 		map[string]attr.Value{
-			"ids": types.ListValueMust(types.StringType, elementsInIds),
+			"ids": func() basetypes.ListValue {
+				if proto.Ids == nil {
+					return types.ListNull(types.StringType)
+				}
+				return types.ListValueMust(types.StringType, elementsInIds)
+			}(),
 		},
 	)
 }
 
 func ConvertDataValueToPolicyVersion_Rules_Source_IpListProto(ctx context.Context, dataValue attr.Value) (*configv1.PolicyVersion_Rules_Source_IpList, diag.Diagnostics) {
+	if dataValue.IsNull() || dataValue.IsUnknown() {
+		return nil, nil
+	}
 	pv := PolicyVersion_Rules_Source_IpList{}
 	diags := tfsdk.ValueAs(ctx, dataValue, &pv)
 	if diags.HasError() {
@@ -13514,6 +13772,9 @@ func GetTypeAttrsForPolicyVersion_Rules_Source_K8S() map[string]attr.Type {
 }
 
 func ConvertPolicyVersion_Rules_Source_K8SToObjectValueFromProto(proto *configv1.PolicyVersion_Rules_Source_K8S) basetypes.ObjectValue {
+	if proto == nil {
+		return types.ObjectNull(GetTypeAttrsForPolicyVersion_Rules_Source_K8S())
+	}
 	elementsInClusters := make([]attr.Value, 0, len(proto.Clusters))
 	for _, item := range proto.Clusters {
 		elementsInClusters = append(elementsInClusters, ConvertPolicyVersion_Rules_Source_K8S_ClustersToObjectValueFromProto(item))
@@ -13521,7 +13782,12 @@ func ConvertPolicyVersion_Rules_Source_K8SToObjectValueFromProto(proto *configv1
 	return types.ObjectValueMust(
 		GetTypeAttrsForPolicyVersion_Rules_Source_K8S(),
 		map[string]attr.Value{
-			"clusters":           types.ListValueMust(types.ObjectType{AttrTypes: GetTypeAttrsForPolicyVersion_Rules_Source_K8S_Clusters()}, elementsInClusters),
+			"clusters": func() basetypes.ListValue {
+				if proto.Clusters == nil {
+					return types.ListNull(types.ObjectType{AttrTypes: GetTypeAttrsForPolicyVersion_Rules_Source_K8S_Clusters()})
+				}
+				return types.ListValueMust(types.ObjectType{AttrTypes: GetTypeAttrsForPolicyVersion_Rules_Source_K8S_Clusters()}, elementsInClusters)
+			}(),
 			"namespace_selector": ConvertPolicyVersion_Rules_Source_K8S_NamespaceSelectorToObjectValueFromProto(proto.NamespaceSelector),
 			"workload_selector":  ConvertPolicyVersion_Rules_Source_K8S_WorkloadSelectorToObjectValueFromProto(proto.WorkloadSelector),
 		},
@@ -13529,6 +13795,9 @@ func ConvertPolicyVersion_Rules_Source_K8SToObjectValueFromProto(proto *configv1
 }
 
 func ConvertDataValueToPolicyVersion_Rules_Source_K8SProto(ctx context.Context, dataValue attr.Value) (*configv1.PolicyVersion_Rules_Source_K8S, diag.Diagnostics) {
+	if dataValue.IsNull() || dataValue.IsUnknown() {
+		return nil, nil
+	}
 	pv := PolicyVersion_Rules_Source_K8S{}
 	diags := tfsdk.ValueAs(ctx, dataValue, &pv)
 	if diags.HasError() {
@@ -13587,6 +13856,9 @@ func GetTypeAttrsForPolicyVersion_Rules_Source_K8S_Clusters() map[string]attr.Ty
 }
 
 func ConvertPolicyVersion_Rules_Source_K8S_ClustersToObjectValueFromProto(proto *configv1.PolicyVersion_Rules_Source_K8S_Clusters) basetypes.ObjectValue {
+	if proto == nil {
+		return types.ObjectNull(GetTypeAttrsForPolicyVersion_Rules_Source_K8S_Clusters())
+	}
 	return types.ObjectValueMust(
 		GetTypeAttrsForPolicyVersion_Rules_Source_K8S_Clusters(),
 		map[string]attr.Value{
@@ -13600,6 +13872,9 @@ func ConvertPolicyVersion_Rules_Source_K8S_ClustersToObjectValueFromProto(proto 
 }
 
 func ConvertDataValueToPolicyVersion_Rules_Source_K8S_ClustersProto(ctx context.Context, dataValue attr.Value) (*configv1.PolicyVersion_Rules_Source_K8S_Clusters, diag.Diagnostics) {
+	if dataValue.IsNull() || dataValue.IsUnknown() {
+		return nil, nil
+	}
 	pv := PolicyVersion_Rules_Source_K8S_Clusters{}
 	diags := tfsdk.ValueAs(ctx, dataValue, &pv)
 	if diags.HasError() {
@@ -13649,6 +13924,9 @@ func GetTypeAttrsForPolicyVersion_Rules_Source_K8S_Clusters_Aws() map[string]att
 }
 
 func ConvertPolicyVersion_Rules_Source_K8S_Clusters_AwsToObjectValueFromProto(proto *configv1.PolicyVersion_Rules_Source_K8S_Clusters_Aws) basetypes.ObjectValue {
+	if proto == nil {
+		return types.ObjectNull(GetTypeAttrsForPolicyVersion_Rules_Source_K8S_Clusters_Aws())
+	}
 	return types.ObjectValueMust(
 		GetTypeAttrsForPolicyVersion_Rules_Source_K8S_Clusters_Aws(),
 		map[string]attr.Value{
@@ -13660,6 +13938,9 @@ func ConvertPolicyVersion_Rules_Source_K8S_Clusters_AwsToObjectValueFromProto(pr
 }
 
 func ConvertDataValueToPolicyVersion_Rules_Source_K8S_Clusters_AwsProto(ctx context.Context, dataValue attr.Value) (*configv1.PolicyVersion_Rules_Source_K8S_Clusters_Aws, diag.Diagnostics) {
+	if dataValue.IsNull() || dataValue.IsUnknown() {
+		return nil, nil
+	}
 	pv := PolicyVersion_Rules_Source_K8S_Clusters_Aws{}
 	diags := tfsdk.ValueAs(ctx, dataValue, &pv)
 	if diags.HasError() {
@@ -13687,6 +13968,9 @@ func GetTypeAttrsForPolicyVersion_Rules_Source_K8S_Clusters_Azure() map[string]a
 }
 
 func ConvertPolicyVersion_Rules_Source_K8S_Clusters_AzureToObjectValueFromProto(proto *configv1.PolicyVersion_Rules_Source_K8S_Clusters_Azure) basetypes.ObjectValue {
+	if proto == nil {
+		return types.ObjectNull(GetTypeAttrsForPolicyVersion_Rules_Source_K8S_Clusters_Azure())
+	}
 	return types.ObjectValueMust(
 		GetTypeAttrsForPolicyVersion_Rules_Source_K8S_Clusters_Azure(),
 		map[string]attr.Value{
@@ -13698,6 +13982,9 @@ func ConvertPolicyVersion_Rules_Source_K8S_Clusters_AzureToObjectValueFromProto(
 }
 
 func ConvertDataValueToPolicyVersion_Rules_Source_K8S_Clusters_AzureProto(ctx context.Context, dataValue attr.Value) (*configv1.PolicyVersion_Rules_Source_K8S_Clusters_Azure, diag.Diagnostics) {
+	if dataValue.IsNull() || dataValue.IsUnknown() {
+		return nil, nil
+	}
 	pv := PolicyVersion_Rules_Source_K8S_Clusters_Azure{}
 	diags := tfsdk.ValueAs(ctx, dataValue, &pv)
 	if diags.HasError() {
@@ -13725,6 +14012,9 @@ func GetTypeAttrsForPolicyVersion_Rules_Source_K8S_Clusters_Gcp() map[string]att
 }
 
 func ConvertPolicyVersion_Rules_Source_K8S_Clusters_GcpToObjectValueFromProto(proto *configv1.PolicyVersion_Rules_Source_K8S_Clusters_Gcp) basetypes.ObjectValue {
+	if proto == nil {
+		return types.ObjectNull(GetTypeAttrsForPolicyVersion_Rules_Source_K8S_Clusters_Gcp())
+	}
 	return types.ObjectValueMust(
 		GetTypeAttrsForPolicyVersion_Rules_Source_K8S_Clusters_Gcp(),
 		map[string]attr.Value{
@@ -13736,6 +14026,9 @@ func ConvertPolicyVersion_Rules_Source_K8S_Clusters_GcpToObjectValueFromProto(pr
 }
 
 func ConvertDataValueToPolicyVersion_Rules_Source_K8S_Clusters_GcpProto(ctx context.Context, dataValue attr.Value) (*configv1.PolicyVersion_Rules_Source_K8S_Clusters_Gcp, diag.Diagnostics) {
+	if dataValue.IsNull() || dataValue.IsUnknown() {
+		return nil, nil
+	}
 	pv := PolicyVersion_Rules_Source_K8S_Clusters_Gcp{}
 	diags := tfsdk.ValueAs(ctx, dataValue, &pv)
 	if diags.HasError() {
@@ -13763,6 +14056,9 @@ func GetTypeAttrsForPolicyVersion_Rules_Source_K8S_Clusters_Oci() map[string]att
 }
 
 func ConvertPolicyVersion_Rules_Source_K8S_Clusters_OciToObjectValueFromProto(proto *configv1.PolicyVersion_Rules_Source_K8S_Clusters_Oci) basetypes.ObjectValue {
+	if proto == nil {
+		return types.ObjectNull(GetTypeAttrsForPolicyVersion_Rules_Source_K8S_Clusters_Oci())
+	}
 	return types.ObjectValueMust(
 		GetTypeAttrsForPolicyVersion_Rules_Source_K8S_Clusters_Oci(),
 		map[string]attr.Value{
@@ -13774,6 +14070,9 @@ func ConvertPolicyVersion_Rules_Source_K8S_Clusters_OciToObjectValueFromProto(pr
 }
 
 func ConvertDataValueToPolicyVersion_Rules_Source_K8S_Clusters_OciProto(ctx context.Context, dataValue attr.Value) (*configv1.PolicyVersion_Rules_Source_K8S_Clusters_Oci, diag.Diagnostics) {
+	if dataValue.IsNull() || dataValue.IsUnknown() {
+		return nil, nil
+	}
 	pv := PolicyVersion_Rules_Source_K8S_Clusters_Oci{}
 	diags := tfsdk.ValueAs(ctx, dataValue, &pv)
 	if diags.HasError() {
@@ -13803,6 +14102,9 @@ func GetTypeAttrsForPolicyVersion_Rules_Source_K8S_NamespaceSelector() map[strin
 }
 
 func ConvertPolicyVersion_Rules_Source_K8S_NamespaceSelectorToObjectValueFromProto(proto *configv1.PolicyVersion_Rules_Source_K8S_NamespaceSelector) basetypes.ObjectValue {
+	if proto == nil {
+		return types.ObjectNull(GetTypeAttrsForPolicyVersion_Rules_Source_K8S_NamespaceSelector())
+	}
 	elementsInMatchExpressions := make([]attr.Value, 0, len(proto.MatchExpressions))
 	for _, item := range proto.MatchExpressions {
 		elementsInMatchExpressions = append(elementsInMatchExpressions, ConvertPolicyVersion_Rules_Source_K8S_NamespaceSelector_MatchExpressionsToObjectValueFromProto(item))
@@ -13814,13 +14116,26 @@ func ConvertPolicyVersion_Rules_Source_K8S_NamespaceSelectorToObjectValueFromPro
 	return types.ObjectValueMust(
 		GetTypeAttrsForPolicyVersion_Rules_Source_K8S_NamespaceSelector(),
 		map[string]attr.Value{
-			"match_expressions": types.ListValueMust(types.ObjectType{AttrTypes: GetTypeAttrsForPolicyVersion_Rules_Source_K8S_NamespaceSelector_MatchExpressions()}, elementsInMatchExpressions),
-			"match_labels":      types.ListValueMust(types.ObjectType{AttrTypes: GetTypeAttrsForPolicyVersion_Rules_Source_K8S_NamespaceSelector_MatchLabels()}, elementsInMatchLabels),
+			"match_expressions": func() basetypes.ListValue {
+				if proto.MatchExpressions == nil {
+					return types.ListNull(types.ObjectType{AttrTypes: GetTypeAttrsForPolicyVersion_Rules_Source_K8S_NamespaceSelector_MatchExpressions()})
+				}
+				return types.ListValueMust(types.ObjectType{AttrTypes: GetTypeAttrsForPolicyVersion_Rules_Source_K8S_NamespaceSelector_MatchExpressions()}, elementsInMatchExpressions)
+			}(),
+			"match_labels": func() basetypes.ListValue {
+				if proto.MatchLabels == nil {
+					return types.ListNull(types.ObjectType{AttrTypes: GetTypeAttrsForPolicyVersion_Rules_Source_K8S_NamespaceSelector_MatchLabels()})
+				}
+				return types.ListValueMust(types.ObjectType{AttrTypes: GetTypeAttrsForPolicyVersion_Rules_Source_K8S_NamespaceSelector_MatchLabels()}, elementsInMatchLabels)
+			}(),
 		},
 	)
 }
 
 func ConvertDataValueToPolicyVersion_Rules_Source_K8S_NamespaceSelectorProto(ctx context.Context, dataValue attr.Value) (*configv1.PolicyVersion_Rules_Source_K8S_NamespaceSelector, diag.Diagnostics) {
+	if dataValue.IsNull() || dataValue.IsUnknown() {
+		return nil, nil
+	}
 	pv := PolicyVersion_Rules_Source_K8S_NamespaceSelector{}
 	diags := tfsdk.ValueAs(ctx, dataValue, &pv)
 	if diags.HasError() {
@@ -13865,6 +14180,9 @@ func GetTypeAttrsForPolicyVersion_Rules_Source_K8S_NamespaceSelector_MatchExpres
 }
 
 func ConvertPolicyVersion_Rules_Source_K8S_NamespaceSelector_MatchExpressionsToObjectValueFromProto(proto *configv1.PolicyVersion_Rules_Source_K8S_NamespaceSelector_MatchExpressions) basetypes.ObjectValue {
+	if proto == nil {
+		return types.ObjectNull(GetTypeAttrsForPolicyVersion_Rules_Source_K8S_NamespaceSelector_MatchExpressions())
+	}
 	elementsInValues := make([]attr.Value, 0, len(proto.Values))
 	for _, item := range proto.Values {
 		elementsInValues = append(elementsInValues, types.StringValue(item))
@@ -13874,12 +14192,20 @@ func ConvertPolicyVersion_Rules_Source_K8S_NamespaceSelector_MatchExpressionsToO
 		map[string]attr.Value{
 			"key":      types.StringValue(proto.Key),
 			"operator": types.StringValue(proto.Operator),
-			"values":   types.ListValueMust(types.StringType, elementsInValues),
+			"values": func() basetypes.ListValue {
+				if proto.Values == nil {
+					return types.ListNull(types.StringType)
+				}
+				return types.ListValueMust(types.StringType, elementsInValues)
+			}(),
 		},
 	)
 }
 
 func ConvertDataValueToPolicyVersion_Rules_Source_K8S_NamespaceSelector_MatchExpressionsProto(ctx context.Context, dataValue attr.Value) (*configv1.PolicyVersion_Rules_Source_K8S_NamespaceSelector_MatchExpressions, diag.Diagnostics) {
+	if dataValue.IsNull() || dataValue.IsUnknown() {
+		return nil, nil
+	}
 	pv := PolicyVersion_Rules_Source_K8S_NamespaceSelector_MatchExpressions{}
 	diags := tfsdk.ValueAs(ctx, dataValue, &pv)
 	if diags.HasError() {
@@ -13911,6 +14237,9 @@ func GetTypeAttrsForPolicyVersion_Rules_Source_K8S_NamespaceSelector_MatchLabels
 }
 
 func ConvertPolicyVersion_Rules_Source_K8S_NamespaceSelector_MatchLabelsToObjectValueFromProto(proto *configv1.PolicyVersion_Rules_Source_K8S_NamespaceSelector_MatchLabels) basetypes.ObjectValue {
+	if proto == nil {
+		return types.ObjectNull(GetTypeAttrsForPolicyVersion_Rules_Source_K8S_NamespaceSelector_MatchLabels())
+	}
 	return types.ObjectValueMust(
 		GetTypeAttrsForPolicyVersion_Rules_Source_K8S_NamespaceSelector_MatchLabels(),
 		map[string]attr.Value{
@@ -13921,6 +14250,9 @@ func ConvertPolicyVersion_Rules_Source_K8S_NamespaceSelector_MatchLabelsToObject
 }
 
 func ConvertDataValueToPolicyVersion_Rules_Source_K8S_NamespaceSelector_MatchLabelsProto(ctx context.Context, dataValue attr.Value) (*configv1.PolicyVersion_Rules_Source_K8S_NamespaceSelector_MatchLabels, diag.Diagnostics) {
+	if dataValue.IsNull() || dataValue.IsUnknown() {
+		return nil, nil
+	}
 	pv := PolicyVersion_Rules_Source_K8S_NamespaceSelector_MatchLabels{}
 	diags := tfsdk.ValueAs(ctx, dataValue, &pv)
 	if diags.HasError() {
@@ -13951,6 +14283,9 @@ func GetTypeAttrsForPolicyVersion_Rules_Source_K8S_WorkloadSelector() map[string
 }
 
 func ConvertPolicyVersion_Rules_Source_K8S_WorkloadSelectorToObjectValueFromProto(proto *configv1.PolicyVersion_Rules_Source_K8S_WorkloadSelector) basetypes.ObjectValue {
+	if proto == nil {
+		return types.ObjectNull(GetTypeAttrsForPolicyVersion_Rules_Source_K8S_WorkloadSelector())
+	}
 	elementsInMatchExpressions := make([]attr.Value, 0, len(proto.MatchExpressions))
 	for _, item := range proto.MatchExpressions {
 		elementsInMatchExpressions = append(elementsInMatchExpressions, ConvertPolicyVersion_Rules_Source_K8S_WorkloadSelector_MatchExpressionsToObjectValueFromProto(item))
@@ -13966,14 +14301,32 @@ func ConvertPolicyVersion_Rules_Source_K8S_WorkloadSelectorToObjectValueFromProt
 	return types.ObjectValueMust(
 		GetTypeAttrsForPolicyVersion_Rules_Source_K8S_WorkloadSelector(),
 		map[string]attr.Value{
-			"match_expressions": types.ListValueMust(types.ObjectType{AttrTypes: GetTypeAttrsForPolicyVersion_Rules_Source_K8S_WorkloadSelector_MatchExpressions()}, elementsInMatchExpressions),
-			"match_labels":      types.ListValueMust(types.ObjectType{AttrTypes: GetTypeAttrsForPolicyVersion_Rules_Source_K8S_WorkloadSelector_MatchLabels()}, elementsInMatchLabels),
-			"service_accounts":  types.ListValueMust(types.StringType, elementsInServiceAccounts),
+			"match_expressions": func() basetypes.ListValue {
+				if proto.MatchExpressions == nil {
+					return types.ListNull(types.ObjectType{AttrTypes: GetTypeAttrsForPolicyVersion_Rules_Source_K8S_WorkloadSelector_MatchExpressions()})
+				}
+				return types.ListValueMust(types.ObjectType{AttrTypes: GetTypeAttrsForPolicyVersion_Rules_Source_K8S_WorkloadSelector_MatchExpressions()}, elementsInMatchExpressions)
+			}(),
+			"match_labels": func() basetypes.ListValue {
+				if proto.MatchLabels == nil {
+					return types.ListNull(types.ObjectType{AttrTypes: GetTypeAttrsForPolicyVersion_Rules_Source_K8S_WorkloadSelector_MatchLabels()})
+				}
+				return types.ListValueMust(types.ObjectType{AttrTypes: GetTypeAttrsForPolicyVersion_Rules_Source_K8S_WorkloadSelector_MatchLabels()}, elementsInMatchLabels)
+			}(),
+			"service_accounts": func() basetypes.ListValue {
+				if proto.ServiceAccounts == nil {
+					return types.ListNull(types.StringType)
+				}
+				return types.ListValueMust(types.StringType, elementsInServiceAccounts)
+			}(),
 		},
 	)
 }
 
 func ConvertDataValueToPolicyVersion_Rules_Source_K8S_WorkloadSelectorProto(ctx context.Context, dataValue attr.Value) (*configv1.PolicyVersion_Rules_Source_K8S_WorkloadSelector, diag.Diagnostics) {
+	if dataValue.IsNull() || dataValue.IsUnknown() {
+		return nil, nil
+	}
 	pv := PolicyVersion_Rules_Source_K8S_WorkloadSelector{}
 	diags := tfsdk.ValueAs(ctx, dataValue, &pv)
 	if diags.HasError() {
@@ -14025,6 +14378,9 @@ func GetTypeAttrsForPolicyVersion_Rules_Source_K8S_WorkloadSelector_MatchExpress
 }
 
 func ConvertPolicyVersion_Rules_Source_K8S_WorkloadSelector_MatchExpressionsToObjectValueFromProto(proto *configv1.PolicyVersion_Rules_Source_K8S_WorkloadSelector_MatchExpressions) basetypes.ObjectValue {
+	if proto == nil {
+		return types.ObjectNull(GetTypeAttrsForPolicyVersion_Rules_Source_K8S_WorkloadSelector_MatchExpressions())
+	}
 	elementsInValues := make([]attr.Value, 0, len(proto.Values))
 	for _, item := range proto.Values {
 		elementsInValues = append(elementsInValues, types.StringValue(item))
@@ -14034,12 +14390,20 @@ func ConvertPolicyVersion_Rules_Source_K8S_WorkloadSelector_MatchExpressionsToOb
 		map[string]attr.Value{
 			"key":      types.StringValue(proto.Key),
 			"operator": types.StringValue(proto.Operator),
-			"values":   types.ListValueMust(types.StringType, elementsInValues),
+			"values": func() basetypes.ListValue {
+				if proto.Values == nil {
+					return types.ListNull(types.StringType)
+				}
+				return types.ListValueMust(types.StringType, elementsInValues)
+			}(),
 		},
 	)
 }
 
 func ConvertDataValueToPolicyVersion_Rules_Source_K8S_WorkloadSelector_MatchExpressionsProto(ctx context.Context, dataValue attr.Value) (*configv1.PolicyVersion_Rules_Source_K8S_WorkloadSelector_MatchExpressions, diag.Diagnostics) {
+	if dataValue.IsNull() || dataValue.IsUnknown() {
+		return nil, nil
+	}
 	pv := PolicyVersion_Rules_Source_K8S_WorkloadSelector_MatchExpressions{}
 	diags := tfsdk.ValueAs(ctx, dataValue, &pv)
 	if diags.HasError() {
@@ -14071,6 +14435,9 @@ func GetTypeAttrsForPolicyVersion_Rules_Source_K8S_WorkloadSelector_MatchLabels(
 }
 
 func ConvertPolicyVersion_Rules_Source_K8S_WorkloadSelector_MatchLabelsToObjectValueFromProto(proto *configv1.PolicyVersion_Rules_Source_K8S_WorkloadSelector_MatchLabels) basetypes.ObjectValue {
+	if proto == nil {
+		return types.ObjectNull(GetTypeAttrsForPolicyVersion_Rules_Source_K8S_WorkloadSelector_MatchLabels())
+	}
 	return types.ObjectValueMust(
 		GetTypeAttrsForPolicyVersion_Rules_Source_K8S_WorkloadSelector_MatchLabels(),
 		map[string]attr.Value{
@@ -14081,6 +14448,9 @@ func ConvertPolicyVersion_Rules_Source_K8S_WorkloadSelector_MatchLabelsToObjectV
 }
 
 func ConvertDataValueToPolicyVersion_Rules_Source_K8S_WorkloadSelector_MatchLabelsProto(ctx context.Context, dataValue attr.Value) (*configv1.PolicyVersion_Rules_Source_K8S_WorkloadSelector_MatchLabels, diag.Diagnostics) {
+	if dataValue.IsNull() || dataValue.IsUnknown() {
+		return nil, nil
+	}
 	pv := PolicyVersion_Rules_Source_K8S_WorkloadSelector_MatchLabels{}
 	diags := tfsdk.ValueAs(ctx, dataValue, &pv)
 	if diags.HasError() {
@@ -14107,6 +14477,9 @@ func GetTypeAttrsForTagToLabel_Icon() map[string]attr.Type {
 }
 
 func ConvertTagToLabel_IconToObjectValueFromProto(proto *configv1.TagToLabel_Icon) basetypes.ObjectValue {
+	if proto == nil {
+		return types.ObjectNull(GetTypeAttrsForTagToLabel_Icon())
+	}
 	return types.ObjectValueMust(
 		GetTypeAttrsForTagToLabel_Icon(),
 		map[string]attr.Value{
@@ -14118,6 +14491,9 @@ func ConvertTagToLabel_IconToObjectValueFromProto(proto *configv1.TagToLabel_Ico
 }
 
 func ConvertDataValueToTagToLabel_IconProto(ctx context.Context, dataValue attr.Value) (*configv1.TagToLabel_Icon, diag.Diagnostics) {
+	if dataValue.IsNull() || dataValue.IsUnknown() {
+		return nil, nil
+	}
 	pv := TagToLabel_Icon{}
 	diags := tfsdk.ValueAs(ctx, dataValue, &pv)
 	if diags.HasError() {
