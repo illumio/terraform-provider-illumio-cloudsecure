@@ -405,6 +405,9 @@ func GetTypeAttrsForPolicyVersion_Spec() map[string]attr.Type {
 	// Verify ConvertToObjectValueFromProto iterates over list and calls nested converter for each element
 	expectedConvertToObjectValue := `
 func ConvertPolicyVersion_SpecToObjectValueFromProto(proto *configv1.PolicyVersion_Spec) basetypes.ObjectValue  {
+	if proto == nil {
+		return types.ObjectNull(GetTypeAttrsForPolicyVersion_Spec())
+	}
 	elementsInRules := make([]attr.Value, 0, len(proto.Rules))
 	for _, item := range proto.Rules {
 		elementsInRules = append(elementsInRules, ConvertPolicyVersion_Spec_RulesToObjectValueFromProto(item))
@@ -416,8 +419,8 @@ func ConvertPolicyVersion_SpecToObjectValueFromProto(proto *configv1.PolicyVersi
 	return types.ObjectValueMust(
 		GetTypeAttrsForPolicyVersion_Spec(),
 		map[string]attr.Value{
-			"rules": types.ListValueMust(types.ObjectType{AttrTypes: GetTypeAttrsForPolicyVersion_Spec_Rules()}, elementsInRules),
-			"rules_by_name": types.MapValueMust(types.ObjectType{AttrTypes: GetTypeAttrsForPolicyVersion_Spec_RulesByName()}, elementsInRulesByName),
+			"rules": func() basetypes.ListValue { if proto.Rules == nil { return types.ListNull(types.ObjectType{AttrTypes: GetTypeAttrsForPolicyVersion_Spec_Rules()}) }; return types.ListValueMust(types.ObjectType{AttrTypes: GetTypeAttrsForPolicyVersion_Spec_Rules()}, elementsInRules) }(),
+			"rules_by_name": func() basetypes.MapValue { if proto.RulesByName == nil { return types.MapNull(types.ObjectType{AttrTypes: GetTypeAttrsForPolicyVersion_Spec_RulesByName()}) }; return types.MapValueMust(types.ObjectType{AttrTypes: GetTypeAttrsForPolicyVersion_Spec_RulesByName()}, elementsInRulesByName) }(),
 		},
 	)
 }
@@ -427,6 +430,9 @@ func ConvertPolicyVersion_SpecToObjectValueFromProto(proto *configv1.PolicyVersi
 	// Verify ConvertDataValueToProto uses Elements() and iterates to convert each element back to proto
 	expectedConvertDataValue := `
 func ConvertDataValueToPolicyVersion_SpecProto(ctx context.Context, dataValue attr.Value) (*configv1.PolicyVersion_Spec, diag.Diagnostics) {
+	if dataValue.IsNull() || dataValue.IsUnknown() {
+		return nil, nil
+	}
 	pv := PolicyVersion_Spec{}
 	diags := tfsdk.ValueAs(ctx, dataValue, &pv)
 	if diags.HasError() {
@@ -658,6 +664,9 @@ func GetTypeAttrsForTestResource_Config() map[string]attr.Type {
 	// Verify ConvertToObjectValueFromProto iterates and converts each primitive
 	expectedToProto := `
 func ConvertTestResource_ConfigToObjectValueFromProto(proto *configv1.TestResource_Config) basetypes.ObjectValue  {
+	if proto == nil {
+		return types.ObjectNull(GetTypeAttrsForTestResource_Config())
+	}
 	elementsInTags := make([]attr.Value, 0, len(proto.Tags))
 	for _, item := range proto.Tags {
 		elementsInTags = append(elementsInTags, types.StringValue(item))
@@ -666,7 +675,7 @@ func ConvertTestResource_ConfigToObjectValueFromProto(proto *configv1.TestResour
 		GetTypeAttrsForTestResource_Config(),
 		map[string]attr.Value{
 			"name": types.StringValue(proto.Name),
-			"tags": types.ListValueMust(types.StringType, elementsInTags),
+			"tags": func() basetypes.ListValue { if proto.Tags == nil { return types.ListNull(types.StringType) }; return types.ListValueMust(types.StringType, elementsInTags) }(),
 		},
 	)
 }
@@ -676,6 +685,9 @@ func ConvertTestResource_ConfigToObjectValueFromProto(proto *configv1.TestResour
 	// Verify ConvertDataValueToProto uses ElementsAs for primitives
 	expectedFromProto := `
 func ConvertDataValueToTestResource_ConfigProto(ctx context.Context, dataValue attr.Value) (*configv1.TestResource_Config, diag.Diagnostics) {
+	if dataValue.IsNull() || dataValue.IsUnknown() {
+		return nil, nil
+	}
 	pv := TestResource_Config{}
 	diags := tfsdk.ValueAs(ctx, dataValue, &pv)
 	if diags.HasError() {
@@ -764,6 +776,9 @@ func GetTypeAttrsForTestMapResource_Metadata() map[string]attr.Type {
 	// Verify ConvertToObjectValueFromProto iterates map and converts each value
 	expectedToProto := `
 func ConvertTestMapResource_MetadataToObjectValueFromProto(proto *configv1.TestMapResource_Metadata) basetypes.ObjectValue  {
+	if proto == nil {
+		return types.ObjectNull(GetTypeAttrsForTestMapResource_Metadata())
+	}
 	elementsInLabels := make(map[string]attr.Value, len(proto.Labels))
 	for key, item := range proto.Labels {
 		elementsInLabels[key] = types.StringValue(item)
@@ -771,7 +786,7 @@ func ConvertTestMapResource_MetadataToObjectValueFromProto(proto *configv1.TestM
 	return types.ObjectValueMust(
 		GetTypeAttrsForTestMapResource_Metadata(),
 		map[string]attr.Value{
-			"labels": types.MapValueMust(types.StringType, elementsInLabels),
+			"labels": func() basetypes.MapValue { if proto.Labels == nil { return types.MapNull(types.StringType) }; return types.MapValueMust(types.StringType, elementsInLabels) }(),
 			"name": types.StringValue(proto.Name),
 		},
 	)
@@ -782,6 +797,9 @@ func ConvertTestMapResource_MetadataToObjectValueFromProto(proto *configv1.TestM
 	// Verify ConvertDataValueToProto uses ElementsAs for map
 	expectedFromProto := `
 func ConvertDataValueToTestMapResource_MetadataProto(ctx context.Context, dataValue attr.Value) (*configv1.TestMapResource_Metadata, diag.Diagnostics) {
+	if dataValue.IsNull() || dataValue.IsUnknown() {
+		return nil, nil
+	}
 	pv := TestMapResource_Metadata{}
 	diags := tfsdk.ValueAs(ctx, dataValue, &pv)
 	if diags.HasError() {
@@ -908,4 +926,94 @@ func (suite *GenerateProviderTestSuite) TestSetsAndMore() {
 	suite.Require().NoError(err, "ProviderConvertersTemplate.Execute should not return an error")
 
 	suite.NotEmpty(dst.String(), "Generated provider output should not be empty")
+}
+
+// TestNilProtoHandling verifies the three null/nil handling fixes in generated converters:
+// 1. Convert...ToObjectValueFromProto returns ObjectNull when proto is nil
+// 2. ConvertDataValueTo...Proto returns nil when dataValue is null/unknown
+// 3. Collection fields return typed null (not empty) when the proto field is nil
+func (suite *GenerateProviderTestSuite) TestNilProtoHandling() {
+	testResource := schema.Resource{
+		TypeName: "nil_test",
+		Schema: resource_schema.Schema{
+			Version:     1,
+			Description: "Test resource for nil/null handling.",
+			Attributes: map[string]resource_schema.Attribute{
+				"id": resource_schema.StringAttribute{
+					Description: "Resource ID.",
+					Computed:    true,
+				},
+				"nested": resource_schema.SingleNestedAttribute{
+					Description: "Nested object with optional collections.",
+					Required:    true,
+					Attributes: map[string]resource_schema.Attribute{
+						"name": resource_schema.StringAttribute{
+							Description: "Name.",
+							Required:    true,
+						},
+						"tags": resource_schema.ListAttribute{
+							Description: "Optional list of strings.",
+							Optional:    true,
+							ElementType: types.StringType,
+						},
+						"items": resource_schema.ListNestedAttribute{
+							Description: "Optional list of nested objects.",
+							Optional:    true,
+							NestedObject: resource_schema.NestedAttributeObject{
+								Attributes: map[string]resource_schema.Attribute{
+									"key": resource_schema.StringAttribute{
+										Description: "Key.",
+										Required:    true,
+									},
+								},
+							},
+						},
+					},
+				},
+			},
+		},
+	}
+
+	data := providerTemplateData{
+		Package:               "testpkg",
+		ProviderTypeName:      "Provider",
+		Models:                make([]model, 0),
+		NewRequestFuncs:       make([]convertFunc, 0, 3),
+		NewUpdateRequestFuncs: make([]convertFunc, 0, 1),
+		CopyResponseFuncs:     make([]convertFunc, 0, 3),
+		Resources:             make([]resourceData, 0, 1),
+	}
+
+	err := AddResourceToProviderTemplateData(&testResource, &data, "NilTest", "NilTest")
+	suite.Require().NoError(err)
+
+	dst := new(bytes.Buffer)
+	err = ProviderConvertersTemplate.Execute(dst, &data)
+	suite.Require().NoError(err)
+
+	output := dst.String()
+
+	// Fix 1: Convert...ToObjectValueFromProto returns ObjectNull for nil proto
+	suite.Contains(output, `func ConvertNilTest_NestedToObjectValueFromProto(proto *configv1.NilTest_Nested) basetypes.ObjectValue  {
+	if proto == nil {
+		return types.ObjectNull(GetTypeAttrsForNilTest_Nested())
+	}`,
+		"should return ObjectNull when proto is nil")
+
+	// Fix 2: ConvertDataValueTo...Proto returns nil for null/unknown data values
+	suite.Contains(output, `func ConvertDataValueToNilTest_NestedProto(ctx context.Context, dataValue attr.Value) (*configv1.NilTest_Nested, diag.Diagnostics) {
+	if dataValue.IsNull() || dataValue.IsUnknown() {
+		return nil, nil
+	}`,
+		"should return nil when dataValue is null or unknown")
+
+	// Fix 3a: Primitive collection (tags) returns typed null when proto field is nil
+	suite.Contains(output,
+		`"tags": func() basetypes.ListValue { if proto.Tags == nil { return types.ListNull(types.StringType) }; return types.ListValueMust(types.StringType, elementsInTags) }()`,
+		"primitive list should return ListNull when proto field is nil")
+
+	// Fix 3b: Nested object collection (items) returns typed null when proto field is nil
+	suite.Contains(output,
+		`"items": func() basetypes.ListValue { if proto.Items == nil { return types.ListNull(types.ObjectType{AttrTypes: GetTypeAttrsForNilTest_Nested_Items()}) }; return types.ListValueMust(types.ObjectType{AttrTypes: GetTypeAttrsForNilTest_Nested_Items()}, elementsInItems) }()`,
+		"nested object list should return ListNull when proto field is nil")
 }
