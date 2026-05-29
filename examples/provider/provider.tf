@@ -3,7 +3,7 @@ terraform {
   required_providers {
     illumio-cloudsecure = {
       source  = "illumio/illumio-cloudsecure"
-      version = "~> 1.8.2"
+      version = "~> 2.0.0"
     }
   }
 }
