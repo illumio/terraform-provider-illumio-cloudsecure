@@ -1047,7 +1047,17 @@ message DeletePolicyProvisionRequest {
 }
 message PolicyVersion_Rules {
   message Destination {
-    message Cloud {}
+    message Cloud {
+      message Azure {
+        message Resources {
+          repeated string csp_ids = 1;
+          string object_type = 2;
+        }
+        repeated Resources resources = 1;
+        string subscription_id = 2;
+      }
+      Azure azure = 1;
+    }
     message Fqdns {
       repeated string names = 1;
     }
@@ -1126,7 +1136,17 @@ message PolicyVersion_Rules {
     int64 to_port = 3;
   }
   message Source {
-    message Cloud {}
+    message Cloud {
+      message Azure {
+        message Resources {
+          repeated string csp_ids = 1;
+          string object_type = 2;
+        }
+        repeated Resources resources = 1;
+        string subscription_id = 2;
+      }
+      Azure azure = 1;
+    }
     message IllumioLabels {}
     message IpList {
       repeated string ids = 2;

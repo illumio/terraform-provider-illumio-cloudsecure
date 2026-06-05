@@ -44,7 +44,7 @@ Required:
 
 Optional:
 
-- `cloud` (Attributes) Cloud resource selector (e.g., VMs, instances). Not yet implemented. (see [below for nested schema](#nestedatt--rules--destination--cloud))
+- `cloud` (Attributes) Cloud resource selector for Azure subscriptions, VNets, and subnets. (see [below for nested schema](#nestedatt--rules--destination--cloud))
 - `fqdns` (Attributes) FQDN selector. (see [below for nested schema](#nestedatt--rules--destination--fqdns))
 - `illumio_labels` (Attributes) Illumio label selector. Not yet implemented. (see [below for nested schema](#nestedatt--rules--destination--illumio_labels))
 - `ip_list` (Attributes) IP list reference selector. (see [below for nested schema](#nestedatt--rules--destination--ip_list))
@@ -52,6 +52,31 @@ Optional:
 
 <a id="nestedatt--rules--destination--cloud"></a>
 ### Nested Schema for `rules.destination.cloud`
+
+Optional:
+
+- `azure` (Attributes) Azure cloud resource selector. (see [below for nested schema](#nestedatt--rules--destination--cloud--azure))
+
+<a id="nestedatt--rules--destination--cloud--azure"></a>
+### Nested Schema for `rules.destination.cloud.azure`
+
+Required:
+
+- `subscription_id` (String) Azure subscription ID (GUID).
+
+Optional:
+
+- `resources` (Attributes List) Optional list of resource selectors to filter specific resources within the subscription. (see [below for nested schema](#nestedatt--rules--destination--cloud--azure--resources))
+
+<a id="nestedatt--rules--destination--cloud--azure--resources"></a>
+### Nested Schema for `rules.destination.cloud.azure.resources`
+
+Required:
+
+- `csp_ids` (List of String) List of cloud resource IDs (full Azure resource IDs, AWS ARNs, etc.).
+- `object_type` (String) Cloud resource object type (e.g., VirtualNetworks, NetworkSubnets).
+
+
 
 
 <a id="nestedatt--rules--destination--fqdns"></a>
@@ -215,13 +240,38 @@ Required:
 
 Optional:
 
-- `cloud` (Attributes) Cloud resource selector (e.g., VMs, instances). Not yet implemented. (see [below for nested schema](#nestedatt--rules--source--cloud))
+- `cloud` (Attributes) Cloud resource selector for Azure subscriptions, VNets, and subnets. (see [below for nested schema](#nestedatt--rules--source--cloud))
 - `illumio_labels` (Attributes) Illumio label selector. Not yet implemented. (see [below for nested schema](#nestedatt--rules--source--illumio_labels))
 - `ip_list` (Attributes) IP list reference selector. (see [below for nested schema](#nestedatt--rules--source--ip_list))
 - `k8s` (Attributes) K8s workload selector. (see [below for nested schema](#nestedatt--rules--source--k8s))
 
 <a id="nestedatt--rules--source--cloud"></a>
 ### Nested Schema for `rules.source.cloud`
+
+Optional:
+
+- `azure` (Attributes) Azure cloud resource selector. (see [below for nested schema](#nestedatt--rules--source--cloud--azure))
+
+<a id="nestedatt--rules--source--cloud--azure"></a>
+### Nested Schema for `rules.source.cloud.azure`
+
+Required:
+
+- `subscription_id` (String) Azure subscription ID (GUID).
+
+Optional:
+
+- `resources` (Attributes List) Optional list of resource selectors to filter specific resources within the subscription. (see [below for nested schema](#nestedatt--rules--source--cloud--azure--resources))
+
+<a id="nestedatt--rules--source--cloud--azure--resources"></a>
+### Nested Schema for `rules.source.cloud.azure.resources`
+
+Required:
+
+- `csp_ids` (List of String) List of cloud resource IDs (full Azure resource IDs, AWS ARNs, etc.).
+- `object_type` (String) Cloud resource object type (e.g., VirtualNetworks, NetworkSubnets).
+
+
 
 
 <a id="nestedatt--rules--source--illumio_labels"></a>
