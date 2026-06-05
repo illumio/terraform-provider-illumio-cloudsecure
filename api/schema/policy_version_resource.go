@@ -213,6 +213,43 @@ var ipSelectorAttributes = map[string]resource_schema.Attribute{
 	},
 }
 
+// resourceSelectorAttributes defines the structure for filtering resources by object type and CSP IDs.
+var resourceSelectorAttributes = map[string]resource_schema.Attribute{
+	"object_type": resource_schema.StringAttribute{
+		Description: "Cloud resource object type (e.g., VirtualNetworks, NetworkSubnets).",
+		Required:    true,
+	},
+	"csp_ids": resource_schema.ListAttribute{
+		Description: "List of cloud resource IDs (full Azure resource IDs, AWS ARNs, etc.).",
+		Required:    true,
+		ElementType: types.StringType,
+	},
+}
+
+// cloudAzureSelectorAttributes defines the Azure cloud resource selector.
+var cloudAzureSelectorAttributes = map[string]resource_schema.Attribute{
+	"subscription_id": resource_schema.StringAttribute{
+		Description: "Azure subscription ID (GUID).",
+		Required:    true,
+	},
+	"resources": resource_schema.ListNestedAttribute{
+		Description: "Optional list of resource selectors to filter specific resources within the subscription.",
+		Optional:    true,
+		NestedObject: resource_schema.NestedAttributeObject{
+			Attributes: resourceSelectorAttributes,
+		},
+	},
+}
+
+// cloudSelectorAttributes is reused for source.cloud and destination.cloud.
+var cloudSelectorAttributes = map[string]resource_schema.Attribute{
+	"azure": resource_schema.SingleNestedAttribute{
+		Description: "Azure cloud resource selector.",
+		Optional:    true,
+		Attributes:  cloudAzureSelectorAttributes,
+	},
+}
+
 // workloadSelectorAttributes extends labelSelectorAttributes with service_accounts.
 var workloadSelectorAttributes = func() map[string]resource_schema.Attribute {
 	m := maps.Clone(labelSelectorAttributes)
@@ -308,9 +345,9 @@ var (
 											},
 										},
 										"cloud": resource_schema.SingleNestedAttribute{
-											Description: "Cloud resource selector (e.g., VMs, instances). Not yet implemented.",
+											Description: "Cloud resource selector for Azure subscriptions, VNets, and subnets.",
 											Optional:    true,
-											Attributes:  map[string]resource_schema.Attribute{},
+											Attributes:  cloudSelectorAttributes,
 											Validators: []validator.Object{
 												objectvalidator.ExactlyOneOf(
 													path.MatchRelative().AtParent().AtName("k8s"),
@@ -388,9 +425,9 @@ var (
 											},
 										},
 										"cloud": resource_schema.SingleNestedAttribute{
-											Description: "Cloud resource selector (e.g., VMs, instances). Not yet implemented.",
+											Description: "Cloud resource selector for Azure subscriptions, VNets, and subnets.",
 											Optional:    true,
-											Attributes:  map[string]resource_schema.Attribute{},
+											Attributes:  cloudSelectorAttributes,
 											Validators: []validator.Object{
 												objectvalidator.ExactlyOneOf(
 													path.MatchRelative().AtParent().AtName("k8s"),
