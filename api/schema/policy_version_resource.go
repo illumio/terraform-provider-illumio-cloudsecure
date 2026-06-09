@@ -213,16 +213,37 @@ var ipSelectorAttributes = map[string]resource_schema.Attribute{
 	},
 }
 
-// resourceSelectorAttributes defines the structure for filtering resources by object type and CSP IDs.
-var resourceSelectorAttributes = map[string]resource_schema.Attribute{
-	"object_type": resource_schema.StringAttribute{
-		Description: "Cloud resource object type (e.g., VirtualNetworks, NetworkSubnets).",
+// azureVirtualNetworkAttributes defines the VNet selector.
+var azureVirtualNetworkAttributes = map[string]resource_schema.Attribute{
+	"id": resource_schema.StringAttribute{
+		Description: "Full Azure resource ID for the VNet (e.g., /subscriptions/{sub}/resourceGroups/{rg}/providers/Microsoft.Network/virtualNetworks/{name}).",
 		Required:    true,
 	},
-	"csp_ids": resource_schema.ListAttribute{
-		Description: "List of cloud resource IDs (full Azure resource IDs, AWS ARNs, etc.).",
+}
+
+// azureSubnetAttributes defines the Subnet selector.
+var azureSubnetAttributes = map[string]resource_schema.Attribute{
+	"id": resource_schema.StringAttribute{
+		Description: "Full Azure resource ID for the Subnet (e.g., /subscriptions/{sub}/resourceGroups/{rg}/providers/Microsoft.Network/virtualNetworks/{vnet}/subnets/{name}).",
 		Required:    true,
-		ElementType: types.StringType,
+	},
+}
+
+// azureNetworkAttributes defines the network resource selectors within Azure.
+var azureNetworkAttributes = map[string]resource_schema.Attribute{
+	"vnets": resource_schema.ListNestedAttribute{
+		Description: "Optional list of VNet selectors to filter specific VNets.",
+		Optional:    true,
+		NestedObject: resource_schema.NestedAttributeObject{
+			Attributes: azureVirtualNetworkAttributes,
+		},
+	},
+	"subnets": resource_schema.ListNestedAttribute{
+		Description: "Optional list of Subnet selectors to filter specific Subnets.",
+		Optional:    true,
+		NestedObject: resource_schema.NestedAttributeObject{
+			Attributes: azureSubnetAttributes,
+		},
 	},
 }
 
@@ -232,12 +253,10 @@ var cloudAzureSelectorAttributes = map[string]resource_schema.Attribute{
 		Description: "Azure subscription ID (GUID).",
 		Required:    true,
 	},
-	"resources": resource_schema.ListNestedAttribute{
-		Description: "Optional list of resource selectors to filter specific resources within the subscription.",
+	"network": resource_schema.SingleNestedAttribute{
+		Description: "Optional network resource selectors (VNets, Subnets) within the subscription.",
 		Optional:    true,
-		NestedObject: resource_schema.NestedAttributeObject{
-			Attributes: resourceSelectorAttributes,
-		},
+		Attributes:  azureNetworkAttributes,
 	},
 }
 
