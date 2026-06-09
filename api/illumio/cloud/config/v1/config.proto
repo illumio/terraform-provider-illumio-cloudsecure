@@ -1049,11 +1049,17 @@ message PolicyVersion_Rules {
   message Destination {
     message Cloud {
       message Azure {
-        message Resources {
-          repeated string csp_ids = 1;
-          string object_type = 2;
+        message Network {
+          message Subnets {
+            string id = 1;
+          }
+          message Vnets {
+            string id = 1;
+          }
+          repeated Subnets subnets = 1;
+          repeated Vnets vnets = 2;
         }
-        repeated Resources resources = 1;
+        Network network = 3;
         string subscription_id = 2;
       }
       Azure azure = 1;
@@ -1138,11 +1144,17 @@ message PolicyVersion_Rules {
   message Source {
     message Cloud {
       message Azure {
-        message Resources {
-          repeated string csp_ids = 1;
-          string object_type = 2;
+        message Network {
+          message Subnets {
+            string id = 1;
+          }
+          message Vnets {
+            string id = 1;
+          }
+          repeated Subnets subnets = 1;
+          repeated Vnets vnets = 2;
         }
-        repeated Resources resources = 1;
+        Network network = 3;
         string subscription_id = 2;
       }
       Azure azure = 1;

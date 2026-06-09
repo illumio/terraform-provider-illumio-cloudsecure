@@ -66,15 +66,31 @@ Required:
 
 Optional:
 
-- `resources` (Attributes List) Optional list of resource selectors to filter specific resources within the subscription. (see [below for nested schema](#nestedatt--rules--destination--cloud--azure--resources))
+- `network` (Attributes) Optional network resource selectors (VNets, Subnets) within the subscription. (see [below for nested schema](#nestedatt--rules--destination--cloud--azure--network))
 
-<a id="nestedatt--rules--destination--cloud--azure--resources"></a>
-### Nested Schema for `rules.destination.cloud.azure.resources`
+<a id="nestedatt--rules--destination--cloud--azure--network"></a>
+### Nested Schema for `rules.destination.cloud.azure.network`
+
+Optional:
+
+- `subnets` (Attributes List) Optional list of Subnet selectors to filter specific Subnets. (see [below for nested schema](#nestedatt--rules--destination--cloud--azure--network--subnets))
+- `vnets` (Attributes List) Optional list of VNet selectors to filter specific VNets. (see [below for nested schema](#nestedatt--rules--destination--cloud--azure--network--vnets))
+
+<a id="nestedatt--rules--destination--cloud--azure--network--subnets"></a>
+### Nested Schema for `rules.destination.cloud.azure.network.subnets`
 
 Required:
 
-- `csp_ids` (List of String) List of cloud resource IDs (full Azure resource IDs, AWS ARNs, etc.).
-- `object_type` (String) Cloud resource object type (e.g., VirtualNetworks, NetworkSubnets).
+- `id` (String) Full Azure resource ID for the Subnet (e.g., /subscriptions/{sub}/resourceGroups/{rg}/providers/Microsoft.Network/virtualNetworks/{vnet}/subnets/{name}).
+
+
+<a id="nestedatt--rules--destination--cloud--azure--network--vnets"></a>
+### Nested Schema for `rules.destination.cloud.azure.network.vnets`
+
+Required:
+
+- `id` (String) Full Azure resource ID for the VNet (e.g., /subscriptions/{sub}/resourceGroups/{rg}/providers/Microsoft.Network/virtualNetworks/{name}).
+
 
 
 
@@ -261,15 +277,31 @@ Required:
 
 Optional:
 
-- `resources` (Attributes List) Optional list of resource selectors to filter specific resources within the subscription. (see [below for nested schema](#nestedatt--rules--source--cloud--azure--resources))
+- `network` (Attributes) Optional network resource selectors (VNets, Subnets) within the subscription. (see [below for nested schema](#nestedatt--rules--source--cloud--azure--network))
 
-<a id="nestedatt--rules--source--cloud--azure--resources"></a>
-### Nested Schema for `rules.source.cloud.azure.resources`
+<a id="nestedatt--rules--source--cloud--azure--network"></a>
+### Nested Schema for `rules.source.cloud.azure.network`
+
+Optional:
+
+- `subnets` (Attributes List) Optional list of Subnet selectors to filter specific Subnets. (see [below for nested schema](#nestedatt--rules--source--cloud--azure--network--subnets))
+- `vnets` (Attributes List) Optional list of VNet selectors to filter specific VNets. (see [below for nested schema](#nestedatt--rules--source--cloud--azure--network--vnets))
+
+<a id="nestedatt--rules--source--cloud--azure--network--subnets"></a>
+### Nested Schema for `rules.source.cloud.azure.network.subnets`
 
 Required:
 
-- `csp_ids` (List of String) List of cloud resource IDs (full Azure resource IDs, AWS ARNs, etc.).
-- `object_type` (String) Cloud resource object type (e.g., VirtualNetworks, NetworkSubnets).
+- `id` (String) Full Azure resource ID for the Subnet (e.g., /subscriptions/{sub}/resourceGroups/{rg}/providers/Microsoft.Network/virtualNetworks/{vnet}/subnets/{name}).
+
+
+<a id="nestedatt--rules--source--cloud--azure--network--vnets"></a>
+### Nested Schema for `rules.source.cloud.azure.network.vnets`
+
+Required:
+
+- `id` (String) Full Azure resource ID for the VNet (e.g., /subscriptions/{sub}/resourceGroups/{rg}/providers/Microsoft.Network/virtualNetworks/{name}).
+
 
 
 
