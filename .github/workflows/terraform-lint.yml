@@ -18,7 +18,7 @@ jobs:
 
     steps:
       - name: Check out repo
-        uses: actions/checkout@v6
+        uses: actions/checkout@v7
 
       - name: Lint Terraform
         uses: actionshub/terraform-lint@2.0.1
