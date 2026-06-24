@@ -99,41 +99,22 @@ type Application struct {
 }
 
 type ApplicationAwsResources struct {
-	Id                                     string
-	AccountId                              string
-	ApplicationId                          string
-	ApplicationResourceIds                 []string
-	Arns                                   []string
-	AwsCustomerGatewayIds                  []string
-	AwsDxConnectionIds                     []string
-	AwsDxVirtualInterfaceIds               []string
-	AwsEbsVolumeIds                        []string
-	AwsEc2InstanceConnectEndpointIds       []string
-	AwsEc2TransitGatewayAttachmentIds      []string
-	AwsEc2TransitGatewayIds                []string
-	AwsEc2TransitGatewayMulticastDomainIds []string
-	AwsEc2TransitGatewayRouteTableIds      []string
-	AwsEgressOnlyInternetGatewayIds        []string
-	AwsEipIds                              []string
-	AwsFlowLogIds                          []string
-	AwsInstancesIds                        []string
-	AwsInternetGatewayIds                  []string
-	AwsNatGatewayIds                       []string
-	AwsNetworkAclIds                       []string
-	AwsNetworkInterfaceIds                 []string
-	AwsRdsClusterIds                       []string
-	AwsRouteTableIds                       []string
-	AwsSecurityGroupIds                    []string
-	AwsSecurityGroupRuleIds                []string
-	AwsSpotFleetRequestIds                 []string
-	AwsSpotInstanceRequestIds              []string
-	AwsSubnetIds                           []string
-	AwsVpcEndpointIds                      []string
-	AwsVpcEndpointServiceIds               []string
-	AwsVpcIds                              []string
-	AwsVpcPeeringConnectionIds             []string
-	AwsVpnConnectionIds                    []string
-	AwsVpnGatewayIds                       []string
+	Id                                string
+	AccountId                         string
+	ApplicationId                     string
+	ApplicationResourceIds            []string
+	Arns                              []string
+	AwsEc2TransitGatewayAttachmentIds []string
+	AwsInstancesIds                   []string
+	AwsNatGatewayIds                  []string
+	AwsNetworkAclIds                  []string
+	AwsNetworkInterfaceIds            []string
+	AwsRdsClusterIds                  []string
+	AwsSecurityGroupIds               []string
+	AwsSubnetIds                      []string
+	AwsVpcEndpointIds                 []string
+	AwsVpcIds                         []string
+	AwsVpcPeeringConnectionIds        []string
 }
 
 type ApplicationAzureResources struct {
@@ -425,77 +406,39 @@ func (s *FakeConfigServer) DeleteApplication(ctx context.Context, req *configv1.
 func (s *FakeConfigServer) CreateApplicationAwsResources(ctx context.Context, req *configv1.CreateApplicationAwsResourcesRequest) (*configv1.CreateApplicationAwsResourcesResponse, error) {
 	id := uuid.New().String()
 	model := &ApplicationAwsResources{
-		Id:                                     id,
-		AccountId:                              req.AccountId,
-		ApplicationId:                          req.ApplicationId,
-		Arns:                                   req.Arns,
-		AwsCustomerGatewayIds:                  req.AwsCustomerGatewayIds,
-		AwsDxConnectionIds:                     req.AwsDxConnectionIds,
-		AwsDxVirtualInterfaceIds:               req.AwsDxVirtualInterfaceIds,
-		AwsEbsVolumeIds:                        req.AwsEbsVolumeIds,
-		AwsEc2InstanceConnectEndpointIds:       req.AwsEc2InstanceConnectEndpointIds,
-		AwsEc2TransitGatewayAttachmentIds:      req.AwsEc2TransitGatewayAttachmentIds,
-		AwsEc2TransitGatewayIds:                req.AwsEc2TransitGatewayIds,
-		AwsEc2TransitGatewayMulticastDomainIds: req.AwsEc2TransitGatewayMulticastDomainIds,
-		AwsEc2TransitGatewayRouteTableIds:      req.AwsEc2TransitGatewayRouteTableIds,
-		AwsEgressOnlyInternetGatewayIds:        req.AwsEgressOnlyInternetGatewayIds,
-		AwsEipIds:                              req.AwsEipIds,
-		AwsFlowLogIds:                          req.AwsFlowLogIds,
-		AwsInstancesIds:                        req.AwsInstancesIds,
-		AwsInternetGatewayIds:                  req.AwsInternetGatewayIds,
-		AwsNatGatewayIds:                       req.AwsNatGatewayIds,
-		AwsNetworkAclIds:                       req.AwsNetworkAclIds,
-		AwsNetworkInterfaceIds:                 req.AwsNetworkInterfaceIds,
-		AwsRdsClusterIds:                       req.AwsRdsClusterIds,
-		AwsRouteTableIds:                       req.AwsRouteTableIds,
-		AwsSecurityGroupIds:                    req.AwsSecurityGroupIds,
-		AwsSecurityGroupRuleIds:                req.AwsSecurityGroupRuleIds,
-		AwsSpotFleetRequestIds:                 req.AwsSpotFleetRequestIds,
-		AwsSpotInstanceRequestIds:              req.AwsSpotInstanceRequestIds,
-		AwsSubnetIds:                           req.AwsSubnetIds,
-		AwsVpcEndpointIds:                      req.AwsVpcEndpointIds,
-		AwsVpcEndpointServiceIds:               req.AwsVpcEndpointServiceIds,
-		AwsVpcIds:                              req.AwsVpcIds,
-		AwsVpcPeeringConnectionIds:             req.AwsVpcPeeringConnectionIds,
-		AwsVpnConnectionIds:                    req.AwsVpnConnectionIds,
-		AwsVpnGatewayIds:                       req.AwsVpnGatewayIds,
+		Id:                                id,
+		AccountId:                         req.AccountId,
+		ApplicationId:                     req.ApplicationId,
+		Arns:                              req.Arns,
+		AwsEc2TransitGatewayAttachmentIds: req.AwsEc2TransitGatewayAttachmentIds,
+		AwsInstancesIds:                   req.AwsInstancesIds,
+		AwsNatGatewayIds:                  req.AwsNatGatewayIds,
+		AwsNetworkAclIds:                  req.AwsNetworkAclIds,
+		AwsNetworkInterfaceIds:            req.AwsNetworkInterfaceIds,
+		AwsRdsClusterIds:                  req.AwsRdsClusterIds,
+		AwsSecurityGroupIds:               req.AwsSecurityGroupIds,
+		AwsSubnetIds:                      req.AwsSubnetIds,
+		AwsVpcEndpointIds:                 req.AwsVpcEndpointIds,
+		AwsVpcIds:                         req.AwsVpcIds,
+		AwsVpcPeeringConnectionIds:        req.AwsVpcPeeringConnectionIds,
 	}
 	resp := &configv1.CreateApplicationAwsResourcesResponse{
-		Id:                                     id,
-		AccountId:                              model.AccountId,
-		ApplicationId:                          model.ApplicationId,
-		ApplicationResourceIds:                 model.ApplicationResourceIds,
-		Arns:                                   model.Arns,
-		AwsCustomerGatewayIds:                  model.AwsCustomerGatewayIds,
-		AwsDxConnectionIds:                     model.AwsDxConnectionIds,
-		AwsDxVirtualInterfaceIds:               model.AwsDxVirtualInterfaceIds,
-		AwsEbsVolumeIds:                        model.AwsEbsVolumeIds,
-		AwsEc2InstanceConnectEndpointIds:       model.AwsEc2InstanceConnectEndpointIds,
-		AwsEc2TransitGatewayAttachmentIds:      model.AwsEc2TransitGatewayAttachmentIds,
-		AwsEc2TransitGatewayIds:                model.AwsEc2TransitGatewayIds,
-		AwsEc2TransitGatewayMulticastDomainIds: model.AwsEc2TransitGatewayMulticastDomainIds,
-		AwsEc2TransitGatewayRouteTableIds:      model.AwsEc2TransitGatewayRouteTableIds,
-		AwsEgressOnlyInternetGatewayIds:        model.AwsEgressOnlyInternetGatewayIds,
-		AwsEipIds:                              model.AwsEipIds,
-		AwsFlowLogIds:                          model.AwsFlowLogIds,
-		AwsInstancesIds:                        model.AwsInstancesIds,
-		AwsInternetGatewayIds:                  model.AwsInternetGatewayIds,
-		AwsNatGatewayIds:                       model.AwsNatGatewayIds,
-		AwsNetworkAclIds:                       model.AwsNetworkAclIds,
-		AwsNetworkInterfaceIds:                 model.AwsNetworkInterfaceIds,
-		AwsRdsClusterIds:                       model.AwsRdsClusterIds,
-		AwsRouteTableIds:                       model.AwsRouteTableIds,
-		AwsSecurityGroupIds:                    model.AwsSecurityGroupIds,
-		AwsSecurityGroupRuleIds:                model.AwsSecurityGroupRuleIds,
-		AwsSpotFleetRequestIds:                 model.AwsSpotFleetRequestIds,
-		AwsSpotInstanceRequestIds:              model.AwsSpotInstanceRequestIds,
-		AwsSubnetIds:                           model.AwsSubnetIds,
-		AwsVpcEndpointIds:                      model.AwsVpcEndpointIds,
-		AwsVpcEndpointServiceIds:               model.AwsVpcEndpointServiceIds,
-		AwsVpcIds:                              model.AwsVpcIds,
-		AwsVpcPeeringConnectionIds:             model.AwsVpcPeeringConnectionIds,
-		AwsVpnConnectionIds:                    model.AwsVpnConnectionIds,
-		AwsVpnGatewayIds:                       model.AwsVpnGatewayIds,
+		Id:                                id,
+		AccountId:                         model.AccountId,
+		ApplicationId:                     model.ApplicationId,
+		ApplicationResourceIds:            model.ApplicationResourceIds,
+		Arns:                              model.Arns,
+		AwsEc2TransitGatewayAttachmentIds: model.AwsEc2TransitGatewayAttachmentIds,
+		AwsInstancesIds:                   model.AwsInstancesIds,
+		AwsNatGatewayIds:                  model.AwsNatGatewayIds,
+		AwsNetworkAclIds:                  model.AwsNetworkAclIds,
+		AwsNetworkInterfaceIds:            model.AwsNetworkInterfaceIds,
+		AwsRdsClusterIds:                  model.AwsRdsClusterIds,
+		AwsSecurityGroupIds:               model.AwsSecurityGroupIds,
+		AwsSubnetIds:                      model.AwsSubnetIds,
+		AwsVpcEndpointIds:                 model.AwsVpcEndpointIds,
+		AwsVpcIds:                         model.AwsVpcIds,
+		AwsVpcPeeringConnectionIds:        model.AwsVpcPeeringConnectionIds,
 	}
 	s.ApplicationAwsResourcesMutex.Lock()
 	s.ApplicationAwsResourcesMap[id] = model
@@ -522,41 +465,22 @@ func (s *FakeConfigServer) ReadApplicationAwsResources(ctx context.Context, req 
 		return nil, status.Errorf(codes.NotFound, "no application_aws_resources found with id %s", id)
 	}
 	resp := &configv1.ReadApplicationAwsResourcesResponse{
-		Id:                                     id,
-		AccountId:                              model.AccountId,
-		ApplicationId:                          model.ApplicationId,
-		ApplicationResourceIds:                 model.ApplicationResourceIds,
-		Arns:                                   model.Arns,
-		AwsCustomerGatewayIds:                  model.AwsCustomerGatewayIds,
-		AwsDxConnectionIds:                     model.AwsDxConnectionIds,
-		AwsDxVirtualInterfaceIds:               model.AwsDxVirtualInterfaceIds,
-		AwsEbsVolumeIds:                        model.AwsEbsVolumeIds,
-		AwsEc2InstanceConnectEndpointIds:       model.AwsEc2InstanceConnectEndpointIds,
-		AwsEc2TransitGatewayAttachmentIds:      model.AwsEc2TransitGatewayAttachmentIds,
-		AwsEc2TransitGatewayIds:                model.AwsEc2TransitGatewayIds,
-		AwsEc2TransitGatewayMulticastDomainIds: model.AwsEc2TransitGatewayMulticastDomainIds,
-		AwsEc2TransitGatewayRouteTableIds:      model.AwsEc2TransitGatewayRouteTableIds,
-		AwsEgressOnlyInternetGatewayIds:        model.AwsEgressOnlyInternetGatewayIds,
-		AwsEipIds:                              model.AwsEipIds,
-		AwsFlowLogIds:                          model.AwsFlowLogIds,
-		AwsInstancesIds:                        model.AwsInstancesIds,
-		AwsInternetGatewayIds:                  model.AwsInternetGatewayIds,
-		AwsNatGatewayIds:                       model.AwsNatGatewayIds,
-		AwsNetworkAclIds:                       model.AwsNetworkAclIds,
-		AwsNetworkInterfaceIds:                 model.AwsNetworkInterfaceIds,
-		AwsRdsClusterIds:                       model.AwsRdsClusterIds,
-		AwsRouteTableIds:                       model.AwsRouteTableIds,
-		AwsSecurityGroupIds:                    model.AwsSecurityGroupIds,
-		AwsSecurityGroupRuleIds:                model.AwsSecurityGroupRuleIds,
-		AwsSpotFleetRequestIds:                 model.AwsSpotFleetRequestIds,
-		AwsSpotInstanceRequestIds:              model.AwsSpotInstanceRequestIds,
-		AwsSubnetIds:                           model.AwsSubnetIds,
-		AwsVpcEndpointIds:                      model.AwsVpcEndpointIds,
-		AwsVpcEndpointServiceIds:               model.AwsVpcEndpointServiceIds,
-		AwsVpcIds:                              model.AwsVpcIds,
-		AwsVpcPeeringConnectionIds:             model.AwsVpcPeeringConnectionIds,
-		AwsVpnConnectionIds:                    model.AwsVpnConnectionIds,
-		AwsVpnGatewayIds:                       model.AwsVpnGatewayIds,
+		Id:                                id,
+		AccountId:                         model.AccountId,
+		ApplicationId:                     model.ApplicationId,
+		ApplicationResourceIds:            model.ApplicationResourceIds,
+		Arns:                              model.Arns,
+		AwsEc2TransitGatewayAttachmentIds: model.AwsEc2TransitGatewayAttachmentIds,
+		AwsInstancesIds:                   model.AwsInstancesIds,
+		AwsNatGatewayIds:                  model.AwsNatGatewayIds,
+		AwsNetworkAclIds:                  model.AwsNetworkAclIds,
+		AwsNetworkInterfaceIds:            model.AwsNetworkInterfaceIds,
+		AwsRdsClusterIds:                  model.AwsRdsClusterIds,
+		AwsSecurityGroupIds:               model.AwsSecurityGroupIds,
+		AwsSubnetIds:                      model.AwsSubnetIds,
+		AwsVpcEndpointIds:                 model.AwsVpcEndpointIds,
+		AwsVpcIds:                         model.AwsVpcIds,
+		AwsVpcPeeringConnectionIds:        model.AwsVpcPeeringConnectionIds,
 	}
 	s.ApplicationAwsResourcesMutex.RUnlock()
 	s.Logger.Info("read resource",
@@ -595,34 +519,10 @@ func (s *FakeConfigServer) UpdateApplicationAwsResources(ctx context.Context, re
 			model.ApplicationResourceIds = req.ApplicationResourceIds
 		case "arns":
 			model.Arns = req.Arns
-		case "aws_customer_gateway_ids":
-			model.AwsCustomerGatewayIds = req.AwsCustomerGatewayIds
-		case "aws_dx_connection_ids":
-			model.AwsDxConnectionIds = req.AwsDxConnectionIds
-		case "aws_dx_virtual_interface_ids":
-			model.AwsDxVirtualInterfaceIds = req.AwsDxVirtualInterfaceIds
-		case "aws_ebs_volume_ids":
-			model.AwsEbsVolumeIds = req.AwsEbsVolumeIds
-		case "aws_ec2_instance_connect_endpoint_ids":
-			model.AwsEc2InstanceConnectEndpointIds = req.AwsEc2InstanceConnectEndpointIds
 		case "aws_ec2_transit_gateway_attachment_ids":
 			model.AwsEc2TransitGatewayAttachmentIds = req.AwsEc2TransitGatewayAttachmentIds
-		case "aws_ec2_transit_gateway_ids":
-			model.AwsEc2TransitGatewayIds = req.AwsEc2TransitGatewayIds
-		case "aws_ec2_transit_gateway_multicast_domain_ids":
-			model.AwsEc2TransitGatewayMulticastDomainIds = req.AwsEc2TransitGatewayMulticastDomainIds
-		case "aws_ec2_transit_gateway_route_table_ids":
-			model.AwsEc2TransitGatewayRouteTableIds = req.AwsEc2TransitGatewayRouteTableIds
-		case "aws_egress_only_internet_gateway_ids":
-			model.AwsEgressOnlyInternetGatewayIds = req.AwsEgressOnlyInternetGatewayIds
-		case "aws_eip_ids":
-			model.AwsEipIds = req.AwsEipIds
-		case "aws_flow_log_ids":
-			model.AwsFlowLogIds = req.AwsFlowLogIds
 		case "aws_instances_ids":
 			model.AwsInstancesIds = req.AwsInstancesIds
-		case "aws_internet_gateway_ids":
-			model.AwsInternetGatewayIds = req.AwsInternetGatewayIds
 		case "aws_nat_gateway_ids":
 			model.AwsNatGatewayIds = req.AwsNatGatewayIds
 		case "aws_network_acl_ids":
@@ -631,30 +531,16 @@ func (s *FakeConfigServer) UpdateApplicationAwsResources(ctx context.Context, re
 			model.AwsNetworkInterfaceIds = req.AwsNetworkInterfaceIds
 		case "aws_rds_cluster_ids":
 			model.AwsRdsClusterIds = req.AwsRdsClusterIds
-		case "aws_route_table_ids":
-			model.AwsRouteTableIds = req.AwsRouteTableIds
 		case "aws_security_group_ids":
 			model.AwsSecurityGroupIds = req.AwsSecurityGroupIds
-		case "aws_security_group_rule_ids":
-			model.AwsSecurityGroupRuleIds = req.AwsSecurityGroupRuleIds
-		case "aws_spot_fleet_request_ids":
-			model.AwsSpotFleetRequestIds = req.AwsSpotFleetRequestIds
-		case "aws_spot_instance_request_ids":
-			model.AwsSpotInstanceRequestIds = req.AwsSpotInstanceRequestIds
 		case "aws_subnet_ids":
 			model.AwsSubnetIds = req.AwsSubnetIds
 		case "aws_vpc_endpoint_ids":
 			model.AwsVpcEndpointIds = req.AwsVpcEndpointIds
-		case "aws_vpc_endpoint_service_ids":
-			model.AwsVpcEndpointServiceIds = req.AwsVpcEndpointServiceIds
 		case "aws_vpc_ids":
 			model.AwsVpcIds = req.AwsVpcIds
 		case "aws_vpc_peering_connection_ids":
 			model.AwsVpcPeeringConnectionIds = req.AwsVpcPeeringConnectionIds
-		case "aws_vpn_connection_ids":
-			model.AwsVpnConnectionIds = req.AwsVpnConnectionIds
-		case "aws_vpn_gateway_ids":
-			model.AwsVpnGatewayIds = req.AwsVpnGatewayIds
 		default:
 			s.AwsAccountMutex.Unlock()
 			s.Logger.Error("attempted to update resource using invalid update_mask path",
@@ -668,41 +554,22 @@ func (s *FakeConfigServer) UpdateApplicationAwsResources(ctx context.Context, re
 		}
 	}
 	resp := &configv1.UpdateApplicationAwsResourcesResponse{
-		Id:                                     id,
-		AccountId:                              model.AccountId,
-		ApplicationId:                          model.ApplicationId,
-		ApplicationResourceIds:                 model.ApplicationResourceIds,
-		Arns:                                   model.Arns,
-		AwsCustomerGatewayIds:                  model.AwsCustomerGatewayIds,
-		AwsDxConnectionIds:                     model.AwsDxConnectionIds,
-		AwsDxVirtualInterfaceIds:               model.AwsDxVirtualInterfaceIds,
-		AwsEbsVolumeIds:                        model.AwsEbsVolumeIds,
-		AwsEc2InstanceConnectEndpointIds:       model.AwsEc2InstanceConnectEndpointIds,
-		AwsEc2TransitGatewayAttachmentIds:      model.AwsEc2TransitGatewayAttachmentIds,
-		AwsEc2TransitGatewayIds:                model.AwsEc2TransitGatewayIds,
-		AwsEc2TransitGatewayMulticastDomainIds: model.AwsEc2TransitGatewayMulticastDomainIds,
-		AwsEc2TransitGatewayRouteTableIds:      model.AwsEc2TransitGatewayRouteTableIds,
-		AwsEgressOnlyInternetGatewayIds:        model.AwsEgressOnlyInternetGatewayIds,
-		AwsEipIds:                              model.AwsEipIds,
-		AwsFlowLogIds:                          model.AwsFlowLogIds,
-		AwsInstancesIds:                        model.AwsInstancesIds,
-		AwsInternetGatewayIds:                  model.AwsInternetGatewayIds,
-		AwsNatGatewayIds:                       model.AwsNatGatewayIds,
-		AwsNetworkAclIds:                       model.AwsNetworkAclIds,
-		AwsNetworkInterfaceIds:                 model.AwsNetworkInterfaceIds,
-		AwsRdsClusterIds:                       model.AwsRdsClusterIds,
-		AwsRouteTableIds:                       model.AwsRouteTableIds,
-		AwsSecurityGroupIds:                    model.AwsSecurityGroupIds,
-		AwsSecurityGroupRuleIds:                model.AwsSecurityGroupRuleIds,
-		AwsSpotFleetRequestIds:                 model.AwsSpotFleetRequestIds,
-		AwsSpotInstanceRequestIds:              model.AwsSpotInstanceRequestIds,
-		AwsSubnetIds:                           model.AwsSubnetIds,
-		AwsVpcEndpointIds:                      model.AwsVpcEndpointIds,
-		AwsVpcEndpointServiceIds:               model.AwsVpcEndpointServiceIds,
-		AwsVpcIds:                              model.AwsVpcIds,
-		AwsVpcPeeringConnectionIds:             model.AwsVpcPeeringConnectionIds,
-		AwsVpnConnectionIds:                    model.AwsVpnConnectionIds,
-		AwsVpnGatewayIds:                       model.AwsVpnGatewayIds,
+		Id:                                id,
+		AccountId:                         model.AccountId,
+		ApplicationId:                     model.ApplicationId,
+		ApplicationResourceIds:            model.ApplicationResourceIds,
+		Arns:                              model.Arns,
+		AwsEc2TransitGatewayAttachmentIds: model.AwsEc2TransitGatewayAttachmentIds,
+		AwsInstancesIds:                   model.AwsInstancesIds,
+		AwsNatGatewayIds:                  model.AwsNatGatewayIds,
+		AwsNetworkAclIds:                  model.AwsNetworkAclIds,
+		AwsNetworkInterfaceIds:            model.AwsNetworkInterfaceIds,
+		AwsRdsClusterIds:                  model.AwsRdsClusterIds,
+		AwsSecurityGroupIds:               model.AwsSecurityGroupIds,
+		AwsSubnetIds:                      model.AwsSubnetIds,
+		AwsVpcEndpointIds:                 model.AwsVpcEndpointIds,
+		AwsVpcIds:                         model.AwsVpcIds,
+		AwsVpcPeeringConnectionIds:        model.AwsVpcPeeringConnectionIds,
 	}
 	s.ApplicationAwsResourcesMutex.Unlock()
 	s.Logger.Info("updated resource",
