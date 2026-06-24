@@ -3,7 +3,6 @@ resource "illumio-cloudsecure_policy" "example" {
   description = "Allow traffic between Azure network resources"
 }
 
-# Look up existing Azure resources
 data "azurerm_subscription" "current" {}
 
 data "azurerm_subnet" "destination" {
@@ -23,7 +22,11 @@ resource "illumio-cloudsecure_policy_version" "subscription_to_subnet" {
       source = {
         cloud = {
           azure = {
-            subscription_id = data.azurerm_subscription.current.subscription_id
+            org_selector = {
+              subscriptions = [
+                { id = data.azurerm_subscription.current.subscription_id }
+              ]
+            }
           }
         }
       }
@@ -31,7 +34,6 @@ resource "illumio-cloudsecure_policy_version" "subscription_to_subnet" {
       destination = {
         cloud = {
           azure = {
-            subscription_id = data.azurerm_subscription.current.subscription_id
             network = {
               subnets = [
                 { id = data.azurerm_subnet.destination.id }
