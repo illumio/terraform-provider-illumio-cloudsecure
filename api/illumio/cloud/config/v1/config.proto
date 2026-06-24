@@ -953,6 +953,30 @@ message DeletePolicyProvisionRequest {
 message PolicyVersion_Rules {
   message Destination {
     message Cloud {
+      message Aws {
+        message Network {
+          message Subnets {
+            string id = 1;
+            string account_id = 2;
+            string region = 3;
+          }
+          message Vpcs {
+            string id = 1;
+            string account_id = 2;
+            string region = 3;
+          }
+          repeated Subnets subnets = 1;
+          repeated Vpcs vpcs = 2;
+        }
+        message OrgSelector {
+          message Accounts {
+            string id = 1;
+          }
+          repeated Accounts accounts = 1;
+        }
+        Network network = 1;
+        OrgSelector org_selector = 2;
+      }
       message Azure {
         message Network {
           message Subnets {
@@ -960,13 +984,22 @@ message PolicyVersion_Rules {
           }
           message Vnets {
             string id = 1;
+            string resource_group = 2;
+            string subscription_id = 3;
           }
           repeated Subnets subnets = 1;
           repeated Vnets vnets = 2;
         }
+        message OrgSelector {
+          message Subscriptions {
+            string id = 1;
+          }
+          repeated Subscriptions subscriptions = 1;
+        }
         Network network = 3;
-        string subscription_id = 2;
+        OrgSelector org_selector = 5;
       }
+      Aws aws = 2;
       Azure azure = 1;
     }
     message Fqdns {
@@ -1048,6 +1081,30 @@ message PolicyVersion_Rules {
   }
   message Source {
     message Cloud {
+      message Aws {
+        message Network {
+          message Subnets {
+            string id = 1;
+            string account_id = 2;
+            string region = 3;
+          }
+          message Vpcs {
+            string id = 1;
+            string account_id = 2;
+            string region = 3;
+          }
+          repeated Subnets subnets = 1;
+          repeated Vpcs vpcs = 2;
+        }
+        message OrgSelector {
+          message Accounts {
+            string id = 1;
+          }
+          repeated Accounts accounts = 1;
+        }
+        Network network = 1;
+        OrgSelector org_selector = 2;
+      }
       message Azure {
         message Network {
           message Subnets {
@@ -1055,13 +1112,22 @@ message PolicyVersion_Rules {
           }
           message Vnets {
             string id = 1;
+            string resource_group = 2;
+            string subscription_id = 3;
           }
           repeated Subnets subnets = 1;
           repeated Vnets vnets = 2;
         }
+        message OrgSelector {
+          message Subscriptions {
+            string id = 1;
+          }
+          repeated Subscriptions subscriptions = 1;
+        }
         Network network = 3;
-        string subscription_id = 2;
+        OrgSelector org_selector = 5;
       }
+      Aws aws = 2;
       Azure azure = 1;
     }
     message IllumioLabels {}
