@@ -213,10 +213,34 @@ var ipSelectorAttributes = map[string]resource_schema.Attribute{
 	},
 }
 
+// azureOrgSelectorAttributes defines the Azure organizational boundary selector.
+var azureOrgSelectorAttributes = map[string]resource_schema.Attribute{
+	"subscriptions": resource_schema.ListNestedAttribute{
+		Description: "List of Azure subscriptions. Targets all resources within each subscription.",
+		Required:    true,
+		NestedObject: resource_schema.NestedAttributeObject{
+			Attributes: map[string]resource_schema.Attribute{
+				"id": resource_schema.StringAttribute{
+					Description: "Azure subscription GUID.",
+					Required:    true,
+				},
+			},
+		},
+	},
+}
+
 // azureVirtualNetworkAttributes defines the VNet selector.
 var azureVirtualNetworkAttributes = map[string]resource_schema.Attribute{
+	"subscription_id": resource_schema.StringAttribute{
+		Description: "Azure subscription ID containing the VNet.",
+		Required:    true,
+	},
+	"resource_group": resource_schema.StringAttribute{
+		Description: "Azure resource group name containing the VNet.",
+		Required:    true,
+	},
 	"id": resource_schema.StringAttribute{
-		Description: "Full Azure resource ID for the VNet (e.g., /subscriptions/{sub}/resourceGroups/{rg}/providers/Microsoft.Network/virtualNetworks/{name}).",
+		Description: "Azure VNet name.",
 		Required:    true,
 	},
 }
@@ -224,7 +248,7 @@ var azureVirtualNetworkAttributes = map[string]resource_schema.Attribute{
 // azureSubnetAttributes defines the Subnet selector.
 var azureSubnetAttributes = map[string]resource_schema.Attribute{
 	"id": resource_schema.StringAttribute{
-		Description: "Full Azure resource ID for the Subnet (e.g., /subscriptions/{sub}/resourceGroups/{rg}/providers/Microsoft.Network/virtualNetworks/{vnet}/subnets/{name}).",
+		Description: "Full Azure resource ID for the Subnet (csp_id).",
 		Required:    true,
 	},
 }
@@ -232,14 +256,14 @@ var azureSubnetAttributes = map[string]resource_schema.Attribute{
 // azureNetworkAttributes defines the network resource selectors within Azure.
 var azureNetworkAttributes = map[string]resource_schema.Attribute{
 	"vnets": resource_schema.ListNestedAttribute{
-		Description: "Optional list of VNet selectors to filter specific VNets.",
+		Description: "Optional list of VNet selectors.",
 		Optional:    true,
 		NestedObject: resource_schema.NestedAttributeObject{
 			Attributes: azureVirtualNetworkAttributes,
 		},
 	},
 	"subnets": resource_schema.ListNestedAttribute{
-		Description: "Optional list of Subnet selectors to filter specific Subnets.",
+		Description: "Optional list of Subnet selectors.",
 		Optional:    true,
 		NestedObject: resource_schema.NestedAttributeObject{
 			Attributes: azureSubnetAttributes,
@@ -248,24 +272,148 @@ var azureNetworkAttributes = map[string]resource_schema.Attribute{
 }
 
 // cloudAzureSelectorAttributes defines the Azure cloud resource selector.
+// Exactly one of org_selector or network must be set.
 var cloudAzureSelectorAttributes = map[string]resource_schema.Attribute{
-	"subscription_id": resource_schema.StringAttribute{
-		Description: "Azure subscription ID (GUID).",
-		Required:    true,
+	"org_selector": resource_schema.SingleNestedAttribute{
+		Description: "Targets all resources within the specified subscriptions. Mutually exclusive with network.",
+		Optional:    true,
+		Attributes:  azureOrgSelectorAttributes,
+		Validators: []validator.Object{
+			objectvalidator.ExactlyOneOf(
+				path.MatchRelative().AtParent().AtName("org_selector"),
+				path.MatchRelative().AtParent().AtName("network"),
+			),
+		},
 	},
 	"network": resource_schema.SingleNestedAttribute{
-		Description: "Optional network resource selectors (VNets, Subnets) within the subscription.",
+		Description: "Targets specific VNets or Subnets. Mutually exclusive with org_selector.",
 		Optional:    true,
 		Attributes:  azureNetworkAttributes,
+		Validators: []validator.Object{
+			objectvalidator.ExactlyOneOf(
+				path.MatchRelative().AtParent().AtName("org_selector"),
+				path.MatchRelative().AtParent().AtName("network"),
+			),
+		},
+	},
+}
+
+// awsOrgSelectorAttributes defines the AWS organizational boundary selector.
+var awsOrgSelectorAttributes = map[string]resource_schema.Attribute{
+	"accounts": resource_schema.ListNestedAttribute{
+		Description: "List of AWS accounts. Targets all resources within each account.",
+		Required:    true,
+		NestedObject: resource_schema.NestedAttributeObject{
+			Attributes: map[string]resource_schema.Attribute{
+				"id": resource_schema.StringAttribute{
+					Description: "AWS account ID.",
+					Required:    true,
+				},
+			},
+		},
+	},
+}
+
+// awsVpcAttributes defines the VPC selector.
+var awsVpcAttributes = map[string]resource_schema.Attribute{
+	"id": resource_schema.StringAttribute{
+		Description: "VPC ID (e.g., vpc-0a1b2c3d4e5f67890).",
+		Required:    true,
+	},
+	"account_id": resource_schema.StringAttribute{
+		Description: "AWS account ID containing the VPC.",
+		Required:    true,
+	},
+	"region": resource_schema.StringAttribute{
+		Description: "AWS region containing the VPC (e.g., us-east-1).",
+		Required:    true,
+	},
+}
+
+// awsSubnetAttributes defines the AWS Subnet selector.
+var awsSubnetAttributes = map[string]resource_schema.Attribute{
+	"id": resource_schema.StringAttribute{
+		Description: "Subnet ID (e.g., subnet-0a1b2c3d4e5f67890).",
+		Required:    true,
+	},
+	"account_id": resource_schema.StringAttribute{
+		Description: "AWS account ID containing the subnet.",
+		Required:    true,
+	},
+	"region": resource_schema.StringAttribute{
+		Description: "AWS region containing the subnet (e.g., us-east-1).",
+		Required:    true,
+	},
+}
+
+// awsNetworkAttributes defines the network resource selectors within AWS.
+var awsNetworkAttributes = map[string]resource_schema.Attribute{
+	"vpcs": resource_schema.ListNestedAttribute{
+		Description: "Optional list of VPC selectors.",
+		Optional:    true,
+		NestedObject: resource_schema.NestedAttributeObject{
+			Attributes: awsVpcAttributes,
+		},
+	},
+	"subnets": resource_schema.ListNestedAttribute{
+		Description: "Optional list of Subnet selectors.",
+		Optional:    true,
+		NestedObject: resource_schema.NestedAttributeObject{
+			Attributes: awsSubnetAttributes,
+		},
+	},
+}
+
+// cloudAwsSelectorAttributes defines the AWS cloud resource selector.
+// Exactly one of org_selector or network must be set.
+var cloudAwsSelectorAttributes = map[string]resource_schema.Attribute{
+	"org_selector": resource_schema.SingleNestedAttribute{
+		Description: "Targets all resources within the specified accounts. Mutually exclusive with network.",
+		Optional:    true,
+		Attributes:  awsOrgSelectorAttributes,
+		Validators: []validator.Object{
+			objectvalidator.ExactlyOneOf(
+				path.MatchRelative().AtParent().AtName("org_selector"),
+				path.MatchRelative().AtParent().AtName("network"),
+			),
+		},
+	},
+	"network": resource_schema.SingleNestedAttribute{
+		Description: "Targets specific VPCs or Subnets. Mutually exclusive with org_selector.",
+		Optional:    true,
+		Attributes:  awsNetworkAttributes,
+		Validators: []validator.Object{
+			objectvalidator.ExactlyOneOf(
+				path.MatchRelative().AtParent().AtName("org_selector"),
+				path.MatchRelative().AtParent().AtName("network"),
+			),
+		},
 	},
 }
 
 // cloudSelectorAttributes is reused for source.cloud and destination.cloud.
 var cloudSelectorAttributes = map[string]resource_schema.Attribute{
 	"azure": resource_schema.SingleNestedAttribute{
-		Description: "Azure cloud resource selector.",
+		Description: "Azure cloud resource selector. Mutually exclusive with aws.",
 		Optional:    true,
 		Attributes:  cloudAzureSelectorAttributes,
+		Validators: []validator.Object{
+			objectvalidator.ExactlyOneOf(
+				path.MatchRelative().AtParent().AtName("azure"),
+				path.MatchRelative().AtParent().AtName("aws"),
+			),
+		},
+	},
+	"aws": resource_schema.SingleNestedAttribute{
+		Description: "AWS cloud resource selector. Mutually exclusive with azure.",
+		Optional:    true,
+		Attributes:  cloudAwsSelectorAttributes,
+		Validators: []validator.Object{
+			objectvalidator.ExactlyOneOf(
+				path.MatchRelative().AtParent().AtName("azure"),
+				path.MatchRelative().AtParent().AtName("aws"),
+			),
+		},
 	},
 }
 
@@ -364,7 +512,7 @@ var (
 											},
 										},
 										"cloud": resource_schema.SingleNestedAttribute{
-											Description: "Cloud resource selector for Azure subscriptions, VNets, and subnets.",
+											Description: "Cloud resource selector (Azure or AWS).",
 											Optional:    true,
 											Attributes:  cloudSelectorAttributes,
 											Validators: []validator.Object{
@@ -444,7 +592,7 @@ var (
 											},
 										},
 										"cloud": resource_schema.SingleNestedAttribute{
-											Description: "Cloud resource selector for Azure subscriptions, VNets, and subnets.",
+											Description: "Cloud resource selector (Azure or AWS).",
 											Optional:    true,
 											Attributes:  cloudSelectorAttributes,
 											Validators: []validator.Object{

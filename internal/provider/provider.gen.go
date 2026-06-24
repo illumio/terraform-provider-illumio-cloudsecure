@@ -10767,11 +10767,15 @@ func ConvertDataValueToPolicyVersion_Rules_DestinationProto(ctx context.Context,
 }
 
 type PolicyVersion_Rules_Destination_Cloud struct {
+	Aws   types.Object `tfsdk:"aws"`
 	Azure types.Object `tfsdk:"azure"`
 }
 
 func GetTypeAttrsForPolicyVersion_Rules_Destination_Cloud() map[string]attr.Type {
 	return map[string]attr.Type{
+		"aws": types.ObjectType{
+			AttrTypes: GetTypeAttrsForPolicyVersion_Rules_Destination_Cloud_Aws(),
+		},
 		"azure": types.ObjectType{
 			AttrTypes: GetTypeAttrsForPolicyVersion_Rules_Destination_Cloud_Azure(),
 		},
@@ -10785,6 +10789,7 @@ func ConvertPolicyVersion_Rules_Destination_CloudToObjectValueFromProto(proto *c
 	return types.ObjectValueMust(
 		GetTypeAttrsForPolicyVersion_Rules_Destination_Cloud(),
 		map[string]attr.Value{
+			"aws":   ConvertPolicyVersion_Rules_Destination_Cloud_AwsToObjectValueFromProto(proto.Aws),
 			"azure": ConvertPolicyVersion_Rules_Destination_Cloud_AzureToObjectValueFromProto(proto.Azure),
 		},
 	)
@@ -10800,6 +10805,12 @@ func ConvertDataValueToPolicyVersion_Rules_Destination_CloudProto(ctx context.Co
 		return nil, diags
 	}
 	proto := &configv1.PolicyVersion_Rules_Destination_Cloud{}
+	pvModelAws, dvDiagsAws := ConvertDataValueToPolicyVersion_Rules_Destination_Cloud_AwsProto(ctx, pv.Aws)
+	diags.Append(dvDiagsAws...)
+	if diags.HasError() {
+		return nil, diags
+	}
+	proto.Aws = pvModelAws
 	pvModelAzure, dvDiagsAzure := ConvertDataValueToPolicyVersion_Rules_Destination_Cloud_AzureProto(ctx, pv.Azure)
 	diags.Append(dvDiagsAzure...)
 	if diags.HasError() {
@@ -10809,9 +10820,323 @@ func ConvertDataValueToPolicyVersion_Rules_Destination_CloudProto(ctx context.Co
 	return proto, diags
 }
 
+type PolicyVersion_Rules_Destination_Cloud_Aws struct {
+	Network     types.Object `tfsdk:"network"`
+	OrgSelector types.Object `tfsdk:"org_selector"`
+}
+
+func GetTypeAttrsForPolicyVersion_Rules_Destination_Cloud_Aws() map[string]attr.Type {
+	return map[string]attr.Type{
+		"network": types.ObjectType{
+			AttrTypes: GetTypeAttrsForPolicyVersion_Rules_Destination_Cloud_Aws_Network(),
+		},
+		"org_selector": types.ObjectType{
+			AttrTypes: GetTypeAttrsForPolicyVersion_Rules_Destination_Cloud_Aws_OrgSelector(),
+		},
+	}
+}
+
+func ConvertPolicyVersion_Rules_Destination_Cloud_AwsToObjectValueFromProto(proto *configv1.PolicyVersion_Rules_Destination_Cloud_Aws) basetypes.ObjectValue {
+	if proto == nil {
+		return types.ObjectNull(GetTypeAttrsForPolicyVersion_Rules_Destination_Cloud_Aws())
+	}
+	return types.ObjectValueMust(
+		GetTypeAttrsForPolicyVersion_Rules_Destination_Cloud_Aws(),
+		map[string]attr.Value{
+			"network":      ConvertPolicyVersion_Rules_Destination_Cloud_Aws_NetworkToObjectValueFromProto(proto.Network),
+			"org_selector": ConvertPolicyVersion_Rules_Destination_Cloud_Aws_OrgSelectorToObjectValueFromProto(proto.OrgSelector),
+		},
+	)
+}
+
+func ConvertDataValueToPolicyVersion_Rules_Destination_Cloud_AwsProto(ctx context.Context, dataValue attr.Value) (*configv1.PolicyVersion_Rules_Destination_Cloud_Aws, diag.Diagnostics) {
+	if dataValue.IsNull() || dataValue.IsUnknown() {
+		return nil, nil
+	}
+	pv := PolicyVersion_Rules_Destination_Cloud_Aws{}
+	diags := tfsdk.ValueAs(ctx, dataValue, &pv)
+	if diags.HasError() {
+		return nil, diags
+	}
+	proto := &configv1.PolicyVersion_Rules_Destination_Cloud_Aws{}
+	pvModelNetwork, dvDiagsNetwork := ConvertDataValueToPolicyVersion_Rules_Destination_Cloud_Aws_NetworkProto(ctx, pv.Network)
+	diags.Append(dvDiagsNetwork...)
+	if diags.HasError() {
+		return nil, diags
+	}
+	proto.Network = pvModelNetwork
+	pvModelOrgSelector, dvDiagsOrgSelector := ConvertDataValueToPolicyVersion_Rules_Destination_Cloud_Aws_OrgSelectorProto(ctx, pv.OrgSelector)
+	diags.Append(dvDiagsOrgSelector...)
+	if diags.HasError() {
+		return nil, diags
+	}
+	proto.OrgSelector = pvModelOrgSelector
+	return proto, diags
+}
+
+type PolicyVersion_Rules_Destination_Cloud_Aws_Network struct {
+	Subnets types.List `tfsdk:"subnets"`
+	Vpcs    types.List `tfsdk:"vpcs"`
+}
+
+func GetTypeAttrsForPolicyVersion_Rules_Destination_Cloud_Aws_Network() map[string]attr.Type {
+	return map[string]attr.Type{
+		"subnets": types.ListType{ElemType: types.ObjectType{
+			AttrTypes: GetTypeAttrsForPolicyVersion_Rules_Destination_Cloud_Aws_Network_Subnets(),
+		}},
+		"vpcs": types.ListType{ElemType: types.ObjectType{
+			AttrTypes: GetTypeAttrsForPolicyVersion_Rules_Destination_Cloud_Aws_Network_Vpcs(),
+		}},
+	}
+}
+
+func ConvertPolicyVersion_Rules_Destination_Cloud_Aws_NetworkToObjectValueFromProto(proto *configv1.PolicyVersion_Rules_Destination_Cloud_Aws_Network) basetypes.ObjectValue {
+	if proto == nil {
+		return types.ObjectNull(GetTypeAttrsForPolicyVersion_Rules_Destination_Cloud_Aws_Network())
+	}
+	elementsInSubnets := make([]attr.Value, 0, len(proto.Subnets))
+	for _, item := range proto.Subnets {
+		elementsInSubnets = append(elementsInSubnets, ConvertPolicyVersion_Rules_Destination_Cloud_Aws_Network_SubnetsToObjectValueFromProto(item))
+	}
+	elementsInVpcs := make([]attr.Value, 0, len(proto.Vpcs))
+	for _, item := range proto.Vpcs {
+		elementsInVpcs = append(elementsInVpcs, ConvertPolicyVersion_Rules_Destination_Cloud_Aws_Network_VpcsToObjectValueFromProto(item))
+	}
+	return types.ObjectValueMust(
+		GetTypeAttrsForPolicyVersion_Rules_Destination_Cloud_Aws_Network(),
+		map[string]attr.Value{
+			"subnets": func() basetypes.ListValue {
+				if proto.Subnets == nil {
+					return types.ListNull(types.ObjectType{AttrTypes: GetTypeAttrsForPolicyVersion_Rules_Destination_Cloud_Aws_Network_Subnets()})
+				}
+				return types.ListValueMust(types.ObjectType{AttrTypes: GetTypeAttrsForPolicyVersion_Rules_Destination_Cloud_Aws_Network_Subnets()}, elementsInSubnets)
+			}(),
+			"vpcs": func() basetypes.ListValue {
+				if proto.Vpcs == nil {
+					return types.ListNull(types.ObjectType{AttrTypes: GetTypeAttrsForPolicyVersion_Rules_Destination_Cloud_Aws_Network_Vpcs()})
+				}
+				return types.ListValueMust(types.ObjectType{AttrTypes: GetTypeAttrsForPolicyVersion_Rules_Destination_Cloud_Aws_Network_Vpcs()}, elementsInVpcs)
+			}(),
+		},
+	)
+}
+
+func ConvertDataValueToPolicyVersion_Rules_Destination_Cloud_Aws_NetworkProto(ctx context.Context, dataValue attr.Value) (*configv1.PolicyVersion_Rules_Destination_Cloud_Aws_Network, diag.Diagnostics) {
+	if dataValue.IsNull() || dataValue.IsUnknown() {
+		return nil, nil
+	}
+	pv := PolicyVersion_Rules_Destination_Cloud_Aws_Network{}
+	diags := tfsdk.ValueAs(ctx, dataValue, &pv)
+	if diags.HasError() {
+		return nil, diags
+	}
+	proto := &configv1.PolicyVersion_Rules_Destination_Cloud_Aws_Network{}
+	pvElemModelSubnets := pv.Subnets.Elements()
+	proto.Subnets = make([]*configv1.PolicyVersion_Rules_Destination_Cloud_Aws_Network_Subnets, 0, len(pvElemModelSubnets))
+	for _, elem := range pvElemModelSubnets {
+		pvModel, dvDiags := ConvertDataValueToPolicyVersion_Rules_Destination_Cloud_Aws_Network_SubnetsProto(ctx, elem)
+		diags.Append(dvDiags...)
+		if diags.HasError() {
+			return nil, diags
+		}
+		proto.Subnets = append(proto.Subnets, pvModel)
+	}
+	pvElemModelVpcs := pv.Vpcs.Elements()
+	proto.Vpcs = make([]*configv1.PolicyVersion_Rules_Destination_Cloud_Aws_Network_Vpcs, 0, len(pvElemModelVpcs))
+	for _, elem := range pvElemModelVpcs {
+		pvModel, dvDiags := ConvertDataValueToPolicyVersion_Rules_Destination_Cloud_Aws_Network_VpcsProto(ctx, elem)
+		diags.Append(dvDiags...)
+		if diags.HasError() {
+			return nil, diags
+		}
+		proto.Vpcs = append(proto.Vpcs, pvModel)
+	}
+	return proto, diags
+}
+
+type PolicyVersion_Rules_Destination_Cloud_Aws_Network_Subnets struct {
+	Id        types.String `tfsdk:"id"`
+	AccountId types.String `tfsdk:"account_id"`
+	Region    types.String `tfsdk:"region"`
+}
+
+func GetTypeAttrsForPolicyVersion_Rules_Destination_Cloud_Aws_Network_Subnets() map[string]attr.Type {
+	return map[string]attr.Type{
+		"id":         types.StringType,
+		"account_id": types.StringType,
+		"region":     types.StringType,
+	}
+}
+
+func ConvertPolicyVersion_Rules_Destination_Cloud_Aws_Network_SubnetsToObjectValueFromProto(proto *configv1.PolicyVersion_Rules_Destination_Cloud_Aws_Network_Subnets) basetypes.ObjectValue {
+	if proto == nil {
+		return types.ObjectNull(GetTypeAttrsForPolicyVersion_Rules_Destination_Cloud_Aws_Network_Subnets())
+	}
+	return types.ObjectValueMust(
+		GetTypeAttrsForPolicyVersion_Rules_Destination_Cloud_Aws_Network_Subnets(),
+		map[string]attr.Value{
+			"id":         types.StringValue(proto.Id),
+			"account_id": types.StringValue(proto.AccountId),
+			"region":     types.StringValue(proto.Region),
+		},
+	)
+}
+
+func ConvertDataValueToPolicyVersion_Rules_Destination_Cloud_Aws_Network_SubnetsProto(ctx context.Context, dataValue attr.Value) (*configv1.PolicyVersion_Rules_Destination_Cloud_Aws_Network_Subnets, diag.Diagnostics) {
+	if dataValue.IsNull() || dataValue.IsUnknown() {
+		return nil, nil
+	}
+	pv := PolicyVersion_Rules_Destination_Cloud_Aws_Network_Subnets{}
+	diags := tfsdk.ValueAs(ctx, dataValue, &pv)
+	if diags.HasError() {
+		return nil, diags
+	}
+	proto := &configv1.PolicyVersion_Rules_Destination_Cloud_Aws_Network_Subnets{}
+	proto.Id = pv.Id.ValueString()
+	proto.AccountId = pv.AccountId.ValueString()
+	proto.Region = pv.Region.ValueString()
+	return proto, diags
+}
+
+type PolicyVersion_Rules_Destination_Cloud_Aws_Network_Vpcs struct {
+	Id        types.String `tfsdk:"id"`
+	AccountId types.String `tfsdk:"account_id"`
+	Region    types.String `tfsdk:"region"`
+}
+
+func GetTypeAttrsForPolicyVersion_Rules_Destination_Cloud_Aws_Network_Vpcs() map[string]attr.Type {
+	return map[string]attr.Type{
+		"id":         types.StringType,
+		"account_id": types.StringType,
+		"region":     types.StringType,
+	}
+}
+
+func ConvertPolicyVersion_Rules_Destination_Cloud_Aws_Network_VpcsToObjectValueFromProto(proto *configv1.PolicyVersion_Rules_Destination_Cloud_Aws_Network_Vpcs) basetypes.ObjectValue {
+	if proto == nil {
+		return types.ObjectNull(GetTypeAttrsForPolicyVersion_Rules_Destination_Cloud_Aws_Network_Vpcs())
+	}
+	return types.ObjectValueMust(
+		GetTypeAttrsForPolicyVersion_Rules_Destination_Cloud_Aws_Network_Vpcs(),
+		map[string]attr.Value{
+			"id":         types.StringValue(proto.Id),
+			"account_id": types.StringValue(proto.AccountId),
+			"region":     types.StringValue(proto.Region),
+		},
+	)
+}
+
+func ConvertDataValueToPolicyVersion_Rules_Destination_Cloud_Aws_Network_VpcsProto(ctx context.Context, dataValue attr.Value) (*configv1.PolicyVersion_Rules_Destination_Cloud_Aws_Network_Vpcs, diag.Diagnostics) {
+	if dataValue.IsNull() || dataValue.IsUnknown() {
+		return nil, nil
+	}
+	pv := PolicyVersion_Rules_Destination_Cloud_Aws_Network_Vpcs{}
+	diags := tfsdk.ValueAs(ctx, dataValue, &pv)
+	if diags.HasError() {
+		return nil, diags
+	}
+	proto := &configv1.PolicyVersion_Rules_Destination_Cloud_Aws_Network_Vpcs{}
+	proto.Id = pv.Id.ValueString()
+	proto.AccountId = pv.AccountId.ValueString()
+	proto.Region = pv.Region.ValueString()
+	return proto, diags
+}
+
+type PolicyVersion_Rules_Destination_Cloud_Aws_OrgSelector struct {
+	Accounts types.List `tfsdk:"accounts"`
+}
+
+func GetTypeAttrsForPolicyVersion_Rules_Destination_Cloud_Aws_OrgSelector() map[string]attr.Type {
+	return map[string]attr.Type{
+		"accounts": types.ListType{ElemType: types.ObjectType{
+			AttrTypes: GetTypeAttrsForPolicyVersion_Rules_Destination_Cloud_Aws_OrgSelector_Accounts(),
+		}},
+	}
+}
+
+func ConvertPolicyVersion_Rules_Destination_Cloud_Aws_OrgSelectorToObjectValueFromProto(proto *configv1.PolicyVersion_Rules_Destination_Cloud_Aws_OrgSelector) basetypes.ObjectValue {
+	if proto == nil {
+		return types.ObjectNull(GetTypeAttrsForPolicyVersion_Rules_Destination_Cloud_Aws_OrgSelector())
+	}
+	elementsInAccounts := make([]attr.Value, 0, len(proto.Accounts))
+	for _, item := range proto.Accounts {
+		elementsInAccounts = append(elementsInAccounts, ConvertPolicyVersion_Rules_Destination_Cloud_Aws_OrgSelector_AccountsToObjectValueFromProto(item))
+	}
+	return types.ObjectValueMust(
+		GetTypeAttrsForPolicyVersion_Rules_Destination_Cloud_Aws_OrgSelector(),
+		map[string]attr.Value{
+			"accounts": func() basetypes.ListValue {
+				if proto.Accounts == nil {
+					return types.ListNull(types.ObjectType{AttrTypes: GetTypeAttrsForPolicyVersion_Rules_Destination_Cloud_Aws_OrgSelector_Accounts()})
+				}
+				return types.ListValueMust(types.ObjectType{AttrTypes: GetTypeAttrsForPolicyVersion_Rules_Destination_Cloud_Aws_OrgSelector_Accounts()}, elementsInAccounts)
+			}(),
+		},
+	)
+}
+
+func ConvertDataValueToPolicyVersion_Rules_Destination_Cloud_Aws_OrgSelectorProto(ctx context.Context, dataValue attr.Value) (*configv1.PolicyVersion_Rules_Destination_Cloud_Aws_OrgSelector, diag.Diagnostics) {
+	if dataValue.IsNull() || dataValue.IsUnknown() {
+		return nil, nil
+	}
+	pv := PolicyVersion_Rules_Destination_Cloud_Aws_OrgSelector{}
+	diags := tfsdk.ValueAs(ctx, dataValue, &pv)
+	if diags.HasError() {
+		return nil, diags
+	}
+	proto := &configv1.PolicyVersion_Rules_Destination_Cloud_Aws_OrgSelector{}
+	pvElemModelAccounts := pv.Accounts.Elements()
+	proto.Accounts = make([]*configv1.PolicyVersion_Rules_Destination_Cloud_Aws_OrgSelector_Accounts, 0, len(pvElemModelAccounts))
+	for _, elem := range pvElemModelAccounts {
+		pvModel, dvDiags := ConvertDataValueToPolicyVersion_Rules_Destination_Cloud_Aws_OrgSelector_AccountsProto(ctx, elem)
+		diags.Append(dvDiags...)
+		if diags.HasError() {
+			return nil, diags
+		}
+		proto.Accounts = append(proto.Accounts, pvModel)
+	}
+	return proto, diags
+}
+
+type PolicyVersion_Rules_Destination_Cloud_Aws_OrgSelector_Accounts struct {
+	Id types.String `tfsdk:"id"`
+}
+
+func GetTypeAttrsForPolicyVersion_Rules_Destination_Cloud_Aws_OrgSelector_Accounts() map[string]attr.Type {
+	return map[string]attr.Type{
+		"id": types.StringType,
+	}
+}
+
+func ConvertPolicyVersion_Rules_Destination_Cloud_Aws_OrgSelector_AccountsToObjectValueFromProto(proto *configv1.PolicyVersion_Rules_Destination_Cloud_Aws_OrgSelector_Accounts) basetypes.ObjectValue {
+	if proto == nil {
+		return types.ObjectNull(GetTypeAttrsForPolicyVersion_Rules_Destination_Cloud_Aws_OrgSelector_Accounts())
+	}
+	return types.ObjectValueMust(
+		GetTypeAttrsForPolicyVersion_Rules_Destination_Cloud_Aws_OrgSelector_Accounts(),
+		map[string]attr.Value{
+			"id": types.StringValue(proto.Id),
+		},
+	)
+}
+
+func ConvertDataValueToPolicyVersion_Rules_Destination_Cloud_Aws_OrgSelector_AccountsProto(ctx context.Context, dataValue attr.Value) (*configv1.PolicyVersion_Rules_Destination_Cloud_Aws_OrgSelector_Accounts, diag.Diagnostics) {
+	if dataValue.IsNull() || dataValue.IsUnknown() {
+		return nil, nil
+	}
+	pv := PolicyVersion_Rules_Destination_Cloud_Aws_OrgSelector_Accounts{}
+	diags := tfsdk.ValueAs(ctx, dataValue, &pv)
+	if diags.HasError() {
+		return nil, diags
+	}
+	proto := &configv1.PolicyVersion_Rules_Destination_Cloud_Aws_OrgSelector_Accounts{}
+	proto.Id = pv.Id.ValueString()
+	return proto, diags
+}
+
 type PolicyVersion_Rules_Destination_Cloud_Azure struct {
-	Network        types.Object `tfsdk:"network"`
-	SubscriptionId types.String `tfsdk:"subscription_id"`
+	Network     types.Object `tfsdk:"network"`
+	OrgSelector types.Object `tfsdk:"org_selector"`
 }
 
 func GetTypeAttrsForPolicyVersion_Rules_Destination_Cloud_Azure() map[string]attr.Type {
@@ -10819,7 +11144,9 @@ func GetTypeAttrsForPolicyVersion_Rules_Destination_Cloud_Azure() map[string]att
 		"network": types.ObjectType{
 			AttrTypes: GetTypeAttrsForPolicyVersion_Rules_Destination_Cloud_Azure_Network(),
 		},
-		"subscription_id": types.StringType,
+		"org_selector": types.ObjectType{
+			AttrTypes: GetTypeAttrsForPolicyVersion_Rules_Destination_Cloud_Azure_OrgSelector(),
+		},
 	}
 }
 
@@ -10830,8 +11157,8 @@ func ConvertPolicyVersion_Rules_Destination_Cloud_AzureToObjectValueFromProto(pr
 	return types.ObjectValueMust(
 		GetTypeAttrsForPolicyVersion_Rules_Destination_Cloud_Azure(),
 		map[string]attr.Value{
-			"network":         ConvertPolicyVersion_Rules_Destination_Cloud_Azure_NetworkToObjectValueFromProto(proto.Network),
-			"subscription_id": types.StringValue(proto.SubscriptionId),
+			"network":      ConvertPolicyVersion_Rules_Destination_Cloud_Azure_NetworkToObjectValueFromProto(proto.Network),
+			"org_selector": ConvertPolicyVersion_Rules_Destination_Cloud_Azure_OrgSelectorToObjectValueFromProto(proto.OrgSelector),
 		},
 	)
 }
@@ -10852,7 +11179,12 @@ func ConvertDataValueToPolicyVersion_Rules_Destination_Cloud_AzureProto(ctx cont
 		return nil, diags
 	}
 	proto.Network = pvModelNetwork
-	proto.SubscriptionId = pv.SubscriptionId.ValueString()
+	pvModelOrgSelector, dvDiagsOrgSelector := ConvertDataValueToPolicyVersion_Rules_Destination_Cloud_Azure_OrgSelectorProto(ctx, pv.OrgSelector)
+	diags.Append(dvDiagsOrgSelector...)
+	if diags.HasError() {
+		return nil, diags
+	}
+	proto.OrgSelector = pvModelOrgSelector
 	return proto, diags
 }
 
@@ -10973,12 +11305,16 @@ func ConvertDataValueToPolicyVersion_Rules_Destination_Cloud_Azure_Network_Subne
 }
 
 type PolicyVersion_Rules_Destination_Cloud_Azure_Network_Vnets struct {
-	Id types.String `tfsdk:"id"`
+	Id             types.String `tfsdk:"id"`
+	ResourceGroup  types.String `tfsdk:"resource_group"`
+	SubscriptionId types.String `tfsdk:"subscription_id"`
 }
 
 func GetTypeAttrsForPolicyVersion_Rules_Destination_Cloud_Azure_Network_Vnets() map[string]attr.Type {
 	return map[string]attr.Type{
-		"id": types.StringType,
+		"id":              types.StringType,
+		"resource_group":  types.StringType,
+		"subscription_id": types.StringType,
 	}
 }
 
@@ -10989,7 +11325,9 @@ func ConvertPolicyVersion_Rules_Destination_Cloud_Azure_Network_VnetsToObjectVal
 	return types.ObjectValueMust(
 		GetTypeAttrsForPolicyVersion_Rules_Destination_Cloud_Azure_Network_Vnets(),
 		map[string]attr.Value{
-			"id": types.StringValue(proto.Id),
+			"id":              types.StringValue(proto.Id),
+			"resource_group":  types.StringValue(proto.ResourceGroup),
+			"subscription_id": types.StringValue(proto.SubscriptionId),
 		},
 	)
 }
@@ -11004,6 +11342,100 @@ func ConvertDataValueToPolicyVersion_Rules_Destination_Cloud_Azure_Network_Vnets
 		return nil, diags
 	}
 	proto := &configv1.PolicyVersion_Rules_Destination_Cloud_Azure_Network_Vnets{}
+	proto.Id = pv.Id.ValueString()
+	proto.ResourceGroup = pv.ResourceGroup.ValueString()
+	proto.SubscriptionId = pv.SubscriptionId.ValueString()
+	return proto, diags
+}
+
+type PolicyVersion_Rules_Destination_Cloud_Azure_OrgSelector struct {
+	Subscriptions types.List `tfsdk:"subscriptions"`
+}
+
+func GetTypeAttrsForPolicyVersion_Rules_Destination_Cloud_Azure_OrgSelector() map[string]attr.Type {
+	return map[string]attr.Type{
+		"subscriptions": types.ListType{ElemType: types.ObjectType{
+			AttrTypes: GetTypeAttrsForPolicyVersion_Rules_Destination_Cloud_Azure_OrgSelector_Subscriptions(),
+		}},
+	}
+}
+
+func ConvertPolicyVersion_Rules_Destination_Cloud_Azure_OrgSelectorToObjectValueFromProto(proto *configv1.PolicyVersion_Rules_Destination_Cloud_Azure_OrgSelector) basetypes.ObjectValue {
+	if proto == nil {
+		return types.ObjectNull(GetTypeAttrsForPolicyVersion_Rules_Destination_Cloud_Azure_OrgSelector())
+	}
+	elementsInSubscriptions := make([]attr.Value, 0, len(proto.Subscriptions))
+	for _, item := range proto.Subscriptions {
+		elementsInSubscriptions = append(elementsInSubscriptions, ConvertPolicyVersion_Rules_Destination_Cloud_Azure_OrgSelector_SubscriptionsToObjectValueFromProto(item))
+	}
+	return types.ObjectValueMust(
+		GetTypeAttrsForPolicyVersion_Rules_Destination_Cloud_Azure_OrgSelector(),
+		map[string]attr.Value{
+			"subscriptions": func() basetypes.ListValue {
+				if proto.Subscriptions == nil {
+					return types.ListNull(types.ObjectType{AttrTypes: GetTypeAttrsForPolicyVersion_Rules_Destination_Cloud_Azure_OrgSelector_Subscriptions()})
+				}
+				return types.ListValueMust(types.ObjectType{AttrTypes: GetTypeAttrsForPolicyVersion_Rules_Destination_Cloud_Azure_OrgSelector_Subscriptions()}, elementsInSubscriptions)
+			}(),
+		},
+	)
+}
+
+func ConvertDataValueToPolicyVersion_Rules_Destination_Cloud_Azure_OrgSelectorProto(ctx context.Context, dataValue attr.Value) (*configv1.PolicyVersion_Rules_Destination_Cloud_Azure_OrgSelector, diag.Diagnostics) {
+	if dataValue.IsNull() || dataValue.IsUnknown() {
+		return nil, nil
+	}
+	pv := PolicyVersion_Rules_Destination_Cloud_Azure_OrgSelector{}
+	diags := tfsdk.ValueAs(ctx, dataValue, &pv)
+	if diags.HasError() {
+		return nil, diags
+	}
+	proto := &configv1.PolicyVersion_Rules_Destination_Cloud_Azure_OrgSelector{}
+	pvElemModelSubscriptions := pv.Subscriptions.Elements()
+	proto.Subscriptions = make([]*configv1.PolicyVersion_Rules_Destination_Cloud_Azure_OrgSelector_Subscriptions, 0, len(pvElemModelSubscriptions))
+	for _, elem := range pvElemModelSubscriptions {
+		pvModel, dvDiags := ConvertDataValueToPolicyVersion_Rules_Destination_Cloud_Azure_OrgSelector_SubscriptionsProto(ctx, elem)
+		diags.Append(dvDiags...)
+		if diags.HasError() {
+			return nil, diags
+		}
+		proto.Subscriptions = append(proto.Subscriptions, pvModel)
+	}
+	return proto, diags
+}
+
+type PolicyVersion_Rules_Destination_Cloud_Azure_OrgSelector_Subscriptions struct {
+	Id types.String `tfsdk:"id"`
+}
+
+func GetTypeAttrsForPolicyVersion_Rules_Destination_Cloud_Azure_OrgSelector_Subscriptions() map[string]attr.Type {
+	return map[string]attr.Type{
+		"id": types.StringType,
+	}
+}
+
+func ConvertPolicyVersion_Rules_Destination_Cloud_Azure_OrgSelector_SubscriptionsToObjectValueFromProto(proto *configv1.PolicyVersion_Rules_Destination_Cloud_Azure_OrgSelector_Subscriptions) basetypes.ObjectValue {
+	if proto == nil {
+		return types.ObjectNull(GetTypeAttrsForPolicyVersion_Rules_Destination_Cloud_Azure_OrgSelector_Subscriptions())
+	}
+	return types.ObjectValueMust(
+		GetTypeAttrsForPolicyVersion_Rules_Destination_Cloud_Azure_OrgSelector_Subscriptions(),
+		map[string]attr.Value{
+			"id": types.StringValue(proto.Id),
+		},
+	)
+}
+
+func ConvertDataValueToPolicyVersion_Rules_Destination_Cloud_Azure_OrgSelector_SubscriptionsProto(ctx context.Context, dataValue attr.Value) (*configv1.PolicyVersion_Rules_Destination_Cloud_Azure_OrgSelector_Subscriptions, diag.Diagnostics) {
+	if dataValue.IsNull() || dataValue.IsUnknown() {
+		return nil, nil
+	}
+	pv := PolicyVersion_Rules_Destination_Cloud_Azure_OrgSelector_Subscriptions{}
+	diags := tfsdk.ValueAs(ctx, dataValue, &pv)
+	if diags.HasError() {
+		return nil, diags
+	}
+	proto := &configv1.PolicyVersion_Rules_Destination_Cloud_Azure_OrgSelector_Subscriptions{}
 	proto.Id = pv.Id.ValueString()
 	return proto, diags
 }
@@ -11972,11 +12404,15 @@ func ConvertDataValueToPolicyVersion_Rules_SourceProto(ctx context.Context, data
 }
 
 type PolicyVersion_Rules_Source_Cloud struct {
+	Aws   types.Object `tfsdk:"aws"`
 	Azure types.Object `tfsdk:"azure"`
 }
 
 func GetTypeAttrsForPolicyVersion_Rules_Source_Cloud() map[string]attr.Type {
 	return map[string]attr.Type{
+		"aws": types.ObjectType{
+			AttrTypes: GetTypeAttrsForPolicyVersion_Rules_Source_Cloud_Aws(),
+		},
 		"azure": types.ObjectType{
 			AttrTypes: GetTypeAttrsForPolicyVersion_Rules_Source_Cloud_Azure(),
 		},
@@ -11990,6 +12426,7 @@ func ConvertPolicyVersion_Rules_Source_CloudToObjectValueFromProto(proto *config
 	return types.ObjectValueMust(
 		GetTypeAttrsForPolicyVersion_Rules_Source_Cloud(),
 		map[string]attr.Value{
+			"aws":   ConvertPolicyVersion_Rules_Source_Cloud_AwsToObjectValueFromProto(proto.Aws),
 			"azure": ConvertPolicyVersion_Rules_Source_Cloud_AzureToObjectValueFromProto(proto.Azure),
 		},
 	)
@@ -12005,6 +12442,12 @@ func ConvertDataValueToPolicyVersion_Rules_Source_CloudProto(ctx context.Context
 		return nil, diags
 	}
 	proto := &configv1.PolicyVersion_Rules_Source_Cloud{}
+	pvModelAws, dvDiagsAws := ConvertDataValueToPolicyVersion_Rules_Source_Cloud_AwsProto(ctx, pv.Aws)
+	diags.Append(dvDiagsAws...)
+	if diags.HasError() {
+		return nil, diags
+	}
+	proto.Aws = pvModelAws
 	pvModelAzure, dvDiagsAzure := ConvertDataValueToPolicyVersion_Rules_Source_Cloud_AzureProto(ctx, pv.Azure)
 	diags.Append(dvDiagsAzure...)
 	if diags.HasError() {
@@ -12014,9 +12457,323 @@ func ConvertDataValueToPolicyVersion_Rules_Source_CloudProto(ctx context.Context
 	return proto, diags
 }
 
+type PolicyVersion_Rules_Source_Cloud_Aws struct {
+	Network     types.Object `tfsdk:"network"`
+	OrgSelector types.Object `tfsdk:"org_selector"`
+}
+
+func GetTypeAttrsForPolicyVersion_Rules_Source_Cloud_Aws() map[string]attr.Type {
+	return map[string]attr.Type{
+		"network": types.ObjectType{
+			AttrTypes: GetTypeAttrsForPolicyVersion_Rules_Source_Cloud_Aws_Network(),
+		},
+		"org_selector": types.ObjectType{
+			AttrTypes: GetTypeAttrsForPolicyVersion_Rules_Source_Cloud_Aws_OrgSelector(),
+		},
+	}
+}
+
+func ConvertPolicyVersion_Rules_Source_Cloud_AwsToObjectValueFromProto(proto *configv1.PolicyVersion_Rules_Source_Cloud_Aws) basetypes.ObjectValue {
+	if proto == nil {
+		return types.ObjectNull(GetTypeAttrsForPolicyVersion_Rules_Source_Cloud_Aws())
+	}
+	return types.ObjectValueMust(
+		GetTypeAttrsForPolicyVersion_Rules_Source_Cloud_Aws(),
+		map[string]attr.Value{
+			"network":      ConvertPolicyVersion_Rules_Source_Cloud_Aws_NetworkToObjectValueFromProto(proto.Network),
+			"org_selector": ConvertPolicyVersion_Rules_Source_Cloud_Aws_OrgSelectorToObjectValueFromProto(proto.OrgSelector),
+		},
+	)
+}
+
+func ConvertDataValueToPolicyVersion_Rules_Source_Cloud_AwsProto(ctx context.Context, dataValue attr.Value) (*configv1.PolicyVersion_Rules_Source_Cloud_Aws, diag.Diagnostics) {
+	if dataValue.IsNull() || dataValue.IsUnknown() {
+		return nil, nil
+	}
+	pv := PolicyVersion_Rules_Source_Cloud_Aws{}
+	diags := tfsdk.ValueAs(ctx, dataValue, &pv)
+	if diags.HasError() {
+		return nil, diags
+	}
+	proto := &configv1.PolicyVersion_Rules_Source_Cloud_Aws{}
+	pvModelNetwork, dvDiagsNetwork := ConvertDataValueToPolicyVersion_Rules_Source_Cloud_Aws_NetworkProto(ctx, pv.Network)
+	diags.Append(dvDiagsNetwork...)
+	if diags.HasError() {
+		return nil, diags
+	}
+	proto.Network = pvModelNetwork
+	pvModelOrgSelector, dvDiagsOrgSelector := ConvertDataValueToPolicyVersion_Rules_Source_Cloud_Aws_OrgSelectorProto(ctx, pv.OrgSelector)
+	diags.Append(dvDiagsOrgSelector...)
+	if diags.HasError() {
+		return nil, diags
+	}
+	proto.OrgSelector = pvModelOrgSelector
+	return proto, diags
+}
+
+type PolicyVersion_Rules_Source_Cloud_Aws_Network struct {
+	Subnets types.List `tfsdk:"subnets"`
+	Vpcs    types.List `tfsdk:"vpcs"`
+}
+
+func GetTypeAttrsForPolicyVersion_Rules_Source_Cloud_Aws_Network() map[string]attr.Type {
+	return map[string]attr.Type{
+		"subnets": types.ListType{ElemType: types.ObjectType{
+			AttrTypes: GetTypeAttrsForPolicyVersion_Rules_Source_Cloud_Aws_Network_Subnets(),
+		}},
+		"vpcs": types.ListType{ElemType: types.ObjectType{
+			AttrTypes: GetTypeAttrsForPolicyVersion_Rules_Source_Cloud_Aws_Network_Vpcs(),
+		}},
+	}
+}
+
+func ConvertPolicyVersion_Rules_Source_Cloud_Aws_NetworkToObjectValueFromProto(proto *configv1.PolicyVersion_Rules_Source_Cloud_Aws_Network) basetypes.ObjectValue {
+	if proto == nil {
+		return types.ObjectNull(GetTypeAttrsForPolicyVersion_Rules_Source_Cloud_Aws_Network())
+	}
+	elementsInSubnets := make([]attr.Value, 0, len(proto.Subnets))
+	for _, item := range proto.Subnets {
+		elementsInSubnets = append(elementsInSubnets, ConvertPolicyVersion_Rules_Source_Cloud_Aws_Network_SubnetsToObjectValueFromProto(item))
+	}
+	elementsInVpcs := make([]attr.Value, 0, len(proto.Vpcs))
+	for _, item := range proto.Vpcs {
+		elementsInVpcs = append(elementsInVpcs, ConvertPolicyVersion_Rules_Source_Cloud_Aws_Network_VpcsToObjectValueFromProto(item))
+	}
+	return types.ObjectValueMust(
+		GetTypeAttrsForPolicyVersion_Rules_Source_Cloud_Aws_Network(),
+		map[string]attr.Value{
+			"subnets": func() basetypes.ListValue {
+				if proto.Subnets == nil {
+					return types.ListNull(types.ObjectType{AttrTypes: GetTypeAttrsForPolicyVersion_Rules_Source_Cloud_Aws_Network_Subnets()})
+				}
+				return types.ListValueMust(types.ObjectType{AttrTypes: GetTypeAttrsForPolicyVersion_Rules_Source_Cloud_Aws_Network_Subnets()}, elementsInSubnets)
+			}(),
+			"vpcs": func() basetypes.ListValue {
+				if proto.Vpcs == nil {
+					return types.ListNull(types.ObjectType{AttrTypes: GetTypeAttrsForPolicyVersion_Rules_Source_Cloud_Aws_Network_Vpcs()})
+				}
+				return types.ListValueMust(types.ObjectType{AttrTypes: GetTypeAttrsForPolicyVersion_Rules_Source_Cloud_Aws_Network_Vpcs()}, elementsInVpcs)
+			}(),
+		},
+	)
+}
+
+func ConvertDataValueToPolicyVersion_Rules_Source_Cloud_Aws_NetworkProto(ctx context.Context, dataValue attr.Value) (*configv1.PolicyVersion_Rules_Source_Cloud_Aws_Network, diag.Diagnostics) {
+	if dataValue.IsNull() || dataValue.IsUnknown() {
+		return nil, nil
+	}
+	pv := PolicyVersion_Rules_Source_Cloud_Aws_Network{}
+	diags := tfsdk.ValueAs(ctx, dataValue, &pv)
+	if diags.HasError() {
+		return nil, diags
+	}
+	proto := &configv1.PolicyVersion_Rules_Source_Cloud_Aws_Network{}
+	pvElemModelSubnets := pv.Subnets.Elements()
+	proto.Subnets = make([]*configv1.PolicyVersion_Rules_Source_Cloud_Aws_Network_Subnets, 0, len(pvElemModelSubnets))
+	for _, elem := range pvElemModelSubnets {
+		pvModel, dvDiags := ConvertDataValueToPolicyVersion_Rules_Source_Cloud_Aws_Network_SubnetsProto(ctx, elem)
+		diags.Append(dvDiags...)
+		if diags.HasError() {
+			return nil, diags
+		}
+		proto.Subnets = append(proto.Subnets, pvModel)
+	}
+	pvElemModelVpcs := pv.Vpcs.Elements()
+	proto.Vpcs = make([]*configv1.PolicyVersion_Rules_Source_Cloud_Aws_Network_Vpcs, 0, len(pvElemModelVpcs))
+	for _, elem := range pvElemModelVpcs {
+		pvModel, dvDiags := ConvertDataValueToPolicyVersion_Rules_Source_Cloud_Aws_Network_VpcsProto(ctx, elem)
+		diags.Append(dvDiags...)
+		if diags.HasError() {
+			return nil, diags
+		}
+		proto.Vpcs = append(proto.Vpcs, pvModel)
+	}
+	return proto, diags
+}
+
+type PolicyVersion_Rules_Source_Cloud_Aws_Network_Subnets struct {
+	Id        types.String `tfsdk:"id"`
+	AccountId types.String `tfsdk:"account_id"`
+	Region    types.String `tfsdk:"region"`
+}
+
+func GetTypeAttrsForPolicyVersion_Rules_Source_Cloud_Aws_Network_Subnets() map[string]attr.Type {
+	return map[string]attr.Type{
+		"id":         types.StringType,
+		"account_id": types.StringType,
+		"region":     types.StringType,
+	}
+}
+
+func ConvertPolicyVersion_Rules_Source_Cloud_Aws_Network_SubnetsToObjectValueFromProto(proto *configv1.PolicyVersion_Rules_Source_Cloud_Aws_Network_Subnets) basetypes.ObjectValue {
+	if proto == nil {
+		return types.ObjectNull(GetTypeAttrsForPolicyVersion_Rules_Source_Cloud_Aws_Network_Subnets())
+	}
+	return types.ObjectValueMust(
+		GetTypeAttrsForPolicyVersion_Rules_Source_Cloud_Aws_Network_Subnets(),
+		map[string]attr.Value{
+			"id":         types.StringValue(proto.Id),
+			"account_id": types.StringValue(proto.AccountId),
+			"region":     types.StringValue(proto.Region),
+		},
+	)
+}
+
+func ConvertDataValueToPolicyVersion_Rules_Source_Cloud_Aws_Network_SubnetsProto(ctx context.Context, dataValue attr.Value) (*configv1.PolicyVersion_Rules_Source_Cloud_Aws_Network_Subnets, diag.Diagnostics) {
+	if dataValue.IsNull() || dataValue.IsUnknown() {
+		return nil, nil
+	}
+	pv := PolicyVersion_Rules_Source_Cloud_Aws_Network_Subnets{}
+	diags := tfsdk.ValueAs(ctx, dataValue, &pv)
+	if diags.HasError() {
+		return nil, diags
+	}
+	proto := &configv1.PolicyVersion_Rules_Source_Cloud_Aws_Network_Subnets{}
+	proto.Id = pv.Id.ValueString()
+	proto.AccountId = pv.AccountId.ValueString()
+	proto.Region = pv.Region.ValueString()
+	return proto, diags
+}
+
+type PolicyVersion_Rules_Source_Cloud_Aws_Network_Vpcs struct {
+	Id        types.String `tfsdk:"id"`
+	AccountId types.String `tfsdk:"account_id"`
+	Region    types.String `tfsdk:"region"`
+}
+
+func GetTypeAttrsForPolicyVersion_Rules_Source_Cloud_Aws_Network_Vpcs() map[string]attr.Type {
+	return map[string]attr.Type{
+		"id":         types.StringType,
+		"account_id": types.StringType,
+		"region":     types.StringType,
+	}
+}
+
+func ConvertPolicyVersion_Rules_Source_Cloud_Aws_Network_VpcsToObjectValueFromProto(proto *configv1.PolicyVersion_Rules_Source_Cloud_Aws_Network_Vpcs) basetypes.ObjectValue {
+	if proto == nil {
+		return types.ObjectNull(GetTypeAttrsForPolicyVersion_Rules_Source_Cloud_Aws_Network_Vpcs())
+	}
+	return types.ObjectValueMust(
+		GetTypeAttrsForPolicyVersion_Rules_Source_Cloud_Aws_Network_Vpcs(),
+		map[string]attr.Value{
+			"id":         types.StringValue(proto.Id),
+			"account_id": types.StringValue(proto.AccountId),
+			"region":     types.StringValue(proto.Region),
+		},
+	)
+}
+
+func ConvertDataValueToPolicyVersion_Rules_Source_Cloud_Aws_Network_VpcsProto(ctx context.Context, dataValue attr.Value) (*configv1.PolicyVersion_Rules_Source_Cloud_Aws_Network_Vpcs, diag.Diagnostics) {
+	if dataValue.IsNull() || dataValue.IsUnknown() {
+		return nil, nil
+	}
+	pv := PolicyVersion_Rules_Source_Cloud_Aws_Network_Vpcs{}
+	diags := tfsdk.ValueAs(ctx, dataValue, &pv)
+	if diags.HasError() {
+		return nil, diags
+	}
+	proto := &configv1.PolicyVersion_Rules_Source_Cloud_Aws_Network_Vpcs{}
+	proto.Id = pv.Id.ValueString()
+	proto.AccountId = pv.AccountId.ValueString()
+	proto.Region = pv.Region.ValueString()
+	return proto, diags
+}
+
+type PolicyVersion_Rules_Source_Cloud_Aws_OrgSelector struct {
+	Accounts types.List `tfsdk:"accounts"`
+}
+
+func GetTypeAttrsForPolicyVersion_Rules_Source_Cloud_Aws_OrgSelector() map[string]attr.Type {
+	return map[string]attr.Type{
+		"accounts": types.ListType{ElemType: types.ObjectType{
+			AttrTypes: GetTypeAttrsForPolicyVersion_Rules_Source_Cloud_Aws_OrgSelector_Accounts(),
+		}},
+	}
+}
+
+func ConvertPolicyVersion_Rules_Source_Cloud_Aws_OrgSelectorToObjectValueFromProto(proto *configv1.PolicyVersion_Rules_Source_Cloud_Aws_OrgSelector) basetypes.ObjectValue {
+	if proto == nil {
+		return types.ObjectNull(GetTypeAttrsForPolicyVersion_Rules_Source_Cloud_Aws_OrgSelector())
+	}
+	elementsInAccounts := make([]attr.Value, 0, len(proto.Accounts))
+	for _, item := range proto.Accounts {
+		elementsInAccounts = append(elementsInAccounts, ConvertPolicyVersion_Rules_Source_Cloud_Aws_OrgSelector_AccountsToObjectValueFromProto(item))
+	}
+	return types.ObjectValueMust(
+		GetTypeAttrsForPolicyVersion_Rules_Source_Cloud_Aws_OrgSelector(),
+		map[string]attr.Value{
+			"accounts": func() basetypes.ListValue {
+				if proto.Accounts == nil {
+					return types.ListNull(types.ObjectType{AttrTypes: GetTypeAttrsForPolicyVersion_Rules_Source_Cloud_Aws_OrgSelector_Accounts()})
+				}
+				return types.ListValueMust(types.ObjectType{AttrTypes: GetTypeAttrsForPolicyVersion_Rules_Source_Cloud_Aws_OrgSelector_Accounts()}, elementsInAccounts)
+			}(),
+		},
+	)
+}
+
+func ConvertDataValueToPolicyVersion_Rules_Source_Cloud_Aws_OrgSelectorProto(ctx context.Context, dataValue attr.Value) (*configv1.PolicyVersion_Rules_Source_Cloud_Aws_OrgSelector, diag.Diagnostics) {
+	if dataValue.IsNull() || dataValue.IsUnknown() {
+		return nil, nil
+	}
+	pv := PolicyVersion_Rules_Source_Cloud_Aws_OrgSelector{}
+	diags := tfsdk.ValueAs(ctx, dataValue, &pv)
+	if diags.HasError() {
+		return nil, diags
+	}
+	proto := &configv1.PolicyVersion_Rules_Source_Cloud_Aws_OrgSelector{}
+	pvElemModelAccounts := pv.Accounts.Elements()
+	proto.Accounts = make([]*configv1.PolicyVersion_Rules_Source_Cloud_Aws_OrgSelector_Accounts, 0, len(pvElemModelAccounts))
+	for _, elem := range pvElemModelAccounts {
+		pvModel, dvDiags := ConvertDataValueToPolicyVersion_Rules_Source_Cloud_Aws_OrgSelector_AccountsProto(ctx, elem)
+		diags.Append(dvDiags...)
+		if diags.HasError() {
+			return nil, diags
+		}
+		proto.Accounts = append(proto.Accounts, pvModel)
+	}
+	return proto, diags
+}
+
+type PolicyVersion_Rules_Source_Cloud_Aws_OrgSelector_Accounts struct {
+	Id types.String `tfsdk:"id"`
+}
+
+func GetTypeAttrsForPolicyVersion_Rules_Source_Cloud_Aws_OrgSelector_Accounts() map[string]attr.Type {
+	return map[string]attr.Type{
+		"id": types.StringType,
+	}
+}
+
+func ConvertPolicyVersion_Rules_Source_Cloud_Aws_OrgSelector_AccountsToObjectValueFromProto(proto *configv1.PolicyVersion_Rules_Source_Cloud_Aws_OrgSelector_Accounts) basetypes.ObjectValue {
+	if proto == nil {
+		return types.ObjectNull(GetTypeAttrsForPolicyVersion_Rules_Source_Cloud_Aws_OrgSelector_Accounts())
+	}
+	return types.ObjectValueMust(
+		GetTypeAttrsForPolicyVersion_Rules_Source_Cloud_Aws_OrgSelector_Accounts(),
+		map[string]attr.Value{
+			"id": types.StringValue(proto.Id),
+		},
+	)
+}
+
+func ConvertDataValueToPolicyVersion_Rules_Source_Cloud_Aws_OrgSelector_AccountsProto(ctx context.Context, dataValue attr.Value) (*configv1.PolicyVersion_Rules_Source_Cloud_Aws_OrgSelector_Accounts, diag.Diagnostics) {
+	if dataValue.IsNull() || dataValue.IsUnknown() {
+		return nil, nil
+	}
+	pv := PolicyVersion_Rules_Source_Cloud_Aws_OrgSelector_Accounts{}
+	diags := tfsdk.ValueAs(ctx, dataValue, &pv)
+	if diags.HasError() {
+		return nil, diags
+	}
+	proto := &configv1.PolicyVersion_Rules_Source_Cloud_Aws_OrgSelector_Accounts{}
+	proto.Id = pv.Id.ValueString()
+	return proto, diags
+}
+
 type PolicyVersion_Rules_Source_Cloud_Azure struct {
-	Network        types.Object `tfsdk:"network"`
-	SubscriptionId types.String `tfsdk:"subscription_id"`
+	Network     types.Object `tfsdk:"network"`
+	OrgSelector types.Object `tfsdk:"org_selector"`
 }
 
 func GetTypeAttrsForPolicyVersion_Rules_Source_Cloud_Azure() map[string]attr.Type {
@@ -12024,7 +12781,9 @@ func GetTypeAttrsForPolicyVersion_Rules_Source_Cloud_Azure() map[string]attr.Typ
 		"network": types.ObjectType{
 			AttrTypes: GetTypeAttrsForPolicyVersion_Rules_Source_Cloud_Azure_Network(),
 		},
-		"subscription_id": types.StringType,
+		"org_selector": types.ObjectType{
+			AttrTypes: GetTypeAttrsForPolicyVersion_Rules_Source_Cloud_Azure_OrgSelector(),
+		},
 	}
 }
 
@@ -12035,8 +12794,8 @@ func ConvertPolicyVersion_Rules_Source_Cloud_AzureToObjectValueFromProto(proto *
 	return types.ObjectValueMust(
 		GetTypeAttrsForPolicyVersion_Rules_Source_Cloud_Azure(),
 		map[string]attr.Value{
-			"network":         ConvertPolicyVersion_Rules_Source_Cloud_Azure_NetworkToObjectValueFromProto(proto.Network),
-			"subscription_id": types.StringValue(proto.SubscriptionId),
+			"network":      ConvertPolicyVersion_Rules_Source_Cloud_Azure_NetworkToObjectValueFromProto(proto.Network),
+			"org_selector": ConvertPolicyVersion_Rules_Source_Cloud_Azure_OrgSelectorToObjectValueFromProto(proto.OrgSelector),
 		},
 	)
 }
@@ -12057,7 +12816,12 @@ func ConvertDataValueToPolicyVersion_Rules_Source_Cloud_AzureProto(ctx context.C
 		return nil, diags
 	}
 	proto.Network = pvModelNetwork
-	proto.SubscriptionId = pv.SubscriptionId.ValueString()
+	pvModelOrgSelector, dvDiagsOrgSelector := ConvertDataValueToPolicyVersion_Rules_Source_Cloud_Azure_OrgSelectorProto(ctx, pv.OrgSelector)
+	diags.Append(dvDiagsOrgSelector...)
+	if diags.HasError() {
+		return nil, diags
+	}
+	proto.OrgSelector = pvModelOrgSelector
 	return proto, diags
 }
 
@@ -12178,12 +12942,16 @@ func ConvertDataValueToPolicyVersion_Rules_Source_Cloud_Azure_Network_SubnetsPro
 }
 
 type PolicyVersion_Rules_Source_Cloud_Azure_Network_Vnets struct {
-	Id types.String `tfsdk:"id"`
+	Id             types.String `tfsdk:"id"`
+	ResourceGroup  types.String `tfsdk:"resource_group"`
+	SubscriptionId types.String `tfsdk:"subscription_id"`
 }
 
 func GetTypeAttrsForPolicyVersion_Rules_Source_Cloud_Azure_Network_Vnets() map[string]attr.Type {
 	return map[string]attr.Type{
-		"id": types.StringType,
+		"id":              types.StringType,
+		"resource_group":  types.StringType,
+		"subscription_id": types.StringType,
 	}
 }
 
@@ -12194,7 +12962,9 @@ func ConvertPolicyVersion_Rules_Source_Cloud_Azure_Network_VnetsToObjectValueFro
 	return types.ObjectValueMust(
 		GetTypeAttrsForPolicyVersion_Rules_Source_Cloud_Azure_Network_Vnets(),
 		map[string]attr.Value{
-			"id": types.StringValue(proto.Id),
+			"id":              types.StringValue(proto.Id),
+			"resource_group":  types.StringValue(proto.ResourceGroup),
+			"subscription_id": types.StringValue(proto.SubscriptionId),
 		},
 	)
 }
@@ -12209,6 +12979,100 @@ func ConvertDataValueToPolicyVersion_Rules_Source_Cloud_Azure_Network_VnetsProto
 		return nil, diags
 	}
 	proto := &configv1.PolicyVersion_Rules_Source_Cloud_Azure_Network_Vnets{}
+	proto.Id = pv.Id.ValueString()
+	proto.ResourceGroup = pv.ResourceGroup.ValueString()
+	proto.SubscriptionId = pv.SubscriptionId.ValueString()
+	return proto, diags
+}
+
+type PolicyVersion_Rules_Source_Cloud_Azure_OrgSelector struct {
+	Subscriptions types.List `tfsdk:"subscriptions"`
+}
+
+func GetTypeAttrsForPolicyVersion_Rules_Source_Cloud_Azure_OrgSelector() map[string]attr.Type {
+	return map[string]attr.Type{
+		"subscriptions": types.ListType{ElemType: types.ObjectType{
+			AttrTypes: GetTypeAttrsForPolicyVersion_Rules_Source_Cloud_Azure_OrgSelector_Subscriptions(),
+		}},
+	}
+}
+
+func ConvertPolicyVersion_Rules_Source_Cloud_Azure_OrgSelectorToObjectValueFromProto(proto *configv1.PolicyVersion_Rules_Source_Cloud_Azure_OrgSelector) basetypes.ObjectValue {
+	if proto == nil {
+		return types.ObjectNull(GetTypeAttrsForPolicyVersion_Rules_Source_Cloud_Azure_OrgSelector())
+	}
+	elementsInSubscriptions := make([]attr.Value, 0, len(proto.Subscriptions))
+	for _, item := range proto.Subscriptions {
+		elementsInSubscriptions = append(elementsInSubscriptions, ConvertPolicyVersion_Rules_Source_Cloud_Azure_OrgSelector_SubscriptionsToObjectValueFromProto(item))
+	}
+	return types.ObjectValueMust(
+		GetTypeAttrsForPolicyVersion_Rules_Source_Cloud_Azure_OrgSelector(),
+		map[string]attr.Value{
+			"subscriptions": func() basetypes.ListValue {
+				if proto.Subscriptions == nil {
+					return types.ListNull(types.ObjectType{AttrTypes: GetTypeAttrsForPolicyVersion_Rules_Source_Cloud_Azure_OrgSelector_Subscriptions()})
+				}
+				return types.ListValueMust(types.ObjectType{AttrTypes: GetTypeAttrsForPolicyVersion_Rules_Source_Cloud_Azure_OrgSelector_Subscriptions()}, elementsInSubscriptions)
+			}(),
+		},
+	)
+}
+
+func ConvertDataValueToPolicyVersion_Rules_Source_Cloud_Azure_OrgSelectorProto(ctx context.Context, dataValue attr.Value) (*configv1.PolicyVersion_Rules_Source_Cloud_Azure_OrgSelector, diag.Diagnostics) {
+	if dataValue.IsNull() || dataValue.IsUnknown() {
+		return nil, nil
+	}
+	pv := PolicyVersion_Rules_Source_Cloud_Azure_OrgSelector{}
+	diags := tfsdk.ValueAs(ctx, dataValue, &pv)
+	if diags.HasError() {
+		return nil, diags
+	}
+	proto := &configv1.PolicyVersion_Rules_Source_Cloud_Azure_OrgSelector{}
+	pvElemModelSubscriptions := pv.Subscriptions.Elements()
+	proto.Subscriptions = make([]*configv1.PolicyVersion_Rules_Source_Cloud_Azure_OrgSelector_Subscriptions, 0, len(pvElemModelSubscriptions))
+	for _, elem := range pvElemModelSubscriptions {
+		pvModel, dvDiags := ConvertDataValueToPolicyVersion_Rules_Source_Cloud_Azure_OrgSelector_SubscriptionsProto(ctx, elem)
+		diags.Append(dvDiags...)
+		if diags.HasError() {
+			return nil, diags
+		}
+		proto.Subscriptions = append(proto.Subscriptions, pvModel)
+	}
+	return proto, diags
+}
+
+type PolicyVersion_Rules_Source_Cloud_Azure_OrgSelector_Subscriptions struct {
+	Id types.String `tfsdk:"id"`
+}
+
+func GetTypeAttrsForPolicyVersion_Rules_Source_Cloud_Azure_OrgSelector_Subscriptions() map[string]attr.Type {
+	return map[string]attr.Type{
+		"id": types.StringType,
+	}
+}
+
+func ConvertPolicyVersion_Rules_Source_Cloud_Azure_OrgSelector_SubscriptionsToObjectValueFromProto(proto *configv1.PolicyVersion_Rules_Source_Cloud_Azure_OrgSelector_Subscriptions) basetypes.ObjectValue {
+	if proto == nil {
+		return types.ObjectNull(GetTypeAttrsForPolicyVersion_Rules_Source_Cloud_Azure_OrgSelector_Subscriptions())
+	}
+	return types.ObjectValueMust(
+		GetTypeAttrsForPolicyVersion_Rules_Source_Cloud_Azure_OrgSelector_Subscriptions(),
+		map[string]attr.Value{
+			"id": types.StringValue(proto.Id),
+		},
+	)
+}
+
+func ConvertDataValueToPolicyVersion_Rules_Source_Cloud_Azure_OrgSelector_SubscriptionsProto(ctx context.Context, dataValue attr.Value) (*configv1.PolicyVersion_Rules_Source_Cloud_Azure_OrgSelector_Subscriptions, diag.Diagnostics) {
+	if dataValue.IsNull() || dataValue.IsUnknown() {
+		return nil, nil
+	}
+	pv := PolicyVersion_Rules_Source_Cloud_Azure_OrgSelector_Subscriptions{}
+	diags := tfsdk.ValueAs(ctx, dataValue, &pv)
+	if diags.HasError() {
+		return nil, diags
+	}
+	proto := &configv1.PolicyVersion_Rules_Source_Cloud_Azure_OrgSelector_Subscriptions{}
 	proto.Id = pv.Id.ValueString()
 	return proto, diags
 }

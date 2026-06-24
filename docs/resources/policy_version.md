@@ -10,7 +10,376 @@ description: |-
 
 Manages an immutable policy version on CloudSecure. Each version contains a set of rules that define allowed or denied traffic between sources and destinations.
 
+## Example Usage
 
+```terraform
+resource "illumio-cloudsecure_policy" "example" {
+  name        = "Cloud Network Policy"
+  description = "Allow traffic between cloud network resources"
+}
+
+# --- Azure data sources ---
+
+data "azurerm_subscription" "current" {}
+
+data "azurerm_virtual_network" "source" {
+  name                = "source-vnet"
+  resource_group_name = "my-rg"
+}
+
+data "azurerm_virtual_network" "destination" {
+  name                = "destination-vnet"
+  resource_group_name = "my-rg"
+}
+
+data "azurerm_subnet" "destination" {
+  name                 = "destination-subnet"
+  resource_group_name  = "my-rg"
+  virtual_network_name = "destination-vnet"
+}
+
+# Example 1: Azure subscription (org_selector) -> subnet
+resource "illumio-cloudsecure_policy_version" "azure_subscription_to_subnet" {
+  policy_id   = illumio-cloudsecure_policy.example.id
+  description = "Allow HTTPS from entire Azure subscription to a specific subnet"
+
+  rules = [
+    {
+      action = "Allow"
+
+      source = {
+        cloud = {
+          azure = {
+            org_selector = {
+              subscriptions = [
+                { id = data.azurerm_subscription.current.subscription_id }
+              ]
+            }
+          }
+        }
+      }
+
+      destination = {
+        cloud = {
+          azure = {
+            network = {
+              subnets = [
+                { id = data.azurerm_subnet.destination.id }
+              ]
+            }
+          }
+        }
+      }
+
+      port_ranges = [
+        {
+          protocol  = "TCP"
+          from_port = 443
+          to_port   = 443
+        }
+      ]
+    }
+  ]
+}
+
+# Example 2: Azure VNet -> VNet
+resource "illumio-cloudsecure_policy_version" "azure_vnet_to_vnet" {
+  policy_id   = illumio-cloudsecure_policy.example.id
+  description = "Allow HTTPS from source VNet to destination VNet"
+
+  rules = [
+    {
+      action = "Allow"
+
+      source = {
+        cloud = {
+          azure = {
+            network = {
+              vnets = [
+                {
+                  subscription_id = data.azurerm_subscription.current.subscription_id
+                  resource_group  = "my-rg"
+                  id              = data.azurerm_virtual_network.source.name
+                }
+              ]
+            }
+          }
+        }
+      }
+
+      destination = {
+        cloud = {
+          azure = {
+            network = {
+              vnets = [
+                {
+                  subscription_id = data.azurerm_subscription.current.subscription_id
+                  resource_group  = "my-rg"
+                  id              = data.azurerm_virtual_network.destination.name
+                }
+              ]
+            }
+          }
+        }
+      }
+
+      port_ranges = [
+        {
+          protocol  = "TCP"
+          from_port = 443
+          to_port   = 443
+        }
+      ]
+    }
+  ]
+}
+
+# Example 3: Azure VNet -> subnet
+resource "illumio-cloudsecure_policy_version" "azure_vnet_to_subnet" {
+  policy_id   = illumio-cloudsecure_policy.example.id
+  description = "Allow HTTPS from source VNet to destination subnet"
+
+  rules = [
+    {
+      action = "Allow"
+
+      source = {
+        cloud = {
+          azure = {
+            network = {
+              vnets = [
+                {
+                  subscription_id = data.azurerm_subscription.current.subscription_id
+                  resource_group  = "my-rg"
+                  id              = data.azurerm_virtual_network.source.name
+                }
+              ]
+            }
+          }
+        }
+      }
+
+      destination = {
+        cloud = {
+          azure = {
+            network = {
+              subnets = [
+                { id = data.azurerm_subnet.destination.id }
+              ]
+            }
+          }
+        }
+      }
+
+      port_ranges = [
+        {
+          protocol  = "TCP"
+          from_port = 443
+          to_port   = 443
+        }
+      ]
+    }
+  ]
+}
+
+# Example 4: Azure multiple subscriptions (org_selector) -> VNet
+resource "illumio-cloudsecure_policy_version" "azure_multi_subscription_to_vnet" {
+  policy_id   = illumio-cloudsecure_policy.example.id
+  description = "Allow HTTPS from multiple Azure subscriptions to a specific VNet"
+
+  rules = [
+    {
+      action = "Allow"
+
+      source = {
+        cloud = {
+          azure = {
+            org_selector = {
+              subscriptions = [
+                { id = "aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa" },
+                { id = "bbbbbbbb-bbbb-bbbb-bbbb-bbbbbbbbbbbb" },
+              ]
+            }
+          }
+        }
+      }
+
+      destination = {
+        cloud = {
+          azure = {
+            network = {
+              vnets = [
+                {
+                  subscription_id = data.azurerm_subscription.current.subscription_id
+                  resource_group  = "my-rg"
+                  id              = data.azurerm_virtual_network.destination.name
+                }
+              ]
+            }
+          }
+        }
+      }
+
+      port_ranges = [
+        {
+          protocol  = "TCP"
+          from_port = 443
+          to_port   = 443
+        }
+      ]
+    }
+  ]
+}
+
+# Example 5: AWS account (org_selector) -> subnet
+resource "illumio-cloudsecure_policy_version" "aws_account_to_subnet" {
+  policy_id   = illumio-cloudsecure_policy.example.id
+  description = "Allow HTTPS from entire AWS account to a specific subnet"
+
+  rules = [
+    {
+      action = "Allow"
+
+      source = {
+        cloud = {
+          aws = {
+            org_selector = {
+              accounts = [
+                { id = "123456789012" }
+              ]
+            }
+          }
+        }
+      }
+
+      destination = {
+        cloud = {
+          aws = {
+            network = {
+              subnets = [
+                {
+                  id         = "subnet-0a1b2c3d4e5f67890"
+                  account_id = "123456789012"
+                  region     = "us-east-1"
+                }
+              ]
+            }
+          }
+        }
+      }
+
+      port_ranges = [
+        {
+          protocol  = "TCP"
+          from_port = 443
+          to_port   = 443
+        }
+      ]
+    }
+  ]
+}
+
+# Example 6: AWS VPC -> VPC
+resource "illumio-cloudsecure_policy_version" "aws_vpc_to_vpc" {
+  policy_id   = illumio-cloudsecure_policy.example.id
+  description = "Allow HTTPS from source VPC to destination VPC"
+
+  rules = [
+    {
+      action = "Allow"
+
+      source = {
+        cloud = {
+          aws = {
+            network = {
+              vpcs = [
+                {
+                  id         = "vpc-0a1b2c3d4e5f67890"
+                  account_id = "123456789012"
+                  region     = "us-east-1"
+                }
+              ]
+            }
+          }
+        }
+      }
+
+      destination = {
+        cloud = {
+          aws = {
+            network = {
+              vpcs = [
+                {
+                  id         = "vpc-0f9e8d7c6b5a43210"
+                  account_id = "123456789012"
+                  region     = "us-west-2"
+                }
+              ]
+            }
+          }
+        }
+      }
+
+      port_ranges = [
+        {
+          protocol  = "TCP"
+          from_port = 443
+          to_port   = 443
+        }
+      ]
+    }
+  ]
+}
+
+# Example 7: AWS multiple accounts (org_selector) -> VPC
+resource "illumio-cloudsecure_policy_version" "aws_multi_account_to_vpc" {
+  policy_id   = illumio-cloudsecure_policy.example.id
+  description = "Allow HTTPS from multiple AWS accounts to a specific VPC"
+
+  rules = [
+    {
+      action = "Allow"
+
+      source = {
+        cloud = {
+          aws = {
+            org_selector = {
+              accounts = [
+                { id = "111111111111" },
+                { id = "222222222222" },
+              ]
+            }
+          }
+        }
+      }
+
+      destination = {
+        cloud = {
+          aws = {
+            network = {
+              vpcs = [
+                {
+                  id         = "vpc-0f9e8d7c6b5a43210"
+                  account_id = "333333333333"
+                  region     = "us-east-1"
+                }
+              ]
+            }
+          }
+        }
+      }
+
+      port_ranges = [
+        {
+          protocol  = "TCP"
+          from_port = 443
+          to_port   = 443
+        }
+      ]
+    }
+  ]
+}
+```
 
 <!-- schema generated by tfplugindocs -->
 ## Schema
@@ -44,7 +413,7 @@ Required:
 
 Optional:
 
-- `cloud` (Attributes) Cloud resource selector for Azure subscriptions, VNets, and subnets. (see [below for nested schema](#nestedatt--rules--destination--cloud))
+- `cloud` (Attributes) Cloud resource selector (Azure or AWS). (see [below for nested schema](#nestedatt--rules--destination--cloud))
 - `fqdns` (Attributes) FQDN selector. (see [below for nested schema](#nestedatt--rules--destination--fqdns))
 - `illumio_labels` (Attributes) Illumio label selector. Not yet implemented. (see [below for nested schema](#nestedatt--rules--destination--illumio_labels))
 - `ip_list` (Attributes) IP list reference selector. (see [below for nested schema](#nestedatt--rules--destination--ip_list))
@@ -55,33 +424,85 @@ Optional:
 
 Optional:
 
-- `azure` (Attributes) Azure cloud resource selector. (see [below for nested schema](#nestedatt--rules--destination--cloud--azure))
+- `aws` (Attributes) AWS cloud resource selector. Mutually exclusive with azure. (see [below for nested schema](#nestedatt--rules--destination--cloud--aws))
+- `azure` (Attributes) Azure cloud resource selector. Mutually exclusive with aws. (see [below for nested schema](#nestedatt--rules--destination--cloud--azure))
+
+<a id="nestedatt--rules--destination--cloud--aws"></a>
+### Nested Schema for `rules.destination.cloud.aws`
+
+Optional:
+
+- `network` (Attributes) Targets specific VPCs or Subnets. Mutually exclusive with org_selector. (see [below for nested schema](#nestedatt--rules--destination--cloud--aws--network))
+- `org_selector` (Attributes) Targets all resources within the specified accounts. Mutually exclusive with network. (see [below for nested schema](#nestedatt--rules--destination--cloud--aws--org_selector))
+
+<a id="nestedatt--rules--destination--cloud--aws--network"></a>
+### Nested Schema for `rules.destination.cloud.aws.network`
+
+Optional:
+
+- `subnets` (Attributes List) Optional list of Subnet selectors. (see [below for nested schema](#nestedatt--rules--destination--cloud--aws--network--subnets))
+- `vpcs` (Attributes List) Optional list of VPC selectors. (see [below for nested schema](#nestedatt--rules--destination--cloud--aws--network--vpcs))
+
+<a id="nestedatt--rules--destination--cloud--aws--network--subnets"></a>
+### Nested Schema for `rules.destination.cloud.aws.network.subnets`
+
+Required:
+
+- `account_id` (String) AWS account ID containing the subnet.
+- `id` (String) Subnet ID (e.g., subnet-0a1b2c3d4e5f67890).
+- `region` (String) AWS region containing the subnet (e.g., us-east-1).
+
+
+<a id="nestedatt--rules--destination--cloud--aws--network--vpcs"></a>
+### Nested Schema for `rules.destination.cloud.aws.network.vpcs`
+
+Required:
+
+- `account_id` (String) AWS account ID containing the VPC.
+- `id` (String) VPC ID (e.g., vpc-0a1b2c3d4e5f67890).
+- `region` (String) AWS region containing the VPC (e.g., us-east-1).
+
+
+
+<a id="nestedatt--rules--destination--cloud--aws--org_selector"></a>
+### Nested Schema for `rules.destination.cloud.aws.org_selector`
+
+Required:
+
+- `accounts` (Attributes List) List of AWS accounts. Targets all resources within each account. (see [below for nested schema](#nestedatt--rules--destination--cloud--aws--org_selector--accounts))
+
+<a id="nestedatt--rules--destination--cloud--aws--org_selector--accounts"></a>
+### Nested Schema for `rules.destination.cloud.aws.org_selector.accounts`
+
+Required:
+
+- `id` (String) AWS account ID.
+
+
+
 
 <a id="nestedatt--rules--destination--cloud--azure"></a>
 ### Nested Schema for `rules.destination.cloud.azure`
 
-Required:
-
-- `subscription_id` (String) Azure subscription ID (GUID).
-
 Optional:
 
-- `network` (Attributes) Optional network resource selectors (VNets, Subnets) within the subscription. (see [below for nested schema](#nestedatt--rules--destination--cloud--azure--network))
+- `network` (Attributes) Targets specific VNets or Subnets. Mutually exclusive with org_selector. (see [below for nested schema](#nestedatt--rules--destination--cloud--azure--network))
+- `org_selector` (Attributes) Targets all resources within the specified subscriptions. Mutually exclusive with network. (see [below for nested schema](#nestedatt--rules--destination--cloud--azure--org_selector))
 
 <a id="nestedatt--rules--destination--cloud--azure--network"></a>
 ### Nested Schema for `rules.destination.cloud.azure.network`
 
 Optional:
 
-- `subnets` (Attributes List) Optional list of Subnet selectors to filter specific Subnets. (see [below for nested schema](#nestedatt--rules--destination--cloud--azure--network--subnets))
-- `vnets` (Attributes List) Optional list of VNet selectors to filter specific VNets. (see [below for nested schema](#nestedatt--rules--destination--cloud--azure--network--vnets))
+- `subnets` (Attributes List) Optional list of Subnet selectors. (see [below for nested schema](#nestedatt--rules--destination--cloud--azure--network--subnets))
+- `vnets` (Attributes List) Optional list of VNet selectors. (see [below for nested schema](#nestedatt--rules--destination--cloud--azure--network--vnets))
 
 <a id="nestedatt--rules--destination--cloud--azure--network--subnets"></a>
 ### Nested Schema for `rules.destination.cloud.azure.network.subnets`
 
 Required:
 
-- `id` (String) Full Azure resource ID for the Subnet (e.g., /subscriptions/{sub}/resourceGroups/{rg}/providers/Microsoft.Network/virtualNetworks/{vnet}/subnets/{name}).
+- `id` (String) Full Azure resource ID for the Subnet (csp_id).
 
 
 <a id="nestedatt--rules--destination--cloud--azure--network--vnets"></a>
@@ -89,7 +510,25 @@ Required:
 
 Required:
 
-- `id` (String) Full Azure resource ID for the VNet (e.g., /subscriptions/{sub}/resourceGroups/{rg}/providers/Microsoft.Network/virtualNetworks/{name}).
+- `id` (String) Azure VNet name.
+- `resource_group` (String) Azure resource group name containing the VNet.
+- `subscription_id` (String) Azure subscription ID containing the VNet.
+
+
+
+<a id="nestedatt--rules--destination--cloud--azure--org_selector"></a>
+### Nested Schema for `rules.destination.cloud.azure.org_selector`
+
+Required:
+
+- `subscriptions` (Attributes List) List of Azure subscriptions. Targets all resources within each subscription. (see [below for nested schema](#nestedatt--rules--destination--cloud--azure--org_selector--subscriptions))
+
+<a id="nestedatt--rules--destination--cloud--azure--org_selector--subscriptions"></a>
+### Nested Schema for `rules.destination.cloud.azure.org_selector.subscriptions`
+
+Required:
+
+- `id` (String) Azure subscription GUID.
 
 
 
@@ -256,7 +695,7 @@ Required:
 
 Optional:
 
-- `cloud` (Attributes) Cloud resource selector for Azure subscriptions, VNets, and subnets. (see [below for nested schema](#nestedatt--rules--source--cloud))
+- `cloud` (Attributes) Cloud resource selector (Azure or AWS). (see [below for nested schema](#nestedatt--rules--source--cloud))
 - `illumio_labels` (Attributes) Illumio label selector. Not yet implemented. (see [below for nested schema](#nestedatt--rules--source--illumio_labels))
 - `ip_list` (Attributes) IP list reference selector. (see [below for nested schema](#nestedatt--rules--source--ip_list))
 - `k8s` (Attributes) K8s workload selector. (see [below for nested schema](#nestedatt--rules--source--k8s))
@@ -266,33 +705,85 @@ Optional:
 
 Optional:
 
-- `azure` (Attributes) Azure cloud resource selector. (see [below for nested schema](#nestedatt--rules--source--cloud--azure))
+- `aws` (Attributes) AWS cloud resource selector. Mutually exclusive with azure. (see [below for nested schema](#nestedatt--rules--source--cloud--aws))
+- `azure` (Attributes) Azure cloud resource selector. Mutually exclusive with aws. (see [below for nested schema](#nestedatt--rules--source--cloud--azure))
+
+<a id="nestedatt--rules--source--cloud--aws"></a>
+### Nested Schema for `rules.source.cloud.aws`
+
+Optional:
+
+- `network` (Attributes) Targets specific VPCs or Subnets. Mutually exclusive with org_selector. (see [below for nested schema](#nestedatt--rules--source--cloud--aws--network))
+- `org_selector` (Attributes) Targets all resources within the specified accounts. Mutually exclusive with network. (see [below for nested schema](#nestedatt--rules--source--cloud--aws--org_selector))
+
+<a id="nestedatt--rules--source--cloud--aws--network"></a>
+### Nested Schema for `rules.source.cloud.aws.network`
+
+Optional:
+
+- `subnets` (Attributes List) Optional list of Subnet selectors. (see [below for nested schema](#nestedatt--rules--source--cloud--aws--network--subnets))
+- `vpcs` (Attributes List) Optional list of VPC selectors. (see [below for nested schema](#nestedatt--rules--source--cloud--aws--network--vpcs))
+
+<a id="nestedatt--rules--source--cloud--aws--network--subnets"></a>
+### Nested Schema for `rules.source.cloud.aws.network.subnets`
+
+Required:
+
+- `account_id` (String) AWS account ID containing the subnet.
+- `id` (String) Subnet ID (e.g., subnet-0a1b2c3d4e5f67890).
+- `region` (String) AWS region containing the subnet (e.g., us-east-1).
+
+
+<a id="nestedatt--rules--source--cloud--aws--network--vpcs"></a>
+### Nested Schema for `rules.source.cloud.aws.network.vpcs`
+
+Required:
+
+- `account_id` (String) AWS account ID containing the VPC.
+- `id` (String) VPC ID (e.g., vpc-0a1b2c3d4e5f67890).
+- `region` (String) AWS region containing the VPC (e.g., us-east-1).
+
+
+
+<a id="nestedatt--rules--source--cloud--aws--org_selector"></a>
+### Nested Schema for `rules.source.cloud.aws.org_selector`
+
+Required:
+
+- `accounts` (Attributes List) List of AWS accounts. Targets all resources within each account. (see [below for nested schema](#nestedatt--rules--source--cloud--aws--org_selector--accounts))
+
+<a id="nestedatt--rules--source--cloud--aws--org_selector--accounts"></a>
+### Nested Schema for `rules.source.cloud.aws.org_selector.accounts`
+
+Required:
+
+- `id` (String) AWS account ID.
+
+
+
 
 <a id="nestedatt--rules--source--cloud--azure"></a>
 ### Nested Schema for `rules.source.cloud.azure`
 
-Required:
-
-- `subscription_id` (String) Azure subscription ID (GUID).
-
 Optional:
 
-- `network` (Attributes) Optional network resource selectors (VNets, Subnets) within the subscription. (see [below for nested schema](#nestedatt--rules--source--cloud--azure--network))
+- `network` (Attributes) Targets specific VNets or Subnets. Mutually exclusive with org_selector. (see [below for nested schema](#nestedatt--rules--source--cloud--azure--network))
+- `org_selector` (Attributes) Targets all resources within the specified subscriptions. Mutually exclusive with network. (see [below for nested schema](#nestedatt--rules--source--cloud--azure--org_selector))
 
 <a id="nestedatt--rules--source--cloud--azure--network"></a>
 ### Nested Schema for `rules.source.cloud.azure.network`
 
 Optional:
 
-- `subnets` (Attributes List) Optional list of Subnet selectors to filter specific Subnets. (see [below for nested schema](#nestedatt--rules--source--cloud--azure--network--subnets))
-- `vnets` (Attributes List) Optional list of VNet selectors to filter specific VNets. (see [below for nested schema](#nestedatt--rules--source--cloud--azure--network--vnets))
+- `subnets` (Attributes List) Optional list of Subnet selectors. (see [below for nested schema](#nestedatt--rules--source--cloud--azure--network--subnets))
+- `vnets` (Attributes List) Optional list of VNet selectors. (see [below for nested schema](#nestedatt--rules--source--cloud--azure--network--vnets))
 
 <a id="nestedatt--rules--source--cloud--azure--network--subnets"></a>
 ### Nested Schema for `rules.source.cloud.azure.network.subnets`
 
 Required:
 
-- `id` (String) Full Azure resource ID for the Subnet (e.g., /subscriptions/{sub}/resourceGroups/{rg}/providers/Microsoft.Network/virtualNetworks/{vnet}/subnets/{name}).
+- `id` (String) Full Azure resource ID for the Subnet (csp_id).
 
 
 <a id="nestedatt--rules--source--cloud--azure--network--vnets"></a>
@@ -300,7 +791,25 @@ Required:
 
 Required:
 
-- `id` (String) Full Azure resource ID for the VNet (e.g., /subscriptions/{sub}/resourceGroups/{rg}/providers/Microsoft.Network/virtualNetworks/{name}).
+- `id` (String) Azure VNet name.
+- `resource_group` (String) Azure resource group name containing the VNet.
+- `subscription_id` (String) Azure subscription ID containing the VNet.
+
+
+
+<a id="nestedatt--rules--source--cloud--azure--org_selector"></a>
+### Nested Schema for `rules.source.cloud.azure.org_selector`
+
+Required:
+
+- `subscriptions` (Attributes List) List of Azure subscriptions. Targets all resources within each subscription. (see [below for nested schema](#nestedatt--rules--source--cloud--azure--org_selector--subscriptions))
+
+<a id="nestedatt--rules--source--cloud--azure--org_selector--subscriptions"></a>
+### Nested Schema for `rules.source.cloud.azure.org_selector.subscriptions`
+
+Required:
+
+- `id` (String) Azure subscription GUID.
 
 
 
