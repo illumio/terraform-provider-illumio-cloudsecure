@@ -447,42 +447,23 @@ func (x *DeleteApplicationRequest) GetId() string {
 }
 
 type CreateApplicationAwsResourcesRequest struct {
-	state                                  protoimpl.MessageState `protogen:"open.v1"`
-	AccountId                              string                 `protobuf:"bytes,2,opt,name=account_id,json=accountId,proto3" json:"account_id,omitempty"`
-	ApplicationId                          string                 `protobuf:"bytes,3,opt,name=application_id,json=applicationId,proto3" json:"application_id,omitempty"`
-	Arns                                   []string               `protobuf:"bytes,4,rep,name=arns,proto3" json:"arns,omitempty"`
-	AwsCustomerGatewayIds                  []string               `protobuf:"bytes,5,rep,name=aws_customer_gateway_ids,json=awsCustomerGatewayIds,proto3" json:"aws_customer_gateway_ids,omitempty"`
-	AwsDxConnectionIds                     []string               `protobuf:"bytes,6,rep,name=aws_dx_connection_ids,json=awsDxConnectionIds,proto3" json:"aws_dx_connection_ids,omitempty"`
-	AwsDxVirtualInterfaceIds               []string               `protobuf:"bytes,7,rep,name=aws_dx_virtual_interface_ids,json=awsDxVirtualInterfaceIds,proto3" json:"aws_dx_virtual_interface_ids,omitempty"`
-	AwsEbsVolumeIds                        []string               `protobuf:"bytes,8,rep,name=aws_ebs_volume_ids,json=awsEbsVolumeIds,proto3" json:"aws_ebs_volume_ids,omitempty"`
-	AwsEc2InstanceConnectEndpointIds       []string               `protobuf:"bytes,9,rep,name=aws_ec2_instance_connect_endpoint_ids,json=awsEc2InstanceConnectEndpointIds,proto3" json:"aws_ec2_instance_connect_endpoint_ids,omitempty"`
-	AwsEc2TransitGatewayAttachmentIds      []string               `protobuf:"bytes,10,rep,name=aws_ec2_transit_gateway_attachment_ids,json=awsEc2TransitGatewayAttachmentIds,proto3" json:"aws_ec2_transit_gateway_attachment_ids,omitempty"`
-	AwsEc2TransitGatewayIds                []string               `protobuf:"bytes,11,rep,name=aws_ec2_transit_gateway_ids,json=awsEc2TransitGatewayIds,proto3" json:"aws_ec2_transit_gateway_ids,omitempty"`
-	AwsEc2TransitGatewayMulticastDomainIds []string               `protobuf:"bytes,12,rep,name=aws_ec2_transit_gateway_multicast_domain_ids,json=awsEc2TransitGatewayMulticastDomainIds,proto3" json:"aws_ec2_transit_gateway_multicast_domain_ids,omitempty"`
-	AwsEc2TransitGatewayRouteTableIds      []string               `protobuf:"bytes,13,rep,name=aws_ec2_transit_gateway_route_table_ids,json=awsEc2TransitGatewayRouteTableIds,proto3" json:"aws_ec2_transit_gateway_route_table_ids,omitempty"`
-	AwsEgressOnlyInternetGatewayIds        []string               `protobuf:"bytes,14,rep,name=aws_egress_only_internet_gateway_ids,json=awsEgressOnlyInternetGatewayIds,proto3" json:"aws_egress_only_internet_gateway_ids,omitempty"`
-	AwsEipIds                              []string               `protobuf:"bytes,15,rep,name=aws_eip_ids,json=awsEipIds,proto3" json:"aws_eip_ids,omitempty"`
-	AwsFlowLogIds                          []string               `protobuf:"bytes,16,rep,name=aws_flow_log_ids,json=awsFlowLogIds,proto3" json:"aws_flow_log_ids,omitempty"`
-	AwsInstancesIds                        []string               `protobuf:"bytes,17,rep,name=aws_instances_ids,json=awsInstancesIds,proto3" json:"aws_instances_ids,omitempty"`
-	AwsInternetGatewayIds                  []string               `protobuf:"bytes,18,rep,name=aws_internet_gateway_ids,json=awsInternetGatewayIds,proto3" json:"aws_internet_gateway_ids,omitempty"`
-	AwsNatGatewayIds                       []string               `protobuf:"bytes,19,rep,name=aws_nat_gateway_ids,json=awsNatGatewayIds,proto3" json:"aws_nat_gateway_ids,omitempty"`
-	AwsNetworkAclIds                       []string               `protobuf:"bytes,20,rep,name=aws_network_acl_ids,json=awsNetworkAclIds,proto3" json:"aws_network_acl_ids,omitempty"`
-	AwsNetworkInterfaceIds                 []string               `protobuf:"bytes,21,rep,name=aws_network_interface_ids,json=awsNetworkInterfaceIds,proto3" json:"aws_network_interface_ids,omitempty"`
-	AwsRdsClusterIds                       []string               `protobuf:"bytes,22,rep,name=aws_rds_cluster_ids,json=awsRdsClusterIds,proto3" json:"aws_rds_cluster_ids,omitempty"`
-	AwsRouteTableIds                       []string               `protobuf:"bytes,23,rep,name=aws_route_table_ids,json=awsRouteTableIds,proto3" json:"aws_route_table_ids,omitempty"`
-	AwsSecurityGroupIds                    []string               `protobuf:"bytes,24,rep,name=aws_security_group_ids,json=awsSecurityGroupIds,proto3" json:"aws_security_group_ids,omitempty"`
-	AwsSecurityGroupRuleIds                []string               `protobuf:"bytes,25,rep,name=aws_security_group_rule_ids,json=awsSecurityGroupRuleIds,proto3" json:"aws_security_group_rule_ids,omitempty"`
-	AwsSpotFleetRequestIds                 []string               `protobuf:"bytes,26,rep,name=aws_spot_fleet_request_ids,json=awsSpotFleetRequestIds,proto3" json:"aws_spot_fleet_request_ids,omitempty"`
-	AwsSpotInstanceRequestIds              []string               `protobuf:"bytes,27,rep,name=aws_spot_instance_request_ids,json=awsSpotInstanceRequestIds,proto3" json:"aws_spot_instance_request_ids,omitempty"`
-	AwsSubnetIds                           []string               `protobuf:"bytes,28,rep,name=aws_subnet_ids,json=awsSubnetIds,proto3" json:"aws_subnet_ids,omitempty"`
-	AwsVpcEndpointIds                      []string               `protobuf:"bytes,29,rep,name=aws_vpc_endpoint_ids,json=awsVpcEndpointIds,proto3" json:"aws_vpc_endpoint_ids,omitempty"`
-	AwsVpcEndpointServiceIds               []string               `protobuf:"bytes,30,rep,name=aws_vpc_endpoint_service_ids,json=awsVpcEndpointServiceIds,proto3" json:"aws_vpc_endpoint_service_ids,omitempty"`
-	AwsVpcIds                              []string               `protobuf:"bytes,31,rep,name=aws_vpc_ids,json=awsVpcIds,proto3" json:"aws_vpc_ids,omitempty"`
-	AwsVpcPeeringConnectionIds             []string               `protobuf:"bytes,32,rep,name=aws_vpc_peering_connection_ids,json=awsVpcPeeringConnectionIds,proto3" json:"aws_vpc_peering_connection_ids,omitempty"`
-	AwsVpnConnectionIds                    []string               `protobuf:"bytes,33,rep,name=aws_vpn_connection_ids,json=awsVpnConnectionIds,proto3" json:"aws_vpn_connection_ids,omitempty"`
-	AwsVpnGatewayIds                       []string               `protobuf:"bytes,34,rep,name=aws_vpn_gateway_ids,json=awsVpnGatewayIds,proto3" json:"aws_vpn_gateway_ids,omitempty"`
-	unknownFields                          protoimpl.UnknownFields
-	sizeCache                              protoimpl.SizeCache
+	state                             protoimpl.MessageState `protogen:"open.v1"`
+	AccountId                         string                 `protobuf:"bytes,2,opt,name=account_id,json=accountId,proto3" json:"account_id,omitempty"`
+	ApplicationId                     string                 `protobuf:"bytes,3,opt,name=application_id,json=applicationId,proto3" json:"application_id,omitempty"`
+	Arns                              []string               `protobuf:"bytes,4,rep,name=arns,proto3" json:"arns,omitempty"`
+	AwsEc2TransitGatewayAttachmentIds []string               `protobuf:"bytes,10,rep,name=aws_ec2_transit_gateway_attachment_ids,json=awsEc2TransitGatewayAttachmentIds,proto3" json:"aws_ec2_transit_gateway_attachment_ids,omitempty"`
+	AwsInstancesIds                   []string               `protobuf:"bytes,17,rep,name=aws_instances_ids,json=awsInstancesIds,proto3" json:"aws_instances_ids,omitempty"`
+	AwsNatGatewayIds                  []string               `protobuf:"bytes,19,rep,name=aws_nat_gateway_ids,json=awsNatGatewayIds,proto3" json:"aws_nat_gateway_ids,omitempty"`
+	AwsNetworkAclIds                  []string               `protobuf:"bytes,20,rep,name=aws_network_acl_ids,json=awsNetworkAclIds,proto3" json:"aws_network_acl_ids,omitempty"`
+	AwsNetworkInterfaceIds            []string               `protobuf:"bytes,21,rep,name=aws_network_interface_ids,json=awsNetworkInterfaceIds,proto3" json:"aws_network_interface_ids,omitempty"`
+	AwsRdsClusterIds                  []string               `protobuf:"bytes,22,rep,name=aws_rds_cluster_ids,json=awsRdsClusterIds,proto3" json:"aws_rds_cluster_ids,omitempty"`
+	AwsSecurityGroupIds               []string               `protobuf:"bytes,24,rep,name=aws_security_group_ids,json=awsSecurityGroupIds,proto3" json:"aws_security_group_ids,omitempty"`
+	AwsSubnetIds                      []string               `protobuf:"bytes,28,rep,name=aws_subnet_ids,json=awsSubnetIds,proto3" json:"aws_subnet_ids,omitempty"`
+	AwsVpcEndpointIds                 []string               `protobuf:"bytes,29,rep,name=aws_vpc_endpoint_ids,json=awsVpcEndpointIds,proto3" json:"aws_vpc_endpoint_ids,omitempty"`
+	AwsVpcIds                         []string               `protobuf:"bytes,31,rep,name=aws_vpc_ids,json=awsVpcIds,proto3" json:"aws_vpc_ids,omitempty"`
+	AwsVpcPeeringConnectionIds        []string               `protobuf:"bytes,32,rep,name=aws_vpc_peering_connection_ids,json=awsVpcPeeringConnectionIds,proto3" json:"aws_vpc_peering_connection_ids,omitempty"`
+	unknownFields                     protoimpl.UnknownFields
+	sizeCache                         protoimpl.SizeCache
 }
 
 func (x *CreateApplicationAwsResourcesRequest) Reset() {
@@ -536,41 +517,6 @@ func (x *CreateApplicationAwsResourcesRequest) GetArns() []string {
 	return nil
 }
 
-func (x *CreateApplicationAwsResourcesRequest) GetAwsCustomerGatewayIds() []string {
-	if x != nil {
-		return x.AwsCustomerGatewayIds
-	}
-	return nil
-}
-
-func (x *CreateApplicationAwsResourcesRequest) GetAwsDxConnectionIds() []string {
-	if x != nil {
-		return x.AwsDxConnectionIds
-	}
-	return nil
-}
-
-func (x *CreateApplicationAwsResourcesRequest) GetAwsDxVirtualInterfaceIds() []string {
-	if x != nil {
-		return x.AwsDxVirtualInterfaceIds
-	}
-	return nil
-}
-
-func (x *CreateApplicationAwsResourcesRequest) GetAwsEbsVolumeIds() []string {
-	if x != nil {
-		return x.AwsEbsVolumeIds
-	}
-	return nil
-}
-
-func (x *CreateApplicationAwsResourcesRequest) GetAwsEc2InstanceConnectEndpointIds() []string {
-	if x != nil {
-		return x.AwsEc2InstanceConnectEndpointIds
-	}
-	return nil
-}
-
 func (x *CreateApplicationAwsResourcesRequest) GetAwsEc2TransitGatewayAttachmentIds() []string {
 	if x != nil {
 		return x.AwsEc2TransitGatewayAttachmentIds
@@ -578,58 +524,9 @@ func (x *CreateApplicationAwsResourcesRequest) GetAwsEc2TransitGatewayAttachment
 	return nil
 }
 
-func (x *CreateApplicationAwsResourcesRequest) GetAwsEc2TransitGatewayIds() []string {
-	if x != nil {
-		return x.AwsEc2TransitGatewayIds
-	}
-	return nil
-}
-
-func (x *CreateApplicationAwsResourcesRequest) GetAwsEc2TransitGatewayMulticastDomainIds() []string {
-	if x != nil {
-		return x.AwsEc2TransitGatewayMulticastDomainIds
-	}
-	return nil
-}
-
-func (x *CreateApplicationAwsResourcesRequest) GetAwsEc2TransitGatewayRouteTableIds() []string {
-	if x != nil {
-		return x.AwsEc2TransitGatewayRouteTableIds
-	}
-	return nil
-}
-
-func (x *CreateApplicationAwsResourcesRequest) GetAwsEgressOnlyInternetGatewayIds() []string {
-	if x != nil {
-		return x.AwsEgressOnlyInternetGatewayIds
-	}
-	return nil
-}
-
-func (x *CreateApplicationAwsResourcesRequest) GetAwsEipIds() []string {
-	if x != nil {
-		return x.AwsEipIds
-	}
-	return nil
-}
-
-func (x *CreateApplicationAwsResourcesRequest) GetAwsFlowLogIds() []string {
-	if x != nil {
-		return x.AwsFlowLogIds
-	}
-	return nil
-}
-
 func (x *CreateApplicationAwsResourcesRequest) GetAwsInstancesIds() []string {
 	if x != nil {
 		return x.AwsInstancesIds
-	}
-	return nil
-}
-
-func (x *CreateApplicationAwsResourcesRequest) GetAwsInternetGatewayIds() []string {
-	if x != nil {
-		return x.AwsInternetGatewayIds
 	}
 	return nil
 }
@@ -662,37 +559,9 @@ func (x *CreateApplicationAwsResourcesRequest) GetAwsRdsClusterIds() []string {
 	return nil
 }
 
-func (x *CreateApplicationAwsResourcesRequest) GetAwsRouteTableIds() []string {
-	if x != nil {
-		return x.AwsRouteTableIds
-	}
-	return nil
-}
-
 func (x *CreateApplicationAwsResourcesRequest) GetAwsSecurityGroupIds() []string {
 	if x != nil {
 		return x.AwsSecurityGroupIds
-	}
-	return nil
-}
-
-func (x *CreateApplicationAwsResourcesRequest) GetAwsSecurityGroupRuleIds() []string {
-	if x != nil {
-		return x.AwsSecurityGroupRuleIds
-	}
-	return nil
-}
-
-func (x *CreateApplicationAwsResourcesRequest) GetAwsSpotFleetRequestIds() []string {
-	if x != nil {
-		return x.AwsSpotFleetRequestIds
-	}
-	return nil
-}
-
-func (x *CreateApplicationAwsResourcesRequest) GetAwsSpotInstanceRequestIds() []string {
-	if x != nil {
-		return x.AwsSpotInstanceRequestIds
 	}
 	return nil
 }
@@ -711,13 +580,6 @@ func (x *CreateApplicationAwsResourcesRequest) GetAwsVpcEndpointIds() []string {
 	return nil
 }
 
-func (x *CreateApplicationAwsResourcesRequest) GetAwsVpcEndpointServiceIds() []string {
-	if x != nil {
-		return x.AwsVpcEndpointServiceIds
-	}
-	return nil
-}
-
 func (x *CreateApplicationAwsResourcesRequest) GetAwsVpcIds() []string {
 	if x != nil {
 		return x.AwsVpcIds
@@ -732,59 +594,26 @@ func (x *CreateApplicationAwsResourcesRequest) GetAwsVpcPeeringConnectionIds() [
 	return nil
 }
 
-func (x *CreateApplicationAwsResourcesRequest) GetAwsVpnConnectionIds() []string {
-	if x != nil {
-		return x.AwsVpnConnectionIds
-	}
-	return nil
-}
-
-func (x *CreateApplicationAwsResourcesRequest) GetAwsVpnGatewayIds() []string {
-	if x != nil {
-		return x.AwsVpnGatewayIds
-	}
-	return nil
-}
-
 type CreateApplicationAwsResourcesResponse struct {
-	state                                  protoimpl.MessageState `protogen:"open.v1"`
-	Id                                     string                 `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
-	AccountId                              string                 `protobuf:"bytes,2,opt,name=account_id,json=accountId,proto3" json:"account_id,omitempty"`
-	ApplicationId                          string                 `protobuf:"bytes,3,opt,name=application_id,json=applicationId,proto3" json:"application_id,omitempty"`
-	ApplicationResourceIds                 []string               `protobuf:"bytes,36,rep,name=application_resource_ids,json=applicationResourceIds,proto3" json:"application_resource_ids,omitempty"`
-	Arns                                   []string               `protobuf:"bytes,4,rep,name=arns,proto3" json:"arns,omitempty"`
-	AwsCustomerGatewayIds                  []string               `protobuf:"bytes,5,rep,name=aws_customer_gateway_ids,json=awsCustomerGatewayIds,proto3" json:"aws_customer_gateway_ids,omitempty"`
-	AwsDxConnectionIds                     []string               `protobuf:"bytes,6,rep,name=aws_dx_connection_ids,json=awsDxConnectionIds,proto3" json:"aws_dx_connection_ids,omitempty"`
-	AwsDxVirtualInterfaceIds               []string               `protobuf:"bytes,7,rep,name=aws_dx_virtual_interface_ids,json=awsDxVirtualInterfaceIds,proto3" json:"aws_dx_virtual_interface_ids,omitempty"`
-	AwsEbsVolumeIds                        []string               `protobuf:"bytes,8,rep,name=aws_ebs_volume_ids,json=awsEbsVolumeIds,proto3" json:"aws_ebs_volume_ids,omitempty"`
-	AwsEc2InstanceConnectEndpointIds       []string               `protobuf:"bytes,9,rep,name=aws_ec2_instance_connect_endpoint_ids,json=awsEc2InstanceConnectEndpointIds,proto3" json:"aws_ec2_instance_connect_endpoint_ids,omitempty"`
-	AwsEc2TransitGatewayAttachmentIds      []string               `protobuf:"bytes,10,rep,name=aws_ec2_transit_gateway_attachment_ids,json=awsEc2TransitGatewayAttachmentIds,proto3" json:"aws_ec2_transit_gateway_attachment_ids,omitempty"`
-	AwsEc2TransitGatewayIds                []string               `protobuf:"bytes,11,rep,name=aws_ec2_transit_gateway_ids,json=awsEc2TransitGatewayIds,proto3" json:"aws_ec2_transit_gateway_ids,omitempty"`
-	AwsEc2TransitGatewayMulticastDomainIds []string               `protobuf:"bytes,12,rep,name=aws_ec2_transit_gateway_multicast_domain_ids,json=awsEc2TransitGatewayMulticastDomainIds,proto3" json:"aws_ec2_transit_gateway_multicast_domain_ids,omitempty"`
-	AwsEc2TransitGatewayRouteTableIds      []string               `protobuf:"bytes,13,rep,name=aws_ec2_transit_gateway_route_table_ids,json=awsEc2TransitGatewayRouteTableIds,proto3" json:"aws_ec2_transit_gateway_route_table_ids,omitempty"`
-	AwsEgressOnlyInternetGatewayIds        []string               `protobuf:"bytes,14,rep,name=aws_egress_only_internet_gateway_ids,json=awsEgressOnlyInternetGatewayIds,proto3" json:"aws_egress_only_internet_gateway_ids,omitempty"`
-	AwsEipIds                              []string               `protobuf:"bytes,15,rep,name=aws_eip_ids,json=awsEipIds,proto3" json:"aws_eip_ids,omitempty"`
-	AwsFlowLogIds                          []string               `protobuf:"bytes,16,rep,name=aws_flow_log_ids,json=awsFlowLogIds,proto3" json:"aws_flow_log_ids,omitempty"`
-	AwsInstancesIds                        []string               `protobuf:"bytes,17,rep,name=aws_instances_ids,json=awsInstancesIds,proto3" json:"aws_instances_ids,omitempty"`
-	AwsInternetGatewayIds                  []string               `protobuf:"bytes,18,rep,name=aws_internet_gateway_ids,json=awsInternetGatewayIds,proto3" json:"aws_internet_gateway_ids,omitempty"`
-	AwsNatGatewayIds                       []string               `protobuf:"bytes,19,rep,name=aws_nat_gateway_ids,json=awsNatGatewayIds,proto3" json:"aws_nat_gateway_ids,omitempty"`
-	AwsNetworkAclIds                       []string               `protobuf:"bytes,20,rep,name=aws_network_acl_ids,json=awsNetworkAclIds,proto3" json:"aws_network_acl_ids,omitempty"`
-	AwsNetworkInterfaceIds                 []string               `protobuf:"bytes,21,rep,name=aws_network_interface_ids,json=awsNetworkInterfaceIds,proto3" json:"aws_network_interface_ids,omitempty"`
-	AwsRdsClusterIds                       []string               `protobuf:"bytes,22,rep,name=aws_rds_cluster_ids,json=awsRdsClusterIds,proto3" json:"aws_rds_cluster_ids,omitempty"`
-	AwsRouteTableIds                       []string               `protobuf:"bytes,23,rep,name=aws_route_table_ids,json=awsRouteTableIds,proto3" json:"aws_route_table_ids,omitempty"`
-	AwsSecurityGroupIds                    []string               `protobuf:"bytes,24,rep,name=aws_security_group_ids,json=awsSecurityGroupIds,proto3" json:"aws_security_group_ids,omitempty"`
-	AwsSecurityGroupRuleIds                []string               `protobuf:"bytes,25,rep,name=aws_security_group_rule_ids,json=awsSecurityGroupRuleIds,proto3" json:"aws_security_group_rule_ids,omitempty"`
-	AwsSpotFleetRequestIds                 []string               `protobuf:"bytes,26,rep,name=aws_spot_fleet_request_ids,json=awsSpotFleetRequestIds,proto3" json:"aws_spot_fleet_request_ids,omitempty"`
-	AwsSpotInstanceRequestIds              []string               `protobuf:"bytes,27,rep,name=aws_spot_instance_request_ids,json=awsSpotInstanceRequestIds,proto3" json:"aws_spot_instance_request_ids,omitempty"`
-	AwsSubnetIds                           []string               `protobuf:"bytes,28,rep,name=aws_subnet_ids,json=awsSubnetIds,proto3" json:"aws_subnet_ids,omitempty"`
-	AwsVpcEndpointIds                      []string               `protobuf:"bytes,29,rep,name=aws_vpc_endpoint_ids,json=awsVpcEndpointIds,proto3" json:"aws_vpc_endpoint_ids,omitempty"`
-	AwsVpcEndpointServiceIds               []string               `protobuf:"bytes,30,rep,name=aws_vpc_endpoint_service_ids,json=awsVpcEndpointServiceIds,proto3" json:"aws_vpc_endpoint_service_ids,omitempty"`
-	AwsVpcIds                              []string               `protobuf:"bytes,31,rep,name=aws_vpc_ids,json=awsVpcIds,proto3" json:"aws_vpc_ids,omitempty"`
-	AwsVpcPeeringConnectionIds             []string               `protobuf:"bytes,32,rep,name=aws_vpc_peering_connection_ids,json=awsVpcPeeringConnectionIds,proto3" json:"aws_vpc_peering_connection_ids,omitempty"`
-	AwsVpnConnectionIds                    []string               `protobuf:"bytes,33,rep,name=aws_vpn_connection_ids,json=awsVpnConnectionIds,proto3" json:"aws_vpn_connection_ids,omitempty"`
-	AwsVpnGatewayIds                       []string               `protobuf:"bytes,34,rep,name=aws_vpn_gateway_ids,json=awsVpnGatewayIds,proto3" json:"aws_vpn_gateway_ids,omitempty"`
-	unknownFields                          protoimpl.UnknownFields
-	sizeCache                              protoimpl.SizeCache
+	state                             protoimpl.MessageState `protogen:"open.v1"`
+	Id                                string                 `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
+	AccountId                         string                 `protobuf:"bytes,2,opt,name=account_id,json=accountId,proto3" json:"account_id,omitempty"`
+	ApplicationId                     string                 `protobuf:"bytes,3,opt,name=application_id,json=applicationId,proto3" json:"application_id,omitempty"`
+	ApplicationResourceIds            []string               `protobuf:"bytes,36,rep,name=application_resource_ids,json=applicationResourceIds,proto3" json:"application_resource_ids,omitempty"`
+	Arns                              []string               `protobuf:"bytes,4,rep,name=arns,proto3" json:"arns,omitempty"`
+	AwsEc2TransitGatewayAttachmentIds []string               `protobuf:"bytes,10,rep,name=aws_ec2_transit_gateway_attachment_ids,json=awsEc2TransitGatewayAttachmentIds,proto3" json:"aws_ec2_transit_gateway_attachment_ids,omitempty"`
+	AwsInstancesIds                   []string               `protobuf:"bytes,17,rep,name=aws_instances_ids,json=awsInstancesIds,proto3" json:"aws_instances_ids,omitempty"`
+	AwsNatGatewayIds                  []string               `protobuf:"bytes,19,rep,name=aws_nat_gateway_ids,json=awsNatGatewayIds,proto3" json:"aws_nat_gateway_ids,omitempty"`
+	AwsNetworkAclIds                  []string               `protobuf:"bytes,20,rep,name=aws_network_acl_ids,json=awsNetworkAclIds,proto3" json:"aws_network_acl_ids,omitempty"`
+	AwsNetworkInterfaceIds            []string               `protobuf:"bytes,21,rep,name=aws_network_interface_ids,json=awsNetworkInterfaceIds,proto3" json:"aws_network_interface_ids,omitempty"`
+	AwsRdsClusterIds                  []string               `protobuf:"bytes,22,rep,name=aws_rds_cluster_ids,json=awsRdsClusterIds,proto3" json:"aws_rds_cluster_ids,omitempty"`
+	AwsSecurityGroupIds               []string               `protobuf:"bytes,24,rep,name=aws_security_group_ids,json=awsSecurityGroupIds,proto3" json:"aws_security_group_ids,omitempty"`
+	AwsSubnetIds                      []string               `protobuf:"bytes,28,rep,name=aws_subnet_ids,json=awsSubnetIds,proto3" json:"aws_subnet_ids,omitempty"`
+	AwsVpcEndpointIds                 []string               `protobuf:"bytes,29,rep,name=aws_vpc_endpoint_ids,json=awsVpcEndpointIds,proto3" json:"aws_vpc_endpoint_ids,omitempty"`
+	AwsVpcIds                         []string               `protobuf:"bytes,31,rep,name=aws_vpc_ids,json=awsVpcIds,proto3" json:"aws_vpc_ids,omitempty"`
+	AwsVpcPeeringConnectionIds        []string               `protobuf:"bytes,32,rep,name=aws_vpc_peering_connection_ids,json=awsVpcPeeringConnectionIds,proto3" json:"aws_vpc_peering_connection_ids,omitempty"`
+	unknownFields                     protoimpl.UnknownFields
+	sizeCache                         protoimpl.SizeCache
 }
 
 func (x *CreateApplicationAwsResourcesResponse) Reset() {
@@ -852,41 +681,6 @@ func (x *CreateApplicationAwsResourcesResponse) GetArns() []string {
 	return nil
 }
 
-func (x *CreateApplicationAwsResourcesResponse) GetAwsCustomerGatewayIds() []string {
-	if x != nil {
-		return x.AwsCustomerGatewayIds
-	}
-	return nil
-}
-
-func (x *CreateApplicationAwsResourcesResponse) GetAwsDxConnectionIds() []string {
-	if x != nil {
-		return x.AwsDxConnectionIds
-	}
-	return nil
-}
-
-func (x *CreateApplicationAwsResourcesResponse) GetAwsDxVirtualInterfaceIds() []string {
-	if x != nil {
-		return x.AwsDxVirtualInterfaceIds
-	}
-	return nil
-}
-
-func (x *CreateApplicationAwsResourcesResponse) GetAwsEbsVolumeIds() []string {
-	if x != nil {
-		return x.AwsEbsVolumeIds
-	}
-	return nil
-}
-
-func (x *CreateApplicationAwsResourcesResponse) GetAwsEc2InstanceConnectEndpointIds() []string {
-	if x != nil {
-		return x.AwsEc2InstanceConnectEndpointIds
-	}
-	return nil
-}
-
 func (x *CreateApplicationAwsResourcesResponse) GetAwsEc2TransitGatewayAttachmentIds() []string {
 	if x != nil {
 		return x.AwsEc2TransitGatewayAttachmentIds
@@ -894,58 +688,9 @@ func (x *CreateApplicationAwsResourcesResponse) GetAwsEc2TransitGatewayAttachmen
 	return nil
 }
 
-func (x *CreateApplicationAwsResourcesResponse) GetAwsEc2TransitGatewayIds() []string {
-	if x != nil {
-		return x.AwsEc2TransitGatewayIds
-	}
-	return nil
-}
-
-func (x *CreateApplicationAwsResourcesResponse) GetAwsEc2TransitGatewayMulticastDomainIds() []string {
-	if x != nil {
-		return x.AwsEc2TransitGatewayMulticastDomainIds
-	}
-	return nil
-}
-
-func (x *CreateApplicationAwsResourcesResponse) GetAwsEc2TransitGatewayRouteTableIds() []string {
-	if x != nil {
-		return x.AwsEc2TransitGatewayRouteTableIds
-	}
-	return nil
-}
-
-func (x *CreateApplicationAwsResourcesResponse) GetAwsEgressOnlyInternetGatewayIds() []string {
-	if x != nil {
-		return x.AwsEgressOnlyInternetGatewayIds
-	}
-	return nil
-}
-
-func (x *CreateApplicationAwsResourcesResponse) GetAwsEipIds() []string {
-	if x != nil {
-		return x.AwsEipIds
-	}
-	return nil
-}
-
-func (x *CreateApplicationAwsResourcesResponse) GetAwsFlowLogIds() []string {
-	if x != nil {
-		return x.AwsFlowLogIds
-	}
-	return nil
-}
-
 func (x *CreateApplicationAwsResourcesResponse) GetAwsInstancesIds() []string {
 	if x != nil {
 		return x.AwsInstancesIds
-	}
-	return nil
-}
-
-func (x *CreateApplicationAwsResourcesResponse) GetAwsInternetGatewayIds() []string {
-	if x != nil {
-		return x.AwsInternetGatewayIds
 	}
 	return nil
 }
@@ -978,37 +723,9 @@ func (x *CreateApplicationAwsResourcesResponse) GetAwsRdsClusterIds() []string {
 	return nil
 }
 
-func (x *CreateApplicationAwsResourcesResponse) GetAwsRouteTableIds() []string {
-	if x != nil {
-		return x.AwsRouteTableIds
-	}
-	return nil
-}
-
 func (x *CreateApplicationAwsResourcesResponse) GetAwsSecurityGroupIds() []string {
 	if x != nil {
 		return x.AwsSecurityGroupIds
-	}
-	return nil
-}
-
-func (x *CreateApplicationAwsResourcesResponse) GetAwsSecurityGroupRuleIds() []string {
-	if x != nil {
-		return x.AwsSecurityGroupRuleIds
-	}
-	return nil
-}
-
-func (x *CreateApplicationAwsResourcesResponse) GetAwsSpotFleetRequestIds() []string {
-	if x != nil {
-		return x.AwsSpotFleetRequestIds
-	}
-	return nil
-}
-
-func (x *CreateApplicationAwsResourcesResponse) GetAwsSpotInstanceRequestIds() []string {
-	if x != nil {
-		return x.AwsSpotInstanceRequestIds
 	}
 	return nil
 }
@@ -1027,13 +744,6 @@ func (x *CreateApplicationAwsResourcesResponse) GetAwsVpcEndpointIds() []string 
 	return nil
 }
 
-func (x *CreateApplicationAwsResourcesResponse) GetAwsVpcEndpointServiceIds() []string {
-	if x != nil {
-		return x.AwsVpcEndpointServiceIds
-	}
-	return nil
-}
-
 func (x *CreateApplicationAwsResourcesResponse) GetAwsVpcIds() []string {
 	if x != nil {
 		return x.AwsVpcIds
@@ -1044,20 +754,6 @@ func (x *CreateApplicationAwsResourcesResponse) GetAwsVpcIds() []string {
 func (x *CreateApplicationAwsResourcesResponse) GetAwsVpcPeeringConnectionIds() []string {
 	if x != nil {
 		return x.AwsVpcPeeringConnectionIds
-	}
-	return nil
-}
-
-func (x *CreateApplicationAwsResourcesResponse) GetAwsVpnConnectionIds() []string {
-	if x != nil {
-		return x.AwsVpnConnectionIds
-	}
-	return nil
-}
-
-func (x *CreateApplicationAwsResourcesResponse) GetAwsVpnGatewayIds() []string {
-	if x != nil {
-		return x.AwsVpnGatewayIds
 	}
 	return nil
 }
@@ -1131,44 +827,25 @@ func (x *ReadApplicationAwsResourcesRequest) GetApplicationResourceIds() []strin
 }
 
 type ReadApplicationAwsResourcesResponse struct {
-	state                                  protoimpl.MessageState `protogen:"open.v1"`
-	Id                                     string                 `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
-	AccountId                              string                 `protobuf:"bytes,2,opt,name=account_id,json=accountId,proto3" json:"account_id,omitempty"`
-	ApplicationId                          string                 `protobuf:"bytes,3,opt,name=application_id,json=applicationId,proto3" json:"application_id,omitempty"`
-	ApplicationResourceIds                 []string               `protobuf:"bytes,36,rep,name=application_resource_ids,json=applicationResourceIds,proto3" json:"application_resource_ids,omitempty"`
-	Arns                                   []string               `protobuf:"bytes,4,rep,name=arns,proto3" json:"arns,omitempty"`
-	AwsCustomerGatewayIds                  []string               `protobuf:"bytes,5,rep,name=aws_customer_gateway_ids,json=awsCustomerGatewayIds,proto3" json:"aws_customer_gateway_ids,omitempty"`
-	AwsDxConnectionIds                     []string               `protobuf:"bytes,6,rep,name=aws_dx_connection_ids,json=awsDxConnectionIds,proto3" json:"aws_dx_connection_ids,omitempty"`
-	AwsDxVirtualInterfaceIds               []string               `protobuf:"bytes,7,rep,name=aws_dx_virtual_interface_ids,json=awsDxVirtualInterfaceIds,proto3" json:"aws_dx_virtual_interface_ids,omitempty"`
-	AwsEbsVolumeIds                        []string               `protobuf:"bytes,8,rep,name=aws_ebs_volume_ids,json=awsEbsVolumeIds,proto3" json:"aws_ebs_volume_ids,omitempty"`
-	AwsEc2InstanceConnectEndpointIds       []string               `protobuf:"bytes,9,rep,name=aws_ec2_instance_connect_endpoint_ids,json=awsEc2InstanceConnectEndpointIds,proto3" json:"aws_ec2_instance_connect_endpoint_ids,omitempty"`
-	AwsEc2TransitGatewayAttachmentIds      []string               `protobuf:"bytes,10,rep,name=aws_ec2_transit_gateway_attachment_ids,json=awsEc2TransitGatewayAttachmentIds,proto3" json:"aws_ec2_transit_gateway_attachment_ids,omitempty"`
-	AwsEc2TransitGatewayIds                []string               `protobuf:"bytes,11,rep,name=aws_ec2_transit_gateway_ids,json=awsEc2TransitGatewayIds,proto3" json:"aws_ec2_transit_gateway_ids,omitempty"`
-	AwsEc2TransitGatewayMulticastDomainIds []string               `protobuf:"bytes,12,rep,name=aws_ec2_transit_gateway_multicast_domain_ids,json=awsEc2TransitGatewayMulticastDomainIds,proto3" json:"aws_ec2_transit_gateway_multicast_domain_ids,omitempty"`
-	AwsEc2TransitGatewayRouteTableIds      []string               `protobuf:"bytes,13,rep,name=aws_ec2_transit_gateway_route_table_ids,json=awsEc2TransitGatewayRouteTableIds,proto3" json:"aws_ec2_transit_gateway_route_table_ids,omitempty"`
-	AwsEgressOnlyInternetGatewayIds        []string               `protobuf:"bytes,14,rep,name=aws_egress_only_internet_gateway_ids,json=awsEgressOnlyInternetGatewayIds,proto3" json:"aws_egress_only_internet_gateway_ids,omitempty"`
-	AwsEipIds                              []string               `protobuf:"bytes,15,rep,name=aws_eip_ids,json=awsEipIds,proto3" json:"aws_eip_ids,omitempty"`
-	AwsFlowLogIds                          []string               `protobuf:"bytes,16,rep,name=aws_flow_log_ids,json=awsFlowLogIds,proto3" json:"aws_flow_log_ids,omitempty"`
-	AwsInstancesIds                        []string               `protobuf:"bytes,17,rep,name=aws_instances_ids,json=awsInstancesIds,proto3" json:"aws_instances_ids,omitempty"`
-	AwsInternetGatewayIds                  []string               `protobuf:"bytes,18,rep,name=aws_internet_gateway_ids,json=awsInternetGatewayIds,proto3" json:"aws_internet_gateway_ids,omitempty"`
-	AwsNatGatewayIds                       []string               `protobuf:"bytes,19,rep,name=aws_nat_gateway_ids,json=awsNatGatewayIds,proto3" json:"aws_nat_gateway_ids,omitempty"`
-	AwsNetworkAclIds                       []string               `protobuf:"bytes,20,rep,name=aws_network_acl_ids,json=awsNetworkAclIds,proto3" json:"aws_network_acl_ids,omitempty"`
-	AwsNetworkInterfaceIds                 []string               `protobuf:"bytes,21,rep,name=aws_network_interface_ids,json=awsNetworkInterfaceIds,proto3" json:"aws_network_interface_ids,omitempty"`
-	AwsRdsClusterIds                       []string               `protobuf:"bytes,22,rep,name=aws_rds_cluster_ids,json=awsRdsClusterIds,proto3" json:"aws_rds_cluster_ids,omitempty"`
-	AwsRouteTableIds                       []string               `protobuf:"bytes,23,rep,name=aws_route_table_ids,json=awsRouteTableIds,proto3" json:"aws_route_table_ids,omitempty"`
-	AwsSecurityGroupIds                    []string               `protobuf:"bytes,24,rep,name=aws_security_group_ids,json=awsSecurityGroupIds,proto3" json:"aws_security_group_ids,omitempty"`
-	AwsSecurityGroupRuleIds                []string               `protobuf:"bytes,25,rep,name=aws_security_group_rule_ids,json=awsSecurityGroupRuleIds,proto3" json:"aws_security_group_rule_ids,omitempty"`
-	AwsSpotFleetRequestIds                 []string               `protobuf:"bytes,26,rep,name=aws_spot_fleet_request_ids,json=awsSpotFleetRequestIds,proto3" json:"aws_spot_fleet_request_ids,omitempty"`
-	AwsSpotInstanceRequestIds              []string               `protobuf:"bytes,27,rep,name=aws_spot_instance_request_ids,json=awsSpotInstanceRequestIds,proto3" json:"aws_spot_instance_request_ids,omitempty"`
-	AwsSubnetIds                           []string               `protobuf:"bytes,28,rep,name=aws_subnet_ids,json=awsSubnetIds,proto3" json:"aws_subnet_ids,omitempty"`
-	AwsVpcEndpointIds                      []string               `protobuf:"bytes,29,rep,name=aws_vpc_endpoint_ids,json=awsVpcEndpointIds,proto3" json:"aws_vpc_endpoint_ids,omitempty"`
-	AwsVpcEndpointServiceIds               []string               `protobuf:"bytes,30,rep,name=aws_vpc_endpoint_service_ids,json=awsVpcEndpointServiceIds,proto3" json:"aws_vpc_endpoint_service_ids,omitempty"`
-	AwsVpcIds                              []string               `protobuf:"bytes,31,rep,name=aws_vpc_ids,json=awsVpcIds,proto3" json:"aws_vpc_ids,omitempty"`
-	AwsVpcPeeringConnectionIds             []string               `protobuf:"bytes,32,rep,name=aws_vpc_peering_connection_ids,json=awsVpcPeeringConnectionIds,proto3" json:"aws_vpc_peering_connection_ids,omitempty"`
-	AwsVpnConnectionIds                    []string               `protobuf:"bytes,33,rep,name=aws_vpn_connection_ids,json=awsVpnConnectionIds,proto3" json:"aws_vpn_connection_ids,omitempty"`
-	AwsVpnGatewayIds                       []string               `protobuf:"bytes,34,rep,name=aws_vpn_gateway_ids,json=awsVpnGatewayIds,proto3" json:"aws_vpn_gateway_ids,omitempty"`
-	unknownFields                          protoimpl.UnknownFields
-	sizeCache                              protoimpl.SizeCache
+	state                             protoimpl.MessageState `protogen:"open.v1"`
+	Id                                string                 `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
+	AccountId                         string                 `protobuf:"bytes,2,opt,name=account_id,json=accountId,proto3" json:"account_id,omitempty"`
+	ApplicationId                     string                 `protobuf:"bytes,3,opt,name=application_id,json=applicationId,proto3" json:"application_id,omitempty"`
+	ApplicationResourceIds            []string               `protobuf:"bytes,36,rep,name=application_resource_ids,json=applicationResourceIds,proto3" json:"application_resource_ids,omitempty"`
+	Arns                              []string               `protobuf:"bytes,4,rep,name=arns,proto3" json:"arns,omitempty"`
+	AwsEc2TransitGatewayAttachmentIds []string               `protobuf:"bytes,10,rep,name=aws_ec2_transit_gateway_attachment_ids,json=awsEc2TransitGatewayAttachmentIds,proto3" json:"aws_ec2_transit_gateway_attachment_ids,omitempty"`
+	AwsInstancesIds                   []string               `protobuf:"bytes,17,rep,name=aws_instances_ids,json=awsInstancesIds,proto3" json:"aws_instances_ids,omitempty"`
+	AwsNatGatewayIds                  []string               `protobuf:"bytes,19,rep,name=aws_nat_gateway_ids,json=awsNatGatewayIds,proto3" json:"aws_nat_gateway_ids,omitempty"`
+	AwsNetworkAclIds                  []string               `protobuf:"bytes,20,rep,name=aws_network_acl_ids,json=awsNetworkAclIds,proto3" json:"aws_network_acl_ids,omitempty"`
+	AwsNetworkInterfaceIds            []string               `protobuf:"bytes,21,rep,name=aws_network_interface_ids,json=awsNetworkInterfaceIds,proto3" json:"aws_network_interface_ids,omitempty"`
+	AwsRdsClusterIds                  []string               `protobuf:"bytes,22,rep,name=aws_rds_cluster_ids,json=awsRdsClusterIds,proto3" json:"aws_rds_cluster_ids,omitempty"`
+	AwsSecurityGroupIds               []string               `protobuf:"bytes,24,rep,name=aws_security_group_ids,json=awsSecurityGroupIds,proto3" json:"aws_security_group_ids,omitempty"`
+	AwsSubnetIds                      []string               `protobuf:"bytes,28,rep,name=aws_subnet_ids,json=awsSubnetIds,proto3" json:"aws_subnet_ids,omitempty"`
+	AwsVpcEndpointIds                 []string               `protobuf:"bytes,29,rep,name=aws_vpc_endpoint_ids,json=awsVpcEndpointIds,proto3" json:"aws_vpc_endpoint_ids,omitempty"`
+	AwsVpcIds                         []string               `protobuf:"bytes,31,rep,name=aws_vpc_ids,json=awsVpcIds,proto3" json:"aws_vpc_ids,omitempty"`
+	AwsVpcPeeringConnectionIds        []string               `protobuf:"bytes,32,rep,name=aws_vpc_peering_connection_ids,json=awsVpcPeeringConnectionIds,proto3" json:"aws_vpc_peering_connection_ids,omitempty"`
+	unknownFields                     protoimpl.UnknownFields
+	sizeCache                         protoimpl.SizeCache
 }
 
 func (x *ReadApplicationAwsResourcesResponse) Reset() {
@@ -1236,41 +913,6 @@ func (x *ReadApplicationAwsResourcesResponse) GetArns() []string {
 	return nil
 }
 
-func (x *ReadApplicationAwsResourcesResponse) GetAwsCustomerGatewayIds() []string {
-	if x != nil {
-		return x.AwsCustomerGatewayIds
-	}
-	return nil
-}
-
-func (x *ReadApplicationAwsResourcesResponse) GetAwsDxConnectionIds() []string {
-	if x != nil {
-		return x.AwsDxConnectionIds
-	}
-	return nil
-}
-
-func (x *ReadApplicationAwsResourcesResponse) GetAwsDxVirtualInterfaceIds() []string {
-	if x != nil {
-		return x.AwsDxVirtualInterfaceIds
-	}
-	return nil
-}
-
-func (x *ReadApplicationAwsResourcesResponse) GetAwsEbsVolumeIds() []string {
-	if x != nil {
-		return x.AwsEbsVolumeIds
-	}
-	return nil
-}
-
-func (x *ReadApplicationAwsResourcesResponse) GetAwsEc2InstanceConnectEndpointIds() []string {
-	if x != nil {
-		return x.AwsEc2InstanceConnectEndpointIds
-	}
-	return nil
-}
-
 func (x *ReadApplicationAwsResourcesResponse) GetAwsEc2TransitGatewayAttachmentIds() []string {
 	if x != nil {
 		return x.AwsEc2TransitGatewayAttachmentIds
@@ -1278,58 +920,9 @@ func (x *ReadApplicationAwsResourcesResponse) GetAwsEc2TransitGatewayAttachmentI
 	return nil
 }
 
-func (x *ReadApplicationAwsResourcesResponse) GetAwsEc2TransitGatewayIds() []string {
-	if x != nil {
-		return x.AwsEc2TransitGatewayIds
-	}
-	return nil
-}
-
-func (x *ReadApplicationAwsResourcesResponse) GetAwsEc2TransitGatewayMulticastDomainIds() []string {
-	if x != nil {
-		return x.AwsEc2TransitGatewayMulticastDomainIds
-	}
-	return nil
-}
-
-func (x *ReadApplicationAwsResourcesResponse) GetAwsEc2TransitGatewayRouteTableIds() []string {
-	if x != nil {
-		return x.AwsEc2TransitGatewayRouteTableIds
-	}
-	return nil
-}
-
-func (x *ReadApplicationAwsResourcesResponse) GetAwsEgressOnlyInternetGatewayIds() []string {
-	if x != nil {
-		return x.AwsEgressOnlyInternetGatewayIds
-	}
-	return nil
-}
-
-func (x *ReadApplicationAwsResourcesResponse) GetAwsEipIds() []string {
-	if x != nil {
-		return x.AwsEipIds
-	}
-	return nil
-}
-
-func (x *ReadApplicationAwsResourcesResponse) GetAwsFlowLogIds() []string {
-	if x != nil {
-		return x.AwsFlowLogIds
-	}
-	return nil
-}
-
 func (x *ReadApplicationAwsResourcesResponse) GetAwsInstancesIds() []string {
 	if x != nil {
 		return x.AwsInstancesIds
-	}
-	return nil
-}
-
-func (x *ReadApplicationAwsResourcesResponse) GetAwsInternetGatewayIds() []string {
-	if x != nil {
-		return x.AwsInternetGatewayIds
 	}
 	return nil
 }
@@ -1362,37 +955,9 @@ func (x *ReadApplicationAwsResourcesResponse) GetAwsRdsClusterIds() []string {
 	return nil
 }
 
-func (x *ReadApplicationAwsResourcesResponse) GetAwsRouteTableIds() []string {
-	if x != nil {
-		return x.AwsRouteTableIds
-	}
-	return nil
-}
-
 func (x *ReadApplicationAwsResourcesResponse) GetAwsSecurityGroupIds() []string {
 	if x != nil {
 		return x.AwsSecurityGroupIds
-	}
-	return nil
-}
-
-func (x *ReadApplicationAwsResourcesResponse) GetAwsSecurityGroupRuleIds() []string {
-	if x != nil {
-		return x.AwsSecurityGroupRuleIds
-	}
-	return nil
-}
-
-func (x *ReadApplicationAwsResourcesResponse) GetAwsSpotFleetRequestIds() []string {
-	if x != nil {
-		return x.AwsSpotFleetRequestIds
-	}
-	return nil
-}
-
-func (x *ReadApplicationAwsResourcesResponse) GetAwsSpotInstanceRequestIds() []string {
-	if x != nil {
-		return x.AwsSpotInstanceRequestIds
 	}
 	return nil
 }
@@ -1411,13 +976,6 @@ func (x *ReadApplicationAwsResourcesResponse) GetAwsVpcEndpointIds() []string {
 	return nil
 }
 
-func (x *ReadApplicationAwsResourcesResponse) GetAwsVpcEndpointServiceIds() []string {
-	if x != nil {
-		return x.AwsVpcEndpointServiceIds
-	}
-	return nil
-}
-
 func (x *ReadApplicationAwsResourcesResponse) GetAwsVpcIds() []string {
 	if x != nil {
 		return x.AwsVpcIds
@@ -1432,60 +990,27 @@ func (x *ReadApplicationAwsResourcesResponse) GetAwsVpcPeeringConnectionIds() []
 	return nil
 }
 
-func (x *ReadApplicationAwsResourcesResponse) GetAwsVpnConnectionIds() []string {
-	if x != nil {
-		return x.AwsVpnConnectionIds
-	}
-	return nil
-}
-
-func (x *ReadApplicationAwsResourcesResponse) GetAwsVpnGatewayIds() []string {
-	if x != nil {
-		return x.AwsVpnGatewayIds
-	}
-	return nil
-}
-
 type UpdateApplicationAwsResourcesRequest struct {
-	state                                  protoimpl.MessageState `protogen:"open.v1"`
-	Id                                     string                 `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
-	AccountId                              string                 `protobuf:"bytes,2,opt,name=account_id,json=accountId,proto3" json:"account_id,omitempty"`
-	ApplicationId                          string                 `protobuf:"bytes,3,opt,name=application_id,json=applicationId,proto3" json:"application_id,omitempty"`
-	ApplicationResourceIds                 []string               `protobuf:"bytes,36,rep,name=application_resource_ids,json=applicationResourceIds,proto3" json:"application_resource_ids,omitempty"`
-	Arns                                   []string               `protobuf:"bytes,4,rep,name=arns,proto3" json:"arns,omitempty"`
-	AwsCustomerGatewayIds                  []string               `protobuf:"bytes,5,rep,name=aws_customer_gateway_ids,json=awsCustomerGatewayIds,proto3" json:"aws_customer_gateway_ids,omitempty"`
-	AwsDxConnectionIds                     []string               `protobuf:"bytes,6,rep,name=aws_dx_connection_ids,json=awsDxConnectionIds,proto3" json:"aws_dx_connection_ids,omitempty"`
-	AwsDxVirtualInterfaceIds               []string               `protobuf:"bytes,7,rep,name=aws_dx_virtual_interface_ids,json=awsDxVirtualInterfaceIds,proto3" json:"aws_dx_virtual_interface_ids,omitempty"`
-	AwsEbsVolumeIds                        []string               `protobuf:"bytes,8,rep,name=aws_ebs_volume_ids,json=awsEbsVolumeIds,proto3" json:"aws_ebs_volume_ids,omitempty"`
-	AwsEc2InstanceConnectEndpointIds       []string               `protobuf:"bytes,9,rep,name=aws_ec2_instance_connect_endpoint_ids,json=awsEc2InstanceConnectEndpointIds,proto3" json:"aws_ec2_instance_connect_endpoint_ids,omitempty"`
-	AwsEc2TransitGatewayAttachmentIds      []string               `protobuf:"bytes,10,rep,name=aws_ec2_transit_gateway_attachment_ids,json=awsEc2TransitGatewayAttachmentIds,proto3" json:"aws_ec2_transit_gateway_attachment_ids,omitempty"`
-	AwsEc2TransitGatewayIds                []string               `protobuf:"bytes,11,rep,name=aws_ec2_transit_gateway_ids,json=awsEc2TransitGatewayIds,proto3" json:"aws_ec2_transit_gateway_ids,omitempty"`
-	AwsEc2TransitGatewayMulticastDomainIds []string               `protobuf:"bytes,12,rep,name=aws_ec2_transit_gateway_multicast_domain_ids,json=awsEc2TransitGatewayMulticastDomainIds,proto3" json:"aws_ec2_transit_gateway_multicast_domain_ids,omitempty"`
-	AwsEc2TransitGatewayRouteTableIds      []string               `protobuf:"bytes,13,rep,name=aws_ec2_transit_gateway_route_table_ids,json=awsEc2TransitGatewayRouteTableIds,proto3" json:"aws_ec2_transit_gateway_route_table_ids,omitempty"`
-	AwsEgressOnlyInternetGatewayIds        []string               `protobuf:"bytes,14,rep,name=aws_egress_only_internet_gateway_ids,json=awsEgressOnlyInternetGatewayIds,proto3" json:"aws_egress_only_internet_gateway_ids,omitempty"`
-	AwsEipIds                              []string               `protobuf:"bytes,15,rep,name=aws_eip_ids,json=awsEipIds,proto3" json:"aws_eip_ids,omitempty"`
-	AwsFlowLogIds                          []string               `protobuf:"bytes,16,rep,name=aws_flow_log_ids,json=awsFlowLogIds,proto3" json:"aws_flow_log_ids,omitempty"`
-	AwsInstancesIds                        []string               `protobuf:"bytes,17,rep,name=aws_instances_ids,json=awsInstancesIds,proto3" json:"aws_instances_ids,omitempty"`
-	AwsInternetGatewayIds                  []string               `protobuf:"bytes,18,rep,name=aws_internet_gateway_ids,json=awsInternetGatewayIds,proto3" json:"aws_internet_gateway_ids,omitempty"`
-	AwsNatGatewayIds                       []string               `protobuf:"bytes,19,rep,name=aws_nat_gateway_ids,json=awsNatGatewayIds,proto3" json:"aws_nat_gateway_ids,omitempty"`
-	AwsNetworkAclIds                       []string               `protobuf:"bytes,20,rep,name=aws_network_acl_ids,json=awsNetworkAclIds,proto3" json:"aws_network_acl_ids,omitempty"`
-	AwsNetworkInterfaceIds                 []string               `protobuf:"bytes,21,rep,name=aws_network_interface_ids,json=awsNetworkInterfaceIds,proto3" json:"aws_network_interface_ids,omitempty"`
-	AwsRdsClusterIds                       []string               `protobuf:"bytes,22,rep,name=aws_rds_cluster_ids,json=awsRdsClusterIds,proto3" json:"aws_rds_cluster_ids,omitempty"`
-	AwsRouteTableIds                       []string               `protobuf:"bytes,23,rep,name=aws_route_table_ids,json=awsRouteTableIds,proto3" json:"aws_route_table_ids,omitempty"`
-	AwsSecurityGroupIds                    []string               `protobuf:"bytes,24,rep,name=aws_security_group_ids,json=awsSecurityGroupIds,proto3" json:"aws_security_group_ids,omitempty"`
-	AwsSecurityGroupRuleIds                []string               `protobuf:"bytes,25,rep,name=aws_security_group_rule_ids,json=awsSecurityGroupRuleIds,proto3" json:"aws_security_group_rule_ids,omitempty"`
-	AwsSpotFleetRequestIds                 []string               `protobuf:"bytes,26,rep,name=aws_spot_fleet_request_ids,json=awsSpotFleetRequestIds,proto3" json:"aws_spot_fleet_request_ids,omitempty"`
-	AwsSpotInstanceRequestIds              []string               `protobuf:"bytes,27,rep,name=aws_spot_instance_request_ids,json=awsSpotInstanceRequestIds,proto3" json:"aws_spot_instance_request_ids,omitempty"`
-	AwsSubnetIds                           []string               `protobuf:"bytes,28,rep,name=aws_subnet_ids,json=awsSubnetIds,proto3" json:"aws_subnet_ids,omitempty"`
-	AwsVpcEndpointIds                      []string               `protobuf:"bytes,29,rep,name=aws_vpc_endpoint_ids,json=awsVpcEndpointIds,proto3" json:"aws_vpc_endpoint_ids,omitempty"`
-	AwsVpcEndpointServiceIds               []string               `protobuf:"bytes,30,rep,name=aws_vpc_endpoint_service_ids,json=awsVpcEndpointServiceIds,proto3" json:"aws_vpc_endpoint_service_ids,omitempty"`
-	AwsVpcIds                              []string               `protobuf:"bytes,31,rep,name=aws_vpc_ids,json=awsVpcIds,proto3" json:"aws_vpc_ids,omitempty"`
-	AwsVpcPeeringConnectionIds             []string               `protobuf:"bytes,32,rep,name=aws_vpc_peering_connection_ids,json=awsVpcPeeringConnectionIds,proto3" json:"aws_vpc_peering_connection_ids,omitempty"`
-	AwsVpnConnectionIds                    []string               `protobuf:"bytes,33,rep,name=aws_vpn_connection_ids,json=awsVpnConnectionIds,proto3" json:"aws_vpn_connection_ids,omitempty"`
-	AwsVpnGatewayIds                       []string               `protobuf:"bytes,34,rep,name=aws_vpn_gateway_ids,json=awsVpnGatewayIds,proto3" json:"aws_vpn_gateway_ids,omitempty"`
-	UpdateMask                             *fieldmaskpb.FieldMask `protobuf:"bytes,35,opt,name=update_mask,json=updateMask,proto3" json:"update_mask,omitempty"`
-	unknownFields                          protoimpl.UnknownFields
-	sizeCache                              protoimpl.SizeCache
+	state                             protoimpl.MessageState `protogen:"open.v1"`
+	Id                                string                 `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
+	AccountId                         string                 `protobuf:"bytes,2,opt,name=account_id,json=accountId,proto3" json:"account_id,omitempty"`
+	ApplicationId                     string                 `protobuf:"bytes,3,opt,name=application_id,json=applicationId,proto3" json:"application_id,omitempty"`
+	ApplicationResourceIds            []string               `protobuf:"bytes,36,rep,name=application_resource_ids,json=applicationResourceIds,proto3" json:"application_resource_ids,omitempty"`
+	Arns                              []string               `protobuf:"bytes,4,rep,name=arns,proto3" json:"arns,omitempty"`
+	AwsEc2TransitGatewayAttachmentIds []string               `protobuf:"bytes,10,rep,name=aws_ec2_transit_gateway_attachment_ids,json=awsEc2TransitGatewayAttachmentIds,proto3" json:"aws_ec2_transit_gateway_attachment_ids,omitempty"`
+	AwsInstancesIds                   []string               `protobuf:"bytes,17,rep,name=aws_instances_ids,json=awsInstancesIds,proto3" json:"aws_instances_ids,omitempty"`
+	AwsNatGatewayIds                  []string               `protobuf:"bytes,19,rep,name=aws_nat_gateway_ids,json=awsNatGatewayIds,proto3" json:"aws_nat_gateway_ids,omitempty"`
+	AwsNetworkAclIds                  []string               `protobuf:"bytes,20,rep,name=aws_network_acl_ids,json=awsNetworkAclIds,proto3" json:"aws_network_acl_ids,omitempty"`
+	AwsNetworkInterfaceIds            []string               `protobuf:"bytes,21,rep,name=aws_network_interface_ids,json=awsNetworkInterfaceIds,proto3" json:"aws_network_interface_ids,omitempty"`
+	AwsRdsClusterIds                  []string               `protobuf:"bytes,22,rep,name=aws_rds_cluster_ids,json=awsRdsClusterIds,proto3" json:"aws_rds_cluster_ids,omitempty"`
+	AwsSecurityGroupIds               []string               `protobuf:"bytes,24,rep,name=aws_security_group_ids,json=awsSecurityGroupIds,proto3" json:"aws_security_group_ids,omitempty"`
+	AwsSubnetIds                      []string               `protobuf:"bytes,28,rep,name=aws_subnet_ids,json=awsSubnetIds,proto3" json:"aws_subnet_ids,omitempty"`
+	AwsVpcEndpointIds                 []string               `protobuf:"bytes,29,rep,name=aws_vpc_endpoint_ids,json=awsVpcEndpointIds,proto3" json:"aws_vpc_endpoint_ids,omitempty"`
+	AwsVpcIds                         []string               `protobuf:"bytes,31,rep,name=aws_vpc_ids,json=awsVpcIds,proto3" json:"aws_vpc_ids,omitempty"`
+	AwsVpcPeeringConnectionIds        []string               `protobuf:"bytes,32,rep,name=aws_vpc_peering_connection_ids,json=awsVpcPeeringConnectionIds,proto3" json:"aws_vpc_peering_connection_ids,omitempty"`
+	UpdateMask                        *fieldmaskpb.FieldMask `protobuf:"bytes,35,opt,name=update_mask,json=updateMask,proto3" json:"update_mask,omitempty"`
+	unknownFields                     protoimpl.UnknownFields
+	sizeCache                         protoimpl.SizeCache
 }
 
 func (x *UpdateApplicationAwsResourcesRequest) Reset() {
@@ -1553,41 +1078,6 @@ func (x *UpdateApplicationAwsResourcesRequest) GetArns() []string {
 	return nil
 }
 
-func (x *UpdateApplicationAwsResourcesRequest) GetAwsCustomerGatewayIds() []string {
-	if x != nil {
-		return x.AwsCustomerGatewayIds
-	}
-	return nil
-}
-
-func (x *UpdateApplicationAwsResourcesRequest) GetAwsDxConnectionIds() []string {
-	if x != nil {
-		return x.AwsDxConnectionIds
-	}
-	return nil
-}
-
-func (x *UpdateApplicationAwsResourcesRequest) GetAwsDxVirtualInterfaceIds() []string {
-	if x != nil {
-		return x.AwsDxVirtualInterfaceIds
-	}
-	return nil
-}
-
-func (x *UpdateApplicationAwsResourcesRequest) GetAwsEbsVolumeIds() []string {
-	if x != nil {
-		return x.AwsEbsVolumeIds
-	}
-	return nil
-}
-
-func (x *UpdateApplicationAwsResourcesRequest) GetAwsEc2InstanceConnectEndpointIds() []string {
-	if x != nil {
-		return x.AwsEc2InstanceConnectEndpointIds
-	}
-	return nil
-}
-
 func (x *UpdateApplicationAwsResourcesRequest) GetAwsEc2TransitGatewayAttachmentIds() []string {
 	if x != nil {
 		return x.AwsEc2TransitGatewayAttachmentIds
@@ -1595,58 +1085,9 @@ func (x *UpdateApplicationAwsResourcesRequest) GetAwsEc2TransitGatewayAttachment
 	return nil
 }
 
-func (x *UpdateApplicationAwsResourcesRequest) GetAwsEc2TransitGatewayIds() []string {
-	if x != nil {
-		return x.AwsEc2TransitGatewayIds
-	}
-	return nil
-}
-
-func (x *UpdateApplicationAwsResourcesRequest) GetAwsEc2TransitGatewayMulticastDomainIds() []string {
-	if x != nil {
-		return x.AwsEc2TransitGatewayMulticastDomainIds
-	}
-	return nil
-}
-
-func (x *UpdateApplicationAwsResourcesRequest) GetAwsEc2TransitGatewayRouteTableIds() []string {
-	if x != nil {
-		return x.AwsEc2TransitGatewayRouteTableIds
-	}
-	return nil
-}
-
-func (x *UpdateApplicationAwsResourcesRequest) GetAwsEgressOnlyInternetGatewayIds() []string {
-	if x != nil {
-		return x.AwsEgressOnlyInternetGatewayIds
-	}
-	return nil
-}
-
-func (x *UpdateApplicationAwsResourcesRequest) GetAwsEipIds() []string {
-	if x != nil {
-		return x.AwsEipIds
-	}
-	return nil
-}
-
-func (x *UpdateApplicationAwsResourcesRequest) GetAwsFlowLogIds() []string {
-	if x != nil {
-		return x.AwsFlowLogIds
-	}
-	return nil
-}
-
 func (x *UpdateApplicationAwsResourcesRequest) GetAwsInstancesIds() []string {
 	if x != nil {
 		return x.AwsInstancesIds
-	}
-	return nil
-}
-
-func (x *UpdateApplicationAwsResourcesRequest) GetAwsInternetGatewayIds() []string {
-	if x != nil {
-		return x.AwsInternetGatewayIds
 	}
 	return nil
 }
@@ -1679,37 +1120,9 @@ func (x *UpdateApplicationAwsResourcesRequest) GetAwsRdsClusterIds() []string {
 	return nil
 }
 
-func (x *UpdateApplicationAwsResourcesRequest) GetAwsRouteTableIds() []string {
-	if x != nil {
-		return x.AwsRouteTableIds
-	}
-	return nil
-}
-
 func (x *UpdateApplicationAwsResourcesRequest) GetAwsSecurityGroupIds() []string {
 	if x != nil {
 		return x.AwsSecurityGroupIds
-	}
-	return nil
-}
-
-func (x *UpdateApplicationAwsResourcesRequest) GetAwsSecurityGroupRuleIds() []string {
-	if x != nil {
-		return x.AwsSecurityGroupRuleIds
-	}
-	return nil
-}
-
-func (x *UpdateApplicationAwsResourcesRequest) GetAwsSpotFleetRequestIds() []string {
-	if x != nil {
-		return x.AwsSpotFleetRequestIds
-	}
-	return nil
-}
-
-func (x *UpdateApplicationAwsResourcesRequest) GetAwsSpotInstanceRequestIds() []string {
-	if x != nil {
-		return x.AwsSpotInstanceRequestIds
 	}
 	return nil
 }
@@ -1728,13 +1141,6 @@ func (x *UpdateApplicationAwsResourcesRequest) GetAwsVpcEndpointIds() []string {
 	return nil
 }
 
-func (x *UpdateApplicationAwsResourcesRequest) GetAwsVpcEndpointServiceIds() []string {
-	if x != nil {
-		return x.AwsVpcEndpointServiceIds
-	}
-	return nil
-}
-
 func (x *UpdateApplicationAwsResourcesRequest) GetAwsVpcIds() []string {
 	if x != nil {
 		return x.AwsVpcIds
@@ -1749,20 +1155,6 @@ func (x *UpdateApplicationAwsResourcesRequest) GetAwsVpcPeeringConnectionIds() [
 	return nil
 }
 
-func (x *UpdateApplicationAwsResourcesRequest) GetAwsVpnConnectionIds() []string {
-	if x != nil {
-		return x.AwsVpnConnectionIds
-	}
-	return nil
-}
-
-func (x *UpdateApplicationAwsResourcesRequest) GetAwsVpnGatewayIds() []string {
-	if x != nil {
-		return x.AwsVpnGatewayIds
-	}
-	return nil
-}
-
 func (x *UpdateApplicationAwsResourcesRequest) GetUpdateMask() *fieldmaskpb.FieldMask {
 	if x != nil {
 		return x.UpdateMask
@@ -1771,44 +1163,25 @@ func (x *UpdateApplicationAwsResourcesRequest) GetUpdateMask() *fieldmaskpb.Fiel
 }
 
 type UpdateApplicationAwsResourcesResponse struct {
-	state                                  protoimpl.MessageState `protogen:"open.v1"`
-	Id                                     string                 `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
-	AccountId                              string                 `protobuf:"bytes,2,opt,name=account_id,json=accountId,proto3" json:"account_id,omitempty"`
-	ApplicationId                          string                 `protobuf:"bytes,3,opt,name=application_id,json=applicationId,proto3" json:"application_id,omitempty"`
-	ApplicationResourceIds                 []string               `protobuf:"bytes,36,rep,name=application_resource_ids,json=applicationResourceIds,proto3" json:"application_resource_ids,omitempty"`
-	Arns                                   []string               `protobuf:"bytes,4,rep,name=arns,proto3" json:"arns,omitempty"`
-	AwsCustomerGatewayIds                  []string               `protobuf:"bytes,5,rep,name=aws_customer_gateway_ids,json=awsCustomerGatewayIds,proto3" json:"aws_customer_gateway_ids,omitempty"`
-	AwsDxConnectionIds                     []string               `protobuf:"bytes,6,rep,name=aws_dx_connection_ids,json=awsDxConnectionIds,proto3" json:"aws_dx_connection_ids,omitempty"`
-	AwsDxVirtualInterfaceIds               []string               `protobuf:"bytes,7,rep,name=aws_dx_virtual_interface_ids,json=awsDxVirtualInterfaceIds,proto3" json:"aws_dx_virtual_interface_ids,omitempty"`
-	AwsEbsVolumeIds                        []string               `protobuf:"bytes,8,rep,name=aws_ebs_volume_ids,json=awsEbsVolumeIds,proto3" json:"aws_ebs_volume_ids,omitempty"`
-	AwsEc2InstanceConnectEndpointIds       []string               `protobuf:"bytes,9,rep,name=aws_ec2_instance_connect_endpoint_ids,json=awsEc2InstanceConnectEndpointIds,proto3" json:"aws_ec2_instance_connect_endpoint_ids,omitempty"`
-	AwsEc2TransitGatewayAttachmentIds      []string               `protobuf:"bytes,10,rep,name=aws_ec2_transit_gateway_attachment_ids,json=awsEc2TransitGatewayAttachmentIds,proto3" json:"aws_ec2_transit_gateway_attachment_ids,omitempty"`
-	AwsEc2TransitGatewayIds                []string               `protobuf:"bytes,11,rep,name=aws_ec2_transit_gateway_ids,json=awsEc2TransitGatewayIds,proto3" json:"aws_ec2_transit_gateway_ids,omitempty"`
-	AwsEc2TransitGatewayMulticastDomainIds []string               `protobuf:"bytes,12,rep,name=aws_ec2_transit_gateway_multicast_domain_ids,json=awsEc2TransitGatewayMulticastDomainIds,proto3" json:"aws_ec2_transit_gateway_multicast_domain_ids,omitempty"`
-	AwsEc2TransitGatewayRouteTableIds      []string               `protobuf:"bytes,13,rep,name=aws_ec2_transit_gateway_route_table_ids,json=awsEc2TransitGatewayRouteTableIds,proto3" json:"aws_ec2_transit_gateway_route_table_ids,omitempty"`
-	AwsEgressOnlyInternetGatewayIds        []string               `protobuf:"bytes,14,rep,name=aws_egress_only_internet_gateway_ids,json=awsEgressOnlyInternetGatewayIds,proto3" json:"aws_egress_only_internet_gateway_ids,omitempty"`
-	AwsEipIds                              []string               `protobuf:"bytes,15,rep,name=aws_eip_ids,json=awsEipIds,proto3" json:"aws_eip_ids,omitempty"`
-	AwsFlowLogIds                          []string               `protobuf:"bytes,16,rep,name=aws_flow_log_ids,json=awsFlowLogIds,proto3" json:"aws_flow_log_ids,omitempty"`
-	AwsInstancesIds                        []string               `protobuf:"bytes,17,rep,name=aws_instances_ids,json=awsInstancesIds,proto3" json:"aws_instances_ids,omitempty"`
-	AwsInternetGatewayIds                  []string               `protobuf:"bytes,18,rep,name=aws_internet_gateway_ids,json=awsInternetGatewayIds,proto3" json:"aws_internet_gateway_ids,omitempty"`
-	AwsNatGatewayIds                       []string               `protobuf:"bytes,19,rep,name=aws_nat_gateway_ids,json=awsNatGatewayIds,proto3" json:"aws_nat_gateway_ids,omitempty"`
-	AwsNetworkAclIds                       []string               `protobuf:"bytes,20,rep,name=aws_network_acl_ids,json=awsNetworkAclIds,proto3" json:"aws_network_acl_ids,omitempty"`
-	AwsNetworkInterfaceIds                 []string               `protobuf:"bytes,21,rep,name=aws_network_interface_ids,json=awsNetworkInterfaceIds,proto3" json:"aws_network_interface_ids,omitempty"`
-	AwsRdsClusterIds                       []string               `protobuf:"bytes,22,rep,name=aws_rds_cluster_ids,json=awsRdsClusterIds,proto3" json:"aws_rds_cluster_ids,omitempty"`
-	AwsRouteTableIds                       []string               `protobuf:"bytes,23,rep,name=aws_route_table_ids,json=awsRouteTableIds,proto3" json:"aws_route_table_ids,omitempty"`
-	AwsSecurityGroupIds                    []string               `protobuf:"bytes,24,rep,name=aws_security_group_ids,json=awsSecurityGroupIds,proto3" json:"aws_security_group_ids,omitempty"`
-	AwsSecurityGroupRuleIds                []string               `protobuf:"bytes,25,rep,name=aws_security_group_rule_ids,json=awsSecurityGroupRuleIds,proto3" json:"aws_security_group_rule_ids,omitempty"`
-	AwsSpotFleetRequestIds                 []string               `protobuf:"bytes,26,rep,name=aws_spot_fleet_request_ids,json=awsSpotFleetRequestIds,proto3" json:"aws_spot_fleet_request_ids,omitempty"`
-	AwsSpotInstanceRequestIds              []string               `protobuf:"bytes,27,rep,name=aws_spot_instance_request_ids,json=awsSpotInstanceRequestIds,proto3" json:"aws_spot_instance_request_ids,omitempty"`
-	AwsSubnetIds                           []string               `protobuf:"bytes,28,rep,name=aws_subnet_ids,json=awsSubnetIds,proto3" json:"aws_subnet_ids,omitempty"`
-	AwsVpcEndpointIds                      []string               `protobuf:"bytes,29,rep,name=aws_vpc_endpoint_ids,json=awsVpcEndpointIds,proto3" json:"aws_vpc_endpoint_ids,omitempty"`
-	AwsVpcEndpointServiceIds               []string               `protobuf:"bytes,30,rep,name=aws_vpc_endpoint_service_ids,json=awsVpcEndpointServiceIds,proto3" json:"aws_vpc_endpoint_service_ids,omitempty"`
-	AwsVpcIds                              []string               `protobuf:"bytes,31,rep,name=aws_vpc_ids,json=awsVpcIds,proto3" json:"aws_vpc_ids,omitempty"`
-	AwsVpcPeeringConnectionIds             []string               `protobuf:"bytes,32,rep,name=aws_vpc_peering_connection_ids,json=awsVpcPeeringConnectionIds,proto3" json:"aws_vpc_peering_connection_ids,omitempty"`
-	AwsVpnConnectionIds                    []string               `protobuf:"bytes,33,rep,name=aws_vpn_connection_ids,json=awsVpnConnectionIds,proto3" json:"aws_vpn_connection_ids,omitempty"`
-	AwsVpnGatewayIds                       []string               `protobuf:"bytes,34,rep,name=aws_vpn_gateway_ids,json=awsVpnGatewayIds,proto3" json:"aws_vpn_gateway_ids,omitempty"`
-	unknownFields                          protoimpl.UnknownFields
-	sizeCache                              protoimpl.SizeCache
+	state                             protoimpl.MessageState `protogen:"open.v1"`
+	Id                                string                 `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
+	AccountId                         string                 `protobuf:"bytes,2,opt,name=account_id,json=accountId,proto3" json:"account_id,omitempty"`
+	ApplicationId                     string                 `protobuf:"bytes,3,opt,name=application_id,json=applicationId,proto3" json:"application_id,omitempty"`
+	ApplicationResourceIds            []string               `protobuf:"bytes,36,rep,name=application_resource_ids,json=applicationResourceIds,proto3" json:"application_resource_ids,omitempty"`
+	Arns                              []string               `protobuf:"bytes,4,rep,name=arns,proto3" json:"arns,omitempty"`
+	AwsEc2TransitGatewayAttachmentIds []string               `protobuf:"bytes,10,rep,name=aws_ec2_transit_gateway_attachment_ids,json=awsEc2TransitGatewayAttachmentIds,proto3" json:"aws_ec2_transit_gateway_attachment_ids,omitempty"`
+	AwsInstancesIds                   []string               `protobuf:"bytes,17,rep,name=aws_instances_ids,json=awsInstancesIds,proto3" json:"aws_instances_ids,omitempty"`
+	AwsNatGatewayIds                  []string               `protobuf:"bytes,19,rep,name=aws_nat_gateway_ids,json=awsNatGatewayIds,proto3" json:"aws_nat_gateway_ids,omitempty"`
+	AwsNetworkAclIds                  []string               `protobuf:"bytes,20,rep,name=aws_network_acl_ids,json=awsNetworkAclIds,proto3" json:"aws_network_acl_ids,omitempty"`
+	AwsNetworkInterfaceIds            []string               `protobuf:"bytes,21,rep,name=aws_network_interface_ids,json=awsNetworkInterfaceIds,proto3" json:"aws_network_interface_ids,omitempty"`
+	AwsRdsClusterIds                  []string               `protobuf:"bytes,22,rep,name=aws_rds_cluster_ids,json=awsRdsClusterIds,proto3" json:"aws_rds_cluster_ids,omitempty"`
+	AwsSecurityGroupIds               []string               `protobuf:"bytes,24,rep,name=aws_security_group_ids,json=awsSecurityGroupIds,proto3" json:"aws_security_group_ids,omitempty"`
+	AwsSubnetIds                      []string               `protobuf:"bytes,28,rep,name=aws_subnet_ids,json=awsSubnetIds,proto3" json:"aws_subnet_ids,omitempty"`
+	AwsVpcEndpointIds                 []string               `protobuf:"bytes,29,rep,name=aws_vpc_endpoint_ids,json=awsVpcEndpointIds,proto3" json:"aws_vpc_endpoint_ids,omitempty"`
+	AwsVpcIds                         []string               `protobuf:"bytes,31,rep,name=aws_vpc_ids,json=awsVpcIds,proto3" json:"aws_vpc_ids,omitempty"`
+	AwsVpcPeeringConnectionIds        []string               `protobuf:"bytes,32,rep,name=aws_vpc_peering_connection_ids,json=awsVpcPeeringConnectionIds,proto3" json:"aws_vpc_peering_connection_ids,omitempty"`
+	unknownFields                     protoimpl.UnknownFields
+	sizeCache                         protoimpl.SizeCache
 }
 
 func (x *UpdateApplicationAwsResourcesResponse) Reset() {
@@ -1876,41 +1249,6 @@ func (x *UpdateApplicationAwsResourcesResponse) GetArns() []string {
 	return nil
 }
 
-func (x *UpdateApplicationAwsResourcesResponse) GetAwsCustomerGatewayIds() []string {
-	if x != nil {
-		return x.AwsCustomerGatewayIds
-	}
-	return nil
-}
-
-func (x *UpdateApplicationAwsResourcesResponse) GetAwsDxConnectionIds() []string {
-	if x != nil {
-		return x.AwsDxConnectionIds
-	}
-	return nil
-}
-
-func (x *UpdateApplicationAwsResourcesResponse) GetAwsDxVirtualInterfaceIds() []string {
-	if x != nil {
-		return x.AwsDxVirtualInterfaceIds
-	}
-	return nil
-}
-
-func (x *UpdateApplicationAwsResourcesResponse) GetAwsEbsVolumeIds() []string {
-	if x != nil {
-		return x.AwsEbsVolumeIds
-	}
-	return nil
-}
-
-func (x *UpdateApplicationAwsResourcesResponse) GetAwsEc2InstanceConnectEndpointIds() []string {
-	if x != nil {
-		return x.AwsEc2InstanceConnectEndpointIds
-	}
-	return nil
-}
-
 func (x *UpdateApplicationAwsResourcesResponse) GetAwsEc2TransitGatewayAttachmentIds() []string {
 	if x != nil {
 		return x.AwsEc2TransitGatewayAttachmentIds
@@ -1918,58 +1256,9 @@ func (x *UpdateApplicationAwsResourcesResponse) GetAwsEc2TransitGatewayAttachmen
 	return nil
 }
 
-func (x *UpdateApplicationAwsResourcesResponse) GetAwsEc2TransitGatewayIds() []string {
-	if x != nil {
-		return x.AwsEc2TransitGatewayIds
-	}
-	return nil
-}
-
-func (x *UpdateApplicationAwsResourcesResponse) GetAwsEc2TransitGatewayMulticastDomainIds() []string {
-	if x != nil {
-		return x.AwsEc2TransitGatewayMulticastDomainIds
-	}
-	return nil
-}
-
-func (x *UpdateApplicationAwsResourcesResponse) GetAwsEc2TransitGatewayRouteTableIds() []string {
-	if x != nil {
-		return x.AwsEc2TransitGatewayRouteTableIds
-	}
-	return nil
-}
-
-func (x *UpdateApplicationAwsResourcesResponse) GetAwsEgressOnlyInternetGatewayIds() []string {
-	if x != nil {
-		return x.AwsEgressOnlyInternetGatewayIds
-	}
-	return nil
-}
-
-func (x *UpdateApplicationAwsResourcesResponse) GetAwsEipIds() []string {
-	if x != nil {
-		return x.AwsEipIds
-	}
-	return nil
-}
-
-func (x *UpdateApplicationAwsResourcesResponse) GetAwsFlowLogIds() []string {
-	if x != nil {
-		return x.AwsFlowLogIds
-	}
-	return nil
-}
-
 func (x *UpdateApplicationAwsResourcesResponse) GetAwsInstancesIds() []string {
 	if x != nil {
 		return x.AwsInstancesIds
-	}
-	return nil
-}
-
-func (x *UpdateApplicationAwsResourcesResponse) GetAwsInternetGatewayIds() []string {
-	if x != nil {
-		return x.AwsInternetGatewayIds
 	}
 	return nil
 }
@@ -2002,37 +1291,9 @@ func (x *UpdateApplicationAwsResourcesResponse) GetAwsRdsClusterIds() []string {
 	return nil
 }
 
-func (x *UpdateApplicationAwsResourcesResponse) GetAwsRouteTableIds() []string {
-	if x != nil {
-		return x.AwsRouteTableIds
-	}
-	return nil
-}
-
 func (x *UpdateApplicationAwsResourcesResponse) GetAwsSecurityGroupIds() []string {
 	if x != nil {
 		return x.AwsSecurityGroupIds
-	}
-	return nil
-}
-
-func (x *UpdateApplicationAwsResourcesResponse) GetAwsSecurityGroupRuleIds() []string {
-	if x != nil {
-		return x.AwsSecurityGroupRuleIds
-	}
-	return nil
-}
-
-func (x *UpdateApplicationAwsResourcesResponse) GetAwsSpotFleetRequestIds() []string {
-	if x != nil {
-		return x.AwsSpotFleetRequestIds
-	}
-	return nil
-}
-
-func (x *UpdateApplicationAwsResourcesResponse) GetAwsSpotInstanceRequestIds() []string {
-	if x != nil {
-		return x.AwsSpotInstanceRequestIds
 	}
 	return nil
 }
@@ -2051,13 +1312,6 @@ func (x *UpdateApplicationAwsResourcesResponse) GetAwsVpcEndpointIds() []string 
 	return nil
 }
 
-func (x *UpdateApplicationAwsResourcesResponse) GetAwsVpcEndpointServiceIds() []string {
-	if x != nil {
-		return x.AwsVpcEndpointServiceIds
-	}
-	return nil
-}
-
 func (x *UpdateApplicationAwsResourcesResponse) GetAwsVpcIds() []string {
 	if x != nil {
 		return x.AwsVpcIds
@@ -2068,20 +1322,6 @@ func (x *UpdateApplicationAwsResourcesResponse) GetAwsVpcIds() []string {
 func (x *UpdateApplicationAwsResourcesResponse) GetAwsVpcPeeringConnectionIds() []string {
 	if x != nil {
 		return x.AwsVpcPeeringConnectionIds
-	}
-	return nil
-}
-
-func (x *UpdateApplicationAwsResourcesResponse) GetAwsVpnConnectionIds() []string {
-	if x != nil {
-		return x.AwsVpnConnectionIds
-	}
-	return nil
-}
-
-func (x *UpdateApplicationAwsResourcesResponse) GetAwsVpnGatewayIds() []string {
-	if x != nil {
-		return x.AwsVpnGatewayIds
 	}
 	return nil
 }
@@ -13472,203 +12712,108 @@ const file_illumio_cloud_config_v1_config_proto_rawDesc = "" +
 	"\x04name\x18\x04 \x01(\tR\x04nameB\x0e\n" +
 	"\f_description\"*\n" +
 	"\x18DeleteApplicationRequest\x12\x0e\n" +
-	"\x02id\x18\x01 \x01(\tR\x02id\"\xb1\x0e\n" +
+	"\x02id\x18\x01 \x01(\tR\x02id\"\xb7\x05\n" +
 	"$CreateApplicationAwsResourcesRequest\x12\x1d\n" +
 	"\n" +
 	"account_id\x18\x02 \x01(\tR\taccountId\x12%\n" +
 	"\x0eapplication_id\x18\x03 \x01(\tR\rapplicationId\x12\x12\n" +
-	"\x04arns\x18\x04 \x03(\tR\x04arns\x127\n" +
-	"\x18aws_customer_gateway_ids\x18\x05 \x03(\tR\x15awsCustomerGatewayIds\x121\n" +
-	"\x15aws_dx_connection_ids\x18\x06 \x03(\tR\x12awsDxConnectionIds\x12>\n" +
-	"\x1caws_dx_virtual_interface_ids\x18\a \x03(\tR\x18awsDxVirtualInterfaceIds\x12+\n" +
-	"\x12aws_ebs_volume_ids\x18\b \x03(\tR\x0fawsEbsVolumeIds\x12O\n" +
-	"%aws_ec2_instance_connect_endpoint_ids\x18\t \x03(\tR awsEc2InstanceConnectEndpointIds\x12Q\n" +
+	"\x04arns\x18\x04 \x03(\tR\x04arns\x12Q\n" +
 	"&aws_ec2_transit_gateway_attachment_ids\x18\n" +
-	" \x03(\tR!awsEc2TransitGatewayAttachmentIds\x12<\n" +
-	"\x1baws_ec2_transit_gateway_ids\x18\v \x03(\tR\x17awsEc2TransitGatewayIds\x12\\\n" +
-	",aws_ec2_transit_gateway_multicast_domain_ids\x18\f \x03(\tR&awsEc2TransitGatewayMulticastDomainIds\x12R\n" +
-	"'aws_ec2_transit_gateway_route_table_ids\x18\r \x03(\tR!awsEc2TransitGatewayRouteTableIds\x12M\n" +
-	"$aws_egress_only_internet_gateway_ids\x18\x0e \x03(\tR\x1fawsEgressOnlyInternetGatewayIds\x12\x1e\n" +
-	"\vaws_eip_ids\x18\x0f \x03(\tR\tawsEipIds\x12'\n" +
-	"\x10aws_flow_log_ids\x18\x10 \x03(\tR\rawsFlowLogIds\x12*\n" +
-	"\x11aws_instances_ids\x18\x11 \x03(\tR\x0fawsInstancesIds\x127\n" +
-	"\x18aws_internet_gateway_ids\x18\x12 \x03(\tR\x15awsInternetGatewayIds\x12-\n" +
+	" \x03(\tR!awsEc2TransitGatewayAttachmentIds\x12*\n" +
+	"\x11aws_instances_ids\x18\x11 \x03(\tR\x0fawsInstancesIds\x12-\n" +
 	"\x13aws_nat_gateway_ids\x18\x13 \x03(\tR\x10awsNatGatewayIds\x12-\n" +
 	"\x13aws_network_acl_ids\x18\x14 \x03(\tR\x10awsNetworkAclIds\x129\n" +
 	"\x19aws_network_interface_ids\x18\x15 \x03(\tR\x16awsNetworkInterfaceIds\x12-\n" +
-	"\x13aws_rds_cluster_ids\x18\x16 \x03(\tR\x10awsRdsClusterIds\x12-\n" +
-	"\x13aws_route_table_ids\x18\x17 \x03(\tR\x10awsRouteTableIds\x123\n" +
-	"\x16aws_security_group_ids\x18\x18 \x03(\tR\x13awsSecurityGroupIds\x12<\n" +
-	"\x1baws_security_group_rule_ids\x18\x19 \x03(\tR\x17awsSecurityGroupRuleIds\x12:\n" +
-	"\x1aaws_spot_fleet_request_ids\x18\x1a \x03(\tR\x16awsSpotFleetRequestIds\x12@\n" +
-	"\x1daws_spot_instance_request_ids\x18\x1b \x03(\tR\x19awsSpotInstanceRequestIds\x12$\n" +
+	"\x13aws_rds_cluster_ids\x18\x16 \x03(\tR\x10awsRdsClusterIds\x123\n" +
+	"\x16aws_security_group_ids\x18\x18 \x03(\tR\x13awsSecurityGroupIds\x12$\n" +
 	"\x0eaws_subnet_ids\x18\x1c \x03(\tR\fawsSubnetIds\x12/\n" +
-	"\x14aws_vpc_endpoint_ids\x18\x1d \x03(\tR\x11awsVpcEndpointIds\x12>\n" +
-	"\x1caws_vpc_endpoint_service_ids\x18\x1e \x03(\tR\x18awsVpcEndpointServiceIds\x12\x1e\n" +
+	"\x14aws_vpc_endpoint_ids\x18\x1d \x03(\tR\x11awsVpcEndpointIds\x12\x1e\n" +
 	"\vaws_vpc_ids\x18\x1f \x03(\tR\tawsVpcIds\x12B\n" +
-	"\x1eaws_vpc_peering_connection_ids\x18  \x03(\tR\x1aawsVpcPeeringConnectionIds\x123\n" +
-	"\x16aws_vpn_connection_ids\x18! \x03(\tR\x13awsVpnConnectionIds\x12-\n" +
-	"\x13aws_vpn_gateway_ids\x18\" \x03(\tR\x10awsVpnGatewayIds\"\xfc\x0e\n" +
+	"\x1eaws_vpc_peering_connection_ids\x18  \x03(\tR\x1aawsVpcPeeringConnectionIds\"\x82\x06\n" +
 	"%CreateApplicationAwsResourcesResponse\x12\x0e\n" +
 	"\x02id\x18\x01 \x01(\tR\x02id\x12\x1d\n" +
 	"\n" +
 	"account_id\x18\x02 \x01(\tR\taccountId\x12%\n" +
 	"\x0eapplication_id\x18\x03 \x01(\tR\rapplicationId\x128\n" +
 	"\x18application_resource_ids\x18$ \x03(\tR\x16applicationResourceIds\x12\x12\n" +
-	"\x04arns\x18\x04 \x03(\tR\x04arns\x127\n" +
-	"\x18aws_customer_gateway_ids\x18\x05 \x03(\tR\x15awsCustomerGatewayIds\x121\n" +
-	"\x15aws_dx_connection_ids\x18\x06 \x03(\tR\x12awsDxConnectionIds\x12>\n" +
-	"\x1caws_dx_virtual_interface_ids\x18\a \x03(\tR\x18awsDxVirtualInterfaceIds\x12+\n" +
-	"\x12aws_ebs_volume_ids\x18\b \x03(\tR\x0fawsEbsVolumeIds\x12O\n" +
-	"%aws_ec2_instance_connect_endpoint_ids\x18\t \x03(\tR awsEc2InstanceConnectEndpointIds\x12Q\n" +
+	"\x04arns\x18\x04 \x03(\tR\x04arns\x12Q\n" +
 	"&aws_ec2_transit_gateway_attachment_ids\x18\n" +
-	" \x03(\tR!awsEc2TransitGatewayAttachmentIds\x12<\n" +
-	"\x1baws_ec2_transit_gateway_ids\x18\v \x03(\tR\x17awsEc2TransitGatewayIds\x12\\\n" +
-	",aws_ec2_transit_gateway_multicast_domain_ids\x18\f \x03(\tR&awsEc2TransitGatewayMulticastDomainIds\x12R\n" +
-	"'aws_ec2_transit_gateway_route_table_ids\x18\r \x03(\tR!awsEc2TransitGatewayRouteTableIds\x12M\n" +
-	"$aws_egress_only_internet_gateway_ids\x18\x0e \x03(\tR\x1fawsEgressOnlyInternetGatewayIds\x12\x1e\n" +
-	"\vaws_eip_ids\x18\x0f \x03(\tR\tawsEipIds\x12'\n" +
-	"\x10aws_flow_log_ids\x18\x10 \x03(\tR\rawsFlowLogIds\x12*\n" +
-	"\x11aws_instances_ids\x18\x11 \x03(\tR\x0fawsInstancesIds\x127\n" +
-	"\x18aws_internet_gateway_ids\x18\x12 \x03(\tR\x15awsInternetGatewayIds\x12-\n" +
+	" \x03(\tR!awsEc2TransitGatewayAttachmentIds\x12*\n" +
+	"\x11aws_instances_ids\x18\x11 \x03(\tR\x0fawsInstancesIds\x12-\n" +
 	"\x13aws_nat_gateway_ids\x18\x13 \x03(\tR\x10awsNatGatewayIds\x12-\n" +
 	"\x13aws_network_acl_ids\x18\x14 \x03(\tR\x10awsNetworkAclIds\x129\n" +
 	"\x19aws_network_interface_ids\x18\x15 \x03(\tR\x16awsNetworkInterfaceIds\x12-\n" +
-	"\x13aws_rds_cluster_ids\x18\x16 \x03(\tR\x10awsRdsClusterIds\x12-\n" +
-	"\x13aws_route_table_ids\x18\x17 \x03(\tR\x10awsRouteTableIds\x123\n" +
-	"\x16aws_security_group_ids\x18\x18 \x03(\tR\x13awsSecurityGroupIds\x12<\n" +
-	"\x1baws_security_group_rule_ids\x18\x19 \x03(\tR\x17awsSecurityGroupRuleIds\x12:\n" +
-	"\x1aaws_spot_fleet_request_ids\x18\x1a \x03(\tR\x16awsSpotFleetRequestIds\x12@\n" +
-	"\x1daws_spot_instance_request_ids\x18\x1b \x03(\tR\x19awsSpotInstanceRequestIds\x12$\n" +
+	"\x13aws_rds_cluster_ids\x18\x16 \x03(\tR\x10awsRdsClusterIds\x123\n" +
+	"\x16aws_security_group_ids\x18\x18 \x03(\tR\x13awsSecurityGroupIds\x12$\n" +
 	"\x0eaws_subnet_ids\x18\x1c \x03(\tR\fawsSubnetIds\x12/\n" +
-	"\x14aws_vpc_endpoint_ids\x18\x1d \x03(\tR\x11awsVpcEndpointIds\x12>\n" +
-	"\x1caws_vpc_endpoint_service_ids\x18\x1e \x03(\tR\x18awsVpcEndpointServiceIds\x12\x1e\n" +
+	"\x14aws_vpc_endpoint_ids\x18\x1d \x03(\tR\x11awsVpcEndpointIds\x12\x1e\n" +
 	"\vaws_vpc_ids\x18\x1f \x03(\tR\tawsVpcIds\x12B\n" +
-	"\x1eaws_vpc_peering_connection_ids\x18  \x03(\tR\x1aawsVpcPeeringConnectionIds\x123\n" +
-	"\x16aws_vpn_connection_ids\x18! \x03(\tR\x13awsVpnConnectionIds\x12-\n" +
-	"\x13aws_vpn_gateway_ids\x18\" \x03(\tR\x10awsVpnGatewayIds\"\xb4\x01\n" +
+	"\x1eaws_vpc_peering_connection_ids\x18  \x03(\tR\x1aawsVpcPeeringConnectionIds\"\xb4\x01\n" +
 	"\"ReadApplicationAwsResourcesRequest\x12\x0e\n" +
 	"\x02id\x18\x01 \x01(\tR\x02id\x12\x1d\n" +
 	"\n" +
 	"account_id\x18\x02 \x01(\tR\taccountId\x12%\n" +
 	"\x0eapplication_id\x18\x03 \x01(\tR\rapplicationId\x128\n" +
-	"\x18application_resource_ids\x18$ \x03(\tR\x16applicationResourceIds\"\xfa\x0e\n" +
+	"\x18application_resource_ids\x18$ \x03(\tR\x16applicationResourceIds\"\x80\x06\n" +
 	"#ReadApplicationAwsResourcesResponse\x12\x0e\n" +
 	"\x02id\x18\x01 \x01(\tR\x02id\x12\x1d\n" +
 	"\n" +
 	"account_id\x18\x02 \x01(\tR\taccountId\x12%\n" +
 	"\x0eapplication_id\x18\x03 \x01(\tR\rapplicationId\x128\n" +
 	"\x18application_resource_ids\x18$ \x03(\tR\x16applicationResourceIds\x12\x12\n" +
-	"\x04arns\x18\x04 \x03(\tR\x04arns\x127\n" +
-	"\x18aws_customer_gateway_ids\x18\x05 \x03(\tR\x15awsCustomerGatewayIds\x121\n" +
-	"\x15aws_dx_connection_ids\x18\x06 \x03(\tR\x12awsDxConnectionIds\x12>\n" +
-	"\x1caws_dx_virtual_interface_ids\x18\a \x03(\tR\x18awsDxVirtualInterfaceIds\x12+\n" +
-	"\x12aws_ebs_volume_ids\x18\b \x03(\tR\x0fawsEbsVolumeIds\x12O\n" +
-	"%aws_ec2_instance_connect_endpoint_ids\x18\t \x03(\tR awsEc2InstanceConnectEndpointIds\x12Q\n" +
+	"\x04arns\x18\x04 \x03(\tR\x04arns\x12Q\n" +
 	"&aws_ec2_transit_gateway_attachment_ids\x18\n" +
-	" \x03(\tR!awsEc2TransitGatewayAttachmentIds\x12<\n" +
-	"\x1baws_ec2_transit_gateway_ids\x18\v \x03(\tR\x17awsEc2TransitGatewayIds\x12\\\n" +
-	",aws_ec2_transit_gateway_multicast_domain_ids\x18\f \x03(\tR&awsEc2TransitGatewayMulticastDomainIds\x12R\n" +
-	"'aws_ec2_transit_gateway_route_table_ids\x18\r \x03(\tR!awsEc2TransitGatewayRouteTableIds\x12M\n" +
-	"$aws_egress_only_internet_gateway_ids\x18\x0e \x03(\tR\x1fawsEgressOnlyInternetGatewayIds\x12\x1e\n" +
-	"\vaws_eip_ids\x18\x0f \x03(\tR\tawsEipIds\x12'\n" +
-	"\x10aws_flow_log_ids\x18\x10 \x03(\tR\rawsFlowLogIds\x12*\n" +
-	"\x11aws_instances_ids\x18\x11 \x03(\tR\x0fawsInstancesIds\x127\n" +
-	"\x18aws_internet_gateway_ids\x18\x12 \x03(\tR\x15awsInternetGatewayIds\x12-\n" +
+	" \x03(\tR!awsEc2TransitGatewayAttachmentIds\x12*\n" +
+	"\x11aws_instances_ids\x18\x11 \x03(\tR\x0fawsInstancesIds\x12-\n" +
 	"\x13aws_nat_gateway_ids\x18\x13 \x03(\tR\x10awsNatGatewayIds\x12-\n" +
 	"\x13aws_network_acl_ids\x18\x14 \x03(\tR\x10awsNetworkAclIds\x129\n" +
 	"\x19aws_network_interface_ids\x18\x15 \x03(\tR\x16awsNetworkInterfaceIds\x12-\n" +
-	"\x13aws_rds_cluster_ids\x18\x16 \x03(\tR\x10awsRdsClusterIds\x12-\n" +
-	"\x13aws_route_table_ids\x18\x17 \x03(\tR\x10awsRouteTableIds\x123\n" +
-	"\x16aws_security_group_ids\x18\x18 \x03(\tR\x13awsSecurityGroupIds\x12<\n" +
-	"\x1baws_security_group_rule_ids\x18\x19 \x03(\tR\x17awsSecurityGroupRuleIds\x12:\n" +
-	"\x1aaws_spot_fleet_request_ids\x18\x1a \x03(\tR\x16awsSpotFleetRequestIds\x12@\n" +
-	"\x1daws_spot_instance_request_ids\x18\x1b \x03(\tR\x19awsSpotInstanceRequestIds\x12$\n" +
+	"\x13aws_rds_cluster_ids\x18\x16 \x03(\tR\x10awsRdsClusterIds\x123\n" +
+	"\x16aws_security_group_ids\x18\x18 \x03(\tR\x13awsSecurityGroupIds\x12$\n" +
 	"\x0eaws_subnet_ids\x18\x1c \x03(\tR\fawsSubnetIds\x12/\n" +
-	"\x14aws_vpc_endpoint_ids\x18\x1d \x03(\tR\x11awsVpcEndpointIds\x12>\n" +
-	"\x1caws_vpc_endpoint_service_ids\x18\x1e \x03(\tR\x18awsVpcEndpointServiceIds\x12\x1e\n" +
+	"\x14aws_vpc_endpoint_ids\x18\x1d \x03(\tR\x11awsVpcEndpointIds\x12\x1e\n" +
 	"\vaws_vpc_ids\x18\x1f \x03(\tR\tawsVpcIds\x12B\n" +
-	"\x1eaws_vpc_peering_connection_ids\x18  \x03(\tR\x1aawsVpcPeeringConnectionIds\x123\n" +
-	"\x16aws_vpn_connection_ids\x18! \x03(\tR\x13awsVpnConnectionIds\x12-\n" +
-	"\x13aws_vpn_gateway_ids\x18\" \x03(\tR\x10awsVpnGatewayIds\"\xb8\x0f\n" +
+	"\x1eaws_vpc_peering_connection_ids\x18  \x03(\tR\x1aawsVpcPeeringConnectionIds\"\xbe\x06\n" +
 	"$UpdateApplicationAwsResourcesRequest\x12\x0e\n" +
 	"\x02id\x18\x01 \x01(\tR\x02id\x12\x1d\n" +
 	"\n" +
 	"account_id\x18\x02 \x01(\tR\taccountId\x12%\n" +
 	"\x0eapplication_id\x18\x03 \x01(\tR\rapplicationId\x128\n" +
 	"\x18application_resource_ids\x18$ \x03(\tR\x16applicationResourceIds\x12\x12\n" +
-	"\x04arns\x18\x04 \x03(\tR\x04arns\x127\n" +
-	"\x18aws_customer_gateway_ids\x18\x05 \x03(\tR\x15awsCustomerGatewayIds\x121\n" +
-	"\x15aws_dx_connection_ids\x18\x06 \x03(\tR\x12awsDxConnectionIds\x12>\n" +
-	"\x1caws_dx_virtual_interface_ids\x18\a \x03(\tR\x18awsDxVirtualInterfaceIds\x12+\n" +
-	"\x12aws_ebs_volume_ids\x18\b \x03(\tR\x0fawsEbsVolumeIds\x12O\n" +
-	"%aws_ec2_instance_connect_endpoint_ids\x18\t \x03(\tR awsEc2InstanceConnectEndpointIds\x12Q\n" +
+	"\x04arns\x18\x04 \x03(\tR\x04arns\x12Q\n" +
 	"&aws_ec2_transit_gateway_attachment_ids\x18\n" +
-	" \x03(\tR!awsEc2TransitGatewayAttachmentIds\x12<\n" +
-	"\x1baws_ec2_transit_gateway_ids\x18\v \x03(\tR\x17awsEc2TransitGatewayIds\x12\\\n" +
-	",aws_ec2_transit_gateway_multicast_domain_ids\x18\f \x03(\tR&awsEc2TransitGatewayMulticastDomainIds\x12R\n" +
-	"'aws_ec2_transit_gateway_route_table_ids\x18\r \x03(\tR!awsEc2TransitGatewayRouteTableIds\x12M\n" +
-	"$aws_egress_only_internet_gateway_ids\x18\x0e \x03(\tR\x1fawsEgressOnlyInternetGatewayIds\x12\x1e\n" +
-	"\vaws_eip_ids\x18\x0f \x03(\tR\tawsEipIds\x12'\n" +
-	"\x10aws_flow_log_ids\x18\x10 \x03(\tR\rawsFlowLogIds\x12*\n" +
-	"\x11aws_instances_ids\x18\x11 \x03(\tR\x0fawsInstancesIds\x127\n" +
-	"\x18aws_internet_gateway_ids\x18\x12 \x03(\tR\x15awsInternetGatewayIds\x12-\n" +
+	" \x03(\tR!awsEc2TransitGatewayAttachmentIds\x12*\n" +
+	"\x11aws_instances_ids\x18\x11 \x03(\tR\x0fawsInstancesIds\x12-\n" +
 	"\x13aws_nat_gateway_ids\x18\x13 \x03(\tR\x10awsNatGatewayIds\x12-\n" +
 	"\x13aws_network_acl_ids\x18\x14 \x03(\tR\x10awsNetworkAclIds\x129\n" +
 	"\x19aws_network_interface_ids\x18\x15 \x03(\tR\x16awsNetworkInterfaceIds\x12-\n" +
-	"\x13aws_rds_cluster_ids\x18\x16 \x03(\tR\x10awsRdsClusterIds\x12-\n" +
-	"\x13aws_route_table_ids\x18\x17 \x03(\tR\x10awsRouteTableIds\x123\n" +
-	"\x16aws_security_group_ids\x18\x18 \x03(\tR\x13awsSecurityGroupIds\x12<\n" +
-	"\x1baws_security_group_rule_ids\x18\x19 \x03(\tR\x17awsSecurityGroupRuleIds\x12:\n" +
-	"\x1aaws_spot_fleet_request_ids\x18\x1a \x03(\tR\x16awsSpotFleetRequestIds\x12@\n" +
-	"\x1daws_spot_instance_request_ids\x18\x1b \x03(\tR\x19awsSpotInstanceRequestIds\x12$\n" +
+	"\x13aws_rds_cluster_ids\x18\x16 \x03(\tR\x10awsRdsClusterIds\x123\n" +
+	"\x16aws_security_group_ids\x18\x18 \x03(\tR\x13awsSecurityGroupIds\x12$\n" +
 	"\x0eaws_subnet_ids\x18\x1c \x03(\tR\fawsSubnetIds\x12/\n" +
-	"\x14aws_vpc_endpoint_ids\x18\x1d \x03(\tR\x11awsVpcEndpointIds\x12>\n" +
-	"\x1caws_vpc_endpoint_service_ids\x18\x1e \x03(\tR\x18awsVpcEndpointServiceIds\x12\x1e\n" +
+	"\x14aws_vpc_endpoint_ids\x18\x1d \x03(\tR\x11awsVpcEndpointIds\x12\x1e\n" +
 	"\vaws_vpc_ids\x18\x1f \x03(\tR\tawsVpcIds\x12B\n" +
-	"\x1eaws_vpc_peering_connection_ids\x18  \x03(\tR\x1aawsVpcPeeringConnectionIds\x123\n" +
-	"\x16aws_vpn_connection_ids\x18! \x03(\tR\x13awsVpnConnectionIds\x12-\n" +
-	"\x13aws_vpn_gateway_ids\x18\" \x03(\tR\x10awsVpnGatewayIds\x12;\n" +
+	"\x1eaws_vpc_peering_connection_ids\x18  \x03(\tR\x1aawsVpcPeeringConnectionIds\x12;\n" +
 	"\vupdate_mask\x18# \x01(\v2\x1a.google.protobuf.FieldMaskR\n" +
-	"updateMask\"\xfc\x0e\n" +
+	"updateMask\"\x82\x06\n" +
 	"%UpdateApplicationAwsResourcesResponse\x12\x0e\n" +
 	"\x02id\x18\x01 \x01(\tR\x02id\x12\x1d\n" +
 	"\n" +
 	"account_id\x18\x02 \x01(\tR\taccountId\x12%\n" +
 	"\x0eapplication_id\x18\x03 \x01(\tR\rapplicationId\x128\n" +
 	"\x18application_resource_ids\x18$ \x03(\tR\x16applicationResourceIds\x12\x12\n" +
-	"\x04arns\x18\x04 \x03(\tR\x04arns\x127\n" +
-	"\x18aws_customer_gateway_ids\x18\x05 \x03(\tR\x15awsCustomerGatewayIds\x121\n" +
-	"\x15aws_dx_connection_ids\x18\x06 \x03(\tR\x12awsDxConnectionIds\x12>\n" +
-	"\x1caws_dx_virtual_interface_ids\x18\a \x03(\tR\x18awsDxVirtualInterfaceIds\x12+\n" +
-	"\x12aws_ebs_volume_ids\x18\b \x03(\tR\x0fawsEbsVolumeIds\x12O\n" +
-	"%aws_ec2_instance_connect_endpoint_ids\x18\t \x03(\tR awsEc2InstanceConnectEndpointIds\x12Q\n" +
+	"\x04arns\x18\x04 \x03(\tR\x04arns\x12Q\n" +
 	"&aws_ec2_transit_gateway_attachment_ids\x18\n" +
-	" \x03(\tR!awsEc2TransitGatewayAttachmentIds\x12<\n" +
-	"\x1baws_ec2_transit_gateway_ids\x18\v \x03(\tR\x17awsEc2TransitGatewayIds\x12\\\n" +
-	",aws_ec2_transit_gateway_multicast_domain_ids\x18\f \x03(\tR&awsEc2TransitGatewayMulticastDomainIds\x12R\n" +
-	"'aws_ec2_transit_gateway_route_table_ids\x18\r \x03(\tR!awsEc2TransitGatewayRouteTableIds\x12M\n" +
-	"$aws_egress_only_internet_gateway_ids\x18\x0e \x03(\tR\x1fawsEgressOnlyInternetGatewayIds\x12\x1e\n" +
-	"\vaws_eip_ids\x18\x0f \x03(\tR\tawsEipIds\x12'\n" +
-	"\x10aws_flow_log_ids\x18\x10 \x03(\tR\rawsFlowLogIds\x12*\n" +
-	"\x11aws_instances_ids\x18\x11 \x03(\tR\x0fawsInstancesIds\x127\n" +
-	"\x18aws_internet_gateway_ids\x18\x12 \x03(\tR\x15awsInternetGatewayIds\x12-\n" +
+	" \x03(\tR!awsEc2TransitGatewayAttachmentIds\x12*\n" +
+	"\x11aws_instances_ids\x18\x11 \x03(\tR\x0fawsInstancesIds\x12-\n" +
 	"\x13aws_nat_gateway_ids\x18\x13 \x03(\tR\x10awsNatGatewayIds\x12-\n" +
 	"\x13aws_network_acl_ids\x18\x14 \x03(\tR\x10awsNetworkAclIds\x129\n" +
 	"\x19aws_network_interface_ids\x18\x15 \x03(\tR\x16awsNetworkInterfaceIds\x12-\n" +
-	"\x13aws_rds_cluster_ids\x18\x16 \x03(\tR\x10awsRdsClusterIds\x12-\n" +
-	"\x13aws_route_table_ids\x18\x17 \x03(\tR\x10awsRouteTableIds\x123\n" +
-	"\x16aws_security_group_ids\x18\x18 \x03(\tR\x13awsSecurityGroupIds\x12<\n" +
-	"\x1baws_security_group_rule_ids\x18\x19 \x03(\tR\x17awsSecurityGroupRuleIds\x12:\n" +
-	"\x1aaws_spot_fleet_request_ids\x18\x1a \x03(\tR\x16awsSpotFleetRequestIds\x12@\n" +
-	"\x1daws_spot_instance_request_ids\x18\x1b \x03(\tR\x19awsSpotInstanceRequestIds\x12$\n" +
+	"\x13aws_rds_cluster_ids\x18\x16 \x03(\tR\x10awsRdsClusterIds\x123\n" +
+	"\x16aws_security_group_ids\x18\x18 \x03(\tR\x13awsSecurityGroupIds\x12$\n" +
 	"\x0eaws_subnet_ids\x18\x1c \x03(\tR\fawsSubnetIds\x12/\n" +
-	"\x14aws_vpc_endpoint_ids\x18\x1d \x03(\tR\x11awsVpcEndpointIds\x12>\n" +
-	"\x1caws_vpc_endpoint_service_ids\x18\x1e \x03(\tR\x18awsVpcEndpointServiceIds\x12\x1e\n" +
+	"\x14aws_vpc_endpoint_ids\x18\x1d \x03(\tR\x11awsVpcEndpointIds\x12\x1e\n" +
 	"\vaws_vpc_ids\x18\x1f \x03(\tR\tawsVpcIds\x12B\n" +
-	"\x1eaws_vpc_peering_connection_ids\x18  \x03(\tR\x1aawsVpcPeeringConnectionIds\x123\n" +
-	"\x16aws_vpn_connection_ids\x18! \x03(\tR\x13awsVpnConnectionIds\x12-\n" +
-	"\x13aws_vpn_gateway_ids\x18\" \x03(\tR\x10awsVpnGatewayIds\"\xb6\x01\n" +
+	"\x1eaws_vpc_peering_connection_ids\x18  \x03(\tR\x1aawsVpcPeeringConnectionIds\"\xb6\x01\n" +
 	"$DeleteApplicationAwsResourcesRequest\x12\x0e\n" +
 	"\x02id\x18\x01 \x01(\tR\x02id\x12\x1d\n" +
 	"\n" +
