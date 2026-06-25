@@ -417,28 +417,10 @@ var (
 										},
 									},
 								},
-								"port_ranges": resource_schema.ListNestedAttribute{
+								"port_ranges": resource_schema.ListAttribute{
 									Description: "List of port ranges for the rule.",
 									Required:    true,
-									NestedObject: resource_schema.NestedAttributeObject{
-										Attributes: map[string]resource_schema.Attribute{
-											"protocol": resource_schema.StringAttribute{
-												Description: "Transport protocol: TCP or UDP.",
-												Required:    true,
-												Validators: []validator.String{
-													stringvalidator.OneOf("TCP", "UDP"),
-												},
-											},
-											"from_port": resource_schema.Int64Attribute{
-												Description: "Start port number.",
-												Required:    true,
-											},
-											"to_port": resource_schema.Int64Attribute{
-												Description: "End port number.",
-												Required:    true,
-											},
-										},
-									},
+									ElementType: PortRange,
 								},
 							},
 						},
