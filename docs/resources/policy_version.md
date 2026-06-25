@@ -440,8 +440,8 @@ Optional:
 
 Optional:
 
-- `subnets` (Attributes List) Optional list of Subnet selectors. (see [below for nested schema](#nestedatt--rules--destination--cloud--aws--network--subnets))
-- `vpcs` (Attributes List) Optional list of VPC selectors. (see [below for nested schema](#nestedatt--rules--destination--cloud--aws--network--vpcs))
+- `subnets` (Attributes List) Optional list of Subnet selectors. At least one of vpcs or subnets must be specified. (see [below for nested schema](#nestedatt--rules--destination--cloud--aws--network--subnets))
+- `vpcs` (Attributes List) Optional list of VPC selectors. At least one of vpcs or subnets must be specified. (see [below for nested schema](#nestedatt--rules--destination--cloud--aws--network--vpcs))
 
 <a id="nestedatt--rules--destination--cloud--aws--network--subnets"></a>
 ### Nested Schema for `rules.destination.cloud.aws.network.subnets`
@@ -476,7 +476,7 @@ Required:
 
 Required:
 
-- `id` (String) AWS account ID.
+- `id` (String) AWS account ID (12-digit number, e.g. 123456789012).
 
 
 
@@ -494,8 +494,8 @@ Optional:
 
 Optional:
 
-- `subnets` (Attributes List) Optional list of Subnet selectors. (see [below for nested schema](#nestedatt--rules--destination--cloud--azure--network--subnets))
-- `vnets` (Attributes List) Optional list of VNet selectors. (see [below for nested schema](#nestedatt--rules--destination--cloud--azure--network--vnets))
+- `subnets` (Attributes List) Optional list of Subnet selectors. At least one of vnets or subnets must be specified. (see [below for nested schema](#nestedatt--rules--destination--cloud--azure--network--subnets))
+- `vnets` (Attributes List) Optional list of VNet selectors. At least one of vnets or subnets must be specified. (see [below for nested schema](#nestedatt--rules--destination--cloud--azure--network--vnets))
 
 <a id="nestedatt--rules--destination--cloud--azure--network--subnets"></a>
 ### Nested Schema for `rules.destination.cloud.azure.network.subnets`
@@ -721,8 +721,8 @@ Optional:
 
 Optional:
 
-- `subnets` (Attributes List) Optional list of Subnet selectors. (see [below for nested schema](#nestedatt--rules--source--cloud--aws--network--subnets))
-- `vpcs` (Attributes List) Optional list of VPC selectors. (see [below for nested schema](#nestedatt--rules--source--cloud--aws--network--vpcs))
+- `subnets` (Attributes List) Optional list of Subnet selectors. At least one of vpcs or subnets must be specified. (see [below for nested schema](#nestedatt--rules--source--cloud--aws--network--subnets))
+- `vpcs` (Attributes List) Optional list of VPC selectors. At least one of vpcs or subnets must be specified. (see [below for nested schema](#nestedatt--rules--source--cloud--aws--network--vpcs))
 
 <a id="nestedatt--rules--source--cloud--aws--network--subnets"></a>
 ### Nested Schema for `rules.source.cloud.aws.network.subnets`
@@ -757,7 +757,7 @@ Required:
 
 Required:
 
-- `id` (String) AWS account ID.
+- `id` (String) AWS account ID (12-digit number, e.g. 123456789012).
 
 
 
@@ -775,8 +775,8 @@ Optional:
 
 Optional:
 
-- `subnets` (Attributes List) Optional list of Subnet selectors. (see [below for nested schema](#nestedatt--rules--source--cloud--azure--network--subnets))
-- `vnets` (Attributes List) Optional list of VNet selectors. (see [below for nested schema](#nestedatt--rules--source--cloud--azure--network--vnets))
+- `subnets` (Attributes List) Optional list of Subnet selectors. At least one of vnets or subnets must be specified. (see [below for nested schema](#nestedatt--rules--source--cloud--azure--network--subnets))
+- `vnets` (Attributes List) Optional list of VNet selectors. At least one of vnets or subnets must be specified. (see [below for nested schema](#nestedatt--rules--source--cloud--azure--network--vnets))
 
 <a id="nestedatt--rules--source--cloud--azure--network--subnets"></a>
 ### Nested Schema for `rules.source.cloud.azure.network.subnets`
