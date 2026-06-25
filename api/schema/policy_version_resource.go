@@ -6,6 +6,7 @@ package schema
 import (
 	"maps"
 
+	"github.com/hashicorp/terraform-plugin-framework-validators/listvalidator"
 	"github.com/hashicorp/terraform-plugin-framework-validators/objectvalidator"
 	"github.com/hashicorp/terraform-plugin-framework-validators/stringvalidator"
 	"github.com/hashicorp/terraform-plugin-framework/path"
@@ -254,19 +255,32 @@ var azureSubnetAttributes = map[string]resource_schema.Attribute{
 }
 
 // azureNetworkAttributes defines the network resource selectors within Azure.
+// At least one of vnets or subnets must be set.
 var azureNetworkAttributes = map[string]resource_schema.Attribute{
 	"vnets": resource_schema.ListNestedAttribute{
-		Description: "Optional list of VNet selectors.",
+		Description: "Optional list of VNet selectors. At least one of vnets or subnets must be specified.",
 		Optional:    true,
 		NestedObject: resource_schema.NestedAttributeObject{
 			Attributes: azureVirtualNetworkAttributes,
 		},
+		Validators: []validator.List{
+			listvalidator.AtLeastOneOf(
+				path.MatchRelative().AtParent().AtName("vnets"),
+				path.MatchRelative().AtParent().AtName("subnets"),
+			),
+		},
 	},
 	"subnets": resource_schema.ListNestedAttribute{
-		Description: "Optional list of Subnet selectors.",
+		Description: "Optional list of Subnet selectors. At least one of vnets or subnets must be specified.",
 		Optional:    true,
 		NestedObject: resource_schema.NestedAttributeObject{
 			Attributes: azureSubnetAttributes,
+		},
+		Validators: []validator.List{
+			listvalidator.AtLeastOneOf(
+				path.MatchRelative().AtParent().AtName("vnets"),
+				path.MatchRelative().AtParent().AtName("subnets"),
+			),
 		},
 	},
 }
@@ -306,7 +320,7 @@ var awsOrgSelectorAttributes = map[string]resource_schema.Attribute{
 		NestedObject: resource_schema.NestedAttributeObject{
 			Attributes: map[string]resource_schema.Attribute{
 				"id": resource_schema.StringAttribute{
-					Description: "AWS account ID.",
+					Description: "AWS account ID (12-digit number, e.g. 123456789012).",
 					Required:    true,
 				},
 			},
@@ -347,19 +361,32 @@ var awsSubnetAttributes = map[string]resource_schema.Attribute{
 }
 
 // awsNetworkAttributes defines the network resource selectors within AWS.
+// At least one of vpcs or subnets must be set.
 var awsNetworkAttributes = map[string]resource_schema.Attribute{
 	"vpcs": resource_schema.ListNestedAttribute{
-		Description: "Optional list of VPC selectors.",
+		Description: "Optional list of VPC selectors. At least one of vpcs or subnets must be specified.",
 		Optional:    true,
 		NestedObject: resource_schema.NestedAttributeObject{
 			Attributes: awsVpcAttributes,
 		},
+		Validators: []validator.List{
+			listvalidator.AtLeastOneOf(
+				path.MatchRelative().AtParent().AtName("vpcs"),
+				path.MatchRelative().AtParent().AtName("subnets"),
+			),
+		},
 	},
 	"subnets": resource_schema.ListNestedAttribute{
-		Description: "Optional list of Subnet selectors.",
+		Description: "Optional list of Subnet selectors. At least one of vpcs or subnets must be specified.",
 		Optional:    true,
 		NestedObject: resource_schema.NestedAttributeObject{
 			Attributes: awsSubnetAttributes,
+		},
+		Validators: []validator.List{
+			listvalidator.AtLeastOneOf(
+				path.MatchRelative().AtParent().AtName("vpcs"),
+				path.MatchRelative().AtParent().AtName("subnets"),
+			),
 		},
 	},
 }
