@@ -10,10 +10,9 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework/attr"
 	resource_schema "github.com/hashicorp/terraform-plugin-framework/resource/schema"
 	"github.com/hashicorp/terraform-plugin-framework/types"
-	"github.com/stretchr/testify/suite"
-
 	"github.com/illumio/terraform-provider-illumio-cloudsecure/api/schema"
 	"github.com/illumio/terraform-provider-illumio-cloudsecure/util"
+	"github.com/stretchr/testify/suite"
 )
 
 type GenerateTestSuite struct {
