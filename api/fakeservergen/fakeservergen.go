@@ -446,6 +446,8 @@ func TerraformAttributeTypeToProtoType(nestedMessageNamePrefix, attrName string,
 		return TerraformRepeatedAttributeTypeToProtoType(nestedMessageNamePrefix, attrName, value.ElementType())
 	case types.SetType:
 		return TerraformRepeatedAttributeTypeToProtoType(nestedMessageNamePrefix, attrName, value.ElementType())
+	case types.MapType:
+		return TerraformMapAttributeTypeToProtoType(nestedMessageNamePrefix, attrName, value.ElementType())
 	case types.ObjectType:
 		return TerraformObjectAttributeTypeToProtoType(nestedMessageNamePrefix, attrName)
 	default:
@@ -457,6 +459,21 @@ func TerraformObjectAttributeTypeToProtoType(nestedMessageNamePrefix, attrName s
 	nestedMessageName := nestedMessageNamePrefix + "_" + schema.ProtoMessageName(attrName)
 
 	return "*" + nestedMessageName, nil
+}
+
+func TerraformMapAttributeTypeToProtoType(nestedMessageNamePrefix, attrName string, elementType attr.Type) (t string, err error) {
+	switch elementType.(type) {
+	case types.ObjectType:
+		nestedMessageName := nestedMessageNamePrefix + "_" + schema.ProtoMessageName(attrName)
+		return "map[string]*" + nestedMessageName, nil
+	default:
+		elemType, err := TerraformAttributeTypeToProtoType(nestedMessageNamePrefix, attrName, elementType, false)
+		if err != nil {
+			return "", fmt.Errorf("unsupported map value type %s: %w", elementType.String(), err)
+		}
+
+		return "map[string]" + elemType, nil
+	}
 }
 
 func TerraformRepeatedAttributeTypeToProtoType(nestedMessageNamePrefix, attrName string, elementType attr.Type) (t string, err error) {

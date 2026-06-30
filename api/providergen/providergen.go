@@ -291,6 +291,22 @@ type {{.Name}} struct {
 		}
 	{{- else if eq .CollectionElementType nil}}
 		protoValue = dataValue.(types.{{.ModelTypeName}}).Value{{.ModelTypeName}}()
+	{{- else if eq .ModelTypeName "Map"}}
+		{
+			dataElements := dataValue.(types.{{.ModelTypeName}}).Elements()
+			protoValues := make({{.ProtoTypeName}}, len(dataElements))
+			for key, dataElement := range dataElements {
+				var dataValue attr.Value = dataElement
+				{{- if eq .CollectionElementType.NestedModel nil}}
+				var protoValue {{.CollectionElementType.ProtoTypeName}}
+				{{- else}}
+				var protoValue *{{.CollectionElementType.ProtoTypeName}}
+				{{- end}}
+				{{- template "convertDataValueToProto" .CollectionElementType}}
+				protoValues[key] = {{if ne .WrapProtoValueElementExpr nil}}{{.WrapProtoValueElementExpr}}{{else}}protoValue{{end}}
+			}
+			protoValue = protoValues
+		}
 	{{- else}}
 		{
 			dataElements := dataValue.(types.{{.ModelTypeName}}).Elements()
@@ -386,6 +402,27 @@ types.{{.ModelTypeName}}Type{ElemType: {{- template "modelDataType" .CollectionE
 		dataValue = Convert{{.NestedModel.Name}}ToObjectValueFromProto(protoValue)
 	{{- else if eq .CollectionElementType nil}}
 		dataValue = types.{{.ModelTypeName}}Value(protoValue)
+	{{- else if eq .ModelTypeName "Map"}}
+		{
+			dataElementType := {{template "modelDataType" .CollectionElementType}}
+			protoElements := protoValue
+			if protoElements == nil {
+				dataValue = types.MapNull(dataElementType)
+			} else {
+				dataValues := make(map[string]attr.Value, len(protoElements))
+				for key, protoElement := range protoElements {
+					{{- if ne .CollectionElementType.NestedModel nil}}
+					var protoValue *{{.CollectionElementType.ProtoTypeName}} = {{if ne .UnwrapProtoValueElementExpr nil}}{{.UnwrapProtoValueElementExpr}}{{else}}protoElement{{end}}
+					{{- else}}
+					var protoValue {{.CollectionElementType.ProtoTypeName}} = {{if ne .UnwrapProtoValueElementExpr nil}}{{.UnwrapProtoValueElementExpr}}{{else}}protoElement{{end}}
+					{{- end}}
+					var dataValue attr.Value
+					{{- template "convertRepeatedProtoValueToData" .CollectionElementType}}
+					dataValues[key] = dataValue
+				}
+				dataValue = types.MapValueMust(dataElementType, dataValues)
+			}
+		}
 	{{- else}}
 		{
 			dataElementType := {{template "modelDataType" .CollectionElementType}}
@@ -397,9 +434,9 @@ types.{{.ModelTypeName}}Type{ElemType: {{- template "modelDataType" .CollectionE
 				for _, protoElement := range protoElements {
 					{{- if ne .CollectionElementType.NestedModel nil}}
 					var protoValue *{{.CollectionElementType.ProtoTypeName}} = {{if ne .UnwrapProtoValueElementExpr nil}}{{.UnwrapProtoValueElementExpr}}{{else}}protoElement{{end}}
-					{{- else}}	
+					{{- else}}
 					var protoValue {{.CollectionElementType.ProtoTypeName}} = {{if ne .UnwrapProtoValueElementExpr nil}}{{.UnwrapProtoValueElementExpr}}{{else}}protoElement{{end}}
-					{{- end}}	
+					{{- end}}
 					var dataValue attr.Value
 					{{- template "convertRepeatedProtoValueToData" .CollectionElementType}}
 					dataValues = append(dataValues, dataValue)
@@ -828,17 +865,20 @@ func TerraformAttributeTypeToProtoType(nestedMessageNamePrefix, attrName string,
 		}, nil
 	case types.MapType:
 		valueType, err := TerraformAttributeTypeToProtoType(nestedMessageNamePrefix, attrName, v.ElemType)
-
-		// Only support primitive value types for now
-		// MapNestedAttribute (map of objects) and nested collections are not supported
 		if err != nil {
 			return fieldType{}, fmt.Errorf("unsupported map value type: %s", v.ElemType.String())
 		}
 
-		// Terraform maps always have string keys
+		// Terraform maps always have string keys.
+		// Proto map values of message types require a pointer.
+		protoTypeName := "map[string]" + valueType.ProtoTypeName
+		if valueType.NestedModel != nil {
+			protoTypeName = "map[string]*" + valueType.ProtoTypeName
+		}
+
 		return fieldType{
 			ModelTypeName:         "Map",
-			ProtoTypeName:         "map[string]" + valueType.ProtoTypeName,
+			ProtoTypeName:         protoTypeName,
 			CollectionElementType: &valueType,
 		}, nil
 	default:

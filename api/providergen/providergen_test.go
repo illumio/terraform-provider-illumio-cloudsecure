@@ -179,6 +179,18 @@ func (suite *GenerateProviderTestSuite) TestListAndMapNestedAttribute() { //noli
 					Description: "Policy version ID.",
 					Computed:    true,
 				},
+				"top_level_rules": resource_schema.MapNestedAttribute{
+					Description: "Top-level map of rules.",
+					Required:    true,
+					NestedObject: resource_schema.NestedAttributeObject{
+						Attributes: map[string]resource_schema.Attribute{
+							"action": resource_schema.StringAttribute{
+								Description: "Action to take.",
+								Required:    true,
+							},
+						},
+					},
+				},
 				"spec": resource_schema.SingleNestedAttribute{
 					Description: "Policy specification.",
 					Required:    true,
@@ -463,6 +475,23 @@ func ConvertDataValueToPolicyVersion_SpecProto(ctx context.Context, dataValue at
 }
 `
 	suite.Contains(output, expectedConvertDataValue)
+
+	// Also verify provider template (newRequestFunc, copyResponseFunc) generates correct map semantics
+	// for the top-level MapNestedAttribute. This tests different code paths from the converter template above.
+	providerDst := new(bytes.Buffer)
+	err = providerTemplate.Execute(providerDst, &data)
+	suite.Require().NoError(err, "providerTemplate.Execute should not return an error")
+	providerOutput := providerDst.String()
+
+	// newRequestFunc should use map semantics for top_level_rules
+	suite.Contains(providerOutput, "for key, dataElement := range", "newRequestFunc should iterate with key for map")
+	suite.Contains(providerOutput, "protoValues[key]", "newRequestFunc should assign by key for map")
+
+	// copyResponseFunc should use map semantics for top_level_rules
+	suite.Contains(providerOutput, "types.MapNull(", "copyResponseFunc should use MapNull for nil map")
+	suite.Contains(providerOutput, "types.MapValueMust(", "copyResponseFunc should use MapValueMust for map")
+	suite.Contains(providerOutput, "for key, protoElement := range", "copyResponseFunc should iterate with key for map")
+	suite.Contains(providerOutput, "dataValues[key]", "copyResponseFunc should assign by key for map")
 }
 
 // TestNestedCollectionsOfObjects verifies that nested collections (Set of Sets, List of Lists)
