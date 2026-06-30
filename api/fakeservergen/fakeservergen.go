@@ -465,6 +465,7 @@ func TerraformMapAttributeTypeToProtoType(nestedMessageNamePrefix, attrName stri
 	switch elementType.(type) {
 	case types.ObjectType:
 		nestedMessageName := nestedMessageNamePrefix + "_" + schema.ProtoMessageName(attrName)
+
 		return "map[string]*" + nestedMessageName, nil
 	default:
 		elemType, err := TerraformAttributeTypeToProtoType(nestedMessageNamePrefix, attrName, elementType, false)
