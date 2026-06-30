@@ -996,11 +996,11 @@ message PolicyVersion_Rules {
           }
           repeated Subscriptions subscriptions = 1;
         }
-        Network network = 3;
-        OrgSelector org_selector = 5;
+        Network network = 1;
+        OrgSelector org_selector = 2;
       }
-      Aws aws = 2;
-      Azure azure = 1;
+      Aws aws = 1;
+      Azure azure = 2;
     }
     message Fqdns {
       repeated string names = 1;
@@ -1124,11 +1124,11 @@ message PolicyVersion_Rules {
           }
           repeated Subscriptions subscriptions = 1;
         }
-        Network network = 3;
-        OrgSelector org_selector = 5;
+        Network network = 1;
+        OrgSelector org_selector = 2;
       }
-      Aws aws = 2;
-      Azure azure = 1;
+      Aws aws = 1;
+      Azure azure = 2;
     }
     message IllumioLabels {}
     message IpList {
@@ -1206,14 +1206,14 @@ message PolicyVersion_Rules {
 message CreatePolicyVersionRequest {
   optional string description = 2;
   string policy_id = 3;
-  repeated PolicyVersion_Rules rules = 5;
+  map<string, PolicyVersion_Rules> rules = 5;
   int64 version_number = 6;
 }
 message CreatePolicyVersionResponse {
   string id = 1;
   optional string description = 2;
   string policy_id = 3;
-  repeated PolicyVersion_Rules rules = 5;
+  map<string, PolicyVersion_Rules> rules = 5;
   int64 version_number = 6;
 }
 message ReadPolicyVersionRequest {
@@ -1223,7 +1223,7 @@ message ReadPolicyVersionResponse {
   string id = 1;
   optional string description = 2;
   string policy_id = 3;
-  repeated PolicyVersion_Rules rules = 5;
+  map<string, PolicyVersion_Rules> rules = 5;
   int64 version_number = 6;
 }
 message UpdatePolicyVersionRequest {
@@ -1235,7 +1235,7 @@ message UpdatePolicyVersionResponse {
   string id = 1;
   optional string description = 2;
   string policy_id = 3;
-  repeated PolicyVersion_Rules rules = 5;
+  map<string, PolicyVersion_Rules> rules = 5;
   int64 version_number = 6;
 }
 message DeletePolicyVersionRequest {

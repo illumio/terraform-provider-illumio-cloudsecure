@@ -387,7 +387,7 @@ resource "illumio-cloudsecure_policy_version" "aws_multi_account_to_vpc" {
 ### Required
 
 - `policy_id` (String) ID of the CloudSecure policy this version belongs to.
-- `rules` (Attributes List) List of rules in this policy version. Each rule specifies an action (Allow/Deny), source, destination, and port ranges. Multiple rules use OR logic for allows; deny takes precedence. (see [below for nested schema](#nestedatt--rules))
+- `rules` (Attributes Map) Map of rules in this policy version, keyed by rule name. Each rule specifies an action (Allow/Deny), source, destination, and port ranges. Multiple rules use OR logic for allows; deny takes precedence. (see [below for nested schema](#nestedatt--rules))
 
 ### Optional
 
@@ -405,7 +405,7 @@ Required:
 
 - `action` (String) Action to take: Allow or Deny.
 - `destination` (Attributes) Traffic destination selector. (see [below for nested schema](#nestedatt--rules--destination))
-- `port_ranges` (Attributes List) List of port ranges for the rule. (see [below for nested schema](#nestedatt--rules--port_ranges))
+- `port_ranges` (List of Object) List of port ranges for the rule. (see [below for nested schema](#nestedatt--rules--port_ranges))
 - `source` (Attributes) Traffic source selector. (see [below for nested schema](#nestedatt--rules--source))
 
 <a id="nestedatt--rules--destination"></a>
@@ -685,9 +685,9 @@ Required:
 
 Required:
 
-- `from_port` (Number) Start port number.
-- `protocol` (String) Transport protocol: TCP or UDP.
-- `to_port` (Number) End port number.
+- `from_port` (Number)
+- `protocol` (String)
+- `to_port` (Number)
 
 
 <a id="nestedatt--rules--source"></a>

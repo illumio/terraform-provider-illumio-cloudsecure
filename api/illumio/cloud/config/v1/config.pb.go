@@ -9719,11 +9719,11 @@ func (x *PolicyVersion_Rules) GetSource() *PolicyVersion_Rules_Source {
 }
 
 type CreatePolicyVersionRequest struct {
-	state         protoimpl.MessageState `protogen:"open.v1"`
-	Description   *string                `protobuf:"bytes,2,opt,name=description,proto3,oneof" json:"description,omitempty"`
-	PolicyId      string                 `protobuf:"bytes,3,opt,name=policy_id,json=policyId,proto3" json:"policy_id,omitempty"`
-	Rules         []*PolicyVersion_Rules `protobuf:"bytes,5,rep,name=rules,proto3" json:"rules,omitempty"`
-	VersionNumber int64                  `protobuf:"varint,6,opt,name=version_number,json=versionNumber,proto3" json:"version_number,omitempty"`
+	state         protoimpl.MessageState          `protogen:"open.v1"`
+	Description   *string                         `protobuf:"bytes,2,opt,name=description,proto3,oneof" json:"description,omitempty"`
+	PolicyId      string                          `protobuf:"bytes,3,opt,name=policy_id,json=policyId,proto3" json:"policy_id,omitempty"`
+	Rules         map[string]*PolicyVersion_Rules `protobuf:"bytes,5,rep,name=rules,proto3" json:"rules,omitempty" protobuf_key:"bytes,1,opt,name=key" protobuf_val:"bytes,2,opt,name=value"`
+	VersionNumber int64                           `protobuf:"varint,6,opt,name=version_number,json=versionNumber,proto3" json:"version_number,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -9772,7 +9772,7 @@ func (x *CreatePolicyVersionRequest) GetPolicyId() string {
 	return ""
 }
 
-func (x *CreatePolicyVersionRequest) GetRules() []*PolicyVersion_Rules {
+func (x *CreatePolicyVersionRequest) GetRules() map[string]*PolicyVersion_Rules {
 	if x != nil {
 		return x.Rules
 	}
@@ -9787,12 +9787,12 @@ func (x *CreatePolicyVersionRequest) GetVersionNumber() int64 {
 }
 
 type CreatePolicyVersionResponse struct {
-	state         protoimpl.MessageState `protogen:"open.v1"`
-	Id            string                 `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
-	Description   *string                `protobuf:"bytes,2,opt,name=description,proto3,oneof" json:"description,omitempty"`
-	PolicyId      string                 `protobuf:"bytes,3,opt,name=policy_id,json=policyId,proto3" json:"policy_id,omitempty"`
-	Rules         []*PolicyVersion_Rules `protobuf:"bytes,5,rep,name=rules,proto3" json:"rules,omitempty"`
-	VersionNumber int64                  `protobuf:"varint,6,opt,name=version_number,json=versionNumber,proto3" json:"version_number,omitempty"`
+	state         protoimpl.MessageState          `protogen:"open.v1"`
+	Id            string                          `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
+	Description   *string                         `protobuf:"bytes,2,opt,name=description,proto3,oneof" json:"description,omitempty"`
+	PolicyId      string                          `protobuf:"bytes,3,opt,name=policy_id,json=policyId,proto3" json:"policy_id,omitempty"`
+	Rules         map[string]*PolicyVersion_Rules `protobuf:"bytes,5,rep,name=rules,proto3" json:"rules,omitempty" protobuf_key:"bytes,1,opt,name=key" protobuf_val:"bytes,2,opt,name=value"`
+	VersionNumber int64                           `protobuf:"varint,6,opt,name=version_number,json=versionNumber,proto3" json:"version_number,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -9848,7 +9848,7 @@ func (x *CreatePolicyVersionResponse) GetPolicyId() string {
 	return ""
 }
 
-func (x *CreatePolicyVersionResponse) GetRules() []*PolicyVersion_Rules {
+func (x *CreatePolicyVersionResponse) GetRules() map[string]*PolicyVersion_Rules {
 	if x != nil {
 		return x.Rules
 	}
@@ -9907,12 +9907,12 @@ func (x *ReadPolicyVersionRequest) GetId() string {
 }
 
 type ReadPolicyVersionResponse struct {
-	state         protoimpl.MessageState `protogen:"open.v1"`
-	Id            string                 `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
-	Description   *string                `protobuf:"bytes,2,opt,name=description,proto3,oneof" json:"description,omitempty"`
-	PolicyId      string                 `protobuf:"bytes,3,opt,name=policy_id,json=policyId,proto3" json:"policy_id,omitempty"`
-	Rules         []*PolicyVersion_Rules `protobuf:"bytes,5,rep,name=rules,proto3" json:"rules,omitempty"`
-	VersionNumber int64                  `protobuf:"varint,6,opt,name=version_number,json=versionNumber,proto3" json:"version_number,omitempty"`
+	state         protoimpl.MessageState          `protogen:"open.v1"`
+	Id            string                          `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
+	Description   *string                         `protobuf:"bytes,2,opt,name=description,proto3,oneof" json:"description,omitempty"`
+	PolicyId      string                          `protobuf:"bytes,3,opt,name=policy_id,json=policyId,proto3" json:"policy_id,omitempty"`
+	Rules         map[string]*PolicyVersion_Rules `protobuf:"bytes,5,rep,name=rules,proto3" json:"rules,omitempty" protobuf_key:"bytes,1,opt,name=key" protobuf_val:"bytes,2,opt,name=value"`
+	VersionNumber int64                           `protobuf:"varint,6,opt,name=version_number,json=versionNumber,proto3" json:"version_number,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -9968,7 +9968,7 @@ func (x *ReadPolicyVersionResponse) GetPolicyId() string {
 	return ""
 }
 
-func (x *ReadPolicyVersionResponse) GetRules() []*PolicyVersion_Rules {
+func (x *ReadPolicyVersionResponse) GetRules() map[string]*PolicyVersion_Rules {
 	if x != nil {
 		return x.Rules
 	}
@@ -10043,12 +10043,12 @@ func (x *UpdatePolicyVersionRequest) GetUpdateMask() *fieldmaskpb.FieldMask {
 }
 
 type UpdatePolicyVersionResponse struct {
-	state         protoimpl.MessageState `protogen:"open.v1"`
-	Id            string                 `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
-	Description   *string                `protobuf:"bytes,2,opt,name=description,proto3,oneof" json:"description,omitempty"`
-	PolicyId      string                 `protobuf:"bytes,3,opt,name=policy_id,json=policyId,proto3" json:"policy_id,omitempty"`
-	Rules         []*PolicyVersion_Rules `protobuf:"bytes,5,rep,name=rules,proto3" json:"rules,omitempty"`
-	VersionNumber int64                  `protobuf:"varint,6,opt,name=version_number,json=versionNumber,proto3" json:"version_number,omitempty"`
+	state         protoimpl.MessageState          `protogen:"open.v1"`
+	Id            string                          `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
+	Description   *string                         `protobuf:"bytes,2,opt,name=description,proto3,oneof" json:"description,omitempty"`
+	PolicyId      string                          `protobuf:"bytes,3,opt,name=policy_id,json=policyId,proto3" json:"policy_id,omitempty"`
+	Rules         map[string]*PolicyVersion_Rules `protobuf:"bytes,5,rep,name=rules,proto3" json:"rules,omitempty" protobuf_key:"bytes,1,opt,name=key" protobuf_val:"bytes,2,opt,name=value"`
+	VersionNumber int64                           `protobuf:"varint,6,opt,name=version_number,json=versionNumber,proto3" json:"version_number,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -10104,7 +10104,7 @@ func (x *UpdatePolicyVersionResponse) GetPolicyId() string {
 	return ""
 }
 
-func (x *UpdatePolicyVersionResponse) GetRules() []*PolicyVersion_Rules {
+func (x *UpdatePolicyVersionResponse) GetRules() map[string]*PolicyVersion_Rules {
 	if x != nil {
 		return x.Rules
 	}
@@ -10976,8 +10976,8 @@ func (x *PolicyVersion_Rules_Source) GetK8S() *PolicyVersion_Rules_Source_K8S {
 
 type PolicyVersion_Rules_Destination_Cloud struct {
 	state         protoimpl.MessageState                       `protogen:"open.v1"`
-	Aws           *PolicyVersion_Rules_Destination_Cloud_Aws   `protobuf:"bytes,2,opt,name=aws,proto3" json:"aws,omitempty"`
-	Azure         *PolicyVersion_Rules_Destination_Cloud_Azure `protobuf:"bytes,1,opt,name=azure,proto3" json:"azure,omitempty"`
+	Aws           *PolicyVersion_Rules_Destination_Cloud_Aws   `protobuf:"bytes,1,opt,name=aws,proto3" json:"aws,omitempty"`
+	Azure         *PolicyVersion_Rules_Destination_Cloud_Azure `protobuf:"bytes,2,opt,name=azure,proto3" json:"azure,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -11264,8 +11264,8 @@ func (x *PolicyVersion_Rules_Destination_Cloud_Aws) GetOrgSelector() *PolicyVers
 
 type PolicyVersion_Rules_Destination_Cloud_Azure struct {
 	state         protoimpl.MessageState                                   `protogen:"open.v1"`
-	Network       *PolicyVersion_Rules_Destination_Cloud_Azure_Network     `protobuf:"bytes,3,opt,name=network,proto3" json:"network,omitempty"`
-	OrgSelector   *PolicyVersion_Rules_Destination_Cloud_Azure_OrgSelector `protobuf:"bytes,5,opt,name=org_selector,json=orgSelector,proto3" json:"org_selector,omitempty"`
+	Network       *PolicyVersion_Rules_Destination_Cloud_Azure_Network     `protobuf:"bytes,1,opt,name=network,proto3" json:"network,omitempty"`
+	OrgSelector   *PolicyVersion_Rules_Destination_Cloud_Azure_OrgSelector `protobuf:"bytes,2,opt,name=org_selector,json=orgSelector,proto3" json:"org_selector,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -12472,8 +12472,8 @@ func (x *PolicyVersion_Rules_Destination_K8S_WorkloadSelector_MatchLabels) GetVa
 
 type PolicyVersion_Rules_Source_Cloud struct {
 	state         protoimpl.MessageState                  `protogen:"open.v1"`
-	Aws           *PolicyVersion_Rules_Source_Cloud_Aws   `protobuf:"bytes,2,opt,name=aws,proto3" json:"aws,omitempty"`
-	Azure         *PolicyVersion_Rules_Source_Cloud_Azure `protobuf:"bytes,1,opt,name=azure,proto3" json:"azure,omitempty"`
+	Aws           *PolicyVersion_Rules_Source_Cloud_Aws   `protobuf:"bytes,1,opt,name=aws,proto3" json:"aws,omitempty"`
+	Azure         *PolicyVersion_Rules_Source_Cloud_Azure `protobuf:"bytes,2,opt,name=azure,proto3" json:"azure,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -12716,8 +12716,8 @@ func (x *PolicyVersion_Rules_Source_Cloud_Aws) GetOrgSelector() *PolicyVersion_R
 
 type PolicyVersion_Rules_Source_Cloud_Azure struct {
 	state         protoimpl.MessageState                              `protogen:"open.v1"`
-	Network       *PolicyVersion_Rules_Source_Cloud_Azure_Network     `protobuf:"bytes,3,opt,name=network,proto3" json:"network,omitempty"`
-	OrgSelector   *PolicyVersion_Rules_Source_Cloud_Azure_OrgSelector `protobuf:"bytes,5,opt,name=org_selector,json=orgSelector,proto3" json:"org_selector,omitempty"`
+	Network       *PolicyVersion_Rules_Source_Cloud_Azure_Network     `protobuf:"bytes,1,opt,name=network,proto3" json:"network,omitempty"`
+	OrgSelector   *PolicyVersion_Rules_Source_Cloud_Azure_OrgSelector `protobuf:"bytes,2,opt,name=org_selector,json=orgSelector,proto3" json:"org_selector,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -14796,8 +14796,8 @@ const file_illumio_cloud_config_v1_config_proto_rawDesc = "" +
 	"\aip_list\x18\x04 \x01(\v2?.illumio.cloud.config.v1.PolicyVersion_Rules.Destination.IpListR\x06ipList\x12N\n" +
 	"\x03k8s\x18\x05 \x01(\v2<.illumio.cloud.config.v1.PolicyVersion_Rules.Destination.K8SR\x03k8s\x1a\xc4\r\n" +
 	"\x05Cloud\x12T\n" +
-	"\x03aws\x18\x02 \x01(\v2B.illumio.cloud.config.v1.PolicyVersion_Rules.Destination.Cloud.AwsR\x03aws\x12Z\n" +
-	"\x05azure\x18\x01 \x01(\v2D.illumio.cloud.config.v1.PolicyVersion_Rules.Destination.Cloud.AzureR\x05azure\x1a\xff\x05\n" +
+	"\x03aws\x18\x01 \x01(\v2B.illumio.cloud.config.v1.PolicyVersion_Rules.Destination.Cloud.AwsR\x03aws\x12Z\n" +
+	"\x05azure\x18\x02 \x01(\v2D.illumio.cloud.config.v1.PolicyVersion_Rules.Destination.Cloud.AzureR\x05azure\x1a\xff\x05\n" +
 	"\x03Aws\x12d\n" +
 	"\anetwork\x18\x01 \x01(\v2J.illumio.cloud.config.v1.PolicyVersion_Rules.Destination.Cloud.Aws.NetworkR\anetwork\x12q\n" +
 	"\forg_selector\x18\x02 \x01(\v2N.illumio.cloud.config.v1.PolicyVersion_Rules.Destination.Cloud.Aws.OrgSelectorR\vorgSelector\x1a\xfd\x02\n" +
@@ -14819,8 +14819,8 @@ const file_illumio_cloud_config_v1_config_proto_rawDesc = "" +
 	"\bAccounts\x12\x0e\n" +
 	"\x02id\x18\x01 \x01(\tR\x02id\x1a\x86\x06\n" +
 	"\x05Azure\x12f\n" +
-	"\anetwork\x18\x03 \x01(\v2L.illumio.cloud.config.v1.PolicyVersion_Rules.Destination.Cloud.Azure.NetworkR\anetwork\x12s\n" +
-	"\forg_selector\x18\x05 \x01(\v2P.illumio.cloud.config.v1.PolicyVersion_Rules.Destination.Cloud.Azure.OrgSelectorR\vorgSelector\x1a\xe7\x02\n" +
+	"\anetwork\x18\x01 \x01(\v2L.illumio.cloud.config.v1.PolicyVersion_Rules.Destination.Cloud.Azure.NetworkR\anetwork\x12s\n" +
+	"\forg_selector\x18\x02 \x01(\v2P.illumio.cloud.config.v1.PolicyVersion_Rules.Destination.Cloud.Azure.OrgSelectorR\vorgSelector\x1a\xe7\x02\n" +
 	"\aNetwork\x12n\n" +
 	"\asubnets\x18\x01 \x03(\v2T.illumio.cloud.config.v1.PolicyVersion_Rules.Destination.Cloud.Azure.Network.SubnetsR\asubnets\x12h\n" +
 	"\x05vnets\x18\x02 \x03(\v2R.illumio.cloud.config.v1.PolicyVersion_Rules.Destination.Cloud.Azure.Network.VnetsR\x05vnets\x1a\x19\n" +
@@ -14899,8 +14899,8 @@ const file_illumio_cloud_config_v1_config_proto_rawDesc = "" +
 	"\aip_list\x18\x03 \x01(\v2:.illumio.cloud.config.v1.PolicyVersion_Rules.Source.IpListR\x06ipList\x12I\n" +
 	"\x03k8s\x18\x04 \x01(\v27.illumio.cloud.config.v1.PolicyVersion_Rules.Source.K8SR\x03k8s\x1a\x87\r\n" +
 	"\x05Cloud\x12O\n" +
-	"\x03aws\x18\x02 \x01(\v2=.illumio.cloud.config.v1.PolicyVersion_Rules.Source.Cloud.AwsR\x03aws\x12U\n" +
-	"\x05azure\x18\x01 \x01(\v2?.illumio.cloud.config.v1.PolicyVersion_Rules.Source.Cloud.AzureR\x05azure\x1a\xe6\x05\n" +
+	"\x03aws\x18\x01 \x01(\v2=.illumio.cloud.config.v1.PolicyVersion_Rules.Source.Cloud.AwsR\x03aws\x12U\n" +
+	"\x05azure\x18\x02 \x01(\v2?.illumio.cloud.config.v1.PolicyVersion_Rules.Source.Cloud.AzureR\x05azure\x1a\xe6\x05\n" +
 	"\x03Aws\x12_\n" +
 	"\anetwork\x18\x01 \x01(\v2E.illumio.cloud.config.v1.PolicyVersion_Rules.Source.Cloud.Aws.NetworkR\anetwork\x12l\n" +
 	"\forg_selector\x18\x02 \x01(\v2I.illumio.cloud.config.v1.PolicyVersion_Rules.Source.Cloud.Aws.OrgSelectorR\vorgSelector\x1a\xf3\x02\n" +
@@ -14922,8 +14922,8 @@ const file_illumio_cloud_config_v1_config_proto_rawDesc = "" +
 	"\bAccounts\x12\x0e\n" +
 	"\x02id\x18\x01 \x01(\tR\x02id\x1a\xec\x05\n" +
 	"\x05Azure\x12a\n" +
-	"\anetwork\x18\x03 \x01(\v2G.illumio.cloud.config.v1.PolicyVersion_Rules.Source.Cloud.Azure.NetworkR\anetwork\x12n\n" +
-	"\forg_selector\x18\x05 \x01(\v2K.illumio.cloud.config.v1.PolicyVersion_Rules.Source.Cloud.Azure.OrgSelectorR\vorgSelector\x1a\xdd\x02\n" +
+	"\anetwork\x18\x01 \x01(\v2G.illumio.cloud.config.v1.PolicyVersion_Rules.Source.Cloud.Azure.NetworkR\anetwork\x12n\n" +
+	"\forg_selector\x18\x02 \x01(\v2K.illumio.cloud.config.v1.PolicyVersion_Rules.Source.Cloud.Azure.OrgSelectorR\vorgSelector\x1a\xdd\x02\n" +
 	"\aNetwork\x12i\n" +
 	"\asubnets\x18\x01 \x03(\v2O.illumio.cloud.config.v1.PolicyVersion_Rules.Source.Cloud.Azure.Network.SubnetsR\asubnets\x12c\n" +
 	"\x05vnets\x18\x02 \x03(\v2M.illumio.cloud.config.v1.PolicyVersion_Rules.Source.Cloud.Azure.Network.VnetsR\x05vnets\x1a\x19\n" +
@@ -14988,40 +14988,56 @@ const file_illumio_cloud_config_v1_config_proto_rawDesc = "" +
 	"\x06values\x18\x03 \x03(\tR\x06values\x1a5\n" +
 	"\vMatchLabels\x12\x10\n" +
 	"\x03key\x18\x01 \x01(\tR\x03key\x12\x14\n" +
-	"\x05value\x18\x02 \x01(\tR\x05value\"\xdb\x01\n" +
+	"\x05value\x18\x02 \x01(\tR\x05value\"\xd5\x02\n" +
 	"\x1aCreatePolicyVersionRequest\x12%\n" +
 	"\vdescription\x18\x02 \x01(\tH\x00R\vdescription\x88\x01\x01\x12\x1b\n" +
-	"\tpolicy_id\x18\x03 \x01(\tR\bpolicyId\x12B\n" +
-	"\x05rules\x18\x05 \x03(\v2,.illumio.cloud.config.v1.PolicyVersion_RulesR\x05rules\x12%\n" +
-	"\x0eversion_number\x18\x06 \x01(\x03R\rversionNumberB\x0e\n" +
-	"\f_description\"\xec\x01\n" +
+	"\tpolicy_id\x18\x03 \x01(\tR\bpolicyId\x12T\n" +
+	"\x05rules\x18\x05 \x03(\v2>.illumio.cloud.config.v1.CreatePolicyVersionRequest.RulesEntryR\x05rules\x12%\n" +
+	"\x0eversion_number\x18\x06 \x01(\x03R\rversionNumber\x1af\n" +
+	"\n" +
+	"RulesEntry\x12\x10\n" +
+	"\x03key\x18\x01 \x01(\tR\x03key\x12B\n" +
+	"\x05value\x18\x02 \x01(\v2,.illumio.cloud.config.v1.PolicyVersion_RulesR\x05value:\x028\x01B\x0e\n" +
+	"\f_description\"\xe7\x02\n" +
 	"\x1bCreatePolicyVersionResponse\x12\x0e\n" +
 	"\x02id\x18\x01 \x01(\tR\x02id\x12%\n" +
 	"\vdescription\x18\x02 \x01(\tH\x00R\vdescription\x88\x01\x01\x12\x1b\n" +
-	"\tpolicy_id\x18\x03 \x01(\tR\bpolicyId\x12B\n" +
-	"\x05rules\x18\x05 \x03(\v2,.illumio.cloud.config.v1.PolicyVersion_RulesR\x05rules\x12%\n" +
-	"\x0eversion_number\x18\x06 \x01(\x03R\rversionNumberB\x0e\n" +
+	"\tpolicy_id\x18\x03 \x01(\tR\bpolicyId\x12U\n" +
+	"\x05rules\x18\x05 \x03(\v2?.illumio.cloud.config.v1.CreatePolicyVersionResponse.RulesEntryR\x05rules\x12%\n" +
+	"\x0eversion_number\x18\x06 \x01(\x03R\rversionNumber\x1af\n" +
+	"\n" +
+	"RulesEntry\x12\x10\n" +
+	"\x03key\x18\x01 \x01(\tR\x03key\x12B\n" +
+	"\x05value\x18\x02 \x01(\v2,.illumio.cloud.config.v1.PolicyVersion_RulesR\x05value:\x028\x01B\x0e\n" +
 	"\f_description\"*\n" +
 	"\x18ReadPolicyVersionRequest\x12\x0e\n" +
-	"\x02id\x18\x01 \x01(\tR\x02id\"\xea\x01\n" +
+	"\x02id\x18\x01 \x01(\tR\x02id\"\xe3\x02\n" +
 	"\x19ReadPolicyVersionResponse\x12\x0e\n" +
 	"\x02id\x18\x01 \x01(\tR\x02id\x12%\n" +
 	"\vdescription\x18\x02 \x01(\tH\x00R\vdescription\x88\x01\x01\x12\x1b\n" +
-	"\tpolicy_id\x18\x03 \x01(\tR\bpolicyId\x12B\n" +
-	"\x05rules\x18\x05 \x03(\v2,.illumio.cloud.config.v1.PolicyVersion_RulesR\x05rules\x12%\n" +
-	"\x0eversion_number\x18\x06 \x01(\x03R\rversionNumberB\x0e\n" +
+	"\tpolicy_id\x18\x03 \x01(\tR\bpolicyId\x12S\n" +
+	"\x05rules\x18\x05 \x03(\v2=.illumio.cloud.config.v1.ReadPolicyVersionResponse.RulesEntryR\x05rules\x12%\n" +
+	"\x0eversion_number\x18\x06 \x01(\x03R\rversionNumber\x1af\n" +
+	"\n" +
+	"RulesEntry\x12\x10\n" +
+	"\x03key\x18\x01 \x01(\tR\x03key\x12B\n" +
+	"\x05value\x18\x02 \x01(\v2,.illumio.cloud.config.v1.PolicyVersion_RulesR\x05value:\x028\x01B\x0e\n" +
 	"\f_description\"\x90\x01\n" +
 	"\x1aUpdatePolicyVersionRequest\x12\x0e\n" +
 	"\x02id\x18\x01 \x01(\tR\x02id\x12%\n" +
 	"\x0eversion_number\x18\x06 \x01(\x03R\rversionNumber\x12;\n" +
 	"\vupdate_mask\x18\x04 \x01(\v2\x1a.google.protobuf.FieldMaskR\n" +
-	"updateMask\"\xec\x01\n" +
+	"updateMask\"\xe7\x02\n" +
 	"\x1bUpdatePolicyVersionResponse\x12\x0e\n" +
 	"\x02id\x18\x01 \x01(\tR\x02id\x12%\n" +
 	"\vdescription\x18\x02 \x01(\tH\x00R\vdescription\x88\x01\x01\x12\x1b\n" +
-	"\tpolicy_id\x18\x03 \x01(\tR\bpolicyId\x12B\n" +
-	"\x05rules\x18\x05 \x03(\v2,.illumio.cloud.config.v1.PolicyVersion_RulesR\x05rules\x12%\n" +
-	"\x0eversion_number\x18\x06 \x01(\x03R\rversionNumberB\x0e\n" +
+	"\tpolicy_id\x18\x03 \x01(\tR\bpolicyId\x12U\n" +
+	"\x05rules\x18\x05 \x03(\v2?.illumio.cloud.config.v1.UpdatePolicyVersionResponse.RulesEntryR\x05rules\x12%\n" +
+	"\x0eversion_number\x18\x06 \x01(\x03R\rversionNumber\x1af\n" +
+	"\n" +
+	"RulesEntry\x12\x10\n" +
+	"\x03key\x18\x01 \x01(\tR\x03key\x12B\n" +
+	"\x05value\x18\x02 \x01(\v2,.illumio.cloud.config.v1.PolicyVersion_RulesR\x05value:\x028\x01B\x0e\n" +
 	"\f_description\",\n" +
 	"\x1aDeletePolicyVersionRequest\x12\x0e\n" +
 	"\x02id\x18\x01 \x01(\tR\x02id\"{\n" +
@@ -15181,7 +15197,7 @@ func file_illumio_cloud_config_v1_config_proto_rawDescGZIP() []byte {
 	return file_illumio_cloud_config_v1_config_proto_rawDescData
 }
 
-var file_illumio_cloud_config_v1_config_proto_msgTypes = make([]protoimpl.MessageInfo, 210)
+var file_illumio_cloud_config_v1_config_proto_msgTypes = make([]protoimpl.MessageInfo, 214)
 var file_illumio_cloud_config_v1_config_proto_goTypes = []any{
 	(*CreateApplicationRequest)(nil),                                               // 0: illumio.cloud.config.v1.CreateApplicationRequest
 	(*CreateApplicationResponse)(nil),                                              // 1: illumio.cloud.config.v1.CreateApplicationResponse
@@ -15393,13 +15409,17 @@ var file_illumio_cloud_config_v1_config_proto_goTypes = []any{
 	(*PolicyVersion_Rules_Source_K8S_NamespaceSelector_MatchLabels)(nil),           // 207: illumio.cloud.config.v1.PolicyVersion_Rules.Source.K8S.NamespaceSelector.MatchLabels
 	(*PolicyVersion_Rules_Source_K8S_WorkloadSelector_MatchExpressions)(nil),       // 208: illumio.cloud.config.v1.PolicyVersion_Rules.Source.K8S.WorkloadSelector.MatchExpressions
 	(*PolicyVersion_Rules_Source_K8S_WorkloadSelector_MatchLabels)(nil),            // 209: illumio.cloud.config.v1.PolicyVersion_Rules.Source.K8S.WorkloadSelector.MatchLabels
-	(*fieldmaskpb.FieldMask)(nil),                                                  // 210: google.protobuf.FieldMask
-	(*emptypb.Empty)(nil),                                                          // 211: google.protobuf.Empty
+	nil,                           // 210: illumio.cloud.config.v1.CreatePolicyVersionRequest.RulesEntry
+	nil,                           // 211: illumio.cloud.config.v1.CreatePolicyVersionResponse.RulesEntry
+	nil,                           // 212: illumio.cloud.config.v1.ReadPolicyVersionResponse.RulesEntry
+	nil,                           // 213: illumio.cloud.config.v1.UpdatePolicyVersionResponse.RulesEntry
+	(*fieldmaskpb.FieldMask)(nil), // 214: google.protobuf.FieldMask
+	(*emptypb.Empty)(nil),         // 215: google.protobuf.Empty
 }
 var file_illumio_cloud_config_v1_config_proto_depIdxs = []int32{
-	210, // 0: illumio.cloud.config.v1.UpdateApplicationRequest.update_mask:type_name -> google.protobuf.FieldMask
-	210, // 1: illumio.cloud.config.v1.UpdateApplicationAwsResourcesRequest.update_mask:type_name -> google.protobuf.FieldMask
-	210, // 2: illumio.cloud.config.v1.UpdateApplicationAzureResourcesRequest.update_mask:type_name -> google.protobuf.FieldMask
+	214, // 0: illumio.cloud.config.v1.UpdateApplicationRequest.update_mask:type_name -> google.protobuf.FieldMask
+	214, // 1: illumio.cloud.config.v1.UpdateApplicationAwsResourcesRequest.update_mask:type_name -> google.protobuf.FieldMask
+	214, // 2: illumio.cloud.config.v1.UpdateApplicationAzureResourcesRequest.update_mask:type_name -> google.protobuf.FieldMask
 	21,  // 3: illumio.cloud.config.v1.CreateApplicationPolicyRuleRequest.from_labels:type_name -> illumio.cloud.config.v1.ApplicationPolicyRule_FromLabels
 	22,  // 4: illumio.cloud.config.v1.CreateApplicationPolicyRuleRequest.to_labels:type_name -> illumio.cloud.config.v1.ApplicationPolicyRule_ToLabels
 	23,  // 5: illumio.cloud.config.v1.CreateApplicationPolicyRuleRequest.to_port_ranges:type_name -> illumio.cloud.config.v1.ApplicationPolicyRule_ToPortRanges
@@ -15412,14 +15432,14 @@ var file_illumio_cloud_config_v1_config_proto_depIdxs = []int32{
 	21,  // 12: illumio.cloud.config.v1.UpdateApplicationPolicyRuleRequest.from_labels:type_name -> illumio.cloud.config.v1.ApplicationPolicyRule_FromLabels
 	22,  // 13: illumio.cloud.config.v1.UpdateApplicationPolicyRuleRequest.to_labels:type_name -> illumio.cloud.config.v1.ApplicationPolicyRule_ToLabels
 	23,  // 14: illumio.cloud.config.v1.UpdateApplicationPolicyRuleRequest.to_port_ranges:type_name -> illumio.cloud.config.v1.ApplicationPolicyRule_ToPortRanges
-	210, // 15: illumio.cloud.config.v1.UpdateApplicationPolicyRuleRequest.update_mask:type_name -> google.protobuf.FieldMask
+	214, // 15: illumio.cloud.config.v1.UpdateApplicationPolicyRuleRequest.update_mask:type_name -> google.protobuf.FieldMask
 	21,  // 16: illumio.cloud.config.v1.UpdateApplicationPolicyRuleResponse.from_labels:type_name -> illumio.cloud.config.v1.ApplicationPolicyRule_FromLabels
 	22,  // 17: illumio.cloud.config.v1.UpdateApplicationPolicyRuleResponse.to_labels:type_name -> illumio.cloud.config.v1.ApplicationPolicyRule_ToLabels
 	23,  // 18: illumio.cloud.config.v1.UpdateApplicationPolicyRuleResponse.to_port_ranges:type_name -> illumio.cloud.config.v1.ApplicationPolicyRule_ToPortRanges
-	210, // 19: illumio.cloud.config.v1.UpdateAwsAccountRequest.update_mask:type_name -> google.protobuf.FieldMask
-	210, // 20: illumio.cloud.config.v1.UpdateAwsFlowLogsS3BucketRequest.update_mask:type_name -> google.protobuf.FieldMask
-	210, // 21: illumio.cloud.config.v1.UpdateAzureFlowLogsStorageAccountRequest.update_mask:type_name -> google.protobuf.FieldMask
-	210, // 22: illumio.cloud.config.v1.UpdateAzureSubscriptionRequest.update_mask:type_name -> google.protobuf.FieldMask
+	214, // 19: illumio.cloud.config.v1.UpdateAwsAccountRequest.update_mask:type_name -> google.protobuf.FieldMask
+	214, // 20: illumio.cloud.config.v1.UpdateAwsFlowLogsS3BucketRequest.update_mask:type_name -> google.protobuf.FieldMask
+	214, // 21: illumio.cloud.config.v1.UpdateAzureFlowLogsStorageAccountRequest.update_mask:type_name -> google.protobuf.FieldMask
+	214, // 22: illumio.cloud.config.v1.UpdateAzureSubscriptionRequest.update_mask:type_name -> google.protobuf.FieldMask
 	59,  // 23: illumio.cloud.config.v1.CreateDeploymentRequest.aws_tags:type_name -> illumio.cloud.config.v1.Deployment_AwsTags
 	60,  // 24: illumio.cloud.config.v1.CreateDeploymentRequest.azure_tags:type_name -> illumio.cloud.config.v1.Deployment_AzureTags
 	59,  // 25: illumio.cloud.config.v1.CreateDeploymentResponse.aws_tags:type_name -> illumio.cloud.config.v1.Deployment_AwsTags
@@ -15428,11 +15448,11 @@ var file_illumio_cloud_config_v1_config_proto_depIdxs = []int32{
 	60,  // 28: illumio.cloud.config.v1.ReadDeploymentResponse.azure_tags:type_name -> illumio.cloud.config.v1.Deployment_AzureTags
 	59,  // 29: illumio.cloud.config.v1.UpdateDeploymentRequest.aws_tags:type_name -> illumio.cloud.config.v1.Deployment_AwsTags
 	60,  // 30: illumio.cloud.config.v1.UpdateDeploymentRequest.azure_tags:type_name -> illumio.cloud.config.v1.Deployment_AzureTags
-	210, // 31: illumio.cloud.config.v1.UpdateDeploymentRequest.update_mask:type_name -> google.protobuf.FieldMask
+	214, // 31: illumio.cloud.config.v1.UpdateDeploymentRequest.update_mask:type_name -> google.protobuf.FieldMask
 	59,  // 32: illumio.cloud.config.v1.UpdateDeploymentResponse.aws_tags:type_name -> illumio.cloud.config.v1.Deployment_AwsTags
 	60,  // 33: illumio.cloud.config.v1.UpdateDeploymentResponse.azure_tags:type_name -> illumio.cloud.config.v1.Deployment_AzureTags
-	210, // 34: illumio.cloud.config.v1.UpdateGcpFlowLogsPubsubTopicRequest.update_mask:type_name -> google.protobuf.FieldMask
-	210, // 35: illumio.cloud.config.v1.UpdateGcpProjectRequest.update_mask:type_name -> google.protobuf.FieldMask
+	214, // 34: illumio.cloud.config.v1.UpdateGcpFlowLogsPubsubTopicRequest.update_mask:type_name -> google.protobuf.FieldMask
+	214, // 35: illumio.cloud.config.v1.UpdateGcpProjectRequest.update_mask:type_name -> google.protobuf.FieldMask
 	82,  // 36: illumio.cloud.config.v1.CreateIpListRequest.ip_addresses:type_name -> illumio.cloud.config.v1.IpList_IpAddresses
 	83,  // 37: illumio.cloud.config.v1.CreateIpListRequest.ip_ranges:type_name -> illumio.cloud.config.v1.IpList_IpRanges
 	82,  // 38: illumio.cloud.config.v1.CreateIpListResponse.ip_addresses:type_name -> illumio.cloud.config.v1.IpList_IpAddresses
@@ -15441,12 +15461,12 @@ var file_illumio_cloud_config_v1_config_proto_depIdxs = []int32{
 	83,  // 41: illumio.cloud.config.v1.ReadIpListResponse.ip_ranges:type_name -> illumio.cloud.config.v1.IpList_IpRanges
 	82,  // 42: illumio.cloud.config.v1.UpdateIpListRequest.ip_addresses:type_name -> illumio.cloud.config.v1.IpList_IpAddresses
 	83,  // 43: illumio.cloud.config.v1.UpdateIpListRequest.ip_ranges:type_name -> illumio.cloud.config.v1.IpList_IpRanges
-	210, // 44: illumio.cloud.config.v1.UpdateIpListRequest.update_mask:type_name -> google.protobuf.FieldMask
+	214, // 44: illumio.cloud.config.v1.UpdateIpListRequest.update_mask:type_name -> google.protobuf.FieldMask
 	82,  // 45: illumio.cloud.config.v1.UpdateIpListResponse.ip_addresses:type_name -> illumio.cloud.config.v1.IpList_IpAddresses
 	83,  // 46: illumio.cloud.config.v1.UpdateIpListResponse.ip_ranges:type_name -> illumio.cloud.config.v1.IpList_IpRanges
-	210, // 47: illumio.cloud.config.v1.UpdateK8SClusterRequest.update_mask:type_name -> google.protobuf.FieldMask
-	210, // 48: illumio.cloud.config.v1.UpdateK8SClusterOnboardingCredentialRequest.update_mask:type_name -> google.protobuf.FieldMask
-	210, // 49: illumio.cloud.config.v1.UpdateOrganizationPolicyRequest.update_mask:type_name -> google.protobuf.FieldMask
+	214, // 47: illumio.cloud.config.v1.UpdateK8SClusterRequest.update_mask:type_name -> google.protobuf.FieldMask
+	214, // 48: illumio.cloud.config.v1.UpdateK8SClusterOnboardingCredentialRequest.update_mask:type_name -> google.protobuf.FieldMask
+	214, // 49: illumio.cloud.config.v1.UpdateOrganizationPolicyRequest.update_mask:type_name -> google.protobuf.FieldMask
 	112, // 50: illumio.cloud.config.v1.CreateOrganizationPolicyRuleRequest.from_labels:type_name -> illumio.cloud.config.v1.OrganizationPolicyRule_FromLabels
 	113, // 51: illumio.cloud.config.v1.CreateOrganizationPolicyRuleRequest.to_labels:type_name -> illumio.cloud.config.v1.OrganizationPolicyRule_ToLabels
 	114, // 52: illumio.cloud.config.v1.CreateOrganizationPolicyRuleRequest.to_port_ranges:type_name -> illumio.cloud.config.v1.OrganizationPolicyRule_ToPortRanges
@@ -15459,25 +15479,25 @@ var file_illumio_cloud_config_v1_config_proto_depIdxs = []int32{
 	112, // 59: illumio.cloud.config.v1.UpdateOrganizationPolicyRuleRequest.from_labels:type_name -> illumio.cloud.config.v1.OrganizationPolicyRule_FromLabels
 	113, // 60: illumio.cloud.config.v1.UpdateOrganizationPolicyRuleRequest.to_labels:type_name -> illumio.cloud.config.v1.OrganizationPolicyRule_ToLabels
 	114, // 61: illumio.cloud.config.v1.UpdateOrganizationPolicyRuleRequest.to_port_ranges:type_name -> illumio.cloud.config.v1.OrganizationPolicyRule_ToPortRanges
-	210, // 62: illumio.cloud.config.v1.UpdateOrganizationPolicyRuleRequest.update_mask:type_name -> google.protobuf.FieldMask
+	214, // 62: illumio.cloud.config.v1.UpdateOrganizationPolicyRuleRequest.update_mask:type_name -> google.protobuf.FieldMask
 	112, // 63: illumio.cloud.config.v1.UpdateOrganizationPolicyRuleResponse.from_labels:type_name -> illumio.cloud.config.v1.OrganizationPolicyRule_FromLabels
 	113, // 64: illumio.cloud.config.v1.UpdateOrganizationPolicyRuleResponse.to_labels:type_name -> illumio.cloud.config.v1.OrganizationPolicyRule_ToLabels
 	114, // 65: illumio.cloud.config.v1.UpdateOrganizationPolicyRuleResponse.to_port_ranges:type_name -> illumio.cloud.config.v1.OrganizationPolicyRule_ToPortRanges
-	210, // 66: illumio.cloud.config.v1.UpdatePolicyRequest.update_mask:type_name -> google.protobuf.FieldMask
-	210, // 67: illumio.cloud.config.v1.UpdatePolicyProvisionRequest.update_mask:type_name -> google.protobuf.FieldMask
+	214, // 66: illumio.cloud.config.v1.UpdatePolicyRequest.update_mask:type_name -> google.protobuf.FieldMask
+	214, // 67: illumio.cloud.config.v1.UpdatePolicyProvisionRequest.update_mask:type_name -> google.protobuf.FieldMask
 	152, // 68: illumio.cloud.config.v1.PolicyVersion_Rules.destination:type_name -> illumio.cloud.config.v1.PolicyVersion_Rules.Destination
 	153, // 69: illumio.cloud.config.v1.PolicyVersion_Rules.port_ranges:type_name -> illumio.cloud.config.v1.PolicyVersion_Rules.PortRanges
 	154, // 70: illumio.cloud.config.v1.PolicyVersion_Rules.source:type_name -> illumio.cloud.config.v1.PolicyVersion_Rules.Source
-	136, // 71: illumio.cloud.config.v1.CreatePolicyVersionRequest.rules:type_name -> illumio.cloud.config.v1.PolicyVersion_Rules
-	136, // 72: illumio.cloud.config.v1.CreatePolicyVersionResponse.rules:type_name -> illumio.cloud.config.v1.PolicyVersion_Rules
-	136, // 73: illumio.cloud.config.v1.ReadPolicyVersionResponse.rules:type_name -> illumio.cloud.config.v1.PolicyVersion_Rules
-	210, // 74: illumio.cloud.config.v1.UpdatePolicyVersionRequest.update_mask:type_name -> google.protobuf.FieldMask
-	136, // 75: illumio.cloud.config.v1.UpdatePolicyVersionResponse.rules:type_name -> illumio.cloud.config.v1.PolicyVersion_Rules
+	210, // 71: illumio.cloud.config.v1.CreatePolicyVersionRequest.rules:type_name -> illumio.cloud.config.v1.CreatePolicyVersionRequest.RulesEntry
+	211, // 72: illumio.cloud.config.v1.CreatePolicyVersionResponse.rules:type_name -> illumio.cloud.config.v1.CreatePolicyVersionResponse.RulesEntry
+	212, // 73: illumio.cloud.config.v1.ReadPolicyVersionResponse.rules:type_name -> illumio.cloud.config.v1.ReadPolicyVersionResponse.RulesEntry
+	214, // 74: illumio.cloud.config.v1.UpdatePolicyVersionRequest.update_mask:type_name -> google.protobuf.FieldMask
+	213, // 75: illumio.cloud.config.v1.UpdatePolicyVersionResponse.rules:type_name -> illumio.cloud.config.v1.UpdatePolicyVersionResponse.RulesEntry
 	144, // 76: illumio.cloud.config.v1.CreateTagToLabelRequest.icon:type_name -> illumio.cloud.config.v1.TagToLabel_Icon
 	144, // 77: illumio.cloud.config.v1.CreateTagToLabelResponse.icon:type_name -> illumio.cloud.config.v1.TagToLabel_Icon
 	144, // 78: illumio.cloud.config.v1.ReadTagToLabelResponse.icon:type_name -> illumio.cloud.config.v1.TagToLabel_Icon
 	144, // 79: illumio.cloud.config.v1.UpdateTagToLabelRequest.icon:type_name -> illumio.cloud.config.v1.TagToLabel_Icon
-	210, // 80: illumio.cloud.config.v1.UpdateTagToLabelRequest.update_mask:type_name -> google.protobuf.FieldMask
+	214, // 80: illumio.cloud.config.v1.UpdateTagToLabelRequest.update_mask:type_name -> google.protobuf.FieldMask
 	144, // 81: illumio.cloud.config.v1.UpdateTagToLabelResponse.icon:type_name -> illumio.cloud.config.v1.TagToLabel_Icon
 	155, // 82: illumio.cloud.config.v1.PolicyVersion_Rules.Destination.cloud:type_name -> illumio.cloud.config.v1.PolicyVersion_Rules.Destination.Cloud
 	156, // 83: illumio.cloud.config.v1.PolicyVersion_Rules.Destination.fqdns:type_name -> illumio.cloud.config.v1.PolicyVersion_Rules.Destination.Fqdns
@@ -15534,171 +15554,175 @@ var file_illumio_cloud_config_v1_config_proto_depIdxs = []int32{
 	207, // 134: illumio.cloud.config.v1.PolicyVersion_Rules.Source.K8S.NamespaceSelector.match_labels:type_name -> illumio.cloud.config.v1.PolicyVersion_Rules.Source.K8S.NamespaceSelector.MatchLabels
 	208, // 135: illumio.cloud.config.v1.PolicyVersion_Rules.Source.K8S.WorkloadSelector.match_expressions:type_name -> illumio.cloud.config.v1.PolicyVersion_Rules.Source.K8S.WorkloadSelector.MatchExpressions
 	209, // 136: illumio.cloud.config.v1.PolicyVersion_Rules.Source.K8S.WorkloadSelector.match_labels:type_name -> illumio.cloud.config.v1.PolicyVersion_Rules.Source.K8S.WorkloadSelector.MatchLabels
-	0,   // 137: illumio.cloud.config.v1.ConfigService.CreateApplication:input_type -> illumio.cloud.config.v1.CreateApplicationRequest
-	2,   // 138: illumio.cloud.config.v1.ConfigService.ReadApplication:input_type -> illumio.cloud.config.v1.ReadApplicationRequest
-	4,   // 139: illumio.cloud.config.v1.ConfigService.UpdateApplication:input_type -> illumio.cloud.config.v1.UpdateApplicationRequest
-	6,   // 140: illumio.cloud.config.v1.ConfigService.DeleteApplication:input_type -> illumio.cloud.config.v1.DeleteApplicationRequest
-	7,   // 141: illumio.cloud.config.v1.ConfigService.CreateApplicationAwsResources:input_type -> illumio.cloud.config.v1.CreateApplicationAwsResourcesRequest
-	9,   // 142: illumio.cloud.config.v1.ConfigService.ReadApplicationAwsResources:input_type -> illumio.cloud.config.v1.ReadApplicationAwsResourcesRequest
-	11,  // 143: illumio.cloud.config.v1.ConfigService.UpdateApplicationAwsResources:input_type -> illumio.cloud.config.v1.UpdateApplicationAwsResourcesRequest
-	13,  // 144: illumio.cloud.config.v1.ConfigService.DeleteApplicationAwsResources:input_type -> illumio.cloud.config.v1.DeleteApplicationAwsResourcesRequest
-	14,  // 145: illumio.cloud.config.v1.ConfigService.CreateApplicationAzureResources:input_type -> illumio.cloud.config.v1.CreateApplicationAzureResourcesRequest
-	16,  // 146: illumio.cloud.config.v1.ConfigService.ReadApplicationAzureResources:input_type -> illumio.cloud.config.v1.ReadApplicationAzureResourcesRequest
-	18,  // 147: illumio.cloud.config.v1.ConfigService.UpdateApplicationAzureResources:input_type -> illumio.cloud.config.v1.UpdateApplicationAzureResourcesRequest
-	20,  // 148: illumio.cloud.config.v1.ConfigService.DeleteApplicationAzureResources:input_type -> illumio.cloud.config.v1.DeleteApplicationAzureResourcesRequest
-	24,  // 149: illumio.cloud.config.v1.ConfigService.CreateApplicationPolicyRule:input_type -> illumio.cloud.config.v1.CreateApplicationPolicyRuleRequest
-	26,  // 150: illumio.cloud.config.v1.ConfigService.ReadApplicationPolicyRule:input_type -> illumio.cloud.config.v1.ReadApplicationPolicyRuleRequest
-	28,  // 151: illumio.cloud.config.v1.ConfigService.UpdateApplicationPolicyRule:input_type -> illumio.cloud.config.v1.UpdateApplicationPolicyRuleRequest
-	30,  // 152: illumio.cloud.config.v1.ConfigService.DeleteApplicationPolicyRule:input_type -> illumio.cloud.config.v1.DeleteApplicationPolicyRuleRequest
-	31,  // 153: illumio.cloud.config.v1.ConfigService.CreateAwsAccount:input_type -> illumio.cloud.config.v1.CreateAwsAccountRequest
-	33,  // 154: illumio.cloud.config.v1.ConfigService.ReadAwsAccount:input_type -> illumio.cloud.config.v1.ReadAwsAccountRequest
-	35,  // 155: illumio.cloud.config.v1.ConfigService.UpdateAwsAccount:input_type -> illumio.cloud.config.v1.UpdateAwsAccountRequest
-	37,  // 156: illumio.cloud.config.v1.ConfigService.DeleteAwsAccount:input_type -> illumio.cloud.config.v1.DeleteAwsAccountRequest
-	38,  // 157: illumio.cloud.config.v1.ConfigService.CreateAwsFlowLogsS3Bucket:input_type -> illumio.cloud.config.v1.CreateAwsFlowLogsS3BucketRequest
-	40,  // 158: illumio.cloud.config.v1.ConfigService.ReadAwsFlowLogsS3Bucket:input_type -> illumio.cloud.config.v1.ReadAwsFlowLogsS3BucketRequest
-	42,  // 159: illumio.cloud.config.v1.ConfigService.UpdateAwsFlowLogsS3Bucket:input_type -> illumio.cloud.config.v1.UpdateAwsFlowLogsS3BucketRequest
-	44,  // 160: illumio.cloud.config.v1.ConfigService.DeleteAwsFlowLogsS3Bucket:input_type -> illumio.cloud.config.v1.DeleteAwsFlowLogsS3BucketRequest
-	45,  // 161: illumio.cloud.config.v1.ConfigService.CreateAzureFlowLogsStorageAccount:input_type -> illumio.cloud.config.v1.CreateAzureFlowLogsStorageAccountRequest
-	47,  // 162: illumio.cloud.config.v1.ConfigService.ReadAzureFlowLogsStorageAccount:input_type -> illumio.cloud.config.v1.ReadAzureFlowLogsStorageAccountRequest
-	49,  // 163: illumio.cloud.config.v1.ConfigService.UpdateAzureFlowLogsStorageAccount:input_type -> illumio.cloud.config.v1.UpdateAzureFlowLogsStorageAccountRequest
-	51,  // 164: illumio.cloud.config.v1.ConfigService.DeleteAzureFlowLogsStorageAccount:input_type -> illumio.cloud.config.v1.DeleteAzureFlowLogsStorageAccountRequest
-	52,  // 165: illumio.cloud.config.v1.ConfigService.CreateAzureSubscription:input_type -> illumio.cloud.config.v1.CreateAzureSubscriptionRequest
-	54,  // 166: illumio.cloud.config.v1.ConfigService.ReadAzureSubscription:input_type -> illumio.cloud.config.v1.ReadAzureSubscriptionRequest
-	56,  // 167: illumio.cloud.config.v1.ConfigService.UpdateAzureSubscription:input_type -> illumio.cloud.config.v1.UpdateAzureSubscriptionRequest
-	58,  // 168: illumio.cloud.config.v1.ConfigService.DeleteAzureSubscription:input_type -> illumio.cloud.config.v1.DeleteAzureSubscriptionRequest
-	61,  // 169: illumio.cloud.config.v1.ConfigService.CreateDeployment:input_type -> illumio.cloud.config.v1.CreateDeploymentRequest
-	63,  // 170: illumio.cloud.config.v1.ConfigService.ReadDeployment:input_type -> illumio.cloud.config.v1.ReadDeploymentRequest
-	65,  // 171: illumio.cloud.config.v1.ConfigService.UpdateDeployment:input_type -> illumio.cloud.config.v1.UpdateDeploymentRequest
-	67,  // 172: illumio.cloud.config.v1.ConfigService.DeleteDeployment:input_type -> illumio.cloud.config.v1.DeleteDeploymentRequest
-	68,  // 173: illumio.cloud.config.v1.ConfigService.CreateGcpFlowLogsPubsubTopic:input_type -> illumio.cloud.config.v1.CreateGcpFlowLogsPubsubTopicRequest
-	70,  // 174: illumio.cloud.config.v1.ConfigService.ReadGcpFlowLogsPubsubTopic:input_type -> illumio.cloud.config.v1.ReadGcpFlowLogsPubsubTopicRequest
-	72,  // 175: illumio.cloud.config.v1.ConfigService.UpdateGcpFlowLogsPubsubTopic:input_type -> illumio.cloud.config.v1.UpdateGcpFlowLogsPubsubTopicRequest
-	74,  // 176: illumio.cloud.config.v1.ConfigService.DeleteGcpFlowLogsPubsubTopic:input_type -> illumio.cloud.config.v1.DeleteGcpFlowLogsPubsubTopicRequest
-	75,  // 177: illumio.cloud.config.v1.ConfigService.CreateGcpProject:input_type -> illumio.cloud.config.v1.CreateGcpProjectRequest
-	77,  // 178: illumio.cloud.config.v1.ConfigService.ReadGcpProject:input_type -> illumio.cloud.config.v1.ReadGcpProjectRequest
-	79,  // 179: illumio.cloud.config.v1.ConfigService.UpdateGcpProject:input_type -> illumio.cloud.config.v1.UpdateGcpProjectRequest
-	81,  // 180: illumio.cloud.config.v1.ConfigService.DeleteGcpProject:input_type -> illumio.cloud.config.v1.DeleteGcpProjectRequest
-	84,  // 181: illumio.cloud.config.v1.ConfigService.CreateIpList:input_type -> illumio.cloud.config.v1.CreateIpListRequest
-	86,  // 182: illumio.cloud.config.v1.ConfigService.ReadIpList:input_type -> illumio.cloud.config.v1.ReadIpListRequest
-	88,  // 183: illumio.cloud.config.v1.ConfigService.UpdateIpList:input_type -> illumio.cloud.config.v1.UpdateIpListRequest
-	90,  // 184: illumio.cloud.config.v1.ConfigService.DeleteIpList:input_type -> illumio.cloud.config.v1.DeleteIpListRequest
-	91,  // 185: illumio.cloud.config.v1.ConfigService.CreateK8SCluster:input_type -> illumio.cloud.config.v1.CreateK8SClusterRequest
-	93,  // 186: illumio.cloud.config.v1.ConfigService.ReadK8SCluster:input_type -> illumio.cloud.config.v1.ReadK8SClusterRequest
-	95,  // 187: illumio.cloud.config.v1.ConfigService.UpdateK8SCluster:input_type -> illumio.cloud.config.v1.UpdateK8SClusterRequest
-	97,  // 188: illumio.cloud.config.v1.ConfigService.DeleteK8SCluster:input_type -> illumio.cloud.config.v1.DeleteK8SClusterRequest
-	98,  // 189: illumio.cloud.config.v1.ConfigService.CreateK8SClusterOnboardingCredential:input_type -> illumio.cloud.config.v1.CreateK8SClusterOnboardingCredentialRequest
-	100, // 190: illumio.cloud.config.v1.ConfigService.ReadK8SClusterOnboardingCredential:input_type -> illumio.cloud.config.v1.ReadK8SClusterOnboardingCredentialRequest
-	102, // 191: illumio.cloud.config.v1.ConfigService.UpdateK8SClusterOnboardingCredential:input_type -> illumio.cloud.config.v1.UpdateK8SClusterOnboardingCredentialRequest
-	104, // 192: illumio.cloud.config.v1.ConfigService.DeleteK8SClusterOnboardingCredential:input_type -> illumio.cloud.config.v1.DeleteK8SClusterOnboardingCredentialRequest
-	105, // 193: illumio.cloud.config.v1.ConfigService.CreateOrganizationPolicy:input_type -> illumio.cloud.config.v1.CreateOrganizationPolicyRequest
-	107, // 194: illumio.cloud.config.v1.ConfigService.ReadOrganizationPolicy:input_type -> illumio.cloud.config.v1.ReadOrganizationPolicyRequest
-	109, // 195: illumio.cloud.config.v1.ConfigService.UpdateOrganizationPolicy:input_type -> illumio.cloud.config.v1.UpdateOrganizationPolicyRequest
-	111, // 196: illumio.cloud.config.v1.ConfigService.DeleteOrganizationPolicy:input_type -> illumio.cloud.config.v1.DeleteOrganizationPolicyRequest
-	115, // 197: illumio.cloud.config.v1.ConfigService.CreateOrganizationPolicyRule:input_type -> illumio.cloud.config.v1.CreateOrganizationPolicyRuleRequest
-	117, // 198: illumio.cloud.config.v1.ConfigService.ReadOrganizationPolicyRule:input_type -> illumio.cloud.config.v1.ReadOrganizationPolicyRuleRequest
-	119, // 199: illumio.cloud.config.v1.ConfigService.UpdateOrganizationPolicyRule:input_type -> illumio.cloud.config.v1.UpdateOrganizationPolicyRuleRequest
-	121, // 200: illumio.cloud.config.v1.ConfigService.DeleteOrganizationPolicyRule:input_type -> illumio.cloud.config.v1.DeleteOrganizationPolicyRuleRequest
-	122, // 201: illumio.cloud.config.v1.ConfigService.CreatePolicy:input_type -> illumio.cloud.config.v1.CreatePolicyRequest
-	124, // 202: illumio.cloud.config.v1.ConfigService.ReadPolicy:input_type -> illumio.cloud.config.v1.ReadPolicyRequest
-	126, // 203: illumio.cloud.config.v1.ConfigService.UpdatePolicy:input_type -> illumio.cloud.config.v1.UpdatePolicyRequest
-	128, // 204: illumio.cloud.config.v1.ConfigService.DeletePolicy:input_type -> illumio.cloud.config.v1.DeletePolicyRequest
-	129, // 205: illumio.cloud.config.v1.ConfigService.CreatePolicyProvision:input_type -> illumio.cloud.config.v1.CreatePolicyProvisionRequest
-	131, // 206: illumio.cloud.config.v1.ConfigService.ReadPolicyProvision:input_type -> illumio.cloud.config.v1.ReadPolicyProvisionRequest
-	133, // 207: illumio.cloud.config.v1.ConfigService.UpdatePolicyProvision:input_type -> illumio.cloud.config.v1.UpdatePolicyProvisionRequest
-	135, // 208: illumio.cloud.config.v1.ConfigService.DeletePolicyProvision:input_type -> illumio.cloud.config.v1.DeletePolicyProvisionRequest
-	137, // 209: illumio.cloud.config.v1.ConfigService.CreatePolicyVersion:input_type -> illumio.cloud.config.v1.CreatePolicyVersionRequest
-	139, // 210: illumio.cloud.config.v1.ConfigService.ReadPolicyVersion:input_type -> illumio.cloud.config.v1.ReadPolicyVersionRequest
-	141, // 211: illumio.cloud.config.v1.ConfigService.UpdatePolicyVersion:input_type -> illumio.cloud.config.v1.UpdatePolicyVersionRequest
-	143, // 212: illumio.cloud.config.v1.ConfigService.DeletePolicyVersion:input_type -> illumio.cloud.config.v1.DeletePolicyVersionRequest
-	145, // 213: illumio.cloud.config.v1.ConfigService.CreateTagToLabel:input_type -> illumio.cloud.config.v1.CreateTagToLabelRequest
-	147, // 214: illumio.cloud.config.v1.ConfigService.ReadTagToLabel:input_type -> illumio.cloud.config.v1.ReadTagToLabelRequest
-	149, // 215: illumio.cloud.config.v1.ConfigService.UpdateTagToLabel:input_type -> illumio.cloud.config.v1.UpdateTagToLabelRequest
-	151, // 216: illumio.cloud.config.v1.ConfigService.DeleteTagToLabel:input_type -> illumio.cloud.config.v1.DeleteTagToLabelRequest
-	1,   // 217: illumio.cloud.config.v1.ConfigService.CreateApplication:output_type -> illumio.cloud.config.v1.CreateApplicationResponse
-	3,   // 218: illumio.cloud.config.v1.ConfigService.ReadApplication:output_type -> illumio.cloud.config.v1.ReadApplicationResponse
-	5,   // 219: illumio.cloud.config.v1.ConfigService.UpdateApplication:output_type -> illumio.cloud.config.v1.UpdateApplicationResponse
-	211, // 220: illumio.cloud.config.v1.ConfigService.DeleteApplication:output_type -> google.protobuf.Empty
-	8,   // 221: illumio.cloud.config.v1.ConfigService.CreateApplicationAwsResources:output_type -> illumio.cloud.config.v1.CreateApplicationAwsResourcesResponse
-	10,  // 222: illumio.cloud.config.v1.ConfigService.ReadApplicationAwsResources:output_type -> illumio.cloud.config.v1.ReadApplicationAwsResourcesResponse
-	12,  // 223: illumio.cloud.config.v1.ConfigService.UpdateApplicationAwsResources:output_type -> illumio.cloud.config.v1.UpdateApplicationAwsResourcesResponse
-	211, // 224: illumio.cloud.config.v1.ConfigService.DeleteApplicationAwsResources:output_type -> google.protobuf.Empty
-	15,  // 225: illumio.cloud.config.v1.ConfigService.CreateApplicationAzureResources:output_type -> illumio.cloud.config.v1.CreateApplicationAzureResourcesResponse
-	17,  // 226: illumio.cloud.config.v1.ConfigService.ReadApplicationAzureResources:output_type -> illumio.cloud.config.v1.ReadApplicationAzureResourcesResponse
-	19,  // 227: illumio.cloud.config.v1.ConfigService.UpdateApplicationAzureResources:output_type -> illumio.cloud.config.v1.UpdateApplicationAzureResourcesResponse
-	211, // 228: illumio.cloud.config.v1.ConfigService.DeleteApplicationAzureResources:output_type -> google.protobuf.Empty
-	25,  // 229: illumio.cloud.config.v1.ConfigService.CreateApplicationPolicyRule:output_type -> illumio.cloud.config.v1.CreateApplicationPolicyRuleResponse
-	27,  // 230: illumio.cloud.config.v1.ConfigService.ReadApplicationPolicyRule:output_type -> illumio.cloud.config.v1.ReadApplicationPolicyRuleResponse
-	29,  // 231: illumio.cloud.config.v1.ConfigService.UpdateApplicationPolicyRule:output_type -> illumio.cloud.config.v1.UpdateApplicationPolicyRuleResponse
-	211, // 232: illumio.cloud.config.v1.ConfigService.DeleteApplicationPolicyRule:output_type -> google.protobuf.Empty
-	32,  // 233: illumio.cloud.config.v1.ConfigService.CreateAwsAccount:output_type -> illumio.cloud.config.v1.CreateAwsAccountResponse
-	34,  // 234: illumio.cloud.config.v1.ConfigService.ReadAwsAccount:output_type -> illumio.cloud.config.v1.ReadAwsAccountResponse
-	36,  // 235: illumio.cloud.config.v1.ConfigService.UpdateAwsAccount:output_type -> illumio.cloud.config.v1.UpdateAwsAccountResponse
-	211, // 236: illumio.cloud.config.v1.ConfigService.DeleteAwsAccount:output_type -> google.protobuf.Empty
-	39,  // 237: illumio.cloud.config.v1.ConfigService.CreateAwsFlowLogsS3Bucket:output_type -> illumio.cloud.config.v1.CreateAwsFlowLogsS3BucketResponse
-	41,  // 238: illumio.cloud.config.v1.ConfigService.ReadAwsFlowLogsS3Bucket:output_type -> illumio.cloud.config.v1.ReadAwsFlowLogsS3BucketResponse
-	43,  // 239: illumio.cloud.config.v1.ConfigService.UpdateAwsFlowLogsS3Bucket:output_type -> illumio.cloud.config.v1.UpdateAwsFlowLogsS3BucketResponse
-	211, // 240: illumio.cloud.config.v1.ConfigService.DeleteAwsFlowLogsS3Bucket:output_type -> google.protobuf.Empty
-	46,  // 241: illumio.cloud.config.v1.ConfigService.CreateAzureFlowLogsStorageAccount:output_type -> illumio.cloud.config.v1.CreateAzureFlowLogsStorageAccountResponse
-	48,  // 242: illumio.cloud.config.v1.ConfigService.ReadAzureFlowLogsStorageAccount:output_type -> illumio.cloud.config.v1.ReadAzureFlowLogsStorageAccountResponse
-	50,  // 243: illumio.cloud.config.v1.ConfigService.UpdateAzureFlowLogsStorageAccount:output_type -> illumio.cloud.config.v1.UpdateAzureFlowLogsStorageAccountResponse
-	211, // 244: illumio.cloud.config.v1.ConfigService.DeleteAzureFlowLogsStorageAccount:output_type -> google.protobuf.Empty
-	53,  // 245: illumio.cloud.config.v1.ConfigService.CreateAzureSubscription:output_type -> illumio.cloud.config.v1.CreateAzureSubscriptionResponse
-	55,  // 246: illumio.cloud.config.v1.ConfigService.ReadAzureSubscription:output_type -> illumio.cloud.config.v1.ReadAzureSubscriptionResponse
-	57,  // 247: illumio.cloud.config.v1.ConfigService.UpdateAzureSubscription:output_type -> illumio.cloud.config.v1.UpdateAzureSubscriptionResponse
-	211, // 248: illumio.cloud.config.v1.ConfigService.DeleteAzureSubscription:output_type -> google.protobuf.Empty
-	62,  // 249: illumio.cloud.config.v1.ConfigService.CreateDeployment:output_type -> illumio.cloud.config.v1.CreateDeploymentResponse
-	64,  // 250: illumio.cloud.config.v1.ConfigService.ReadDeployment:output_type -> illumio.cloud.config.v1.ReadDeploymentResponse
-	66,  // 251: illumio.cloud.config.v1.ConfigService.UpdateDeployment:output_type -> illumio.cloud.config.v1.UpdateDeploymentResponse
-	211, // 252: illumio.cloud.config.v1.ConfigService.DeleteDeployment:output_type -> google.protobuf.Empty
-	69,  // 253: illumio.cloud.config.v1.ConfigService.CreateGcpFlowLogsPubsubTopic:output_type -> illumio.cloud.config.v1.CreateGcpFlowLogsPubsubTopicResponse
-	71,  // 254: illumio.cloud.config.v1.ConfigService.ReadGcpFlowLogsPubsubTopic:output_type -> illumio.cloud.config.v1.ReadGcpFlowLogsPubsubTopicResponse
-	73,  // 255: illumio.cloud.config.v1.ConfigService.UpdateGcpFlowLogsPubsubTopic:output_type -> illumio.cloud.config.v1.UpdateGcpFlowLogsPubsubTopicResponse
-	211, // 256: illumio.cloud.config.v1.ConfigService.DeleteGcpFlowLogsPubsubTopic:output_type -> google.protobuf.Empty
-	76,  // 257: illumio.cloud.config.v1.ConfigService.CreateGcpProject:output_type -> illumio.cloud.config.v1.CreateGcpProjectResponse
-	78,  // 258: illumio.cloud.config.v1.ConfigService.ReadGcpProject:output_type -> illumio.cloud.config.v1.ReadGcpProjectResponse
-	80,  // 259: illumio.cloud.config.v1.ConfigService.UpdateGcpProject:output_type -> illumio.cloud.config.v1.UpdateGcpProjectResponse
-	211, // 260: illumio.cloud.config.v1.ConfigService.DeleteGcpProject:output_type -> google.protobuf.Empty
-	85,  // 261: illumio.cloud.config.v1.ConfigService.CreateIpList:output_type -> illumio.cloud.config.v1.CreateIpListResponse
-	87,  // 262: illumio.cloud.config.v1.ConfigService.ReadIpList:output_type -> illumio.cloud.config.v1.ReadIpListResponse
-	89,  // 263: illumio.cloud.config.v1.ConfigService.UpdateIpList:output_type -> illumio.cloud.config.v1.UpdateIpListResponse
-	211, // 264: illumio.cloud.config.v1.ConfigService.DeleteIpList:output_type -> google.protobuf.Empty
-	92,  // 265: illumio.cloud.config.v1.ConfigService.CreateK8SCluster:output_type -> illumio.cloud.config.v1.CreateK8SClusterResponse
-	94,  // 266: illumio.cloud.config.v1.ConfigService.ReadK8SCluster:output_type -> illumio.cloud.config.v1.ReadK8SClusterResponse
-	96,  // 267: illumio.cloud.config.v1.ConfigService.UpdateK8SCluster:output_type -> illumio.cloud.config.v1.UpdateK8SClusterResponse
-	211, // 268: illumio.cloud.config.v1.ConfigService.DeleteK8SCluster:output_type -> google.protobuf.Empty
-	99,  // 269: illumio.cloud.config.v1.ConfigService.CreateK8SClusterOnboardingCredential:output_type -> illumio.cloud.config.v1.CreateK8SClusterOnboardingCredentialResponse
-	101, // 270: illumio.cloud.config.v1.ConfigService.ReadK8SClusterOnboardingCredential:output_type -> illumio.cloud.config.v1.ReadK8SClusterOnboardingCredentialResponse
-	103, // 271: illumio.cloud.config.v1.ConfigService.UpdateK8SClusterOnboardingCredential:output_type -> illumio.cloud.config.v1.UpdateK8SClusterOnboardingCredentialResponse
-	211, // 272: illumio.cloud.config.v1.ConfigService.DeleteK8SClusterOnboardingCredential:output_type -> google.protobuf.Empty
-	106, // 273: illumio.cloud.config.v1.ConfigService.CreateOrganizationPolicy:output_type -> illumio.cloud.config.v1.CreateOrganizationPolicyResponse
-	108, // 274: illumio.cloud.config.v1.ConfigService.ReadOrganizationPolicy:output_type -> illumio.cloud.config.v1.ReadOrganizationPolicyResponse
-	110, // 275: illumio.cloud.config.v1.ConfigService.UpdateOrganizationPolicy:output_type -> illumio.cloud.config.v1.UpdateOrganizationPolicyResponse
-	211, // 276: illumio.cloud.config.v1.ConfigService.DeleteOrganizationPolicy:output_type -> google.protobuf.Empty
-	116, // 277: illumio.cloud.config.v1.ConfigService.CreateOrganizationPolicyRule:output_type -> illumio.cloud.config.v1.CreateOrganizationPolicyRuleResponse
-	118, // 278: illumio.cloud.config.v1.ConfigService.ReadOrganizationPolicyRule:output_type -> illumio.cloud.config.v1.ReadOrganizationPolicyRuleResponse
-	120, // 279: illumio.cloud.config.v1.ConfigService.UpdateOrganizationPolicyRule:output_type -> illumio.cloud.config.v1.UpdateOrganizationPolicyRuleResponse
-	211, // 280: illumio.cloud.config.v1.ConfigService.DeleteOrganizationPolicyRule:output_type -> google.protobuf.Empty
-	123, // 281: illumio.cloud.config.v1.ConfigService.CreatePolicy:output_type -> illumio.cloud.config.v1.CreatePolicyResponse
-	125, // 282: illumio.cloud.config.v1.ConfigService.ReadPolicy:output_type -> illumio.cloud.config.v1.ReadPolicyResponse
-	127, // 283: illumio.cloud.config.v1.ConfigService.UpdatePolicy:output_type -> illumio.cloud.config.v1.UpdatePolicyResponse
-	211, // 284: illumio.cloud.config.v1.ConfigService.DeletePolicy:output_type -> google.protobuf.Empty
-	130, // 285: illumio.cloud.config.v1.ConfigService.CreatePolicyProvision:output_type -> illumio.cloud.config.v1.CreatePolicyProvisionResponse
-	132, // 286: illumio.cloud.config.v1.ConfigService.ReadPolicyProvision:output_type -> illumio.cloud.config.v1.ReadPolicyProvisionResponse
-	134, // 287: illumio.cloud.config.v1.ConfigService.UpdatePolicyProvision:output_type -> illumio.cloud.config.v1.UpdatePolicyProvisionResponse
-	211, // 288: illumio.cloud.config.v1.ConfigService.DeletePolicyProvision:output_type -> google.protobuf.Empty
-	138, // 289: illumio.cloud.config.v1.ConfigService.CreatePolicyVersion:output_type -> illumio.cloud.config.v1.CreatePolicyVersionResponse
-	140, // 290: illumio.cloud.config.v1.ConfigService.ReadPolicyVersion:output_type -> illumio.cloud.config.v1.ReadPolicyVersionResponse
-	142, // 291: illumio.cloud.config.v1.ConfigService.UpdatePolicyVersion:output_type -> illumio.cloud.config.v1.UpdatePolicyVersionResponse
-	211, // 292: illumio.cloud.config.v1.ConfigService.DeletePolicyVersion:output_type -> google.protobuf.Empty
-	146, // 293: illumio.cloud.config.v1.ConfigService.CreateTagToLabel:output_type -> illumio.cloud.config.v1.CreateTagToLabelResponse
-	148, // 294: illumio.cloud.config.v1.ConfigService.ReadTagToLabel:output_type -> illumio.cloud.config.v1.ReadTagToLabelResponse
-	150, // 295: illumio.cloud.config.v1.ConfigService.UpdateTagToLabel:output_type -> illumio.cloud.config.v1.UpdateTagToLabelResponse
-	211, // 296: illumio.cloud.config.v1.ConfigService.DeleteTagToLabel:output_type -> google.protobuf.Empty
-	217, // [217:297] is the sub-list for method output_type
-	137, // [137:217] is the sub-list for method input_type
-	137, // [137:137] is the sub-list for extension type_name
-	137, // [137:137] is the sub-list for extension extendee
-	0,   // [0:137] is the sub-list for field type_name
+	136, // 137: illumio.cloud.config.v1.CreatePolicyVersionRequest.RulesEntry.value:type_name -> illumio.cloud.config.v1.PolicyVersion_Rules
+	136, // 138: illumio.cloud.config.v1.CreatePolicyVersionResponse.RulesEntry.value:type_name -> illumio.cloud.config.v1.PolicyVersion_Rules
+	136, // 139: illumio.cloud.config.v1.ReadPolicyVersionResponse.RulesEntry.value:type_name -> illumio.cloud.config.v1.PolicyVersion_Rules
+	136, // 140: illumio.cloud.config.v1.UpdatePolicyVersionResponse.RulesEntry.value:type_name -> illumio.cloud.config.v1.PolicyVersion_Rules
+	0,   // 141: illumio.cloud.config.v1.ConfigService.CreateApplication:input_type -> illumio.cloud.config.v1.CreateApplicationRequest
+	2,   // 142: illumio.cloud.config.v1.ConfigService.ReadApplication:input_type -> illumio.cloud.config.v1.ReadApplicationRequest
+	4,   // 143: illumio.cloud.config.v1.ConfigService.UpdateApplication:input_type -> illumio.cloud.config.v1.UpdateApplicationRequest
+	6,   // 144: illumio.cloud.config.v1.ConfigService.DeleteApplication:input_type -> illumio.cloud.config.v1.DeleteApplicationRequest
+	7,   // 145: illumio.cloud.config.v1.ConfigService.CreateApplicationAwsResources:input_type -> illumio.cloud.config.v1.CreateApplicationAwsResourcesRequest
+	9,   // 146: illumio.cloud.config.v1.ConfigService.ReadApplicationAwsResources:input_type -> illumio.cloud.config.v1.ReadApplicationAwsResourcesRequest
+	11,  // 147: illumio.cloud.config.v1.ConfigService.UpdateApplicationAwsResources:input_type -> illumio.cloud.config.v1.UpdateApplicationAwsResourcesRequest
+	13,  // 148: illumio.cloud.config.v1.ConfigService.DeleteApplicationAwsResources:input_type -> illumio.cloud.config.v1.DeleteApplicationAwsResourcesRequest
+	14,  // 149: illumio.cloud.config.v1.ConfigService.CreateApplicationAzureResources:input_type -> illumio.cloud.config.v1.CreateApplicationAzureResourcesRequest
+	16,  // 150: illumio.cloud.config.v1.ConfigService.ReadApplicationAzureResources:input_type -> illumio.cloud.config.v1.ReadApplicationAzureResourcesRequest
+	18,  // 151: illumio.cloud.config.v1.ConfigService.UpdateApplicationAzureResources:input_type -> illumio.cloud.config.v1.UpdateApplicationAzureResourcesRequest
+	20,  // 152: illumio.cloud.config.v1.ConfigService.DeleteApplicationAzureResources:input_type -> illumio.cloud.config.v1.DeleteApplicationAzureResourcesRequest
+	24,  // 153: illumio.cloud.config.v1.ConfigService.CreateApplicationPolicyRule:input_type -> illumio.cloud.config.v1.CreateApplicationPolicyRuleRequest
+	26,  // 154: illumio.cloud.config.v1.ConfigService.ReadApplicationPolicyRule:input_type -> illumio.cloud.config.v1.ReadApplicationPolicyRuleRequest
+	28,  // 155: illumio.cloud.config.v1.ConfigService.UpdateApplicationPolicyRule:input_type -> illumio.cloud.config.v1.UpdateApplicationPolicyRuleRequest
+	30,  // 156: illumio.cloud.config.v1.ConfigService.DeleteApplicationPolicyRule:input_type -> illumio.cloud.config.v1.DeleteApplicationPolicyRuleRequest
+	31,  // 157: illumio.cloud.config.v1.ConfigService.CreateAwsAccount:input_type -> illumio.cloud.config.v1.CreateAwsAccountRequest
+	33,  // 158: illumio.cloud.config.v1.ConfigService.ReadAwsAccount:input_type -> illumio.cloud.config.v1.ReadAwsAccountRequest
+	35,  // 159: illumio.cloud.config.v1.ConfigService.UpdateAwsAccount:input_type -> illumio.cloud.config.v1.UpdateAwsAccountRequest
+	37,  // 160: illumio.cloud.config.v1.ConfigService.DeleteAwsAccount:input_type -> illumio.cloud.config.v1.DeleteAwsAccountRequest
+	38,  // 161: illumio.cloud.config.v1.ConfigService.CreateAwsFlowLogsS3Bucket:input_type -> illumio.cloud.config.v1.CreateAwsFlowLogsS3BucketRequest
+	40,  // 162: illumio.cloud.config.v1.ConfigService.ReadAwsFlowLogsS3Bucket:input_type -> illumio.cloud.config.v1.ReadAwsFlowLogsS3BucketRequest
+	42,  // 163: illumio.cloud.config.v1.ConfigService.UpdateAwsFlowLogsS3Bucket:input_type -> illumio.cloud.config.v1.UpdateAwsFlowLogsS3BucketRequest
+	44,  // 164: illumio.cloud.config.v1.ConfigService.DeleteAwsFlowLogsS3Bucket:input_type -> illumio.cloud.config.v1.DeleteAwsFlowLogsS3BucketRequest
+	45,  // 165: illumio.cloud.config.v1.ConfigService.CreateAzureFlowLogsStorageAccount:input_type -> illumio.cloud.config.v1.CreateAzureFlowLogsStorageAccountRequest
+	47,  // 166: illumio.cloud.config.v1.ConfigService.ReadAzureFlowLogsStorageAccount:input_type -> illumio.cloud.config.v1.ReadAzureFlowLogsStorageAccountRequest
+	49,  // 167: illumio.cloud.config.v1.ConfigService.UpdateAzureFlowLogsStorageAccount:input_type -> illumio.cloud.config.v1.UpdateAzureFlowLogsStorageAccountRequest
+	51,  // 168: illumio.cloud.config.v1.ConfigService.DeleteAzureFlowLogsStorageAccount:input_type -> illumio.cloud.config.v1.DeleteAzureFlowLogsStorageAccountRequest
+	52,  // 169: illumio.cloud.config.v1.ConfigService.CreateAzureSubscription:input_type -> illumio.cloud.config.v1.CreateAzureSubscriptionRequest
+	54,  // 170: illumio.cloud.config.v1.ConfigService.ReadAzureSubscription:input_type -> illumio.cloud.config.v1.ReadAzureSubscriptionRequest
+	56,  // 171: illumio.cloud.config.v1.ConfigService.UpdateAzureSubscription:input_type -> illumio.cloud.config.v1.UpdateAzureSubscriptionRequest
+	58,  // 172: illumio.cloud.config.v1.ConfigService.DeleteAzureSubscription:input_type -> illumio.cloud.config.v1.DeleteAzureSubscriptionRequest
+	61,  // 173: illumio.cloud.config.v1.ConfigService.CreateDeployment:input_type -> illumio.cloud.config.v1.CreateDeploymentRequest
+	63,  // 174: illumio.cloud.config.v1.ConfigService.ReadDeployment:input_type -> illumio.cloud.config.v1.ReadDeploymentRequest
+	65,  // 175: illumio.cloud.config.v1.ConfigService.UpdateDeployment:input_type -> illumio.cloud.config.v1.UpdateDeploymentRequest
+	67,  // 176: illumio.cloud.config.v1.ConfigService.DeleteDeployment:input_type -> illumio.cloud.config.v1.DeleteDeploymentRequest
+	68,  // 177: illumio.cloud.config.v1.ConfigService.CreateGcpFlowLogsPubsubTopic:input_type -> illumio.cloud.config.v1.CreateGcpFlowLogsPubsubTopicRequest
+	70,  // 178: illumio.cloud.config.v1.ConfigService.ReadGcpFlowLogsPubsubTopic:input_type -> illumio.cloud.config.v1.ReadGcpFlowLogsPubsubTopicRequest
+	72,  // 179: illumio.cloud.config.v1.ConfigService.UpdateGcpFlowLogsPubsubTopic:input_type -> illumio.cloud.config.v1.UpdateGcpFlowLogsPubsubTopicRequest
+	74,  // 180: illumio.cloud.config.v1.ConfigService.DeleteGcpFlowLogsPubsubTopic:input_type -> illumio.cloud.config.v1.DeleteGcpFlowLogsPubsubTopicRequest
+	75,  // 181: illumio.cloud.config.v1.ConfigService.CreateGcpProject:input_type -> illumio.cloud.config.v1.CreateGcpProjectRequest
+	77,  // 182: illumio.cloud.config.v1.ConfigService.ReadGcpProject:input_type -> illumio.cloud.config.v1.ReadGcpProjectRequest
+	79,  // 183: illumio.cloud.config.v1.ConfigService.UpdateGcpProject:input_type -> illumio.cloud.config.v1.UpdateGcpProjectRequest
+	81,  // 184: illumio.cloud.config.v1.ConfigService.DeleteGcpProject:input_type -> illumio.cloud.config.v1.DeleteGcpProjectRequest
+	84,  // 185: illumio.cloud.config.v1.ConfigService.CreateIpList:input_type -> illumio.cloud.config.v1.CreateIpListRequest
+	86,  // 186: illumio.cloud.config.v1.ConfigService.ReadIpList:input_type -> illumio.cloud.config.v1.ReadIpListRequest
+	88,  // 187: illumio.cloud.config.v1.ConfigService.UpdateIpList:input_type -> illumio.cloud.config.v1.UpdateIpListRequest
+	90,  // 188: illumio.cloud.config.v1.ConfigService.DeleteIpList:input_type -> illumio.cloud.config.v1.DeleteIpListRequest
+	91,  // 189: illumio.cloud.config.v1.ConfigService.CreateK8SCluster:input_type -> illumio.cloud.config.v1.CreateK8SClusterRequest
+	93,  // 190: illumio.cloud.config.v1.ConfigService.ReadK8SCluster:input_type -> illumio.cloud.config.v1.ReadK8SClusterRequest
+	95,  // 191: illumio.cloud.config.v1.ConfigService.UpdateK8SCluster:input_type -> illumio.cloud.config.v1.UpdateK8SClusterRequest
+	97,  // 192: illumio.cloud.config.v1.ConfigService.DeleteK8SCluster:input_type -> illumio.cloud.config.v1.DeleteK8SClusterRequest
+	98,  // 193: illumio.cloud.config.v1.ConfigService.CreateK8SClusterOnboardingCredential:input_type -> illumio.cloud.config.v1.CreateK8SClusterOnboardingCredentialRequest
+	100, // 194: illumio.cloud.config.v1.ConfigService.ReadK8SClusterOnboardingCredential:input_type -> illumio.cloud.config.v1.ReadK8SClusterOnboardingCredentialRequest
+	102, // 195: illumio.cloud.config.v1.ConfigService.UpdateK8SClusterOnboardingCredential:input_type -> illumio.cloud.config.v1.UpdateK8SClusterOnboardingCredentialRequest
+	104, // 196: illumio.cloud.config.v1.ConfigService.DeleteK8SClusterOnboardingCredential:input_type -> illumio.cloud.config.v1.DeleteK8SClusterOnboardingCredentialRequest
+	105, // 197: illumio.cloud.config.v1.ConfigService.CreateOrganizationPolicy:input_type -> illumio.cloud.config.v1.CreateOrganizationPolicyRequest
+	107, // 198: illumio.cloud.config.v1.ConfigService.ReadOrganizationPolicy:input_type -> illumio.cloud.config.v1.ReadOrganizationPolicyRequest
+	109, // 199: illumio.cloud.config.v1.ConfigService.UpdateOrganizationPolicy:input_type -> illumio.cloud.config.v1.UpdateOrganizationPolicyRequest
+	111, // 200: illumio.cloud.config.v1.ConfigService.DeleteOrganizationPolicy:input_type -> illumio.cloud.config.v1.DeleteOrganizationPolicyRequest
+	115, // 201: illumio.cloud.config.v1.ConfigService.CreateOrganizationPolicyRule:input_type -> illumio.cloud.config.v1.CreateOrganizationPolicyRuleRequest
+	117, // 202: illumio.cloud.config.v1.ConfigService.ReadOrganizationPolicyRule:input_type -> illumio.cloud.config.v1.ReadOrganizationPolicyRuleRequest
+	119, // 203: illumio.cloud.config.v1.ConfigService.UpdateOrganizationPolicyRule:input_type -> illumio.cloud.config.v1.UpdateOrganizationPolicyRuleRequest
+	121, // 204: illumio.cloud.config.v1.ConfigService.DeleteOrganizationPolicyRule:input_type -> illumio.cloud.config.v1.DeleteOrganizationPolicyRuleRequest
+	122, // 205: illumio.cloud.config.v1.ConfigService.CreatePolicy:input_type -> illumio.cloud.config.v1.CreatePolicyRequest
+	124, // 206: illumio.cloud.config.v1.ConfigService.ReadPolicy:input_type -> illumio.cloud.config.v1.ReadPolicyRequest
+	126, // 207: illumio.cloud.config.v1.ConfigService.UpdatePolicy:input_type -> illumio.cloud.config.v1.UpdatePolicyRequest
+	128, // 208: illumio.cloud.config.v1.ConfigService.DeletePolicy:input_type -> illumio.cloud.config.v1.DeletePolicyRequest
+	129, // 209: illumio.cloud.config.v1.ConfigService.CreatePolicyProvision:input_type -> illumio.cloud.config.v1.CreatePolicyProvisionRequest
+	131, // 210: illumio.cloud.config.v1.ConfigService.ReadPolicyProvision:input_type -> illumio.cloud.config.v1.ReadPolicyProvisionRequest
+	133, // 211: illumio.cloud.config.v1.ConfigService.UpdatePolicyProvision:input_type -> illumio.cloud.config.v1.UpdatePolicyProvisionRequest
+	135, // 212: illumio.cloud.config.v1.ConfigService.DeletePolicyProvision:input_type -> illumio.cloud.config.v1.DeletePolicyProvisionRequest
+	137, // 213: illumio.cloud.config.v1.ConfigService.CreatePolicyVersion:input_type -> illumio.cloud.config.v1.CreatePolicyVersionRequest
+	139, // 214: illumio.cloud.config.v1.ConfigService.ReadPolicyVersion:input_type -> illumio.cloud.config.v1.ReadPolicyVersionRequest
+	141, // 215: illumio.cloud.config.v1.ConfigService.UpdatePolicyVersion:input_type -> illumio.cloud.config.v1.UpdatePolicyVersionRequest
+	143, // 216: illumio.cloud.config.v1.ConfigService.DeletePolicyVersion:input_type -> illumio.cloud.config.v1.DeletePolicyVersionRequest
+	145, // 217: illumio.cloud.config.v1.ConfigService.CreateTagToLabel:input_type -> illumio.cloud.config.v1.CreateTagToLabelRequest
+	147, // 218: illumio.cloud.config.v1.ConfigService.ReadTagToLabel:input_type -> illumio.cloud.config.v1.ReadTagToLabelRequest
+	149, // 219: illumio.cloud.config.v1.ConfigService.UpdateTagToLabel:input_type -> illumio.cloud.config.v1.UpdateTagToLabelRequest
+	151, // 220: illumio.cloud.config.v1.ConfigService.DeleteTagToLabel:input_type -> illumio.cloud.config.v1.DeleteTagToLabelRequest
+	1,   // 221: illumio.cloud.config.v1.ConfigService.CreateApplication:output_type -> illumio.cloud.config.v1.CreateApplicationResponse
+	3,   // 222: illumio.cloud.config.v1.ConfigService.ReadApplication:output_type -> illumio.cloud.config.v1.ReadApplicationResponse
+	5,   // 223: illumio.cloud.config.v1.ConfigService.UpdateApplication:output_type -> illumio.cloud.config.v1.UpdateApplicationResponse
+	215, // 224: illumio.cloud.config.v1.ConfigService.DeleteApplication:output_type -> google.protobuf.Empty
+	8,   // 225: illumio.cloud.config.v1.ConfigService.CreateApplicationAwsResources:output_type -> illumio.cloud.config.v1.CreateApplicationAwsResourcesResponse
+	10,  // 226: illumio.cloud.config.v1.ConfigService.ReadApplicationAwsResources:output_type -> illumio.cloud.config.v1.ReadApplicationAwsResourcesResponse
+	12,  // 227: illumio.cloud.config.v1.ConfigService.UpdateApplicationAwsResources:output_type -> illumio.cloud.config.v1.UpdateApplicationAwsResourcesResponse
+	215, // 228: illumio.cloud.config.v1.ConfigService.DeleteApplicationAwsResources:output_type -> google.protobuf.Empty
+	15,  // 229: illumio.cloud.config.v1.ConfigService.CreateApplicationAzureResources:output_type -> illumio.cloud.config.v1.CreateApplicationAzureResourcesResponse
+	17,  // 230: illumio.cloud.config.v1.ConfigService.ReadApplicationAzureResources:output_type -> illumio.cloud.config.v1.ReadApplicationAzureResourcesResponse
+	19,  // 231: illumio.cloud.config.v1.ConfigService.UpdateApplicationAzureResources:output_type -> illumio.cloud.config.v1.UpdateApplicationAzureResourcesResponse
+	215, // 232: illumio.cloud.config.v1.ConfigService.DeleteApplicationAzureResources:output_type -> google.protobuf.Empty
+	25,  // 233: illumio.cloud.config.v1.ConfigService.CreateApplicationPolicyRule:output_type -> illumio.cloud.config.v1.CreateApplicationPolicyRuleResponse
+	27,  // 234: illumio.cloud.config.v1.ConfigService.ReadApplicationPolicyRule:output_type -> illumio.cloud.config.v1.ReadApplicationPolicyRuleResponse
+	29,  // 235: illumio.cloud.config.v1.ConfigService.UpdateApplicationPolicyRule:output_type -> illumio.cloud.config.v1.UpdateApplicationPolicyRuleResponse
+	215, // 236: illumio.cloud.config.v1.ConfigService.DeleteApplicationPolicyRule:output_type -> google.protobuf.Empty
+	32,  // 237: illumio.cloud.config.v1.ConfigService.CreateAwsAccount:output_type -> illumio.cloud.config.v1.CreateAwsAccountResponse
+	34,  // 238: illumio.cloud.config.v1.ConfigService.ReadAwsAccount:output_type -> illumio.cloud.config.v1.ReadAwsAccountResponse
+	36,  // 239: illumio.cloud.config.v1.ConfigService.UpdateAwsAccount:output_type -> illumio.cloud.config.v1.UpdateAwsAccountResponse
+	215, // 240: illumio.cloud.config.v1.ConfigService.DeleteAwsAccount:output_type -> google.protobuf.Empty
+	39,  // 241: illumio.cloud.config.v1.ConfigService.CreateAwsFlowLogsS3Bucket:output_type -> illumio.cloud.config.v1.CreateAwsFlowLogsS3BucketResponse
+	41,  // 242: illumio.cloud.config.v1.ConfigService.ReadAwsFlowLogsS3Bucket:output_type -> illumio.cloud.config.v1.ReadAwsFlowLogsS3BucketResponse
+	43,  // 243: illumio.cloud.config.v1.ConfigService.UpdateAwsFlowLogsS3Bucket:output_type -> illumio.cloud.config.v1.UpdateAwsFlowLogsS3BucketResponse
+	215, // 244: illumio.cloud.config.v1.ConfigService.DeleteAwsFlowLogsS3Bucket:output_type -> google.protobuf.Empty
+	46,  // 245: illumio.cloud.config.v1.ConfigService.CreateAzureFlowLogsStorageAccount:output_type -> illumio.cloud.config.v1.CreateAzureFlowLogsStorageAccountResponse
+	48,  // 246: illumio.cloud.config.v1.ConfigService.ReadAzureFlowLogsStorageAccount:output_type -> illumio.cloud.config.v1.ReadAzureFlowLogsStorageAccountResponse
+	50,  // 247: illumio.cloud.config.v1.ConfigService.UpdateAzureFlowLogsStorageAccount:output_type -> illumio.cloud.config.v1.UpdateAzureFlowLogsStorageAccountResponse
+	215, // 248: illumio.cloud.config.v1.ConfigService.DeleteAzureFlowLogsStorageAccount:output_type -> google.protobuf.Empty
+	53,  // 249: illumio.cloud.config.v1.ConfigService.CreateAzureSubscription:output_type -> illumio.cloud.config.v1.CreateAzureSubscriptionResponse
+	55,  // 250: illumio.cloud.config.v1.ConfigService.ReadAzureSubscription:output_type -> illumio.cloud.config.v1.ReadAzureSubscriptionResponse
+	57,  // 251: illumio.cloud.config.v1.ConfigService.UpdateAzureSubscription:output_type -> illumio.cloud.config.v1.UpdateAzureSubscriptionResponse
+	215, // 252: illumio.cloud.config.v1.ConfigService.DeleteAzureSubscription:output_type -> google.protobuf.Empty
+	62,  // 253: illumio.cloud.config.v1.ConfigService.CreateDeployment:output_type -> illumio.cloud.config.v1.CreateDeploymentResponse
+	64,  // 254: illumio.cloud.config.v1.ConfigService.ReadDeployment:output_type -> illumio.cloud.config.v1.ReadDeploymentResponse
+	66,  // 255: illumio.cloud.config.v1.ConfigService.UpdateDeployment:output_type -> illumio.cloud.config.v1.UpdateDeploymentResponse
+	215, // 256: illumio.cloud.config.v1.ConfigService.DeleteDeployment:output_type -> google.protobuf.Empty
+	69,  // 257: illumio.cloud.config.v1.ConfigService.CreateGcpFlowLogsPubsubTopic:output_type -> illumio.cloud.config.v1.CreateGcpFlowLogsPubsubTopicResponse
+	71,  // 258: illumio.cloud.config.v1.ConfigService.ReadGcpFlowLogsPubsubTopic:output_type -> illumio.cloud.config.v1.ReadGcpFlowLogsPubsubTopicResponse
+	73,  // 259: illumio.cloud.config.v1.ConfigService.UpdateGcpFlowLogsPubsubTopic:output_type -> illumio.cloud.config.v1.UpdateGcpFlowLogsPubsubTopicResponse
+	215, // 260: illumio.cloud.config.v1.ConfigService.DeleteGcpFlowLogsPubsubTopic:output_type -> google.protobuf.Empty
+	76,  // 261: illumio.cloud.config.v1.ConfigService.CreateGcpProject:output_type -> illumio.cloud.config.v1.CreateGcpProjectResponse
+	78,  // 262: illumio.cloud.config.v1.ConfigService.ReadGcpProject:output_type -> illumio.cloud.config.v1.ReadGcpProjectResponse
+	80,  // 263: illumio.cloud.config.v1.ConfigService.UpdateGcpProject:output_type -> illumio.cloud.config.v1.UpdateGcpProjectResponse
+	215, // 264: illumio.cloud.config.v1.ConfigService.DeleteGcpProject:output_type -> google.protobuf.Empty
+	85,  // 265: illumio.cloud.config.v1.ConfigService.CreateIpList:output_type -> illumio.cloud.config.v1.CreateIpListResponse
+	87,  // 266: illumio.cloud.config.v1.ConfigService.ReadIpList:output_type -> illumio.cloud.config.v1.ReadIpListResponse
+	89,  // 267: illumio.cloud.config.v1.ConfigService.UpdateIpList:output_type -> illumio.cloud.config.v1.UpdateIpListResponse
+	215, // 268: illumio.cloud.config.v1.ConfigService.DeleteIpList:output_type -> google.protobuf.Empty
+	92,  // 269: illumio.cloud.config.v1.ConfigService.CreateK8SCluster:output_type -> illumio.cloud.config.v1.CreateK8SClusterResponse
+	94,  // 270: illumio.cloud.config.v1.ConfigService.ReadK8SCluster:output_type -> illumio.cloud.config.v1.ReadK8SClusterResponse
+	96,  // 271: illumio.cloud.config.v1.ConfigService.UpdateK8SCluster:output_type -> illumio.cloud.config.v1.UpdateK8SClusterResponse
+	215, // 272: illumio.cloud.config.v1.ConfigService.DeleteK8SCluster:output_type -> google.protobuf.Empty
+	99,  // 273: illumio.cloud.config.v1.ConfigService.CreateK8SClusterOnboardingCredential:output_type -> illumio.cloud.config.v1.CreateK8SClusterOnboardingCredentialResponse
+	101, // 274: illumio.cloud.config.v1.ConfigService.ReadK8SClusterOnboardingCredential:output_type -> illumio.cloud.config.v1.ReadK8SClusterOnboardingCredentialResponse
+	103, // 275: illumio.cloud.config.v1.ConfigService.UpdateK8SClusterOnboardingCredential:output_type -> illumio.cloud.config.v1.UpdateK8SClusterOnboardingCredentialResponse
+	215, // 276: illumio.cloud.config.v1.ConfigService.DeleteK8SClusterOnboardingCredential:output_type -> google.protobuf.Empty
+	106, // 277: illumio.cloud.config.v1.ConfigService.CreateOrganizationPolicy:output_type -> illumio.cloud.config.v1.CreateOrganizationPolicyResponse
+	108, // 278: illumio.cloud.config.v1.ConfigService.ReadOrganizationPolicy:output_type -> illumio.cloud.config.v1.ReadOrganizationPolicyResponse
+	110, // 279: illumio.cloud.config.v1.ConfigService.UpdateOrganizationPolicy:output_type -> illumio.cloud.config.v1.UpdateOrganizationPolicyResponse
+	215, // 280: illumio.cloud.config.v1.ConfigService.DeleteOrganizationPolicy:output_type -> google.protobuf.Empty
+	116, // 281: illumio.cloud.config.v1.ConfigService.CreateOrganizationPolicyRule:output_type -> illumio.cloud.config.v1.CreateOrganizationPolicyRuleResponse
+	118, // 282: illumio.cloud.config.v1.ConfigService.ReadOrganizationPolicyRule:output_type -> illumio.cloud.config.v1.ReadOrganizationPolicyRuleResponse
+	120, // 283: illumio.cloud.config.v1.ConfigService.UpdateOrganizationPolicyRule:output_type -> illumio.cloud.config.v1.UpdateOrganizationPolicyRuleResponse
+	215, // 284: illumio.cloud.config.v1.ConfigService.DeleteOrganizationPolicyRule:output_type -> google.protobuf.Empty
+	123, // 285: illumio.cloud.config.v1.ConfigService.CreatePolicy:output_type -> illumio.cloud.config.v1.CreatePolicyResponse
+	125, // 286: illumio.cloud.config.v1.ConfigService.ReadPolicy:output_type -> illumio.cloud.config.v1.ReadPolicyResponse
+	127, // 287: illumio.cloud.config.v1.ConfigService.UpdatePolicy:output_type -> illumio.cloud.config.v1.UpdatePolicyResponse
+	215, // 288: illumio.cloud.config.v1.ConfigService.DeletePolicy:output_type -> google.protobuf.Empty
+	130, // 289: illumio.cloud.config.v1.ConfigService.CreatePolicyProvision:output_type -> illumio.cloud.config.v1.CreatePolicyProvisionResponse
+	132, // 290: illumio.cloud.config.v1.ConfigService.ReadPolicyProvision:output_type -> illumio.cloud.config.v1.ReadPolicyProvisionResponse
+	134, // 291: illumio.cloud.config.v1.ConfigService.UpdatePolicyProvision:output_type -> illumio.cloud.config.v1.UpdatePolicyProvisionResponse
+	215, // 292: illumio.cloud.config.v1.ConfigService.DeletePolicyProvision:output_type -> google.protobuf.Empty
+	138, // 293: illumio.cloud.config.v1.ConfigService.CreatePolicyVersion:output_type -> illumio.cloud.config.v1.CreatePolicyVersionResponse
+	140, // 294: illumio.cloud.config.v1.ConfigService.ReadPolicyVersion:output_type -> illumio.cloud.config.v1.ReadPolicyVersionResponse
+	142, // 295: illumio.cloud.config.v1.ConfigService.UpdatePolicyVersion:output_type -> illumio.cloud.config.v1.UpdatePolicyVersionResponse
+	215, // 296: illumio.cloud.config.v1.ConfigService.DeletePolicyVersion:output_type -> google.protobuf.Empty
+	146, // 297: illumio.cloud.config.v1.ConfigService.CreateTagToLabel:output_type -> illumio.cloud.config.v1.CreateTagToLabelResponse
+	148, // 298: illumio.cloud.config.v1.ConfigService.ReadTagToLabel:output_type -> illumio.cloud.config.v1.ReadTagToLabelResponse
+	150, // 299: illumio.cloud.config.v1.ConfigService.UpdateTagToLabel:output_type -> illumio.cloud.config.v1.UpdateTagToLabelResponse
+	215, // 300: illumio.cloud.config.v1.ConfigService.DeleteTagToLabel:output_type -> google.protobuf.Empty
+	221, // [221:301] is the sub-list for method output_type
+	141, // [141:221] is the sub-list for method input_type
+	141, // [141:141] is the sub-list for extension type_name
+	141, // [141:141] is the sub-list for extension extendee
+	0,   // [0:141] is the sub-list for field type_name
 }
 
 func init() { file_illumio_cloud_config_v1_config_proto_init() }
@@ -15760,7 +15784,7 @@ func file_illumio_cloud_config_v1_config_proto_init() {
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: unsafe.Slice(unsafe.StringData(file_illumio_cloud_config_v1_config_proto_rawDesc), len(file_illumio_cloud_config_v1_config_proto_rawDesc)),
 			NumEnums:      0,
-			NumMessages:   210,
+			NumMessages:   214,
 			NumExtensions: 0,
 			NumServices:   1,
 		},

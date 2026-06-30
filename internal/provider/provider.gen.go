@@ -4140,7 +4140,7 @@ type PolicyVersionResourceModel struct {
 	Id            types.String `tfsdk:"id"`
 	Description   types.String `tfsdk:"description"`
 	PolicyId      types.String `tfsdk:"policy_id"`
-	Rules         types.List   `tfsdk:"rules"`
+	Rules         types.Map    `tfsdk:"rules"`
 	VersionNumber types.Int64  `tfsdk:"version_number"`
 }
 
@@ -5765,11 +5765,11 @@ func NewCreatePolicyVersionRequest(ctx context.Context, data *PolicyVersionResou
 	}
 	if !data.Rules.IsUnknown() && !data.Rules.IsNull() {
 		var dataValue attr.Value = data.Rules
-		var protoValue []*configv1.PolicyVersion_Rules
+		var protoValue map[string]*configv1.PolicyVersion_Rules
 		{
-			dataElements := dataValue.(types.List).Elements()
-			protoValues := make([]*configv1.PolicyVersion_Rules, 0, len(dataElements))
-			for _, dataElement := range dataElements {
+			dataElements := dataValue.(types.Map).Elements()
+			protoValues := make(map[string]*configv1.PolicyVersion_Rules, len(dataElements))
+			for key, dataElement := range dataElements {
 				var dataValue attr.Value = dataElement
 				var protoValue *configv1.PolicyVersion_Rules
 				protoValue, newDiags := ConvertDataValueToPolicyVersion_RulesProto(ctx, dataValue)
@@ -5777,7 +5777,7 @@ func NewCreatePolicyVersionRequest(ctx context.Context, data *PolicyVersionResou
 				if diags.HasError() {
 					return nil, diags
 				}
-				protoValues = append(protoValues, protoValue)
+				protoValues[key] = protoValue
 			}
 			protoValue = protoValues
 		}
@@ -9896,23 +9896,23 @@ func CopyCreatePolicyVersionResponse(dst *PolicyVersionResourceModel, src *confi
 	dst.PolicyId = types.StringValue(src.PolicyId)
 	{
 		protoValue := src.Rules
-		var dataValue types.List
+		var dataValue types.Map
 		{
 			dataElementType := types.ObjectType{
 				AttrTypes: GetTypeAttrsForPolicyVersion_Rules(),
 			}
 			protoElements := protoValue
 			if protoElements == nil {
-				dataValue = types.ListNull(dataElementType)
+				dataValue = types.MapNull(dataElementType)
 			} else {
-				dataValues := make([]attr.Value, 0, len(protoElements))
-				for _, protoElement := range protoElements {
+				dataValues := make(map[string]attr.Value, len(protoElements))
+				for key, protoElement := range protoElements {
 					var protoValue *configv1.PolicyVersion_Rules = protoElement
 					var dataValue attr.Value
 					dataValue = ConvertPolicyVersion_RulesToObjectValueFromProto(protoValue)
-					dataValues = append(dataValues, dataValue)
+					dataValues[key] = dataValue
 				}
-				dataValue = types.ListValueMust(dataElementType, dataValues)
+				dataValue = types.MapValueMust(dataElementType, dataValues)
 			}
 		}
 		dst.Rules = dataValue
@@ -9925,23 +9925,23 @@ func CopyReadPolicyVersionResponse(dst *PolicyVersionResourceModel, src *configv
 	dst.PolicyId = types.StringValue(src.PolicyId)
 	{
 		protoValue := src.Rules
-		var dataValue types.List
+		var dataValue types.Map
 		{
 			dataElementType := types.ObjectType{
 				AttrTypes: GetTypeAttrsForPolicyVersion_Rules(),
 			}
 			protoElements := protoValue
 			if protoElements == nil {
-				dataValue = types.ListNull(dataElementType)
+				dataValue = types.MapNull(dataElementType)
 			} else {
-				dataValues := make([]attr.Value, 0, len(protoElements))
-				for _, protoElement := range protoElements {
+				dataValues := make(map[string]attr.Value, len(protoElements))
+				for key, protoElement := range protoElements {
 					var protoValue *configv1.PolicyVersion_Rules = protoElement
 					var dataValue attr.Value
 					dataValue = ConvertPolicyVersion_RulesToObjectValueFromProto(protoValue)
-					dataValues = append(dataValues, dataValue)
+					dataValues[key] = dataValue
 				}
-				dataValue = types.ListValueMust(dataElementType, dataValues)
+				dataValue = types.MapValueMust(dataElementType, dataValues)
 			}
 		}
 		dst.Rules = dataValue
@@ -9954,23 +9954,23 @@ func CopyUpdatePolicyVersionResponse(dst *PolicyVersionResourceModel, src *confi
 	dst.PolicyId = types.StringValue(src.PolicyId)
 	{
 		protoValue := src.Rules
-		var dataValue types.List
+		var dataValue types.Map
 		{
 			dataElementType := types.ObjectType{
 				AttrTypes: GetTypeAttrsForPolicyVersion_Rules(),
 			}
 			protoElements := protoValue
 			if protoElements == nil {
-				dataValue = types.ListNull(dataElementType)
+				dataValue = types.MapNull(dataElementType)
 			} else {
-				dataValues := make([]attr.Value, 0, len(protoElements))
-				for _, protoElement := range protoElements {
+				dataValues := make(map[string]attr.Value, len(protoElements))
+				for key, protoElement := range protoElements {
 					var protoValue *configv1.PolicyVersion_Rules = protoElement
 					var dataValue attr.Value
 					dataValue = ConvertPolicyVersion_RulesToObjectValueFromProto(protoValue)
-					dataValues = append(dataValues, dataValue)
+					dataValues[key] = dataValue
 				}
-				dataValue = types.ListValueMust(dataElementType, dataValues)
+				dataValue = types.MapValueMust(dataElementType, dataValues)
 			}
 		}
 		dst.Rules = dataValue
