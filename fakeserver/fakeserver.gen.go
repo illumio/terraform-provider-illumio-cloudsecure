@@ -271,7 +271,7 @@ type PolicyVersion struct {
 	Id            string
 	Description   *string
 	PolicyId      string
-	Rules         []*configv1.PolicyVersion_Rules
+	Rules         map[string]*configv1.PolicyVersion_Rules
 	VersionNumber int64
 }
 

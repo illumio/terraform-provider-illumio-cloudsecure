@@ -11,7 +11,7 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework-validators/stringvalidator"
 	"github.com/hashicorp/terraform-plugin-framework/path"
 	resource_schema "github.com/hashicorp/terraform-plugin-framework/resource/schema"
-	"github.com/hashicorp/terraform-plugin-framework/resource/schema/listplanmodifier"
+	"github.com/hashicorp/terraform-plugin-framework/resource/schema/mapplanmodifier"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/planmodifier"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/stringplanmodifier"
 	"github.com/hashicorp/terraform-plugin-framework/schema/validator"
@@ -492,12 +492,12 @@ var (
 					Description: "Sequential version number within the policy, for display purposes.",
 					Computed:    true,
 				},
-				"rules": ListNestedResourceAttributeWithMode{
-					ListNestedAttribute: resource_schema.ListNestedAttribute{
-						MarkdownDescription: "List of rules in this policy version. Each rule specifies an action (Allow/Deny), source, destination, and port ranges. Multiple rules use OR logic for allows; deny takes precedence.",
+				"rules": MapNestedResourceAttributeWithMode{
+					MapNestedAttribute: resource_schema.MapNestedAttribute{
+						MarkdownDescription: "Map of rules in this policy version, keyed by rule name. Each rule specifies an action (Allow/Deny), source, destination, and port ranges. Multiple rules use OR logic for allows; deny takes precedence.",
 						Required:            true,
-						PlanModifiers: []planmodifier.List{
-							listplanmodifier.RequiresReplace(),
+						PlanModifiers: []planmodifier.Map{
+							mapplanmodifier.RequiresReplace(),
 						},
 						NestedObject: resource_schema.NestedAttributeObject{
 							Attributes: map[string]resource_schema.Attribute{

@@ -387,7 +387,7 @@ resource "illumio-cloudsecure_policy_version" "aws_multi_account_to_vpc" {
 ### Required
 
 - `policy_id` (String) ID of the CloudSecure policy this version belongs to.
-- `rules` (Attributes List) List of rules in this policy version. Each rule specifies an action (Allow/Deny), source, destination, and port ranges. Multiple rules use OR logic for allows; deny takes precedence. (see [below for nested schema](#nestedatt--rules))
+- `rules` (Attributes Map) Map of rules in this policy version, keyed by rule name. Each rule specifies an action (Allow/Deny), source, destination, and port ranges. Multiple rules use OR logic for allows; deny takes precedence. (see [below for nested schema](#nestedatt--rules))
 
 ### Optional
 
