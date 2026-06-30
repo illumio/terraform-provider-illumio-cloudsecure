@@ -10,9 +10,10 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework/attr"
 	resource_schema "github.com/hashicorp/terraform-plugin-framework/resource/schema"
 	"github.com/hashicorp/terraform-plugin-framework/types"
+	"github.com/stretchr/testify/suite"
+
 	"github.com/illumio/terraform-provider-illumio-cloudsecure/api/schema"
 	"github.com/illumio/terraform-provider-illumio-cloudsecure/util"
-	"github.com/stretchr/testify/suite"
 )
 
 type GenerateTestSuite struct {
@@ -980,8 +981,8 @@ type testSchema struct {
 	dataSources schema.DataSources
 }
 
-func (s testSchema) Version() string             { return "v1" }
-func (s testSchema) Resources() schema.Resources  { return s.resources }
+func (s testSchema) Version() string                 { return "v1" }
+func (s testSchema) Resources() schema.Resources     { return s.resources }
 func (s testSchema) DataSources() schema.DataSources { return s.dataSources }
 
 // TestGenerateGRPCAPISpec verifies that GenerateGRPCAPISpec correctly generates proto definitions
@@ -1027,6 +1028,7 @@ func (suite *GenerateTestSuite) TestGenerateGRPCAPISpec() {
 			src := testSchema{resources: tc.resources}
 
 			var buf bytes.Buffer
+
 			tagger := newAPISpecTagger()
 			err := GenerateGRPCAPISpec(&buf, src, tagger)
 			suite.Require().NoError(err, "GenerateGRPCAPISpec should not return an error")

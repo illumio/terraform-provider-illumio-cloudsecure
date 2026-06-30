@@ -481,6 +481,7 @@ func ConvertDataValueToPolicyVersion_SpecProto(ctx context.Context, dataValue at
 	providerDst := new(bytes.Buffer)
 	err = providerTemplate.Execute(providerDst, &data)
 	suite.Require().NoError(err, "providerTemplate.Execute should not return an error")
+
 	providerOutput := providerDst.String()
 
 	// newRequestFunc should use map semantics for top_level_rules
