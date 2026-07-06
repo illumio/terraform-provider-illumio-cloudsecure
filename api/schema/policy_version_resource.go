@@ -234,16 +234,25 @@ var k8sDestinationSelectorAttributes = map[string]resource_schema.Attribute{
 		Description: "List of K8s Service names to target. Mutually exclusive with workload_selector, ingresses, and gateways.",
 		Optional:    true,
 		ElementType: types.StringType,
+		Validators: []validator.List{
+			listvalidator.SizeAtLeast(1),
+		},
 	},
 	"ingresses": resource_schema.ListAttribute{
 		Description: "List of K8s Ingress names to target. Mutually exclusive with workload_selector, services, and gateways.",
 		Optional:    true,
 		ElementType: types.StringType,
+		Validators: []validator.List{
+			listvalidator.SizeAtLeast(1),
+		},
 	},
 	"gateways": resource_schema.ListAttribute{
 		Description: "List of K8s Gateway names to target. Mutually exclusive with workload_selector, services, and ingresses.",
 		Optional:    true,
 		ElementType: types.StringType,
+		Validators: []validator.List{
+			listvalidator.SizeAtLeast(1),
+		},
 	},
 }
 
