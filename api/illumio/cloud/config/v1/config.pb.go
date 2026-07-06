@@ -11153,7 +11153,10 @@ func (x *PolicyVersion_Rules_Destination_IpList) GetIds() []string {
 type PolicyVersion_Rules_Destination_K8S struct {
 	state             protoimpl.MessageState                                 `protogen:"open.v1"`
 	Clusters          []*PolicyVersion_Rules_Destination_K8S_Clusters        `protobuf:"bytes,1,rep,name=clusters,proto3" json:"clusters,omitempty"`
+	Gateways          []string                                               `protobuf:"bytes,4,rep,name=gateways,proto3" json:"gateways,omitempty"`
+	Ingresses         []string                                               `protobuf:"bytes,5,rep,name=ingresses,proto3" json:"ingresses,omitempty"`
 	NamespaceSelector *PolicyVersion_Rules_Destination_K8S_NamespaceSelector `protobuf:"bytes,2,opt,name=namespace_selector,json=namespaceSelector,proto3" json:"namespace_selector,omitempty"`
+	Services          []string                                               `protobuf:"bytes,6,rep,name=services,proto3" json:"services,omitempty"`
 	WorkloadSelector  *PolicyVersion_Rules_Destination_K8S_WorkloadSelector  `protobuf:"bytes,3,opt,name=workload_selector,json=workloadSelector,proto3" json:"workload_selector,omitempty"`
 	unknownFields     protoimpl.UnknownFields
 	sizeCache         protoimpl.SizeCache
@@ -11196,9 +11199,30 @@ func (x *PolicyVersion_Rules_Destination_K8S) GetClusters() []*PolicyVersion_Rul
 	return nil
 }
 
+func (x *PolicyVersion_Rules_Destination_K8S) GetGateways() []string {
+	if x != nil {
+		return x.Gateways
+	}
+	return nil
+}
+
+func (x *PolicyVersion_Rules_Destination_K8S) GetIngresses() []string {
+	if x != nil {
+		return x.Ingresses
+	}
+	return nil
+}
+
 func (x *PolicyVersion_Rules_Destination_K8S) GetNamespaceSelector() *PolicyVersion_Rules_Destination_K8S_NamespaceSelector {
 	if x != nil {
 		return x.NamespaceSelector
+	}
+	return nil
+}
+
+func (x *PolicyVersion_Rules_Destination_K8S) GetServices() []string {
+	if x != nil {
+		return x.Services
 	}
 	return nil
 }
@@ -14782,13 +14806,13 @@ const file_illumio_cloud_config_v1_config_proto_rawDesc = "" +
 	"\x02id\x18\x01 \x01(\tR\x02id\x12*\n" +
 	"\x11policy_version_id\x18\x05 \x01(\tR\x0fpolicyVersionId\".\n" +
 	"\x1cDeletePolicyProvisionRequest\x12\x0e\n" +
-	"\x02id\x18\x01 \x01(\tR\x02id\"\xd2E\n" +
+	"\x02id\x18\x01 \x01(\tR\x02id\"\xa8F\n" +
 	"\x13PolicyVersion_Rules\x12\x16\n" +
 	"\x06action\x18\x01 \x01(\tR\x06action\x12Z\n" +
 	"\vdestination\x18\x02 \x01(\v28.illumio.cloud.config.v1.PolicyVersion_Rules.DestinationR\vdestination\x12X\n" +
 	"\vport_ranges\x18\x03 \x03(\v27.illumio.cloud.config.v1.PolicyVersion_Rules.PortRangesR\n" +
 	"portRanges\x12K\n" +
-	"\x06source\x18\x04 \x01(\v23.illumio.cloud.config.v1.PolicyVersion_Rules.SourceR\x06source\x1a\x9f\"\n" +
+	"\x06source\x18\x04 \x01(\v23.illumio.cloud.config.v1.PolicyVersion_Rules.SourceR\x06source\x1a\xf5\"\n" +
 	"\vDestination\x12T\n" +
 	"\x05cloud\x18\x01 \x01(\v2>.illumio.cloud.config.v1.PolicyVersion_Rules.Destination.CloudR\x05cloud\x12T\n" +
 	"\x05fqdns\x18\x02 \x01(\v2>.illumio.cloud.config.v1.PolicyVersion_Rules.Destination.FqdnsR\x05fqdns\x12m\n" +
@@ -14838,10 +14862,13 @@ const file_illumio_cloud_config_v1_config_proto_rawDesc = "" +
 	"\x05names\x18\x01 \x03(\tR\x05names\x1a\x0f\n" +
 	"\rIllumioLabels\x1a\x1a\n" +
 	"\x06IpList\x12\x10\n" +
-	"\x03ids\x18\x02 \x03(\tR\x03ids\x1a\xb7\x10\n" +
+	"\x03ids\x18\x02 \x03(\tR\x03ids\x1a\x8d\x11\n" +
 	"\x03K8S\x12a\n" +
-	"\bclusters\x18\x01 \x03(\v2E.illumio.cloud.config.v1.PolicyVersion_Rules.Destination.K8S.ClustersR\bclusters\x12}\n" +
-	"\x12namespace_selector\x18\x02 \x01(\v2N.illumio.cloud.config.v1.PolicyVersion_Rules.Destination.K8S.NamespaceSelectorR\x11namespaceSelector\x12z\n" +
+	"\bclusters\x18\x01 \x03(\v2E.illumio.cloud.config.v1.PolicyVersion_Rules.Destination.K8S.ClustersR\bclusters\x12\x1a\n" +
+	"\bgateways\x18\x04 \x03(\tR\bgateways\x12\x1c\n" +
+	"\tingresses\x18\x05 \x03(\tR\tingresses\x12}\n" +
+	"\x12namespace_selector\x18\x02 \x01(\v2N.illumio.cloud.config.v1.PolicyVersion_Rules.Destination.K8S.NamespaceSelectorR\x11namespaceSelector\x12\x1a\n" +
+	"\bservices\x18\x06 \x03(\tR\bservices\x12z\n" +
 	"\x11workload_selector\x18\x03 \x01(\v2M.illumio.cloud.config.v1.PolicyVersion_Rules.Destination.K8S.WorkloadSelectorR\x10workloadSelector\x1a\xbf\x06\n" +
 	"\bClusters\x12\x0e\n" +
 	"\x02id\x18\x05 \x01(\tR\x02id\x12[\n" +

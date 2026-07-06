@@ -1065,7 +1065,10 @@ message PolicyVersion_Rules {
         repeated string service_accounts = 3;
       }
       repeated Clusters clusters = 1;
+      repeated string gateways = 4;
+      repeated string ingresses = 5;
       NamespaceSelector namespace_selector = 2;
+      repeated string services = 6;
       WorkloadSelector workload_selector = 3;
     }
     Cloud cloud = 1;

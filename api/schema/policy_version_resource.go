@@ -62,137 +62,140 @@ var labelSelectorAttributes = map[string]resource_schema.Attribute{
 	},
 }
 
-// k8sSelectorAttributes is reused for source.k8s and destination.k8s.
-var k8sSelectorAttributes = map[string]resource_schema.Attribute{
-	"clusters": resource_schema.ListNestedAttribute{
-		Description: "List of K8s clusters. Each entry identifies one cluster. Any cluster matches (OR logic).",
-		Required:    true,
-		NestedObject: resource_schema.NestedAttributeObject{
-			Attributes: map[string]resource_schema.Attribute{
-				"id": resource_schema.StringAttribute{
-					Description: "Cluster ID (from k8s_cluster resource/data source). Mutually exclusive with aws, gcp, azure, and oci.",
-					Optional:    true,
-					Validators: []validator.String{
-						stringvalidator.ExactlyOneOf(
-							path.MatchRelative().AtParent().AtName("id"),
-							path.MatchRelative().AtParent().AtName("aws"),
-							path.MatchRelative().AtParent().AtName("gcp"),
-							path.MatchRelative().AtParent().AtName("azure"),
-							path.MatchRelative().AtParent().AtName("oci"),
-						),
+// clusterSelectorAttributes is shared between source and destination k8s selectors.
+var clusterSelectorAttributes = resource_schema.ListNestedAttribute{
+	Description: "List of K8s clusters. Each entry identifies one cluster. Any cluster matches (OR logic).",
+	Required:    true,
+	NestedObject: resource_schema.NestedAttributeObject{
+		Attributes: map[string]resource_schema.Attribute{
+			"id": resource_schema.StringAttribute{
+				Description: "Cluster ID (from k8s_cluster resource/data source). Mutually exclusive with aws, gcp, azure, and oci.",
+				Optional:    true,
+				Validators: []validator.String{
+					stringvalidator.ExactlyOneOf(
+						path.MatchRelative().AtParent().AtName("id"),
+						path.MatchRelative().AtParent().AtName("aws"),
+						path.MatchRelative().AtParent().AtName("gcp"),
+						path.MatchRelative().AtParent().AtName("azure"),
+						path.MatchRelative().AtParent().AtName("oci"),
+					),
+				},
+			},
+			"aws": resource_schema.SingleNestedAttribute{
+				Description: "AWS EKS cluster. Mutually exclusive with id, gcp, azure, and oci.",
+				Optional:    true,
+				Attributes: map[string]resource_schema.Attribute{
+					"account_id": resource_schema.StringAttribute{
+						Description: "AWS account ID.",
+						Required:    true,
+					},
+					"region": resource_schema.StringAttribute{
+						Description: "AWS region (e.g., us-east-1).",
+						Required:    true,
+					},
+					"cluster_name": resource_schema.StringAttribute{
+						Description: "EKS cluster name.",
+						Required:    true,
 					},
 				},
-				"aws": resource_schema.SingleNestedAttribute{
-					Description: "AWS EKS cluster. Mutually exclusive with id, gcp, azure, and oci.",
-					Optional:    true,
-					Attributes: map[string]resource_schema.Attribute{
-						"account_id": resource_schema.StringAttribute{
-							Description: "AWS account ID.",
-							Required:    true,
-						},
-						"region": resource_schema.StringAttribute{
-							Description: "AWS region (e.g., us-east-1).",
-							Required:    true,
-						},
-						"cluster_name": resource_schema.StringAttribute{
-							Description: "EKS cluster name.",
-							Required:    true,
-						},
+				Validators: []validator.Object{
+					objectvalidator.ExactlyOneOf(
+						path.MatchRelative().AtParent().AtName("id"),
+						path.MatchRelative().AtParent().AtName("aws"),
+						path.MatchRelative().AtParent().AtName("gcp"),
+						path.MatchRelative().AtParent().AtName("azure"),
+						path.MatchRelative().AtParent().AtName("oci"),
+					),
+				},
+			},
+			"gcp": resource_schema.SingleNestedAttribute{
+				Description: "GCP GKE cluster. Mutually exclusive with id, aws, azure, and oci.",
+				Optional:    true,
+				Attributes: map[string]resource_schema.Attribute{
+					"project_id": resource_schema.StringAttribute{
+						Description: "GCP project ID.",
+						Required:    true,
 					},
-					Validators: []validator.Object{
-						objectvalidator.ExactlyOneOf(
-							path.MatchRelative().AtParent().AtName("id"),
-							path.MatchRelative().AtParent().AtName("aws"),
-							path.MatchRelative().AtParent().AtName("gcp"),
-							path.MatchRelative().AtParent().AtName("azure"),
-							path.MatchRelative().AtParent().AtName("oci"),
-						),
+					"location": resource_schema.StringAttribute{
+						Description: "GKE cluster location (region or zone).",
+						Required:    true,
+					},
+					"cluster_name": resource_schema.StringAttribute{
+						Description: "GKE cluster name.",
+						Required:    true,
 					},
 				},
-				"gcp": resource_schema.SingleNestedAttribute{
-					Description: "GCP GKE cluster. Mutually exclusive with id, aws, azure, and oci.",
-					Optional:    true,
-					Attributes: map[string]resource_schema.Attribute{
-						"project_id": resource_schema.StringAttribute{
-							Description: "GCP project ID.",
-							Required:    true,
-						},
-						"location": resource_schema.StringAttribute{
-							Description: "GKE cluster location (region or zone).",
-							Required:    true,
-						},
-						"cluster_name": resource_schema.StringAttribute{
-							Description: "GKE cluster name.",
-							Required:    true,
-						},
+				Validators: []validator.Object{
+					objectvalidator.ExactlyOneOf(
+						path.MatchRelative().AtParent().AtName("id"),
+						path.MatchRelative().AtParent().AtName("aws"),
+						path.MatchRelative().AtParent().AtName("gcp"),
+						path.MatchRelative().AtParent().AtName("azure"),
+						path.MatchRelative().AtParent().AtName("oci"),
+					),
+				},
+			},
+			"azure": resource_schema.SingleNestedAttribute{
+				Description: "Azure AKS cluster. Mutually exclusive with id, aws, gcp, and oci.",
+				Optional:    true,
+				Attributes: map[string]resource_schema.Attribute{
+					"subscription_id": resource_schema.StringAttribute{
+						Description: "Azure subscription ID.",
+						Required:    true,
 					},
-					Validators: []validator.Object{
-						objectvalidator.ExactlyOneOf(
-							path.MatchRelative().AtParent().AtName("id"),
-							path.MatchRelative().AtParent().AtName("aws"),
-							path.MatchRelative().AtParent().AtName("gcp"),
-							path.MatchRelative().AtParent().AtName("azure"),
-							path.MatchRelative().AtParent().AtName("oci"),
-						),
+					"resource_group": resource_schema.StringAttribute{
+						Description: "Azure resource group name.",
+						Required:    true,
+					},
+					"cluster_name": resource_schema.StringAttribute{
+						Description: "AKS cluster name.",
+						Required:    true,
 					},
 				},
-				"azure": resource_schema.SingleNestedAttribute{
-					Description: "Azure AKS cluster. Mutually exclusive with id, aws, gcp, and oci.",
-					Optional:    true,
-					Attributes: map[string]resource_schema.Attribute{
-						"subscription_id": resource_schema.StringAttribute{
-							Description: "Azure subscription ID.",
-							Required:    true,
-						},
-						"resource_group": resource_schema.StringAttribute{
-							Description: "Azure resource group name.",
-							Required:    true,
-						},
-						"cluster_name": resource_schema.StringAttribute{
-							Description: "AKS cluster name.",
-							Required:    true,
-						},
+				Validators: []validator.Object{
+					objectvalidator.ExactlyOneOf(
+						path.MatchRelative().AtParent().AtName("id"),
+						path.MatchRelative().AtParent().AtName("aws"),
+						path.MatchRelative().AtParent().AtName("gcp"),
+						path.MatchRelative().AtParent().AtName("azure"),
+						path.MatchRelative().AtParent().AtName("oci"),
+					),
+				},
+			},
+			"oci": resource_schema.SingleNestedAttribute{
+				Description: "OCI OKE cluster. Mutually exclusive with id, aws, gcp, and azure.",
+				Optional:    true,
+				Attributes: map[string]resource_schema.Attribute{
+					"compartment_id": resource_schema.StringAttribute{
+						Description: "OCI compartment OCID.",
+						Required:    true,
 					},
-					Validators: []validator.Object{
-						objectvalidator.ExactlyOneOf(
-							path.MatchRelative().AtParent().AtName("id"),
-							path.MatchRelative().AtParent().AtName("aws"),
-							path.MatchRelative().AtParent().AtName("gcp"),
-							path.MatchRelative().AtParent().AtName("azure"),
-							path.MatchRelative().AtParent().AtName("oci"),
-						),
+					"region": resource_schema.StringAttribute{
+						Description: "OCI region (e.g., us-ashburn-1).",
+						Required:    true,
+					},
+					"cluster_name": resource_schema.StringAttribute{
+						Description: "OKE cluster name.",
+						Required:    true,
 					},
 				},
-				"oci": resource_schema.SingleNestedAttribute{
-					Description: "OCI OKE cluster. Mutually exclusive with id, aws, gcp, and azure.",
-					Optional:    true,
-					Attributes: map[string]resource_schema.Attribute{
-						"compartment_id": resource_schema.StringAttribute{
-							Description: "OCI compartment OCID.",
-							Required:    true,
-						},
-						"region": resource_schema.StringAttribute{
-							Description: "OCI region (e.g., us-ashburn-1).",
-							Required:    true,
-						},
-						"cluster_name": resource_schema.StringAttribute{
-							Description: "OKE cluster name.",
-							Required:    true,
-						},
-					},
-					Validators: []validator.Object{
-						objectvalidator.ExactlyOneOf(
-							path.MatchRelative().AtParent().AtName("id"),
-							path.MatchRelative().AtParent().AtName("aws"),
-							path.MatchRelative().AtParent().AtName("gcp"),
-							path.MatchRelative().AtParent().AtName("azure"),
-							path.MatchRelative().AtParent().AtName("oci"),
-						),
-					},
+				Validators: []validator.Object{
+					objectvalidator.ExactlyOneOf(
+						path.MatchRelative().AtParent().AtName("id"),
+						path.MatchRelative().AtParent().AtName("aws"),
+						path.MatchRelative().AtParent().AtName("gcp"),
+						path.MatchRelative().AtParent().AtName("azure"),
+						path.MatchRelative().AtParent().AtName("oci"),
+					),
 				},
 			},
 		},
 	},
+}
+
+// k8sSourceSelectorAttributes is used for source.k8s. Source always targets pods.
+var k8sSourceSelectorAttributes = map[string]resource_schema.Attribute{
+	"clusters": clusterSelectorAttributes,
 	"namespace_selector": resource_schema.SingleNestedAttribute{
 		Description: "Label selector for K8s namespaces. Use empty {} to match all namespaces.",
 		Required:    true,
@@ -202,6 +205,45 @@ var k8sSelectorAttributes = map[string]resource_schema.Attribute{
 		Description: "Label selector for K8s workloads (pods). Use empty {} to match all pods.",
 		Required:    true,
 		Attributes:  workloadSelectorAttributes,
+	},
+}
+
+// k8sDestinationSelectorAttributes is used for destination.k8s.
+// Destination supports targeting pods, Services, Ingresses, or Gateways (exactly one).
+var k8sDestinationSelectorAttributes = map[string]resource_schema.Attribute{
+	"clusters": clusterSelectorAttributes,
+	"namespace_selector": resource_schema.SingleNestedAttribute{
+		Description: "Label selector for K8s namespaces. Use empty {} to match all namespaces.",
+		Required:    true,
+		Attributes:  labelSelectorAttributes,
+	},
+	"workload_selector": resource_schema.SingleNestedAttribute{
+		Description: "Label selector for K8s workloads (pods). Use empty {} to match all pods. Mutually exclusive with services, ingresses, and gateways.",
+		Optional:    true,
+		Attributes:  workloadSelectorAttributes,
+		Validators: []validator.Object{
+			objectvalidator.ExactlyOneOf(
+				path.MatchRelative().AtParent().AtName("workload_selector"),
+				path.MatchRelative().AtParent().AtName("services"),
+				path.MatchRelative().AtParent().AtName("ingresses"),
+				path.MatchRelative().AtParent().AtName("gateways"),
+			),
+		},
+	},
+	"services": resource_schema.ListAttribute{
+		Description: "List of K8s Service names to target. Mutually exclusive with workload_selector, ingresses, and gateways.",
+		Optional:    true,
+		ElementType: types.StringType,
+	},
+	"ingresses": resource_schema.ListAttribute{
+		Description: "List of K8s Ingress names to target. Mutually exclusive with workload_selector, services, and gateways.",
+		Optional:    true,
+		ElementType: types.StringType,
+	},
+	"gateways": resource_schema.ListAttribute{
+		Description: "List of K8s Gateway names to target. Mutually exclusive with workload_selector, services, and ingresses.",
+		Optional:    true,
+		ElementType: types.StringType,
 	},
 }
 
@@ -515,7 +557,7 @@ var (
 										"k8s": resource_schema.SingleNestedAttribute{
 											Description: "K8s workload selector.",
 											Optional:    true,
-											Attributes:  k8sSelectorAttributes,
+											Attributes:  k8sSourceSelectorAttributes,
 											Validators: []validator.Object{
 												objectvalidator.ExactlyOneOf(
 													path.MatchRelative().AtParent().AtName("k8s"),
@@ -571,9 +613,9 @@ var (
 									Required:    true,
 									Attributes: map[string]resource_schema.Attribute{
 										"k8s": resource_schema.SingleNestedAttribute{
-											Description: "K8s workload selector.",
+											Description: "K8s destination selector. Target pods, Services, Ingresses, or Gateways.",
 											Optional:    true,
-											Attributes:  k8sSelectorAttributes,
+											Attributes:  k8sDestinationSelectorAttributes,
 											Validators: []validator.Object{
 												objectvalidator.ExactlyOneOf(
 													path.MatchRelative().AtParent().AtName("k8s"),

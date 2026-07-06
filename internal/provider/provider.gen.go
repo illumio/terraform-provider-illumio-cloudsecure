@@ -11574,7 +11574,10 @@ func ConvertDataValueToPolicyVersion_Rules_Destination_IpListProto(ctx context.C
 
 type PolicyVersion_Rules_Destination_K8S struct {
 	Clusters          types.List   `tfsdk:"clusters"`
+	Gateways          types.List   `tfsdk:"gateways"`
+	Ingresses         types.List   `tfsdk:"ingresses"`
 	NamespaceSelector types.Object `tfsdk:"namespace_selector"`
+	Services          types.List   `tfsdk:"services"`
 	WorkloadSelector  types.Object `tfsdk:"workload_selector"`
 }
 
@@ -11583,9 +11586,12 @@ func GetTypeAttrsForPolicyVersion_Rules_Destination_K8S() map[string]attr.Type {
 		"clusters": types.ListType{ElemType: types.ObjectType{
 			AttrTypes: GetTypeAttrsForPolicyVersion_Rules_Destination_K8S_Clusters(),
 		}},
+		"gateways":  types.ListType{ElemType: types.StringType},
+		"ingresses": types.ListType{ElemType: types.StringType},
 		"namespace_selector": types.ObjectType{
 			AttrTypes: GetTypeAttrsForPolicyVersion_Rules_Destination_K8S_NamespaceSelector(),
 		},
+		"services": types.ListType{ElemType: types.StringType},
 		"workload_selector": types.ObjectType{
 			AttrTypes: GetTypeAttrsForPolicyVersion_Rules_Destination_K8S_WorkloadSelector(),
 		},
@@ -11600,6 +11606,18 @@ func ConvertPolicyVersion_Rules_Destination_K8SToObjectValueFromProto(proto *con
 	for _, item := range proto.Clusters {
 		elementsInClusters = append(elementsInClusters, ConvertPolicyVersion_Rules_Destination_K8S_ClustersToObjectValueFromProto(item))
 	}
+	elementsInGateways := make([]attr.Value, 0, len(proto.Gateways))
+	for _, item := range proto.Gateways {
+		elementsInGateways = append(elementsInGateways, types.StringValue(item))
+	}
+	elementsInIngresses := make([]attr.Value, 0, len(proto.Ingresses))
+	for _, item := range proto.Ingresses {
+		elementsInIngresses = append(elementsInIngresses, types.StringValue(item))
+	}
+	elementsInServices := make([]attr.Value, 0, len(proto.Services))
+	for _, item := range proto.Services {
+		elementsInServices = append(elementsInServices, types.StringValue(item))
+	}
 	return types.ObjectValueMust(
 		GetTypeAttrsForPolicyVersion_Rules_Destination_K8S(),
 		map[string]attr.Value{
@@ -11609,8 +11627,26 @@ func ConvertPolicyVersion_Rules_Destination_K8SToObjectValueFromProto(proto *con
 				}
 				return types.ListValueMust(types.ObjectType{AttrTypes: GetTypeAttrsForPolicyVersion_Rules_Destination_K8S_Clusters()}, elementsInClusters)
 			}(),
+			"gateways": func() basetypes.ListValue {
+				if proto.Gateways == nil {
+					return types.ListNull(types.StringType)
+				}
+				return types.ListValueMust(types.StringType, elementsInGateways)
+			}(),
+			"ingresses": func() basetypes.ListValue {
+				if proto.Ingresses == nil {
+					return types.ListNull(types.StringType)
+				}
+				return types.ListValueMust(types.StringType, elementsInIngresses)
+			}(),
 			"namespace_selector": ConvertPolicyVersion_Rules_Destination_K8S_NamespaceSelectorToObjectValueFromProto(proto.NamespaceSelector),
-			"workload_selector":  ConvertPolicyVersion_Rules_Destination_K8S_WorkloadSelectorToObjectValueFromProto(proto.WorkloadSelector),
+			"services": func() basetypes.ListValue {
+				if proto.Services == nil {
+					return types.ListNull(types.StringType)
+				}
+				return types.ListValueMust(types.StringType, elementsInServices)
+			}(),
+			"workload_selector": ConvertPolicyVersion_Rules_Destination_K8S_WorkloadSelectorToObjectValueFromProto(proto.WorkloadSelector),
 		},
 	)
 }
@@ -11635,12 +11671,33 @@ func ConvertDataValueToPolicyVersion_Rules_Destination_K8SProto(ctx context.Cont
 		}
 		proto.Clusters = append(proto.Clusters, pvModel)
 	}
+	var pvModelGateways []string
+	dvDiagsGateways := pv.Gateways.ElementsAs(ctx, &pvModelGateways, false)
+	diags.Append(dvDiagsGateways...)
+	if diags.HasError() {
+		return nil, diags
+	}
+	proto.Gateways = pvModelGateways
+	var pvModelIngresses []string
+	dvDiagsIngresses := pv.Ingresses.ElementsAs(ctx, &pvModelIngresses, false)
+	diags.Append(dvDiagsIngresses...)
+	if diags.HasError() {
+		return nil, diags
+	}
+	proto.Ingresses = pvModelIngresses
 	pvModelNamespaceSelector, dvDiagsNamespaceSelector := ConvertDataValueToPolicyVersion_Rules_Destination_K8S_NamespaceSelectorProto(ctx, pv.NamespaceSelector)
 	diags.Append(dvDiagsNamespaceSelector...)
 	if diags.HasError() {
 		return nil, diags
 	}
 	proto.NamespaceSelector = pvModelNamespaceSelector
+	var pvModelServices []string
+	dvDiagsServices := pv.Services.ElementsAs(ctx, &pvModelServices, false)
+	diags.Append(dvDiagsServices...)
+	if diags.HasError() {
+		return nil, diags
+	}
+	proto.Services = pvModelServices
 	pvModelWorkloadSelector, dvDiagsWorkloadSelector := ConvertDataValueToPolicyVersion_Rules_Destination_K8S_WorkloadSelectorProto(ctx, pv.WorkloadSelector)
 	diags.Append(dvDiagsWorkloadSelector...)
 	if diags.HasError() {
