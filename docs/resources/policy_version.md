@@ -417,7 +417,7 @@ Optional:
 - `fqdns` (Attributes) FQDN selector. (see [below for nested schema](#nestedatt--rules--destination--fqdns))
 - `illumio_labels` (Attributes) Illumio label selector. Not yet implemented. (see [below for nested schema](#nestedatt--rules--destination--illumio_labels))
 - `ip_list` (Attributes) IP list reference selector. (see [below for nested schema](#nestedatt--rules--destination--ip_list))
-- `k8s` (Attributes) K8s workload selector. (see [below for nested schema](#nestedatt--rules--destination--k8s))
+- `k8s` (Attributes) K8s destination selector. Target pods, Services, Ingresses, or Gateways. (see [below for nested schema](#nestedatt--rules--destination--k8s))
 
 <a id="nestedatt--rules--destination--cloud"></a>
 ### Nested Schema for `rules.destination.cloud`
@@ -561,7 +561,13 @@ Required:
 
 - `clusters` (Attributes List) List of K8s clusters. Each entry identifies one cluster. Any cluster matches (OR logic). (see [below for nested schema](#nestedatt--rules--destination--k8s--clusters))
 - `namespace_selector` (Attributes) Label selector for K8s namespaces. Use empty {} to match all namespaces. (see [below for nested schema](#nestedatt--rules--destination--k8s--namespace_selector))
-- `workload_selector` (Attributes) Label selector for K8s workloads (pods). Use empty {} to match all pods. (see [below for nested schema](#nestedatt--rules--destination--k8s--workload_selector))
+
+Optional:
+
+- `gateways` (List of String) List of K8s Gateway names to target. Mutually exclusive with workload_selector, services, and ingresses.
+- `ingresses` (List of String) List of K8s Ingress names to target. Mutually exclusive with workload_selector, services, and gateways.
+- `services` (List of String) List of K8s Service names to target. Mutually exclusive with workload_selector, ingresses, and gateways.
+- `workload_selector` (Attributes) Label selector for K8s workloads (pods). Use empty {} to match all pods. Mutually exclusive with services, ingresses, and gateways. (see [below for nested schema](#nestedatt--rules--destination--k8s--workload_selector))
 
 <a id="nestedatt--rules--destination--k8s--clusters"></a>
 ### Nested Schema for `rules.destination.k8s.clusters`
