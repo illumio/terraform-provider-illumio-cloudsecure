@@ -1005,8 +1005,14 @@ message PolicyVersion_Rules {
     message Fqdns {
       repeated string names = 1;
     }
-    message IllumioLabels {}
-    message IpList {
+    message IllumioLabels {
+      message Labels {
+        string key = 1;
+        repeated string values = 2;
+      }
+      repeated Labels labels = 1;
+    }
+    message IpLists {
       repeated string ids = 2;
     }
     message K8S {
@@ -1074,7 +1080,7 @@ message PolicyVersion_Rules {
     Cloud cloud = 1;
     Fqdns fqdns = 2;
     IllumioLabels illumio_labels = 3;
-    IpList ip_list = 4;
+    IpLists ip_lists = 4;
     K8S k8s = 5;
   }
   message PortRanges {
@@ -1133,8 +1139,14 @@ message PolicyVersion_Rules {
       Aws aws = 1;
       Azure azure = 2;
     }
-    message IllumioLabels {}
-    message IpList {
+    message IllumioLabels {
+      message Labels {
+        string key = 1;
+        repeated string values = 2;
+      }
+      repeated Labels labels = 1;
+    }
+    message IpLists {
       repeated string ids = 2;
     }
     message K8S {
@@ -1198,7 +1210,7 @@ message PolicyVersion_Rules {
     }
     Cloud cloud = 1;
     IllumioLabels illumio_labels = 2;
-    IpList ip_list = 3;
+    IpLists ip_lists = 3;
     K8S k8s = 4;
   }
   string action = 1;

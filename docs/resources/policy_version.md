@@ -415,8 +415,8 @@ Optional:
 
 - `cloud` (Attributes) Cloud resource selector (Azure or AWS). (see [below for nested schema](#nestedatt--rules--destination--cloud))
 - `fqdns` (Attributes) FQDN selector. (see [below for nested schema](#nestedatt--rules--destination--fqdns))
-- `illumio_labels` (Attributes) Illumio label selector. Not yet implemented. (see [below for nested schema](#nestedatt--rules--destination--illumio_labels))
-- `ip_list` (Attributes) IP list reference selector. (see [below for nested schema](#nestedatt--rules--destination--ip_list))
+- `illumio_labels` (Attributes) Illumio label selector. (see [below for nested schema](#nestedatt--rules--destination--illumio_labels))
+- `ip_lists` (Attributes) IP list reference selector. (see [below for nested schema](#nestedatt--rules--destination--ip_lists))
 - `k8s` (Attributes) K8s destination selector. Target pods, Services, Ingresses, or Gateways. (see [below for nested schema](#nestedatt--rules--destination--k8s))
 
 <a id="nestedatt--rules--destination--cloud"></a>
@@ -545,13 +545,26 @@ Required:
 <a id="nestedatt--rules--destination--illumio_labels"></a>
 ### Nested Schema for `rules.destination.illumio_labels`
 
+Required:
 
-<a id="nestedatt--rules--destination--ip_list"></a>
-### Nested Schema for `rules.destination.ip_list`
+- `labels` (Attributes List) List of Illumio label requirements. Values within an entry are OR'd; entries are AND'd. (see [below for nested schema](#nestedatt--rules--destination--illumio_labels--labels))
+
+<a id="nestedatt--rules--destination--illumio_labels--labels"></a>
+### Nested Schema for `rules.destination.illumio_labels.labels`
 
 Required:
 
-- `ids` (List of String) List of ip_list resource IDs. Traffic matching any list is selected (OR logic).
+- `key` (String) Illumio label key.
+- `values` (List of String) Accepted values for the key. Any value matches (OR logic).
+
+
+
+<a id="nestedatt--rules--destination--ip_lists"></a>
+### Nested Schema for `rules.destination.ip_lists`
+
+Required:
+
+- `ids` (List of String) List of illumio-cloudsecure_ip_list resource IDs. Traffic matching any list is selected (OR logic).
 
 
 <a id="nestedatt--rules--destination--k8s"></a>
@@ -702,8 +715,8 @@ Required:
 Optional:
 
 - `cloud` (Attributes) Cloud resource selector (Azure or AWS). (see [below for nested schema](#nestedatt--rules--source--cloud))
-- `illumio_labels` (Attributes) Illumio label selector. Not yet implemented. (see [below for nested schema](#nestedatt--rules--source--illumio_labels))
-- `ip_list` (Attributes) IP list reference selector. (see [below for nested schema](#nestedatt--rules--source--ip_list))
+- `illumio_labels` (Attributes) Illumio label selector. (see [below for nested schema](#nestedatt--rules--source--illumio_labels))
+- `ip_lists` (Attributes) IP list reference selector. (see [below for nested schema](#nestedatt--rules--source--ip_lists))
 - `k8s` (Attributes) K8s workload selector. (see [below for nested schema](#nestedatt--rules--source--k8s))
 
 <a id="nestedatt--rules--source--cloud"></a>
@@ -824,13 +837,26 @@ Required:
 <a id="nestedatt--rules--source--illumio_labels"></a>
 ### Nested Schema for `rules.source.illumio_labels`
 
+Required:
 
-<a id="nestedatt--rules--source--ip_list"></a>
-### Nested Schema for `rules.source.ip_list`
+- `labels` (Attributes List) List of Illumio label requirements. Values within an entry are OR'd; entries are AND'd. (see [below for nested schema](#nestedatt--rules--source--illumio_labels--labels))
+
+<a id="nestedatt--rules--source--illumio_labels--labels"></a>
+### Nested Schema for `rules.source.illumio_labels.labels`
 
 Required:
 
-- `ids` (List of String) List of ip_list resource IDs. Traffic matching any list is selected (OR logic).
+- `key` (String) Illumio label key.
+- `values` (List of String) Accepted values for the key. Any value matches (OR logic).
+
+
+
+<a id="nestedatt--rules--source--ip_lists"></a>
+### Nested Schema for `rules.source.ip_lists`
+
+Required:
+
+- `ids` (List of String) List of illumio-cloudsecure_ip_list resource IDs. Traffic matching any list is selected (OR logic).
 
 
 <a id="nestedatt--rules--source--k8s"></a>
