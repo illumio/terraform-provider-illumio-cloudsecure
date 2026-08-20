@@ -11147,7 +11147,7 @@ type PolicyVersion_Rules_Destination struct {
 	Cloud         *PolicyVersion_Rules_Destination_Cloud         `protobuf:"bytes,1,opt,name=cloud,proto3" json:"cloud,omitempty"`
 	Fqdns         *PolicyVersion_Rules_Destination_Fqdns         `protobuf:"bytes,2,opt,name=fqdns,proto3" json:"fqdns,omitempty"`
 	IllumioLabels *PolicyVersion_Rules_Destination_IllumioLabels `protobuf:"bytes,3,opt,name=illumio_labels,json=illumioLabels,proto3" json:"illumio_labels,omitempty"`
-	IpList        *PolicyVersion_Rules_Destination_IpList        `protobuf:"bytes,4,opt,name=ip_list,json=ipList,proto3" json:"ip_list,omitempty"`
+	IpLists       *PolicyVersion_Rules_Destination_IpLists       `protobuf:"bytes,4,opt,name=ip_lists,json=ipLists,proto3" json:"ip_lists,omitempty"`
 	K8S           *PolicyVersion_Rules_Destination_K8S           `protobuf:"bytes,5,opt,name=k8s,proto3" json:"k8s,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
@@ -11204,9 +11204,9 @@ func (x *PolicyVersion_Rules_Destination) GetIllumioLabels() *PolicyVersion_Rule
 	return nil
 }
 
-func (x *PolicyVersion_Rules_Destination) GetIpList() *PolicyVersion_Rules_Destination_IpList {
+func (x *PolicyVersion_Rules_Destination) GetIpLists() *PolicyVersion_Rules_Destination_IpLists {
 	if x != nil {
-		return x.IpList
+		return x.IpLists
 	}
 	return nil
 }
@@ -11282,7 +11282,7 @@ type PolicyVersion_Rules_Source struct {
 	state         protoimpl.MessageState                    `protogen:"open.v1"`
 	Cloud         *PolicyVersion_Rules_Source_Cloud         `protobuf:"bytes,1,opt,name=cloud,proto3" json:"cloud,omitempty"`
 	IllumioLabels *PolicyVersion_Rules_Source_IllumioLabels `protobuf:"bytes,2,opt,name=illumio_labels,json=illumioLabels,proto3" json:"illumio_labels,omitempty"`
-	IpList        *PolicyVersion_Rules_Source_IpList        `protobuf:"bytes,3,opt,name=ip_list,json=ipList,proto3" json:"ip_list,omitempty"`
+	IpLists       *PolicyVersion_Rules_Source_IpLists       `protobuf:"bytes,3,opt,name=ip_lists,json=ipLists,proto3" json:"ip_lists,omitempty"`
 	K8S           *PolicyVersion_Rules_Source_K8S           `protobuf:"bytes,4,opt,name=k8s,proto3" json:"k8s,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
@@ -11332,9 +11332,9 @@ func (x *PolicyVersion_Rules_Source) GetIllumioLabels() *PolicyVersion_Rules_Sou
 	return nil
 }
 
-func (x *PolicyVersion_Rules_Source) GetIpList() *PolicyVersion_Rules_Source_IpList {
+func (x *PolicyVersion_Rules_Source) GetIpLists() *PolicyVersion_Rules_Source_IpLists {
 	if x != nil {
-		return x.IpList
+		return x.IpLists
 	}
 	return nil
 }
@@ -11443,7 +11443,8 @@ func (x *PolicyVersion_Rules_Destination_Fqdns) GetNames() []string {
 }
 
 type PolicyVersion_Rules_Destination_IllumioLabels struct {
-	state         protoimpl.MessageState `protogen:"open.v1"`
+	state         protoimpl.MessageState                                  `protogen:"open.v1"`
+	Labels        []*PolicyVersion_Rules_Destination_IllumioLabels_Labels `protobuf:"bytes,1,rep,name=labels,proto3" json:"labels,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -11478,27 +11479,34 @@ func (*PolicyVersion_Rules_Destination_IllumioLabels) Descriptor() ([]byte, []in
 	return file_illumio_cloud_config_v1_config_proto_rawDescGZIP(), []int{143, 0, 2}
 }
 
-type PolicyVersion_Rules_Destination_IpList struct {
+func (x *PolicyVersion_Rules_Destination_IllumioLabels) GetLabels() []*PolicyVersion_Rules_Destination_IllumioLabels_Labels {
+	if x != nil {
+		return x.Labels
+	}
+	return nil
+}
+
+type PolicyVersion_Rules_Destination_IpLists struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
 	Ids           []string               `protobuf:"bytes,2,rep,name=ids,proto3" json:"ids,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
 
-func (x *PolicyVersion_Rules_Destination_IpList) Reset() {
-	*x = PolicyVersion_Rules_Destination_IpList{}
+func (x *PolicyVersion_Rules_Destination_IpLists) Reset() {
+	*x = PolicyVersion_Rules_Destination_IpLists{}
 	mi := &file_illumio_cloud_config_v1_config_proto_msgTypes[165]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *PolicyVersion_Rules_Destination_IpList) String() string {
+func (x *PolicyVersion_Rules_Destination_IpLists) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*PolicyVersion_Rules_Destination_IpList) ProtoMessage() {}
+func (*PolicyVersion_Rules_Destination_IpLists) ProtoMessage() {}
 
-func (x *PolicyVersion_Rules_Destination_IpList) ProtoReflect() protoreflect.Message {
+func (x *PolicyVersion_Rules_Destination_IpLists) ProtoReflect() protoreflect.Message {
 	mi := &file_illumio_cloud_config_v1_config_proto_msgTypes[165]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -11510,12 +11518,12 @@ func (x *PolicyVersion_Rules_Destination_IpList) ProtoReflect() protoreflect.Mes
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use PolicyVersion_Rules_Destination_IpList.ProtoReflect.Descriptor instead.
-func (*PolicyVersion_Rules_Destination_IpList) Descriptor() ([]byte, []int) {
+// Deprecated: Use PolicyVersion_Rules_Destination_IpLists.ProtoReflect.Descriptor instead.
+func (*PolicyVersion_Rules_Destination_IpLists) Descriptor() ([]byte, []int) {
 	return file_illumio_cloud_config_v1_config_proto_rawDescGZIP(), []int{143, 0, 3}
 }
 
-func (x *PolicyVersion_Rules_Destination_IpList) GetIds() []string {
+func (x *PolicyVersion_Rules_Destination_IpLists) GetIds() []string {
 	if x != nil {
 		return x.Ids
 	}
@@ -12214,6 +12222,58 @@ func (x *PolicyVersion_Rules_Destination_Cloud_Azure_OrgSelector_Subscriptions) 
 	return ""
 }
 
+type PolicyVersion_Rules_Destination_IllumioLabels_Labels struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Key           string                 `protobuf:"bytes,1,opt,name=key,proto3" json:"key,omitempty"`
+	Values        []string               `protobuf:"bytes,2,rep,name=values,proto3" json:"values,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *PolicyVersion_Rules_Destination_IllumioLabels_Labels) Reset() {
+	*x = PolicyVersion_Rules_Destination_IllumioLabels_Labels{}
+	mi := &file_illumio_cloud_config_v1_config_proto_msgTypes[179]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *PolicyVersion_Rules_Destination_IllumioLabels_Labels) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*PolicyVersion_Rules_Destination_IllumioLabels_Labels) ProtoMessage() {}
+
+func (x *PolicyVersion_Rules_Destination_IllumioLabels_Labels) ProtoReflect() protoreflect.Message {
+	mi := &file_illumio_cloud_config_v1_config_proto_msgTypes[179]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use PolicyVersion_Rules_Destination_IllumioLabels_Labels.ProtoReflect.Descriptor instead.
+func (*PolicyVersion_Rules_Destination_IllumioLabels_Labels) Descriptor() ([]byte, []int) {
+	return file_illumio_cloud_config_v1_config_proto_rawDescGZIP(), []int{143, 0, 2, 0}
+}
+
+func (x *PolicyVersion_Rules_Destination_IllumioLabels_Labels) GetKey() string {
+	if x != nil {
+		return x.Key
+	}
+	return ""
+}
+
+func (x *PolicyVersion_Rules_Destination_IllumioLabels_Labels) GetValues() []string {
+	if x != nil {
+		return x.Values
+	}
+	return nil
+}
+
 type PolicyVersion_Rules_Destination_K8S_Clusters struct {
 	state         protoimpl.MessageState                              `protogen:"open.v1"`
 	Id            string                                              `protobuf:"bytes,5,opt,name=id,proto3" json:"id,omitempty"`
@@ -12227,7 +12287,7 @@ type PolicyVersion_Rules_Destination_K8S_Clusters struct {
 
 func (x *PolicyVersion_Rules_Destination_K8S_Clusters) Reset() {
 	*x = PolicyVersion_Rules_Destination_K8S_Clusters{}
-	mi := &file_illumio_cloud_config_v1_config_proto_msgTypes[179]
+	mi := &file_illumio_cloud_config_v1_config_proto_msgTypes[180]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -12239,7 +12299,7 @@ func (x *PolicyVersion_Rules_Destination_K8S_Clusters) String() string {
 func (*PolicyVersion_Rules_Destination_K8S_Clusters) ProtoMessage() {}
 
 func (x *PolicyVersion_Rules_Destination_K8S_Clusters) ProtoReflect() protoreflect.Message {
-	mi := &file_illumio_cloud_config_v1_config_proto_msgTypes[179]
+	mi := &file_illumio_cloud_config_v1_config_proto_msgTypes[180]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -12300,7 +12360,7 @@ type PolicyVersion_Rules_Destination_K8S_NamespaceSelector struct {
 
 func (x *PolicyVersion_Rules_Destination_K8S_NamespaceSelector) Reset() {
 	*x = PolicyVersion_Rules_Destination_K8S_NamespaceSelector{}
-	mi := &file_illumio_cloud_config_v1_config_proto_msgTypes[180]
+	mi := &file_illumio_cloud_config_v1_config_proto_msgTypes[181]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -12312,7 +12372,7 @@ func (x *PolicyVersion_Rules_Destination_K8S_NamespaceSelector) String() string 
 func (*PolicyVersion_Rules_Destination_K8S_NamespaceSelector) ProtoMessage() {}
 
 func (x *PolicyVersion_Rules_Destination_K8S_NamespaceSelector) ProtoReflect() protoreflect.Message {
-	mi := &file_illumio_cloud_config_v1_config_proto_msgTypes[180]
+	mi := &file_illumio_cloud_config_v1_config_proto_msgTypes[181]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -12353,7 +12413,7 @@ type PolicyVersion_Rules_Destination_K8S_WorkloadSelector struct {
 
 func (x *PolicyVersion_Rules_Destination_K8S_WorkloadSelector) Reset() {
 	*x = PolicyVersion_Rules_Destination_K8S_WorkloadSelector{}
-	mi := &file_illumio_cloud_config_v1_config_proto_msgTypes[181]
+	mi := &file_illumio_cloud_config_v1_config_proto_msgTypes[182]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -12365,7 +12425,7 @@ func (x *PolicyVersion_Rules_Destination_K8S_WorkloadSelector) String() string {
 func (*PolicyVersion_Rules_Destination_K8S_WorkloadSelector) ProtoMessage() {}
 
 func (x *PolicyVersion_Rules_Destination_K8S_WorkloadSelector) ProtoReflect() protoreflect.Message {
-	mi := &file_illumio_cloud_config_v1_config_proto_msgTypes[181]
+	mi := &file_illumio_cloud_config_v1_config_proto_msgTypes[182]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -12413,7 +12473,7 @@ type PolicyVersion_Rules_Destination_K8S_Clusters_Aws struct {
 
 func (x *PolicyVersion_Rules_Destination_K8S_Clusters_Aws) Reset() {
 	*x = PolicyVersion_Rules_Destination_K8S_Clusters_Aws{}
-	mi := &file_illumio_cloud_config_v1_config_proto_msgTypes[182]
+	mi := &file_illumio_cloud_config_v1_config_proto_msgTypes[183]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -12425,7 +12485,7 @@ func (x *PolicyVersion_Rules_Destination_K8S_Clusters_Aws) String() string {
 func (*PolicyVersion_Rules_Destination_K8S_Clusters_Aws) ProtoMessage() {}
 
 func (x *PolicyVersion_Rules_Destination_K8S_Clusters_Aws) ProtoReflect() protoreflect.Message {
-	mi := &file_illumio_cloud_config_v1_config_proto_msgTypes[182]
+	mi := &file_illumio_cloud_config_v1_config_proto_msgTypes[183]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -12473,7 +12533,7 @@ type PolicyVersion_Rules_Destination_K8S_Clusters_Azure struct {
 
 func (x *PolicyVersion_Rules_Destination_K8S_Clusters_Azure) Reset() {
 	*x = PolicyVersion_Rules_Destination_K8S_Clusters_Azure{}
-	mi := &file_illumio_cloud_config_v1_config_proto_msgTypes[183]
+	mi := &file_illumio_cloud_config_v1_config_proto_msgTypes[184]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -12485,7 +12545,7 @@ func (x *PolicyVersion_Rules_Destination_K8S_Clusters_Azure) String() string {
 func (*PolicyVersion_Rules_Destination_K8S_Clusters_Azure) ProtoMessage() {}
 
 func (x *PolicyVersion_Rules_Destination_K8S_Clusters_Azure) ProtoReflect() protoreflect.Message {
-	mi := &file_illumio_cloud_config_v1_config_proto_msgTypes[183]
+	mi := &file_illumio_cloud_config_v1_config_proto_msgTypes[184]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -12533,7 +12593,7 @@ type PolicyVersion_Rules_Destination_K8S_Clusters_Gcp struct {
 
 func (x *PolicyVersion_Rules_Destination_K8S_Clusters_Gcp) Reset() {
 	*x = PolicyVersion_Rules_Destination_K8S_Clusters_Gcp{}
-	mi := &file_illumio_cloud_config_v1_config_proto_msgTypes[184]
+	mi := &file_illumio_cloud_config_v1_config_proto_msgTypes[185]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -12545,7 +12605,7 @@ func (x *PolicyVersion_Rules_Destination_K8S_Clusters_Gcp) String() string {
 func (*PolicyVersion_Rules_Destination_K8S_Clusters_Gcp) ProtoMessage() {}
 
 func (x *PolicyVersion_Rules_Destination_K8S_Clusters_Gcp) ProtoReflect() protoreflect.Message {
-	mi := &file_illumio_cloud_config_v1_config_proto_msgTypes[184]
+	mi := &file_illumio_cloud_config_v1_config_proto_msgTypes[185]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -12593,7 +12653,7 @@ type PolicyVersion_Rules_Destination_K8S_Clusters_Oci struct {
 
 func (x *PolicyVersion_Rules_Destination_K8S_Clusters_Oci) Reset() {
 	*x = PolicyVersion_Rules_Destination_K8S_Clusters_Oci{}
-	mi := &file_illumio_cloud_config_v1_config_proto_msgTypes[185]
+	mi := &file_illumio_cloud_config_v1_config_proto_msgTypes[186]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -12605,7 +12665,7 @@ func (x *PolicyVersion_Rules_Destination_K8S_Clusters_Oci) String() string {
 func (*PolicyVersion_Rules_Destination_K8S_Clusters_Oci) ProtoMessage() {}
 
 func (x *PolicyVersion_Rules_Destination_K8S_Clusters_Oci) ProtoReflect() protoreflect.Message {
-	mi := &file_illumio_cloud_config_v1_config_proto_msgTypes[185]
+	mi := &file_illumio_cloud_config_v1_config_proto_msgTypes[186]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -12653,7 +12713,7 @@ type PolicyVersion_Rules_Destination_K8S_NamespaceSelector_MatchExpressions stru
 
 func (x *PolicyVersion_Rules_Destination_K8S_NamespaceSelector_MatchExpressions) Reset() {
 	*x = PolicyVersion_Rules_Destination_K8S_NamespaceSelector_MatchExpressions{}
-	mi := &file_illumio_cloud_config_v1_config_proto_msgTypes[186]
+	mi := &file_illumio_cloud_config_v1_config_proto_msgTypes[187]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -12665,7 +12725,7 @@ func (x *PolicyVersion_Rules_Destination_K8S_NamespaceSelector_MatchExpressions)
 func (*PolicyVersion_Rules_Destination_K8S_NamespaceSelector_MatchExpressions) ProtoMessage() {}
 
 func (x *PolicyVersion_Rules_Destination_K8S_NamespaceSelector_MatchExpressions) ProtoReflect() protoreflect.Message {
-	mi := &file_illumio_cloud_config_v1_config_proto_msgTypes[186]
+	mi := &file_illumio_cloud_config_v1_config_proto_msgTypes[187]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -12712,7 +12772,7 @@ type PolicyVersion_Rules_Destination_K8S_NamespaceSelector_MatchLabels struct {
 
 func (x *PolicyVersion_Rules_Destination_K8S_NamespaceSelector_MatchLabels) Reset() {
 	*x = PolicyVersion_Rules_Destination_K8S_NamespaceSelector_MatchLabels{}
-	mi := &file_illumio_cloud_config_v1_config_proto_msgTypes[187]
+	mi := &file_illumio_cloud_config_v1_config_proto_msgTypes[188]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -12724,7 +12784,7 @@ func (x *PolicyVersion_Rules_Destination_K8S_NamespaceSelector_MatchLabels) Stri
 func (*PolicyVersion_Rules_Destination_K8S_NamespaceSelector_MatchLabels) ProtoMessage() {}
 
 func (x *PolicyVersion_Rules_Destination_K8S_NamespaceSelector_MatchLabels) ProtoReflect() protoreflect.Message {
-	mi := &file_illumio_cloud_config_v1_config_proto_msgTypes[187]
+	mi := &file_illumio_cloud_config_v1_config_proto_msgTypes[188]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -12765,7 +12825,7 @@ type PolicyVersion_Rules_Destination_K8S_WorkloadSelector_MatchExpressions struc
 
 func (x *PolicyVersion_Rules_Destination_K8S_WorkloadSelector_MatchExpressions) Reset() {
 	*x = PolicyVersion_Rules_Destination_K8S_WorkloadSelector_MatchExpressions{}
-	mi := &file_illumio_cloud_config_v1_config_proto_msgTypes[188]
+	mi := &file_illumio_cloud_config_v1_config_proto_msgTypes[189]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -12777,7 +12837,7 @@ func (x *PolicyVersion_Rules_Destination_K8S_WorkloadSelector_MatchExpressions) 
 func (*PolicyVersion_Rules_Destination_K8S_WorkloadSelector_MatchExpressions) ProtoMessage() {}
 
 func (x *PolicyVersion_Rules_Destination_K8S_WorkloadSelector_MatchExpressions) ProtoReflect() protoreflect.Message {
-	mi := &file_illumio_cloud_config_v1_config_proto_msgTypes[188]
+	mi := &file_illumio_cloud_config_v1_config_proto_msgTypes[189]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -12824,7 +12884,7 @@ type PolicyVersion_Rules_Destination_K8S_WorkloadSelector_MatchLabels struct {
 
 func (x *PolicyVersion_Rules_Destination_K8S_WorkloadSelector_MatchLabels) Reset() {
 	*x = PolicyVersion_Rules_Destination_K8S_WorkloadSelector_MatchLabels{}
-	mi := &file_illumio_cloud_config_v1_config_proto_msgTypes[189]
+	mi := &file_illumio_cloud_config_v1_config_proto_msgTypes[190]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -12836,7 +12896,7 @@ func (x *PolicyVersion_Rules_Destination_K8S_WorkloadSelector_MatchLabels) Strin
 func (*PolicyVersion_Rules_Destination_K8S_WorkloadSelector_MatchLabels) ProtoMessage() {}
 
 func (x *PolicyVersion_Rules_Destination_K8S_WorkloadSelector_MatchLabels) ProtoReflect() protoreflect.Message {
-	mi := &file_illumio_cloud_config_v1_config_proto_msgTypes[189]
+	mi := &file_illumio_cloud_config_v1_config_proto_msgTypes[190]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -12876,7 +12936,7 @@ type PolicyVersion_Rules_Source_Cloud struct {
 
 func (x *PolicyVersion_Rules_Source_Cloud) Reset() {
 	*x = PolicyVersion_Rules_Source_Cloud{}
-	mi := &file_illumio_cloud_config_v1_config_proto_msgTypes[190]
+	mi := &file_illumio_cloud_config_v1_config_proto_msgTypes[191]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -12888,7 +12948,7 @@ func (x *PolicyVersion_Rules_Source_Cloud) String() string {
 func (*PolicyVersion_Rules_Source_Cloud) ProtoMessage() {}
 
 func (x *PolicyVersion_Rules_Source_Cloud) ProtoReflect() protoreflect.Message {
-	mi := &file_illumio_cloud_config_v1_config_proto_msgTypes[190]
+	mi := &file_illumio_cloud_config_v1_config_proto_msgTypes[191]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -12919,14 +12979,15 @@ func (x *PolicyVersion_Rules_Source_Cloud) GetAzure() *PolicyVersion_Rules_Sourc
 }
 
 type PolicyVersion_Rules_Source_IllumioLabels struct {
-	state         protoimpl.MessageState `protogen:"open.v1"`
+	state         protoimpl.MessageState                             `protogen:"open.v1"`
+	Labels        []*PolicyVersion_Rules_Source_IllumioLabels_Labels `protobuf:"bytes,1,rep,name=labels,proto3" json:"labels,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
 
 func (x *PolicyVersion_Rules_Source_IllumioLabels) Reset() {
 	*x = PolicyVersion_Rules_Source_IllumioLabels{}
-	mi := &file_illumio_cloud_config_v1_config_proto_msgTypes[191]
+	mi := &file_illumio_cloud_config_v1_config_proto_msgTypes[192]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -12938,7 +12999,7 @@ func (x *PolicyVersion_Rules_Source_IllumioLabels) String() string {
 func (*PolicyVersion_Rules_Source_IllumioLabels) ProtoMessage() {}
 
 func (x *PolicyVersion_Rules_Source_IllumioLabels) ProtoReflect() protoreflect.Message {
-	mi := &file_illumio_cloud_config_v1_config_proto_msgTypes[191]
+	mi := &file_illumio_cloud_config_v1_config_proto_msgTypes[192]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -12954,28 +13015,35 @@ func (*PolicyVersion_Rules_Source_IllumioLabels) Descriptor() ([]byte, []int) {
 	return file_illumio_cloud_config_v1_config_proto_rawDescGZIP(), []int{143, 2, 1}
 }
 
-type PolicyVersion_Rules_Source_IpList struct {
+func (x *PolicyVersion_Rules_Source_IllumioLabels) GetLabels() []*PolicyVersion_Rules_Source_IllumioLabels_Labels {
+	if x != nil {
+		return x.Labels
+	}
+	return nil
+}
+
+type PolicyVersion_Rules_Source_IpLists struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
 	Ids           []string               `protobuf:"bytes,2,rep,name=ids,proto3" json:"ids,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
 
-func (x *PolicyVersion_Rules_Source_IpList) Reset() {
-	*x = PolicyVersion_Rules_Source_IpList{}
-	mi := &file_illumio_cloud_config_v1_config_proto_msgTypes[192]
+func (x *PolicyVersion_Rules_Source_IpLists) Reset() {
+	*x = PolicyVersion_Rules_Source_IpLists{}
+	mi := &file_illumio_cloud_config_v1_config_proto_msgTypes[193]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *PolicyVersion_Rules_Source_IpList) String() string {
+func (x *PolicyVersion_Rules_Source_IpLists) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*PolicyVersion_Rules_Source_IpList) ProtoMessage() {}
+func (*PolicyVersion_Rules_Source_IpLists) ProtoMessage() {}
 
-func (x *PolicyVersion_Rules_Source_IpList) ProtoReflect() protoreflect.Message {
-	mi := &file_illumio_cloud_config_v1_config_proto_msgTypes[192]
+func (x *PolicyVersion_Rules_Source_IpLists) ProtoReflect() protoreflect.Message {
+	mi := &file_illumio_cloud_config_v1_config_proto_msgTypes[193]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -12986,12 +13054,12 @@ func (x *PolicyVersion_Rules_Source_IpList) ProtoReflect() protoreflect.Message 
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use PolicyVersion_Rules_Source_IpList.ProtoReflect.Descriptor instead.
-func (*PolicyVersion_Rules_Source_IpList) Descriptor() ([]byte, []int) {
+// Deprecated: Use PolicyVersion_Rules_Source_IpLists.ProtoReflect.Descriptor instead.
+func (*PolicyVersion_Rules_Source_IpLists) Descriptor() ([]byte, []int) {
 	return file_illumio_cloud_config_v1_config_proto_rawDescGZIP(), []int{143, 2, 2}
 }
 
-func (x *PolicyVersion_Rules_Source_IpList) GetIds() []string {
+func (x *PolicyVersion_Rules_Source_IpLists) GetIds() []string {
 	if x != nil {
 		return x.Ids
 	}
@@ -13009,7 +13077,7 @@ type PolicyVersion_Rules_Source_K8S struct {
 
 func (x *PolicyVersion_Rules_Source_K8S) Reset() {
 	*x = PolicyVersion_Rules_Source_K8S{}
-	mi := &file_illumio_cloud_config_v1_config_proto_msgTypes[193]
+	mi := &file_illumio_cloud_config_v1_config_proto_msgTypes[194]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -13021,7 +13089,7 @@ func (x *PolicyVersion_Rules_Source_K8S) String() string {
 func (*PolicyVersion_Rules_Source_K8S) ProtoMessage() {}
 
 func (x *PolicyVersion_Rules_Source_K8S) ProtoReflect() protoreflect.Message {
-	mi := &file_illumio_cloud_config_v1_config_proto_msgTypes[193]
+	mi := &file_illumio_cloud_config_v1_config_proto_msgTypes[194]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -13068,7 +13136,7 @@ type PolicyVersion_Rules_Source_Cloud_Aws struct {
 
 func (x *PolicyVersion_Rules_Source_Cloud_Aws) Reset() {
 	*x = PolicyVersion_Rules_Source_Cloud_Aws{}
-	mi := &file_illumio_cloud_config_v1_config_proto_msgTypes[194]
+	mi := &file_illumio_cloud_config_v1_config_proto_msgTypes[195]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -13080,7 +13148,7 @@ func (x *PolicyVersion_Rules_Source_Cloud_Aws) String() string {
 func (*PolicyVersion_Rules_Source_Cloud_Aws) ProtoMessage() {}
 
 func (x *PolicyVersion_Rules_Source_Cloud_Aws) ProtoReflect() protoreflect.Message {
-	mi := &file_illumio_cloud_config_v1_config_proto_msgTypes[194]
+	mi := &file_illumio_cloud_config_v1_config_proto_msgTypes[195]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -13120,7 +13188,7 @@ type PolicyVersion_Rules_Source_Cloud_Azure struct {
 
 func (x *PolicyVersion_Rules_Source_Cloud_Azure) Reset() {
 	*x = PolicyVersion_Rules_Source_Cloud_Azure{}
-	mi := &file_illumio_cloud_config_v1_config_proto_msgTypes[195]
+	mi := &file_illumio_cloud_config_v1_config_proto_msgTypes[196]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -13132,7 +13200,7 @@ func (x *PolicyVersion_Rules_Source_Cloud_Azure) String() string {
 func (*PolicyVersion_Rules_Source_Cloud_Azure) ProtoMessage() {}
 
 func (x *PolicyVersion_Rules_Source_Cloud_Azure) ProtoReflect() protoreflect.Message {
-	mi := &file_illumio_cloud_config_v1_config_proto_msgTypes[195]
+	mi := &file_illumio_cloud_config_v1_config_proto_msgTypes[196]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -13172,7 +13240,7 @@ type PolicyVersion_Rules_Source_Cloud_Aws_Network struct {
 
 func (x *PolicyVersion_Rules_Source_Cloud_Aws_Network) Reset() {
 	*x = PolicyVersion_Rules_Source_Cloud_Aws_Network{}
-	mi := &file_illumio_cloud_config_v1_config_proto_msgTypes[196]
+	mi := &file_illumio_cloud_config_v1_config_proto_msgTypes[197]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -13184,7 +13252,7 @@ func (x *PolicyVersion_Rules_Source_Cloud_Aws_Network) String() string {
 func (*PolicyVersion_Rules_Source_Cloud_Aws_Network) ProtoMessage() {}
 
 func (x *PolicyVersion_Rules_Source_Cloud_Aws_Network) ProtoReflect() protoreflect.Message {
-	mi := &file_illumio_cloud_config_v1_config_proto_msgTypes[196]
+	mi := &file_illumio_cloud_config_v1_config_proto_msgTypes[197]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -13223,7 +13291,7 @@ type PolicyVersion_Rules_Source_Cloud_Aws_OrgSelector struct {
 
 func (x *PolicyVersion_Rules_Source_Cloud_Aws_OrgSelector) Reset() {
 	*x = PolicyVersion_Rules_Source_Cloud_Aws_OrgSelector{}
-	mi := &file_illumio_cloud_config_v1_config_proto_msgTypes[197]
+	mi := &file_illumio_cloud_config_v1_config_proto_msgTypes[198]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -13235,7 +13303,7 @@ func (x *PolicyVersion_Rules_Source_Cloud_Aws_OrgSelector) String() string {
 func (*PolicyVersion_Rules_Source_Cloud_Aws_OrgSelector) ProtoMessage() {}
 
 func (x *PolicyVersion_Rules_Source_Cloud_Aws_OrgSelector) ProtoReflect() protoreflect.Message {
-	mi := &file_illumio_cloud_config_v1_config_proto_msgTypes[197]
+	mi := &file_illumio_cloud_config_v1_config_proto_msgTypes[198]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -13269,7 +13337,7 @@ type PolicyVersion_Rules_Source_Cloud_Aws_Network_Subnets struct {
 
 func (x *PolicyVersion_Rules_Source_Cloud_Aws_Network_Subnets) Reset() {
 	*x = PolicyVersion_Rules_Source_Cloud_Aws_Network_Subnets{}
-	mi := &file_illumio_cloud_config_v1_config_proto_msgTypes[198]
+	mi := &file_illumio_cloud_config_v1_config_proto_msgTypes[199]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -13281,7 +13349,7 @@ func (x *PolicyVersion_Rules_Source_Cloud_Aws_Network_Subnets) String() string {
 func (*PolicyVersion_Rules_Source_Cloud_Aws_Network_Subnets) ProtoMessage() {}
 
 func (x *PolicyVersion_Rules_Source_Cloud_Aws_Network_Subnets) ProtoReflect() protoreflect.Message {
-	mi := &file_illumio_cloud_config_v1_config_proto_msgTypes[198]
+	mi := &file_illumio_cloud_config_v1_config_proto_msgTypes[199]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -13329,7 +13397,7 @@ type PolicyVersion_Rules_Source_Cloud_Aws_Network_Vpcs struct {
 
 func (x *PolicyVersion_Rules_Source_Cloud_Aws_Network_Vpcs) Reset() {
 	*x = PolicyVersion_Rules_Source_Cloud_Aws_Network_Vpcs{}
-	mi := &file_illumio_cloud_config_v1_config_proto_msgTypes[199]
+	mi := &file_illumio_cloud_config_v1_config_proto_msgTypes[200]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -13341,7 +13409,7 @@ func (x *PolicyVersion_Rules_Source_Cloud_Aws_Network_Vpcs) String() string {
 func (*PolicyVersion_Rules_Source_Cloud_Aws_Network_Vpcs) ProtoMessage() {}
 
 func (x *PolicyVersion_Rules_Source_Cloud_Aws_Network_Vpcs) ProtoReflect() protoreflect.Message {
-	mi := &file_illumio_cloud_config_v1_config_proto_msgTypes[199]
+	mi := &file_illumio_cloud_config_v1_config_proto_msgTypes[200]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -13387,7 +13455,7 @@ type PolicyVersion_Rules_Source_Cloud_Aws_OrgSelector_Accounts struct {
 
 func (x *PolicyVersion_Rules_Source_Cloud_Aws_OrgSelector_Accounts) Reset() {
 	*x = PolicyVersion_Rules_Source_Cloud_Aws_OrgSelector_Accounts{}
-	mi := &file_illumio_cloud_config_v1_config_proto_msgTypes[200]
+	mi := &file_illumio_cloud_config_v1_config_proto_msgTypes[201]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -13399,7 +13467,7 @@ func (x *PolicyVersion_Rules_Source_Cloud_Aws_OrgSelector_Accounts) String() str
 func (*PolicyVersion_Rules_Source_Cloud_Aws_OrgSelector_Accounts) ProtoMessage() {}
 
 func (x *PolicyVersion_Rules_Source_Cloud_Aws_OrgSelector_Accounts) ProtoReflect() protoreflect.Message {
-	mi := &file_illumio_cloud_config_v1_config_proto_msgTypes[200]
+	mi := &file_illumio_cloud_config_v1_config_proto_msgTypes[201]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -13432,7 +13500,7 @@ type PolicyVersion_Rules_Source_Cloud_Azure_Network struct {
 
 func (x *PolicyVersion_Rules_Source_Cloud_Azure_Network) Reset() {
 	*x = PolicyVersion_Rules_Source_Cloud_Azure_Network{}
-	mi := &file_illumio_cloud_config_v1_config_proto_msgTypes[201]
+	mi := &file_illumio_cloud_config_v1_config_proto_msgTypes[202]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -13444,7 +13512,7 @@ func (x *PolicyVersion_Rules_Source_Cloud_Azure_Network) String() string {
 func (*PolicyVersion_Rules_Source_Cloud_Azure_Network) ProtoMessage() {}
 
 func (x *PolicyVersion_Rules_Source_Cloud_Azure_Network) ProtoReflect() protoreflect.Message {
-	mi := &file_illumio_cloud_config_v1_config_proto_msgTypes[201]
+	mi := &file_illumio_cloud_config_v1_config_proto_msgTypes[202]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -13483,7 +13551,7 @@ type PolicyVersion_Rules_Source_Cloud_Azure_OrgSelector struct {
 
 func (x *PolicyVersion_Rules_Source_Cloud_Azure_OrgSelector) Reset() {
 	*x = PolicyVersion_Rules_Source_Cloud_Azure_OrgSelector{}
-	mi := &file_illumio_cloud_config_v1_config_proto_msgTypes[202]
+	mi := &file_illumio_cloud_config_v1_config_proto_msgTypes[203]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -13495,7 +13563,7 @@ func (x *PolicyVersion_Rules_Source_Cloud_Azure_OrgSelector) String() string {
 func (*PolicyVersion_Rules_Source_Cloud_Azure_OrgSelector) ProtoMessage() {}
 
 func (x *PolicyVersion_Rules_Source_Cloud_Azure_OrgSelector) ProtoReflect() protoreflect.Message {
-	mi := &file_illumio_cloud_config_v1_config_proto_msgTypes[202]
+	mi := &file_illumio_cloud_config_v1_config_proto_msgTypes[203]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -13527,7 +13595,7 @@ type PolicyVersion_Rules_Source_Cloud_Azure_Network_Subnets struct {
 
 func (x *PolicyVersion_Rules_Source_Cloud_Azure_Network_Subnets) Reset() {
 	*x = PolicyVersion_Rules_Source_Cloud_Azure_Network_Subnets{}
-	mi := &file_illumio_cloud_config_v1_config_proto_msgTypes[203]
+	mi := &file_illumio_cloud_config_v1_config_proto_msgTypes[204]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -13539,7 +13607,7 @@ func (x *PolicyVersion_Rules_Source_Cloud_Azure_Network_Subnets) String() string
 func (*PolicyVersion_Rules_Source_Cloud_Azure_Network_Subnets) ProtoMessage() {}
 
 func (x *PolicyVersion_Rules_Source_Cloud_Azure_Network_Subnets) ProtoReflect() protoreflect.Message {
-	mi := &file_illumio_cloud_config_v1_config_proto_msgTypes[203]
+	mi := &file_illumio_cloud_config_v1_config_proto_msgTypes[204]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -13573,7 +13641,7 @@ type PolicyVersion_Rules_Source_Cloud_Azure_Network_Vnets struct {
 
 func (x *PolicyVersion_Rules_Source_Cloud_Azure_Network_Vnets) Reset() {
 	*x = PolicyVersion_Rules_Source_Cloud_Azure_Network_Vnets{}
-	mi := &file_illumio_cloud_config_v1_config_proto_msgTypes[204]
+	mi := &file_illumio_cloud_config_v1_config_proto_msgTypes[205]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -13585,7 +13653,7 @@ func (x *PolicyVersion_Rules_Source_Cloud_Azure_Network_Vnets) String() string {
 func (*PolicyVersion_Rules_Source_Cloud_Azure_Network_Vnets) ProtoMessage() {}
 
 func (x *PolicyVersion_Rules_Source_Cloud_Azure_Network_Vnets) ProtoReflect() protoreflect.Message {
-	mi := &file_illumio_cloud_config_v1_config_proto_msgTypes[204]
+	mi := &file_illumio_cloud_config_v1_config_proto_msgTypes[205]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -13631,7 +13699,7 @@ type PolicyVersion_Rules_Source_Cloud_Azure_OrgSelector_Subscriptions struct {
 
 func (x *PolicyVersion_Rules_Source_Cloud_Azure_OrgSelector_Subscriptions) Reset() {
 	*x = PolicyVersion_Rules_Source_Cloud_Azure_OrgSelector_Subscriptions{}
-	mi := &file_illumio_cloud_config_v1_config_proto_msgTypes[205]
+	mi := &file_illumio_cloud_config_v1_config_proto_msgTypes[206]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -13643,7 +13711,7 @@ func (x *PolicyVersion_Rules_Source_Cloud_Azure_OrgSelector_Subscriptions) Strin
 func (*PolicyVersion_Rules_Source_Cloud_Azure_OrgSelector_Subscriptions) ProtoMessage() {}
 
 func (x *PolicyVersion_Rules_Source_Cloud_Azure_OrgSelector_Subscriptions) ProtoReflect() protoreflect.Message {
-	mi := &file_illumio_cloud_config_v1_config_proto_msgTypes[205]
+	mi := &file_illumio_cloud_config_v1_config_proto_msgTypes[206]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -13666,6 +13734,58 @@ func (x *PolicyVersion_Rules_Source_Cloud_Azure_OrgSelector_Subscriptions) GetId
 	return ""
 }
 
+type PolicyVersion_Rules_Source_IllumioLabels_Labels struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Key           string                 `protobuf:"bytes,1,opt,name=key,proto3" json:"key,omitempty"`
+	Values        []string               `protobuf:"bytes,2,rep,name=values,proto3" json:"values,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *PolicyVersion_Rules_Source_IllumioLabels_Labels) Reset() {
+	*x = PolicyVersion_Rules_Source_IllumioLabels_Labels{}
+	mi := &file_illumio_cloud_config_v1_config_proto_msgTypes[207]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *PolicyVersion_Rules_Source_IllumioLabels_Labels) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*PolicyVersion_Rules_Source_IllumioLabels_Labels) ProtoMessage() {}
+
+func (x *PolicyVersion_Rules_Source_IllumioLabels_Labels) ProtoReflect() protoreflect.Message {
+	mi := &file_illumio_cloud_config_v1_config_proto_msgTypes[207]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use PolicyVersion_Rules_Source_IllumioLabels_Labels.ProtoReflect.Descriptor instead.
+func (*PolicyVersion_Rules_Source_IllumioLabels_Labels) Descriptor() ([]byte, []int) {
+	return file_illumio_cloud_config_v1_config_proto_rawDescGZIP(), []int{143, 2, 1, 0}
+}
+
+func (x *PolicyVersion_Rules_Source_IllumioLabels_Labels) GetKey() string {
+	if x != nil {
+		return x.Key
+	}
+	return ""
+}
+
+func (x *PolicyVersion_Rules_Source_IllumioLabels_Labels) GetValues() []string {
+	if x != nil {
+		return x.Values
+	}
+	return nil
+}
+
 type PolicyVersion_Rules_Source_K8S_Clusters struct {
 	state         protoimpl.MessageState                         `protogen:"open.v1"`
 	Id            string                                         `protobuf:"bytes,5,opt,name=id,proto3" json:"id,omitempty"`
@@ -13679,7 +13799,7 @@ type PolicyVersion_Rules_Source_K8S_Clusters struct {
 
 func (x *PolicyVersion_Rules_Source_K8S_Clusters) Reset() {
 	*x = PolicyVersion_Rules_Source_K8S_Clusters{}
-	mi := &file_illumio_cloud_config_v1_config_proto_msgTypes[206]
+	mi := &file_illumio_cloud_config_v1_config_proto_msgTypes[208]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -13691,7 +13811,7 @@ func (x *PolicyVersion_Rules_Source_K8S_Clusters) String() string {
 func (*PolicyVersion_Rules_Source_K8S_Clusters) ProtoMessage() {}
 
 func (x *PolicyVersion_Rules_Source_K8S_Clusters) ProtoReflect() protoreflect.Message {
-	mi := &file_illumio_cloud_config_v1_config_proto_msgTypes[206]
+	mi := &file_illumio_cloud_config_v1_config_proto_msgTypes[208]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -13752,7 +13872,7 @@ type PolicyVersion_Rules_Source_K8S_NamespaceSelector struct {
 
 func (x *PolicyVersion_Rules_Source_K8S_NamespaceSelector) Reset() {
 	*x = PolicyVersion_Rules_Source_K8S_NamespaceSelector{}
-	mi := &file_illumio_cloud_config_v1_config_proto_msgTypes[207]
+	mi := &file_illumio_cloud_config_v1_config_proto_msgTypes[209]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -13764,7 +13884,7 @@ func (x *PolicyVersion_Rules_Source_K8S_NamespaceSelector) String() string {
 func (*PolicyVersion_Rules_Source_K8S_NamespaceSelector) ProtoMessage() {}
 
 func (x *PolicyVersion_Rules_Source_K8S_NamespaceSelector) ProtoReflect() protoreflect.Message {
-	mi := &file_illumio_cloud_config_v1_config_proto_msgTypes[207]
+	mi := &file_illumio_cloud_config_v1_config_proto_msgTypes[209]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -13805,7 +13925,7 @@ type PolicyVersion_Rules_Source_K8S_WorkloadSelector struct {
 
 func (x *PolicyVersion_Rules_Source_K8S_WorkloadSelector) Reset() {
 	*x = PolicyVersion_Rules_Source_K8S_WorkloadSelector{}
-	mi := &file_illumio_cloud_config_v1_config_proto_msgTypes[208]
+	mi := &file_illumio_cloud_config_v1_config_proto_msgTypes[210]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -13817,7 +13937,7 @@ func (x *PolicyVersion_Rules_Source_K8S_WorkloadSelector) String() string {
 func (*PolicyVersion_Rules_Source_K8S_WorkloadSelector) ProtoMessage() {}
 
 func (x *PolicyVersion_Rules_Source_K8S_WorkloadSelector) ProtoReflect() protoreflect.Message {
-	mi := &file_illumio_cloud_config_v1_config_proto_msgTypes[208]
+	mi := &file_illumio_cloud_config_v1_config_proto_msgTypes[210]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -13865,7 +13985,7 @@ type PolicyVersion_Rules_Source_K8S_Clusters_Aws struct {
 
 func (x *PolicyVersion_Rules_Source_K8S_Clusters_Aws) Reset() {
 	*x = PolicyVersion_Rules_Source_K8S_Clusters_Aws{}
-	mi := &file_illumio_cloud_config_v1_config_proto_msgTypes[209]
+	mi := &file_illumio_cloud_config_v1_config_proto_msgTypes[211]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -13877,7 +13997,7 @@ func (x *PolicyVersion_Rules_Source_K8S_Clusters_Aws) String() string {
 func (*PolicyVersion_Rules_Source_K8S_Clusters_Aws) ProtoMessage() {}
 
 func (x *PolicyVersion_Rules_Source_K8S_Clusters_Aws) ProtoReflect() protoreflect.Message {
-	mi := &file_illumio_cloud_config_v1_config_proto_msgTypes[209]
+	mi := &file_illumio_cloud_config_v1_config_proto_msgTypes[211]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -13925,7 +14045,7 @@ type PolicyVersion_Rules_Source_K8S_Clusters_Azure struct {
 
 func (x *PolicyVersion_Rules_Source_K8S_Clusters_Azure) Reset() {
 	*x = PolicyVersion_Rules_Source_K8S_Clusters_Azure{}
-	mi := &file_illumio_cloud_config_v1_config_proto_msgTypes[210]
+	mi := &file_illumio_cloud_config_v1_config_proto_msgTypes[212]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -13937,7 +14057,7 @@ func (x *PolicyVersion_Rules_Source_K8S_Clusters_Azure) String() string {
 func (*PolicyVersion_Rules_Source_K8S_Clusters_Azure) ProtoMessage() {}
 
 func (x *PolicyVersion_Rules_Source_K8S_Clusters_Azure) ProtoReflect() protoreflect.Message {
-	mi := &file_illumio_cloud_config_v1_config_proto_msgTypes[210]
+	mi := &file_illumio_cloud_config_v1_config_proto_msgTypes[212]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -13985,7 +14105,7 @@ type PolicyVersion_Rules_Source_K8S_Clusters_Gcp struct {
 
 func (x *PolicyVersion_Rules_Source_K8S_Clusters_Gcp) Reset() {
 	*x = PolicyVersion_Rules_Source_K8S_Clusters_Gcp{}
-	mi := &file_illumio_cloud_config_v1_config_proto_msgTypes[211]
+	mi := &file_illumio_cloud_config_v1_config_proto_msgTypes[213]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -13997,7 +14117,7 @@ func (x *PolicyVersion_Rules_Source_K8S_Clusters_Gcp) String() string {
 func (*PolicyVersion_Rules_Source_K8S_Clusters_Gcp) ProtoMessage() {}
 
 func (x *PolicyVersion_Rules_Source_K8S_Clusters_Gcp) ProtoReflect() protoreflect.Message {
-	mi := &file_illumio_cloud_config_v1_config_proto_msgTypes[211]
+	mi := &file_illumio_cloud_config_v1_config_proto_msgTypes[213]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -14045,7 +14165,7 @@ type PolicyVersion_Rules_Source_K8S_Clusters_Oci struct {
 
 func (x *PolicyVersion_Rules_Source_K8S_Clusters_Oci) Reset() {
 	*x = PolicyVersion_Rules_Source_K8S_Clusters_Oci{}
-	mi := &file_illumio_cloud_config_v1_config_proto_msgTypes[212]
+	mi := &file_illumio_cloud_config_v1_config_proto_msgTypes[214]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -14057,7 +14177,7 @@ func (x *PolicyVersion_Rules_Source_K8S_Clusters_Oci) String() string {
 func (*PolicyVersion_Rules_Source_K8S_Clusters_Oci) ProtoMessage() {}
 
 func (x *PolicyVersion_Rules_Source_K8S_Clusters_Oci) ProtoReflect() protoreflect.Message {
-	mi := &file_illumio_cloud_config_v1_config_proto_msgTypes[212]
+	mi := &file_illumio_cloud_config_v1_config_proto_msgTypes[214]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -14105,7 +14225,7 @@ type PolicyVersion_Rules_Source_K8S_NamespaceSelector_MatchExpressions struct {
 
 func (x *PolicyVersion_Rules_Source_K8S_NamespaceSelector_MatchExpressions) Reset() {
 	*x = PolicyVersion_Rules_Source_K8S_NamespaceSelector_MatchExpressions{}
-	mi := &file_illumio_cloud_config_v1_config_proto_msgTypes[213]
+	mi := &file_illumio_cloud_config_v1_config_proto_msgTypes[215]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -14117,7 +14237,7 @@ func (x *PolicyVersion_Rules_Source_K8S_NamespaceSelector_MatchExpressions) Stri
 func (*PolicyVersion_Rules_Source_K8S_NamespaceSelector_MatchExpressions) ProtoMessage() {}
 
 func (x *PolicyVersion_Rules_Source_K8S_NamespaceSelector_MatchExpressions) ProtoReflect() protoreflect.Message {
-	mi := &file_illumio_cloud_config_v1_config_proto_msgTypes[213]
+	mi := &file_illumio_cloud_config_v1_config_proto_msgTypes[215]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -14164,7 +14284,7 @@ type PolicyVersion_Rules_Source_K8S_NamespaceSelector_MatchLabels struct {
 
 func (x *PolicyVersion_Rules_Source_K8S_NamespaceSelector_MatchLabels) Reset() {
 	*x = PolicyVersion_Rules_Source_K8S_NamespaceSelector_MatchLabels{}
-	mi := &file_illumio_cloud_config_v1_config_proto_msgTypes[214]
+	mi := &file_illumio_cloud_config_v1_config_proto_msgTypes[216]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -14176,7 +14296,7 @@ func (x *PolicyVersion_Rules_Source_K8S_NamespaceSelector_MatchLabels) String() 
 func (*PolicyVersion_Rules_Source_K8S_NamespaceSelector_MatchLabels) ProtoMessage() {}
 
 func (x *PolicyVersion_Rules_Source_K8S_NamespaceSelector_MatchLabels) ProtoReflect() protoreflect.Message {
-	mi := &file_illumio_cloud_config_v1_config_proto_msgTypes[214]
+	mi := &file_illumio_cloud_config_v1_config_proto_msgTypes[216]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -14217,7 +14337,7 @@ type PolicyVersion_Rules_Source_K8S_WorkloadSelector_MatchExpressions struct {
 
 func (x *PolicyVersion_Rules_Source_K8S_WorkloadSelector_MatchExpressions) Reset() {
 	*x = PolicyVersion_Rules_Source_K8S_WorkloadSelector_MatchExpressions{}
-	mi := &file_illumio_cloud_config_v1_config_proto_msgTypes[215]
+	mi := &file_illumio_cloud_config_v1_config_proto_msgTypes[217]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -14229,7 +14349,7 @@ func (x *PolicyVersion_Rules_Source_K8S_WorkloadSelector_MatchExpressions) Strin
 func (*PolicyVersion_Rules_Source_K8S_WorkloadSelector_MatchExpressions) ProtoMessage() {}
 
 func (x *PolicyVersion_Rules_Source_K8S_WorkloadSelector_MatchExpressions) ProtoReflect() protoreflect.Message {
-	mi := &file_illumio_cloud_config_v1_config_proto_msgTypes[215]
+	mi := &file_illumio_cloud_config_v1_config_proto_msgTypes[217]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -14276,7 +14396,7 @@ type PolicyVersion_Rules_Source_K8S_WorkloadSelector_MatchLabels struct {
 
 func (x *PolicyVersion_Rules_Source_K8S_WorkloadSelector_MatchLabels) Reset() {
 	*x = PolicyVersion_Rules_Source_K8S_WorkloadSelector_MatchLabels{}
-	mi := &file_illumio_cloud_config_v1_config_proto_msgTypes[216]
+	mi := &file_illumio_cloud_config_v1_config_proto_msgTypes[218]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -14288,7 +14408,7 @@ func (x *PolicyVersion_Rules_Source_K8S_WorkloadSelector_MatchLabels) String() s
 func (*PolicyVersion_Rules_Source_K8S_WorkloadSelector_MatchLabels) ProtoMessage() {}
 
 func (x *PolicyVersion_Rules_Source_K8S_WorkloadSelector_MatchLabels) ProtoReflect() protoreflect.Message {
-	mi := &file_illumio_cloud_config_v1_config_proto_msgTypes[216]
+	mi := &file_illumio_cloud_config_v1_config_proto_msgTypes[218]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -15205,18 +15325,18 @@ const file_illumio_cloud_config_v1_config_proto_rawDesc = "" +
 	"\x02id\x18\x01 \x01(\tR\x02id\x12*\n" +
 	"\x11policy_version_id\x18\x05 \x01(\tR\x0fpolicyVersionId\".\n" +
 	"\x1cDeletePolicyProvisionRequest\x12\x0e\n" +
-	"\x02id\x18\x01 \x01(\tR\x02id\"\xa8F\n" +
+	"\x02id\x18\x01 \x01(\tR\x02id\"\xe3H\n" +
 	"\x13PolicyVersion_Rules\x12\x16\n" +
 	"\x06action\x18\x01 \x01(\tR\x06action\x12Z\n" +
 	"\vdestination\x18\x02 \x01(\v28.illumio.cloud.config.v1.PolicyVersion_Rules.DestinationR\vdestination\x12X\n" +
 	"\vport_ranges\x18\x03 \x03(\v27.illumio.cloud.config.v1.PolicyVersion_Rules.PortRangesR\n" +
 	"portRanges\x12K\n" +
-	"\x06source\x18\x04 \x01(\v23.illumio.cloud.config.v1.PolicyVersion_Rules.SourceR\x06source\x1a\xf5\"\n" +
+	"\x06source\x18\x04 \x01(\v23.illumio.cloud.config.v1.PolicyVersion_Rules.SourceR\x06source\x1a\x95$\n" +
 	"\vDestination\x12T\n" +
 	"\x05cloud\x18\x01 \x01(\v2>.illumio.cloud.config.v1.PolicyVersion_Rules.Destination.CloudR\x05cloud\x12T\n" +
 	"\x05fqdns\x18\x02 \x01(\v2>.illumio.cloud.config.v1.PolicyVersion_Rules.Destination.FqdnsR\x05fqdns\x12m\n" +
-	"\x0eillumio_labels\x18\x03 \x01(\v2F.illumio.cloud.config.v1.PolicyVersion_Rules.Destination.IllumioLabelsR\rillumioLabels\x12X\n" +
-	"\aip_list\x18\x04 \x01(\v2?.illumio.cloud.config.v1.PolicyVersion_Rules.Destination.IpListR\x06ipList\x12N\n" +
+	"\x0eillumio_labels\x18\x03 \x01(\v2F.illumio.cloud.config.v1.PolicyVersion_Rules.Destination.IllumioLabelsR\rillumioLabels\x12[\n" +
+	"\bip_lists\x18\x04 \x01(\v2@.illumio.cloud.config.v1.PolicyVersion_Rules.Destination.IpListsR\aipLists\x12N\n" +
 	"\x03k8s\x18\x05 \x01(\v2<.illumio.cloud.config.v1.PolicyVersion_Rules.Destination.K8SR\x03k8s\x1a\xc4\r\n" +
 	"\x05Cloud\x12T\n" +
 	"\x03aws\x18\x01 \x01(\v2B.illumio.cloud.config.v1.PolicyVersion_Rules.Destination.Cloud.AwsR\x03aws\x12Z\n" +
@@ -15258,9 +15378,13 @@ const file_illumio_cloud_config_v1_config_proto_rawDesc = "" +
 	"\rSubscriptions\x12\x0e\n" +
 	"\x02id\x18\x01 \x01(\tR\x02id\x1a\x1d\n" +
 	"\x05Fqdns\x12\x14\n" +
-	"\x05names\x18\x01 \x03(\tR\x05names\x1a\x0f\n" +
-	"\rIllumioLabels\x1a\x1a\n" +
-	"\x06IpList\x12\x10\n" +
+	"\x05names\x18\x01 \x03(\tR\x05names\x1a\xaa\x01\n" +
+	"\rIllumioLabels\x12e\n" +
+	"\x06labels\x18\x01 \x03(\v2M.illumio.cloud.config.v1.PolicyVersion_Rules.Destination.IllumioLabels.LabelsR\x06labels\x1a2\n" +
+	"\x06Labels\x12\x10\n" +
+	"\x03key\x18\x01 \x01(\tR\x03key\x12\x16\n" +
+	"\x06values\x18\x02 \x03(\tR\x06values\x1a\x1b\n" +
+	"\aIpLists\x12\x10\n" +
 	"\x03ids\x18\x02 \x03(\tR\x03ids\x1a\x8d\x11\n" +
 	"\x03K8S\x12a\n" +
 	"\bclusters\x18\x01 \x03(\v2E.illumio.cloud.config.v1.PolicyVersion_Rules.Destination.K8S.ClustersR\bclusters\x12\x1a\n" +
@@ -15318,11 +15442,11 @@ const file_illumio_cloud_config_v1_config_proto_rawDesc = "" +
 	"PortRanges\x12\x1b\n" +
 	"\tfrom_port\x18\x01 \x01(\x03R\bfromPort\x12\x1a\n" +
 	"\bprotocol\x18\x02 \x01(\tR\bprotocol\x12\x17\n" +
-	"\ato_port\x18\x03 \x01(\x03R\x06toPort\x1a\x9d \n" +
+	"\ato_port\x18\x03 \x01(\x03R\x06toPort\x1a\xb8!\n" +
 	"\x06Source\x12O\n" +
 	"\x05cloud\x18\x01 \x01(\v29.illumio.cloud.config.v1.PolicyVersion_Rules.Source.CloudR\x05cloud\x12h\n" +
-	"\x0eillumio_labels\x18\x02 \x01(\v2A.illumio.cloud.config.v1.PolicyVersion_Rules.Source.IllumioLabelsR\rillumioLabels\x12S\n" +
-	"\aip_list\x18\x03 \x01(\v2:.illumio.cloud.config.v1.PolicyVersion_Rules.Source.IpListR\x06ipList\x12I\n" +
+	"\x0eillumio_labels\x18\x02 \x01(\v2A.illumio.cloud.config.v1.PolicyVersion_Rules.Source.IllumioLabelsR\rillumioLabels\x12V\n" +
+	"\bip_lists\x18\x03 \x01(\v2;.illumio.cloud.config.v1.PolicyVersion_Rules.Source.IpListsR\aipLists\x12I\n" +
 	"\x03k8s\x18\x04 \x01(\v27.illumio.cloud.config.v1.PolicyVersion_Rules.Source.K8SR\x03k8s\x1a\x87\r\n" +
 	"\x05Cloud\x12O\n" +
 	"\x03aws\x18\x01 \x01(\v2=.illumio.cloud.config.v1.PolicyVersion_Rules.Source.Cloud.AwsR\x03aws\x12U\n" +
@@ -15362,9 +15486,13 @@ const file_illumio_cloud_config_v1_config_proto_rawDesc = "" +
 	"\vOrgSelector\x12\x7f\n" +
 	"\rsubscriptions\x18\x01 \x03(\v2Y.illumio.cloud.config.v1.PolicyVersion_Rules.Source.Cloud.Azure.OrgSelector.SubscriptionsR\rsubscriptions\x1a\x1f\n" +
 	"\rSubscriptions\x12\x0e\n" +
-	"\x02id\x18\x01 \x01(\tR\x02id\x1a\x0f\n" +
-	"\rIllumioLabels\x1a\x1a\n" +
-	"\x06IpList\x12\x10\n" +
+	"\x02id\x18\x01 \x01(\tR\x02id\x1a\xa5\x01\n" +
+	"\rIllumioLabels\x12`\n" +
+	"\x06labels\x18\x01 \x03(\v2H.illumio.cloud.config.v1.PolicyVersion_Rules.Source.IllumioLabels.LabelsR\x06labels\x1a2\n" +
+	"\x06Labels\x12\x10\n" +
+	"\x03key\x18\x01 \x01(\tR\x03key\x12\x16\n" +
+	"\x06values\x18\x02 \x03(\tR\x06values\x1a\x1b\n" +
+	"\aIpLists\x12\x10\n" +
 	"\x03ids\x18\x02 \x03(\tR\x03ids\x1a\x80\x10\n" +
 	"\x03K8S\x12\\\n" +
 	"\bclusters\x18\x01 \x03(\v2@.illumio.cloud.config.v1.PolicyVersion_Rules.Source.K8S.ClustersR\bclusters\x12x\n" +
@@ -15627,7 +15755,7 @@ func file_illumio_cloud_config_v1_config_proto_rawDescGZIP() []byte {
 	return file_illumio_cloud_config_v1_config_proto_rawDescData
 }
 
-var file_illumio_cloud_config_v1_config_proto_msgTypes = make([]protoimpl.MessageInfo, 221)
+var file_illumio_cloud_config_v1_config_proto_msgTypes = make([]protoimpl.MessageInfo, 223)
 var file_illumio_cloud_config_v1_config_proto_goTypes = []any{
 	(*CreateApplicationRequest)(nil),                                               // 0: illumio.cloud.config.v1.CreateApplicationRequest
 	(*CreateApplicationResponse)(nil),                                              // 1: illumio.cloud.config.v1.CreateApplicationResponse
@@ -15794,7 +15922,7 @@ var file_illumio_cloud_config_v1_config_proto_goTypes = []any{
 	(*PolicyVersion_Rules_Destination_Cloud)(nil),                                  // 162: illumio.cloud.config.v1.PolicyVersion_Rules.Destination.Cloud
 	(*PolicyVersion_Rules_Destination_Fqdns)(nil),                                  // 163: illumio.cloud.config.v1.PolicyVersion_Rules.Destination.Fqdns
 	(*PolicyVersion_Rules_Destination_IllumioLabels)(nil),                          // 164: illumio.cloud.config.v1.PolicyVersion_Rules.Destination.IllumioLabels
-	(*PolicyVersion_Rules_Destination_IpList)(nil),                                 // 165: illumio.cloud.config.v1.PolicyVersion_Rules.Destination.IpList
+	(*PolicyVersion_Rules_Destination_IpLists)(nil),                                // 165: illumio.cloud.config.v1.PolicyVersion_Rules.Destination.IpLists
 	(*PolicyVersion_Rules_Destination_K8S)(nil),                                    // 166: illumio.cloud.config.v1.PolicyVersion_Rules.Destination.K8S
 	(*PolicyVersion_Rules_Destination_Cloud_Aws)(nil),                              // 167: illumio.cloud.config.v1.PolicyVersion_Rules.Destination.Cloud.Aws
 	(*PolicyVersion_Rules_Destination_Cloud_Azure)(nil),                            // 168: illumio.cloud.config.v1.PolicyVersion_Rules.Destination.Cloud.Azure
@@ -15808,55 +15936,57 @@ var file_illumio_cloud_config_v1_config_proto_goTypes = []any{
 	(*PolicyVersion_Rules_Destination_Cloud_Azure_Network_Subnets)(nil),            // 176: illumio.cloud.config.v1.PolicyVersion_Rules.Destination.Cloud.Azure.Network.Subnets
 	(*PolicyVersion_Rules_Destination_Cloud_Azure_Network_Vnets)(nil),              // 177: illumio.cloud.config.v1.PolicyVersion_Rules.Destination.Cloud.Azure.Network.Vnets
 	(*PolicyVersion_Rules_Destination_Cloud_Azure_OrgSelector_Subscriptions)(nil),  // 178: illumio.cloud.config.v1.PolicyVersion_Rules.Destination.Cloud.Azure.OrgSelector.Subscriptions
-	(*PolicyVersion_Rules_Destination_K8S_Clusters)(nil),                           // 179: illumio.cloud.config.v1.PolicyVersion_Rules.Destination.K8S.Clusters
-	(*PolicyVersion_Rules_Destination_K8S_NamespaceSelector)(nil),                  // 180: illumio.cloud.config.v1.PolicyVersion_Rules.Destination.K8S.NamespaceSelector
-	(*PolicyVersion_Rules_Destination_K8S_WorkloadSelector)(nil),                   // 181: illumio.cloud.config.v1.PolicyVersion_Rules.Destination.K8S.WorkloadSelector
-	(*PolicyVersion_Rules_Destination_K8S_Clusters_Aws)(nil),                       // 182: illumio.cloud.config.v1.PolicyVersion_Rules.Destination.K8S.Clusters.Aws
-	(*PolicyVersion_Rules_Destination_K8S_Clusters_Azure)(nil),                     // 183: illumio.cloud.config.v1.PolicyVersion_Rules.Destination.K8S.Clusters.Azure
-	(*PolicyVersion_Rules_Destination_K8S_Clusters_Gcp)(nil),                       // 184: illumio.cloud.config.v1.PolicyVersion_Rules.Destination.K8S.Clusters.Gcp
-	(*PolicyVersion_Rules_Destination_K8S_Clusters_Oci)(nil),                       // 185: illumio.cloud.config.v1.PolicyVersion_Rules.Destination.K8S.Clusters.Oci
-	(*PolicyVersion_Rules_Destination_K8S_NamespaceSelector_MatchExpressions)(nil), // 186: illumio.cloud.config.v1.PolicyVersion_Rules.Destination.K8S.NamespaceSelector.MatchExpressions
-	(*PolicyVersion_Rules_Destination_K8S_NamespaceSelector_MatchLabels)(nil),      // 187: illumio.cloud.config.v1.PolicyVersion_Rules.Destination.K8S.NamespaceSelector.MatchLabels
-	(*PolicyVersion_Rules_Destination_K8S_WorkloadSelector_MatchExpressions)(nil),  // 188: illumio.cloud.config.v1.PolicyVersion_Rules.Destination.K8S.WorkloadSelector.MatchExpressions
-	(*PolicyVersion_Rules_Destination_K8S_WorkloadSelector_MatchLabels)(nil),       // 189: illumio.cloud.config.v1.PolicyVersion_Rules.Destination.K8S.WorkloadSelector.MatchLabels
-	(*PolicyVersion_Rules_Source_Cloud)(nil),                                       // 190: illumio.cloud.config.v1.PolicyVersion_Rules.Source.Cloud
-	(*PolicyVersion_Rules_Source_IllumioLabels)(nil),                               // 191: illumio.cloud.config.v1.PolicyVersion_Rules.Source.IllumioLabels
-	(*PolicyVersion_Rules_Source_IpList)(nil),                                      // 192: illumio.cloud.config.v1.PolicyVersion_Rules.Source.IpList
-	(*PolicyVersion_Rules_Source_K8S)(nil),                                         // 193: illumio.cloud.config.v1.PolicyVersion_Rules.Source.K8S
-	(*PolicyVersion_Rules_Source_Cloud_Aws)(nil),                                   // 194: illumio.cloud.config.v1.PolicyVersion_Rules.Source.Cloud.Aws
-	(*PolicyVersion_Rules_Source_Cloud_Azure)(nil),                                 // 195: illumio.cloud.config.v1.PolicyVersion_Rules.Source.Cloud.Azure
-	(*PolicyVersion_Rules_Source_Cloud_Aws_Network)(nil),                           // 196: illumio.cloud.config.v1.PolicyVersion_Rules.Source.Cloud.Aws.Network
-	(*PolicyVersion_Rules_Source_Cloud_Aws_OrgSelector)(nil),                       // 197: illumio.cloud.config.v1.PolicyVersion_Rules.Source.Cloud.Aws.OrgSelector
-	(*PolicyVersion_Rules_Source_Cloud_Aws_Network_Subnets)(nil),                   // 198: illumio.cloud.config.v1.PolicyVersion_Rules.Source.Cloud.Aws.Network.Subnets
-	(*PolicyVersion_Rules_Source_Cloud_Aws_Network_Vpcs)(nil),                      // 199: illumio.cloud.config.v1.PolicyVersion_Rules.Source.Cloud.Aws.Network.Vpcs
-	(*PolicyVersion_Rules_Source_Cloud_Aws_OrgSelector_Accounts)(nil),              // 200: illumio.cloud.config.v1.PolicyVersion_Rules.Source.Cloud.Aws.OrgSelector.Accounts
-	(*PolicyVersion_Rules_Source_Cloud_Azure_Network)(nil),                         // 201: illumio.cloud.config.v1.PolicyVersion_Rules.Source.Cloud.Azure.Network
-	(*PolicyVersion_Rules_Source_Cloud_Azure_OrgSelector)(nil),                     // 202: illumio.cloud.config.v1.PolicyVersion_Rules.Source.Cloud.Azure.OrgSelector
-	(*PolicyVersion_Rules_Source_Cloud_Azure_Network_Subnets)(nil),                 // 203: illumio.cloud.config.v1.PolicyVersion_Rules.Source.Cloud.Azure.Network.Subnets
-	(*PolicyVersion_Rules_Source_Cloud_Azure_Network_Vnets)(nil),                   // 204: illumio.cloud.config.v1.PolicyVersion_Rules.Source.Cloud.Azure.Network.Vnets
-	(*PolicyVersion_Rules_Source_Cloud_Azure_OrgSelector_Subscriptions)(nil),       // 205: illumio.cloud.config.v1.PolicyVersion_Rules.Source.Cloud.Azure.OrgSelector.Subscriptions
-	(*PolicyVersion_Rules_Source_K8S_Clusters)(nil),                                // 206: illumio.cloud.config.v1.PolicyVersion_Rules.Source.K8S.Clusters
-	(*PolicyVersion_Rules_Source_K8S_NamespaceSelector)(nil),                       // 207: illumio.cloud.config.v1.PolicyVersion_Rules.Source.K8S.NamespaceSelector
-	(*PolicyVersion_Rules_Source_K8S_WorkloadSelector)(nil),                        // 208: illumio.cloud.config.v1.PolicyVersion_Rules.Source.K8S.WorkloadSelector
-	(*PolicyVersion_Rules_Source_K8S_Clusters_Aws)(nil),                            // 209: illumio.cloud.config.v1.PolicyVersion_Rules.Source.K8S.Clusters.Aws
-	(*PolicyVersion_Rules_Source_K8S_Clusters_Azure)(nil),                          // 210: illumio.cloud.config.v1.PolicyVersion_Rules.Source.K8S.Clusters.Azure
-	(*PolicyVersion_Rules_Source_K8S_Clusters_Gcp)(nil),                            // 211: illumio.cloud.config.v1.PolicyVersion_Rules.Source.K8S.Clusters.Gcp
-	(*PolicyVersion_Rules_Source_K8S_Clusters_Oci)(nil),                            // 212: illumio.cloud.config.v1.PolicyVersion_Rules.Source.K8S.Clusters.Oci
-	(*PolicyVersion_Rules_Source_K8S_NamespaceSelector_MatchExpressions)(nil),      // 213: illumio.cloud.config.v1.PolicyVersion_Rules.Source.K8S.NamespaceSelector.MatchExpressions
-	(*PolicyVersion_Rules_Source_K8S_NamespaceSelector_MatchLabels)(nil),           // 214: illumio.cloud.config.v1.PolicyVersion_Rules.Source.K8S.NamespaceSelector.MatchLabels
-	(*PolicyVersion_Rules_Source_K8S_WorkloadSelector_MatchExpressions)(nil),       // 215: illumio.cloud.config.v1.PolicyVersion_Rules.Source.K8S.WorkloadSelector.MatchExpressions
-	(*PolicyVersion_Rules_Source_K8S_WorkloadSelector_MatchLabels)(nil),            // 216: illumio.cloud.config.v1.PolicyVersion_Rules.Source.K8S.WorkloadSelector.MatchLabels
-	nil,                           // 217: illumio.cloud.config.v1.CreatePolicyVersionRequest.RulesEntry
-	nil,                           // 218: illumio.cloud.config.v1.CreatePolicyVersionResponse.RulesEntry
-	nil,                           // 219: illumio.cloud.config.v1.ReadPolicyVersionResponse.RulesEntry
-	nil,                           // 220: illumio.cloud.config.v1.UpdatePolicyVersionResponse.RulesEntry
-	(*fieldmaskpb.FieldMask)(nil), // 221: google.protobuf.FieldMask
-	(*emptypb.Empty)(nil),         // 222: google.protobuf.Empty
+	(*PolicyVersion_Rules_Destination_IllumioLabels_Labels)(nil),                   // 179: illumio.cloud.config.v1.PolicyVersion_Rules.Destination.IllumioLabels.Labels
+	(*PolicyVersion_Rules_Destination_K8S_Clusters)(nil),                           // 180: illumio.cloud.config.v1.PolicyVersion_Rules.Destination.K8S.Clusters
+	(*PolicyVersion_Rules_Destination_K8S_NamespaceSelector)(nil),                  // 181: illumio.cloud.config.v1.PolicyVersion_Rules.Destination.K8S.NamespaceSelector
+	(*PolicyVersion_Rules_Destination_K8S_WorkloadSelector)(nil),                   // 182: illumio.cloud.config.v1.PolicyVersion_Rules.Destination.K8S.WorkloadSelector
+	(*PolicyVersion_Rules_Destination_K8S_Clusters_Aws)(nil),                       // 183: illumio.cloud.config.v1.PolicyVersion_Rules.Destination.K8S.Clusters.Aws
+	(*PolicyVersion_Rules_Destination_K8S_Clusters_Azure)(nil),                     // 184: illumio.cloud.config.v1.PolicyVersion_Rules.Destination.K8S.Clusters.Azure
+	(*PolicyVersion_Rules_Destination_K8S_Clusters_Gcp)(nil),                       // 185: illumio.cloud.config.v1.PolicyVersion_Rules.Destination.K8S.Clusters.Gcp
+	(*PolicyVersion_Rules_Destination_K8S_Clusters_Oci)(nil),                       // 186: illumio.cloud.config.v1.PolicyVersion_Rules.Destination.K8S.Clusters.Oci
+	(*PolicyVersion_Rules_Destination_K8S_NamespaceSelector_MatchExpressions)(nil), // 187: illumio.cloud.config.v1.PolicyVersion_Rules.Destination.K8S.NamespaceSelector.MatchExpressions
+	(*PolicyVersion_Rules_Destination_K8S_NamespaceSelector_MatchLabels)(nil),      // 188: illumio.cloud.config.v1.PolicyVersion_Rules.Destination.K8S.NamespaceSelector.MatchLabels
+	(*PolicyVersion_Rules_Destination_K8S_WorkloadSelector_MatchExpressions)(nil),  // 189: illumio.cloud.config.v1.PolicyVersion_Rules.Destination.K8S.WorkloadSelector.MatchExpressions
+	(*PolicyVersion_Rules_Destination_K8S_WorkloadSelector_MatchLabels)(nil),       // 190: illumio.cloud.config.v1.PolicyVersion_Rules.Destination.K8S.WorkloadSelector.MatchLabels
+	(*PolicyVersion_Rules_Source_Cloud)(nil),                                       // 191: illumio.cloud.config.v1.PolicyVersion_Rules.Source.Cloud
+	(*PolicyVersion_Rules_Source_IllumioLabels)(nil),                               // 192: illumio.cloud.config.v1.PolicyVersion_Rules.Source.IllumioLabels
+	(*PolicyVersion_Rules_Source_IpLists)(nil),                                     // 193: illumio.cloud.config.v1.PolicyVersion_Rules.Source.IpLists
+	(*PolicyVersion_Rules_Source_K8S)(nil),                                         // 194: illumio.cloud.config.v1.PolicyVersion_Rules.Source.K8S
+	(*PolicyVersion_Rules_Source_Cloud_Aws)(nil),                                   // 195: illumio.cloud.config.v1.PolicyVersion_Rules.Source.Cloud.Aws
+	(*PolicyVersion_Rules_Source_Cloud_Azure)(nil),                                 // 196: illumio.cloud.config.v1.PolicyVersion_Rules.Source.Cloud.Azure
+	(*PolicyVersion_Rules_Source_Cloud_Aws_Network)(nil),                           // 197: illumio.cloud.config.v1.PolicyVersion_Rules.Source.Cloud.Aws.Network
+	(*PolicyVersion_Rules_Source_Cloud_Aws_OrgSelector)(nil),                       // 198: illumio.cloud.config.v1.PolicyVersion_Rules.Source.Cloud.Aws.OrgSelector
+	(*PolicyVersion_Rules_Source_Cloud_Aws_Network_Subnets)(nil),                   // 199: illumio.cloud.config.v1.PolicyVersion_Rules.Source.Cloud.Aws.Network.Subnets
+	(*PolicyVersion_Rules_Source_Cloud_Aws_Network_Vpcs)(nil),                      // 200: illumio.cloud.config.v1.PolicyVersion_Rules.Source.Cloud.Aws.Network.Vpcs
+	(*PolicyVersion_Rules_Source_Cloud_Aws_OrgSelector_Accounts)(nil),              // 201: illumio.cloud.config.v1.PolicyVersion_Rules.Source.Cloud.Aws.OrgSelector.Accounts
+	(*PolicyVersion_Rules_Source_Cloud_Azure_Network)(nil),                         // 202: illumio.cloud.config.v1.PolicyVersion_Rules.Source.Cloud.Azure.Network
+	(*PolicyVersion_Rules_Source_Cloud_Azure_OrgSelector)(nil),                     // 203: illumio.cloud.config.v1.PolicyVersion_Rules.Source.Cloud.Azure.OrgSelector
+	(*PolicyVersion_Rules_Source_Cloud_Azure_Network_Subnets)(nil),                 // 204: illumio.cloud.config.v1.PolicyVersion_Rules.Source.Cloud.Azure.Network.Subnets
+	(*PolicyVersion_Rules_Source_Cloud_Azure_Network_Vnets)(nil),                   // 205: illumio.cloud.config.v1.PolicyVersion_Rules.Source.Cloud.Azure.Network.Vnets
+	(*PolicyVersion_Rules_Source_Cloud_Azure_OrgSelector_Subscriptions)(nil),       // 206: illumio.cloud.config.v1.PolicyVersion_Rules.Source.Cloud.Azure.OrgSelector.Subscriptions
+	(*PolicyVersion_Rules_Source_IllumioLabels_Labels)(nil),                        // 207: illumio.cloud.config.v1.PolicyVersion_Rules.Source.IllumioLabels.Labels
+	(*PolicyVersion_Rules_Source_K8S_Clusters)(nil),                                // 208: illumio.cloud.config.v1.PolicyVersion_Rules.Source.K8S.Clusters
+	(*PolicyVersion_Rules_Source_K8S_NamespaceSelector)(nil),                       // 209: illumio.cloud.config.v1.PolicyVersion_Rules.Source.K8S.NamespaceSelector
+	(*PolicyVersion_Rules_Source_K8S_WorkloadSelector)(nil),                        // 210: illumio.cloud.config.v1.PolicyVersion_Rules.Source.K8S.WorkloadSelector
+	(*PolicyVersion_Rules_Source_K8S_Clusters_Aws)(nil),                            // 211: illumio.cloud.config.v1.PolicyVersion_Rules.Source.K8S.Clusters.Aws
+	(*PolicyVersion_Rules_Source_K8S_Clusters_Azure)(nil),                          // 212: illumio.cloud.config.v1.PolicyVersion_Rules.Source.K8S.Clusters.Azure
+	(*PolicyVersion_Rules_Source_K8S_Clusters_Gcp)(nil),                            // 213: illumio.cloud.config.v1.PolicyVersion_Rules.Source.K8S.Clusters.Gcp
+	(*PolicyVersion_Rules_Source_K8S_Clusters_Oci)(nil),                            // 214: illumio.cloud.config.v1.PolicyVersion_Rules.Source.K8S.Clusters.Oci
+	(*PolicyVersion_Rules_Source_K8S_NamespaceSelector_MatchExpressions)(nil),      // 215: illumio.cloud.config.v1.PolicyVersion_Rules.Source.K8S.NamespaceSelector.MatchExpressions
+	(*PolicyVersion_Rules_Source_K8S_NamespaceSelector_MatchLabels)(nil),           // 216: illumio.cloud.config.v1.PolicyVersion_Rules.Source.K8S.NamespaceSelector.MatchLabels
+	(*PolicyVersion_Rules_Source_K8S_WorkloadSelector_MatchExpressions)(nil),       // 217: illumio.cloud.config.v1.PolicyVersion_Rules.Source.K8S.WorkloadSelector.MatchExpressions
+	(*PolicyVersion_Rules_Source_K8S_WorkloadSelector_MatchLabels)(nil),            // 218: illumio.cloud.config.v1.PolicyVersion_Rules.Source.K8S.WorkloadSelector.MatchLabels
+	nil,                           // 219: illumio.cloud.config.v1.CreatePolicyVersionRequest.RulesEntry
+	nil,                           // 220: illumio.cloud.config.v1.CreatePolicyVersionResponse.RulesEntry
+	nil,                           // 221: illumio.cloud.config.v1.ReadPolicyVersionResponse.RulesEntry
+	nil,                           // 222: illumio.cloud.config.v1.UpdatePolicyVersionResponse.RulesEntry
+	(*fieldmaskpb.FieldMask)(nil), // 223: google.protobuf.FieldMask
+	(*emptypb.Empty)(nil),         // 224: google.protobuf.Empty
 }
 var file_illumio_cloud_config_v1_config_proto_depIdxs = []int32{
-	221, // 0: illumio.cloud.config.v1.UpdateApplicationRequest.update_mask:type_name -> google.protobuf.FieldMask
-	221, // 1: illumio.cloud.config.v1.UpdateApplicationAwsResourcesRequest.update_mask:type_name -> google.protobuf.FieldMask
-	221, // 2: illumio.cloud.config.v1.UpdateApplicationAzureResourcesRequest.update_mask:type_name -> google.protobuf.FieldMask
+	223, // 0: illumio.cloud.config.v1.UpdateApplicationRequest.update_mask:type_name -> google.protobuf.FieldMask
+	223, // 1: illumio.cloud.config.v1.UpdateApplicationAwsResourcesRequest.update_mask:type_name -> google.protobuf.FieldMask
+	223, // 2: illumio.cloud.config.v1.UpdateApplicationAzureResourcesRequest.update_mask:type_name -> google.protobuf.FieldMask
 	21,  // 3: illumio.cloud.config.v1.CreateApplicationPolicyRuleRequest.from_labels:type_name -> illumio.cloud.config.v1.ApplicationPolicyRule_FromLabels
 	22,  // 4: illumio.cloud.config.v1.CreateApplicationPolicyRuleRequest.to_labels:type_name -> illumio.cloud.config.v1.ApplicationPolicyRule_ToLabels
 	23,  // 5: illumio.cloud.config.v1.CreateApplicationPolicyRuleRequest.to_port_ranges:type_name -> illumio.cloud.config.v1.ApplicationPolicyRule_ToPortRanges
@@ -15869,15 +15999,15 @@ var file_illumio_cloud_config_v1_config_proto_depIdxs = []int32{
 	21,  // 12: illumio.cloud.config.v1.UpdateApplicationPolicyRuleRequest.from_labels:type_name -> illumio.cloud.config.v1.ApplicationPolicyRule_FromLabels
 	22,  // 13: illumio.cloud.config.v1.UpdateApplicationPolicyRuleRequest.to_labels:type_name -> illumio.cloud.config.v1.ApplicationPolicyRule_ToLabels
 	23,  // 14: illumio.cloud.config.v1.UpdateApplicationPolicyRuleRequest.to_port_ranges:type_name -> illumio.cloud.config.v1.ApplicationPolicyRule_ToPortRanges
-	221, // 15: illumio.cloud.config.v1.UpdateApplicationPolicyRuleRequest.update_mask:type_name -> google.protobuf.FieldMask
+	223, // 15: illumio.cloud.config.v1.UpdateApplicationPolicyRuleRequest.update_mask:type_name -> google.protobuf.FieldMask
 	21,  // 16: illumio.cloud.config.v1.UpdateApplicationPolicyRuleResponse.from_labels:type_name -> illumio.cloud.config.v1.ApplicationPolicyRule_FromLabels
 	22,  // 17: illumio.cloud.config.v1.UpdateApplicationPolicyRuleResponse.to_labels:type_name -> illumio.cloud.config.v1.ApplicationPolicyRule_ToLabels
 	23,  // 18: illumio.cloud.config.v1.UpdateApplicationPolicyRuleResponse.to_port_ranges:type_name -> illumio.cloud.config.v1.ApplicationPolicyRule_ToPortRanges
-	221, // 19: illumio.cloud.config.v1.UpdateAwsAccountRequest.update_mask:type_name -> google.protobuf.FieldMask
-	221, // 20: illumio.cloud.config.v1.UpdateAwsCloudtrailS3BucketRequest.update_mask:type_name -> google.protobuf.FieldMask
-	221, // 21: illumio.cloud.config.v1.UpdateAwsFlowLogsS3BucketRequest.update_mask:type_name -> google.protobuf.FieldMask
-	221, // 22: illumio.cloud.config.v1.UpdateAzureFlowLogsStorageAccountRequest.update_mask:type_name -> google.protobuf.FieldMask
-	221, // 23: illumio.cloud.config.v1.UpdateAzureSubscriptionRequest.update_mask:type_name -> google.protobuf.FieldMask
+	223, // 19: illumio.cloud.config.v1.UpdateAwsAccountRequest.update_mask:type_name -> google.protobuf.FieldMask
+	223, // 20: illumio.cloud.config.v1.UpdateAwsCloudtrailS3BucketRequest.update_mask:type_name -> google.protobuf.FieldMask
+	223, // 21: illumio.cloud.config.v1.UpdateAwsFlowLogsS3BucketRequest.update_mask:type_name -> google.protobuf.FieldMask
+	223, // 22: illumio.cloud.config.v1.UpdateAzureFlowLogsStorageAccountRequest.update_mask:type_name -> google.protobuf.FieldMask
+	223, // 23: illumio.cloud.config.v1.UpdateAzureSubscriptionRequest.update_mask:type_name -> google.protobuf.FieldMask
 	66,  // 24: illumio.cloud.config.v1.CreateDeploymentRequest.aws_tags:type_name -> illumio.cloud.config.v1.Deployment_AwsTags
 	67,  // 25: illumio.cloud.config.v1.CreateDeploymentRequest.azure_tags:type_name -> illumio.cloud.config.v1.Deployment_AzureTags
 	66,  // 26: illumio.cloud.config.v1.CreateDeploymentResponse.aws_tags:type_name -> illumio.cloud.config.v1.Deployment_AwsTags
@@ -15886,11 +16016,11 @@ var file_illumio_cloud_config_v1_config_proto_depIdxs = []int32{
 	67,  // 29: illumio.cloud.config.v1.ReadDeploymentResponse.azure_tags:type_name -> illumio.cloud.config.v1.Deployment_AzureTags
 	66,  // 30: illumio.cloud.config.v1.UpdateDeploymentRequest.aws_tags:type_name -> illumio.cloud.config.v1.Deployment_AwsTags
 	67,  // 31: illumio.cloud.config.v1.UpdateDeploymentRequest.azure_tags:type_name -> illumio.cloud.config.v1.Deployment_AzureTags
-	221, // 32: illumio.cloud.config.v1.UpdateDeploymentRequest.update_mask:type_name -> google.protobuf.FieldMask
+	223, // 32: illumio.cloud.config.v1.UpdateDeploymentRequest.update_mask:type_name -> google.protobuf.FieldMask
 	66,  // 33: illumio.cloud.config.v1.UpdateDeploymentResponse.aws_tags:type_name -> illumio.cloud.config.v1.Deployment_AwsTags
 	67,  // 34: illumio.cloud.config.v1.UpdateDeploymentResponse.azure_tags:type_name -> illumio.cloud.config.v1.Deployment_AzureTags
-	221, // 35: illumio.cloud.config.v1.UpdateGcpFlowLogsPubsubTopicRequest.update_mask:type_name -> google.protobuf.FieldMask
-	221, // 36: illumio.cloud.config.v1.UpdateGcpProjectRequest.update_mask:type_name -> google.protobuf.FieldMask
+	223, // 35: illumio.cloud.config.v1.UpdateGcpFlowLogsPubsubTopicRequest.update_mask:type_name -> google.protobuf.FieldMask
+	223, // 36: illumio.cloud.config.v1.UpdateGcpProjectRequest.update_mask:type_name -> google.protobuf.FieldMask
 	89,  // 37: illumio.cloud.config.v1.CreateIpListRequest.ip_addresses:type_name -> illumio.cloud.config.v1.IpList_IpAddresses
 	90,  // 38: illumio.cloud.config.v1.CreateIpListRequest.ip_ranges:type_name -> illumio.cloud.config.v1.IpList_IpRanges
 	89,  // 39: illumio.cloud.config.v1.CreateIpListResponse.ip_addresses:type_name -> illumio.cloud.config.v1.IpList_IpAddresses
@@ -15899,12 +16029,12 @@ var file_illumio_cloud_config_v1_config_proto_depIdxs = []int32{
 	90,  // 42: illumio.cloud.config.v1.ReadIpListResponse.ip_ranges:type_name -> illumio.cloud.config.v1.IpList_IpRanges
 	89,  // 43: illumio.cloud.config.v1.UpdateIpListRequest.ip_addresses:type_name -> illumio.cloud.config.v1.IpList_IpAddresses
 	90,  // 44: illumio.cloud.config.v1.UpdateIpListRequest.ip_ranges:type_name -> illumio.cloud.config.v1.IpList_IpRanges
-	221, // 45: illumio.cloud.config.v1.UpdateIpListRequest.update_mask:type_name -> google.protobuf.FieldMask
+	223, // 45: illumio.cloud.config.v1.UpdateIpListRequest.update_mask:type_name -> google.protobuf.FieldMask
 	89,  // 46: illumio.cloud.config.v1.UpdateIpListResponse.ip_addresses:type_name -> illumio.cloud.config.v1.IpList_IpAddresses
 	90,  // 47: illumio.cloud.config.v1.UpdateIpListResponse.ip_ranges:type_name -> illumio.cloud.config.v1.IpList_IpRanges
-	221, // 48: illumio.cloud.config.v1.UpdateK8SClusterRequest.update_mask:type_name -> google.protobuf.FieldMask
-	221, // 49: illumio.cloud.config.v1.UpdateK8SClusterOnboardingCredentialRequest.update_mask:type_name -> google.protobuf.FieldMask
-	221, // 50: illumio.cloud.config.v1.UpdateOrganizationPolicyRequest.update_mask:type_name -> google.protobuf.FieldMask
+	223, // 48: illumio.cloud.config.v1.UpdateK8SClusterRequest.update_mask:type_name -> google.protobuf.FieldMask
+	223, // 49: illumio.cloud.config.v1.UpdateK8SClusterOnboardingCredentialRequest.update_mask:type_name -> google.protobuf.FieldMask
+	223, // 50: illumio.cloud.config.v1.UpdateOrganizationPolicyRequest.update_mask:type_name -> google.protobuf.FieldMask
 	119, // 51: illumio.cloud.config.v1.CreateOrganizationPolicyRuleRequest.from_labels:type_name -> illumio.cloud.config.v1.OrganizationPolicyRule_FromLabels
 	120, // 52: illumio.cloud.config.v1.CreateOrganizationPolicyRuleRequest.to_labels:type_name -> illumio.cloud.config.v1.OrganizationPolicyRule_ToLabels
 	121, // 53: illumio.cloud.config.v1.CreateOrganizationPolicyRuleRequest.to_port_ranges:type_name -> illumio.cloud.config.v1.OrganizationPolicyRule_ToPortRanges
@@ -15917,258 +16047,260 @@ var file_illumio_cloud_config_v1_config_proto_depIdxs = []int32{
 	119, // 60: illumio.cloud.config.v1.UpdateOrganizationPolicyRuleRequest.from_labels:type_name -> illumio.cloud.config.v1.OrganizationPolicyRule_FromLabels
 	120, // 61: illumio.cloud.config.v1.UpdateOrganizationPolicyRuleRequest.to_labels:type_name -> illumio.cloud.config.v1.OrganizationPolicyRule_ToLabels
 	121, // 62: illumio.cloud.config.v1.UpdateOrganizationPolicyRuleRequest.to_port_ranges:type_name -> illumio.cloud.config.v1.OrganizationPolicyRule_ToPortRanges
-	221, // 63: illumio.cloud.config.v1.UpdateOrganizationPolicyRuleRequest.update_mask:type_name -> google.protobuf.FieldMask
+	223, // 63: illumio.cloud.config.v1.UpdateOrganizationPolicyRuleRequest.update_mask:type_name -> google.protobuf.FieldMask
 	119, // 64: illumio.cloud.config.v1.UpdateOrganizationPolicyRuleResponse.from_labels:type_name -> illumio.cloud.config.v1.OrganizationPolicyRule_FromLabels
 	120, // 65: illumio.cloud.config.v1.UpdateOrganizationPolicyRuleResponse.to_labels:type_name -> illumio.cloud.config.v1.OrganizationPolicyRule_ToLabels
 	121, // 66: illumio.cloud.config.v1.UpdateOrganizationPolicyRuleResponse.to_port_ranges:type_name -> illumio.cloud.config.v1.OrganizationPolicyRule_ToPortRanges
-	221, // 67: illumio.cloud.config.v1.UpdatePolicyRequest.update_mask:type_name -> google.protobuf.FieldMask
-	221, // 68: illumio.cloud.config.v1.UpdatePolicyProvisionRequest.update_mask:type_name -> google.protobuf.FieldMask
+	223, // 67: illumio.cloud.config.v1.UpdatePolicyRequest.update_mask:type_name -> google.protobuf.FieldMask
+	223, // 68: illumio.cloud.config.v1.UpdatePolicyProvisionRequest.update_mask:type_name -> google.protobuf.FieldMask
 	159, // 69: illumio.cloud.config.v1.PolicyVersion_Rules.destination:type_name -> illumio.cloud.config.v1.PolicyVersion_Rules.Destination
 	160, // 70: illumio.cloud.config.v1.PolicyVersion_Rules.port_ranges:type_name -> illumio.cloud.config.v1.PolicyVersion_Rules.PortRanges
 	161, // 71: illumio.cloud.config.v1.PolicyVersion_Rules.source:type_name -> illumio.cloud.config.v1.PolicyVersion_Rules.Source
-	217, // 72: illumio.cloud.config.v1.CreatePolicyVersionRequest.rules:type_name -> illumio.cloud.config.v1.CreatePolicyVersionRequest.RulesEntry
-	218, // 73: illumio.cloud.config.v1.CreatePolicyVersionResponse.rules:type_name -> illumio.cloud.config.v1.CreatePolicyVersionResponse.RulesEntry
-	219, // 74: illumio.cloud.config.v1.ReadPolicyVersionResponse.rules:type_name -> illumio.cloud.config.v1.ReadPolicyVersionResponse.RulesEntry
-	221, // 75: illumio.cloud.config.v1.UpdatePolicyVersionRequest.update_mask:type_name -> google.protobuf.FieldMask
-	220, // 76: illumio.cloud.config.v1.UpdatePolicyVersionResponse.rules:type_name -> illumio.cloud.config.v1.UpdatePolicyVersionResponse.RulesEntry
+	219, // 72: illumio.cloud.config.v1.CreatePolicyVersionRequest.rules:type_name -> illumio.cloud.config.v1.CreatePolicyVersionRequest.RulesEntry
+	220, // 73: illumio.cloud.config.v1.CreatePolicyVersionResponse.rules:type_name -> illumio.cloud.config.v1.CreatePolicyVersionResponse.RulesEntry
+	221, // 74: illumio.cloud.config.v1.ReadPolicyVersionResponse.rules:type_name -> illumio.cloud.config.v1.ReadPolicyVersionResponse.RulesEntry
+	223, // 75: illumio.cloud.config.v1.UpdatePolicyVersionRequest.update_mask:type_name -> google.protobuf.FieldMask
+	222, // 76: illumio.cloud.config.v1.UpdatePolicyVersionResponse.rules:type_name -> illumio.cloud.config.v1.UpdatePolicyVersionResponse.RulesEntry
 	151, // 77: illumio.cloud.config.v1.CreateTagToLabelRequest.icon:type_name -> illumio.cloud.config.v1.TagToLabel_Icon
 	151, // 78: illumio.cloud.config.v1.CreateTagToLabelResponse.icon:type_name -> illumio.cloud.config.v1.TagToLabel_Icon
 	151, // 79: illumio.cloud.config.v1.ReadTagToLabelResponse.icon:type_name -> illumio.cloud.config.v1.TagToLabel_Icon
 	151, // 80: illumio.cloud.config.v1.UpdateTagToLabelRequest.icon:type_name -> illumio.cloud.config.v1.TagToLabel_Icon
-	221, // 81: illumio.cloud.config.v1.UpdateTagToLabelRequest.update_mask:type_name -> google.protobuf.FieldMask
+	223, // 81: illumio.cloud.config.v1.UpdateTagToLabelRequest.update_mask:type_name -> google.protobuf.FieldMask
 	151, // 82: illumio.cloud.config.v1.UpdateTagToLabelResponse.icon:type_name -> illumio.cloud.config.v1.TagToLabel_Icon
 	162, // 83: illumio.cloud.config.v1.PolicyVersion_Rules.Destination.cloud:type_name -> illumio.cloud.config.v1.PolicyVersion_Rules.Destination.Cloud
 	163, // 84: illumio.cloud.config.v1.PolicyVersion_Rules.Destination.fqdns:type_name -> illumio.cloud.config.v1.PolicyVersion_Rules.Destination.Fqdns
 	164, // 85: illumio.cloud.config.v1.PolicyVersion_Rules.Destination.illumio_labels:type_name -> illumio.cloud.config.v1.PolicyVersion_Rules.Destination.IllumioLabels
-	165, // 86: illumio.cloud.config.v1.PolicyVersion_Rules.Destination.ip_list:type_name -> illumio.cloud.config.v1.PolicyVersion_Rules.Destination.IpList
+	165, // 86: illumio.cloud.config.v1.PolicyVersion_Rules.Destination.ip_lists:type_name -> illumio.cloud.config.v1.PolicyVersion_Rules.Destination.IpLists
 	166, // 87: illumio.cloud.config.v1.PolicyVersion_Rules.Destination.k8s:type_name -> illumio.cloud.config.v1.PolicyVersion_Rules.Destination.K8S
-	190, // 88: illumio.cloud.config.v1.PolicyVersion_Rules.Source.cloud:type_name -> illumio.cloud.config.v1.PolicyVersion_Rules.Source.Cloud
-	191, // 89: illumio.cloud.config.v1.PolicyVersion_Rules.Source.illumio_labels:type_name -> illumio.cloud.config.v1.PolicyVersion_Rules.Source.IllumioLabels
-	192, // 90: illumio.cloud.config.v1.PolicyVersion_Rules.Source.ip_list:type_name -> illumio.cloud.config.v1.PolicyVersion_Rules.Source.IpList
-	193, // 91: illumio.cloud.config.v1.PolicyVersion_Rules.Source.k8s:type_name -> illumio.cloud.config.v1.PolicyVersion_Rules.Source.K8S
+	191, // 88: illumio.cloud.config.v1.PolicyVersion_Rules.Source.cloud:type_name -> illumio.cloud.config.v1.PolicyVersion_Rules.Source.Cloud
+	192, // 89: illumio.cloud.config.v1.PolicyVersion_Rules.Source.illumio_labels:type_name -> illumio.cloud.config.v1.PolicyVersion_Rules.Source.IllumioLabels
+	193, // 90: illumio.cloud.config.v1.PolicyVersion_Rules.Source.ip_lists:type_name -> illumio.cloud.config.v1.PolicyVersion_Rules.Source.IpLists
+	194, // 91: illumio.cloud.config.v1.PolicyVersion_Rules.Source.k8s:type_name -> illumio.cloud.config.v1.PolicyVersion_Rules.Source.K8S
 	167, // 92: illumio.cloud.config.v1.PolicyVersion_Rules.Destination.Cloud.aws:type_name -> illumio.cloud.config.v1.PolicyVersion_Rules.Destination.Cloud.Aws
 	168, // 93: illumio.cloud.config.v1.PolicyVersion_Rules.Destination.Cloud.azure:type_name -> illumio.cloud.config.v1.PolicyVersion_Rules.Destination.Cloud.Azure
-	179, // 94: illumio.cloud.config.v1.PolicyVersion_Rules.Destination.K8S.clusters:type_name -> illumio.cloud.config.v1.PolicyVersion_Rules.Destination.K8S.Clusters
-	180, // 95: illumio.cloud.config.v1.PolicyVersion_Rules.Destination.K8S.namespace_selector:type_name -> illumio.cloud.config.v1.PolicyVersion_Rules.Destination.K8S.NamespaceSelector
-	181, // 96: illumio.cloud.config.v1.PolicyVersion_Rules.Destination.K8S.workload_selector:type_name -> illumio.cloud.config.v1.PolicyVersion_Rules.Destination.K8S.WorkloadSelector
-	169, // 97: illumio.cloud.config.v1.PolicyVersion_Rules.Destination.Cloud.Aws.network:type_name -> illumio.cloud.config.v1.PolicyVersion_Rules.Destination.Cloud.Aws.Network
-	170, // 98: illumio.cloud.config.v1.PolicyVersion_Rules.Destination.Cloud.Aws.org_selector:type_name -> illumio.cloud.config.v1.PolicyVersion_Rules.Destination.Cloud.Aws.OrgSelector
-	174, // 99: illumio.cloud.config.v1.PolicyVersion_Rules.Destination.Cloud.Azure.network:type_name -> illumio.cloud.config.v1.PolicyVersion_Rules.Destination.Cloud.Azure.Network
-	175, // 100: illumio.cloud.config.v1.PolicyVersion_Rules.Destination.Cloud.Azure.org_selector:type_name -> illumio.cloud.config.v1.PolicyVersion_Rules.Destination.Cloud.Azure.OrgSelector
-	171, // 101: illumio.cloud.config.v1.PolicyVersion_Rules.Destination.Cloud.Aws.Network.subnets:type_name -> illumio.cloud.config.v1.PolicyVersion_Rules.Destination.Cloud.Aws.Network.Subnets
-	172, // 102: illumio.cloud.config.v1.PolicyVersion_Rules.Destination.Cloud.Aws.Network.vpcs:type_name -> illumio.cloud.config.v1.PolicyVersion_Rules.Destination.Cloud.Aws.Network.Vpcs
-	173, // 103: illumio.cloud.config.v1.PolicyVersion_Rules.Destination.Cloud.Aws.OrgSelector.accounts:type_name -> illumio.cloud.config.v1.PolicyVersion_Rules.Destination.Cloud.Aws.OrgSelector.Accounts
-	176, // 104: illumio.cloud.config.v1.PolicyVersion_Rules.Destination.Cloud.Azure.Network.subnets:type_name -> illumio.cloud.config.v1.PolicyVersion_Rules.Destination.Cloud.Azure.Network.Subnets
-	177, // 105: illumio.cloud.config.v1.PolicyVersion_Rules.Destination.Cloud.Azure.Network.vnets:type_name -> illumio.cloud.config.v1.PolicyVersion_Rules.Destination.Cloud.Azure.Network.Vnets
-	178, // 106: illumio.cloud.config.v1.PolicyVersion_Rules.Destination.Cloud.Azure.OrgSelector.subscriptions:type_name -> illumio.cloud.config.v1.PolicyVersion_Rules.Destination.Cloud.Azure.OrgSelector.Subscriptions
-	182, // 107: illumio.cloud.config.v1.PolicyVersion_Rules.Destination.K8S.Clusters.aws:type_name -> illumio.cloud.config.v1.PolicyVersion_Rules.Destination.K8S.Clusters.Aws
-	183, // 108: illumio.cloud.config.v1.PolicyVersion_Rules.Destination.K8S.Clusters.azure:type_name -> illumio.cloud.config.v1.PolicyVersion_Rules.Destination.K8S.Clusters.Azure
-	184, // 109: illumio.cloud.config.v1.PolicyVersion_Rules.Destination.K8S.Clusters.gcp:type_name -> illumio.cloud.config.v1.PolicyVersion_Rules.Destination.K8S.Clusters.Gcp
-	185, // 110: illumio.cloud.config.v1.PolicyVersion_Rules.Destination.K8S.Clusters.oci:type_name -> illumio.cloud.config.v1.PolicyVersion_Rules.Destination.K8S.Clusters.Oci
-	186, // 111: illumio.cloud.config.v1.PolicyVersion_Rules.Destination.K8S.NamespaceSelector.match_expressions:type_name -> illumio.cloud.config.v1.PolicyVersion_Rules.Destination.K8S.NamespaceSelector.MatchExpressions
-	187, // 112: illumio.cloud.config.v1.PolicyVersion_Rules.Destination.K8S.NamespaceSelector.match_labels:type_name -> illumio.cloud.config.v1.PolicyVersion_Rules.Destination.K8S.NamespaceSelector.MatchLabels
-	188, // 113: illumio.cloud.config.v1.PolicyVersion_Rules.Destination.K8S.WorkloadSelector.match_expressions:type_name -> illumio.cloud.config.v1.PolicyVersion_Rules.Destination.K8S.WorkloadSelector.MatchExpressions
-	189, // 114: illumio.cloud.config.v1.PolicyVersion_Rules.Destination.K8S.WorkloadSelector.match_labels:type_name -> illumio.cloud.config.v1.PolicyVersion_Rules.Destination.K8S.WorkloadSelector.MatchLabels
-	194, // 115: illumio.cloud.config.v1.PolicyVersion_Rules.Source.Cloud.aws:type_name -> illumio.cloud.config.v1.PolicyVersion_Rules.Source.Cloud.Aws
-	195, // 116: illumio.cloud.config.v1.PolicyVersion_Rules.Source.Cloud.azure:type_name -> illumio.cloud.config.v1.PolicyVersion_Rules.Source.Cloud.Azure
-	206, // 117: illumio.cloud.config.v1.PolicyVersion_Rules.Source.K8S.clusters:type_name -> illumio.cloud.config.v1.PolicyVersion_Rules.Source.K8S.Clusters
-	207, // 118: illumio.cloud.config.v1.PolicyVersion_Rules.Source.K8S.namespace_selector:type_name -> illumio.cloud.config.v1.PolicyVersion_Rules.Source.K8S.NamespaceSelector
-	208, // 119: illumio.cloud.config.v1.PolicyVersion_Rules.Source.K8S.workload_selector:type_name -> illumio.cloud.config.v1.PolicyVersion_Rules.Source.K8S.WorkloadSelector
-	196, // 120: illumio.cloud.config.v1.PolicyVersion_Rules.Source.Cloud.Aws.network:type_name -> illumio.cloud.config.v1.PolicyVersion_Rules.Source.Cloud.Aws.Network
-	197, // 121: illumio.cloud.config.v1.PolicyVersion_Rules.Source.Cloud.Aws.org_selector:type_name -> illumio.cloud.config.v1.PolicyVersion_Rules.Source.Cloud.Aws.OrgSelector
-	201, // 122: illumio.cloud.config.v1.PolicyVersion_Rules.Source.Cloud.Azure.network:type_name -> illumio.cloud.config.v1.PolicyVersion_Rules.Source.Cloud.Azure.Network
-	202, // 123: illumio.cloud.config.v1.PolicyVersion_Rules.Source.Cloud.Azure.org_selector:type_name -> illumio.cloud.config.v1.PolicyVersion_Rules.Source.Cloud.Azure.OrgSelector
-	198, // 124: illumio.cloud.config.v1.PolicyVersion_Rules.Source.Cloud.Aws.Network.subnets:type_name -> illumio.cloud.config.v1.PolicyVersion_Rules.Source.Cloud.Aws.Network.Subnets
-	199, // 125: illumio.cloud.config.v1.PolicyVersion_Rules.Source.Cloud.Aws.Network.vpcs:type_name -> illumio.cloud.config.v1.PolicyVersion_Rules.Source.Cloud.Aws.Network.Vpcs
-	200, // 126: illumio.cloud.config.v1.PolicyVersion_Rules.Source.Cloud.Aws.OrgSelector.accounts:type_name -> illumio.cloud.config.v1.PolicyVersion_Rules.Source.Cloud.Aws.OrgSelector.Accounts
-	203, // 127: illumio.cloud.config.v1.PolicyVersion_Rules.Source.Cloud.Azure.Network.subnets:type_name -> illumio.cloud.config.v1.PolicyVersion_Rules.Source.Cloud.Azure.Network.Subnets
-	204, // 128: illumio.cloud.config.v1.PolicyVersion_Rules.Source.Cloud.Azure.Network.vnets:type_name -> illumio.cloud.config.v1.PolicyVersion_Rules.Source.Cloud.Azure.Network.Vnets
-	205, // 129: illumio.cloud.config.v1.PolicyVersion_Rules.Source.Cloud.Azure.OrgSelector.subscriptions:type_name -> illumio.cloud.config.v1.PolicyVersion_Rules.Source.Cloud.Azure.OrgSelector.Subscriptions
-	209, // 130: illumio.cloud.config.v1.PolicyVersion_Rules.Source.K8S.Clusters.aws:type_name -> illumio.cloud.config.v1.PolicyVersion_Rules.Source.K8S.Clusters.Aws
-	210, // 131: illumio.cloud.config.v1.PolicyVersion_Rules.Source.K8S.Clusters.azure:type_name -> illumio.cloud.config.v1.PolicyVersion_Rules.Source.K8S.Clusters.Azure
-	211, // 132: illumio.cloud.config.v1.PolicyVersion_Rules.Source.K8S.Clusters.gcp:type_name -> illumio.cloud.config.v1.PolicyVersion_Rules.Source.K8S.Clusters.Gcp
-	212, // 133: illumio.cloud.config.v1.PolicyVersion_Rules.Source.K8S.Clusters.oci:type_name -> illumio.cloud.config.v1.PolicyVersion_Rules.Source.K8S.Clusters.Oci
-	213, // 134: illumio.cloud.config.v1.PolicyVersion_Rules.Source.K8S.NamespaceSelector.match_expressions:type_name -> illumio.cloud.config.v1.PolicyVersion_Rules.Source.K8S.NamespaceSelector.MatchExpressions
-	214, // 135: illumio.cloud.config.v1.PolicyVersion_Rules.Source.K8S.NamespaceSelector.match_labels:type_name -> illumio.cloud.config.v1.PolicyVersion_Rules.Source.K8S.NamespaceSelector.MatchLabels
-	215, // 136: illumio.cloud.config.v1.PolicyVersion_Rules.Source.K8S.WorkloadSelector.match_expressions:type_name -> illumio.cloud.config.v1.PolicyVersion_Rules.Source.K8S.WorkloadSelector.MatchExpressions
-	216, // 137: illumio.cloud.config.v1.PolicyVersion_Rules.Source.K8S.WorkloadSelector.match_labels:type_name -> illumio.cloud.config.v1.PolicyVersion_Rules.Source.K8S.WorkloadSelector.MatchLabels
-	143, // 138: illumio.cloud.config.v1.CreatePolicyVersionRequest.RulesEntry.value:type_name -> illumio.cloud.config.v1.PolicyVersion_Rules
-	143, // 139: illumio.cloud.config.v1.CreatePolicyVersionResponse.RulesEntry.value:type_name -> illumio.cloud.config.v1.PolicyVersion_Rules
-	143, // 140: illumio.cloud.config.v1.ReadPolicyVersionResponse.RulesEntry.value:type_name -> illumio.cloud.config.v1.PolicyVersion_Rules
-	143, // 141: illumio.cloud.config.v1.UpdatePolicyVersionResponse.RulesEntry.value:type_name -> illumio.cloud.config.v1.PolicyVersion_Rules
-	0,   // 142: illumio.cloud.config.v1.ConfigService.CreateApplication:input_type -> illumio.cloud.config.v1.CreateApplicationRequest
-	2,   // 143: illumio.cloud.config.v1.ConfigService.ReadApplication:input_type -> illumio.cloud.config.v1.ReadApplicationRequest
-	4,   // 144: illumio.cloud.config.v1.ConfigService.UpdateApplication:input_type -> illumio.cloud.config.v1.UpdateApplicationRequest
-	6,   // 145: illumio.cloud.config.v1.ConfigService.DeleteApplication:input_type -> illumio.cloud.config.v1.DeleteApplicationRequest
-	7,   // 146: illumio.cloud.config.v1.ConfigService.CreateApplicationAwsResources:input_type -> illumio.cloud.config.v1.CreateApplicationAwsResourcesRequest
-	9,   // 147: illumio.cloud.config.v1.ConfigService.ReadApplicationAwsResources:input_type -> illumio.cloud.config.v1.ReadApplicationAwsResourcesRequest
-	11,  // 148: illumio.cloud.config.v1.ConfigService.UpdateApplicationAwsResources:input_type -> illumio.cloud.config.v1.UpdateApplicationAwsResourcesRequest
-	13,  // 149: illumio.cloud.config.v1.ConfigService.DeleteApplicationAwsResources:input_type -> illumio.cloud.config.v1.DeleteApplicationAwsResourcesRequest
-	14,  // 150: illumio.cloud.config.v1.ConfigService.CreateApplicationAzureResources:input_type -> illumio.cloud.config.v1.CreateApplicationAzureResourcesRequest
-	16,  // 151: illumio.cloud.config.v1.ConfigService.ReadApplicationAzureResources:input_type -> illumio.cloud.config.v1.ReadApplicationAzureResourcesRequest
-	18,  // 152: illumio.cloud.config.v1.ConfigService.UpdateApplicationAzureResources:input_type -> illumio.cloud.config.v1.UpdateApplicationAzureResourcesRequest
-	20,  // 153: illumio.cloud.config.v1.ConfigService.DeleteApplicationAzureResources:input_type -> illumio.cloud.config.v1.DeleteApplicationAzureResourcesRequest
-	24,  // 154: illumio.cloud.config.v1.ConfigService.CreateApplicationPolicyRule:input_type -> illumio.cloud.config.v1.CreateApplicationPolicyRuleRequest
-	26,  // 155: illumio.cloud.config.v1.ConfigService.ReadApplicationPolicyRule:input_type -> illumio.cloud.config.v1.ReadApplicationPolicyRuleRequest
-	28,  // 156: illumio.cloud.config.v1.ConfigService.UpdateApplicationPolicyRule:input_type -> illumio.cloud.config.v1.UpdateApplicationPolicyRuleRequest
-	30,  // 157: illumio.cloud.config.v1.ConfigService.DeleteApplicationPolicyRule:input_type -> illumio.cloud.config.v1.DeleteApplicationPolicyRuleRequest
-	31,  // 158: illumio.cloud.config.v1.ConfigService.CreateAwsAccount:input_type -> illumio.cloud.config.v1.CreateAwsAccountRequest
-	33,  // 159: illumio.cloud.config.v1.ConfigService.ReadAwsAccount:input_type -> illumio.cloud.config.v1.ReadAwsAccountRequest
-	35,  // 160: illumio.cloud.config.v1.ConfigService.UpdateAwsAccount:input_type -> illumio.cloud.config.v1.UpdateAwsAccountRequest
-	37,  // 161: illumio.cloud.config.v1.ConfigService.DeleteAwsAccount:input_type -> illumio.cloud.config.v1.DeleteAwsAccountRequest
-	38,  // 162: illumio.cloud.config.v1.ConfigService.CreateAwsCloudtrailS3Bucket:input_type -> illumio.cloud.config.v1.CreateAwsCloudtrailS3BucketRequest
-	40,  // 163: illumio.cloud.config.v1.ConfigService.ReadAwsCloudtrailS3Bucket:input_type -> illumio.cloud.config.v1.ReadAwsCloudtrailS3BucketRequest
-	42,  // 164: illumio.cloud.config.v1.ConfigService.UpdateAwsCloudtrailS3Bucket:input_type -> illumio.cloud.config.v1.UpdateAwsCloudtrailS3BucketRequest
-	44,  // 165: illumio.cloud.config.v1.ConfigService.DeleteAwsCloudtrailS3Bucket:input_type -> illumio.cloud.config.v1.DeleteAwsCloudtrailS3BucketRequest
-	45,  // 166: illumio.cloud.config.v1.ConfigService.CreateAwsFlowLogsS3Bucket:input_type -> illumio.cloud.config.v1.CreateAwsFlowLogsS3BucketRequest
-	47,  // 167: illumio.cloud.config.v1.ConfigService.ReadAwsFlowLogsS3Bucket:input_type -> illumio.cloud.config.v1.ReadAwsFlowLogsS3BucketRequest
-	49,  // 168: illumio.cloud.config.v1.ConfigService.UpdateAwsFlowLogsS3Bucket:input_type -> illumio.cloud.config.v1.UpdateAwsFlowLogsS3BucketRequest
-	51,  // 169: illumio.cloud.config.v1.ConfigService.DeleteAwsFlowLogsS3Bucket:input_type -> illumio.cloud.config.v1.DeleteAwsFlowLogsS3BucketRequest
-	52,  // 170: illumio.cloud.config.v1.ConfigService.CreateAzureFlowLogsStorageAccount:input_type -> illumio.cloud.config.v1.CreateAzureFlowLogsStorageAccountRequest
-	54,  // 171: illumio.cloud.config.v1.ConfigService.ReadAzureFlowLogsStorageAccount:input_type -> illumio.cloud.config.v1.ReadAzureFlowLogsStorageAccountRequest
-	56,  // 172: illumio.cloud.config.v1.ConfigService.UpdateAzureFlowLogsStorageAccount:input_type -> illumio.cloud.config.v1.UpdateAzureFlowLogsStorageAccountRequest
-	58,  // 173: illumio.cloud.config.v1.ConfigService.DeleteAzureFlowLogsStorageAccount:input_type -> illumio.cloud.config.v1.DeleteAzureFlowLogsStorageAccountRequest
-	59,  // 174: illumio.cloud.config.v1.ConfigService.CreateAzureSubscription:input_type -> illumio.cloud.config.v1.CreateAzureSubscriptionRequest
-	61,  // 175: illumio.cloud.config.v1.ConfigService.ReadAzureSubscription:input_type -> illumio.cloud.config.v1.ReadAzureSubscriptionRequest
-	63,  // 176: illumio.cloud.config.v1.ConfigService.UpdateAzureSubscription:input_type -> illumio.cloud.config.v1.UpdateAzureSubscriptionRequest
-	65,  // 177: illumio.cloud.config.v1.ConfigService.DeleteAzureSubscription:input_type -> illumio.cloud.config.v1.DeleteAzureSubscriptionRequest
-	68,  // 178: illumio.cloud.config.v1.ConfigService.CreateDeployment:input_type -> illumio.cloud.config.v1.CreateDeploymentRequest
-	70,  // 179: illumio.cloud.config.v1.ConfigService.ReadDeployment:input_type -> illumio.cloud.config.v1.ReadDeploymentRequest
-	72,  // 180: illumio.cloud.config.v1.ConfigService.UpdateDeployment:input_type -> illumio.cloud.config.v1.UpdateDeploymentRequest
-	74,  // 181: illumio.cloud.config.v1.ConfigService.DeleteDeployment:input_type -> illumio.cloud.config.v1.DeleteDeploymentRequest
-	75,  // 182: illumio.cloud.config.v1.ConfigService.CreateGcpFlowLogsPubsubTopic:input_type -> illumio.cloud.config.v1.CreateGcpFlowLogsPubsubTopicRequest
-	77,  // 183: illumio.cloud.config.v1.ConfigService.ReadGcpFlowLogsPubsubTopic:input_type -> illumio.cloud.config.v1.ReadGcpFlowLogsPubsubTopicRequest
-	79,  // 184: illumio.cloud.config.v1.ConfigService.UpdateGcpFlowLogsPubsubTopic:input_type -> illumio.cloud.config.v1.UpdateGcpFlowLogsPubsubTopicRequest
-	81,  // 185: illumio.cloud.config.v1.ConfigService.DeleteGcpFlowLogsPubsubTopic:input_type -> illumio.cloud.config.v1.DeleteGcpFlowLogsPubsubTopicRequest
-	82,  // 186: illumio.cloud.config.v1.ConfigService.CreateGcpProject:input_type -> illumio.cloud.config.v1.CreateGcpProjectRequest
-	84,  // 187: illumio.cloud.config.v1.ConfigService.ReadGcpProject:input_type -> illumio.cloud.config.v1.ReadGcpProjectRequest
-	86,  // 188: illumio.cloud.config.v1.ConfigService.UpdateGcpProject:input_type -> illumio.cloud.config.v1.UpdateGcpProjectRequest
-	88,  // 189: illumio.cloud.config.v1.ConfigService.DeleteGcpProject:input_type -> illumio.cloud.config.v1.DeleteGcpProjectRequest
-	91,  // 190: illumio.cloud.config.v1.ConfigService.CreateIpList:input_type -> illumio.cloud.config.v1.CreateIpListRequest
-	93,  // 191: illumio.cloud.config.v1.ConfigService.ReadIpList:input_type -> illumio.cloud.config.v1.ReadIpListRequest
-	95,  // 192: illumio.cloud.config.v1.ConfigService.UpdateIpList:input_type -> illumio.cloud.config.v1.UpdateIpListRequest
-	97,  // 193: illumio.cloud.config.v1.ConfigService.DeleteIpList:input_type -> illumio.cloud.config.v1.DeleteIpListRequest
-	98,  // 194: illumio.cloud.config.v1.ConfigService.CreateK8SCluster:input_type -> illumio.cloud.config.v1.CreateK8SClusterRequest
-	100, // 195: illumio.cloud.config.v1.ConfigService.ReadK8SCluster:input_type -> illumio.cloud.config.v1.ReadK8SClusterRequest
-	102, // 196: illumio.cloud.config.v1.ConfigService.UpdateK8SCluster:input_type -> illumio.cloud.config.v1.UpdateK8SClusterRequest
-	104, // 197: illumio.cloud.config.v1.ConfigService.DeleteK8SCluster:input_type -> illumio.cloud.config.v1.DeleteK8SClusterRequest
-	105, // 198: illumio.cloud.config.v1.ConfigService.CreateK8SClusterOnboardingCredential:input_type -> illumio.cloud.config.v1.CreateK8SClusterOnboardingCredentialRequest
-	107, // 199: illumio.cloud.config.v1.ConfigService.ReadK8SClusterOnboardingCredential:input_type -> illumio.cloud.config.v1.ReadK8SClusterOnboardingCredentialRequest
-	109, // 200: illumio.cloud.config.v1.ConfigService.UpdateK8SClusterOnboardingCredential:input_type -> illumio.cloud.config.v1.UpdateK8SClusterOnboardingCredentialRequest
-	111, // 201: illumio.cloud.config.v1.ConfigService.DeleteK8SClusterOnboardingCredential:input_type -> illumio.cloud.config.v1.DeleteK8SClusterOnboardingCredentialRequest
-	112, // 202: illumio.cloud.config.v1.ConfigService.CreateOrganizationPolicy:input_type -> illumio.cloud.config.v1.CreateOrganizationPolicyRequest
-	114, // 203: illumio.cloud.config.v1.ConfigService.ReadOrganizationPolicy:input_type -> illumio.cloud.config.v1.ReadOrganizationPolicyRequest
-	116, // 204: illumio.cloud.config.v1.ConfigService.UpdateOrganizationPolicy:input_type -> illumio.cloud.config.v1.UpdateOrganizationPolicyRequest
-	118, // 205: illumio.cloud.config.v1.ConfigService.DeleteOrganizationPolicy:input_type -> illumio.cloud.config.v1.DeleteOrganizationPolicyRequest
-	122, // 206: illumio.cloud.config.v1.ConfigService.CreateOrganizationPolicyRule:input_type -> illumio.cloud.config.v1.CreateOrganizationPolicyRuleRequest
-	124, // 207: illumio.cloud.config.v1.ConfigService.ReadOrganizationPolicyRule:input_type -> illumio.cloud.config.v1.ReadOrganizationPolicyRuleRequest
-	126, // 208: illumio.cloud.config.v1.ConfigService.UpdateOrganizationPolicyRule:input_type -> illumio.cloud.config.v1.UpdateOrganizationPolicyRuleRequest
-	128, // 209: illumio.cloud.config.v1.ConfigService.DeleteOrganizationPolicyRule:input_type -> illumio.cloud.config.v1.DeleteOrganizationPolicyRuleRequest
-	129, // 210: illumio.cloud.config.v1.ConfigService.CreatePolicy:input_type -> illumio.cloud.config.v1.CreatePolicyRequest
-	131, // 211: illumio.cloud.config.v1.ConfigService.ReadPolicy:input_type -> illumio.cloud.config.v1.ReadPolicyRequest
-	133, // 212: illumio.cloud.config.v1.ConfigService.UpdatePolicy:input_type -> illumio.cloud.config.v1.UpdatePolicyRequest
-	135, // 213: illumio.cloud.config.v1.ConfigService.DeletePolicy:input_type -> illumio.cloud.config.v1.DeletePolicyRequest
-	136, // 214: illumio.cloud.config.v1.ConfigService.CreatePolicyProvision:input_type -> illumio.cloud.config.v1.CreatePolicyProvisionRequest
-	138, // 215: illumio.cloud.config.v1.ConfigService.ReadPolicyProvision:input_type -> illumio.cloud.config.v1.ReadPolicyProvisionRequest
-	140, // 216: illumio.cloud.config.v1.ConfigService.UpdatePolicyProvision:input_type -> illumio.cloud.config.v1.UpdatePolicyProvisionRequest
-	142, // 217: illumio.cloud.config.v1.ConfigService.DeletePolicyProvision:input_type -> illumio.cloud.config.v1.DeletePolicyProvisionRequest
-	144, // 218: illumio.cloud.config.v1.ConfigService.CreatePolicyVersion:input_type -> illumio.cloud.config.v1.CreatePolicyVersionRequest
-	146, // 219: illumio.cloud.config.v1.ConfigService.ReadPolicyVersion:input_type -> illumio.cloud.config.v1.ReadPolicyVersionRequest
-	148, // 220: illumio.cloud.config.v1.ConfigService.UpdatePolicyVersion:input_type -> illumio.cloud.config.v1.UpdatePolicyVersionRequest
-	150, // 221: illumio.cloud.config.v1.ConfigService.DeletePolicyVersion:input_type -> illumio.cloud.config.v1.DeletePolicyVersionRequest
-	152, // 222: illumio.cloud.config.v1.ConfigService.CreateTagToLabel:input_type -> illumio.cloud.config.v1.CreateTagToLabelRequest
-	154, // 223: illumio.cloud.config.v1.ConfigService.ReadTagToLabel:input_type -> illumio.cloud.config.v1.ReadTagToLabelRequest
-	156, // 224: illumio.cloud.config.v1.ConfigService.UpdateTagToLabel:input_type -> illumio.cloud.config.v1.UpdateTagToLabelRequest
-	158, // 225: illumio.cloud.config.v1.ConfigService.DeleteTagToLabel:input_type -> illumio.cloud.config.v1.DeleteTagToLabelRequest
-	1,   // 226: illumio.cloud.config.v1.ConfigService.CreateApplication:output_type -> illumio.cloud.config.v1.CreateApplicationResponse
-	3,   // 227: illumio.cloud.config.v1.ConfigService.ReadApplication:output_type -> illumio.cloud.config.v1.ReadApplicationResponse
-	5,   // 228: illumio.cloud.config.v1.ConfigService.UpdateApplication:output_type -> illumio.cloud.config.v1.UpdateApplicationResponse
-	222, // 229: illumio.cloud.config.v1.ConfigService.DeleteApplication:output_type -> google.protobuf.Empty
-	8,   // 230: illumio.cloud.config.v1.ConfigService.CreateApplicationAwsResources:output_type -> illumio.cloud.config.v1.CreateApplicationAwsResourcesResponse
-	10,  // 231: illumio.cloud.config.v1.ConfigService.ReadApplicationAwsResources:output_type -> illumio.cloud.config.v1.ReadApplicationAwsResourcesResponse
-	12,  // 232: illumio.cloud.config.v1.ConfigService.UpdateApplicationAwsResources:output_type -> illumio.cloud.config.v1.UpdateApplicationAwsResourcesResponse
-	222, // 233: illumio.cloud.config.v1.ConfigService.DeleteApplicationAwsResources:output_type -> google.protobuf.Empty
-	15,  // 234: illumio.cloud.config.v1.ConfigService.CreateApplicationAzureResources:output_type -> illumio.cloud.config.v1.CreateApplicationAzureResourcesResponse
-	17,  // 235: illumio.cloud.config.v1.ConfigService.ReadApplicationAzureResources:output_type -> illumio.cloud.config.v1.ReadApplicationAzureResourcesResponse
-	19,  // 236: illumio.cloud.config.v1.ConfigService.UpdateApplicationAzureResources:output_type -> illumio.cloud.config.v1.UpdateApplicationAzureResourcesResponse
-	222, // 237: illumio.cloud.config.v1.ConfigService.DeleteApplicationAzureResources:output_type -> google.protobuf.Empty
-	25,  // 238: illumio.cloud.config.v1.ConfigService.CreateApplicationPolicyRule:output_type -> illumio.cloud.config.v1.CreateApplicationPolicyRuleResponse
-	27,  // 239: illumio.cloud.config.v1.ConfigService.ReadApplicationPolicyRule:output_type -> illumio.cloud.config.v1.ReadApplicationPolicyRuleResponse
-	29,  // 240: illumio.cloud.config.v1.ConfigService.UpdateApplicationPolicyRule:output_type -> illumio.cloud.config.v1.UpdateApplicationPolicyRuleResponse
-	222, // 241: illumio.cloud.config.v1.ConfigService.DeleteApplicationPolicyRule:output_type -> google.protobuf.Empty
-	32,  // 242: illumio.cloud.config.v1.ConfigService.CreateAwsAccount:output_type -> illumio.cloud.config.v1.CreateAwsAccountResponse
-	34,  // 243: illumio.cloud.config.v1.ConfigService.ReadAwsAccount:output_type -> illumio.cloud.config.v1.ReadAwsAccountResponse
-	36,  // 244: illumio.cloud.config.v1.ConfigService.UpdateAwsAccount:output_type -> illumio.cloud.config.v1.UpdateAwsAccountResponse
-	222, // 245: illumio.cloud.config.v1.ConfigService.DeleteAwsAccount:output_type -> google.protobuf.Empty
-	39,  // 246: illumio.cloud.config.v1.ConfigService.CreateAwsCloudtrailS3Bucket:output_type -> illumio.cloud.config.v1.CreateAwsCloudtrailS3BucketResponse
-	41,  // 247: illumio.cloud.config.v1.ConfigService.ReadAwsCloudtrailS3Bucket:output_type -> illumio.cloud.config.v1.ReadAwsCloudtrailS3BucketResponse
-	43,  // 248: illumio.cloud.config.v1.ConfigService.UpdateAwsCloudtrailS3Bucket:output_type -> illumio.cloud.config.v1.UpdateAwsCloudtrailS3BucketResponse
-	222, // 249: illumio.cloud.config.v1.ConfigService.DeleteAwsCloudtrailS3Bucket:output_type -> google.protobuf.Empty
-	46,  // 250: illumio.cloud.config.v1.ConfigService.CreateAwsFlowLogsS3Bucket:output_type -> illumio.cloud.config.v1.CreateAwsFlowLogsS3BucketResponse
-	48,  // 251: illumio.cloud.config.v1.ConfigService.ReadAwsFlowLogsS3Bucket:output_type -> illumio.cloud.config.v1.ReadAwsFlowLogsS3BucketResponse
-	50,  // 252: illumio.cloud.config.v1.ConfigService.UpdateAwsFlowLogsS3Bucket:output_type -> illumio.cloud.config.v1.UpdateAwsFlowLogsS3BucketResponse
-	222, // 253: illumio.cloud.config.v1.ConfigService.DeleteAwsFlowLogsS3Bucket:output_type -> google.protobuf.Empty
-	53,  // 254: illumio.cloud.config.v1.ConfigService.CreateAzureFlowLogsStorageAccount:output_type -> illumio.cloud.config.v1.CreateAzureFlowLogsStorageAccountResponse
-	55,  // 255: illumio.cloud.config.v1.ConfigService.ReadAzureFlowLogsStorageAccount:output_type -> illumio.cloud.config.v1.ReadAzureFlowLogsStorageAccountResponse
-	57,  // 256: illumio.cloud.config.v1.ConfigService.UpdateAzureFlowLogsStorageAccount:output_type -> illumio.cloud.config.v1.UpdateAzureFlowLogsStorageAccountResponse
-	222, // 257: illumio.cloud.config.v1.ConfigService.DeleteAzureFlowLogsStorageAccount:output_type -> google.protobuf.Empty
-	60,  // 258: illumio.cloud.config.v1.ConfigService.CreateAzureSubscription:output_type -> illumio.cloud.config.v1.CreateAzureSubscriptionResponse
-	62,  // 259: illumio.cloud.config.v1.ConfigService.ReadAzureSubscription:output_type -> illumio.cloud.config.v1.ReadAzureSubscriptionResponse
-	64,  // 260: illumio.cloud.config.v1.ConfigService.UpdateAzureSubscription:output_type -> illumio.cloud.config.v1.UpdateAzureSubscriptionResponse
-	222, // 261: illumio.cloud.config.v1.ConfigService.DeleteAzureSubscription:output_type -> google.protobuf.Empty
-	69,  // 262: illumio.cloud.config.v1.ConfigService.CreateDeployment:output_type -> illumio.cloud.config.v1.CreateDeploymentResponse
-	71,  // 263: illumio.cloud.config.v1.ConfigService.ReadDeployment:output_type -> illumio.cloud.config.v1.ReadDeploymentResponse
-	73,  // 264: illumio.cloud.config.v1.ConfigService.UpdateDeployment:output_type -> illumio.cloud.config.v1.UpdateDeploymentResponse
-	222, // 265: illumio.cloud.config.v1.ConfigService.DeleteDeployment:output_type -> google.protobuf.Empty
-	76,  // 266: illumio.cloud.config.v1.ConfigService.CreateGcpFlowLogsPubsubTopic:output_type -> illumio.cloud.config.v1.CreateGcpFlowLogsPubsubTopicResponse
-	78,  // 267: illumio.cloud.config.v1.ConfigService.ReadGcpFlowLogsPubsubTopic:output_type -> illumio.cloud.config.v1.ReadGcpFlowLogsPubsubTopicResponse
-	80,  // 268: illumio.cloud.config.v1.ConfigService.UpdateGcpFlowLogsPubsubTopic:output_type -> illumio.cloud.config.v1.UpdateGcpFlowLogsPubsubTopicResponse
-	222, // 269: illumio.cloud.config.v1.ConfigService.DeleteGcpFlowLogsPubsubTopic:output_type -> google.protobuf.Empty
-	83,  // 270: illumio.cloud.config.v1.ConfigService.CreateGcpProject:output_type -> illumio.cloud.config.v1.CreateGcpProjectResponse
-	85,  // 271: illumio.cloud.config.v1.ConfigService.ReadGcpProject:output_type -> illumio.cloud.config.v1.ReadGcpProjectResponse
-	87,  // 272: illumio.cloud.config.v1.ConfigService.UpdateGcpProject:output_type -> illumio.cloud.config.v1.UpdateGcpProjectResponse
-	222, // 273: illumio.cloud.config.v1.ConfigService.DeleteGcpProject:output_type -> google.protobuf.Empty
-	92,  // 274: illumio.cloud.config.v1.ConfigService.CreateIpList:output_type -> illumio.cloud.config.v1.CreateIpListResponse
-	94,  // 275: illumio.cloud.config.v1.ConfigService.ReadIpList:output_type -> illumio.cloud.config.v1.ReadIpListResponse
-	96,  // 276: illumio.cloud.config.v1.ConfigService.UpdateIpList:output_type -> illumio.cloud.config.v1.UpdateIpListResponse
-	222, // 277: illumio.cloud.config.v1.ConfigService.DeleteIpList:output_type -> google.protobuf.Empty
-	99,  // 278: illumio.cloud.config.v1.ConfigService.CreateK8SCluster:output_type -> illumio.cloud.config.v1.CreateK8SClusterResponse
-	101, // 279: illumio.cloud.config.v1.ConfigService.ReadK8SCluster:output_type -> illumio.cloud.config.v1.ReadK8SClusterResponse
-	103, // 280: illumio.cloud.config.v1.ConfigService.UpdateK8SCluster:output_type -> illumio.cloud.config.v1.UpdateK8SClusterResponse
-	222, // 281: illumio.cloud.config.v1.ConfigService.DeleteK8SCluster:output_type -> google.protobuf.Empty
-	106, // 282: illumio.cloud.config.v1.ConfigService.CreateK8SClusterOnboardingCredential:output_type -> illumio.cloud.config.v1.CreateK8SClusterOnboardingCredentialResponse
-	108, // 283: illumio.cloud.config.v1.ConfigService.ReadK8SClusterOnboardingCredential:output_type -> illumio.cloud.config.v1.ReadK8SClusterOnboardingCredentialResponse
-	110, // 284: illumio.cloud.config.v1.ConfigService.UpdateK8SClusterOnboardingCredential:output_type -> illumio.cloud.config.v1.UpdateK8SClusterOnboardingCredentialResponse
-	222, // 285: illumio.cloud.config.v1.ConfigService.DeleteK8SClusterOnboardingCredential:output_type -> google.protobuf.Empty
-	113, // 286: illumio.cloud.config.v1.ConfigService.CreateOrganizationPolicy:output_type -> illumio.cloud.config.v1.CreateOrganizationPolicyResponse
-	115, // 287: illumio.cloud.config.v1.ConfigService.ReadOrganizationPolicy:output_type -> illumio.cloud.config.v1.ReadOrganizationPolicyResponse
-	117, // 288: illumio.cloud.config.v1.ConfigService.UpdateOrganizationPolicy:output_type -> illumio.cloud.config.v1.UpdateOrganizationPolicyResponse
-	222, // 289: illumio.cloud.config.v1.ConfigService.DeleteOrganizationPolicy:output_type -> google.protobuf.Empty
-	123, // 290: illumio.cloud.config.v1.ConfigService.CreateOrganizationPolicyRule:output_type -> illumio.cloud.config.v1.CreateOrganizationPolicyRuleResponse
-	125, // 291: illumio.cloud.config.v1.ConfigService.ReadOrganizationPolicyRule:output_type -> illumio.cloud.config.v1.ReadOrganizationPolicyRuleResponse
-	127, // 292: illumio.cloud.config.v1.ConfigService.UpdateOrganizationPolicyRule:output_type -> illumio.cloud.config.v1.UpdateOrganizationPolicyRuleResponse
-	222, // 293: illumio.cloud.config.v1.ConfigService.DeleteOrganizationPolicyRule:output_type -> google.protobuf.Empty
-	130, // 294: illumio.cloud.config.v1.ConfigService.CreatePolicy:output_type -> illumio.cloud.config.v1.CreatePolicyResponse
-	132, // 295: illumio.cloud.config.v1.ConfigService.ReadPolicy:output_type -> illumio.cloud.config.v1.ReadPolicyResponse
-	134, // 296: illumio.cloud.config.v1.ConfigService.UpdatePolicy:output_type -> illumio.cloud.config.v1.UpdatePolicyResponse
-	222, // 297: illumio.cloud.config.v1.ConfigService.DeletePolicy:output_type -> google.protobuf.Empty
-	137, // 298: illumio.cloud.config.v1.ConfigService.CreatePolicyProvision:output_type -> illumio.cloud.config.v1.CreatePolicyProvisionResponse
-	139, // 299: illumio.cloud.config.v1.ConfigService.ReadPolicyProvision:output_type -> illumio.cloud.config.v1.ReadPolicyProvisionResponse
-	141, // 300: illumio.cloud.config.v1.ConfigService.UpdatePolicyProvision:output_type -> illumio.cloud.config.v1.UpdatePolicyProvisionResponse
-	222, // 301: illumio.cloud.config.v1.ConfigService.DeletePolicyProvision:output_type -> google.protobuf.Empty
-	145, // 302: illumio.cloud.config.v1.ConfigService.CreatePolicyVersion:output_type -> illumio.cloud.config.v1.CreatePolicyVersionResponse
-	147, // 303: illumio.cloud.config.v1.ConfigService.ReadPolicyVersion:output_type -> illumio.cloud.config.v1.ReadPolicyVersionResponse
-	149, // 304: illumio.cloud.config.v1.ConfigService.UpdatePolicyVersion:output_type -> illumio.cloud.config.v1.UpdatePolicyVersionResponse
-	222, // 305: illumio.cloud.config.v1.ConfigService.DeletePolicyVersion:output_type -> google.protobuf.Empty
-	153, // 306: illumio.cloud.config.v1.ConfigService.CreateTagToLabel:output_type -> illumio.cloud.config.v1.CreateTagToLabelResponse
-	155, // 307: illumio.cloud.config.v1.ConfigService.ReadTagToLabel:output_type -> illumio.cloud.config.v1.ReadTagToLabelResponse
-	157, // 308: illumio.cloud.config.v1.ConfigService.UpdateTagToLabel:output_type -> illumio.cloud.config.v1.UpdateTagToLabelResponse
-	222, // 309: illumio.cloud.config.v1.ConfigService.DeleteTagToLabel:output_type -> google.protobuf.Empty
-	226, // [226:310] is the sub-list for method output_type
-	142, // [142:226] is the sub-list for method input_type
-	142, // [142:142] is the sub-list for extension type_name
-	142, // [142:142] is the sub-list for extension extendee
-	0,   // [0:142] is the sub-list for field type_name
+	179, // 94: illumio.cloud.config.v1.PolicyVersion_Rules.Destination.IllumioLabels.labels:type_name -> illumio.cloud.config.v1.PolicyVersion_Rules.Destination.IllumioLabels.Labels
+	180, // 95: illumio.cloud.config.v1.PolicyVersion_Rules.Destination.K8S.clusters:type_name -> illumio.cloud.config.v1.PolicyVersion_Rules.Destination.K8S.Clusters
+	181, // 96: illumio.cloud.config.v1.PolicyVersion_Rules.Destination.K8S.namespace_selector:type_name -> illumio.cloud.config.v1.PolicyVersion_Rules.Destination.K8S.NamespaceSelector
+	182, // 97: illumio.cloud.config.v1.PolicyVersion_Rules.Destination.K8S.workload_selector:type_name -> illumio.cloud.config.v1.PolicyVersion_Rules.Destination.K8S.WorkloadSelector
+	169, // 98: illumio.cloud.config.v1.PolicyVersion_Rules.Destination.Cloud.Aws.network:type_name -> illumio.cloud.config.v1.PolicyVersion_Rules.Destination.Cloud.Aws.Network
+	170, // 99: illumio.cloud.config.v1.PolicyVersion_Rules.Destination.Cloud.Aws.org_selector:type_name -> illumio.cloud.config.v1.PolicyVersion_Rules.Destination.Cloud.Aws.OrgSelector
+	174, // 100: illumio.cloud.config.v1.PolicyVersion_Rules.Destination.Cloud.Azure.network:type_name -> illumio.cloud.config.v1.PolicyVersion_Rules.Destination.Cloud.Azure.Network
+	175, // 101: illumio.cloud.config.v1.PolicyVersion_Rules.Destination.Cloud.Azure.org_selector:type_name -> illumio.cloud.config.v1.PolicyVersion_Rules.Destination.Cloud.Azure.OrgSelector
+	171, // 102: illumio.cloud.config.v1.PolicyVersion_Rules.Destination.Cloud.Aws.Network.subnets:type_name -> illumio.cloud.config.v1.PolicyVersion_Rules.Destination.Cloud.Aws.Network.Subnets
+	172, // 103: illumio.cloud.config.v1.PolicyVersion_Rules.Destination.Cloud.Aws.Network.vpcs:type_name -> illumio.cloud.config.v1.PolicyVersion_Rules.Destination.Cloud.Aws.Network.Vpcs
+	173, // 104: illumio.cloud.config.v1.PolicyVersion_Rules.Destination.Cloud.Aws.OrgSelector.accounts:type_name -> illumio.cloud.config.v1.PolicyVersion_Rules.Destination.Cloud.Aws.OrgSelector.Accounts
+	176, // 105: illumio.cloud.config.v1.PolicyVersion_Rules.Destination.Cloud.Azure.Network.subnets:type_name -> illumio.cloud.config.v1.PolicyVersion_Rules.Destination.Cloud.Azure.Network.Subnets
+	177, // 106: illumio.cloud.config.v1.PolicyVersion_Rules.Destination.Cloud.Azure.Network.vnets:type_name -> illumio.cloud.config.v1.PolicyVersion_Rules.Destination.Cloud.Azure.Network.Vnets
+	178, // 107: illumio.cloud.config.v1.PolicyVersion_Rules.Destination.Cloud.Azure.OrgSelector.subscriptions:type_name -> illumio.cloud.config.v1.PolicyVersion_Rules.Destination.Cloud.Azure.OrgSelector.Subscriptions
+	183, // 108: illumio.cloud.config.v1.PolicyVersion_Rules.Destination.K8S.Clusters.aws:type_name -> illumio.cloud.config.v1.PolicyVersion_Rules.Destination.K8S.Clusters.Aws
+	184, // 109: illumio.cloud.config.v1.PolicyVersion_Rules.Destination.K8S.Clusters.azure:type_name -> illumio.cloud.config.v1.PolicyVersion_Rules.Destination.K8S.Clusters.Azure
+	185, // 110: illumio.cloud.config.v1.PolicyVersion_Rules.Destination.K8S.Clusters.gcp:type_name -> illumio.cloud.config.v1.PolicyVersion_Rules.Destination.K8S.Clusters.Gcp
+	186, // 111: illumio.cloud.config.v1.PolicyVersion_Rules.Destination.K8S.Clusters.oci:type_name -> illumio.cloud.config.v1.PolicyVersion_Rules.Destination.K8S.Clusters.Oci
+	187, // 112: illumio.cloud.config.v1.PolicyVersion_Rules.Destination.K8S.NamespaceSelector.match_expressions:type_name -> illumio.cloud.config.v1.PolicyVersion_Rules.Destination.K8S.NamespaceSelector.MatchExpressions
+	188, // 113: illumio.cloud.config.v1.PolicyVersion_Rules.Destination.K8S.NamespaceSelector.match_labels:type_name -> illumio.cloud.config.v1.PolicyVersion_Rules.Destination.K8S.NamespaceSelector.MatchLabels
+	189, // 114: illumio.cloud.config.v1.PolicyVersion_Rules.Destination.K8S.WorkloadSelector.match_expressions:type_name -> illumio.cloud.config.v1.PolicyVersion_Rules.Destination.K8S.WorkloadSelector.MatchExpressions
+	190, // 115: illumio.cloud.config.v1.PolicyVersion_Rules.Destination.K8S.WorkloadSelector.match_labels:type_name -> illumio.cloud.config.v1.PolicyVersion_Rules.Destination.K8S.WorkloadSelector.MatchLabels
+	195, // 116: illumio.cloud.config.v1.PolicyVersion_Rules.Source.Cloud.aws:type_name -> illumio.cloud.config.v1.PolicyVersion_Rules.Source.Cloud.Aws
+	196, // 117: illumio.cloud.config.v1.PolicyVersion_Rules.Source.Cloud.azure:type_name -> illumio.cloud.config.v1.PolicyVersion_Rules.Source.Cloud.Azure
+	207, // 118: illumio.cloud.config.v1.PolicyVersion_Rules.Source.IllumioLabels.labels:type_name -> illumio.cloud.config.v1.PolicyVersion_Rules.Source.IllumioLabels.Labels
+	208, // 119: illumio.cloud.config.v1.PolicyVersion_Rules.Source.K8S.clusters:type_name -> illumio.cloud.config.v1.PolicyVersion_Rules.Source.K8S.Clusters
+	209, // 120: illumio.cloud.config.v1.PolicyVersion_Rules.Source.K8S.namespace_selector:type_name -> illumio.cloud.config.v1.PolicyVersion_Rules.Source.K8S.NamespaceSelector
+	210, // 121: illumio.cloud.config.v1.PolicyVersion_Rules.Source.K8S.workload_selector:type_name -> illumio.cloud.config.v1.PolicyVersion_Rules.Source.K8S.WorkloadSelector
+	197, // 122: illumio.cloud.config.v1.PolicyVersion_Rules.Source.Cloud.Aws.network:type_name -> illumio.cloud.config.v1.PolicyVersion_Rules.Source.Cloud.Aws.Network
+	198, // 123: illumio.cloud.config.v1.PolicyVersion_Rules.Source.Cloud.Aws.org_selector:type_name -> illumio.cloud.config.v1.PolicyVersion_Rules.Source.Cloud.Aws.OrgSelector
+	202, // 124: illumio.cloud.config.v1.PolicyVersion_Rules.Source.Cloud.Azure.network:type_name -> illumio.cloud.config.v1.PolicyVersion_Rules.Source.Cloud.Azure.Network
+	203, // 125: illumio.cloud.config.v1.PolicyVersion_Rules.Source.Cloud.Azure.org_selector:type_name -> illumio.cloud.config.v1.PolicyVersion_Rules.Source.Cloud.Azure.OrgSelector
+	199, // 126: illumio.cloud.config.v1.PolicyVersion_Rules.Source.Cloud.Aws.Network.subnets:type_name -> illumio.cloud.config.v1.PolicyVersion_Rules.Source.Cloud.Aws.Network.Subnets
+	200, // 127: illumio.cloud.config.v1.PolicyVersion_Rules.Source.Cloud.Aws.Network.vpcs:type_name -> illumio.cloud.config.v1.PolicyVersion_Rules.Source.Cloud.Aws.Network.Vpcs
+	201, // 128: illumio.cloud.config.v1.PolicyVersion_Rules.Source.Cloud.Aws.OrgSelector.accounts:type_name -> illumio.cloud.config.v1.PolicyVersion_Rules.Source.Cloud.Aws.OrgSelector.Accounts
+	204, // 129: illumio.cloud.config.v1.PolicyVersion_Rules.Source.Cloud.Azure.Network.subnets:type_name -> illumio.cloud.config.v1.PolicyVersion_Rules.Source.Cloud.Azure.Network.Subnets
+	205, // 130: illumio.cloud.config.v1.PolicyVersion_Rules.Source.Cloud.Azure.Network.vnets:type_name -> illumio.cloud.config.v1.PolicyVersion_Rules.Source.Cloud.Azure.Network.Vnets
+	206, // 131: illumio.cloud.config.v1.PolicyVersion_Rules.Source.Cloud.Azure.OrgSelector.subscriptions:type_name -> illumio.cloud.config.v1.PolicyVersion_Rules.Source.Cloud.Azure.OrgSelector.Subscriptions
+	211, // 132: illumio.cloud.config.v1.PolicyVersion_Rules.Source.K8S.Clusters.aws:type_name -> illumio.cloud.config.v1.PolicyVersion_Rules.Source.K8S.Clusters.Aws
+	212, // 133: illumio.cloud.config.v1.PolicyVersion_Rules.Source.K8S.Clusters.azure:type_name -> illumio.cloud.config.v1.PolicyVersion_Rules.Source.K8S.Clusters.Azure
+	213, // 134: illumio.cloud.config.v1.PolicyVersion_Rules.Source.K8S.Clusters.gcp:type_name -> illumio.cloud.config.v1.PolicyVersion_Rules.Source.K8S.Clusters.Gcp
+	214, // 135: illumio.cloud.config.v1.PolicyVersion_Rules.Source.K8S.Clusters.oci:type_name -> illumio.cloud.config.v1.PolicyVersion_Rules.Source.K8S.Clusters.Oci
+	215, // 136: illumio.cloud.config.v1.PolicyVersion_Rules.Source.K8S.NamespaceSelector.match_expressions:type_name -> illumio.cloud.config.v1.PolicyVersion_Rules.Source.K8S.NamespaceSelector.MatchExpressions
+	216, // 137: illumio.cloud.config.v1.PolicyVersion_Rules.Source.K8S.NamespaceSelector.match_labels:type_name -> illumio.cloud.config.v1.PolicyVersion_Rules.Source.K8S.NamespaceSelector.MatchLabels
+	217, // 138: illumio.cloud.config.v1.PolicyVersion_Rules.Source.K8S.WorkloadSelector.match_expressions:type_name -> illumio.cloud.config.v1.PolicyVersion_Rules.Source.K8S.WorkloadSelector.MatchExpressions
+	218, // 139: illumio.cloud.config.v1.PolicyVersion_Rules.Source.K8S.WorkloadSelector.match_labels:type_name -> illumio.cloud.config.v1.PolicyVersion_Rules.Source.K8S.WorkloadSelector.MatchLabels
+	143, // 140: illumio.cloud.config.v1.CreatePolicyVersionRequest.RulesEntry.value:type_name -> illumio.cloud.config.v1.PolicyVersion_Rules
+	143, // 141: illumio.cloud.config.v1.CreatePolicyVersionResponse.RulesEntry.value:type_name -> illumio.cloud.config.v1.PolicyVersion_Rules
+	143, // 142: illumio.cloud.config.v1.ReadPolicyVersionResponse.RulesEntry.value:type_name -> illumio.cloud.config.v1.PolicyVersion_Rules
+	143, // 143: illumio.cloud.config.v1.UpdatePolicyVersionResponse.RulesEntry.value:type_name -> illumio.cloud.config.v1.PolicyVersion_Rules
+	0,   // 144: illumio.cloud.config.v1.ConfigService.CreateApplication:input_type -> illumio.cloud.config.v1.CreateApplicationRequest
+	2,   // 145: illumio.cloud.config.v1.ConfigService.ReadApplication:input_type -> illumio.cloud.config.v1.ReadApplicationRequest
+	4,   // 146: illumio.cloud.config.v1.ConfigService.UpdateApplication:input_type -> illumio.cloud.config.v1.UpdateApplicationRequest
+	6,   // 147: illumio.cloud.config.v1.ConfigService.DeleteApplication:input_type -> illumio.cloud.config.v1.DeleteApplicationRequest
+	7,   // 148: illumio.cloud.config.v1.ConfigService.CreateApplicationAwsResources:input_type -> illumio.cloud.config.v1.CreateApplicationAwsResourcesRequest
+	9,   // 149: illumio.cloud.config.v1.ConfigService.ReadApplicationAwsResources:input_type -> illumio.cloud.config.v1.ReadApplicationAwsResourcesRequest
+	11,  // 150: illumio.cloud.config.v1.ConfigService.UpdateApplicationAwsResources:input_type -> illumio.cloud.config.v1.UpdateApplicationAwsResourcesRequest
+	13,  // 151: illumio.cloud.config.v1.ConfigService.DeleteApplicationAwsResources:input_type -> illumio.cloud.config.v1.DeleteApplicationAwsResourcesRequest
+	14,  // 152: illumio.cloud.config.v1.ConfigService.CreateApplicationAzureResources:input_type -> illumio.cloud.config.v1.CreateApplicationAzureResourcesRequest
+	16,  // 153: illumio.cloud.config.v1.ConfigService.ReadApplicationAzureResources:input_type -> illumio.cloud.config.v1.ReadApplicationAzureResourcesRequest
+	18,  // 154: illumio.cloud.config.v1.ConfigService.UpdateApplicationAzureResources:input_type -> illumio.cloud.config.v1.UpdateApplicationAzureResourcesRequest
+	20,  // 155: illumio.cloud.config.v1.ConfigService.DeleteApplicationAzureResources:input_type -> illumio.cloud.config.v1.DeleteApplicationAzureResourcesRequest
+	24,  // 156: illumio.cloud.config.v1.ConfigService.CreateApplicationPolicyRule:input_type -> illumio.cloud.config.v1.CreateApplicationPolicyRuleRequest
+	26,  // 157: illumio.cloud.config.v1.ConfigService.ReadApplicationPolicyRule:input_type -> illumio.cloud.config.v1.ReadApplicationPolicyRuleRequest
+	28,  // 158: illumio.cloud.config.v1.ConfigService.UpdateApplicationPolicyRule:input_type -> illumio.cloud.config.v1.UpdateApplicationPolicyRuleRequest
+	30,  // 159: illumio.cloud.config.v1.ConfigService.DeleteApplicationPolicyRule:input_type -> illumio.cloud.config.v1.DeleteApplicationPolicyRuleRequest
+	31,  // 160: illumio.cloud.config.v1.ConfigService.CreateAwsAccount:input_type -> illumio.cloud.config.v1.CreateAwsAccountRequest
+	33,  // 161: illumio.cloud.config.v1.ConfigService.ReadAwsAccount:input_type -> illumio.cloud.config.v1.ReadAwsAccountRequest
+	35,  // 162: illumio.cloud.config.v1.ConfigService.UpdateAwsAccount:input_type -> illumio.cloud.config.v1.UpdateAwsAccountRequest
+	37,  // 163: illumio.cloud.config.v1.ConfigService.DeleteAwsAccount:input_type -> illumio.cloud.config.v1.DeleteAwsAccountRequest
+	38,  // 164: illumio.cloud.config.v1.ConfigService.CreateAwsCloudtrailS3Bucket:input_type -> illumio.cloud.config.v1.CreateAwsCloudtrailS3BucketRequest
+	40,  // 165: illumio.cloud.config.v1.ConfigService.ReadAwsCloudtrailS3Bucket:input_type -> illumio.cloud.config.v1.ReadAwsCloudtrailS3BucketRequest
+	42,  // 166: illumio.cloud.config.v1.ConfigService.UpdateAwsCloudtrailS3Bucket:input_type -> illumio.cloud.config.v1.UpdateAwsCloudtrailS3BucketRequest
+	44,  // 167: illumio.cloud.config.v1.ConfigService.DeleteAwsCloudtrailS3Bucket:input_type -> illumio.cloud.config.v1.DeleteAwsCloudtrailS3BucketRequest
+	45,  // 168: illumio.cloud.config.v1.ConfigService.CreateAwsFlowLogsS3Bucket:input_type -> illumio.cloud.config.v1.CreateAwsFlowLogsS3BucketRequest
+	47,  // 169: illumio.cloud.config.v1.ConfigService.ReadAwsFlowLogsS3Bucket:input_type -> illumio.cloud.config.v1.ReadAwsFlowLogsS3BucketRequest
+	49,  // 170: illumio.cloud.config.v1.ConfigService.UpdateAwsFlowLogsS3Bucket:input_type -> illumio.cloud.config.v1.UpdateAwsFlowLogsS3BucketRequest
+	51,  // 171: illumio.cloud.config.v1.ConfigService.DeleteAwsFlowLogsS3Bucket:input_type -> illumio.cloud.config.v1.DeleteAwsFlowLogsS3BucketRequest
+	52,  // 172: illumio.cloud.config.v1.ConfigService.CreateAzureFlowLogsStorageAccount:input_type -> illumio.cloud.config.v1.CreateAzureFlowLogsStorageAccountRequest
+	54,  // 173: illumio.cloud.config.v1.ConfigService.ReadAzureFlowLogsStorageAccount:input_type -> illumio.cloud.config.v1.ReadAzureFlowLogsStorageAccountRequest
+	56,  // 174: illumio.cloud.config.v1.ConfigService.UpdateAzureFlowLogsStorageAccount:input_type -> illumio.cloud.config.v1.UpdateAzureFlowLogsStorageAccountRequest
+	58,  // 175: illumio.cloud.config.v1.ConfigService.DeleteAzureFlowLogsStorageAccount:input_type -> illumio.cloud.config.v1.DeleteAzureFlowLogsStorageAccountRequest
+	59,  // 176: illumio.cloud.config.v1.ConfigService.CreateAzureSubscription:input_type -> illumio.cloud.config.v1.CreateAzureSubscriptionRequest
+	61,  // 177: illumio.cloud.config.v1.ConfigService.ReadAzureSubscription:input_type -> illumio.cloud.config.v1.ReadAzureSubscriptionRequest
+	63,  // 178: illumio.cloud.config.v1.ConfigService.UpdateAzureSubscription:input_type -> illumio.cloud.config.v1.UpdateAzureSubscriptionRequest
+	65,  // 179: illumio.cloud.config.v1.ConfigService.DeleteAzureSubscription:input_type -> illumio.cloud.config.v1.DeleteAzureSubscriptionRequest
+	68,  // 180: illumio.cloud.config.v1.ConfigService.CreateDeployment:input_type -> illumio.cloud.config.v1.CreateDeploymentRequest
+	70,  // 181: illumio.cloud.config.v1.ConfigService.ReadDeployment:input_type -> illumio.cloud.config.v1.ReadDeploymentRequest
+	72,  // 182: illumio.cloud.config.v1.ConfigService.UpdateDeployment:input_type -> illumio.cloud.config.v1.UpdateDeploymentRequest
+	74,  // 183: illumio.cloud.config.v1.ConfigService.DeleteDeployment:input_type -> illumio.cloud.config.v1.DeleteDeploymentRequest
+	75,  // 184: illumio.cloud.config.v1.ConfigService.CreateGcpFlowLogsPubsubTopic:input_type -> illumio.cloud.config.v1.CreateGcpFlowLogsPubsubTopicRequest
+	77,  // 185: illumio.cloud.config.v1.ConfigService.ReadGcpFlowLogsPubsubTopic:input_type -> illumio.cloud.config.v1.ReadGcpFlowLogsPubsubTopicRequest
+	79,  // 186: illumio.cloud.config.v1.ConfigService.UpdateGcpFlowLogsPubsubTopic:input_type -> illumio.cloud.config.v1.UpdateGcpFlowLogsPubsubTopicRequest
+	81,  // 187: illumio.cloud.config.v1.ConfigService.DeleteGcpFlowLogsPubsubTopic:input_type -> illumio.cloud.config.v1.DeleteGcpFlowLogsPubsubTopicRequest
+	82,  // 188: illumio.cloud.config.v1.ConfigService.CreateGcpProject:input_type -> illumio.cloud.config.v1.CreateGcpProjectRequest
+	84,  // 189: illumio.cloud.config.v1.ConfigService.ReadGcpProject:input_type -> illumio.cloud.config.v1.ReadGcpProjectRequest
+	86,  // 190: illumio.cloud.config.v1.ConfigService.UpdateGcpProject:input_type -> illumio.cloud.config.v1.UpdateGcpProjectRequest
+	88,  // 191: illumio.cloud.config.v1.ConfigService.DeleteGcpProject:input_type -> illumio.cloud.config.v1.DeleteGcpProjectRequest
+	91,  // 192: illumio.cloud.config.v1.ConfigService.CreateIpList:input_type -> illumio.cloud.config.v1.CreateIpListRequest
+	93,  // 193: illumio.cloud.config.v1.ConfigService.ReadIpList:input_type -> illumio.cloud.config.v1.ReadIpListRequest
+	95,  // 194: illumio.cloud.config.v1.ConfigService.UpdateIpList:input_type -> illumio.cloud.config.v1.UpdateIpListRequest
+	97,  // 195: illumio.cloud.config.v1.ConfigService.DeleteIpList:input_type -> illumio.cloud.config.v1.DeleteIpListRequest
+	98,  // 196: illumio.cloud.config.v1.ConfigService.CreateK8SCluster:input_type -> illumio.cloud.config.v1.CreateK8SClusterRequest
+	100, // 197: illumio.cloud.config.v1.ConfigService.ReadK8SCluster:input_type -> illumio.cloud.config.v1.ReadK8SClusterRequest
+	102, // 198: illumio.cloud.config.v1.ConfigService.UpdateK8SCluster:input_type -> illumio.cloud.config.v1.UpdateK8SClusterRequest
+	104, // 199: illumio.cloud.config.v1.ConfigService.DeleteK8SCluster:input_type -> illumio.cloud.config.v1.DeleteK8SClusterRequest
+	105, // 200: illumio.cloud.config.v1.ConfigService.CreateK8SClusterOnboardingCredential:input_type -> illumio.cloud.config.v1.CreateK8SClusterOnboardingCredentialRequest
+	107, // 201: illumio.cloud.config.v1.ConfigService.ReadK8SClusterOnboardingCredential:input_type -> illumio.cloud.config.v1.ReadK8SClusterOnboardingCredentialRequest
+	109, // 202: illumio.cloud.config.v1.ConfigService.UpdateK8SClusterOnboardingCredential:input_type -> illumio.cloud.config.v1.UpdateK8SClusterOnboardingCredentialRequest
+	111, // 203: illumio.cloud.config.v1.ConfigService.DeleteK8SClusterOnboardingCredential:input_type -> illumio.cloud.config.v1.DeleteK8SClusterOnboardingCredentialRequest
+	112, // 204: illumio.cloud.config.v1.ConfigService.CreateOrganizationPolicy:input_type -> illumio.cloud.config.v1.CreateOrganizationPolicyRequest
+	114, // 205: illumio.cloud.config.v1.ConfigService.ReadOrganizationPolicy:input_type -> illumio.cloud.config.v1.ReadOrganizationPolicyRequest
+	116, // 206: illumio.cloud.config.v1.ConfigService.UpdateOrganizationPolicy:input_type -> illumio.cloud.config.v1.UpdateOrganizationPolicyRequest
+	118, // 207: illumio.cloud.config.v1.ConfigService.DeleteOrganizationPolicy:input_type -> illumio.cloud.config.v1.DeleteOrganizationPolicyRequest
+	122, // 208: illumio.cloud.config.v1.ConfigService.CreateOrganizationPolicyRule:input_type -> illumio.cloud.config.v1.CreateOrganizationPolicyRuleRequest
+	124, // 209: illumio.cloud.config.v1.ConfigService.ReadOrganizationPolicyRule:input_type -> illumio.cloud.config.v1.ReadOrganizationPolicyRuleRequest
+	126, // 210: illumio.cloud.config.v1.ConfigService.UpdateOrganizationPolicyRule:input_type -> illumio.cloud.config.v1.UpdateOrganizationPolicyRuleRequest
+	128, // 211: illumio.cloud.config.v1.ConfigService.DeleteOrganizationPolicyRule:input_type -> illumio.cloud.config.v1.DeleteOrganizationPolicyRuleRequest
+	129, // 212: illumio.cloud.config.v1.ConfigService.CreatePolicy:input_type -> illumio.cloud.config.v1.CreatePolicyRequest
+	131, // 213: illumio.cloud.config.v1.ConfigService.ReadPolicy:input_type -> illumio.cloud.config.v1.ReadPolicyRequest
+	133, // 214: illumio.cloud.config.v1.ConfigService.UpdatePolicy:input_type -> illumio.cloud.config.v1.UpdatePolicyRequest
+	135, // 215: illumio.cloud.config.v1.ConfigService.DeletePolicy:input_type -> illumio.cloud.config.v1.DeletePolicyRequest
+	136, // 216: illumio.cloud.config.v1.ConfigService.CreatePolicyProvision:input_type -> illumio.cloud.config.v1.CreatePolicyProvisionRequest
+	138, // 217: illumio.cloud.config.v1.ConfigService.ReadPolicyProvision:input_type -> illumio.cloud.config.v1.ReadPolicyProvisionRequest
+	140, // 218: illumio.cloud.config.v1.ConfigService.UpdatePolicyProvision:input_type -> illumio.cloud.config.v1.UpdatePolicyProvisionRequest
+	142, // 219: illumio.cloud.config.v1.ConfigService.DeletePolicyProvision:input_type -> illumio.cloud.config.v1.DeletePolicyProvisionRequest
+	144, // 220: illumio.cloud.config.v1.ConfigService.CreatePolicyVersion:input_type -> illumio.cloud.config.v1.CreatePolicyVersionRequest
+	146, // 221: illumio.cloud.config.v1.ConfigService.ReadPolicyVersion:input_type -> illumio.cloud.config.v1.ReadPolicyVersionRequest
+	148, // 222: illumio.cloud.config.v1.ConfigService.UpdatePolicyVersion:input_type -> illumio.cloud.config.v1.UpdatePolicyVersionRequest
+	150, // 223: illumio.cloud.config.v1.ConfigService.DeletePolicyVersion:input_type -> illumio.cloud.config.v1.DeletePolicyVersionRequest
+	152, // 224: illumio.cloud.config.v1.ConfigService.CreateTagToLabel:input_type -> illumio.cloud.config.v1.CreateTagToLabelRequest
+	154, // 225: illumio.cloud.config.v1.ConfigService.ReadTagToLabel:input_type -> illumio.cloud.config.v1.ReadTagToLabelRequest
+	156, // 226: illumio.cloud.config.v1.ConfigService.UpdateTagToLabel:input_type -> illumio.cloud.config.v1.UpdateTagToLabelRequest
+	158, // 227: illumio.cloud.config.v1.ConfigService.DeleteTagToLabel:input_type -> illumio.cloud.config.v1.DeleteTagToLabelRequest
+	1,   // 228: illumio.cloud.config.v1.ConfigService.CreateApplication:output_type -> illumio.cloud.config.v1.CreateApplicationResponse
+	3,   // 229: illumio.cloud.config.v1.ConfigService.ReadApplication:output_type -> illumio.cloud.config.v1.ReadApplicationResponse
+	5,   // 230: illumio.cloud.config.v1.ConfigService.UpdateApplication:output_type -> illumio.cloud.config.v1.UpdateApplicationResponse
+	224, // 231: illumio.cloud.config.v1.ConfigService.DeleteApplication:output_type -> google.protobuf.Empty
+	8,   // 232: illumio.cloud.config.v1.ConfigService.CreateApplicationAwsResources:output_type -> illumio.cloud.config.v1.CreateApplicationAwsResourcesResponse
+	10,  // 233: illumio.cloud.config.v1.ConfigService.ReadApplicationAwsResources:output_type -> illumio.cloud.config.v1.ReadApplicationAwsResourcesResponse
+	12,  // 234: illumio.cloud.config.v1.ConfigService.UpdateApplicationAwsResources:output_type -> illumio.cloud.config.v1.UpdateApplicationAwsResourcesResponse
+	224, // 235: illumio.cloud.config.v1.ConfigService.DeleteApplicationAwsResources:output_type -> google.protobuf.Empty
+	15,  // 236: illumio.cloud.config.v1.ConfigService.CreateApplicationAzureResources:output_type -> illumio.cloud.config.v1.CreateApplicationAzureResourcesResponse
+	17,  // 237: illumio.cloud.config.v1.ConfigService.ReadApplicationAzureResources:output_type -> illumio.cloud.config.v1.ReadApplicationAzureResourcesResponse
+	19,  // 238: illumio.cloud.config.v1.ConfigService.UpdateApplicationAzureResources:output_type -> illumio.cloud.config.v1.UpdateApplicationAzureResourcesResponse
+	224, // 239: illumio.cloud.config.v1.ConfigService.DeleteApplicationAzureResources:output_type -> google.protobuf.Empty
+	25,  // 240: illumio.cloud.config.v1.ConfigService.CreateApplicationPolicyRule:output_type -> illumio.cloud.config.v1.CreateApplicationPolicyRuleResponse
+	27,  // 241: illumio.cloud.config.v1.ConfigService.ReadApplicationPolicyRule:output_type -> illumio.cloud.config.v1.ReadApplicationPolicyRuleResponse
+	29,  // 242: illumio.cloud.config.v1.ConfigService.UpdateApplicationPolicyRule:output_type -> illumio.cloud.config.v1.UpdateApplicationPolicyRuleResponse
+	224, // 243: illumio.cloud.config.v1.ConfigService.DeleteApplicationPolicyRule:output_type -> google.protobuf.Empty
+	32,  // 244: illumio.cloud.config.v1.ConfigService.CreateAwsAccount:output_type -> illumio.cloud.config.v1.CreateAwsAccountResponse
+	34,  // 245: illumio.cloud.config.v1.ConfigService.ReadAwsAccount:output_type -> illumio.cloud.config.v1.ReadAwsAccountResponse
+	36,  // 246: illumio.cloud.config.v1.ConfigService.UpdateAwsAccount:output_type -> illumio.cloud.config.v1.UpdateAwsAccountResponse
+	224, // 247: illumio.cloud.config.v1.ConfigService.DeleteAwsAccount:output_type -> google.protobuf.Empty
+	39,  // 248: illumio.cloud.config.v1.ConfigService.CreateAwsCloudtrailS3Bucket:output_type -> illumio.cloud.config.v1.CreateAwsCloudtrailS3BucketResponse
+	41,  // 249: illumio.cloud.config.v1.ConfigService.ReadAwsCloudtrailS3Bucket:output_type -> illumio.cloud.config.v1.ReadAwsCloudtrailS3BucketResponse
+	43,  // 250: illumio.cloud.config.v1.ConfigService.UpdateAwsCloudtrailS3Bucket:output_type -> illumio.cloud.config.v1.UpdateAwsCloudtrailS3BucketResponse
+	224, // 251: illumio.cloud.config.v1.ConfigService.DeleteAwsCloudtrailS3Bucket:output_type -> google.protobuf.Empty
+	46,  // 252: illumio.cloud.config.v1.ConfigService.CreateAwsFlowLogsS3Bucket:output_type -> illumio.cloud.config.v1.CreateAwsFlowLogsS3BucketResponse
+	48,  // 253: illumio.cloud.config.v1.ConfigService.ReadAwsFlowLogsS3Bucket:output_type -> illumio.cloud.config.v1.ReadAwsFlowLogsS3BucketResponse
+	50,  // 254: illumio.cloud.config.v1.ConfigService.UpdateAwsFlowLogsS3Bucket:output_type -> illumio.cloud.config.v1.UpdateAwsFlowLogsS3BucketResponse
+	224, // 255: illumio.cloud.config.v1.ConfigService.DeleteAwsFlowLogsS3Bucket:output_type -> google.protobuf.Empty
+	53,  // 256: illumio.cloud.config.v1.ConfigService.CreateAzureFlowLogsStorageAccount:output_type -> illumio.cloud.config.v1.CreateAzureFlowLogsStorageAccountResponse
+	55,  // 257: illumio.cloud.config.v1.ConfigService.ReadAzureFlowLogsStorageAccount:output_type -> illumio.cloud.config.v1.ReadAzureFlowLogsStorageAccountResponse
+	57,  // 258: illumio.cloud.config.v1.ConfigService.UpdateAzureFlowLogsStorageAccount:output_type -> illumio.cloud.config.v1.UpdateAzureFlowLogsStorageAccountResponse
+	224, // 259: illumio.cloud.config.v1.ConfigService.DeleteAzureFlowLogsStorageAccount:output_type -> google.protobuf.Empty
+	60,  // 260: illumio.cloud.config.v1.ConfigService.CreateAzureSubscription:output_type -> illumio.cloud.config.v1.CreateAzureSubscriptionResponse
+	62,  // 261: illumio.cloud.config.v1.ConfigService.ReadAzureSubscription:output_type -> illumio.cloud.config.v1.ReadAzureSubscriptionResponse
+	64,  // 262: illumio.cloud.config.v1.ConfigService.UpdateAzureSubscription:output_type -> illumio.cloud.config.v1.UpdateAzureSubscriptionResponse
+	224, // 263: illumio.cloud.config.v1.ConfigService.DeleteAzureSubscription:output_type -> google.protobuf.Empty
+	69,  // 264: illumio.cloud.config.v1.ConfigService.CreateDeployment:output_type -> illumio.cloud.config.v1.CreateDeploymentResponse
+	71,  // 265: illumio.cloud.config.v1.ConfigService.ReadDeployment:output_type -> illumio.cloud.config.v1.ReadDeploymentResponse
+	73,  // 266: illumio.cloud.config.v1.ConfigService.UpdateDeployment:output_type -> illumio.cloud.config.v1.UpdateDeploymentResponse
+	224, // 267: illumio.cloud.config.v1.ConfigService.DeleteDeployment:output_type -> google.protobuf.Empty
+	76,  // 268: illumio.cloud.config.v1.ConfigService.CreateGcpFlowLogsPubsubTopic:output_type -> illumio.cloud.config.v1.CreateGcpFlowLogsPubsubTopicResponse
+	78,  // 269: illumio.cloud.config.v1.ConfigService.ReadGcpFlowLogsPubsubTopic:output_type -> illumio.cloud.config.v1.ReadGcpFlowLogsPubsubTopicResponse
+	80,  // 270: illumio.cloud.config.v1.ConfigService.UpdateGcpFlowLogsPubsubTopic:output_type -> illumio.cloud.config.v1.UpdateGcpFlowLogsPubsubTopicResponse
+	224, // 271: illumio.cloud.config.v1.ConfigService.DeleteGcpFlowLogsPubsubTopic:output_type -> google.protobuf.Empty
+	83,  // 272: illumio.cloud.config.v1.ConfigService.CreateGcpProject:output_type -> illumio.cloud.config.v1.CreateGcpProjectResponse
+	85,  // 273: illumio.cloud.config.v1.ConfigService.ReadGcpProject:output_type -> illumio.cloud.config.v1.ReadGcpProjectResponse
+	87,  // 274: illumio.cloud.config.v1.ConfigService.UpdateGcpProject:output_type -> illumio.cloud.config.v1.UpdateGcpProjectResponse
+	224, // 275: illumio.cloud.config.v1.ConfigService.DeleteGcpProject:output_type -> google.protobuf.Empty
+	92,  // 276: illumio.cloud.config.v1.ConfigService.CreateIpList:output_type -> illumio.cloud.config.v1.CreateIpListResponse
+	94,  // 277: illumio.cloud.config.v1.ConfigService.ReadIpList:output_type -> illumio.cloud.config.v1.ReadIpListResponse
+	96,  // 278: illumio.cloud.config.v1.ConfigService.UpdateIpList:output_type -> illumio.cloud.config.v1.UpdateIpListResponse
+	224, // 279: illumio.cloud.config.v1.ConfigService.DeleteIpList:output_type -> google.protobuf.Empty
+	99,  // 280: illumio.cloud.config.v1.ConfigService.CreateK8SCluster:output_type -> illumio.cloud.config.v1.CreateK8SClusterResponse
+	101, // 281: illumio.cloud.config.v1.ConfigService.ReadK8SCluster:output_type -> illumio.cloud.config.v1.ReadK8SClusterResponse
+	103, // 282: illumio.cloud.config.v1.ConfigService.UpdateK8SCluster:output_type -> illumio.cloud.config.v1.UpdateK8SClusterResponse
+	224, // 283: illumio.cloud.config.v1.ConfigService.DeleteK8SCluster:output_type -> google.protobuf.Empty
+	106, // 284: illumio.cloud.config.v1.ConfigService.CreateK8SClusterOnboardingCredential:output_type -> illumio.cloud.config.v1.CreateK8SClusterOnboardingCredentialResponse
+	108, // 285: illumio.cloud.config.v1.ConfigService.ReadK8SClusterOnboardingCredential:output_type -> illumio.cloud.config.v1.ReadK8SClusterOnboardingCredentialResponse
+	110, // 286: illumio.cloud.config.v1.ConfigService.UpdateK8SClusterOnboardingCredential:output_type -> illumio.cloud.config.v1.UpdateK8SClusterOnboardingCredentialResponse
+	224, // 287: illumio.cloud.config.v1.ConfigService.DeleteK8SClusterOnboardingCredential:output_type -> google.protobuf.Empty
+	113, // 288: illumio.cloud.config.v1.ConfigService.CreateOrganizationPolicy:output_type -> illumio.cloud.config.v1.CreateOrganizationPolicyResponse
+	115, // 289: illumio.cloud.config.v1.ConfigService.ReadOrganizationPolicy:output_type -> illumio.cloud.config.v1.ReadOrganizationPolicyResponse
+	117, // 290: illumio.cloud.config.v1.ConfigService.UpdateOrganizationPolicy:output_type -> illumio.cloud.config.v1.UpdateOrganizationPolicyResponse
+	224, // 291: illumio.cloud.config.v1.ConfigService.DeleteOrganizationPolicy:output_type -> google.protobuf.Empty
+	123, // 292: illumio.cloud.config.v1.ConfigService.CreateOrganizationPolicyRule:output_type -> illumio.cloud.config.v1.CreateOrganizationPolicyRuleResponse
+	125, // 293: illumio.cloud.config.v1.ConfigService.ReadOrganizationPolicyRule:output_type -> illumio.cloud.config.v1.ReadOrganizationPolicyRuleResponse
+	127, // 294: illumio.cloud.config.v1.ConfigService.UpdateOrganizationPolicyRule:output_type -> illumio.cloud.config.v1.UpdateOrganizationPolicyRuleResponse
+	224, // 295: illumio.cloud.config.v1.ConfigService.DeleteOrganizationPolicyRule:output_type -> google.protobuf.Empty
+	130, // 296: illumio.cloud.config.v1.ConfigService.CreatePolicy:output_type -> illumio.cloud.config.v1.CreatePolicyResponse
+	132, // 297: illumio.cloud.config.v1.ConfigService.ReadPolicy:output_type -> illumio.cloud.config.v1.ReadPolicyResponse
+	134, // 298: illumio.cloud.config.v1.ConfigService.UpdatePolicy:output_type -> illumio.cloud.config.v1.UpdatePolicyResponse
+	224, // 299: illumio.cloud.config.v1.ConfigService.DeletePolicy:output_type -> google.protobuf.Empty
+	137, // 300: illumio.cloud.config.v1.ConfigService.CreatePolicyProvision:output_type -> illumio.cloud.config.v1.CreatePolicyProvisionResponse
+	139, // 301: illumio.cloud.config.v1.ConfigService.ReadPolicyProvision:output_type -> illumio.cloud.config.v1.ReadPolicyProvisionResponse
+	141, // 302: illumio.cloud.config.v1.ConfigService.UpdatePolicyProvision:output_type -> illumio.cloud.config.v1.UpdatePolicyProvisionResponse
+	224, // 303: illumio.cloud.config.v1.ConfigService.DeletePolicyProvision:output_type -> google.protobuf.Empty
+	145, // 304: illumio.cloud.config.v1.ConfigService.CreatePolicyVersion:output_type -> illumio.cloud.config.v1.CreatePolicyVersionResponse
+	147, // 305: illumio.cloud.config.v1.ConfigService.ReadPolicyVersion:output_type -> illumio.cloud.config.v1.ReadPolicyVersionResponse
+	149, // 306: illumio.cloud.config.v1.ConfigService.UpdatePolicyVersion:output_type -> illumio.cloud.config.v1.UpdatePolicyVersionResponse
+	224, // 307: illumio.cloud.config.v1.ConfigService.DeletePolicyVersion:output_type -> google.protobuf.Empty
+	153, // 308: illumio.cloud.config.v1.ConfigService.CreateTagToLabel:output_type -> illumio.cloud.config.v1.CreateTagToLabelResponse
+	155, // 309: illumio.cloud.config.v1.ConfigService.ReadTagToLabel:output_type -> illumio.cloud.config.v1.ReadTagToLabelResponse
+	157, // 310: illumio.cloud.config.v1.ConfigService.UpdateTagToLabel:output_type -> illumio.cloud.config.v1.UpdateTagToLabelResponse
+	224, // 311: illumio.cloud.config.v1.ConfigService.DeleteTagToLabel:output_type -> google.protobuf.Empty
+	228, // [228:312] is the sub-list for method output_type
+	144, // [144:228] is the sub-list for method input_type
+	144, // [144:144] is the sub-list for extension type_name
+	144, // [144:144] is the sub-list for extension extendee
+	0,   // [0:144] is the sub-list for field type_name
 }
 
 func init() { file_illumio_cloud_config_v1_config_proto_init() }
@@ -16230,7 +16362,7 @@ func file_illumio_cloud_config_v1_config_proto_init() {
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: unsafe.Slice(unsafe.StringData(file_illumio_cloud_config_v1_config_proto_rawDesc), len(file_illumio_cloud_config_v1_config_proto_rawDesc)),
 			NumEnums:      0,
-			NumMessages:   221,
+			NumMessages:   223,
 			NumExtensions: 0,
 			NumServices:   1,
 		},

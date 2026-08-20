@@ -256,10 +256,10 @@ var k8sDestinationSelectorAttributes = map[string]resource_schema.Attribute{
 	},
 }
 
-// ipSelectorAttributes is reused for source.ip_list and destination.ip_list.
+// ipSelectorAttributes is reused for source.ip_lists and destination.ip_lists.
 var ipSelectorAttributes = map[string]resource_schema.Attribute{
 	"ids": resource_schema.ListAttribute{
-		Description: "List of ip_list resource IDs. Traffic matching any list is selected (OR logic).",
+		Description: "List of illumio-cloudsecure_ip_list resource IDs. Traffic matching any list is selected (OR logic).",
 		Required:    true,
 		ElementType: types.StringType,
 	},
@@ -495,6 +495,44 @@ var cloudSelectorAttributes = map[string]resource_schema.Attribute{
 	},
 }
 
+// illumioLabelsSelectorAttributes is reused for source.illumio_labels and destination.illumio_labels.
+//
+// The selector is a restricted conjunctive normal form: values within an entry are
+// OR'd, and entries are AND'd. So [{role, [web, api]}, {env, [prod]}] selects
+// workloads that are (role=web OR role=api) AND env=prod. A clause spanning two
+// keys, e.g. (role=web OR env=prod), is not expressible.
+//
+// Note this differs from k8s match_labels, where a repeated key would AND. Here a
+// key appears at most once and carries all of its alternatives, so the two cannot
+// be confused. Uniqueness of the key is enforced by the Config API rather than at
+// plan time, so that gRPC clients other than Terraform are held to the same rule.
+var illumioLabelsSelectorAttributes = map[string]resource_schema.Attribute{
+	"labels": resource_schema.ListNestedAttribute{
+		Description: "List of Illumio label requirements. Values within an entry are OR'd; entries are AND'd.",
+		Required:    true,
+		NestedObject: resource_schema.NestedAttributeObject{
+			Attributes: map[string]resource_schema.Attribute{
+				"key": resource_schema.StringAttribute{
+					Description: "Illumio label key.",
+					Required:    true,
+				},
+				"values": resource_schema.ListAttribute{
+					Description: "Accepted values for the key. Any value matches (OR logic).",
+					Required:    true,
+					ElementType: types.StringType,
+					Validators: []validator.List{
+						listvalidator.SizeAtLeast(1),
+						listvalidator.UniqueValues(),
+					},
+				},
+			},
+		},
+		Validators: []validator.List{
+			listvalidator.SizeAtLeast(1),
+		},
+	},
+}
+
 // workloadSelectorAttributes extends labelSelectorAttributes with service_accounts.
 var workloadSelectorAttributes = func() map[string]resource_schema.Attribute {
 	m := maps.Clone(labelSelectorAttributes)
@@ -570,20 +608,20 @@ var (
 											Validators: []validator.Object{
 												objectvalidator.ExactlyOneOf(
 													path.MatchRelative().AtParent().AtName("k8s"),
-													path.MatchRelative().AtParent().AtName("ip_list"),
+													path.MatchRelative().AtParent().AtName("ip_lists"),
 													path.MatchRelative().AtParent().AtName("cloud"),
 													path.MatchRelative().AtParent().AtName("illumio_labels"),
 												),
 											},
 										},
-										"ip_list": resource_schema.SingleNestedAttribute{
+										"ip_lists": resource_schema.SingleNestedAttribute{
 											Description: "IP list reference selector.",
 											Optional:    true,
 											Attributes:  ipSelectorAttributes,
 											Validators: []validator.Object{
 												objectvalidator.ExactlyOneOf(
 													path.MatchRelative().AtParent().AtName("k8s"),
-													path.MatchRelative().AtParent().AtName("ip_list"),
+													path.MatchRelative().AtParent().AtName("ip_lists"),
 													path.MatchRelative().AtParent().AtName("cloud"),
 													path.MatchRelative().AtParent().AtName("illumio_labels"),
 												),
@@ -596,20 +634,20 @@ var (
 											Validators: []validator.Object{
 												objectvalidator.ExactlyOneOf(
 													path.MatchRelative().AtParent().AtName("k8s"),
-													path.MatchRelative().AtParent().AtName("ip_list"),
+													path.MatchRelative().AtParent().AtName("ip_lists"),
 													path.MatchRelative().AtParent().AtName("cloud"),
 													path.MatchRelative().AtParent().AtName("illumio_labels"),
 												),
 											},
 										},
 										"illumio_labels": resource_schema.SingleNestedAttribute{
-											Description: "Illumio label selector. Not yet implemented.",
+											Description: "Illumio label selector.",
 											Optional:    true,
-											Attributes:  map[string]resource_schema.Attribute{},
+											Attributes:  illumioLabelsSelectorAttributes,
 											Validators: []validator.Object{
 												objectvalidator.ExactlyOneOf(
 													path.MatchRelative().AtParent().AtName("k8s"),
-													path.MatchRelative().AtParent().AtName("ip_list"),
+													path.MatchRelative().AtParent().AtName("ip_lists"),
 													path.MatchRelative().AtParent().AtName("cloud"),
 													path.MatchRelative().AtParent().AtName("illumio_labels"),
 												),
@@ -628,21 +666,21 @@ var (
 											Validators: []validator.Object{
 												objectvalidator.ExactlyOneOf(
 													path.MatchRelative().AtParent().AtName("k8s"),
-													path.MatchRelative().AtParent().AtName("ip_list"),
+													path.MatchRelative().AtParent().AtName("ip_lists"),
 													path.MatchRelative().AtParent().AtName("fqdns"),
 													path.MatchRelative().AtParent().AtName("cloud"),
 													path.MatchRelative().AtParent().AtName("illumio_labels"),
 												),
 											},
 										},
-										"ip_list": resource_schema.SingleNestedAttribute{
+										"ip_lists": resource_schema.SingleNestedAttribute{
 											Description: "IP list reference selector.",
 											Optional:    true,
 											Attributes:  ipSelectorAttributes,
 											Validators: []validator.Object{
 												objectvalidator.ExactlyOneOf(
 													path.MatchRelative().AtParent().AtName("k8s"),
-													path.MatchRelative().AtParent().AtName("ip_list"),
+													path.MatchRelative().AtParent().AtName("ip_lists"),
 													path.MatchRelative().AtParent().AtName("fqdns"),
 													path.MatchRelative().AtParent().AtName("cloud"),
 													path.MatchRelative().AtParent().AtName("illumio_labels"),
@@ -662,7 +700,7 @@ var (
 											Validators: []validator.Object{
 												objectvalidator.ExactlyOneOf(
 													path.MatchRelative().AtParent().AtName("k8s"),
-													path.MatchRelative().AtParent().AtName("ip_list"),
+													path.MatchRelative().AtParent().AtName("ip_lists"),
 													path.MatchRelative().AtParent().AtName("fqdns"),
 													path.MatchRelative().AtParent().AtName("cloud"),
 													path.MatchRelative().AtParent().AtName("illumio_labels"),
@@ -676,7 +714,7 @@ var (
 											Validators: []validator.Object{
 												objectvalidator.ExactlyOneOf(
 													path.MatchRelative().AtParent().AtName("k8s"),
-													path.MatchRelative().AtParent().AtName("ip_list"),
+													path.MatchRelative().AtParent().AtName("ip_lists"),
 													path.MatchRelative().AtParent().AtName("fqdns"),
 													path.MatchRelative().AtParent().AtName("cloud"),
 													path.MatchRelative().AtParent().AtName("illumio_labels"),
@@ -684,13 +722,13 @@ var (
 											},
 										},
 										"illumio_labels": resource_schema.SingleNestedAttribute{
-											Description: "Illumio label selector. Not yet implemented.",
+											Description: "Illumio label selector.",
 											Optional:    true,
-											Attributes:  map[string]resource_schema.Attribute{},
+											Attributes:  illumioLabelsSelectorAttributes,
 											Validators: []validator.Object{
 												objectvalidator.ExactlyOneOf(
 													path.MatchRelative().AtParent().AtName("k8s"),
-													path.MatchRelative().AtParent().AtName("ip_list"),
+													path.MatchRelative().AtParent().AtName("ip_lists"),
 													path.MatchRelative().AtParent().AtName("fqdns"),
 													path.MatchRelative().AtParent().AtName("cloud"),
 													path.MatchRelative().AtParent().AtName("illumio_labels"),

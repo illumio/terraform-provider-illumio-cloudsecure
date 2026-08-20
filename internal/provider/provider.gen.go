@@ -10950,7 +10950,7 @@ type PolicyVersion_Rules_Destination struct {
 	Cloud         types.Object `tfsdk:"cloud"`
 	Fqdns         types.Object `tfsdk:"fqdns"`
 	IllumioLabels types.Object `tfsdk:"illumio_labels"`
-	IpList        types.Object `tfsdk:"ip_list"`
+	IpLists       types.Object `tfsdk:"ip_lists"`
 	K8S           types.Object `tfsdk:"k8s"`
 }
 
@@ -10965,8 +10965,8 @@ func GetTypeAttrsForPolicyVersion_Rules_Destination() map[string]attr.Type {
 		"illumio_labels": types.ObjectType{
 			AttrTypes: GetTypeAttrsForPolicyVersion_Rules_Destination_IllumioLabels(),
 		},
-		"ip_list": types.ObjectType{
-			AttrTypes: GetTypeAttrsForPolicyVersion_Rules_Destination_IpList(),
+		"ip_lists": types.ObjectType{
+			AttrTypes: GetTypeAttrsForPolicyVersion_Rules_Destination_IpLists(),
 		},
 		"k8s": types.ObjectType{
 			AttrTypes: GetTypeAttrsForPolicyVersion_Rules_Destination_K8S(),
@@ -10984,7 +10984,7 @@ func ConvertPolicyVersion_Rules_DestinationToObjectValueFromProto(proto *configv
 			"cloud":          ConvertPolicyVersion_Rules_Destination_CloudToObjectValueFromProto(proto.Cloud),
 			"fqdns":          ConvertPolicyVersion_Rules_Destination_FqdnsToObjectValueFromProto(proto.Fqdns),
 			"illumio_labels": ConvertPolicyVersion_Rules_Destination_IllumioLabelsToObjectValueFromProto(proto.IllumioLabels),
-			"ip_list":        ConvertPolicyVersion_Rules_Destination_IpListToObjectValueFromProto(proto.IpList),
+			"ip_lists":       ConvertPolicyVersion_Rules_Destination_IpListsToObjectValueFromProto(proto.IpLists),
 			"k8s":            ConvertPolicyVersion_Rules_Destination_K8SToObjectValueFromProto(proto.K8S),
 		},
 	)
@@ -11018,12 +11018,12 @@ func ConvertDataValueToPolicyVersion_Rules_DestinationProto(ctx context.Context,
 		return nil, diags
 	}
 	proto.IllumioLabels = pvModelIllumioLabels
-	pvModelIpList, dvDiagsIpList := ConvertDataValueToPolicyVersion_Rules_Destination_IpListProto(ctx, pv.IpList)
-	diags.Append(dvDiagsIpList...)
+	pvModelIpLists, dvDiagsIpLists := ConvertDataValueToPolicyVersion_Rules_Destination_IpListsProto(ctx, pv.IpLists)
+	diags.Append(dvDiagsIpLists...)
 	if diags.HasError() {
 		return nil, diags
 	}
-	proto.IpList = pvModelIpList
+	proto.IpLists = pvModelIpLists
 	pvModelK8S, dvDiagsK8S := ConvertDataValueToPolicyVersion_Rules_Destination_K8SProto(ctx, pv.K8S)
 	diags.Append(dvDiagsK8S...)
 	if diags.HasError() {
@@ -11759,19 +11759,35 @@ func ConvertDataValueToPolicyVersion_Rules_Destination_FqdnsProto(ctx context.Co
 }
 
 type PolicyVersion_Rules_Destination_IllumioLabels struct {
+	Labels types.List `tfsdk:"labels"`
 }
 
 func GetTypeAttrsForPolicyVersion_Rules_Destination_IllumioLabels() map[string]attr.Type {
-	return map[string]attr.Type{}
+	return map[string]attr.Type{
+		"labels": types.ListType{ElemType: types.ObjectType{
+			AttrTypes: GetTypeAttrsForPolicyVersion_Rules_Destination_IllumioLabels_Labels(),
+		}},
+	}
 }
 
 func ConvertPolicyVersion_Rules_Destination_IllumioLabelsToObjectValueFromProto(proto *configv1.PolicyVersion_Rules_Destination_IllumioLabels) basetypes.ObjectValue {
 	if proto == nil {
 		return types.ObjectNull(GetTypeAttrsForPolicyVersion_Rules_Destination_IllumioLabels())
 	}
+	elementsInLabels := make([]attr.Value, 0, len(proto.Labels))
+	for _, item := range proto.Labels {
+		elementsInLabels = append(elementsInLabels, ConvertPolicyVersion_Rules_Destination_IllumioLabels_LabelsToObjectValueFromProto(item))
+	}
 	return types.ObjectValueMust(
 		GetTypeAttrsForPolicyVersion_Rules_Destination_IllumioLabels(),
-		map[string]attr.Value{},
+		map[string]attr.Value{
+			"labels": func() basetypes.ListValue {
+				if proto.Labels == nil {
+					return types.ListNull(types.ObjectType{AttrTypes: GetTypeAttrsForPolicyVersion_Rules_Destination_IllumioLabels_Labels()})
+				}
+				return types.ListValueMust(types.ObjectType{AttrTypes: GetTypeAttrsForPolicyVersion_Rules_Destination_IllumioLabels_Labels()}, elementsInLabels)
+			}(),
+		},
 	)
 }
 
@@ -11785,29 +11801,94 @@ func ConvertDataValueToPolicyVersion_Rules_Destination_IllumioLabelsProto(ctx co
 		return nil, diags
 	}
 	proto := &configv1.PolicyVersion_Rules_Destination_IllumioLabels{}
+	pvElemModelLabels := pv.Labels.Elements()
+	proto.Labels = make([]*configv1.PolicyVersion_Rules_Destination_IllumioLabels_Labels, 0, len(pvElemModelLabels))
+	for _, elem := range pvElemModelLabels {
+		pvModel, dvDiags := ConvertDataValueToPolicyVersion_Rules_Destination_IllumioLabels_LabelsProto(ctx, elem)
+		diags.Append(dvDiags...)
+		if diags.HasError() {
+			return nil, diags
+		}
+		proto.Labels = append(proto.Labels, pvModel)
+	}
 	return proto, diags
 }
 
-type PolicyVersion_Rules_Destination_IpList struct {
+type PolicyVersion_Rules_Destination_IllumioLabels_Labels struct {
+	Key    types.String `tfsdk:"key"`
+	Values types.List   `tfsdk:"values"`
+}
+
+func GetTypeAttrsForPolicyVersion_Rules_Destination_IllumioLabels_Labels() map[string]attr.Type {
+	return map[string]attr.Type{
+		"key":    types.StringType,
+		"values": types.ListType{ElemType: types.StringType},
+	}
+}
+
+func ConvertPolicyVersion_Rules_Destination_IllumioLabels_LabelsToObjectValueFromProto(proto *configv1.PolicyVersion_Rules_Destination_IllumioLabels_Labels) basetypes.ObjectValue {
+	if proto == nil {
+		return types.ObjectNull(GetTypeAttrsForPolicyVersion_Rules_Destination_IllumioLabels_Labels())
+	}
+	elementsInValues := make([]attr.Value, 0, len(proto.Values))
+	for _, item := range proto.Values {
+		elementsInValues = append(elementsInValues, types.StringValue(item))
+	}
+	return types.ObjectValueMust(
+		GetTypeAttrsForPolicyVersion_Rules_Destination_IllumioLabels_Labels(),
+		map[string]attr.Value{
+			"key": types.StringValue(proto.Key),
+			"values": func() basetypes.ListValue {
+				if proto.Values == nil {
+					return types.ListNull(types.StringType)
+				}
+				return types.ListValueMust(types.StringType, elementsInValues)
+			}(),
+		},
+	)
+}
+
+func ConvertDataValueToPolicyVersion_Rules_Destination_IllumioLabels_LabelsProto(ctx context.Context, dataValue attr.Value) (*configv1.PolicyVersion_Rules_Destination_IllumioLabels_Labels, diag.Diagnostics) {
+	if dataValue.IsNull() || dataValue.IsUnknown() {
+		return nil, nil
+	}
+	pv := PolicyVersion_Rules_Destination_IllumioLabels_Labels{}
+	diags := tfsdk.ValueAs(ctx, dataValue, &pv)
+	if diags.HasError() {
+		return nil, diags
+	}
+	proto := &configv1.PolicyVersion_Rules_Destination_IllumioLabels_Labels{}
+	proto.Key = pv.Key.ValueString()
+	var pvModelValues []string
+	dvDiagsValues := pv.Values.ElementsAs(ctx, &pvModelValues, false)
+	diags.Append(dvDiagsValues...)
+	if diags.HasError() {
+		return nil, diags
+	}
+	proto.Values = pvModelValues
+	return proto, diags
+}
+
+type PolicyVersion_Rules_Destination_IpLists struct {
 	Ids types.List `tfsdk:"ids"`
 }
 
-func GetTypeAttrsForPolicyVersion_Rules_Destination_IpList() map[string]attr.Type {
+func GetTypeAttrsForPolicyVersion_Rules_Destination_IpLists() map[string]attr.Type {
 	return map[string]attr.Type{
 		"ids": types.ListType{ElemType: types.StringType},
 	}
 }
 
-func ConvertPolicyVersion_Rules_Destination_IpListToObjectValueFromProto(proto *configv1.PolicyVersion_Rules_Destination_IpList) basetypes.ObjectValue {
+func ConvertPolicyVersion_Rules_Destination_IpListsToObjectValueFromProto(proto *configv1.PolicyVersion_Rules_Destination_IpLists) basetypes.ObjectValue {
 	if proto == nil {
-		return types.ObjectNull(GetTypeAttrsForPolicyVersion_Rules_Destination_IpList())
+		return types.ObjectNull(GetTypeAttrsForPolicyVersion_Rules_Destination_IpLists())
 	}
 	elementsInIds := make([]attr.Value, 0, len(proto.Ids))
 	for _, item := range proto.Ids {
 		elementsInIds = append(elementsInIds, types.StringValue(item))
 	}
 	return types.ObjectValueMust(
-		GetTypeAttrsForPolicyVersion_Rules_Destination_IpList(),
+		GetTypeAttrsForPolicyVersion_Rules_Destination_IpLists(),
 		map[string]attr.Value{
 			"ids": func() basetypes.ListValue {
 				if proto.Ids == nil {
@@ -11819,16 +11900,16 @@ func ConvertPolicyVersion_Rules_Destination_IpListToObjectValueFromProto(proto *
 	)
 }
 
-func ConvertDataValueToPolicyVersion_Rules_Destination_IpListProto(ctx context.Context, dataValue attr.Value) (*configv1.PolicyVersion_Rules_Destination_IpList, diag.Diagnostics) {
+func ConvertDataValueToPolicyVersion_Rules_Destination_IpListsProto(ctx context.Context, dataValue attr.Value) (*configv1.PolicyVersion_Rules_Destination_IpLists, diag.Diagnostics) {
 	if dataValue.IsNull() || dataValue.IsUnknown() {
 		return nil, nil
 	}
-	pv := PolicyVersion_Rules_Destination_IpList{}
+	pv := PolicyVersion_Rules_Destination_IpLists{}
 	diags := tfsdk.ValueAs(ctx, dataValue, &pv)
 	if diags.HasError() {
 		return nil, diags
 	}
-	proto := &configv1.PolicyVersion_Rules_Destination_IpList{}
+	proto := &configv1.PolicyVersion_Rules_Destination_IpLists{}
 	var pvModelIds []string
 	dvDiagsIds := pv.Ids.ElementsAs(ctx, &pvModelIds, false)
 	diags.Append(dvDiagsIds...)
@@ -12654,7 +12735,7 @@ func ConvertDataValueToPolicyVersion_Rules_PortRangesProto(ctx context.Context, 
 type PolicyVersion_Rules_Source struct {
 	Cloud         types.Object `tfsdk:"cloud"`
 	IllumioLabels types.Object `tfsdk:"illumio_labels"`
-	IpList        types.Object `tfsdk:"ip_list"`
+	IpLists       types.Object `tfsdk:"ip_lists"`
 	K8S           types.Object `tfsdk:"k8s"`
 }
 
@@ -12666,8 +12747,8 @@ func GetTypeAttrsForPolicyVersion_Rules_Source() map[string]attr.Type {
 		"illumio_labels": types.ObjectType{
 			AttrTypes: GetTypeAttrsForPolicyVersion_Rules_Source_IllumioLabels(),
 		},
-		"ip_list": types.ObjectType{
-			AttrTypes: GetTypeAttrsForPolicyVersion_Rules_Source_IpList(),
+		"ip_lists": types.ObjectType{
+			AttrTypes: GetTypeAttrsForPolicyVersion_Rules_Source_IpLists(),
 		},
 		"k8s": types.ObjectType{
 			AttrTypes: GetTypeAttrsForPolicyVersion_Rules_Source_K8S(),
@@ -12684,7 +12765,7 @@ func ConvertPolicyVersion_Rules_SourceToObjectValueFromProto(proto *configv1.Pol
 		map[string]attr.Value{
 			"cloud":          ConvertPolicyVersion_Rules_Source_CloudToObjectValueFromProto(proto.Cloud),
 			"illumio_labels": ConvertPolicyVersion_Rules_Source_IllumioLabelsToObjectValueFromProto(proto.IllumioLabels),
-			"ip_list":        ConvertPolicyVersion_Rules_Source_IpListToObjectValueFromProto(proto.IpList),
+			"ip_lists":       ConvertPolicyVersion_Rules_Source_IpListsToObjectValueFromProto(proto.IpLists),
 			"k8s":            ConvertPolicyVersion_Rules_Source_K8SToObjectValueFromProto(proto.K8S),
 		},
 	)
@@ -12712,12 +12793,12 @@ func ConvertDataValueToPolicyVersion_Rules_SourceProto(ctx context.Context, data
 		return nil, diags
 	}
 	proto.IllumioLabels = pvModelIllumioLabels
-	pvModelIpList, dvDiagsIpList := ConvertDataValueToPolicyVersion_Rules_Source_IpListProto(ctx, pv.IpList)
-	diags.Append(dvDiagsIpList...)
+	pvModelIpLists, dvDiagsIpLists := ConvertDataValueToPolicyVersion_Rules_Source_IpListsProto(ctx, pv.IpLists)
+	diags.Append(dvDiagsIpLists...)
 	if diags.HasError() {
 		return nil, diags
 	}
-	proto.IpList = pvModelIpList
+	proto.IpLists = pvModelIpLists
 	pvModelK8S, dvDiagsK8S := ConvertDataValueToPolicyVersion_Rules_Source_K8SProto(ctx, pv.K8S)
 	diags.Append(dvDiagsK8S...)
 	if diags.HasError() {
@@ -13402,19 +13483,35 @@ func ConvertDataValueToPolicyVersion_Rules_Source_Cloud_Azure_OrgSelector_Subscr
 }
 
 type PolicyVersion_Rules_Source_IllumioLabels struct {
+	Labels types.List `tfsdk:"labels"`
 }
 
 func GetTypeAttrsForPolicyVersion_Rules_Source_IllumioLabels() map[string]attr.Type {
-	return map[string]attr.Type{}
+	return map[string]attr.Type{
+		"labels": types.ListType{ElemType: types.ObjectType{
+			AttrTypes: GetTypeAttrsForPolicyVersion_Rules_Source_IllumioLabels_Labels(),
+		}},
+	}
 }
 
 func ConvertPolicyVersion_Rules_Source_IllumioLabelsToObjectValueFromProto(proto *configv1.PolicyVersion_Rules_Source_IllumioLabels) basetypes.ObjectValue {
 	if proto == nil {
 		return types.ObjectNull(GetTypeAttrsForPolicyVersion_Rules_Source_IllumioLabels())
 	}
+	elementsInLabels := make([]attr.Value, 0, len(proto.Labels))
+	for _, item := range proto.Labels {
+		elementsInLabels = append(elementsInLabels, ConvertPolicyVersion_Rules_Source_IllumioLabels_LabelsToObjectValueFromProto(item))
+	}
 	return types.ObjectValueMust(
 		GetTypeAttrsForPolicyVersion_Rules_Source_IllumioLabels(),
-		map[string]attr.Value{},
+		map[string]attr.Value{
+			"labels": func() basetypes.ListValue {
+				if proto.Labels == nil {
+					return types.ListNull(types.ObjectType{AttrTypes: GetTypeAttrsForPolicyVersion_Rules_Source_IllumioLabels_Labels()})
+				}
+				return types.ListValueMust(types.ObjectType{AttrTypes: GetTypeAttrsForPolicyVersion_Rules_Source_IllumioLabels_Labels()}, elementsInLabels)
+			}(),
+		},
 	)
 }
 
@@ -13428,29 +13525,94 @@ func ConvertDataValueToPolicyVersion_Rules_Source_IllumioLabelsProto(ctx context
 		return nil, diags
 	}
 	proto := &configv1.PolicyVersion_Rules_Source_IllumioLabels{}
+	pvElemModelLabels := pv.Labels.Elements()
+	proto.Labels = make([]*configv1.PolicyVersion_Rules_Source_IllumioLabels_Labels, 0, len(pvElemModelLabels))
+	for _, elem := range pvElemModelLabels {
+		pvModel, dvDiags := ConvertDataValueToPolicyVersion_Rules_Source_IllumioLabels_LabelsProto(ctx, elem)
+		diags.Append(dvDiags...)
+		if diags.HasError() {
+			return nil, diags
+		}
+		proto.Labels = append(proto.Labels, pvModel)
+	}
 	return proto, diags
 }
 
-type PolicyVersion_Rules_Source_IpList struct {
+type PolicyVersion_Rules_Source_IllumioLabels_Labels struct {
+	Key    types.String `tfsdk:"key"`
+	Values types.List   `tfsdk:"values"`
+}
+
+func GetTypeAttrsForPolicyVersion_Rules_Source_IllumioLabels_Labels() map[string]attr.Type {
+	return map[string]attr.Type{
+		"key":    types.StringType,
+		"values": types.ListType{ElemType: types.StringType},
+	}
+}
+
+func ConvertPolicyVersion_Rules_Source_IllumioLabels_LabelsToObjectValueFromProto(proto *configv1.PolicyVersion_Rules_Source_IllumioLabels_Labels) basetypes.ObjectValue {
+	if proto == nil {
+		return types.ObjectNull(GetTypeAttrsForPolicyVersion_Rules_Source_IllumioLabels_Labels())
+	}
+	elementsInValues := make([]attr.Value, 0, len(proto.Values))
+	for _, item := range proto.Values {
+		elementsInValues = append(elementsInValues, types.StringValue(item))
+	}
+	return types.ObjectValueMust(
+		GetTypeAttrsForPolicyVersion_Rules_Source_IllumioLabels_Labels(),
+		map[string]attr.Value{
+			"key": types.StringValue(proto.Key),
+			"values": func() basetypes.ListValue {
+				if proto.Values == nil {
+					return types.ListNull(types.StringType)
+				}
+				return types.ListValueMust(types.StringType, elementsInValues)
+			}(),
+		},
+	)
+}
+
+func ConvertDataValueToPolicyVersion_Rules_Source_IllumioLabels_LabelsProto(ctx context.Context, dataValue attr.Value) (*configv1.PolicyVersion_Rules_Source_IllumioLabels_Labels, diag.Diagnostics) {
+	if dataValue.IsNull() || dataValue.IsUnknown() {
+		return nil, nil
+	}
+	pv := PolicyVersion_Rules_Source_IllumioLabels_Labels{}
+	diags := tfsdk.ValueAs(ctx, dataValue, &pv)
+	if diags.HasError() {
+		return nil, diags
+	}
+	proto := &configv1.PolicyVersion_Rules_Source_IllumioLabels_Labels{}
+	proto.Key = pv.Key.ValueString()
+	var pvModelValues []string
+	dvDiagsValues := pv.Values.ElementsAs(ctx, &pvModelValues, false)
+	diags.Append(dvDiagsValues...)
+	if diags.HasError() {
+		return nil, diags
+	}
+	proto.Values = pvModelValues
+	return proto, diags
+}
+
+type PolicyVersion_Rules_Source_IpLists struct {
 	Ids types.List `tfsdk:"ids"`
 }
 
-func GetTypeAttrsForPolicyVersion_Rules_Source_IpList() map[string]attr.Type {
+func GetTypeAttrsForPolicyVersion_Rules_Source_IpLists() map[string]attr.Type {
 	return map[string]attr.Type{
 		"ids": types.ListType{ElemType: types.StringType},
 	}
 }
 
-func ConvertPolicyVersion_Rules_Source_IpListToObjectValueFromProto(proto *configv1.PolicyVersion_Rules_Source_IpList) basetypes.ObjectValue {
+func ConvertPolicyVersion_Rules_Source_IpListsToObjectValueFromProto(proto *configv1.PolicyVersion_Rules_Source_IpLists) basetypes.ObjectValue {
 	if proto == nil {
-		return types.ObjectNull(GetTypeAttrsForPolicyVersion_Rules_Source_IpList())
+		return types.ObjectNull(GetTypeAttrsForPolicyVersion_Rules_Source_IpLists())
 	}
 	elementsInIds := make([]attr.Value, 0, len(proto.Ids))
 	for _, item := range proto.Ids {
 		elementsInIds = append(elementsInIds, types.StringValue(item))
 	}
 	return types.ObjectValueMust(
-		GetTypeAttrsForPolicyVersion_Rules_Source_IpList(),
+		GetTypeAttrsForPolicyVersion_Rules_Source_IpLists(),
 		map[string]attr.Value{
 			"ids": func() basetypes.ListValue {
 				if proto.Ids == nil {
@@ -13462,16 +13624,16 @@ func ConvertPolicyVersion_Rules_Source_IpListToObjectValueFromProto(proto *confi
 	)
 }
 
-func ConvertDataValueToPolicyVersion_Rules_Source_IpListProto(ctx context.Context, dataValue attr.Value) (*configv1.PolicyVersion_Rules_Source_IpList, diag.Diagnostics) {
+func ConvertDataValueToPolicyVersion_Rules_Source_IpListsProto(ctx context.Context, dataValue attr.Value) (*configv1.PolicyVersion_Rules_Source_IpLists, diag.Diagnostics) {
 	if dataValue.IsNull() || dataValue.IsUnknown() {
 		return nil, nil
 	}
-	pv := PolicyVersion_Rules_Source_IpList{}
+	pv := PolicyVersion_Rules_Source_IpLists{}
 	diags := tfsdk.ValueAs(ctx, dataValue, &pv)
 	if diags.HasError() {
 		return nil, diags
 	}
-	proto := &configv1.PolicyVersion_Rules_Source_IpList{}
+	proto := &configv1.PolicyVersion_Rules_Source_IpLists{}
 	var pvModelIds []string
 	dvDiagsIds := pv.Ids.ElementsAs(ctx, &pvModelIds, false)
 	diags.Append(dvDiagsIds...)
