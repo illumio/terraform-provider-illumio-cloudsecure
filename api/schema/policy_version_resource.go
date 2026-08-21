@@ -501,11 +501,6 @@ var cloudSelectorAttributes = map[string]resource_schema.Attribute{
 // OR'd, and entries are AND'd. So [{role, [web, api]}, {env, [prod]}] selects
 // workloads that are (role=web OR role=api) AND env=prod. A clause spanning two
 // keys, e.g. (role=web OR env=prod), is not expressible.
-//
-// Note this differs from k8s match_labels, where a repeated key would AND. Here a
-// key appears at most once and carries all of its alternatives, so the two cannot
-// be confused. Uniqueness of the key is enforced by the Config API rather than at
-// plan time, so that gRPC clients other than Terraform are held to the same rule.
 var illumioLabelsSelectorAttributes = map[string]resource_schema.Attribute{
 	"labels": resource_schema.ListNestedAttribute{
 		Description: "List of Illumio label requirements. Values within an entry are OR'd; entries are AND'd.",
