@@ -4,6 +4,7 @@
 package schema
 
 import (
+	"fmt"
 	"maps"
 
 	"github.com/hashicorp/terraform-plugin-framework-validators/listvalidator"
@@ -62,9 +63,97 @@ var labelSelectorAttributes = map[string]resource_schema.Attribute{
 	},
 }
 
+// stringMatchAttributes is one cluster matching criterion expressed as an operator and
+// values, mirroring match_expressions on the namespace and workload selectors so the two
+// read the same way.
+//
+// Whether values is required depends on the operator: In and NotIn need at least one, while
+// Exists and DoesNotExist take none. That is a cross-field rule the framework cannot express
+// on a single attribute, so it is stated here and enforced by the server, matching how
+// match_expressions handles the same rule.
+var stringMatchAttributes = map[string]resource_schema.Attribute{
+	"operator": resource_schema.StringAttribute{
+		Description: "Match operator. Must be one of: In, NotIn, Exists, DoesNotExist.",
+		Required:    true,
+		Validators: []validator.String{
+			stringvalidator.OneOf("In", "NotIn", "Exists", "DoesNotExist"),
+		},
+	},
+	"values": resource_schema.ListAttribute{
+		Description: "Values to match against. Required for In and NotIn, and must be omitted for Exists and DoesNotExist.",
+		Optional:    true,
+		ElementType: types.StringType,
+	},
+}
+
+// clusterCriterion returns the two attributes that express one cluster matching criterion.
+//
+// Each criterion can be written two ways: a plain string for the common case of exact
+// equality, or a "<name>_match" object for the operator form. Both are declared Optional
+// because the requirement is not "this attribute is set" but "exactly one of the pair is",
+// which only a validator can say. This mirrors how the cluster block already expresses the
+// choice between id and the four cloud providers.
+//
+// A required criterion must have one of the two set. An optional one may have neither, which
+// leaves that criterion unconstrained and matches any value.
+//
+// Note that validation of either kind is skipped while a value is unknown, so a criterion
+// taking its value from another resource is only checked at apply time rather than at plan.
+func clusterCriterion(name, description string, required bool) map[string]resource_schema.Attribute {
+	matchName := name + "_match"
+
+	paths := []path.Expression{
+		path.MatchRelative().AtParent().AtName(name),
+		path.MatchRelative().AtParent().AtName(matchName),
+	}
+
+	var (
+		stringValidator validator.String
+		objectValidator validator.Object
+	)
+	if required {
+		stringValidator = stringvalidator.ExactlyOneOf(paths...)
+		objectValidator = objectvalidator.ExactlyOneOf(paths...)
+	} else {
+		stringValidator = stringvalidator.ConflictsWith(paths...)
+		objectValidator = objectvalidator.ConflictsWith(paths...)
+	}
+
+	return map[string]resource_schema.Attribute{
+		name: resource_schema.StringAttribute{
+			Description: fmt.Sprintf("%s Matched for equality. Mutually exclusive with %s.", description, matchName),
+			Optional:    true,
+			Validators:  []validator.String{stringValidator},
+		},
+		matchName: resource_schema.SingleNestedAttribute{
+			Description: fmt.Sprintf("%s Matched by operator. Mutually exclusive with %s.", description, name),
+			Optional:    true,
+			Attributes:  stringMatchAttributes,
+			Validators:  []validator.Object{objectValidator},
+		},
+	}
+}
+
+// clusterProviderAttributes assembles one cloud provider's criteria into its attribute map.
+//
+// The two locator criteria are required, since between them they bound a selector to a single
+// account and scope. That keeps a selector from silently widening to every cluster in the
+// tenant, and it keeps the negative operators cheap to evaluate: NotIn and DoesNotExist are
+// only ever applied within an already narrow set rather than against everything.
+//
+// The cluster name is optional. Omitting it selects every cluster in that account and scope,
+// which is the case the operators exist to serve.
+func clusterProviderAttributes(accountName, accountDescription, scopeName, scopeDescription, clusterNameDescription string) map[string]resource_schema.Attribute {
+	attributes := make(map[string]resource_schema.Attribute, 6)
+	maps.Copy(attributes, clusterCriterion(accountName, accountDescription, true))
+	maps.Copy(attributes, clusterCriterion(scopeName, scopeDescription, true))
+	maps.Copy(attributes, clusterCriterion("cluster_name", clusterNameDescription, false))
+	return attributes
+}
+
 // clusterSelectorAttributes is shared between source and destination k8s selectors.
 var clusterSelectorAttributes = resource_schema.ListNestedAttribute{
-	Description: "List of K8s clusters. Each entry identifies one cluster. Any cluster matches (OR logic).",
+	Description: "List of K8s cluster selectors. Each entry selects one or more clusters. A cluster matching any entry matches (OR logic).",
 	Required:    true,
 	NestedObject: resource_schema.NestedAttributeObject{
 		Attributes: map[string]resource_schema.Attribute{
@@ -82,22 +171,13 @@ var clusterSelectorAttributes = resource_schema.ListNestedAttribute{
 				},
 			},
 			"aws": resource_schema.SingleNestedAttribute{
-				Description: "AWS EKS cluster. Mutually exclusive with id, gcp, azure, and oci.",
+				Description: "AWS EKS clusters. Mutually exclusive with id, gcp, azure, and oci.",
 				Optional:    true,
-				Attributes: map[string]resource_schema.Attribute{
-					"account_id": resource_schema.StringAttribute{
-						Description: "AWS account ID.",
-						Required:    true,
-					},
-					"region": resource_schema.StringAttribute{
-						Description: "AWS region (e.g., us-east-1).",
-						Required:    true,
-					},
-					"cluster_name": resource_schema.StringAttribute{
-						Description: "EKS cluster name.",
-						Required:    true,
-					},
-				},
+				Attributes: clusterProviderAttributes(
+					"account_id", "AWS account ID.",
+					"region", "AWS region (e.g., us-east-1).",
+					"EKS cluster name.",
+				),
 				Validators: []validator.Object{
 					objectvalidator.ExactlyOneOf(
 						path.MatchRelative().AtParent().AtName("id"),
@@ -109,22 +189,13 @@ var clusterSelectorAttributes = resource_schema.ListNestedAttribute{
 				},
 			},
 			"gcp": resource_schema.SingleNestedAttribute{
-				Description: "GCP GKE cluster. Mutually exclusive with id, aws, azure, and oci.",
+				Description: "GCP GKE clusters. Mutually exclusive with id, aws, azure, and oci.",
 				Optional:    true,
-				Attributes: map[string]resource_schema.Attribute{
-					"project_id": resource_schema.StringAttribute{
-						Description: "GCP project ID.",
-						Required:    true,
-					},
-					"location": resource_schema.StringAttribute{
-						Description: "GKE cluster location (region or zone).",
-						Required:    true,
-					},
-					"cluster_name": resource_schema.StringAttribute{
-						Description: "GKE cluster name.",
-						Required:    true,
-					},
-				},
+				Attributes: clusterProviderAttributes(
+					"project_id", "GCP project ID.",
+					"location", "GKE cluster location (region or zone).",
+					"GKE cluster name.",
+				),
 				Validators: []validator.Object{
 					objectvalidator.ExactlyOneOf(
 						path.MatchRelative().AtParent().AtName("id"),
@@ -136,22 +207,13 @@ var clusterSelectorAttributes = resource_schema.ListNestedAttribute{
 				},
 			},
 			"azure": resource_schema.SingleNestedAttribute{
-				Description: "Azure AKS cluster. Mutually exclusive with id, aws, gcp, and oci.",
+				Description: "Azure AKS clusters. Mutually exclusive with id, aws, gcp, and oci.",
 				Optional:    true,
-				Attributes: map[string]resource_schema.Attribute{
-					"subscription_id": resource_schema.StringAttribute{
-						Description: "Azure subscription ID.",
-						Required:    true,
-					},
-					"resource_group": resource_schema.StringAttribute{
-						Description: "Azure resource group name.",
-						Required:    true,
-					},
-					"cluster_name": resource_schema.StringAttribute{
-						Description: "AKS cluster name.",
-						Required:    true,
-					},
-				},
+				Attributes: clusterProviderAttributes(
+					"subscription_id", "Azure subscription ID.",
+					"resource_group", "Azure resource group name.",
+					"AKS cluster name.",
+				),
 				Validators: []validator.Object{
 					objectvalidator.ExactlyOneOf(
 						path.MatchRelative().AtParent().AtName("id"),
@@ -163,22 +225,13 @@ var clusterSelectorAttributes = resource_schema.ListNestedAttribute{
 				},
 			},
 			"oci": resource_schema.SingleNestedAttribute{
-				Description: "OCI OKE cluster. Mutually exclusive with id, aws, gcp, and azure.",
+				Description: "OCI OKE clusters. Mutually exclusive with id, aws, gcp, and azure.",
 				Optional:    true,
-				Attributes: map[string]resource_schema.Attribute{
-					"compartment_id": resource_schema.StringAttribute{
-						Description: "OCI compartment OCID.",
-						Required:    true,
-					},
-					"region": resource_schema.StringAttribute{
-						Description: "OCI region (e.g., us-ashburn-1).",
-						Required:    true,
-					},
-					"cluster_name": resource_schema.StringAttribute{
-						Description: "OKE cluster name.",
-						Required:    true,
-					},
-				},
+				Attributes: clusterProviderAttributes(
+					"compartment_id", "OCI compartment OCID.",
+					"region", "OCI region (e.g., us-ashburn-1).",
+					"OKE cluster name.",
+				),
 				Validators: []validator.Object{
 					objectvalidator.ExactlyOneOf(
 						path.MatchRelative().AtParent().AtName("id"),

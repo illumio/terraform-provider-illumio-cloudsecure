@@ -572,7 +572,7 @@ Required:
 
 Required:
 
-- `clusters` (Attributes List) List of K8s clusters. Each entry identifies one cluster. Any cluster matches (OR logic). (see [below for nested schema](#nestedatt--rules--destination--k8s--clusters))
+- `clusters` (Attributes List) List of K8s cluster selectors. Each entry selects one or more clusters. A cluster matching any entry matches (OR logic). (see [below for nested schema](#nestedatt--rules--destination--k8s--clusters))
 - `namespace_selector` (Attributes) Label selector for K8s namespaces. Use empty {} to match all namespaces. (see [below for nested schema](#nestedatt--rules--destination--k8s--namespace_selector))
 
 Optional:
@@ -587,50 +587,206 @@ Optional:
 
 Optional:
 
-- `aws` (Attributes) AWS EKS cluster. Mutually exclusive with id, gcp, azure, and oci. (see [below for nested schema](#nestedatt--rules--destination--k8s--clusters--aws))
-- `azure` (Attributes) Azure AKS cluster. Mutually exclusive with id, aws, gcp, and oci. (see [below for nested schema](#nestedatt--rules--destination--k8s--clusters--azure))
-- `gcp` (Attributes) GCP GKE cluster. Mutually exclusive with id, aws, azure, and oci. (see [below for nested schema](#nestedatt--rules--destination--k8s--clusters--gcp))
+- `aws` (Attributes) AWS EKS clusters. Mutually exclusive with id, gcp, azure, and oci. (see [below for nested schema](#nestedatt--rules--destination--k8s--clusters--aws))
+- `azure` (Attributes) Azure AKS clusters. Mutually exclusive with id, aws, gcp, and oci. (see [below for nested schema](#nestedatt--rules--destination--k8s--clusters--azure))
+- `gcp` (Attributes) GCP GKE clusters. Mutually exclusive with id, aws, azure, and oci. (see [below for nested schema](#nestedatt--rules--destination--k8s--clusters--gcp))
 - `id` (String) Cluster ID (from k8s_cluster resource/data source). Mutually exclusive with aws, gcp, azure, and oci.
-- `oci` (Attributes) OCI OKE cluster. Mutually exclusive with id, aws, gcp, and azure. (see [below for nested schema](#nestedatt--rules--destination--k8s--clusters--oci))
+- `oci` (Attributes) OCI OKE clusters. Mutually exclusive with id, aws, gcp, and azure. (see [below for nested schema](#nestedatt--rules--destination--k8s--clusters--oci))
 
 <a id="nestedatt--rules--destination--k8s--clusters--aws"></a>
 ### Nested Schema for `rules.destination.k8s.clusters.aws`
 
+Optional:
+
+- `account_id` (String) AWS account ID. Matched for equality. Mutually exclusive with account_id_match.
+- `account_id_match` (Attributes) AWS account ID. Matched by operator. Mutually exclusive with account_id. (see [below for nested schema](#nestedatt--rules--destination--k8s--clusters--aws--account_id_match))
+- `cluster_name` (String) EKS cluster name. Matched for equality. Mutually exclusive with cluster_name_match.
+- `cluster_name_match` (Attributes) EKS cluster name. Matched by operator. Mutually exclusive with cluster_name. (see [below for nested schema](#nestedatt--rules--destination--k8s--clusters--aws--cluster_name_match))
+- `region` (String) AWS region (e.g., us-east-1). Matched for equality. Mutually exclusive with region_match.
+- `region_match` (Attributes) AWS region (e.g., us-east-1). Matched by operator. Mutually exclusive with region. (see [below for nested schema](#nestedatt--rules--destination--k8s--clusters--aws--region_match))
+
+<a id="nestedatt--rules--destination--k8s--clusters--aws--account_id_match"></a>
+### Nested Schema for `rules.destination.k8s.clusters.aws.account_id_match`
+
 Required:
 
-- `account_id` (String) AWS account ID.
-- `cluster_name` (String) EKS cluster name.
-- `region` (String) AWS region (e.g., us-east-1).
+- `operator` (String) Match operator. Must be one of: In, NotIn, Exists, DoesNotExist.
+
+Optional:
+
+- `values` (List of String) Values to match against. Required for In and NotIn, and must be omitted for Exists and DoesNotExist.
+
+
+<a id="nestedatt--rules--destination--k8s--clusters--aws--cluster_name_match"></a>
+### Nested Schema for `rules.destination.k8s.clusters.aws.cluster_name_match`
+
+Required:
+
+- `operator` (String) Match operator. Must be one of: In, NotIn, Exists, DoesNotExist.
+
+Optional:
+
+- `values` (List of String) Values to match against. Required for In and NotIn, and must be omitted for Exists and DoesNotExist.
+
+
+<a id="nestedatt--rules--destination--k8s--clusters--aws--region_match"></a>
+### Nested Schema for `rules.destination.k8s.clusters.aws.region_match`
+
+Required:
+
+- `operator` (String) Match operator. Must be one of: In, NotIn, Exists, DoesNotExist.
+
+Optional:
+
+- `values` (List of String) Values to match against. Required for In and NotIn, and must be omitted for Exists and DoesNotExist.
+
 
 
 <a id="nestedatt--rules--destination--k8s--clusters--azure"></a>
 ### Nested Schema for `rules.destination.k8s.clusters.azure`
 
+Optional:
+
+- `cluster_name` (String) AKS cluster name. Matched for equality. Mutually exclusive with cluster_name_match.
+- `cluster_name_match` (Attributes) AKS cluster name. Matched by operator. Mutually exclusive with cluster_name. (see [below for nested schema](#nestedatt--rules--destination--k8s--clusters--azure--cluster_name_match))
+- `resource_group` (String) Azure resource group name. Matched for equality. Mutually exclusive with resource_group_match.
+- `resource_group_match` (Attributes) Azure resource group name. Matched by operator. Mutually exclusive with resource_group. (see [below for nested schema](#nestedatt--rules--destination--k8s--clusters--azure--resource_group_match))
+- `subscription_id` (String) Azure subscription ID. Matched for equality. Mutually exclusive with subscription_id_match.
+- `subscription_id_match` (Attributes) Azure subscription ID. Matched by operator. Mutually exclusive with subscription_id. (see [below for nested schema](#nestedatt--rules--destination--k8s--clusters--azure--subscription_id_match))
+
+<a id="nestedatt--rules--destination--k8s--clusters--azure--cluster_name_match"></a>
+### Nested Schema for `rules.destination.k8s.clusters.azure.cluster_name_match`
+
 Required:
 
-- `cluster_name` (String) AKS cluster name.
-- `resource_group` (String) Azure resource group name.
-- `subscription_id` (String) Azure subscription ID.
+- `operator` (String) Match operator. Must be one of: In, NotIn, Exists, DoesNotExist.
+
+Optional:
+
+- `values` (List of String) Values to match against. Required for In and NotIn, and must be omitted for Exists and DoesNotExist.
+
+
+<a id="nestedatt--rules--destination--k8s--clusters--azure--resource_group_match"></a>
+### Nested Schema for `rules.destination.k8s.clusters.azure.resource_group_match`
+
+Required:
+
+- `operator` (String) Match operator. Must be one of: In, NotIn, Exists, DoesNotExist.
+
+Optional:
+
+- `values` (List of String) Values to match against. Required for In and NotIn, and must be omitted for Exists and DoesNotExist.
+
+
+<a id="nestedatt--rules--destination--k8s--clusters--azure--subscription_id_match"></a>
+### Nested Schema for `rules.destination.k8s.clusters.azure.subscription_id_match`
+
+Required:
+
+- `operator` (String) Match operator. Must be one of: In, NotIn, Exists, DoesNotExist.
+
+Optional:
+
+- `values` (List of String) Values to match against. Required for In and NotIn, and must be omitted for Exists and DoesNotExist.
+
 
 
 <a id="nestedatt--rules--destination--k8s--clusters--gcp"></a>
 ### Nested Schema for `rules.destination.k8s.clusters.gcp`
 
+Optional:
+
+- `cluster_name` (String) GKE cluster name. Matched for equality. Mutually exclusive with cluster_name_match.
+- `cluster_name_match` (Attributes) GKE cluster name. Matched by operator. Mutually exclusive with cluster_name. (see [below for nested schema](#nestedatt--rules--destination--k8s--clusters--gcp--cluster_name_match))
+- `location` (String) GKE cluster location (region or zone). Matched for equality. Mutually exclusive with location_match.
+- `location_match` (Attributes) GKE cluster location (region or zone). Matched by operator. Mutually exclusive with location. (see [below for nested schema](#nestedatt--rules--destination--k8s--clusters--gcp--location_match))
+- `project_id` (String) GCP project ID. Matched for equality. Mutually exclusive with project_id_match.
+- `project_id_match` (Attributes) GCP project ID. Matched by operator. Mutually exclusive with project_id. (see [below for nested schema](#nestedatt--rules--destination--k8s--clusters--gcp--project_id_match))
+
+<a id="nestedatt--rules--destination--k8s--clusters--gcp--cluster_name_match"></a>
+### Nested Schema for `rules.destination.k8s.clusters.gcp.cluster_name_match`
+
 Required:
 
-- `cluster_name` (String) GKE cluster name.
-- `location` (String) GKE cluster location (region or zone).
-- `project_id` (String) GCP project ID.
+- `operator` (String) Match operator. Must be one of: In, NotIn, Exists, DoesNotExist.
+
+Optional:
+
+- `values` (List of String) Values to match against. Required for In and NotIn, and must be omitted for Exists and DoesNotExist.
+
+
+<a id="nestedatt--rules--destination--k8s--clusters--gcp--location_match"></a>
+### Nested Schema for `rules.destination.k8s.clusters.gcp.location_match`
+
+Required:
+
+- `operator` (String) Match operator. Must be one of: In, NotIn, Exists, DoesNotExist.
+
+Optional:
+
+- `values` (List of String) Values to match against. Required for In and NotIn, and must be omitted for Exists and DoesNotExist.
+
+
+<a id="nestedatt--rules--destination--k8s--clusters--gcp--project_id_match"></a>
+### Nested Schema for `rules.destination.k8s.clusters.gcp.project_id_match`
+
+Required:
+
+- `operator` (String) Match operator. Must be one of: In, NotIn, Exists, DoesNotExist.
+
+Optional:
+
+- `values` (List of String) Values to match against. Required for In and NotIn, and must be omitted for Exists and DoesNotExist.
+
 
 
 <a id="nestedatt--rules--destination--k8s--clusters--oci"></a>
 ### Nested Schema for `rules.destination.k8s.clusters.oci`
 
+Optional:
+
+- `cluster_name` (String) OKE cluster name. Matched for equality. Mutually exclusive with cluster_name_match.
+- `cluster_name_match` (Attributes) OKE cluster name. Matched by operator. Mutually exclusive with cluster_name. (see [below for nested schema](#nestedatt--rules--destination--k8s--clusters--oci--cluster_name_match))
+- `compartment_id` (String) OCI compartment OCID. Matched for equality. Mutually exclusive with compartment_id_match.
+- `compartment_id_match` (Attributes) OCI compartment OCID. Matched by operator. Mutually exclusive with compartment_id. (see [below for nested schema](#nestedatt--rules--destination--k8s--clusters--oci--compartment_id_match))
+- `region` (String) OCI region (e.g., us-ashburn-1). Matched for equality. Mutually exclusive with region_match.
+- `region_match` (Attributes) OCI region (e.g., us-ashburn-1). Matched by operator. Mutually exclusive with region. (see [below for nested schema](#nestedatt--rules--destination--k8s--clusters--oci--region_match))
+
+<a id="nestedatt--rules--destination--k8s--clusters--oci--cluster_name_match"></a>
+### Nested Schema for `rules.destination.k8s.clusters.oci.cluster_name_match`
+
 Required:
 
-- `cluster_name` (String) OKE cluster name.
-- `compartment_id` (String) OCI compartment OCID.
-- `region` (String) OCI region (e.g., us-ashburn-1).
+- `operator` (String) Match operator. Must be one of: In, NotIn, Exists, DoesNotExist.
+
+Optional:
+
+- `values` (List of String) Values to match against. Required for In and NotIn, and must be omitted for Exists and DoesNotExist.
+
+
+<a id="nestedatt--rules--destination--k8s--clusters--oci--compartment_id_match"></a>
+### Nested Schema for `rules.destination.k8s.clusters.oci.compartment_id_match`
+
+Required:
+
+- `operator` (String) Match operator. Must be one of: In, NotIn, Exists, DoesNotExist.
+
+Optional:
+
+- `values` (List of String) Values to match against. Required for In and NotIn, and must be omitted for Exists and DoesNotExist.
+
+
+<a id="nestedatt--rules--destination--k8s--clusters--oci--region_match"></a>
+### Nested Schema for `rules.destination.k8s.clusters.oci.region_match`
+
+Required:
+
+- `operator` (String) Match operator. Must be one of: In, NotIn, Exists, DoesNotExist.
+
+Optional:
+
+- `values` (List of String) Values to match against. Required for In and NotIn, and must be omitted for Exists and DoesNotExist.
+
 
 
 
@@ -864,7 +1020,7 @@ Required:
 
 Required:
 
-- `clusters` (Attributes List) List of K8s clusters. Each entry identifies one cluster. Any cluster matches (OR logic). (see [below for nested schema](#nestedatt--rules--source--k8s--clusters))
+- `clusters` (Attributes List) List of K8s cluster selectors. Each entry selects one or more clusters. A cluster matching any entry matches (OR logic). (see [below for nested schema](#nestedatt--rules--source--k8s--clusters))
 - `namespace_selector` (Attributes) Label selector for K8s namespaces. Use empty {} to match all namespaces. (see [below for nested schema](#nestedatt--rules--source--k8s--namespace_selector))
 - `workload_selector` (Attributes) Label selector for K8s workloads (pods). Use empty {} to match all pods. (see [below for nested schema](#nestedatt--rules--source--k8s--workload_selector))
 
@@ -873,50 +1029,206 @@ Required:
 
 Optional:
 
-- `aws` (Attributes) AWS EKS cluster. Mutually exclusive with id, gcp, azure, and oci. (see [below for nested schema](#nestedatt--rules--source--k8s--clusters--aws))
-- `azure` (Attributes) Azure AKS cluster. Mutually exclusive with id, aws, gcp, and oci. (see [below for nested schema](#nestedatt--rules--source--k8s--clusters--azure))
-- `gcp` (Attributes) GCP GKE cluster. Mutually exclusive with id, aws, azure, and oci. (see [below for nested schema](#nestedatt--rules--source--k8s--clusters--gcp))
+- `aws` (Attributes) AWS EKS clusters. Mutually exclusive with id, gcp, azure, and oci. (see [below for nested schema](#nestedatt--rules--source--k8s--clusters--aws))
+- `azure` (Attributes) Azure AKS clusters. Mutually exclusive with id, aws, gcp, and oci. (see [below for nested schema](#nestedatt--rules--source--k8s--clusters--azure))
+- `gcp` (Attributes) GCP GKE clusters. Mutually exclusive with id, aws, azure, and oci. (see [below for nested schema](#nestedatt--rules--source--k8s--clusters--gcp))
 - `id` (String) Cluster ID (from k8s_cluster resource/data source). Mutually exclusive with aws, gcp, azure, and oci.
-- `oci` (Attributes) OCI OKE cluster. Mutually exclusive with id, aws, gcp, and azure. (see [below for nested schema](#nestedatt--rules--source--k8s--clusters--oci))
+- `oci` (Attributes) OCI OKE clusters. Mutually exclusive with id, aws, gcp, and azure. (see [below for nested schema](#nestedatt--rules--source--k8s--clusters--oci))
 
 <a id="nestedatt--rules--source--k8s--clusters--aws"></a>
 ### Nested Schema for `rules.source.k8s.clusters.aws`
 
+Optional:
+
+- `account_id` (String) AWS account ID. Matched for equality. Mutually exclusive with account_id_match.
+- `account_id_match` (Attributes) AWS account ID. Matched by operator. Mutually exclusive with account_id. (see [below for nested schema](#nestedatt--rules--source--k8s--clusters--aws--account_id_match))
+- `cluster_name` (String) EKS cluster name. Matched for equality. Mutually exclusive with cluster_name_match.
+- `cluster_name_match` (Attributes) EKS cluster name. Matched by operator. Mutually exclusive with cluster_name. (see [below for nested schema](#nestedatt--rules--source--k8s--clusters--aws--cluster_name_match))
+- `region` (String) AWS region (e.g., us-east-1). Matched for equality. Mutually exclusive with region_match.
+- `region_match` (Attributes) AWS region (e.g., us-east-1). Matched by operator. Mutually exclusive with region. (see [below for nested schema](#nestedatt--rules--source--k8s--clusters--aws--region_match))
+
+<a id="nestedatt--rules--source--k8s--clusters--aws--account_id_match"></a>
+### Nested Schema for `rules.source.k8s.clusters.aws.account_id_match`
+
 Required:
 
-- `account_id` (String) AWS account ID.
-- `cluster_name` (String) EKS cluster name.
-- `region` (String) AWS region (e.g., us-east-1).
+- `operator` (String) Match operator. Must be one of: In, NotIn, Exists, DoesNotExist.
+
+Optional:
+
+- `values` (List of String) Values to match against. Required for In and NotIn, and must be omitted for Exists and DoesNotExist.
+
+
+<a id="nestedatt--rules--source--k8s--clusters--aws--cluster_name_match"></a>
+### Nested Schema for `rules.source.k8s.clusters.aws.cluster_name_match`
+
+Required:
+
+- `operator` (String) Match operator. Must be one of: In, NotIn, Exists, DoesNotExist.
+
+Optional:
+
+- `values` (List of String) Values to match against. Required for In and NotIn, and must be omitted for Exists and DoesNotExist.
+
+
+<a id="nestedatt--rules--source--k8s--clusters--aws--region_match"></a>
+### Nested Schema for `rules.source.k8s.clusters.aws.region_match`
+
+Required:
+
+- `operator` (String) Match operator. Must be one of: In, NotIn, Exists, DoesNotExist.
+
+Optional:
+
+- `values` (List of String) Values to match against. Required for In and NotIn, and must be omitted for Exists and DoesNotExist.
+
 
 
 <a id="nestedatt--rules--source--k8s--clusters--azure"></a>
 ### Nested Schema for `rules.source.k8s.clusters.azure`
 
+Optional:
+
+- `cluster_name` (String) AKS cluster name. Matched for equality. Mutually exclusive with cluster_name_match.
+- `cluster_name_match` (Attributes) AKS cluster name. Matched by operator. Mutually exclusive with cluster_name. (see [below for nested schema](#nestedatt--rules--source--k8s--clusters--azure--cluster_name_match))
+- `resource_group` (String) Azure resource group name. Matched for equality. Mutually exclusive with resource_group_match.
+- `resource_group_match` (Attributes) Azure resource group name. Matched by operator. Mutually exclusive with resource_group. (see [below for nested schema](#nestedatt--rules--source--k8s--clusters--azure--resource_group_match))
+- `subscription_id` (String) Azure subscription ID. Matched for equality. Mutually exclusive with subscription_id_match.
+- `subscription_id_match` (Attributes) Azure subscription ID. Matched by operator. Mutually exclusive with subscription_id. (see [below for nested schema](#nestedatt--rules--source--k8s--clusters--azure--subscription_id_match))
+
+<a id="nestedatt--rules--source--k8s--clusters--azure--cluster_name_match"></a>
+### Nested Schema for `rules.source.k8s.clusters.azure.cluster_name_match`
+
 Required:
 
-- `cluster_name` (String) AKS cluster name.
-- `resource_group` (String) Azure resource group name.
-- `subscription_id` (String) Azure subscription ID.
+- `operator` (String) Match operator. Must be one of: In, NotIn, Exists, DoesNotExist.
+
+Optional:
+
+- `values` (List of String) Values to match against. Required for In and NotIn, and must be omitted for Exists and DoesNotExist.
+
+
+<a id="nestedatt--rules--source--k8s--clusters--azure--resource_group_match"></a>
+### Nested Schema for `rules.source.k8s.clusters.azure.resource_group_match`
+
+Required:
+
+- `operator` (String) Match operator. Must be one of: In, NotIn, Exists, DoesNotExist.
+
+Optional:
+
+- `values` (List of String) Values to match against. Required for In and NotIn, and must be omitted for Exists and DoesNotExist.
+
+
+<a id="nestedatt--rules--source--k8s--clusters--azure--subscription_id_match"></a>
+### Nested Schema for `rules.source.k8s.clusters.azure.subscription_id_match`
+
+Required:
+
+- `operator` (String) Match operator. Must be one of: In, NotIn, Exists, DoesNotExist.
+
+Optional:
+
+- `values` (List of String) Values to match against. Required for In and NotIn, and must be omitted for Exists and DoesNotExist.
+
 
 
 <a id="nestedatt--rules--source--k8s--clusters--gcp"></a>
 ### Nested Schema for `rules.source.k8s.clusters.gcp`
 
+Optional:
+
+- `cluster_name` (String) GKE cluster name. Matched for equality. Mutually exclusive with cluster_name_match.
+- `cluster_name_match` (Attributes) GKE cluster name. Matched by operator. Mutually exclusive with cluster_name. (see [below for nested schema](#nestedatt--rules--source--k8s--clusters--gcp--cluster_name_match))
+- `location` (String) GKE cluster location (region or zone). Matched for equality. Mutually exclusive with location_match.
+- `location_match` (Attributes) GKE cluster location (region or zone). Matched by operator. Mutually exclusive with location. (see [below for nested schema](#nestedatt--rules--source--k8s--clusters--gcp--location_match))
+- `project_id` (String) GCP project ID. Matched for equality. Mutually exclusive with project_id_match.
+- `project_id_match` (Attributes) GCP project ID. Matched by operator. Mutually exclusive with project_id. (see [below for nested schema](#nestedatt--rules--source--k8s--clusters--gcp--project_id_match))
+
+<a id="nestedatt--rules--source--k8s--clusters--gcp--cluster_name_match"></a>
+### Nested Schema for `rules.source.k8s.clusters.gcp.cluster_name_match`
+
 Required:
 
-- `cluster_name` (String) GKE cluster name.
-- `location` (String) GKE cluster location (region or zone).
-- `project_id` (String) GCP project ID.
+- `operator` (String) Match operator. Must be one of: In, NotIn, Exists, DoesNotExist.
+
+Optional:
+
+- `values` (List of String) Values to match against. Required for In and NotIn, and must be omitted for Exists and DoesNotExist.
+
+
+<a id="nestedatt--rules--source--k8s--clusters--gcp--location_match"></a>
+### Nested Schema for `rules.source.k8s.clusters.gcp.location_match`
+
+Required:
+
+- `operator` (String) Match operator. Must be one of: In, NotIn, Exists, DoesNotExist.
+
+Optional:
+
+- `values` (List of String) Values to match against. Required for In and NotIn, and must be omitted for Exists and DoesNotExist.
+
+
+<a id="nestedatt--rules--source--k8s--clusters--gcp--project_id_match"></a>
+### Nested Schema for `rules.source.k8s.clusters.gcp.project_id_match`
+
+Required:
+
+- `operator` (String) Match operator. Must be one of: In, NotIn, Exists, DoesNotExist.
+
+Optional:
+
+- `values` (List of String) Values to match against. Required for In and NotIn, and must be omitted for Exists and DoesNotExist.
+
 
 
 <a id="nestedatt--rules--source--k8s--clusters--oci"></a>
 ### Nested Schema for `rules.source.k8s.clusters.oci`
 
+Optional:
+
+- `cluster_name` (String) OKE cluster name. Matched for equality. Mutually exclusive with cluster_name_match.
+- `cluster_name_match` (Attributes) OKE cluster name. Matched by operator. Mutually exclusive with cluster_name. (see [below for nested schema](#nestedatt--rules--source--k8s--clusters--oci--cluster_name_match))
+- `compartment_id` (String) OCI compartment OCID. Matched for equality. Mutually exclusive with compartment_id_match.
+- `compartment_id_match` (Attributes) OCI compartment OCID. Matched by operator. Mutually exclusive with compartment_id. (see [below for nested schema](#nestedatt--rules--source--k8s--clusters--oci--compartment_id_match))
+- `region` (String) OCI region (e.g., us-ashburn-1). Matched for equality. Mutually exclusive with region_match.
+- `region_match` (Attributes) OCI region (e.g., us-ashburn-1). Matched by operator. Mutually exclusive with region. (see [below for nested schema](#nestedatt--rules--source--k8s--clusters--oci--region_match))
+
+<a id="nestedatt--rules--source--k8s--clusters--oci--cluster_name_match"></a>
+### Nested Schema for `rules.source.k8s.clusters.oci.cluster_name_match`
+
 Required:
 
-- `cluster_name` (String) OKE cluster name.
-- `compartment_id` (String) OCI compartment OCID.
-- `region` (String) OCI region (e.g., us-ashburn-1).
+- `operator` (String) Match operator. Must be one of: In, NotIn, Exists, DoesNotExist.
+
+Optional:
+
+- `values` (List of String) Values to match against. Required for In and NotIn, and must be omitted for Exists and DoesNotExist.
+
+
+<a id="nestedatt--rules--source--k8s--clusters--oci--compartment_id_match"></a>
+### Nested Schema for `rules.source.k8s.clusters.oci.compartment_id_match`
+
+Required:
+
+- `operator` (String) Match operator. Must be one of: In, NotIn, Exists, DoesNotExist.
+
+Optional:
+
+- `values` (List of String) Values to match against. Required for In and NotIn, and must be omitted for Exists and DoesNotExist.
+
+
+<a id="nestedatt--rules--source--k8s--clusters--oci--region_match"></a>
+### Nested Schema for `rules.source.k8s.clusters.oci.region_match`
+
+Required:
+
+- `operator` (String) Match operator. Must be one of: In, NotIn, Exists, DoesNotExist.
+
+Optional:
+
+- `values` (List of String) Values to match against. Required for In and NotIn, and must be omitted for Exists and DoesNotExist.
+
 
 
 
