@@ -1018,24 +1018,84 @@ message PolicyVersion_Rules {
     message K8S {
       message Clusters {
         message Aws {
+          message AccountIdMatch {
+            string operator = 1;
+            repeated string values = 2;
+          }
+          message ClusterNameMatch {
+            string operator = 1;
+            repeated string values = 2;
+          }
+          message RegionMatch {
+            string operator = 1;
+            repeated string values = 2;
+          }
           string account_id = 1;
+          AccountIdMatch account_id_match = 4;
           string cluster_name = 2;
+          ClusterNameMatch cluster_name_match = 5;
           string region = 3;
+          RegionMatch region_match = 6;
         }
         message Azure {
+          message ClusterNameMatch {
+            string operator = 1;
+            repeated string values = 2;
+          }
+          message ResourceGroupMatch {
+            string operator = 1;
+            repeated string values = 2;
+          }
+          message SubscriptionIdMatch {
+            string operator = 1;
+            repeated string values = 2;
+          }
           string cluster_name = 1;
+          ClusterNameMatch cluster_name_match = 4;
           string resource_group = 2;
+          ResourceGroupMatch resource_group_match = 5;
           string subscription_id = 3;
+          SubscriptionIdMatch subscription_id_match = 6;
         }
         message Gcp {
+          message ClusterNameMatch {
+            string operator = 1;
+            repeated string values = 2;
+          }
+          message LocationMatch {
+            string operator = 1;
+            repeated string values = 2;
+          }
+          message ProjectIdMatch {
+            string operator = 1;
+            repeated string values = 2;
+          }
           string cluster_name = 1;
+          ClusterNameMatch cluster_name_match = 4;
           string location = 2;
+          LocationMatch location_match = 5;
           string project_id = 3;
+          ProjectIdMatch project_id_match = 6;
         }
         message Oci {
+          message ClusterNameMatch {
+            string operator = 1;
+            repeated string values = 2;
+          }
+          message CompartmentIdMatch {
+            string operator = 1;
+            repeated string values = 2;
+          }
+          message RegionMatch {
+            string operator = 1;
+            repeated string values = 2;
+          }
           string cluster_name = 1;
+          ClusterNameMatch cluster_name_match = 4;
           string compartment_id = 2;
+          CompartmentIdMatch compartment_id_match = 5;
           string region = 3;
+          RegionMatch region_match = 6;
         }
         string id = 5;
         Aws aws = 1;
@@ -1152,24 +1212,84 @@ message PolicyVersion_Rules {
     message K8S {
       message Clusters {
         message Aws {
+          message AccountIdMatch {
+            string operator = 1;
+            repeated string values = 2;
+          }
+          message ClusterNameMatch {
+            string operator = 1;
+            repeated string values = 2;
+          }
+          message RegionMatch {
+            string operator = 1;
+            repeated string values = 2;
+          }
           string account_id = 1;
+          AccountIdMatch account_id_match = 4;
           string cluster_name = 2;
+          ClusterNameMatch cluster_name_match = 5;
           string region = 3;
+          RegionMatch region_match = 6;
         }
         message Azure {
+          message ClusterNameMatch {
+            string operator = 1;
+            repeated string values = 2;
+          }
+          message ResourceGroupMatch {
+            string operator = 1;
+            repeated string values = 2;
+          }
+          message SubscriptionIdMatch {
+            string operator = 1;
+            repeated string values = 2;
+          }
           string cluster_name = 1;
+          ClusterNameMatch cluster_name_match = 4;
           string resource_group = 2;
+          ResourceGroupMatch resource_group_match = 5;
           string subscription_id = 3;
+          SubscriptionIdMatch subscription_id_match = 6;
         }
         message Gcp {
+          message ClusterNameMatch {
+            string operator = 1;
+            repeated string values = 2;
+          }
+          message LocationMatch {
+            string operator = 1;
+            repeated string values = 2;
+          }
+          message ProjectIdMatch {
+            string operator = 1;
+            repeated string values = 2;
+          }
           string cluster_name = 1;
+          ClusterNameMatch cluster_name_match = 4;
           string location = 2;
+          LocationMatch location_match = 5;
           string project_id = 3;
+          ProjectIdMatch project_id_match = 6;
         }
         message Oci {
+          message ClusterNameMatch {
+            string operator = 1;
+            repeated string values = 2;
+          }
+          message CompartmentIdMatch {
+            string operator = 1;
+            repeated string values = 2;
+          }
+          message RegionMatch {
+            string operator = 1;
+            repeated string values = 2;
+          }
           string cluster_name = 1;
+          ClusterNameMatch cluster_name_match = 4;
           string compartment_id = 2;
+          CompartmentIdMatch compartment_id_match = 5;
           string region = 3;
+          RegionMatch region_match = 6;
         }
         string id = 5;
         Aws aws = 1;

@@ -11869,16 +11869,28 @@ func ConvertDataValueToPolicyVersion_Rules_Destination_K8S_ClustersProto(ctx con
 }
 
 type PolicyVersion_Rules_Destination_K8S_Clusters_Aws struct {
-	AccountId   types.String `tfsdk:"account_id"`
-	ClusterName types.String `tfsdk:"cluster_name"`
-	Region      types.String `tfsdk:"region"`
+	AccountId        types.String `tfsdk:"account_id"`
+	AccountIdMatch   types.Object `tfsdk:"account_id_match"`
+	ClusterName      types.String `tfsdk:"cluster_name"`
+	ClusterNameMatch types.Object `tfsdk:"cluster_name_match"`
+	Region           types.String `tfsdk:"region"`
+	RegionMatch      types.Object `tfsdk:"region_match"`
 }
 
 func GetTypeAttrsForPolicyVersion_Rules_Destination_K8S_Clusters_Aws() map[string]attr.Type {
 	return map[string]attr.Type{
-		"account_id":   types.StringType,
+		"account_id": types.StringType,
+		"account_id_match": types.ObjectType{
+			AttrTypes: GetTypeAttrsForPolicyVersion_Rules_Destination_K8S_Clusters_Aws_AccountIdMatch(),
+		},
 		"cluster_name": types.StringType,
-		"region":       types.StringType,
+		"cluster_name_match": types.ObjectType{
+			AttrTypes: GetTypeAttrsForPolicyVersion_Rules_Destination_K8S_Clusters_Aws_ClusterNameMatch(),
+		},
+		"region": types.StringType,
+		"region_match": types.ObjectType{
+			AttrTypes: GetTypeAttrsForPolicyVersion_Rules_Destination_K8S_Clusters_Aws_RegionMatch(),
+		},
 	}
 }
 
@@ -11889,9 +11901,12 @@ func ConvertPolicyVersion_Rules_Destination_K8S_Clusters_AwsToObjectValueFromPro
 	return types.ObjectValueMust(
 		GetTypeAttrsForPolicyVersion_Rules_Destination_K8S_Clusters_Aws(),
 		map[string]attr.Value{
-			"account_id":   types.StringValue(proto.AccountId),
-			"cluster_name": types.StringValue(proto.ClusterName),
-			"region":       types.StringValue(proto.Region),
+			"account_id":         types.StringValue(proto.AccountId),
+			"account_id_match":   ConvertPolicyVersion_Rules_Destination_K8S_Clusters_Aws_AccountIdMatchToObjectValueFromProto(proto.AccountIdMatch),
+			"cluster_name":       types.StringValue(proto.ClusterName),
+			"cluster_name_match": ConvertPolicyVersion_Rules_Destination_K8S_Clusters_Aws_ClusterNameMatchToObjectValueFromProto(proto.ClusterNameMatch),
+			"region":             types.StringValue(proto.Region),
+			"region_match":       ConvertPolicyVersion_Rules_Destination_K8S_Clusters_Aws_RegionMatchToObjectValueFromProto(proto.RegionMatch),
 		},
 	)
 }
@@ -11907,22 +11922,217 @@ func ConvertDataValueToPolicyVersion_Rules_Destination_K8S_Clusters_AwsProto(ctx
 	}
 	proto := &configv1.PolicyVersion_Rules_Destination_K8S_Clusters_Aws{}
 	proto.AccountId = pv.AccountId.ValueString()
+	pvModelAccountIdMatch, dvDiagsAccountIdMatch := ConvertDataValueToPolicyVersion_Rules_Destination_K8S_Clusters_Aws_AccountIdMatchProto(ctx, pv.AccountIdMatch)
+	diags.Append(dvDiagsAccountIdMatch...)
+	if diags.HasError() {
+		return nil, diags
+	}
+	proto.AccountIdMatch = pvModelAccountIdMatch
 	proto.ClusterName = pv.ClusterName.ValueString()
+	pvModelClusterNameMatch, dvDiagsClusterNameMatch := ConvertDataValueToPolicyVersion_Rules_Destination_K8S_Clusters_Aws_ClusterNameMatchProto(ctx, pv.ClusterNameMatch)
+	diags.Append(dvDiagsClusterNameMatch...)
+	if diags.HasError() {
+		return nil, diags
+	}
+	proto.ClusterNameMatch = pvModelClusterNameMatch
 	proto.Region = pv.Region.ValueString()
+	pvModelRegionMatch, dvDiagsRegionMatch := ConvertDataValueToPolicyVersion_Rules_Destination_K8S_Clusters_Aws_RegionMatchProto(ctx, pv.RegionMatch)
+	diags.Append(dvDiagsRegionMatch...)
+	if diags.HasError() {
+		return nil, diags
+	}
+	proto.RegionMatch = pvModelRegionMatch
+	return proto, diags
+}
+
+type PolicyVersion_Rules_Destination_K8S_Clusters_Aws_AccountIdMatch struct {
+	Operator types.String `tfsdk:"operator"`
+	Values   types.List   `tfsdk:"values"`
+}
+
+func GetTypeAttrsForPolicyVersion_Rules_Destination_K8S_Clusters_Aws_AccountIdMatch() map[string]attr.Type {
+	return map[string]attr.Type{
+		"operator": types.StringType,
+		"values":   types.ListType{ElemType: types.StringType},
+	}
+}
+
+func ConvertPolicyVersion_Rules_Destination_K8S_Clusters_Aws_AccountIdMatchToObjectValueFromProto(proto *configv1.PolicyVersion_Rules_Destination_K8S_Clusters_Aws_AccountIdMatch) basetypes.ObjectValue {
+	if proto == nil {
+		return types.ObjectNull(GetTypeAttrsForPolicyVersion_Rules_Destination_K8S_Clusters_Aws_AccountIdMatch())
+	}
+	elementsInValues := make([]attr.Value, 0, len(proto.Values))
+	for _, item := range proto.Values {
+		elementsInValues = append(elementsInValues, types.StringValue(item))
+	}
+	return types.ObjectValueMust(
+		GetTypeAttrsForPolicyVersion_Rules_Destination_K8S_Clusters_Aws_AccountIdMatch(),
+		map[string]attr.Value{
+			"operator": types.StringValue(proto.Operator),
+			"values": func() basetypes.ListValue {
+				if proto.Values == nil {
+					return types.ListNull(types.StringType)
+				}
+				return types.ListValueMust(types.StringType, elementsInValues)
+			}(),
+		},
+	)
+}
+
+func ConvertDataValueToPolicyVersion_Rules_Destination_K8S_Clusters_Aws_AccountIdMatchProto(ctx context.Context, dataValue attr.Value) (*configv1.PolicyVersion_Rules_Destination_K8S_Clusters_Aws_AccountIdMatch, diag.Diagnostics) {
+	if dataValue.IsNull() || dataValue.IsUnknown() {
+		return nil, nil
+	}
+	pv := PolicyVersion_Rules_Destination_K8S_Clusters_Aws_AccountIdMatch{}
+	diags := tfsdk.ValueAs(ctx, dataValue, &pv)
+	if diags.HasError() {
+		return nil, diags
+	}
+	proto := &configv1.PolicyVersion_Rules_Destination_K8S_Clusters_Aws_AccountIdMatch{}
+	proto.Operator = pv.Operator.ValueString()
+	var pvModelValues []string
+	dvDiagsValues := pv.Values.ElementsAs(ctx, &pvModelValues, false)
+	diags.Append(dvDiagsValues...)
+	if diags.HasError() {
+		return nil, diags
+	}
+	proto.Values = pvModelValues
+	return proto, diags
+}
+
+type PolicyVersion_Rules_Destination_K8S_Clusters_Aws_ClusterNameMatch struct {
+	Operator types.String `tfsdk:"operator"`
+	Values   types.List   `tfsdk:"values"`
+}
+
+func GetTypeAttrsForPolicyVersion_Rules_Destination_K8S_Clusters_Aws_ClusterNameMatch() map[string]attr.Type {
+	return map[string]attr.Type{
+		"operator": types.StringType,
+		"values":   types.ListType{ElemType: types.StringType},
+	}
+}
+
+func ConvertPolicyVersion_Rules_Destination_K8S_Clusters_Aws_ClusterNameMatchToObjectValueFromProto(proto *configv1.PolicyVersion_Rules_Destination_K8S_Clusters_Aws_ClusterNameMatch) basetypes.ObjectValue {
+	if proto == nil {
+		return types.ObjectNull(GetTypeAttrsForPolicyVersion_Rules_Destination_K8S_Clusters_Aws_ClusterNameMatch())
+	}
+	elementsInValues := make([]attr.Value, 0, len(proto.Values))
+	for _, item := range proto.Values {
+		elementsInValues = append(elementsInValues, types.StringValue(item))
+	}
+	return types.ObjectValueMust(
+		GetTypeAttrsForPolicyVersion_Rules_Destination_K8S_Clusters_Aws_ClusterNameMatch(),
+		map[string]attr.Value{
+			"operator": types.StringValue(proto.Operator),
+			"values": func() basetypes.ListValue {
+				if proto.Values == nil {
+					return types.ListNull(types.StringType)
+				}
+				return types.ListValueMust(types.StringType, elementsInValues)
+			}(),
+		},
+	)
+}
+
+func ConvertDataValueToPolicyVersion_Rules_Destination_K8S_Clusters_Aws_ClusterNameMatchProto(ctx context.Context, dataValue attr.Value) (*configv1.PolicyVersion_Rules_Destination_K8S_Clusters_Aws_ClusterNameMatch, diag.Diagnostics) {
+	if dataValue.IsNull() || dataValue.IsUnknown() {
+		return nil, nil
+	}
+	pv := PolicyVersion_Rules_Destination_K8S_Clusters_Aws_ClusterNameMatch{}
+	diags := tfsdk.ValueAs(ctx, dataValue, &pv)
+	if diags.HasError() {
+		return nil, diags
+	}
+	proto := &configv1.PolicyVersion_Rules_Destination_K8S_Clusters_Aws_ClusterNameMatch{}
+	proto.Operator = pv.Operator.ValueString()
+	var pvModelValues []string
+	dvDiagsValues := pv.Values.ElementsAs(ctx, &pvModelValues, false)
+	diags.Append(dvDiagsValues...)
+	if diags.HasError() {
+		return nil, diags
+	}
+	proto.Values = pvModelValues
+	return proto, diags
+}
+
+type PolicyVersion_Rules_Destination_K8S_Clusters_Aws_RegionMatch struct {
+	Operator types.String `tfsdk:"operator"`
+	Values   types.List   `tfsdk:"values"`
+}
+
+func GetTypeAttrsForPolicyVersion_Rules_Destination_K8S_Clusters_Aws_RegionMatch() map[string]attr.Type {
+	return map[string]attr.Type{
+		"operator": types.StringType,
+		"values":   types.ListType{ElemType: types.StringType},
+	}
+}
+
+func ConvertPolicyVersion_Rules_Destination_K8S_Clusters_Aws_RegionMatchToObjectValueFromProto(proto *configv1.PolicyVersion_Rules_Destination_K8S_Clusters_Aws_RegionMatch) basetypes.ObjectValue {
+	if proto == nil {
+		return types.ObjectNull(GetTypeAttrsForPolicyVersion_Rules_Destination_K8S_Clusters_Aws_RegionMatch())
+	}
+	elementsInValues := make([]attr.Value, 0, len(proto.Values))
+	for _, item := range proto.Values {
+		elementsInValues = append(elementsInValues, types.StringValue(item))
+	}
+	return types.ObjectValueMust(
+		GetTypeAttrsForPolicyVersion_Rules_Destination_K8S_Clusters_Aws_RegionMatch(),
+		map[string]attr.Value{
+			"operator": types.StringValue(proto.Operator),
+			"values": func() basetypes.ListValue {
+				if proto.Values == nil {
+					return types.ListNull(types.StringType)
+				}
+				return types.ListValueMust(types.StringType, elementsInValues)
+			}(),
+		},
+	)
+}
+
+func ConvertDataValueToPolicyVersion_Rules_Destination_K8S_Clusters_Aws_RegionMatchProto(ctx context.Context, dataValue attr.Value) (*configv1.PolicyVersion_Rules_Destination_K8S_Clusters_Aws_RegionMatch, diag.Diagnostics) {
+	if dataValue.IsNull() || dataValue.IsUnknown() {
+		return nil, nil
+	}
+	pv := PolicyVersion_Rules_Destination_K8S_Clusters_Aws_RegionMatch{}
+	diags := tfsdk.ValueAs(ctx, dataValue, &pv)
+	if diags.HasError() {
+		return nil, diags
+	}
+	proto := &configv1.PolicyVersion_Rules_Destination_K8S_Clusters_Aws_RegionMatch{}
+	proto.Operator = pv.Operator.ValueString()
+	var pvModelValues []string
+	dvDiagsValues := pv.Values.ElementsAs(ctx, &pvModelValues, false)
+	diags.Append(dvDiagsValues...)
+	if diags.HasError() {
+		return nil, diags
+	}
+	proto.Values = pvModelValues
 	return proto, diags
 }
 
 type PolicyVersion_Rules_Destination_K8S_Clusters_Azure struct {
-	ClusterName    types.String `tfsdk:"cluster_name"`
-	ResourceGroup  types.String `tfsdk:"resource_group"`
-	SubscriptionId types.String `tfsdk:"subscription_id"`
+	ClusterName         types.String `tfsdk:"cluster_name"`
+	ClusterNameMatch    types.Object `tfsdk:"cluster_name_match"`
+	ResourceGroup       types.String `tfsdk:"resource_group"`
+	ResourceGroupMatch  types.Object `tfsdk:"resource_group_match"`
+	SubscriptionId      types.String `tfsdk:"subscription_id"`
+	SubscriptionIdMatch types.Object `tfsdk:"subscription_id_match"`
 }
 
 func GetTypeAttrsForPolicyVersion_Rules_Destination_K8S_Clusters_Azure() map[string]attr.Type {
 	return map[string]attr.Type{
-		"cluster_name":    types.StringType,
-		"resource_group":  types.StringType,
+		"cluster_name": types.StringType,
+		"cluster_name_match": types.ObjectType{
+			AttrTypes: GetTypeAttrsForPolicyVersion_Rules_Destination_K8S_Clusters_Azure_ClusterNameMatch(),
+		},
+		"resource_group": types.StringType,
+		"resource_group_match": types.ObjectType{
+			AttrTypes: GetTypeAttrsForPolicyVersion_Rules_Destination_K8S_Clusters_Azure_ResourceGroupMatch(),
+		},
 		"subscription_id": types.StringType,
+		"subscription_id_match": types.ObjectType{
+			AttrTypes: GetTypeAttrsForPolicyVersion_Rules_Destination_K8S_Clusters_Azure_SubscriptionIdMatch(),
+		},
 	}
 }
 
@@ -11933,9 +12143,12 @@ func ConvertPolicyVersion_Rules_Destination_K8S_Clusters_AzureToObjectValueFromP
 	return types.ObjectValueMust(
 		GetTypeAttrsForPolicyVersion_Rules_Destination_K8S_Clusters_Azure(),
 		map[string]attr.Value{
-			"cluster_name":    types.StringValue(proto.ClusterName),
-			"resource_group":  types.StringValue(proto.ResourceGroup),
-			"subscription_id": types.StringValue(proto.SubscriptionId),
+			"cluster_name":          types.StringValue(proto.ClusterName),
+			"cluster_name_match":    ConvertPolicyVersion_Rules_Destination_K8S_Clusters_Azure_ClusterNameMatchToObjectValueFromProto(proto.ClusterNameMatch),
+			"resource_group":        types.StringValue(proto.ResourceGroup),
+			"resource_group_match":  ConvertPolicyVersion_Rules_Destination_K8S_Clusters_Azure_ResourceGroupMatchToObjectValueFromProto(proto.ResourceGroupMatch),
+			"subscription_id":       types.StringValue(proto.SubscriptionId),
+			"subscription_id_match": ConvertPolicyVersion_Rules_Destination_K8S_Clusters_Azure_SubscriptionIdMatchToObjectValueFromProto(proto.SubscriptionIdMatch),
 		},
 	)
 }
@@ -11951,22 +12164,217 @@ func ConvertDataValueToPolicyVersion_Rules_Destination_K8S_Clusters_AzureProto(c
 	}
 	proto := &configv1.PolicyVersion_Rules_Destination_K8S_Clusters_Azure{}
 	proto.ClusterName = pv.ClusterName.ValueString()
+	pvModelClusterNameMatch, dvDiagsClusterNameMatch := ConvertDataValueToPolicyVersion_Rules_Destination_K8S_Clusters_Azure_ClusterNameMatchProto(ctx, pv.ClusterNameMatch)
+	diags.Append(dvDiagsClusterNameMatch...)
+	if diags.HasError() {
+		return nil, diags
+	}
+	proto.ClusterNameMatch = pvModelClusterNameMatch
 	proto.ResourceGroup = pv.ResourceGroup.ValueString()
+	pvModelResourceGroupMatch, dvDiagsResourceGroupMatch := ConvertDataValueToPolicyVersion_Rules_Destination_K8S_Clusters_Azure_ResourceGroupMatchProto(ctx, pv.ResourceGroupMatch)
+	diags.Append(dvDiagsResourceGroupMatch...)
+	if diags.HasError() {
+		return nil, diags
+	}
+	proto.ResourceGroupMatch = pvModelResourceGroupMatch
 	proto.SubscriptionId = pv.SubscriptionId.ValueString()
+	pvModelSubscriptionIdMatch, dvDiagsSubscriptionIdMatch := ConvertDataValueToPolicyVersion_Rules_Destination_K8S_Clusters_Azure_SubscriptionIdMatchProto(ctx, pv.SubscriptionIdMatch)
+	diags.Append(dvDiagsSubscriptionIdMatch...)
+	if diags.HasError() {
+		return nil, diags
+	}
+	proto.SubscriptionIdMatch = pvModelSubscriptionIdMatch
+	return proto, diags
+}
+
+type PolicyVersion_Rules_Destination_K8S_Clusters_Azure_ClusterNameMatch struct {
+	Operator types.String `tfsdk:"operator"`
+	Values   types.List   `tfsdk:"values"`
+}
+
+func GetTypeAttrsForPolicyVersion_Rules_Destination_K8S_Clusters_Azure_ClusterNameMatch() map[string]attr.Type {
+	return map[string]attr.Type{
+		"operator": types.StringType,
+		"values":   types.ListType{ElemType: types.StringType},
+	}
+}
+
+func ConvertPolicyVersion_Rules_Destination_K8S_Clusters_Azure_ClusterNameMatchToObjectValueFromProto(proto *configv1.PolicyVersion_Rules_Destination_K8S_Clusters_Azure_ClusterNameMatch) basetypes.ObjectValue {
+	if proto == nil {
+		return types.ObjectNull(GetTypeAttrsForPolicyVersion_Rules_Destination_K8S_Clusters_Azure_ClusterNameMatch())
+	}
+	elementsInValues := make([]attr.Value, 0, len(proto.Values))
+	for _, item := range proto.Values {
+		elementsInValues = append(elementsInValues, types.StringValue(item))
+	}
+	return types.ObjectValueMust(
+		GetTypeAttrsForPolicyVersion_Rules_Destination_K8S_Clusters_Azure_ClusterNameMatch(),
+		map[string]attr.Value{
+			"operator": types.StringValue(proto.Operator),
+			"values": func() basetypes.ListValue {
+				if proto.Values == nil {
+					return types.ListNull(types.StringType)
+				}
+				return types.ListValueMust(types.StringType, elementsInValues)
+			}(),
+		},
+	)
+}
+
+func ConvertDataValueToPolicyVersion_Rules_Destination_K8S_Clusters_Azure_ClusterNameMatchProto(ctx context.Context, dataValue attr.Value) (*configv1.PolicyVersion_Rules_Destination_K8S_Clusters_Azure_ClusterNameMatch, diag.Diagnostics) {
+	if dataValue.IsNull() || dataValue.IsUnknown() {
+		return nil, nil
+	}
+	pv := PolicyVersion_Rules_Destination_K8S_Clusters_Azure_ClusterNameMatch{}
+	diags := tfsdk.ValueAs(ctx, dataValue, &pv)
+	if diags.HasError() {
+		return nil, diags
+	}
+	proto := &configv1.PolicyVersion_Rules_Destination_K8S_Clusters_Azure_ClusterNameMatch{}
+	proto.Operator = pv.Operator.ValueString()
+	var pvModelValues []string
+	dvDiagsValues := pv.Values.ElementsAs(ctx, &pvModelValues, false)
+	diags.Append(dvDiagsValues...)
+	if diags.HasError() {
+		return nil, diags
+	}
+	proto.Values = pvModelValues
+	return proto, diags
+}
+
+type PolicyVersion_Rules_Destination_K8S_Clusters_Azure_ResourceGroupMatch struct {
+	Operator types.String `tfsdk:"operator"`
+	Values   types.List   `tfsdk:"values"`
+}
+
+func GetTypeAttrsForPolicyVersion_Rules_Destination_K8S_Clusters_Azure_ResourceGroupMatch() map[string]attr.Type {
+	return map[string]attr.Type{
+		"operator": types.StringType,
+		"values":   types.ListType{ElemType: types.StringType},
+	}
+}
+
+func ConvertPolicyVersion_Rules_Destination_K8S_Clusters_Azure_ResourceGroupMatchToObjectValueFromProto(proto *configv1.PolicyVersion_Rules_Destination_K8S_Clusters_Azure_ResourceGroupMatch) basetypes.ObjectValue {
+	if proto == nil {
+		return types.ObjectNull(GetTypeAttrsForPolicyVersion_Rules_Destination_K8S_Clusters_Azure_ResourceGroupMatch())
+	}
+	elementsInValues := make([]attr.Value, 0, len(proto.Values))
+	for _, item := range proto.Values {
+		elementsInValues = append(elementsInValues, types.StringValue(item))
+	}
+	return types.ObjectValueMust(
+		GetTypeAttrsForPolicyVersion_Rules_Destination_K8S_Clusters_Azure_ResourceGroupMatch(),
+		map[string]attr.Value{
+			"operator": types.StringValue(proto.Operator),
+			"values": func() basetypes.ListValue {
+				if proto.Values == nil {
+					return types.ListNull(types.StringType)
+				}
+				return types.ListValueMust(types.StringType, elementsInValues)
+			}(),
+		},
+	)
+}
+
+func ConvertDataValueToPolicyVersion_Rules_Destination_K8S_Clusters_Azure_ResourceGroupMatchProto(ctx context.Context, dataValue attr.Value) (*configv1.PolicyVersion_Rules_Destination_K8S_Clusters_Azure_ResourceGroupMatch, diag.Diagnostics) {
+	if dataValue.IsNull() || dataValue.IsUnknown() {
+		return nil, nil
+	}
+	pv := PolicyVersion_Rules_Destination_K8S_Clusters_Azure_ResourceGroupMatch{}
+	diags := tfsdk.ValueAs(ctx, dataValue, &pv)
+	if diags.HasError() {
+		return nil, diags
+	}
+	proto := &configv1.PolicyVersion_Rules_Destination_K8S_Clusters_Azure_ResourceGroupMatch{}
+	proto.Operator = pv.Operator.ValueString()
+	var pvModelValues []string
+	dvDiagsValues := pv.Values.ElementsAs(ctx, &pvModelValues, false)
+	diags.Append(dvDiagsValues...)
+	if diags.HasError() {
+		return nil, diags
+	}
+	proto.Values = pvModelValues
+	return proto, diags
+}
+
+type PolicyVersion_Rules_Destination_K8S_Clusters_Azure_SubscriptionIdMatch struct {
+	Operator types.String `tfsdk:"operator"`
+	Values   types.List   `tfsdk:"values"`
+}
+
+func GetTypeAttrsForPolicyVersion_Rules_Destination_K8S_Clusters_Azure_SubscriptionIdMatch() map[string]attr.Type {
+	return map[string]attr.Type{
+		"operator": types.StringType,
+		"values":   types.ListType{ElemType: types.StringType},
+	}
+}
+
+func ConvertPolicyVersion_Rules_Destination_K8S_Clusters_Azure_SubscriptionIdMatchToObjectValueFromProto(proto *configv1.PolicyVersion_Rules_Destination_K8S_Clusters_Azure_SubscriptionIdMatch) basetypes.ObjectValue {
+	if proto == nil {
+		return types.ObjectNull(GetTypeAttrsForPolicyVersion_Rules_Destination_K8S_Clusters_Azure_SubscriptionIdMatch())
+	}
+	elementsInValues := make([]attr.Value, 0, len(proto.Values))
+	for _, item := range proto.Values {
+		elementsInValues = append(elementsInValues, types.StringValue(item))
+	}
+	return types.ObjectValueMust(
+		GetTypeAttrsForPolicyVersion_Rules_Destination_K8S_Clusters_Azure_SubscriptionIdMatch(),
+		map[string]attr.Value{
+			"operator": types.StringValue(proto.Operator),
+			"values": func() basetypes.ListValue {
+				if proto.Values == nil {
+					return types.ListNull(types.StringType)
+				}
+				return types.ListValueMust(types.StringType, elementsInValues)
+			}(),
+		},
+	)
+}
+
+func ConvertDataValueToPolicyVersion_Rules_Destination_K8S_Clusters_Azure_SubscriptionIdMatchProto(ctx context.Context, dataValue attr.Value) (*configv1.PolicyVersion_Rules_Destination_K8S_Clusters_Azure_SubscriptionIdMatch, diag.Diagnostics) {
+	if dataValue.IsNull() || dataValue.IsUnknown() {
+		return nil, nil
+	}
+	pv := PolicyVersion_Rules_Destination_K8S_Clusters_Azure_SubscriptionIdMatch{}
+	diags := tfsdk.ValueAs(ctx, dataValue, &pv)
+	if diags.HasError() {
+		return nil, diags
+	}
+	proto := &configv1.PolicyVersion_Rules_Destination_K8S_Clusters_Azure_SubscriptionIdMatch{}
+	proto.Operator = pv.Operator.ValueString()
+	var pvModelValues []string
+	dvDiagsValues := pv.Values.ElementsAs(ctx, &pvModelValues, false)
+	diags.Append(dvDiagsValues...)
+	if diags.HasError() {
+		return nil, diags
+	}
+	proto.Values = pvModelValues
 	return proto, diags
 }
 
 type PolicyVersion_Rules_Destination_K8S_Clusters_Gcp struct {
-	ClusterName types.String `tfsdk:"cluster_name"`
-	Location    types.String `tfsdk:"location"`
-	ProjectId   types.String `tfsdk:"project_id"`
+	ClusterName      types.String `tfsdk:"cluster_name"`
+	ClusterNameMatch types.Object `tfsdk:"cluster_name_match"`
+	Location         types.String `tfsdk:"location"`
+	LocationMatch    types.Object `tfsdk:"location_match"`
+	ProjectId        types.String `tfsdk:"project_id"`
+	ProjectIdMatch   types.Object `tfsdk:"project_id_match"`
 }
 
 func GetTypeAttrsForPolicyVersion_Rules_Destination_K8S_Clusters_Gcp() map[string]attr.Type {
 	return map[string]attr.Type{
 		"cluster_name": types.StringType,
-		"location":     types.StringType,
-		"project_id":   types.StringType,
+		"cluster_name_match": types.ObjectType{
+			AttrTypes: GetTypeAttrsForPolicyVersion_Rules_Destination_K8S_Clusters_Gcp_ClusterNameMatch(),
+		},
+		"location": types.StringType,
+		"location_match": types.ObjectType{
+			AttrTypes: GetTypeAttrsForPolicyVersion_Rules_Destination_K8S_Clusters_Gcp_LocationMatch(),
+		},
+		"project_id": types.StringType,
+		"project_id_match": types.ObjectType{
+			AttrTypes: GetTypeAttrsForPolicyVersion_Rules_Destination_K8S_Clusters_Gcp_ProjectIdMatch(),
+		},
 	}
 }
 
@@ -11977,9 +12385,12 @@ func ConvertPolicyVersion_Rules_Destination_K8S_Clusters_GcpToObjectValueFromPro
 	return types.ObjectValueMust(
 		GetTypeAttrsForPolicyVersion_Rules_Destination_K8S_Clusters_Gcp(),
 		map[string]attr.Value{
-			"cluster_name": types.StringValue(proto.ClusterName),
-			"location":     types.StringValue(proto.Location),
-			"project_id":   types.StringValue(proto.ProjectId),
+			"cluster_name":       types.StringValue(proto.ClusterName),
+			"cluster_name_match": ConvertPolicyVersion_Rules_Destination_K8S_Clusters_Gcp_ClusterNameMatchToObjectValueFromProto(proto.ClusterNameMatch),
+			"location":           types.StringValue(proto.Location),
+			"location_match":     ConvertPolicyVersion_Rules_Destination_K8S_Clusters_Gcp_LocationMatchToObjectValueFromProto(proto.LocationMatch),
+			"project_id":         types.StringValue(proto.ProjectId),
+			"project_id_match":   ConvertPolicyVersion_Rules_Destination_K8S_Clusters_Gcp_ProjectIdMatchToObjectValueFromProto(proto.ProjectIdMatch),
 		},
 	)
 }
@@ -11995,22 +12406,217 @@ func ConvertDataValueToPolicyVersion_Rules_Destination_K8S_Clusters_GcpProto(ctx
 	}
 	proto := &configv1.PolicyVersion_Rules_Destination_K8S_Clusters_Gcp{}
 	proto.ClusterName = pv.ClusterName.ValueString()
+	pvModelClusterNameMatch, dvDiagsClusterNameMatch := ConvertDataValueToPolicyVersion_Rules_Destination_K8S_Clusters_Gcp_ClusterNameMatchProto(ctx, pv.ClusterNameMatch)
+	diags.Append(dvDiagsClusterNameMatch...)
+	if diags.HasError() {
+		return nil, diags
+	}
+	proto.ClusterNameMatch = pvModelClusterNameMatch
 	proto.Location = pv.Location.ValueString()
+	pvModelLocationMatch, dvDiagsLocationMatch := ConvertDataValueToPolicyVersion_Rules_Destination_K8S_Clusters_Gcp_LocationMatchProto(ctx, pv.LocationMatch)
+	diags.Append(dvDiagsLocationMatch...)
+	if diags.HasError() {
+		return nil, diags
+	}
+	proto.LocationMatch = pvModelLocationMatch
 	proto.ProjectId = pv.ProjectId.ValueString()
+	pvModelProjectIdMatch, dvDiagsProjectIdMatch := ConvertDataValueToPolicyVersion_Rules_Destination_K8S_Clusters_Gcp_ProjectIdMatchProto(ctx, pv.ProjectIdMatch)
+	diags.Append(dvDiagsProjectIdMatch...)
+	if diags.HasError() {
+		return nil, diags
+	}
+	proto.ProjectIdMatch = pvModelProjectIdMatch
+	return proto, diags
+}
+
+type PolicyVersion_Rules_Destination_K8S_Clusters_Gcp_ClusterNameMatch struct {
+	Operator types.String `tfsdk:"operator"`
+	Values   types.List   `tfsdk:"values"`
+}
+
+func GetTypeAttrsForPolicyVersion_Rules_Destination_K8S_Clusters_Gcp_ClusterNameMatch() map[string]attr.Type {
+	return map[string]attr.Type{
+		"operator": types.StringType,
+		"values":   types.ListType{ElemType: types.StringType},
+	}
+}
+
+func ConvertPolicyVersion_Rules_Destination_K8S_Clusters_Gcp_ClusterNameMatchToObjectValueFromProto(proto *configv1.PolicyVersion_Rules_Destination_K8S_Clusters_Gcp_ClusterNameMatch) basetypes.ObjectValue {
+	if proto == nil {
+		return types.ObjectNull(GetTypeAttrsForPolicyVersion_Rules_Destination_K8S_Clusters_Gcp_ClusterNameMatch())
+	}
+	elementsInValues := make([]attr.Value, 0, len(proto.Values))
+	for _, item := range proto.Values {
+		elementsInValues = append(elementsInValues, types.StringValue(item))
+	}
+	return types.ObjectValueMust(
+		GetTypeAttrsForPolicyVersion_Rules_Destination_K8S_Clusters_Gcp_ClusterNameMatch(),
+		map[string]attr.Value{
+			"operator": types.StringValue(proto.Operator),
+			"values": func() basetypes.ListValue {
+				if proto.Values == nil {
+					return types.ListNull(types.StringType)
+				}
+				return types.ListValueMust(types.StringType, elementsInValues)
+			}(),
+		},
+	)
+}
+
+func ConvertDataValueToPolicyVersion_Rules_Destination_K8S_Clusters_Gcp_ClusterNameMatchProto(ctx context.Context, dataValue attr.Value) (*configv1.PolicyVersion_Rules_Destination_K8S_Clusters_Gcp_ClusterNameMatch, diag.Diagnostics) {
+	if dataValue.IsNull() || dataValue.IsUnknown() {
+		return nil, nil
+	}
+	pv := PolicyVersion_Rules_Destination_K8S_Clusters_Gcp_ClusterNameMatch{}
+	diags := tfsdk.ValueAs(ctx, dataValue, &pv)
+	if diags.HasError() {
+		return nil, diags
+	}
+	proto := &configv1.PolicyVersion_Rules_Destination_K8S_Clusters_Gcp_ClusterNameMatch{}
+	proto.Operator = pv.Operator.ValueString()
+	var pvModelValues []string
+	dvDiagsValues := pv.Values.ElementsAs(ctx, &pvModelValues, false)
+	diags.Append(dvDiagsValues...)
+	if diags.HasError() {
+		return nil, diags
+	}
+	proto.Values = pvModelValues
+	return proto, diags
+}
+
+type PolicyVersion_Rules_Destination_K8S_Clusters_Gcp_LocationMatch struct {
+	Operator types.String `tfsdk:"operator"`
+	Values   types.List   `tfsdk:"values"`
+}
+
+func GetTypeAttrsForPolicyVersion_Rules_Destination_K8S_Clusters_Gcp_LocationMatch() map[string]attr.Type {
+	return map[string]attr.Type{
+		"operator": types.StringType,
+		"values":   types.ListType{ElemType: types.StringType},
+	}
+}
+
+func ConvertPolicyVersion_Rules_Destination_K8S_Clusters_Gcp_LocationMatchToObjectValueFromProto(proto *configv1.PolicyVersion_Rules_Destination_K8S_Clusters_Gcp_LocationMatch) basetypes.ObjectValue {
+	if proto == nil {
+		return types.ObjectNull(GetTypeAttrsForPolicyVersion_Rules_Destination_K8S_Clusters_Gcp_LocationMatch())
+	}
+	elementsInValues := make([]attr.Value, 0, len(proto.Values))
+	for _, item := range proto.Values {
+		elementsInValues = append(elementsInValues, types.StringValue(item))
+	}
+	return types.ObjectValueMust(
+		GetTypeAttrsForPolicyVersion_Rules_Destination_K8S_Clusters_Gcp_LocationMatch(),
+		map[string]attr.Value{
+			"operator": types.StringValue(proto.Operator),
+			"values": func() basetypes.ListValue {
+				if proto.Values == nil {
+					return types.ListNull(types.StringType)
+				}
+				return types.ListValueMust(types.StringType, elementsInValues)
+			}(),
+		},
+	)
+}
+
+func ConvertDataValueToPolicyVersion_Rules_Destination_K8S_Clusters_Gcp_LocationMatchProto(ctx context.Context, dataValue attr.Value) (*configv1.PolicyVersion_Rules_Destination_K8S_Clusters_Gcp_LocationMatch, diag.Diagnostics) {
+	if dataValue.IsNull() || dataValue.IsUnknown() {
+		return nil, nil
+	}
+	pv := PolicyVersion_Rules_Destination_K8S_Clusters_Gcp_LocationMatch{}
+	diags := tfsdk.ValueAs(ctx, dataValue, &pv)
+	if diags.HasError() {
+		return nil, diags
+	}
+	proto := &configv1.PolicyVersion_Rules_Destination_K8S_Clusters_Gcp_LocationMatch{}
+	proto.Operator = pv.Operator.ValueString()
+	var pvModelValues []string
+	dvDiagsValues := pv.Values.ElementsAs(ctx, &pvModelValues, false)
+	diags.Append(dvDiagsValues...)
+	if diags.HasError() {
+		return nil, diags
+	}
+	proto.Values = pvModelValues
+	return proto, diags
+}
+
+type PolicyVersion_Rules_Destination_K8S_Clusters_Gcp_ProjectIdMatch struct {
+	Operator types.String `tfsdk:"operator"`
+	Values   types.List   `tfsdk:"values"`
+}
+
+func GetTypeAttrsForPolicyVersion_Rules_Destination_K8S_Clusters_Gcp_ProjectIdMatch() map[string]attr.Type {
+	return map[string]attr.Type{
+		"operator": types.StringType,
+		"values":   types.ListType{ElemType: types.StringType},
+	}
+}
+
+func ConvertPolicyVersion_Rules_Destination_K8S_Clusters_Gcp_ProjectIdMatchToObjectValueFromProto(proto *configv1.PolicyVersion_Rules_Destination_K8S_Clusters_Gcp_ProjectIdMatch) basetypes.ObjectValue {
+	if proto == nil {
+		return types.ObjectNull(GetTypeAttrsForPolicyVersion_Rules_Destination_K8S_Clusters_Gcp_ProjectIdMatch())
+	}
+	elementsInValues := make([]attr.Value, 0, len(proto.Values))
+	for _, item := range proto.Values {
+		elementsInValues = append(elementsInValues, types.StringValue(item))
+	}
+	return types.ObjectValueMust(
+		GetTypeAttrsForPolicyVersion_Rules_Destination_K8S_Clusters_Gcp_ProjectIdMatch(),
+		map[string]attr.Value{
+			"operator": types.StringValue(proto.Operator),
+			"values": func() basetypes.ListValue {
+				if proto.Values == nil {
+					return types.ListNull(types.StringType)
+				}
+				return types.ListValueMust(types.StringType, elementsInValues)
+			}(),
+		},
+	)
+}
+
+func ConvertDataValueToPolicyVersion_Rules_Destination_K8S_Clusters_Gcp_ProjectIdMatchProto(ctx context.Context, dataValue attr.Value) (*configv1.PolicyVersion_Rules_Destination_K8S_Clusters_Gcp_ProjectIdMatch, diag.Diagnostics) {
+	if dataValue.IsNull() || dataValue.IsUnknown() {
+		return nil, nil
+	}
+	pv := PolicyVersion_Rules_Destination_K8S_Clusters_Gcp_ProjectIdMatch{}
+	diags := tfsdk.ValueAs(ctx, dataValue, &pv)
+	if diags.HasError() {
+		return nil, diags
+	}
+	proto := &configv1.PolicyVersion_Rules_Destination_K8S_Clusters_Gcp_ProjectIdMatch{}
+	proto.Operator = pv.Operator.ValueString()
+	var pvModelValues []string
+	dvDiagsValues := pv.Values.ElementsAs(ctx, &pvModelValues, false)
+	diags.Append(dvDiagsValues...)
+	if diags.HasError() {
+		return nil, diags
+	}
+	proto.Values = pvModelValues
 	return proto, diags
 }
 
 type PolicyVersion_Rules_Destination_K8S_Clusters_Oci struct {
-	ClusterName   types.String `tfsdk:"cluster_name"`
-	CompartmentId types.String `tfsdk:"compartment_id"`
-	Region        types.String `tfsdk:"region"`
+	ClusterName        types.String `tfsdk:"cluster_name"`
+	ClusterNameMatch   types.Object `tfsdk:"cluster_name_match"`
+	CompartmentId      types.String `tfsdk:"compartment_id"`
+	CompartmentIdMatch types.Object `tfsdk:"compartment_id_match"`
+	Region             types.String `tfsdk:"region"`
+	RegionMatch        types.Object `tfsdk:"region_match"`
 }
 
 func GetTypeAttrsForPolicyVersion_Rules_Destination_K8S_Clusters_Oci() map[string]attr.Type {
 	return map[string]attr.Type{
-		"cluster_name":   types.StringType,
+		"cluster_name": types.StringType,
+		"cluster_name_match": types.ObjectType{
+			AttrTypes: GetTypeAttrsForPolicyVersion_Rules_Destination_K8S_Clusters_Oci_ClusterNameMatch(),
+		},
 		"compartment_id": types.StringType,
-		"region":         types.StringType,
+		"compartment_id_match": types.ObjectType{
+			AttrTypes: GetTypeAttrsForPolicyVersion_Rules_Destination_K8S_Clusters_Oci_CompartmentIdMatch(),
+		},
+		"region": types.StringType,
+		"region_match": types.ObjectType{
+			AttrTypes: GetTypeAttrsForPolicyVersion_Rules_Destination_K8S_Clusters_Oci_RegionMatch(),
+		},
 	}
 }
 
@@ -12021,9 +12627,12 @@ func ConvertPolicyVersion_Rules_Destination_K8S_Clusters_OciToObjectValueFromPro
 	return types.ObjectValueMust(
 		GetTypeAttrsForPolicyVersion_Rules_Destination_K8S_Clusters_Oci(),
 		map[string]attr.Value{
-			"cluster_name":   types.StringValue(proto.ClusterName),
-			"compartment_id": types.StringValue(proto.CompartmentId),
-			"region":         types.StringValue(proto.Region),
+			"cluster_name":         types.StringValue(proto.ClusterName),
+			"cluster_name_match":   ConvertPolicyVersion_Rules_Destination_K8S_Clusters_Oci_ClusterNameMatchToObjectValueFromProto(proto.ClusterNameMatch),
+			"compartment_id":       types.StringValue(proto.CompartmentId),
+			"compartment_id_match": ConvertPolicyVersion_Rules_Destination_K8S_Clusters_Oci_CompartmentIdMatchToObjectValueFromProto(proto.CompartmentIdMatch),
+			"region":               types.StringValue(proto.Region),
+			"region_match":         ConvertPolicyVersion_Rules_Destination_K8S_Clusters_Oci_RegionMatchToObjectValueFromProto(proto.RegionMatch),
 		},
 	)
 }
@@ -12039,8 +12648,191 @@ func ConvertDataValueToPolicyVersion_Rules_Destination_K8S_Clusters_OciProto(ctx
 	}
 	proto := &configv1.PolicyVersion_Rules_Destination_K8S_Clusters_Oci{}
 	proto.ClusterName = pv.ClusterName.ValueString()
+	pvModelClusterNameMatch, dvDiagsClusterNameMatch := ConvertDataValueToPolicyVersion_Rules_Destination_K8S_Clusters_Oci_ClusterNameMatchProto(ctx, pv.ClusterNameMatch)
+	diags.Append(dvDiagsClusterNameMatch...)
+	if diags.HasError() {
+		return nil, diags
+	}
+	proto.ClusterNameMatch = pvModelClusterNameMatch
 	proto.CompartmentId = pv.CompartmentId.ValueString()
+	pvModelCompartmentIdMatch, dvDiagsCompartmentIdMatch := ConvertDataValueToPolicyVersion_Rules_Destination_K8S_Clusters_Oci_CompartmentIdMatchProto(ctx, pv.CompartmentIdMatch)
+	diags.Append(dvDiagsCompartmentIdMatch...)
+	if diags.HasError() {
+		return nil, diags
+	}
+	proto.CompartmentIdMatch = pvModelCompartmentIdMatch
 	proto.Region = pv.Region.ValueString()
+	pvModelRegionMatch, dvDiagsRegionMatch := ConvertDataValueToPolicyVersion_Rules_Destination_K8S_Clusters_Oci_RegionMatchProto(ctx, pv.RegionMatch)
+	diags.Append(dvDiagsRegionMatch...)
+	if diags.HasError() {
+		return nil, diags
+	}
+	proto.RegionMatch = pvModelRegionMatch
+	return proto, diags
+}
+
+type PolicyVersion_Rules_Destination_K8S_Clusters_Oci_ClusterNameMatch struct {
+	Operator types.String `tfsdk:"operator"`
+	Values   types.List   `tfsdk:"values"`
+}
+
+func GetTypeAttrsForPolicyVersion_Rules_Destination_K8S_Clusters_Oci_ClusterNameMatch() map[string]attr.Type {
+	return map[string]attr.Type{
+		"operator": types.StringType,
+		"values":   types.ListType{ElemType: types.StringType},
+	}
+}
+
+func ConvertPolicyVersion_Rules_Destination_K8S_Clusters_Oci_ClusterNameMatchToObjectValueFromProto(proto *configv1.PolicyVersion_Rules_Destination_K8S_Clusters_Oci_ClusterNameMatch) basetypes.ObjectValue {
+	if proto == nil {
+		return types.ObjectNull(GetTypeAttrsForPolicyVersion_Rules_Destination_K8S_Clusters_Oci_ClusterNameMatch())
+	}
+	elementsInValues := make([]attr.Value, 0, len(proto.Values))
+	for _, item := range proto.Values {
+		elementsInValues = append(elementsInValues, types.StringValue(item))
+	}
+	return types.ObjectValueMust(
+		GetTypeAttrsForPolicyVersion_Rules_Destination_K8S_Clusters_Oci_ClusterNameMatch(),
+		map[string]attr.Value{
+			"operator": types.StringValue(proto.Operator),
+			"values": func() basetypes.ListValue {
+				if proto.Values == nil {
+					return types.ListNull(types.StringType)
+				}
+				return types.ListValueMust(types.StringType, elementsInValues)
+			}(),
+		},
+	)
+}
+
+func ConvertDataValueToPolicyVersion_Rules_Destination_K8S_Clusters_Oci_ClusterNameMatchProto(ctx context.Context, dataValue attr.Value) (*configv1.PolicyVersion_Rules_Destination_K8S_Clusters_Oci_ClusterNameMatch, diag.Diagnostics) {
+	if dataValue.IsNull() || dataValue.IsUnknown() {
+		return nil, nil
+	}
+	pv := PolicyVersion_Rules_Destination_K8S_Clusters_Oci_ClusterNameMatch{}
+	diags := tfsdk.ValueAs(ctx, dataValue, &pv)
+	if diags.HasError() {
+		return nil, diags
+	}
+	proto := &configv1.PolicyVersion_Rules_Destination_K8S_Clusters_Oci_ClusterNameMatch{}
+	proto.Operator = pv.Operator.ValueString()
+	var pvModelValues []string
+	dvDiagsValues := pv.Values.ElementsAs(ctx, &pvModelValues, false)
+	diags.Append(dvDiagsValues...)
+	if diags.HasError() {
+		return nil, diags
+	}
+	proto.Values = pvModelValues
+	return proto, diags
+}
+
+type PolicyVersion_Rules_Destination_K8S_Clusters_Oci_CompartmentIdMatch struct {
+	Operator types.String `tfsdk:"operator"`
+	Values   types.List   `tfsdk:"values"`
+}
+
+func GetTypeAttrsForPolicyVersion_Rules_Destination_K8S_Clusters_Oci_CompartmentIdMatch() map[string]attr.Type {
+	return map[string]attr.Type{
+		"operator": types.StringType,
+		"values":   types.ListType{ElemType: types.StringType},
+	}
+}
+
+func ConvertPolicyVersion_Rules_Destination_K8S_Clusters_Oci_CompartmentIdMatchToObjectValueFromProto(proto *configv1.PolicyVersion_Rules_Destination_K8S_Clusters_Oci_CompartmentIdMatch) basetypes.ObjectValue {
+	if proto == nil {
+		return types.ObjectNull(GetTypeAttrsForPolicyVersion_Rules_Destination_K8S_Clusters_Oci_CompartmentIdMatch())
+	}
+	elementsInValues := make([]attr.Value, 0, len(proto.Values))
+	for _, item := range proto.Values {
+		elementsInValues = append(elementsInValues, types.StringValue(item))
+	}
+	return types.ObjectValueMust(
+		GetTypeAttrsForPolicyVersion_Rules_Destination_K8S_Clusters_Oci_CompartmentIdMatch(),
+		map[string]attr.Value{
+			"operator": types.StringValue(proto.Operator),
+			"values": func() basetypes.ListValue {
+				if proto.Values == nil {
+					return types.ListNull(types.StringType)
+				}
+				return types.ListValueMust(types.StringType, elementsInValues)
+			}(),
+		},
+	)
+}
+
+func ConvertDataValueToPolicyVersion_Rules_Destination_K8S_Clusters_Oci_CompartmentIdMatchProto(ctx context.Context, dataValue attr.Value) (*configv1.PolicyVersion_Rules_Destination_K8S_Clusters_Oci_CompartmentIdMatch, diag.Diagnostics) {
+	if dataValue.IsNull() || dataValue.IsUnknown() {
+		return nil, nil
+	}
+	pv := PolicyVersion_Rules_Destination_K8S_Clusters_Oci_CompartmentIdMatch{}
+	diags := tfsdk.ValueAs(ctx, dataValue, &pv)
+	if diags.HasError() {
+		return nil, diags
+	}
+	proto := &configv1.PolicyVersion_Rules_Destination_K8S_Clusters_Oci_CompartmentIdMatch{}
+	proto.Operator = pv.Operator.ValueString()
+	var pvModelValues []string
+	dvDiagsValues := pv.Values.ElementsAs(ctx, &pvModelValues, false)
+	diags.Append(dvDiagsValues...)
+	if diags.HasError() {
+		return nil, diags
+	}
+	proto.Values = pvModelValues
+	return proto, diags
+}
+
+type PolicyVersion_Rules_Destination_K8S_Clusters_Oci_RegionMatch struct {
+	Operator types.String `tfsdk:"operator"`
+	Values   types.List   `tfsdk:"values"`
+}
+
+func GetTypeAttrsForPolicyVersion_Rules_Destination_K8S_Clusters_Oci_RegionMatch() map[string]attr.Type {
+	return map[string]attr.Type{
+		"operator": types.StringType,
+		"values":   types.ListType{ElemType: types.StringType},
+	}
+}
+
+func ConvertPolicyVersion_Rules_Destination_K8S_Clusters_Oci_RegionMatchToObjectValueFromProto(proto *configv1.PolicyVersion_Rules_Destination_K8S_Clusters_Oci_RegionMatch) basetypes.ObjectValue {
+	if proto == nil {
+		return types.ObjectNull(GetTypeAttrsForPolicyVersion_Rules_Destination_K8S_Clusters_Oci_RegionMatch())
+	}
+	elementsInValues := make([]attr.Value, 0, len(proto.Values))
+	for _, item := range proto.Values {
+		elementsInValues = append(elementsInValues, types.StringValue(item))
+	}
+	return types.ObjectValueMust(
+		GetTypeAttrsForPolicyVersion_Rules_Destination_K8S_Clusters_Oci_RegionMatch(),
+		map[string]attr.Value{
+			"operator": types.StringValue(proto.Operator),
+			"values": func() basetypes.ListValue {
+				if proto.Values == nil {
+					return types.ListNull(types.StringType)
+				}
+				return types.ListValueMust(types.StringType, elementsInValues)
+			}(),
+		},
+	)
+}
+
+func ConvertDataValueToPolicyVersion_Rules_Destination_K8S_Clusters_Oci_RegionMatchProto(ctx context.Context, dataValue attr.Value) (*configv1.PolicyVersion_Rules_Destination_K8S_Clusters_Oci_RegionMatch, diag.Diagnostics) {
+	if dataValue.IsNull() || dataValue.IsUnknown() {
+		return nil, nil
+	}
+	pv := PolicyVersion_Rules_Destination_K8S_Clusters_Oci_RegionMatch{}
+	diags := tfsdk.ValueAs(ctx, dataValue, &pv)
+	if diags.HasError() {
+		return nil, diags
+	}
+	proto := &configv1.PolicyVersion_Rules_Destination_K8S_Clusters_Oci_RegionMatch{}
+	proto.Operator = pv.Operator.ValueString()
+	var pvModelValues []string
+	dvDiagsValues := pv.Values.ElementsAs(ctx, &pvModelValues, false)
+	diags.Append(dvDiagsValues...)
+	if diags.HasError() {
+		return nil, diags
+	}
+	proto.Values = pvModelValues
 	return proto, diags
 }
 
@@ -13536,16 +14328,28 @@ func ConvertDataValueToPolicyVersion_Rules_Source_K8S_ClustersProto(ctx context.
 }
 
 type PolicyVersion_Rules_Source_K8S_Clusters_Aws struct {
-	AccountId   types.String `tfsdk:"account_id"`
-	ClusterName types.String `tfsdk:"cluster_name"`
-	Region      types.String `tfsdk:"region"`
+	AccountId        types.String `tfsdk:"account_id"`
+	AccountIdMatch   types.Object `tfsdk:"account_id_match"`
+	ClusterName      types.String `tfsdk:"cluster_name"`
+	ClusterNameMatch types.Object `tfsdk:"cluster_name_match"`
+	Region           types.String `tfsdk:"region"`
+	RegionMatch      types.Object `tfsdk:"region_match"`
 }
 
 func GetTypeAttrsForPolicyVersion_Rules_Source_K8S_Clusters_Aws() map[string]attr.Type {
 	return map[string]attr.Type{
-		"account_id":   types.StringType,
+		"account_id": types.StringType,
+		"account_id_match": types.ObjectType{
+			AttrTypes: GetTypeAttrsForPolicyVersion_Rules_Source_K8S_Clusters_Aws_AccountIdMatch(),
+		},
 		"cluster_name": types.StringType,
-		"region":       types.StringType,
+		"cluster_name_match": types.ObjectType{
+			AttrTypes: GetTypeAttrsForPolicyVersion_Rules_Source_K8S_Clusters_Aws_ClusterNameMatch(),
+		},
+		"region": types.StringType,
+		"region_match": types.ObjectType{
+			AttrTypes: GetTypeAttrsForPolicyVersion_Rules_Source_K8S_Clusters_Aws_RegionMatch(),
+		},
 	}
 }
 
@@ -13556,9 +14360,12 @@ func ConvertPolicyVersion_Rules_Source_K8S_Clusters_AwsToObjectValueFromProto(pr
 	return types.ObjectValueMust(
 		GetTypeAttrsForPolicyVersion_Rules_Source_K8S_Clusters_Aws(),
 		map[string]attr.Value{
-			"account_id":   types.StringValue(proto.AccountId),
-			"cluster_name": types.StringValue(proto.ClusterName),
-			"region":       types.StringValue(proto.Region),
+			"account_id":         types.StringValue(proto.AccountId),
+			"account_id_match":   ConvertPolicyVersion_Rules_Source_K8S_Clusters_Aws_AccountIdMatchToObjectValueFromProto(proto.AccountIdMatch),
+			"cluster_name":       types.StringValue(proto.ClusterName),
+			"cluster_name_match": ConvertPolicyVersion_Rules_Source_K8S_Clusters_Aws_ClusterNameMatchToObjectValueFromProto(proto.ClusterNameMatch),
+			"region":             types.StringValue(proto.Region),
+			"region_match":       ConvertPolicyVersion_Rules_Source_K8S_Clusters_Aws_RegionMatchToObjectValueFromProto(proto.RegionMatch),
 		},
 	)
 }
@@ -13574,22 +14381,217 @@ func ConvertDataValueToPolicyVersion_Rules_Source_K8S_Clusters_AwsProto(ctx cont
 	}
 	proto := &configv1.PolicyVersion_Rules_Source_K8S_Clusters_Aws{}
 	proto.AccountId = pv.AccountId.ValueString()
+	pvModelAccountIdMatch, dvDiagsAccountIdMatch := ConvertDataValueToPolicyVersion_Rules_Source_K8S_Clusters_Aws_AccountIdMatchProto(ctx, pv.AccountIdMatch)
+	diags.Append(dvDiagsAccountIdMatch...)
+	if diags.HasError() {
+		return nil, diags
+	}
+	proto.AccountIdMatch = pvModelAccountIdMatch
 	proto.ClusterName = pv.ClusterName.ValueString()
+	pvModelClusterNameMatch, dvDiagsClusterNameMatch := ConvertDataValueToPolicyVersion_Rules_Source_K8S_Clusters_Aws_ClusterNameMatchProto(ctx, pv.ClusterNameMatch)
+	diags.Append(dvDiagsClusterNameMatch...)
+	if diags.HasError() {
+		return nil, diags
+	}
+	proto.ClusterNameMatch = pvModelClusterNameMatch
 	proto.Region = pv.Region.ValueString()
+	pvModelRegionMatch, dvDiagsRegionMatch := ConvertDataValueToPolicyVersion_Rules_Source_K8S_Clusters_Aws_RegionMatchProto(ctx, pv.RegionMatch)
+	diags.Append(dvDiagsRegionMatch...)
+	if diags.HasError() {
+		return nil, diags
+	}
+	proto.RegionMatch = pvModelRegionMatch
+	return proto, diags
+}
+
+type PolicyVersion_Rules_Source_K8S_Clusters_Aws_AccountIdMatch struct {
+	Operator types.String `tfsdk:"operator"`
+	Values   types.List   `tfsdk:"values"`
+}
+
+func GetTypeAttrsForPolicyVersion_Rules_Source_K8S_Clusters_Aws_AccountIdMatch() map[string]attr.Type {
+	return map[string]attr.Type{
+		"operator": types.StringType,
+		"values":   types.ListType{ElemType: types.StringType},
+	}
+}
+
+func ConvertPolicyVersion_Rules_Source_K8S_Clusters_Aws_AccountIdMatchToObjectValueFromProto(proto *configv1.PolicyVersion_Rules_Source_K8S_Clusters_Aws_AccountIdMatch) basetypes.ObjectValue {
+	if proto == nil {
+		return types.ObjectNull(GetTypeAttrsForPolicyVersion_Rules_Source_K8S_Clusters_Aws_AccountIdMatch())
+	}
+	elementsInValues := make([]attr.Value, 0, len(proto.Values))
+	for _, item := range proto.Values {
+		elementsInValues = append(elementsInValues, types.StringValue(item))
+	}
+	return types.ObjectValueMust(
+		GetTypeAttrsForPolicyVersion_Rules_Source_K8S_Clusters_Aws_AccountIdMatch(),
+		map[string]attr.Value{
+			"operator": types.StringValue(proto.Operator),
+			"values": func() basetypes.ListValue {
+				if proto.Values == nil {
+					return types.ListNull(types.StringType)
+				}
+				return types.ListValueMust(types.StringType, elementsInValues)
+			}(),
+		},
+	)
+}
+
+func ConvertDataValueToPolicyVersion_Rules_Source_K8S_Clusters_Aws_AccountIdMatchProto(ctx context.Context, dataValue attr.Value) (*configv1.PolicyVersion_Rules_Source_K8S_Clusters_Aws_AccountIdMatch, diag.Diagnostics) {
+	if dataValue.IsNull() || dataValue.IsUnknown() {
+		return nil, nil
+	}
+	pv := PolicyVersion_Rules_Source_K8S_Clusters_Aws_AccountIdMatch{}
+	diags := tfsdk.ValueAs(ctx, dataValue, &pv)
+	if diags.HasError() {
+		return nil, diags
+	}
+	proto := &configv1.PolicyVersion_Rules_Source_K8S_Clusters_Aws_AccountIdMatch{}
+	proto.Operator = pv.Operator.ValueString()
+	var pvModelValues []string
+	dvDiagsValues := pv.Values.ElementsAs(ctx, &pvModelValues, false)
+	diags.Append(dvDiagsValues...)
+	if diags.HasError() {
+		return nil, diags
+	}
+	proto.Values = pvModelValues
+	return proto, diags
+}
+
+type PolicyVersion_Rules_Source_K8S_Clusters_Aws_ClusterNameMatch struct {
+	Operator types.String `tfsdk:"operator"`
+	Values   types.List   `tfsdk:"values"`
+}
+
+func GetTypeAttrsForPolicyVersion_Rules_Source_K8S_Clusters_Aws_ClusterNameMatch() map[string]attr.Type {
+	return map[string]attr.Type{
+		"operator": types.StringType,
+		"values":   types.ListType{ElemType: types.StringType},
+	}
+}
+
+func ConvertPolicyVersion_Rules_Source_K8S_Clusters_Aws_ClusterNameMatchToObjectValueFromProto(proto *configv1.PolicyVersion_Rules_Source_K8S_Clusters_Aws_ClusterNameMatch) basetypes.ObjectValue {
+	if proto == nil {
+		return types.ObjectNull(GetTypeAttrsForPolicyVersion_Rules_Source_K8S_Clusters_Aws_ClusterNameMatch())
+	}
+	elementsInValues := make([]attr.Value, 0, len(proto.Values))
+	for _, item := range proto.Values {
+		elementsInValues = append(elementsInValues, types.StringValue(item))
+	}
+	return types.ObjectValueMust(
+		GetTypeAttrsForPolicyVersion_Rules_Source_K8S_Clusters_Aws_ClusterNameMatch(),
+		map[string]attr.Value{
+			"operator": types.StringValue(proto.Operator),
+			"values": func() basetypes.ListValue {
+				if proto.Values == nil {
+					return types.ListNull(types.StringType)
+				}
+				return types.ListValueMust(types.StringType, elementsInValues)
+			}(),
+		},
+	)
+}
+
+func ConvertDataValueToPolicyVersion_Rules_Source_K8S_Clusters_Aws_ClusterNameMatchProto(ctx context.Context, dataValue attr.Value) (*configv1.PolicyVersion_Rules_Source_K8S_Clusters_Aws_ClusterNameMatch, diag.Diagnostics) {
+	if dataValue.IsNull() || dataValue.IsUnknown() {
+		return nil, nil
+	}
+	pv := PolicyVersion_Rules_Source_K8S_Clusters_Aws_ClusterNameMatch{}
+	diags := tfsdk.ValueAs(ctx, dataValue, &pv)
+	if diags.HasError() {
+		return nil, diags
+	}
+	proto := &configv1.PolicyVersion_Rules_Source_K8S_Clusters_Aws_ClusterNameMatch{}
+	proto.Operator = pv.Operator.ValueString()
+	var pvModelValues []string
+	dvDiagsValues := pv.Values.ElementsAs(ctx, &pvModelValues, false)
+	diags.Append(dvDiagsValues...)
+	if diags.HasError() {
+		return nil, diags
+	}
+	proto.Values = pvModelValues
+	return proto, diags
+}
+
+type PolicyVersion_Rules_Source_K8S_Clusters_Aws_RegionMatch struct {
+	Operator types.String `tfsdk:"operator"`
+	Values   types.List   `tfsdk:"values"`
+}
+
+func GetTypeAttrsForPolicyVersion_Rules_Source_K8S_Clusters_Aws_RegionMatch() map[string]attr.Type {
+	return map[string]attr.Type{
+		"operator": types.StringType,
+		"values":   types.ListType{ElemType: types.StringType},
+	}
+}
+
+func ConvertPolicyVersion_Rules_Source_K8S_Clusters_Aws_RegionMatchToObjectValueFromProto(proto *configv1.PolicyVersion_Rules_Source_K8S_Clusters_Aws_RegionMatch) basetypes.ObjectValue {
+	if proto == nil {
+		return types.ObjectNull(GetTypeAttrsForPolicyVersion_Rules_Source_K8S_Clusters_Aws_RegionMatch())
+	}
+	elementsInValues := make([]attr.Value, 0, len(proto.Values))
+	for _, item := range proto.Values {
+		elementsInValues = append(elementsInValues, types.StringValue(item))
+	}
+	return types.ObjectValueMust(
+		GetTypeAttrsForPolicyVersion_Rules_Source_K8S_Clusters_Aws_RegionMatch(),
+		map[string]attr.Value{
+			"operator": types.StringValue(proto.Operator),
+			"values": func() basetypes.ListValue {
+				if proto.Values == nil {
+					return types.ListNull(types.StringType)
+				}
+				return types.ListValueMust(types.StringType, elementsInValues)
+			}(),
+		},
+	)
+}
+
+func ConvertDataValueToPolicyVersion_Rules_Source_K8S_Clusters_Aws_RegionMatchProto(ctx context.Context, dataValue attr.Value) (*configv1.PolicyVersion_Rules_Source_K8S_Clusters_Aws_RegionMatch, diag.Diagnostics) {
+	if dataValue.IsNull() || dataValue.IsUnknown() {
+		return nil, nil
+	}
+	pv := PolicyVersion_Rules_Source_K8S_Clusters_Aws_RegionMatch{}
+	diags := tfsdk.ValueAs(ctx, dataValue, &pv)
+	if diags.HasError() {
+		return nil, diags
+	}
+	proto := &configv1.PolicyVersion_Rules_Source_K8S_Clusters_Aws_RegionMatch{}
+	proto.Operator = pv.Operator.ValueString()
+	var pvModelValues []string
+	dvDiagsValues := pv.Values.ElementsAs(ctx, &pvModelValues, false)
+	diags.Append(dvDiagsValues...)
+	if diags.HasError() {
+		return nil, diags
+	}
+	proto.Values = pvModelValues
 	return proto, diags
 }
 
 type PolicyVersion_Rules_Source_K8S_Clusters_Azure struct {
-	ClusterName    types.String `tfsdk:"cluster_name"`
-	ResourceGroup  types.String `tfsdk:"resource_group"`
-	SubscriptionId types.String `tfsdk:"subscription_id"`
+	ClusterName         types.String `tfsdk:"cluster_name"`
+	ClusterNameMatch    types.Object `tfsdk:"cluster_name_match"`
+	ResourceGroup       types.String `tfsdk:"resource_group"`
+	ResourceGroupMatch  types.Object `tfsdk:"resource_group_match"`
+	SubscriptionId      types.String `tfsdk:"subscription_id"`
+	SubscriptionIdMatch types.Object `tfsdk:"subscription_id_match"`
 }
 
 func GetTypeAttrsForPolicyVersion_Rules_Source_K8S_Clusters_Azure() map[string]attr.Type {
 	return map[string]attr.Type{
-		"cluster_name":    types.StringType,
-		"resource_group":  types.StringType,
+		"cluster_name": types.StringType,
+		"cluster_name_match": types.ObjectType{
+			AttrTypes: GetTypeAttrsForPolicyVersion_Rules_Source_K8S_Clusters_Azure_ClusterNameMatch(),
+		},
+		"resource_group": types.StringType,
+		"resource_group_match": types.ObjectType{
+			AttrTypes: GetTypeAttrsForPolicyVersion_Rules_Source_K8S_Clusters_Azure_ResourceGroupMatch(),
+		},
 		"subscription_id": types.StringType,
+		"subscription_id_match": types.ObjectType{
+			AttrTypes: GetTypeAttrsForPolicyVersion_Rules_Source_K8S_Clusters_Azure_SubscriptionIdMatch(),
+		},
 	}
 }
 
@@ -13600,9 +14602,12 @@ func ConvertPolicyVersion_Rules_Source_K8S_Clusters_AzureToObjectValueFromProto(
 	return types.ObjectValueMust(
 		GetTypeAttrsForPolicyVersion_Rules_Source_K8S_Clusters_Azure(),
 		map[string]attr.Value{
-			"cluster_name":    types.StringValue(proto.ClusterName),
-			"resource_group":  types.StringValue(proto.ResourceGroup),
-			"subscription_id": types.StringValue(proto.SubscriptionId),
+			"cluster_name":          types.StringValue(proto.ClusterName),
+			"cluster_name_match":    ConvertPolicyVersion_Rules_Source_K8S_Clusters_Azure_ClusterNameMatchToObjectValueFromProto(proto.ClusterNameMatch),
+			"resource_group":        types.StringValue(proto.ResourceGroup),
+			"resource_group_match":  ConvertPolicyVersion_Rules_Source_K8S_Clusters_Azure_ResourceGroupMatchToObjectValueFromProto(proto.ResourceGroupMatch),
+			"subscription_id":       types.StringValue(proto.SubscriptionId),
+			"subscription_id_match": ConvertPolicyVersion_Rules_Source_K8S_Clusters_Azure_SubscriptionIdMatchToObjectValueFromProto(proto.SubscriptionIdMatch),
 		},
 	)
 }
@@ -13618,22 +14623,217 @@ func ConvertDataValueToPolicyVersion_Rules_Source_K8S_Clusters_AzureProto(ctx co
 	}
 	proto := &configv1.PolicyVersion_Rules_Source_K8S_Clusters_Azure{}
 	proto.ClusterName = pv.ClusterName.ValueString()
+	pvModelClusterNameMatch, dvDiagsClusterNameMatch := ConvertDataValueToPolicyVersion_Rules_Source_K8S_Clusters_Azure_ClusterNameMatchProto(ctx, pv.ClusterNameMatch)
+	diags.Append(dvDiagsClusterNameMatch...)
+	if diags.HasError() {
+		return nil, diags
+	}
+	proto.ClusterNameMatch = pvModelClusterNameMatch
 	proto.ResourceGroup = pv.ResourceGroup.ValueString()
+	pvModelResourceGroupMatch, dvDiagsResourceGroupMatch := ConvertDataValueToPolicyVersion_Rules_Source_K8S_Clusters_Azure_ResourceGroupMatchProto(ctx, pv.ResourceGroupMatch)
+	diags.Append(dvDiagsResourceGroupMatch...)
+	if diags.HasError() {
+		return nil, diags
+	}
+	proto.ResourceGroupMatch = pvModelResourceGroupMatch
 	proto.SubscriptionId = pv.SubscriptionId.ValueString()
+	pvModelSubscriptionIdMatch, dvDiagsSubscriptionIdMatch := ConvertDataValueToPolicyVersion_Rules_Source_K8S_Clusters_Azure_SubscriptionIdMatchProto(ctx, pv.SubscriptionIdMatch)
+	diags.Append(dvDiagsSubscriptionIdMatch...)
+	if diags.HasError() {
+		return nil, diags
+	}
+	proto.SubscriptionIdMatch = pvModelSubscriptionIdMatch
+	return proto, diags
+}
+
+type PolicyVersion_Rules_Source_K8S_Clusters_Azure_ClusterNameMatch struct {
+	Operator types.String `tfsdk:"operator"`
+	Values   types.List   `tfsdk:"values"`
+}
+
+func GetTypeAttrsForPolicyVersion_Rules_Source_K8S_Clusters_Azure_ClusterNameMatch() map[string]attr.Type {
+	return map[string]attr.Type{
+		"operator": types.StringType,
+		"values":   types.ListType{ElemType: types.StringType},
+	}
+}
+
+func ConvertPolicyVersion_Rules_Source_K8S_Clusters_Azure_ClusterNameMatchToObjectValueFromProto(proto *configv1.PolicyVersion_Rules_Source_K8S_Clusters_Azure_ClusterNameMatch) basetypes.ObjectValue {
+	if proto == nil {
+		return types.ObjectNull(GetTypeAttrsForPolicyVersion_Rules_Source_K8S_Clusters_Azure_ClusterNameMatch())
+	}
+	elementsInValues := make([]attr.Value, 0, len(proto.Values))
+	for _, item := range proto.Values {
+		elementsInValues = append(elementsInValues, types.StringValue(item))
+	}
+	return types.ObjectValueMust(
+		GetTypeAttrsForPolicyVersion_Rules_Source_K8S_Clusters_Azure_ClusterNameMatch(),
+		map[string]attr.Value{
+			"operator": types.StringValue(proto.Operator),
+			"values": func() basetypes.ListValue {
+				if proto.Values == nil {
+					return types.ListNull(types.StringType)
+				}
+				return types.ListValueMust(types.StringType, elementsInValues)
+			}(),
+		},
+	)
+}
+
+func ConvertDataValueToPolicyVersion_Rules_Source_K8S_Clusters_Azure_ClusterNameMatchProto(ctx context.Context, dataValue attr.Value) (*configv1.PolicyVersion_Rules_Source_K8S_Clusters_Azure_ClusterNameMatch, diag.Diagnostics) {
+	if dataValue.IsNull() || dataValue.IsUnknown() {
+		return nil, nil
+	}
+	pv := PolicyVersion_Rules_Source_K8S_Clusters_Azure_ClusterNameMatch{}
+	diags := tfsdk.ValueAs(ctx, dataValue, &pv)
+	if diags.HasError() {
+		return nil, diags
+	}
+	proto := &configv1.PolicyVersion_Rules_Source_K8S_Clusters_Azure_ClusterNameMatch{}
+	proto.Operator = pv.Operator.ValueString()
+	var pvModelValues []string
+	dvDiagsValues := pv.Values.ElementsAs(ctx, &pvModelValues, false)
+	diags.Append(dvDiagsValues...)
+	if diags.HasError() {
+		return nil, diags
+	}
+	proto.Values = pvModelValues
+	return proto, diags
+}
+
+type PolicyVersion_Rules_Source_K8S_Clusters_Azure_ResourceGroupMatch struct {
+	Operator types.String `tfsdk:"operator"`
+	Values   types.List   `tfsdk:"values"`
+}
+
+func GetTypeAttrsForPolicyVersion_Rules_Source_K8S_Clusters_Azure_ResourceGroupMatch() map[string]attr.Type {
+	return map[string]attr.Type{
+		"operator": types.StringType,
+		"values":   types.ListType{ElemType: types.StringType},
+	}
+}
+
+func ConvertPolicyVersion_Rules_Source_K8S_Clusters_Azure_ResourceGroupMatchToObjectValueFromProto(proto *configv1.PolicyVersion_Rules_Source_K8S_Clusters_Azure_ResourceGroupMatch) basetypes.ObjectValue {
+	if proto == nil {
+		return types.ObjectNull(GetTypeAttrsForPolicyVersion_Rules_Source_K8S_Clusters_Azure_ResourceGroupMatch())
+	}
+	elementsInValues := make([]attr.Value, 0, len(proto.Values))
+	for _, item := range proto.Values {
+		elementsInValues = append(elementsInValues, types.StringValue(item))
+	}
+	return types.ObjectValueMust(
+		GetTypeAttrsForPolicyVersion_Rules_Source_K8S_Clusters_Azure_ResourceGroupMatch(),
+		map[string]attr.Value{
+			"operator": types.StringValue(proto.Operator),
+			"values": func() basetypes.ListValue {
+				if proto.Values == nil {
+					return types.ListNull(types.StringType)
+				}
+				return types.ListValueMust(types.StringType, elementsInValues)
+			}(),
+		},
+	)
+}
+
+func ConvertDataValueToPolicyVersion_Rules_Source_K8S_Clusters_Azure_ResourceGroupMatchProto(ctx context.Context, dataValue attr.Value) (*configv1.PolicyVersion_Rules_Source_K8S_Clusters_Azure_ResourceGroupMatch, diag.Diagnostics) {
+	if dataValue.IsNull() || dataValue.IsUnknown() {
+		return nil, nil
+	}
+	pv := PolicyVersion_Rules_Source_K8S_Clusters_Azure_ResourceGroupMatch{}
+	diags := tfsdk.ValueAs(ctx, dataValue, &pv)
+	if diags.HasError() {
+		return nil, diags
+	}
+	proto := &configv1.PolicyVersion_Rules_Source_K8S_Clusters_Azure_ResourceGroupMatch{}
+	proto.Operator = pv.Operator.ValueString()
+	var pvModelValues []string
+	dvDiagsValues := pv.Values.ElementsAs(ctx, &pvModelValues, false)
+	diags.Append(dvDiagsValues...)
+	if diags.HasError() {
+		return nil, diags
+	}
+	proto.Values = pvModelValues
+	return proto, diags
+}
+
+type PolicyVersion_Rules_Source_K8S_Clusters_Azure_SubscriptionIdMatch struct {
+	Operator types.String `tfsdk:"operator"`
+	Values   types.List   `tfsdk:"values"`
+}
+
+func GetTypeAttrsForPolicyVersion_Rules_Source_K8S_Clusters_Azure_SubscriptionIdMatch() map[string]attr.Type {
+	return map[string]attr.Type{
+		"operator": types.StringType,
+		"values":   types.ListType{ElemType: types.StringType},
+	}
+}
+
+func ConvertPolicyVersion_Rules_Source_K8S_Clusters_Azure_SubscriptionIdMatchToObjectValueFromProto(proto *configv1.PolicyVersion_Rules_Source_K8S_Clusters_Azure_SubscriptionIdMatch) basetypes.ObjectValue {
+	if proto == nil {
+		return types.ObjectNull(GetTypeAttrsForPolicyVersion_Rules_Source_K8S_Clusters_Azure_SubscriptionIdMatch())
+	}
+	elementsInValues := make([]attr.Value, 0, len(proto.Values))
+	for _, item := range proto.Values {
+		elementsInValues = append(elementsInValues, types.StringValue(item))
+	}
+	return types.ObjectValueMust(
+		GetTypeAttrsForPolicyVersion_Rules_Source_K8S_Clusters_Azure_SubscriptionIdMatch(),
+		map[string]attr.Value{
+			"operator": types.StringValue(proto.Operator),
+			"values": func() basetypes.ListValue {
+				if proto.Values == nil {
+					return types.ListNull(types.StringType)
+				}
+				return types.ListValueMust(types.StringType, elementsInValues)
+			}(),
+		},
+	)
+}
+
+func ConvertDataValueToPolicyVersion_Rules_Source_K8S_Clusters_Azure_SubscriptionIdMatchProto(ctx context.Context, dataValue attr.Value) (*configv1.PolicyVersion_Rules_Source_K8S_Clusters_Azure_SubscriptionIdMatch, diag.Diagnostics) {
+	if dataValue.IsNull() || dataValue.IsUnknown() {
+		return nil, nil
+	}
+	pv := PolicyVersion_Rules_Source_K8S_Clusters_Azure_SubscriptionIdMatch{}
+	diags := tfsdk.ValueAs(ctx, dataValue, &pv)
+	if diags.HasError() {
+		return nil, diags
+	}
+	proto := &configv1.PolicyVersion_Rules_Source_K8S_Clusters_Azure_SubscriptionIdMatch{}
+	proto.Operator = pv.Operator.ValueString()
+	var pvModelValues []string
+	dvDiagsValues := pv.Values.ElementsAs(ctx, &pvModelValues, false)
+	diags.Append(dvDiagsValues...)
+	if diags.HasError() {
+		return nil, diags
+	}
+	proto.Values = pvModelValues
 	return proto, diags
 }
 
 type PolicyVersion_Rules_Source_K8S_Clusters_Gcp struct {
-	ClusterName types.String `tfsdk:"cluster_name"`
-	Location    types.String `tfsdk:"location"`
-	ProjectId   types.String `tfsdk:"project_id"`
+	ClusterName      types.String `tfsdk:"cluster_name"`
+	ClusterNameMatch types.Object `tfsdk:"cluster_name_match"`
+	Location         types.String `tfsdk:"location"`
+	LocationMatch    types.Object `tfsdk:"location_match"`
+	ProjectId        types.String `tfsdk:"project_id"`
+	ProjectIdMatch   types.Object `tfsdk:"project_id_match"`
 }
 
 func GetTypeAttrsForPolicyVersion_Rules_Source_K8S_Clusters_Gcp() map[string]attr.Type {
 	return map[string]attr.Type{
 		"cluster_name": types.StringType,
-		"location":     types.StringType,
-		"project_id":   types.StringType,
+		"cluster_name_match": types.ObjectType{
+			AttrTypes: GetTypeAttrsForPolicyVersion_Rules_Source_K8S_Clusters_Gcp_ClusterNameMatch(),
+		},
+		"location": types.StringType,
+		"location_match": types.ObjectType{
+			AttrTypes: GetTypeAttrsForPolicyVersion_Rules_Source_K8S_Clusters_Gcp_LocationMatch(),
+		},
+		"project_id": types.StringType,
+		"project_id_match": types.ObjectType{
+			AttrTypes: GetTypeAttrsForPolicyVersion_Rules_Source_K8S_Clusters_Gcp_ProjectIdMatch(),
+		},
 	}
 }
 
@@ -13644,9 +14844,12 @@ func ConvertPolicyVersion_Rules_Source_K8S_Clusters_GcpToObjectValueFromProto(pr
 	return types.ObjectValueMust(
 		GetTypeAttrsForPolicyVersion_Rules_Source_K8S_Clusters_Gcp(),
 		map[string]attr.Value{
-			"cluster_name": types.StringValue(proto.ClusterName),
-			"location":     types.StringValue(proto.Location),
-			"project_id":   types.StringValue(proto.ProjectId),
+			"cluster_name":       types.StringValue(proto.ClusterName),
+			"cluster_name_match": ConvertPolicyVersion_Rules_Source_K8S_Clusters_Gcp_ClusterNameMatchToObjectValueFromProto(proto.ClusterNameMatch),
+			"location":           types.StringValue(proto.Location),
+			"location_match":     ConvertPolicyVersion_Rules_Source_K8S_Clusters_Gcp_LocationMatchToObjectValueFromProto(proto.LocationMatch),
+			"project_id":         types.StringValue(proto.ProjectId),
+			"project_id_match":   ConvertPolicyVersion_Rules_Source_K8S_Clusters_Gcp_ProjectIdMatchToObjectValueFromProto(proto.ProjectIdMatch),
 		},
 	)
 }
@@ -13662,22 +14865,217 @@ func ConvertDataValueToPolicyVersion_Rules_Source_K8S_Clusters_GcpProto(ctx cont
 	}
 	proto := &configv1.PolicyVersion_Rules_Source_K8S_Clusters_Gcp{}
 	proto.ClusterName = pv.ClusterName.ValueString()
+	pvModelClusterNameMatch, dvDiagsClusterNameMatch := ConvertDataValueToPolicyVersion_Rules_Source_K8S_Clusters_Gcp_ClusterNameMatchProto(ctx, pv.ClusterNameMatch)
+	diags.Append(dvDiagsClusterNameMatch...)
+	if diags.HasError() {
+		return nil, diags
+	}
+	proto.ClusterNameMatch = pvModelClusterNameMatch
 	proto.Location = pv.Location.ValueString()
+	pvModelLocationMatch, dvDiagsLocationMatch := ConvertDataValueToPolicyVersion_Rules_Source_K8S_Clusters_Gcp_LocationMatchProto(ctx, pv.LocationMatch)
+	diags.Append(dvDiagsLocationMatch...)
+	if diags.HasError() {
+		return nil, diags
+	}
+	proto.LocationMatch = pvModelLocationMatch
 	proto.ProjectId = pv.ProjectId.ValueString()
+	pvModelProjectIdMatch, dvDiagsProjectIdMatch := ConvertDataValueToPolicyVersion_Rules_Source_K8S_Clusters_Gcp_ProjectIdMatchProto(ctx, pv.ProjectIdMatch)
+	diags.Append(dvDiagsProjectIdMatch...)
+	if diags.HasError() {
+		return nil, diags
+	}
+	proto.ProjectIdMatch = pvModelProjectIdMatch
+	return proto, diags
+}
+
+type PolicyVersion_Rules_Source_K8S_Clusters_Gcp_ClusterNameMatch struct {
+	Operator types.String `tfsdk:"operator"`
+	Values   types.List   `tfsdk:"values"`
+}
+
+func GetTypeAttrsForPolicyVersion_Rules_Source_K8S_Clusters_Gcp_ClusterNameMatch() map[string]attr.Type {
+	return map[string]attr.Type{
+		"operator": types.StringType,
+		"values":   types.ListType{ElemType: types.StringType},
+	}
+}
+
+func ConvertPolicyVersion_Rules_Source_K8S_Clusters_Gcp_ClusterNameMatchToObjectValueFromProto(proto *configv1.PolicyVersion_Rules_Source_K8S_Clusters_Gcp_ClusterNameMatch) basetypes.ObjectValue {
+	if proto == nil {
+		return types.ObjectNull(GetTypeAttrsForPolicyVersion_Rules_Source_K8S_Clusters_Gcp_ClusterNameMatch())
+	}
+	elementsInValues := make([]attr.Value, 0, len(proto.Values))
+	for _, item := range proto.Values {
+		elementsInValues = append(elementsInValues, types.StringValue(item))
+	}
+	return types.ObjectValueMust(
+		GetTypeAttrsForPolicyVersion_Rules_Source_K8S_Clusters_Gcp_ClusterNameMatch(),
+		map[string]attr.Value{
+			"operator": types.StringValue(proto.Operator),
+			"values": func() basetypes.ListValue {
+				if proto.Values == nil {
+					return types.ListNull(types.StringType)
+				}
+				return types.ListValueMust(types.StringType, elementsInValues)
+			}(),
+		},
+	)
+}
+
+func ConvertDataValueToPolicyVersion_Rules_Source_K8S_Clusters_Gcp_ClusterNameMatchProto(ctx context.Context, dataValue attr.Value) (*configv1.PolicyVersion_Rules_Source_K8S_Clusters_Gcp_ClusterNameMatch, diag.Diagnostics) {
+	if dataValue.IsNull() || dataValue.IsUnknown() {
+		return nil, nil
+	}
+	pv := PolicyVersion_Rules_Source_K8S_Clusters_Gcp_ClusterNameMatch{}
+	diags := tfsdk.ValueAs(ctx, dataValue, &pv)
+	if diags.HasError() {
+		return nil, diags
+	}
+	proto := &configv1.PolicyVersion_Rules_Source_K8S_Clusters_Gcp_ClusterNameMatch{}
+	proto.Operator = pv.Operator.ValueString()
+	var pvModelValues []string
+	dvDiagsValues := pv.Values.ElementsAs(ctx, &pvModelValues, false)
+	diags.Append(dvDiagsValues...)
+	if diags.HasError() {
+		return nil, diags
+	}
+	proto.Values = pvModelValues
+	return proto, diags
+}
+
+type PolicyVersion_Rules_Source_K8S_Clusters_Gcp_LocationMatch struct {
+	Operator types.String `tfsdk:"operator"`
+	Values   types.List   `tfsdk:"values"`
+}
+
+func GetTypeAttrsForPolicyVersion_Rules_Source_K8S_Clusters_Gcp_LocationMatch() map[string]attr.Type {
+	return map[string]attr.Type{
+		"operator": types.StringType,
+		"values":   types.ListType{ElemType: types.StringType},
+	}
+}
+
+func ConvertPolicyVersion_Rules_Source_K8S_Clusters_Gcp_LocationMatchToObjectValueFromProto(proto *configv1.PolicyVersion_Rules_Source_K8S_Clusters_Gcp_LocationMatch) basetypes.ObjectValue {
+	if proto == nil {
+		return types.ObjectNull(GetTypeAttrsForPolicyVersion_Rules_Source_K8S_Clusters_Gcp_LocationMatch())
+	}
+	elementsInValues := make([]attr.Value, 0, len(proto.Values))
+	for _, item := range proto.Values {
+		elementsInValues = append(elementsInValues, types.StringValue(item))
+	}
+	return types.ObjectValueMust(
+		GetTypeAttrsForPolicyVersion_Rules_Source_K8S_Clusters_Gcp_LocationMatch(),
+		map[string]attr.Value{
+			"operator": types.StringValue(proto.Operator),
+			"values": func() basetypes.ListValue {
+				if proto.Values == nil {
+					return types.ListNull(types.StringType)
+				}
+				return types.ListValueMust(types.StringType, elementsInValues)
+			}(),
+		},
+	)
+}
+
+func ConvertDataValueToPolicyVersion_Rules_Source_K8S_Clusters_Gcp_LocationMatchProto(ctx context.Context, dataValue attr.Value) (*configv1.PolicyVersion_Rules_Source_K8S_Clusters_Gcp_LocationMatch, diag.Diagnostics) {
+	if dataValue.IsNull() || dataValue.IsUnknown() {
+		return nil, nil
+	}
+	pv := PolicyVersion_Rules_Source_K8S_Clusters_Gcp_LocationMatch{}
+	diags := tfsdk.ValueAs(ctx, dataValue, &pv)
+	if diags.HasError() {
+		return nil, diags
+	}
+	proto := &configv1.PolicyVersion_Rules_Source_K8S_Clusters_Gcp_LocationMatch{}
+	proto.Operator = pv.Operator.ValueString()
+	var pvModelValues []string
+	dvDiagsValues := pv.Values.ElementsAs(ctx, &pvModelValues, false)
+	diags.Append(dvDiagsValues...)
+	if diags.HasError() {
+		return nil, diags
+	}
+	proto.Values = pvModelValues
+	return proto, diags
+}
+
+type PolicyVersion_Rules_Source_K8S_Clusters_Gcp_ProjectIdMatch struct {
+	Operator types.String `tfsdk:"operator"`
+	Values   types.List   `tfsdk:"values"`
+}
+
+func GetTypeAttrsForPolicyVersion_Rules_Source_K8S_Clusters_Gcp_ProjectIdMatch() map[string]attr.Type {
+	return map[string]attr.Type{
+		"operator": types.StringType,
+		"values":   types.ListType{ElemType: types.StringType},
+	}
+}
+
+func ConvertPolicyVersion_Rules_Source_K8S_Clusters_Gcp_ProjectIdMatchToObjectValueFromProto(proto *configv1.PolicyVersion_Rules_Source_K8S_Clusters_Gcp_ProjectIdMatch) basetypes.ObjectValue {
+	if proto == nil {
+		return types.ObjectNull(GetTypeAttrsForPolicyVersion_Rules_Source_K8S_Clusters_Gcp_ProjectIdMatch())
+	}
+	elementsInValues := make([]attr.Value, 0, len(proto.Values))
+	for _, item := range proto.Values {
+		elementsInValues = append(elementsInValues, types.StringValue(item))
+	}
+	return types.ObjectValueMust(
+		GetTypeAttrsForPolicyVersion_Rules_Source_K8S_Clusters_Gcp_ProjectIdMatch(),
+		map[string]attr.Value{
+			"operator": types.StringValue(proto.Operator),
+			"values": func() basetypes.ListValue {
+				if proto.Values == nil {
+					return types.ListNull(types.StringType)
+				}
+				return types.ListValueMust(types.StringType, elementsInValues)
+			}(),
+		},
+	)
+}
+
+func ConvertDataValueToPolicyVersion_Rules_Source_K8S_Clusters_Gcp_ProjectIdMatchProto(ctx context.Context, dataValue attr.Value) (*configv1.PolicyVersion_Rules_Source_K8S_Clusters_Gcp_ProjectIdMatch, diag.Diagnostics) {
+	if dataValue.IsNull() || dataValue.IsUnknown() {
+		return nil, nil
+	}
+	pv := PolicyVersion_Rules_Source_K8S_Clusters_Gcp_ProjectIdMatch{}
+	diags := tfsdk.ValueAs(ctx, dataValue, &pv)
+	if diags.HasError() {
+		return nil, diags
+	}
+	proto := &configv1.PolicyVersion_Rules_Source_K8S_Clusters_Gcp_ProjectIdMatch{}
+	proto.Operator = pv.Operator.ValueString()
+	var pvModelValues []string
+	dvDiagsValues := pv.Values.ElementsAs(ctx, &pvModelValues, false)
+	diags.Append(dvDiagsValues...)
+	if diags.HasError() {
+		return nil, diags
+	}
+	proto.Values = pvModelValues
 	return proto, diags
 }
 
 type PolicyVersion_Rules_Source_K8S_Clusters_Oci struct {
-	ClusterName   types.String `tfsdk:"cluster_name"`
-	CompartmentId types.String `tfsdk:"compartment_id"`
-	Region        types.String `tfsdk:"region"`
+	ClusterName        types.String `tfsdk:"cluster_name"`
+	ClusterNameMatch   types.Object `tfsdk:"cluster_name_match"`
+	CompartmentId      types.String `tfsdk:"compartment_id"`
+	CompartmentIdMatch types.Object `tfsdk:"compartment_id_match"`
+	Region             types.String `tfsdk:"region"`
+	RegionMatch        types.Object `tfsdk:"region_match"`
 }
 
 func GetTypeAttrsForPolicyVersion_Rules_Source_K8S_Clusters_Oci() map[string]attr.Type {
 	return map[string]attr.Type{
-		"cluster_name":   types.StringType,
+		"cluster_name": types.StringType,
+		"cluster_name_match": types.ObjectType{
+			AttrTypes: GetTypeAttrsForPolicyVersion_Rules_Source_K8S_Clusters_Oci_ClusterNameMatch(),
+		},
 		"compartment_id": types.StringType,
-		"region":         types.StringType,
+		"compartment_id_match": types.ObjectType{
+			AttrTypes: GetTypeAttrsForPolicyVersion_Rules_Source_K8S_Clusters_Oci_CompartmentIdMatch(),
+		},
+		"region": types.StringType,
+		"region_match": types.ObjectType{
+			AttrTypes: GetTypeAttrsForPolicyVersion_Rules_Source_K8S_Clusters_Oci_RegionMatch(),
+		},
 	}
 }
 
@@ -13688,9 +15086,12 @@ func ConvertPolicyVersion_Rules_Source_K8S_Clusters_OciToObjectValueFromProto(pr
 	return types.ObjectValueMust(
 		GetTypeAttrsForPolicyVersion_Rules_Source_K8S_Clusters_Oci(),
 		map[string]attr.Value{
-			"cluster_name":   types.StringValue(proto.ClusterName),
-			"compartment_id": types.StringValue(proto.CompartmentId),
-			"region":         types.StringValue(proto.Region),
+			"cluster_name":         types.StringValue(proto.ClusterName),
+			"cluster_name_match":   ConvertPolicyVersion_Rules_Source_K8S_Clusters_Oci_ClusterNameMatchToObjectValueFromProto(proto.ClusterNameMatch),
+			"compartment_id":       types.StringValue(proto.CompartmentId),
+			"compartment_id_match": ConvertPolicyVersion_Rules_Source_K8S_Clusters_Oci_CompartmentIdMatchToObjectValueFromProto(proto.CompartmentIdMatch),
+			"region":               types.StringValue(proto.Region),
+			"region_match":         ConvertPolicyVersion_Rules_Source_K8S_Clusters_Oci_RegionMatchToObjectValueFromProto(proto.RegionMatch),
 		},
 	)
 }
@@ -13706,8 +15107,191 @@ func ConvertDataValueToPolicyVersion_Rules_Source_K8S_Clusters_OciProto(ctx cont
 	}
 	proto := &configv1.PolicyVersion_Rules_Source_K8S_Clusters_Oci{}
 	proto.ClusterName = pv.ClusterName.ValueString()
+	pvModelClusterNameMatch, dvDiagsClusterNameMatch := ConvertDataValueToPolicyVersion_Rules_Source_K8S_Clusters_Oci_ClusterNameMatchProto(ctx, pv.ClusterNameMatch)
+	diags.Append(dvDiagsClusterNameMatch...)
+	if diags.HasError() {
+		return nil, diags
+	}
+	proto.ClusterNameMatch = pvModelClusterNameMatch
 	proto.CompartmentId = pv.CompartmentId.ValueString()
+	pvModelCompartmentIdMatch, dvDiagsCompartmentIdMatch := ConvertDataValueToPolicyVersion_Rules_Source_K8S_Clusters_Oci_CompartmentIdMatchProto(ctx, pv.CompartmentIdMatch)
+	diags.Append(dvDiagsCompartmentIdMatch...)
+	if diags.HasError() {
+		return nil, diags
+	}
+	proto.CompartmentIdMatch = pvModelCompartmentIdMatch
 	proto.Region = pv.Region.ValueString()
+	pvModelRegionMatch, dvDiagsRegionMatch := ConvertDataValueToPolicyVersion_Rules_Source_K8S_Clusters_Oci_RegionMatchProto(ctx, pv.RegionMatch)
+	diags.Append(dvDiagsRegionMatch...)
+	if diags.HasError() {
+		return nil, diags
+	}
+	proto.RegionMatch = pvModelRegionMatch
+	return proto, diags
+}
+
+type PolicyVersion_Rules_Source_K8S_Clusters_Oci_ClusterNameMatch struct {
+	Operator types.String `tfsdk:"operator"`
+	Values   types.List   `tfsdk:"values"`
+}
+
+func GetTypeAttrsForPolicyVersion_Rules_Source_K8S_Clusters_Oci_ClusterNameMatch() map[string]attr.Type {
+	return map[string]attr.Type{
+		"operator": types.StringType,
+		"values":   types.ListType{ElemType: types.StringType},
+	}
+}
+
+func ConvertPolicyVersion_Rules_Source_K8S_Clusters_Oci_ClusterNameMatchToObjectValueFromProto(proto *configv1.PolicyVersion_Rules_Source_K8S_Clusters_Oci_ClusterNameMatch) basetypes.ObjectValue {
+	if proto == nil {
+		return types.ObjectNull(GetTypeAttrsForPolicyVersion_Rules_Source_K8S_Clusters_Oci_ClusterNameMatch())
+	}
+	elementsInValues := make([]attr.Value, 0, len(proto.Values))
+	for _, item := range proto.Values {
+		elementsInValues = append(elementsInValues, types.StringValue(item))
+	}
+	return types.ObjectValueMust(
+		GetTypeAttrsForPolicyVersion_Rules_Source_K8S_Clusters_Oci_ClusterNameMatch(),
+		map[string]attr.Value{
+			"operator": types.StringValue(proto.Operator),
+			"values": func() basetypes.ListValue {
+				if proto.Values == nil {
+					return types.ListNull(types.StringType)
+				}
+				return types.ListValueMust(types.StringType, elementsInValues)
+			}(),
+		},
+	)
+}
+
+func ConvertDataValueToPolicyVersion_Rules_Source_K8S_Clusters_Oci_ClusterNameMatchProto(ctx context.Context, dataValue attr.Value) (*configv1.PolicyVersion_Rules_Source_K8S_Clusters_Oci_ClusterNameMatch, diag.Diagnostics) {
+	if dataValue.IsNull() || dataValue.IsUnknown() {
+		return nil, nil
+	}
+	pv := PolicyVersion_Rules_Source_K8S_Clusters_Oci_ClusterNameMatch{}
+	diags := tfsdk.ValueAs(ctx, dataValue, &pv)
+	if diags.HasError() {
+		return nil, diags
+	}
+	proto := &configv1.PolicyVersion_Rules_Source_K8S_Clusters_Oci_ClusterNameMatch{}
+	proto.Operator = pv.Operator.ValueString()
+	var pvModelValues []string
+	dvDiagsValues := pv.Values.ElementsAs(ctx, &pvModelValues, false)
+	diags.Append(dvDiagsValues...)
+	if diags.HasError() {
+		return nil, diags
+	}
+	proto.Values = pvModelValues
+	return proto, diags
+}
+
+type PolicyVersion_Rules_Source_K8S_Clusters_Oci_CompartmentIdMatch struct {
+	Operator types.String `tfsdk:"operator"`
+	Values   types.List   `tfsdk:"values"`
+}
+
+func GetTypeAttrsForPolicyVersion_Rules_Source_K8S_Clusters_Oci_CompartmentIdMatch() map[string]attr.Type {
+	return map[string]attr.Type{
+		"operator": types.StringType,
+		"values":   types.ListType{ElemType: types.StringType},
+	}
+}
+
+func ConvertPolicyVersion_Rules_Source_K8S_Clusters_Oci_CompartmentIdMatchToObjectValueFromProto(proto *configv1.PolicyVersion_Rules_Source_K8S_Clusters_Oci_CompartmentIdMatch) basetypes.ObjectValue {
+	if proto == nil {
+		return types.ObjectNull(GetTypeAttrsForPolicyVersion_Rules_Source_K8S_Clusters_Oci_CompartmentIdMatch())
+	}
+	elementsInValues := make([]attr.Value, 0, len(proto.Values))
+	for _, item := range proto.Values {
+		elementsInValues = append(elementsInValues, types.StringValue(item))
+	}
+	return types.ObjectValueMust(
+		GetTypeAttrsForPolicyVersion_Rules_Source_K8S_Clusters_Oci_CompartmentIdMatch(),
+		map[string]attr.Value{
+			"operator": types.StringValue(proto.Operator),
+			"values": func() basetypes.ListValue {
+				if proto.Values == nil {
+					return types.ListNull(types.StringType)
+				}
+				return types.ListValueMust(types.StringType, elementsInValues)
+			}(),
+		},
+	)
+}
+
+func ConvertDataValueToPolicyVersion_Rules_Source_K8S_Clusters_Oci_CompartmentIdMatchProto(ctx context.Context, dataValue attr.Value) (*configv1.PolicyVersion_Rules_Source_K8S_Clusters_Oci_CompartmentIdMatch, diag.Diagnostics) {
+	if dataValue.IsNull() || dataValue.IsUnknown() {
+		return nil, nil
+	}
+	pv := PolicyVersion_Rules_Source_K8S_Clusters_Oci_CompartmentIdMatch{}
+	diags := tfsdk.ValueAs(ctx, dataValue, &pv)
+	if diags.HasError() {
+		return nil, diags
+	}
+	proto := &configv1.PolicyVersion_Rules_Source_K8S_Clusters_Oci_CompartmentIdMatch{}
+	proto.Operator = pv.Operator.ValueString()
+	var pvModelValues []string
+	dvDiagsValues := pv.Values.ElementsAs(ctx, &pvModelValues, false)
+	diags.Append(dvDiagsValues...)
+	if diags.HasError() {
+		return nil, diags
+	}
+	proto.Values = pvModelValues
+	return proto, diags
+}
+
+type PolicyVersion_Rules_Source_K8S_Clusters_Oci_RegionMatch struct {
+	Operator types.String `tfsdk:"operator"`
+	Values   types.List   `tfsdk:"values"`
+}
+
+func GetTypeAttrsForPolicyVersion_Rules_Source_K8S_Clusters_Oci_RegionMatch() map[string]attr.Type {
+	return map[string]attr.Type{
+		"operator": types.StringType,
+		"values":   types.ListType{ElemType: types.StringType},
+	}
+}
+
+func ConvertPolicyVersion_Rules_Source_K8S_Clusters_Oci_RegionMatchToObjectValueFromProto(proto *configv1.PolicyVersion_Rules_Source_K8S_Clusters_Oci_RegionMatch) basetypes.ObjectValue {
+	if proto == nil {
+		return types.ObjectNull(GetTypeAttrsForPolicyVersion_Rules_Source_K8S_Clusters_Oci_RegionMatch())
+	}
+	elementsInValues := make([]attr.Value, 0, len(proto.Values))
+	for _, item := range proto.Values {
+		elementsInValues = append(elementsInValues, types.StringValue(item))
+	}
+	return types.ObjectValueMust(
+		GetTypeAttrsForPolicyVersion_Rules_Source_K8S_Clusters_Oci_RegionMatch(),
+		map[string]attr.Value{
+			"operator": types.StringValue(proto.Operator),
+			"values": func() basetypes.ListValue {
+				if proto.Values == nil {
+					return types.ListNull(types.StringType)
+				}
+				return types.ListValueMust(types.StringType, elementsInValues)
+			}(),
+		},
+	)
+}
+
+func ConvertDataValueToPolicyVersion_Rules_Source_K8S_Clusters_Oci_RegionMatchProto(ctx context.Context, dataValue attr.Value) (*configv1.PolicyVersion_Rules_Source_K8S_Clusters_Oci_RegionMatch, diag.Diagnostics) {
+	if dataValue.IsNull() || dataValue.IsUnknown() {
+		return nil, nil
+	}
+	pv := PolicyVersion_Rules_Source_K8S_Clusters_Oci_RegionMatch{}
+	diags := tfsdk.ValueAs(ctx, dataValue, &pv)
+	if diags.HasError() {
+		return nil, diags
+	}
+	proto := &configv1.PolicyVersion_Rules_Source_K8S_Clusters_Oci_RegionMatch{}
+	proto.Operator = pv.Operator.ValueString()
+	var pvModelValues []string
+	dvDiagsValues := pv.Values.ElementsAs(ctx, &pvModelValues, false)
+	diags.Append(dvDiagsValues...)
+	if diags.HasError() {
+		return nil, diags
+	}
+	proto.Values = pvModelValues
 	return proto, diags
 }
 
