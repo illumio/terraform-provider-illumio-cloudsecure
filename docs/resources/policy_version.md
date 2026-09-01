@@ -610,11 +610,8 @@ Optional:
 
 Required:
 
-- `operator` (String) Match operator. Must be one of: In, NotIn, Exists, DoesNotExist.
-
-Optional:
-
-- `values` (List of String) Values to match against. Required for In and NotIn, and must be omitted for Exists and DoesNotExist.
+- `operator` (String) Match operator. Must be one of: In, NotIn.
+- `values` (List of String) Values to match against. Must contain at least one value.
 
 
 <a id="nestedatt--rules--destination--k8s--clusters--aws--cluster_name_match"></a>
@@ -622,11 +619,8 @@ Optional:
 
 Required:
 
-- `operator` (String) Match operator. Must be one of: In, NotIn, Exists, DoesNotExist.
-
-Optional:
-
-- `values` (List of String) Values to match against. Required for In and NotIn, and must be omitted for Exists and DoesNotExist.
+- `operator` (String) Match operator. Must be one of: In, NotIn.
+- `values` (List of String) Values to match against. Must contain at least one value.
 
 
 <a id="nestedatt--rules--destination--k8s--clusters--aws--region_match"></a>
@@ -634,11 +628,8 @@ Optional:
 
 Required:
 
-- `operator` (String) Match operator. Must be one of: In, NotIn, Exists, DoesNotExist.
-
-Optional:
-
-- `values` (List of String) Values to match against. Required for In and NotIn, and must be omitted for Exists and DoesNotExist.
+- `operator` (String) Match operator. Must be one of: In, NotIn.
+- `values` (List of String) Values to match against. Must contain at least one value.
 
 
 
@@ -659,11 +650,8 @@ Optional:
 
 Required:
 
-- `operator` (String) Match operator. Must be one of: In, NotIn, Exists, DoesNotExist.
-
-Optional:
-
-- `values` (List of String) Values to match against. Required for In and NotIn, and must be omitted for Exists and DoesNotExist.
+- `operator` (String) Match operator. Must be one of: In, NotIn.
+- `values` (List of String) Values to match against. Must contain at least one value.
 
 
 <a id="nestedatt--rules--destination--k8s--clusters--azure--resource_group_match"></a>
@@ -671,11 +659,8 @@ Optional:
 
 Required:
 
-- `operator` (String) Match operator. Must be one of: In, NotIn, Exists, DoesNotExist.
-
-Optional:
-
-- `values` (List of String) Values to match against. Required for In and NotIn, and must be omitted for Exists and DoesNotExist.
+- `operator` (String) Match operator. Must be one of: In, NotIn.
+- `values` (List of String) Values to match against. Must contain at least one value.
 
 
 <a id="nestedatt--rules--destination--k8s--clusters--azure--subscription_id_match"></a>
@@ -683,11 +668,8 @@ Optional:
 
 Required:
 
-- `operator` (String) Match operator. Must be one of: In, NotIn, Exists, DoesNotExist.
-
-Optional:
-
-- `values` (List of String) Values to match against. Required for In and NotIn, and must be omitted for Exists and DoesNotExist.
+- `operator` (String) Match operator. Must be one of: In, NotIn.
+- `values` (List of String) Values to match against. Must contain at least one value.
 
 
 
@@ -708,11 +690,8 @@ Optional:
 
 Required:
 
-- `operator` (String) Match operator. Must be one of: In, NotIn, Exists, DoesNotExist.
-
-Optional:
-
-- `values` (List of String) Values to match against. Required for In and NotIn, and must be omitted for Exists and DoesNotExist.
+- `operator` (String) Match operator. Must be one of: In, NotIn.
+- `values` (List of String) Values to match against. Must contain at least one value.
 
 
 <a id="nestedatt--rules--destination--k8s--clusters--gcp--location_match"></a>
@@ -720,11 +699,8 @@ Optional:
 
 Required:
 
-- `operator` (String) Match operator. Must be one of: In, NotIn, Exists, DoesNotExist.
-
-Optional:
-
-- `values` (List of String) Values to match against. Required for In and NotIn, and must be omitted for Exists and DoesNotExist.
+- `operator` (String) Match operator. Must be one of: In, NotIn.
+- `values` (List of String) Values to match against. Must contain at least one value.
 
 
 <a id="nestedatt--rules--destination--k8s--clusters--gcp--project_id_match"></a>
@@ -732,11 +708,8 @@ Optional:
 
 Required:
 
-- `operator` (String) Match operator. Must be one of: In, NotIn, Exists, DoesNotExist.
-
-Optional:
-
-- `values` (List of String) Values to match against. Required for In and NotIn, and must be omitted for Exists and DoesNotExist.
+- `operator` (String) Match operator. Must be one of: In, NotIn.
+- `values` (List of String) Values to match against. Must contain at least one value.
 
 
 
@@ -757,11 +730,8 @@ Optional:
 
 Required:
 
-- `operator` (String) Match operator. Must be one of: In, NotIn, Exists, DoesNotExist.
-
-Optional:
-
-- `values` (List of String) Values to match against. Required for In and NotIn, and must be omitted for Exists and DoesNotExist.
+- `operator` (String) Match operator. Must be one of: In, NotIn.
+- `values` (List of String) Values to match against. Must contain at least one value.
 
 
 <a id="nestedatt--rules--destination--k8s--clusters--oci--compartment_id_match"></a>
@@ -769,11 +739,8 @@ Optional:
 
 Required:
 
-- `operator` (String) Match operator. Must be one of: In, NotIn, Exists, DoesNotExist.
-
-Optional:
-
-- `values` (List of String) Values to match against. Required for In and NotIn, and must be omitted for Exists and DoesNotExist.
+- `operator` (String) Match operator. Must be one of: In, NotIn.
+- `values` (List of String) Values to match against. Must contain at least one value.
 
 
 <a id="nestedatt--rules--destination--k8s--clusters--oci--region_match"></a>
@@ -781,11 +748,8 @@ Optional:
 
 Required:
 
-- `operator` (String) Match operator. Must be one of: In, NotIn, Exists, DoesNotExist.
-
-Optional:
-
-- `values` (List of String) Values to match against. Required for In and NotIn, and must be omitted for Exists and DoesNotExist.
+- `operator` (String) Match operator. Must be one of: In, NotIn.
+- `values` (List of String) Values to match against. Must contain at least one value.
 
 
 
@@ -1052,11 +1016,8 @@ Optional:
 
 Required:
 
-- `operator` (String) Match operator. Must be one of: In, NotIn, Exists, DoesNotExist.
-
-Optional:
-
-- `values` (List of String) Values to match against. Required for In and NotIn, and must be omitted for Exists and DoesNotExist.
+- `operator` (String) Match operator. Must be one of: In, NotIn.
+- `values` (List of String) Values to match against. Must contain at least one value.
 
 
 <a id="nestedatt--rules--source--k8s--clusters--aws--cluster_name_match"></a>
@@ -1064,11 +1025,8 @@ Optional:
 
 Required:
 
-- `operator` (String) Match operator. Must be one of: In, NotIn, Exists, DoesNotExist.
-
-Optional:
-
-- `values` (List of String) Values to match against. Required for In and NotIn, and must be omitted for Exists and DoesNotExist.
+- `operator` (String) Match operator. Must be one of: In, NotIn.
+- `values` (List of String) Values to match against. Must contain at least one value.
 
 
 <a id="nestedatt--rules--source--k8s--clusters--aws--region_match"></a>
@@ -1076,11 +1034,8 @@ Optional:
 
 Required:
 
-- `operator` (String) Match operator. Must be one of: In, NotIn, Exists, DoesNotExist.
-
-Optional:
-
-- `values` (List of String) Values to match against. Required for In and NotIn, and must be omitted for Exists and DoesNotExist.
+- `operator` (String) Match operator. Must be one of: In, NotIn.
+- `values` (List of String) Values to match against. Must contain at least one value.
 
 
 
@@ -1101,11 +1056,8 @@ Optional:
 
 Required:
 
-- `operator` (String) Match operator. Must be one of: In, NotIn, Exists, DoesNotExist.
-
-Optional:
-
-- `values` (List of String) Values to match against. Required for In and NotIn, and must be omitted for Exists and DoesNotExist.
+- `operator` (String) Match operator. Must be one of: In, NotIn.
+- `values` (List of String) Values to match against. Must contain at least one value.
 
 
 <a id="nestedatt--rules--source--k8s--clusters--azure--resource_group_match"></a>
@@ -1113,11 +1065,8 @@ Optional:
 
 Required:
 
-- `operator` (String) Match operator. Must be one of: In, NotIn, Exists, DoesNotExist.
-
-Optional:
-
-- `values` (List of String) Values to match against. Required for In and NotIn, and must be omitted for Exists and DoesNotExist.
+- `operator` (String) Match operator. Must be one of: In, NotIn.
+- `values` (List of String) Values to match against. Must contain at least one value.
 
 
 <a id="nestedatt--rules--source--k8s--clusters--azure--subscription_id_match"></a>
@@ -1125,11 +1074,8 @@ Optional:
 
 Required:
 
-- `operator` (String) Match operator. Must be one of: In, NotIn, Exists, DoesNotExist.
-
-Optional:
-
-- `values` (List of String) Values to match against. Required for In and NotIn, and must be omitted for Exists and DoesNotExist.
+- `operator` (String) Match operator. Must be one of: In, NotIn.
+- `values` (List of String) Values to match against. Must contain at least one value.
 
 
 
@@ -1150,11 +1096,8 @@ Optional:
 
 Required:
 
-- `operator` (String) Match operator. Must be one of: In, NotIn, Exists, DoesNotExist.
-
-Optional:
-
-- `values` (List of String) Values to match against. Required for In and NotIn, and must be omitted for Exists and DoesNotExist.
+- `operator` (String) Match operator. Must be one of: In, NotIn.
+- `values` (List of String) Values to match against. Must contain at least one value.
 
 
 <a id="nestedatt--rules--source--k8s--clusters--gcp--location_match"></a>
@@ -1162,11 +1105,8 @@ Optional:
 
 Required:
 
-- `operator` (String) Match operator. Must be one of: In, NotIn, Exists, DoesNotExist.
-
-Optional:
-
-- `values` (List of String) Values to match against. Required for In and NotIn, and must be omitted for Exists and DoesNotExist.
+- `operator` (String) Match operator. Must be one of: In, NotIn.
+- `values` (List of String) Values to match against. Must contain at least one value.
 
 
 <a id="nestedatt--rules--source--k8s--clusters--gcp--project_id_match"></a>
@@ -1174,11 +1114,8 @@ Optional:
 
 Required:
 
-- `operator` (String) Match operator. Must be one of: In, NotIn, Exists, DoesNotExist.
-
-Optional:
-
-- `values` (List of String) Values to match against. Required for In and NotIn, and must be omitted for Exists and DoesNotExist.
+- `operator` (String) Match operator. Must be one of: In, NotIn.
+- `values` (List of String) Values to match against. Must contain at least one value.
 
 
 
@@ -1199,11 +1136,8 @@ Optional:
 
 Required:
 
-- `operator` (String) Match operator. Must be one of: In, NotIn, Exists, DoesNotExist.
-
-Optional:
-
-- `values` (List of String) Values to match against. Required for In and NotIn, and must be omitted for Exists and DoesNotExist.
+- `operator` (String) Match operator. Must be one of: In, NotIn.
+- `values` (List of String) Values to match against. Must contain at least one value.
 
 
 <a id="nestedatt--rules--source--k8s--clusters--oci--compartment_id_match"></a>
@@ -1211,11 +1145,8 @@ Optional:
 
 Required:
 
-- `operator` (String) Match operator. Must be one of: In, NotIn, Exists, DoesNotExist.
-
-Optional:
-
-- `values` (List of String) Values to match against. Required for In and NotIn, and must be omitted for Exists and DoesNotExist.
+- `operator` (String) Match operator. Must be one of: In, NotIn.
+- `values` (List of String) Values to match against. Must contain at least one value.
 
 
 <a id="nestedatt--rules--source--k8s--clusters--oci--region_match"></a>
@@ -1223,11 +1154,8 @@ Optional:
 
 Required:
 
-- `operator` (String) Match operator. Must be one of: In, NotIn, Exists, DoesNotExist.
-
-Optional:
-
-- `values` (List of String) Values to match against. Required for In and NotIn, and must be omitted for Exists and DoesNotExist.
+- `operator` (String) Match operator. Must be one of: In, NotIn.
+- `values` (List of String) Values to match against. Must contain at least one value.
 
 
 
