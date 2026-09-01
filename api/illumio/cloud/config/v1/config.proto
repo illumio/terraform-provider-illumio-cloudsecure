@@ -70,6 +70,18 @@ service ConfigService {
   rpc ReadOrganizationPolicyRule(ReadOrganizationPolicyRuleRequest) returns (ReadOrganizationPolicyRuleResponse);
   rpc UpdateOrganizationPolicyRule(UpdateOrganizationPolicyRuleRequest) returns (UpdateOrganizationPolicyRuleResponse);
   rpc DeleteOrganizationPolicyRule(DeleteOrganizationPolicyRuleRequest) returns (google.protobuf.Empty);
+  rpc CreatePolicy(CreatePolicyRequest) returns (CreatePolicyResponse);
+  rpc ReadPolicy(ReadPolicyRequest) returns (ReadPolicyResponse);
+  rpc UpdatePolicy(UpdatePolicyRequest) returns (UpdatePolicyResponse);
+  rpc DeletePolicy(DeletePolicyRequest) returns (google.protobuf.Empty);
+  rpc CreatePolicyProvision(CreatePolicyProvisionRequest) returns (CreatePolicyProvisionResponse);
+  rpc ReadPolicyProvision(ReadPolicyProvisionRequest) returns (ReadPolicyProvisionResponse);
+  rpc UpdatePolicyProvision(UpdatePolicyProvisionRequest) returns (UpdatePolicyProvisionResponse);
+  rpc DeletePolicyProvision(DeletePolicyProvisionRequest) returns (google.protobuf.Empty);
+  rpc CreatePolicyVersion(CreatePolicyVersionRequest) returns (CreatePolicyVersionResponse);
+  rpc ReadPolicyVersion(ReadPolicyVersionRequest) returns (ReadPolicyVersionResponse);
+  rpc UpdatePolicyVersion(UpdatePolicyVersionRequest) returns (UpdatePolicyVersionResponse);
+  rpc DeletePolicyVersion(DeletePolicyVersionRequest) returns (google.protobuf.Empty);
   rpc CreateTagToLabel(CreateTagToLabelRequest) returns (CreateTagToLabelResponse);
   rpc ReadTagToLabel(ReadTagToLabelRequest) returns (ReadTagToLabelResponse);
   rpc UpdateTagToLabel(UpdateTagToLabelRequest) returns (UpdateTagToLabelResponse);
@@ -879,6 +891,489 @@ message UpdateOrganizationPolicyRuleResponse {
   repeated OrganizationPolicyRule_ToPortRanges to_port_ranges = 9;
 }
 message DeleteOrganizationPolicyRuleRequest {
+  string id = 1;
+}
+message CreatePolicyRequest {
+  optional string description = 2;
+  string name = 3;
+}
+message CreatePolicyResponse {
+  string id = 1;
+  optional string description = 2;
+  string name = 3;
+}
+message ReadPolicyRequest {
+  string id = 1;
+}
+message ReadPolicyResponse {
+  string id = 1;
+  optional string description = 2;
+  string name = 3;
+}
+message UpdatePolicyRequest {
+  string id = 1;
+  optional string description = 2;
+  string name = 3;
+  google.protobuf.FieldMask update_mask = 4;
+}
+message UpdatePolicyResponse {
+  string id = 1;
+  optional string description = 2;
+  string name = 3;
+}
+message DeletePolicyRequest {
+  string id = 1;
+}
+message CreatePolicyProvisionRequest {
+  string policy_version_id = 5;
+}
+message CreatePolicyProvisionResponse {
+  string id = 1;
+  string policy_version_id = 5;
+}
+message ReadPolicyProvisionRequest {
+  string id = 1;
+}
+message ReadPolicyProvisionResponse {
+  string id = 1;
+  string policy_version_id = 5;
+}
+message UpdatePolicyProvisionRequest {
+  string id = 1;
+  string policy_version_id = 5;
+  google.protobuf.FieldMask update_mask = 4;
+}
+message UpdatePolicyProvisionResponse {
+  string id = 1;
+  string policy_version_id = 5;
+}
+message DeletePolicyProvisionRequest {
+  string id = 1;
+}
+message PolicyVersion_Rules {
+  message Destination {
+    message Cloud {
+      message Aws {
+        message Network {
+          message Subnets {
+            string id = 1;
+            string account_id = 2;
+            string region = 3;
+          }
+          message Vpcs {
+            string id = 1;
+            string account_id = 2;
+            string region = 3;
+          }
+          repeated Subnets subnets = 1;
+          repeated Vpcs vpcs = 2;
+        }
+        message OrgSelector {
+          message Accounts {
+            string id = 1;
+          }
+          repeated Accounts accounts = 1;
+        }
+        Network network = 1;
+        OrgSelector org_selector = 2;
+      }
+      message Azure {
+        message Network {
+          message Subnets {
+            string id = 1;
+          }
+          message Vnets {
+            string id = 1;
+            string resource_group = 2;
+            string subscription_id = 3;
+          }
+          repeated Subnets subnets = 1;
+          repeated Vnets vnets = 2;
+        }
+        message OrgSelector {
+          message Subscriptions {
+            string id = 1;
+          }
+          repeated Subscriptions subscriptions = 1;
+        }
+        Network network = 1;
+        OrgSelector org_selector = 2;
+      }
+      Aws aws = 1;
+      Azure azure = 2;
+    }
+    message Fqdns {
+      repeated string names = 1;
+    }
+    message IllumioLabels {
+      message Labels {
+        string key = 1;
+        repeated string values = 2;
+      }
+      repeated Labels labels = 1;
+    }
+    message IpLists {
+      repeated string ids = 2;
+    }
+    message K8S {
+      message Clusters {
+        message Aws {
+          message AccountIdMatch {
+            string operator = 1;
+            repeated string values = 2;
+          }
+          message ClusterNameMatch {
+            string operator = 1;
+            repeated string values = 2;
+          }
+          message RegionMatch {
+            string operator = 1;
+            repeated string values = 2;
+          }
+          string account_id = 1;
+          AccountIdMatch account_id_match = 4;
+          string cluster_name = 2;
+          ClusterNameMatch cluster_name_match = 5;
+          string region = 3;
+          RegionMatch region_match = 6;
+        }
+        message Azure {
+          message ClusterNameMatch {
+            string operator = 1;
+            repeated string values = 2;
+          }
+          message ResourceGroupMatch {
+            string operator = 1;
+            repeated string values = 2;
+          }
+          message SubscriptionIdMatch {
+            string operator = 1;
+            repeated string values = 2;
+          }
+          string cluster_name = 1;
+          ClusterNameMatch cluster_name_match = 4;
+          string resource_group = 2;
+          ResourceGroupMatch resource_group_match = 5;
+          string subscription_id = 3;
+          SubscriptionIdMatch subscription_id_match = 6;
+        }
+        message Gcp {
+          message ClusterNameMatch {
+            string operator = 1;
+            repeated string values = 2;
+          }
+          message LocationMatch {
+            string operator = 1;
+            repeated string values = 2;
+          }
+          message ProjectIdMatch {
+            string operator = 1;
+            repeated string values = 2;
+          }
+          string cluster_name = 1;
+          ClusterNameMatch cluster_name_match = 4;
+          string location = 2;
+          LocationMatch location_match = 5;
+          string project_id = 3;
+          ProjectIdMatch project_id_match = 6;
+        }
+        message Oci {
+          message ClusterNameMatch {
+            string operator = 1;
+            repeated string values = 2;
+          }
+          message CompartmentIdMatch {
+            string operator = 1;
+            repeated string values = 2;
+          }
+          message RegionMatch {
+            string operator = 1;
+            repeated string values = 2;
+          }
+          string cluster_name = 1;
+          ClusterNameMatch cluster_name_match = 4;
+          string compartment_id = 2;
+          CompartmentIdMatch compartment_id_match = 5;
+          string region = 3;
+          RegionMatch region_match = 6;
+        }
+        string id = 5;
+        Aws aws = 1;
+        Azure azure = 2;
+        Gcp gcp = 3;
+        Oci oci = 4;
+      }
+      message NamespaceSelector {
+        message MatchExpressions {
+          string key = 1;
+          string operator = 2;
+          repeated string values = 3;
+        }
+        message MatchLabels {
+          string key = 1;
+          string value = 2;
+        }
+        repeated MatchExpressions match_expressions = 1;
+        repeated MatchLabels match_labels = 2;
+      }
+      message WorkloadSelector {
+        message MatchExpressions {
+          string key = 1;
+          string operator = 2;
+          repeated string values = 3;
+        }
+        message MatchLabels {
+          string key = 1;
+          string value = 2;
+        }
+        repeated MatchExpressions match_expressions = 1;
+        repeated MatchLabels match_labels = 2;
+        repeated string service_accounts = 3;
+      }
+      repeated Clusters clusters = 1;
+      repeated string gateways = 4;
+      repeated string ingresses = 5;
+      NamespaceSelector namespace_selector = 2;
+      repeated string services = 6;
+      WorkloadSelector workload_selector = 3;
+    }
+    Cloud cloud = 1;
+    Fqdns fqdns = 2;
+    IllumioLabels illumio_labels = 3;
+    IpLists ip_lists = 4;
+    K8S k8s = 5;
+  }
+  message PortRanges {
+    int64 from_port = 1;
+    string protocol = 2;
+    int64 to_port = 3;
+  }
+  message Source {
+    message Cloud {
+      message Aws {
+        message Network {
+          message Subnets {
+            string id = 1;
+            string account_id = 2;
+            string region = 3;
+          }
+          message Vpcs {
+            string id = 1;
+            string account_id = 2;
+            string region = 3;
+          }
+          repeated Subnets subnets = 1;
+          repeated Vpcs vpcs = 2;
+        }
+        message OrgSelector {
+          message Accounts {
+            string id = 1;
+          }
+          repeated Accounts accounts = 1;
+        }
+        Network network = 1;
+        OrgSelector org_selector = 2;
+      }
+      message Azure {
+        message Network {
+          message Subnets {
+            string id = 1;
+          }
+          message Vnets {
+            string id = 1;
+            string resource_group = 2;
+            string subscription_id = 3;
+          }
+          repeated Subnets subnets = 1;
+          repeated Vnets vnets = 2;
+        }
+        message OrgSelector {
+          message Subscriptions {
+            string id = 1;
+          }
+          repeated Subscriptions subscriptions = 1;
+        }
+        Network network = 1;
+        OrgSelector org_selector = 2;
+      }
+      Aws aws = 1;
+      Azure azure = 2;
+    }
+    message IllumioLabels {
+      message Labels {
+        string key = 1;
+        repeated string values = 2;
+      }
+      repeated Labels labels = 1;
+    }
+    message IpLists {
+      repeated string ids = 2;
+    }
+    message K8S {
+      message Clusters {
+        message Aws {
+          message AccountIdMatch {
+            string operator = 1;
+            repeated string values = 2;
+          }
+          message ClusterNameMatch {
+            string operator = 1;
+            repeated string values = 2;
+          }
+          message RegionMatch {
+            string operator = 1;
+            repeated string values = 2;
+          }
+          string account_id = 1;
+          AccountIdMatch account_id_match = 4;
+          string cluster_name = 2;
+          ClusterNameMatch cluster_name_match = 5;
+          string region = 3;
+          RegionMatch region_match = 6;
+        }
+        message Azure {
+          message ClusterNameMatch {
+            string operator = 1;
+            repeated string values = 2;
+          }
+          message ResourceGroupMatch {
+            string operator = 1;
+            repeated string values = 2;
+          }
+          message SubscriptionIdMatch {
+            string operator = 1;
+            repeated string values = 2;
+          }
+          string cluster_name = 1;
+          ClusterNameMatch cluster_name_match = 4;
+          string resource_group = 2;
+          ResourceGroupMatch resource_group_match = 5;
+          string subscription_id = 3;
+          SubscriptionIdMatch subscription_id_match = 6;
+        }
+        message Gcp {
+          message ClusterNameMatch {
+            string operator = 1;
+            repeated string values = 2;
+          }
+          message LocationMatch {
+            string operator = 1;
+            repeated string values = 2;
+          }
+          message ProjectIdMatch {
+            string operator = 1;
+            repeated string values = 2;
+          }
+          string cluster_name = 1;
+          ClusterNameMatch cluster_name_match = 4;
+          string location = 2;
+          LocationMatch location_match = 5;
+          string project_id = 3;
+          ProjectIdMatch project_id_match = 6;
+        }
+        message Oci {
+          message ClusterNameMatch {
+            string operator = 1;
+            repeated string values = 2;
+          }
+          message CompartmentIdMatch {
+            string operator = 1;
+            repeated string values = 2;
+          }
+          message RegionMatch {
+            string operator = 1;
+            repeated string values = 2;
+          }
+          string cluster_name = 1;
+          ClusterNameMatch cluster_name_match = 4;
+          string compartment_id = 2;
+          CompartmentIdMatch compartment_id_match = 5;
+          string region = 3;
+          RegionMatch region_match = 6;
+        }
+        string id = 5;
+        Aws aws = 1;
+        Azure azure = 2;
+        Gcp gcp = 3;
+        Oci oci = 4;
+      }
+      message NamespaceSelector {
+        message MatchExpressions {
+          string key = 1;
+          string operator = 2;
+          repeated string values = 3;
+        }
+        message MatchLabels {
+          string key = 1;
+          string value = 2;
+        }
+        repeated MatchExpressions match_expressions = 1;
+        repeated MatchLabels match_labels = 2;
+      }
+      message WorkloadSelector {
+        message MatchExpressions {
+          string key = 1;
+          string operator = 2;
+          repeated string values = 3;
+        }
+        message MatchLabels {
+          string key = 1;
+          string value = 2;
+        }
+        repeated MatchExpressions match_expressions = 1;
+        repeated MatchLabels match_labels = 2;
+        repeated string service_accounts = 3;
+      }
+      repeated Clusters clusters = 1;
+      NamespaceSelector namespace_selector = 2;
+      WorkloadSelector workload_selector = 3;
+    }
+    Cloud cloud = 1;
+    IllumioLabels illumio_labels = 2;
+    IpLists ip_lists = 3;
+    K8S k8s = 4;
+  }
+  string action = 1;
+  Destination destination = 2;
+  repeated PortRanges port_ranges = 3;
+  Source source = 4;
+}
+message CreatePolicyVersionRequest {
+  optional string description = 2;
+  string policy_id = 3;
+  map<string, PolicyVersion_Rules> rules = 5;
+  int64 version_number = 6;
+}
+message CreatePolicyVersionResponse {
+  string id = 1;
+  optional string description = 2;
+  string policy_id = 3;
+  map<string, PolicyVersion_Rules> rules = 5;
+  int64 version_number = 6;
+}
+message ReadPolicyVersionRequest {
+  string id = 1;
+}
+message ReadPolicyVersionResponse {
+  string id = 1;
+  optional string description = 2;
+  string policy_id = 3;
+  map<string, PolicyVersion_Rules> rules = 5;
+  int64 version_number = 6;
+}
+message UpdatePolicyVersionRequest {
+  string id = 1;
+  int64 version_number = 6;
+  google.protobuf.FieldMask update_mask = 4;
+}
+message UpdatePolicyVersionResponse {
+  string id = 1;
+  optional string description = 2;
+  string policy_id = 3;
+  map<string, PolicyVersion_Rules> rules = 5;
+  int64 version_number = 6;
+}
+message DeletePolicyVersionRequest {
   string id = 1;
 }
 message TagToLabel_Icon {

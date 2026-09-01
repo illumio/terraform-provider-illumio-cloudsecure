@@ -70,6 +70,12 @@ func (p *Provider) Resources(ctx context.Context) []func() resource.Resource {
 			resp = append(resp, func() resource.Resource { return NewOrganizationPolicyResource(r.Schema) })
 		case "organization_policy_rule":
 			resp = append(resp, func() resource.Resource { return NewOrganizationPolicyRuleResource(r.Schema) })
+		case "policy":
+			resp = append(resp, func() resource.Resource { return NewPolicyResource(r.Schema) })
+		case "policy_provision":
+			resp = append(resp, func() resource.Resource { return NewPolicyProvisionResource(r.Schema) })
+		case "policy_version":
+			resp = append(resp, func() resource.Resource { return NewPolicyVersionResource(r.Schema) })
 		case "tag_to_label":
 			resp = append(resp, func() resource.Resource { return NewTagToLabelResource(r.Schema) })
 		}
@@ -3187,6 +3193,588 @@ func (r *OrganizationPolicyRuleResource) ImportState(ctx context.Context, req re
 	// TODO
 }
 
+// PolicyResource implements the policy resource.
+type PolicyResource struct {
+	// schema is the schema of the policy resource.
+	schema resource_schema.Schema
+
+	// providerData is the provider configuration.
+	config ProviderData
+}
+
+var _ resource.ResourceWithConfigure = &PolicyResource{}
+var _ resource.ResourceWithImportState = &PolicyResource{}
+
+// NewPolicyResource returns a new policy resource.
+func NewPolicyResource(schema resource_schema.Schema) resource.Resource {
+	return &PolicyResource{
+		schema: schema,
+	}
+}
+
+func (r *PolicyResource) Metadata(ctx context.Context, req resource.MetadataRequest, resp *resource.MetadataResponse) {
+	resp.TypeName = req.ProviderTypeName + "_policy"
+}
+
+func (r *PolicyResource) Schema(ctx context.Context, req resource.SchemaRequest, resp *resource.SchemaResponse) {
+	resp.Schema = r.schema
+}
+
+func (r *PolicyResource) Configure(ctx context.Context, req resource.ConfigureRequest, resp *resource.ConfigureResponse) {
+	if req.ProviderData == nil {
+		return
+	}
+
+	providerData, ok := req.ProviderData.(ProviderData)
+	if !ok {
+		resp.Diagnostics.AddError(
+			"Unexpected Resource Configure Type",
+			fmt.Sprintf("Expected ProviderData, got: %T. Please report this issue to the provider developers.", req.ProviderData),
+		)
+
+		return
+	}
+
+	r.config = providerData
+}
+
+func (r *PolicyResource) Create(ctx context.Context, req resource.CreateRequest, resp *resource.CreateResponse) {
+	var data PolicyResourceModel
+
+	resp.Diagnostics.Append(req.Plan.Get(ctx, &data)...)
+	if resp.Diagnostics.HasError() {
+		return
+	}
+
+	protoReq, diagReq := NewCreatePolicyRequest(ctx, &data)
+	resp.Diagnostics.Append(diagReq...)
+	if resp.Diagnostics.HasError() {
+		return
+	}
+
+	tflog.Trace(ctx, "creating a resource", map[string]any{"type": "policy"})
+
+	rpcCtx, rpcCancel := context.WithTimeout(ctx, r.config.RequestTimeout())
+	protoResp, err := r.config.Client().CreatePolicy(rpcCtx, protoReq)
+	rpcCancel()
+	if err != nil {
+		resp.Diagnostics.AddError("Config API Error", fmt.Sprintf("Unable to create policy, got error: %s", err))
+		return
+	}
+
+	CopyCreatePolicyResponse(&data, protoResp)
+
+	tflog.Trace(ctx, "created a resource", map[string]any{"type": "policy", "id": protoResp.Id})
+
+	resp.Diagnostics.Append(resp.State.Set(ctx, &data)...)
+}
+
+func (r *PolicyResource) Read(ctx context.Context, req resource.ReadRequest, resp *resource.ReadResponse) {
+	var data PolicyResourceModel
+
+	resp.Diagnostics.Append(req.State.Get(ctx, &data)...)
+	if resp.Diagnostics.HasError() {
+		return
+	}
+
+	protoReq, diagsReq := NewReadPolicyRequest(ctx, &data)
+	resp.Diagnostics.Append(diagsReq...)
+	if resp.Diagnostics.HasError() {
+		return
+	}
+
+	tflog.Trace(ctx, "reading a resource", map[string]any{"type": "policy", "id": protoReq.Id})
+
+	rpcCtx, rpcCancel := context.WithTimeout(ctx, r.config.RequestTimeout())
+	protoResp, err := r.config.Client().ReadPolicy(rpcCtx, protoReq)
+	rpcCancel()
+	if err != nil {
+		switch status.Code(err) {
+		case codes.NotFound:
+			resp.Diagnostics.AddWarning("Resource Not Found", fmt.Sprintf("No policy found with id %s", protoReq.Id))
+			resp.State.RemoveResource(ctx)
+			return
+		default:
+			resp.Diagnostics.AddError("Config API Error", fmt.Sprintf("Unable to read policy, got error: %s", err))
+			return
+		}
+	}
+
+	CopyReadPolicyResponse(&data, protoResp)
+
+	tflog.Trace(ctx, "read a resource", map[string]any{"type": "policy", "id": protoResp.Id})
+
+	resp.Diagnostics.Append(resp.State.Set(ctx, &data)...)
+}
+
+func (r *PolicyResource) Update(ctx context.Context, req resource.UpdateRequest, resp *resource.UpdateResponse) {
+	var beforeData PolicyResourceModel
+	var afterData PolicyResourceModel
+
+	resp.Diagnostics.Append(req.State.Get(ctx, &beforeData)...)
+	if resp.Diagnostics.HasError() {
+		return
+	}
+
+	resp.Diagnostics.Append(req.Plan.Get(ctx, &afterData)...)
+	if resp.Diagnostics.HasError() {
+		return
+	}
+
+	protoReq, diags := NewUpdatePolicyRequest(ctx, &beforeData, &afterData)
+	resp.Diagnostics.Append(diags...)
+	if resp.Diagnostics.HasError() {
+		return
+	}
+
+	tflog.Trace(ctx, "updating a resource", map[string]any{"type": "policy", "id": protoReq.Id, "update_mask": protoReq.UpdateMask.Paths})
+
+	rpcCtx, rpcCancel := context.WithTimeout(ctx, r.config.RequestTimeout())
+	protoResp, err := r.config.Client().UpdatePolicy(rpcCtx, protoReq)
+	rpcCancel()
+	if err != nil {
+		switch status.Code(err) {
+		case codes.NotFound:
+			resp.Diagnostics.AddError("Resource Not Found", fmt.Sprintf("No policy found with id %s", protoReq.Id))
+			resp.State.RemoveResource(ctx)
+			return
+		default:
+			resp.Diagnostics.AddError("Config API Error", fmt.Sprintf("Unable to update policy, got error: %s", err))
+			return
+		}
+	}
+
+	CopyUpdatePolicyResponse(&afterData, protoResp)
+
+	tflog.Trace(ctx, "updated a resource", map[string]any{"type": "policy", "id": protoResp.Id})
+
+	resp.Diagnostics.Append(resp.State.Set(ctx, &afterData)...)
+}
+
+func (r *PolicyResource) Delete(ctx context.Context, req resource.DeleteRequest, resp *resource.DeleteResponse) {
+	var data PolicyResourceModel
+
+	resp.Diagnostics.Append(req.State.Get(ctx, &data)...)
+	if resp.Diagnostics.HasError() {
+		return
+	}
+
+	protoReq, diags := NewDeletePolicyRequest(ctx, &data)
+	resp.Diagnostics.Append(diags...)
+	if resp.Diagnostics.HasError() {
+		return
+	}
+
+	tflog.Trace(ctx, "deleting a resource", map[string]any{"type": "policy", "id": protoReq.Id})
+
+	rpcCtx, rpcCancel := context.WithTimeout(ctx, r.config.RequestTimeout())
+	_, err := r.config.Client().DeletePolicy(rpcCtx, protoReq)
+	rpcCancel()
+	if err != nil {
+		switch status.Code(err) {
+		case codes.NotFound:
+			tflog.Trace(ctx, "resource was already deleted", map[string]any{"type": "policy", "id": protoReq.Id})
+		default:
+			resp.Diagnostics.AddError("Config API Error", fmt.Sprintf("Unable to delete policy, got error: %s", err))
+			return
+		}
+	}
+
+	tflog.Trace(ctx, "deleted a resource", map[string]any{"type": "policy", "id": protoReq.Id})
+}
+
+func (r *PolicyResource) ImportState(ctx context.Context, req resource.ImportStateRequest, resp *resource.ImportStateResponse) {
+	// TODO
+}
+
+// PolicyProvisionResource implements the policy_provision resource.
+type PolicyProvisionResource struct {
+	// schema is the schema of the policy_provision resource.
+	schema resource_schema.Schema
+
+	// providerData is the provider configuration.
+	config ProviderData
+}
+
+var _ resource.ResourceWithConfigure = &PolicyProvisionResource{}
+var _ resource.ResourceWithImportState = &PolicyProvisionResource{}
+
+// NewPolicyProvisionResource returns a new policy_provision resource.
+func NewPolicyProvisionResource(schema resource_schema.Schema) resource.Resource {
+	return &PolicyProvisionResource{
+		schema: schema,
+	}
+}
+
+func (r *PolicyProvisionResource) Metadata(ctx context.Context, req resource.MetadataRequest, resp *resource.MetadataResponse) {
+	resp.TypeName = req.ProviderTypeName + "_policy_provision"
+}
+
+func (r *PolicyProvisionResource) Schema(ctx context.Context, req resource.SchemaRequest, resp *resource.SchemaResponse) {
+	resp.Schema = r.schema
+}
+
+func (r *PolicyProvisionResource) Configure(ctx context.Context, req resource.ConfigureRequest, resp *resource.ConfigureResponse) {
+	if req.ProviderData == nil {
+		return
+	}
+
+	providerData, ok := req.ProviderData.(ProviderData)
+	if !ok {
+		resp.Diagnostics.AddError(
+			"Unexpected Resource Configure Type",
+			fmt.Sprintf("Expected ProviderData, got: %T. Please report this issue to the provider developers.", req.ProviderData),
+		)
+
+		return
+	}
+
+	r.config = providerData
+}
+
+func (r *PolicyProvisionResource) Create(ctx context.Context, req resource.CreateRequest, resp *resource.CreateResponse) {
+	var data PolicyProvisionResourceModel
+
+	resp.Diagnostics.Append(req.Plan.Get(ctx, &data)...)
+	if resp.Diagnostics.HasError() {
+		return
+	}
+
+	protoReq, diagReq := NewCreatePolicyProvisionRequest(ctx, &data)
+	resp.Diagnostics.Append(diagReq...)
+	if resp.Diagnostics.HasError() {
+		return
+	}
+
+	tflog.Trace(ctx, "creating a resource", map[string]any{"type": "policy_provision"})
+
+	rpcCtx, rpcCancel := context.WithTimeout(ctx, r.config.RequestTimeout())
+	protoResp, err := r.config.Client().CreatePolicyProvision(rpcCtx, protoReq)
+	rpcCancel()
+	if err != nil {
+		resp.Diagnostics.AddError("Config API Error", fmt.Sprintf("Unable to create policy_provision, got error: %s", err))
+		return
+	}
+
+	CopyCreatePolicyProvisionResponse(&data, protoResp)
+
+	tflog.Trace(ctx, "created a resource", map[string]any{"type": "policy_provision", "id": protoResp.Id})
+
+	resp.Diagnostics.Append(resp.State.Set(ctx, &data)...)
+}
+
+func (r *PolicyProvisionResource) Read(ctx context.Context, req resource.ReadRequest, resp *resource.ReadResponse) {
+	var data PolicyProvisionResourceModel
+
+	resp.Diagnostics.Append(req.State.Get(ctx, &data)...)
+	if resp.Diagnostics.HasError() {
+		return
+	}
+
+	protoReq, diagsReq := NewReadPolicyProvisionRequest(ctx, &data)
+	resp.Diagnostics.Append(diagsReq...)
+	if resp.Diagnostics.HasError() {
+		return
+	}
+
+	tflog.Trace(ctx, "reading a resource", map[string]any{"type": "policy_provision", "id": protoReq.Id})
+
+	rpcCtx, rpcCancel := context.WithTimeout(ctx, r.config.RequestTimeout())
+	protoResp, err := r.config.Client().ReadPolicyProvision(rpcCtx, protoReq)
+	rpcCancel()
+	if err != nil {
+		switch status.Code(err) {
+		case codes.NotFound:
+			resp.Diagnostics.AddWarning("Resource Not Found", fmt.Sprintf("No policy_provision found with id %s", protoReq.Id))
+			resp.State.RemoveResource(ctx)
+			return
+		default:
+			resp.Diagnostics.AddError("Config API Error", fmt.Sprintf("Unable to read policy_provision, got error: %s", err))
+			return
+		}
+	}
+
+	CopyReadPolicyProvisionResponse(&data, protoResp)
+
+	tflog.Trace(ctx, "read a resource", map[string]any{"type": "policy_provision", "id": protoResp.Id})
+
+	resp.Diagnostics.Append(resp.State.Set(ctx, &data)...)
+}
+
+func (r *PolicyProvisionResource) Update(ctx context.Context, req resource.UpdateRequest, resp *resource.UpdateResponse) {
+	var beforeData PolicyProvisionResourceModel
+	var afterData PolicyProvisionResourceModel
+
+	resp.Diagnostics.Append(req.State.Get(ctx, &beforeData)...)
+	if resp.Diagnostics.HasError() {
+		return
+	}
+
+	resp.Diagnostics.Append(req.Plan.Get(ctx, &afterData)...)
+	if resp.Diagnostics.HasError() {
+		return
+	}
+
+	protoReq, diags := NewUpdatePolicyProvisionRequest(ctx, &beforeData, &afterData)
+	resp.Diagnostics.Append(diags...)
+	if resp.Diagnostics.HasError() {
+		return
+	}
+
+	tflog.Trace(ctx, "updating a resource", map[string]any{"type": "policy_provision", "id": protoReq.Id, "update_mask": protoReq.UpdateMask.Paths})
+
+	rpcCtx, rpcCancel := context.WithTimeout(ctx, r.config.RequestTimeout())
+	protoResp, err := r.config.Client().UpdatePolicyProvision(rpcCtx, protoReq)
+	rpcCancel()
+	if err != nil {
+		switch status.Code(err) {
+		case codes.NotFound:
+			resp.Diagnostics.AddError("Resource Not Found", fmt.Sprintf("No policy_provision found with id %s", protoReq.Id))
+			resp.State.RemoveResource(ctx)
+			return
+		default:
+			resp.Diagnostics.AddError("Config API Error", fmt.Sprintf("Unable to update policy_provision, got error: %s", err))
+			return
+		}
+	}
+
+	CopyUpdatePolicyProvisionResponse(&afterData, protoResp)
+
+	tflog.Trace(ctx, "updated a resource", map[string]any{"type": "policy_provision", "id": protoResp.Id})
+
+	resp.Diagnostics.Append(resp.State.Set(ctx, &afterData)...)
+}
+
+func (r *PolicyProvisionResource) Delete(ctx context.Context, req resource.DeleteRequest, resp *resource.DeleteResponse) {
+	var data PolicyProvisionResourceModel
+
+	resp.Diagnostics.Append(req.State.Get(ctx, &data)...)
+	if resp.Diagnostics.HasError() {
+		return
+	}
+
+	protoReq, diags := NewDeletePolicyProvisionRequest(ctx, &data)
+	resp.Diagnostics.Append(diags...)
+	if resp.Diagnostics.HasError() {
+		return
+	}
+
+	tflog.Trace(ctx, "deleting a resource", map[string]any{"type": "policy_provision", "id": protoReq.Id})
+
+	rpcCtx, rpcCancel := context.WithTimeout(ctx, r.config.RequestTimeout())
+	_, err := r.config.Client().DeletePolicyProvision(rpcCtx, protoReq)
+	rpcCancel()
+	if err != nil {
+		switch status.Code(err) {
+		case codes.NotFound:
+			tflog.Trace(ctx, "resource was already deleted", map[string]any{"type": "policy_provision", "id": protoReq.Id})
+		default:
+			resp.Diagnostics.AddError("Config API Error", fmt.Sprintf("Unable to delete policy_provision, got error: %s", err))
+			return
+		}
+	}
+
+	tflog.Trace(ctx, "deleted a resource", map[string]any{"type": "policy_provision", "id": protoReq.Id})
+}
+
+func (r *PolicyProvisionResource) ImportState(ctx context.Context, req resource.ImportStateRequest, resp *resource.ImportStateResponse) {
+	// TODO
+}
+
+// PolicyVersionResource implements the policy_version resource.
+type PolicyVersionResource struct {
+	// schema is the schema of the policy_version resource.
+	schema resource_schema.Schema
+
+	// providerData is the provider configuration.
+	config ProviderData
+}
+
+var _ resource.ResourceWithConfigure = &PolicyVersionResource{}
+var _ resource.ResourceWithImportState = &PolicyVersionResource{}
+
+// NewPolicyVersionResource returns a new policy_version resource.
+func NewPolicyVersionResource(schema resource_schema.Schema) resource.Resource {
+	return &PolicyVersionResource{
+		schema: schema,
+	}
+}
+
+func (r *PolicyVersionResource) Metadata(ctx context.Context, req resource.MetadataRequest, resp *resource.MetadataResponse) {
+	resp.TypeName = req.ProviderTypeName + "_policy_version"
+}
+
+func (r *PolicyVersionResource) Schema(ctx context.Context, req resource.SchemaRequest, resp *resource.SchemaResponse) {
+	resp.Schema = r.schema
+}
+
+func (r *PolicyVersionResource) Configure(ctx context.Context, req resource.ConfigureRequest, resp *resource.ConfigureResponse) {
+	if req.ProviderData == nil {
+		return
+	}
+
+	providerData, ok := req.ProviderData.(ProviderData)
+	if !ok {
+		resp.Diagnostics.AddError(
+			"Unexpected Resource Configure Type",
+			fmt.Sprintf("Expected ProviderData, got: %T. Please report this issue to the provider developers.", req.ProviderData),
+		)
+
+		return
+	}
+
+	r.config = providerData
+}
+
+func (r *PolicyVersionResource) Create(ctx context.Context, req resource.CreateRequest, resp *resource.CreateResponse) {
+	var data PolicyVersionResourceModel
+
+	resp.Diagnostics.Append(req.Plan.Get(ctx, &data)...)
+	if resp.Diagnostics.HasError() {
+		return
+	}
+
+	protoReq, diagReq := NewCreatePolicyVersionRequest(ctx, &data)
+	resp.Diagnostics.Append(diagReq...)
+	if resp.Diagnostics.HasError() {
+		return
+	}
+
+	tflog.Trace(ctx, "creating a resource", map[string]any{"type": "policy_version"})
+
+	rpcCtx, rpcCancel := context.WithTimeout(ctx, r.config.RequestTimeout())
+	protoResp, err := r.config.Client().CreatePolicyVersion(rpcCtx, protoReq)
+	rpcCancel()
+	if err != nil {
+		resp.Diagnostics.AddError("Config API Error", fmt.Sprintf("Unable to create policy_version, got error: %s", err))
+		return
+	}
+
+	CopyCreatePolicyVersionResponse(&data, protoResp)
+
+	tflog.Trace(ctx, "created a resource", map[string]any{"type": "policy_version", "id": protoResp.Id})
+
+	resp.Diagnostics.Append(resp.State.Set(ctx, &data)...)
+}
+
+func (r *PolicyVersionResource) Read(ctx context.Context, req resource.ReadRequest, resp *resource.ReadResponse) {
+	var data PolicyVersionResourceModel
+
+	resp.Diagnostics.Append(req.State.Get(ctx, &data)...)
+	if resp.Diagnostics.HasError() {
+		return
+	}
+
+	protoReq, diagsReq := NewReadPolicyVersionRequest(ctx, &data)
+	resp.Diagnostics.Append(diagsReq...)
+	if resp.Diagnostics.HasError() {
+		return
+	}
+
+	tflog.Trace(ctx, "reading a resource", map[string]any{"type": "policy_version", "id": protoReq.Id})
+
+	rpcCtx, rpcCancel := context.WithTimeout(ctx, r.config.RequestTimeout())
+	protoResp, err := r.config.Client().ReadPolicyVersion(rpcCtx, protoReq)
+	rpcCancel()
+	if err != nil {
+		switch status.Code(err) {
+		case codes.NotFound:
+			resp.Diagnostics.AddWarning("Resource Not Found", fmt.Sprintf("No policy_version found with id %s", protoReq.Id))
+			resp.State.RemoveResource(ctx)
+			return
+		default:
+			resp.Diagnostics.AddError("Config API Error", fmt.Sprintf("Unable to read policy_version, got error: %s", err))
+			return
+		}
+	}
+
+	CopyReadPolicyVersionResponse(&data, protoResp)
+
+	tflog.Trace(ctx, "read a resource", map[string]any{"type": "policy_version", "id": protoResp.Id})
+
+	resp.Diagnostics.Append(resp.State.Set(ctx, &data)...)
+}
+
+func (r *PolicyVersionResource) Update(ctx context.Context, req resource.UpdateRequest, resp *resource.UpdateResponse) {
+	var beforeData PolicyVersionResourceModel
+	var afterData PolicyVersionResourceModel
+
+	resp.Diagnostics.Append(req.State.Get(ctx, &beforeData)...)
+	if resp.Diagnostics.HasError() {
+		return
+	}
+
+	resp.Diagnostics.Append(req.Plan.Get(ctx, &afterData)...)
+	if resp.Diagnostics.HasError() {
+		return
+	}
+
+	protoReq, diags := NewUpdatePolicyVersionRequest(ctx, &beforeData, &afterData)
+	resp.Diagnostics.Append(diags...)
+	if resp.Diagnostics.HasError() {
+		return
+	}
+
+	tflog.Trace(ctx, "updating a resource", map[string]any{"type": "policy_version", "id": protoReq.Id, "update_mask": protoReq.UpdateMask.Paths})
+
+	rpcCtx, rpcCancel := context.WithTimeout(ctx, r.config.RequestTimeout())
+	protoResp, err := r.config.Client().UpdatePolicyVersion(rpcCtx, protoReq)
+	rpcCancel()
+	if err != nil {
+		switch status.Code(err) {
+		case codes.NotFound:
+			resp.Diagnostics.AddError("Resource Not Found", fmt.Sprintf("No policy_version found with id %s", protoReq.Id))
+			resp.State.RemoveResource(ctx)
+			return
+		default:
+			resp.Diagnostics.AddError("Config API Error", fmt.Sprintf("Unable to update policy_version, got error: %s", err))
+			return
+		}
+	}
+
+	CopyUpdatePolicyVersionResponse(&afterData, protoResp)
+
+	tflog.Trace(ctx, "updated a resource", map[string]any{"type": "policy_version", "id": protoResp.Id})
+
+	resp.Diagnostics.Append(resp.State.Set(ctx, &afterData)...)
+}
+
+func (r *PolicyVersionResource) Delete(ctx context.Context, req resource.DeleteRequest, resp *resource.DeleteResponse) {
+	var data PolicyVersionResourceModel
+
+	resp.Diagnostics.Append(req.State.Get(ctx, &data)...)
+	if resp.Diagnostics.HasError() {
+		return
+	}
+
+	protoReq, diags := NewDeletePolicyVersionRequest(ctx, &data)
+	resp.Diagnostics.Append(diags...)
+	if resp.Diagnostics.HasError() {
+		return
+	}
+
+	tflog.Trace(ctx, "deleting a resource", map[string]any{"type": "policy_version", "id": protoReq.Id})
+
+	rpcCtx, rpcCancel := context.WithTimeout(ctx, r.config.RequestTimeout())
+	_, err := r.config.Client().DeletePolicyVersion(rpcCtx, protoReq)
+	rpcCancel()
+	if err != nil {
+		switch status.Code(err) {
+		case codes.NotFound:
+			tflog.Trace(ctx, "resource was already deleted", map[string]any{"type": "policy_version", "id": protoReq.Id})
+		default:
+			resp.Diagnostics.AddError("Config API Error", fmt.Sprintf("Unable to delete policy_version, got error: %s", err))
+			return
+		}
+	}
+
+	tflog.Trace(ctx, "deleted a resource", map[string]any{"type": "policy_version", "id": protoReq.Id})
+}
+
+func (r *PolicyVersionResource) ImportState(ctx context.Context, req resource.ImportStateRequest, resp *resource.ImportStateResponse) {
+	// TODO
+}
+
 // TagToLabelResource implements the tag_to_label resource.
 type TagToLabelResource struct {
 	// schema is the schema of the tag_to_label resource.
@@ -3535,6 +4123,25 @@ type OrganizationPolicyRuleResourceModel struct {
 	ToIpListIds          types.List   `tfsdk:"to_ip_list_ids"`
 	ToLabels             types.List   `tfsdk:"to_labels"`
 	ToPortRanges         types.List   `tfsdk:"to_port_ranges"`
+}
+
+type PolicyResourceModel struct {
+	Id          types.String `tfsdk:"id"`
+	Description types.String `tfsdk:"description"`
+	Name        types.String `tfsdk:"name"`
+}
+
+type PolicyProvisionResourceModel struct {
+	Id              types.String `tfsdk:"id"`
+	PolicyVersionId types.String `tfsdk:"policy_version_id"`
+}
+
+type PolicyVersionResourceModel struct {
+	Id            types.String `tfsdk:"id"`
+	Description   types.String `tfsdk:"description"`
+	PolicyId      types.String `tfsdk:"policy_id"`
+	Rules         types.Map    `tfsdk:"rules"`
+	VersionNumber types.Int64  `tfsdk:"version_number"`
 }
 
 type TagToLabelResourceModel struct {
@@ -5063,6 +5670,152 @@ func NewDeleteOrganizationPolicyRuleRequest(ctx context.Context, data *Organizat
 	return proto, diags
 }
 
+func NewCreatePolicyRequest(ctx context.Context, data *PolicyResourceModel) (*configv1.CreatePolicyRequest, diag.Diagnostics) {
+	var diags diag.Diagnostics
+	proto := &configv1.CreatePolicyRequest{}
+	if !data.Description.IsUnknown() && !data.Description.IsNull() {
+		var dataValue attr.Value = data.Description
+		var protoValue string
+		protoValue = dataValue.(types.String).ValueString()
+		proto.Description = &protoValue
+	}
+	if !data.Name.IsUnknown() && !data.Name.IsNull() {
+		var dataValue attr.Value = data.Name
+		var protoValue string
+		protoValue = dataValue.(types.String).ValueString()
+		proto.Name = protoValue
+	}
+	return proto, diags
+}
+
+func NewReadPolicyRequest(ctx context.Context, data *PolicyResourceModel) (*configv1.ReadPolicyRequest, diag.Diagnostics) {
+	var diags diag.Diagnostics
+	proto := &configv1.ReadPolicyRequest{}
+	if !data.Id.IsUnknown() && !data.Id.IsNull() {
+		var dataValue attr.Value = data.Id
+		var protoValue string
+		protoValue = dataValue.(types.String).ValueString()
+		proto.Id = protoValue
+	}
+	return proto, diags
+}
+
+func NewDeletePolicyRequest(ctx context.Context, data *PolicyResourceModel) (*configv1.DeletePolicyRequest, diag.Diagnostics) {
+	var diags diag.Diagnostics
+	proto := &configv1.DeletePolicyRequest{}
+	if !data.Id.IsUnknown() && !data.Id.IsNull() {
+		var dataValue attr.Value = data.Id
+		var protoValue string
+		protoValue = dataValue.(types.String).ValueString()
+		proto.Id = protoValue
+	}
+	return proto, diags
+}
+
+func NewCreatePolicyProvisionRequest(ctx context.Context, data *PolicyProvisionResourceModel) (*configv1.CreatePolicyProvisionRequest, diag.Diagnostics) {
+	var diags diag.Diagnostics
+	proto := &configv1.CreatePolicyProvisionRequest{}
+	if !data.PolicyVersionId.IsUnknown() && !data.PolicyVersionId.IsNull() {
+		var dataValue attr.Value = data.PolicyVersionId
+		var protoValue string
+		protoValue = dataValue.(types.String).ValueString()
+		proto.PolicyVersionId = protoValue
+	}
+	return proto, diags
+}
+
+func NewReadPolicyProvisionRequest(ctx context.Context, data *PolicyProvisionResourceModel) (*configv1.ReadPolicyProvisionRequest, diag.Diagnostics) {
+	var diags diag.Diagnostics
+	proto := &configv1.ReadPolicyProvisionRequest{}
+	if !data.Id.IsUnknown() && !data.Id.IsNull() {
+		var dataValue attr.Value = data.Id
+		var protoValue string
+		protoValue = dataValue.(types.String).ValueString()
+		proto.Id = protoValue
+	}
+	return proto, diags
+}
+
+func NewDeletePolicyProvisionRequest(ctx context.Context, data *PolicyProvisionResourceModel) (*configv1.DeletePolicyProvisionRequest, diag.Diagnostics) {
+	var diags diag.Diagnostics
+	proto := &configv1.DeletePolicyProvisionRequest{}
+	if !data.Id.IsUnknown() && !data.Id.IsNull() {
+		var dataValue attr.Value = data.Id
+		var protoValue string
+		protoValue = dataValue.(types.String).ValueString()
+		proto.Id = protoValue
+	}
+	return proto, diags
+}
+
+func NewCreatePolicyVersionRequest(ctx context.Context, data *PolicyVersionResourceModel) (*configv1.CreatePolicyVersionRequest, diag.Diagnostics) {
+	var diags diag.Diagnostics
+	proto := &configv1.CreatePolicyVersionRequest{}
+	if !data.Description.IsUnknown() && !data.Description.IsNull() {
+		var dataValue attr.Value = data.Description
+		var protoValue string
+		protoValue = dataValue.(types.String).ValueString()
+		proto.Description = &protoValue
+	}
+	if !data.PolicyId.IsUnknown() && !data.PolicyId.IsNull() {
+		var dataValue attr.Value = data.PolicyId
+		var protoValue string
+		protoValue = dataValue.(types.String).ValueString()
+		proto.PolicyId = protoValue
+	}
+	if !data.Rules.IsUnknown() && !data.Rules.IsNull() {
+		var dataValue attr.Value = data.Rules
+		var protoValue map[string]*configv1.PolicyVersion_Rules
+		{
+			dataElements := dataValue.(types.Map).Elements()
+			protoValues := make(map[string]*configv1.PolicyVersion_Rules, len(dataElements))
+			for key, dataElement := range dataElements {
+				var dataValue attr.Value = dataElement
+				var protoValue *configv1.PolicyVersion_Rules
+				protoValue, newDiags := ConvertDataValueToPolicyVersion_RulesProto(ctx, dataValue)
+				diags.Append(newDiags...)
+				if diags.HasError() {
+					return nil, diags
+				}
+				protoValues[key] = protoValue
+			}
+			protoValue = protoValues
+		}
+		proto.Rules = protoValue
+	}
+	if !data.VersionNumber.IsUnknown() && !data.VersionNumber.IsNull() {
+		var dataValue attr.Value = data.VersionNumber
+		var protoValue int64
+		protoValue = dataValue.(types.Int64).ValueInt64()
+		proto.VersionNumber = protoValue
+	}
+	return proto, diags
+}
+
+func NewReadPolicyVersionRequest(ctx context.Context, data *PolicyVersionResourceModel) (*configv1.ReadPolicyVersionRequest, diag.Diagnostics) {
+	var diags diag.Diagnostics
+	proto := &configv1.ReadPolicyVersionRequest{}
+	if !data.Id.IsUnknown() && !data.Id.IsNull() {
+		var dataValue attr.Value = data.Id
+		var protoValue string
+		protoValue = dataValue.(types.String).ValueString()
+		proto.Id = protoValue
+	}
+	return proto, diags
+}
+
+func NewDeletePolicyVersionRequest(ctx context.Context, data *PolicyVersionResourceModel) (*configv1.DeletePolicyVersionRequest, diag.Diagnostics) {
+	var diags diag.Diagnostics
+	proto := &configv1.DeletePolicyVersionRequest{}
+	if !data.Id.IsUnknown() && !data.Id.IsNull() {
+		var dataValue attr.Value = data.Id
+		var protoValue string
+		protoValue = dataValue.(types.String).ValueString()
+		proto.Id = protoValue
+	}
+	return proto, diags
+}
+
 func NewCreateTagToLabelRequest(ctx context.Context, data *TagToLabelResourceModel) (*configv1.CreateTagToLabelRequest, diag.Diagnostics) {
 	var diags diag.Diagnostics
 	proto := &configv1.CreateTagToLabelRequest{}
@@ -6263,6 +7016,66 @@ func NewUpdateOrganizationPolicyRuleRequest(ctx context.Context, beforeData, aft
 				protoValue = protoValues
 			}
 			proto.ToPortRanges = protoValue
+		}
+	}
+	return proto, diags
+}
+
+func NewUpdatePolicyRequest(ctx context.Context, beforeData, afterData *PolicyResourceModel) (*configv1.UpdatePolicyRequest, diag.Diagnostics) {
+	var diags diag.Diagnostics
+	proto := &configv1.UpdatePolicyRequest{}
+	proto.UpdateMask, _ = fieldmaskpb.New(proto)
+	proto.Id = beforeData.Id.ValueString()
+	if !afterData.Description.Equal(beforeData.Description) {
+		proto.UpdateMask.Append(proto, "description")
+		if !afterData.Description.IsUnknown() && !afterData.Description.IsNull() {
+			var dataValue attr.Value = afterData.Description
+			var protoValue string
+			protoValue = dataValue.(types.String).ValueString()
+			proto.Description = &protoValue
+		}
+	}
+	if !afterData.Name.Equal(beforeData.Name) {
+		proto.UpdateMask.Append(proto, "name")
+		if !afterData.Name.IsUnknown() && !afterData.Name.IsNull() {
+			var dataValue attr.Value = afterData.Name
+			var protoValue string
+			protoValue = dataValue.(types.String).ValueString()
+			proto.Name = protoValue
+		}
+	}
+	return proto, diags
+}
+
+func NewUpdatePolicyProvisionRequest(ctx context.Context, beforeData, afterData *PolicyProvisionResourceModel) (*configv1.UpdatePolicyProvisionRequest, diag.Diagnostics) {
+	var diags diag.Diagnostics
+	proto := &configv1.UpdatePolicyProvisionRequest{}
+	proto.UpdateMask, _ = fieldmaskpb.New(proto)
+	proto.Id = beforeData.Id.ValueString()
+	if !afterData.PolicyVersionId.Equal(beforeData.PolicyVersionId) {
+		proto.UpdateMask.Append(proto, "policy_version_id")
+		if !afterData.PolicyVersionId.IsUnknown() && !afterData.PolicyVersionId.IsNull() {
+			var dataValue attr.Value = afterData.PolicyVersionId
+			var protoValue string
+			protoValue = dataValue.(types.String).ValueString()
+			proto.PolicyVersionId = protoValue
+		}
+	}
+	return proto, diags
+}
+
+func NewUpdatePolicyVersionRequest(ctx context.Context, beforeData, afterData *PolicyVersionResourceModel) (*configv1.UpdatePolicyVersionRequest, diag.Diagnostics) {
+	var diags diag.Diagnostics
+	proto := &configv1.UpdatePolicyVersionRequest{}
+	proto.UpdateMask, _ = fieldmaskpb.New(proto)
+	proto.Id = beforeData.Id.ValueString()
+	if !afterData.VersionNumber.Equal(beforeData.VersionNumber) {
+		proto.UpdateMask.Append(proto, "version_number")
+		if !afterData.VersionNumber.IsUnknown() && !afterData.VersionNumber.IsNull() {
+			var dataValue attr.Value = afterData.VersionNumber
+			var protoValue int64
+			protoValue = dataValue.(types.Int64).ValueInt64()
+			proto.VersionNumber = protoValue
 		}
 	}
 	return proto, diags
@@ -9050,6 +9863,120 @@ func CopyUpdateOrganizationPolicyRuleResponse(dst *OrganizationPolicyRuleResourc
 		dst.ToPortRanges = dataValue
 	}
 }
+func CopyCreatePolicyResponse(dst *PolicyResourceModel, src *configv1.CreatePolicyResponse) {
+	dst.Id = types.StringValue(src.Id)
+	dst.Description = types.StringPointerValue(src.Description)
+	dst.Name = types.StringValue(src.Name)
+}
+func CopyReadPolicyResponse(dst *PolicyResourceModel, src *configv1.ReadPolicyResponse) {
+	dst.Id = types.StringValue(src.Id)
+	dst.Description = types.StringPointerValue(src.Description)
+	dst.Name = types.StringValue(src.Name)
+}
+func CopyUpdatePolicyResponse(dst *PolicyResourceModel, src *configv1.UpdatePolicyResponse) {
+	dst.Id = types.StringValue(src.Id)
+	dst.Description = types.StringPointerValue(src.Description)
+	dst.Name = types.StringValue(src.Name)
+}
+func CopyCreatePolicyProvisionResponse(dst *PolicyProvisionResourceModel, src *configv1.CreatePolicyProvisionResponse) {
+	dst.Id = types.StringValue(src.Id)
+	dst.PolicyVersionId = types.StringValue(src.PolicyVersionId)
+}
+func CopyReadPolicyProvisionResponse(dst *PolicyProvisionResourceModel, src *configv1.ReadPolicyProvisionResponse) {
+	dst.Id = types.StringValue(src.Id)
+	dst.PolicyVersionId = types.StringValue(src.PolicyVersionId)
+}
+func CopyUpdatePolicyProvisionResponse(dst *PolicyProvisionResourceModel, src *configv1.UpdatePolicyProvisionResponse) {
+	dst.Id = types.StringValue(src.Id)
+	dst.PolicyVersionId = types.StringValue(src.PolicyVersionId)
+}
+func CopyCreatePolicyVersionResponse(dst *PolicyVersionResourceModel, src *configv1.CreatePolicyVersionResponse) {
+	dst.Id = types.StringValue(src.Id)
+	dst.Description = types.StringPointerValue(src.Description)
+	dst.PolicyId = types.StringValue(src.PolicyId)
+	{
+		protoValue := src.Rules
+		var dataValue types.Map
+		{
+			dataElementType := types.ObjectType{
+				AttrTypes: GetTypeAttrsForPolicyVersion_Rules(),
+			}
+			protoElements := protoValue
+			if protoElements == nil {
+				dataValue = types.MapNull(dataElementType)
+			} else {
+				dataValues := make(map[string]attr.Value, len(protoElements))
+				for key, protoElement := range protoElements {
+					var protoValue *configv1.PolicyVersion_Rules = protoElement
+					var dataValue attr.Value
+					dataValue = ConvertPolicyVersion_RulesToObjectValueFromProto(protoValue)
+					dataValues[key] = dataValue
+				}
+				dataValue = types.MapValueMust(dataElementType, dataValues)
+			}
+		}
+		dst.Rules = dataValue
+	}
+	dst.VersionNumber = types.Int64Value(src.VersionNumber)
+}
+func CopyReadPolicyVersionResponse(dst *PolicyVersionResourceModel, src *configv1.ReadPolicyVersionResponse) {
+	dst.Id = types.StringValue(src.Id)
+	dst.Description = types.StringPointerValue(src.Description)
+	dst.PolicyId = types.StringValue(src.PolicyId)
+	{
+		protoValue := src.Rules
+		var dataValue types.Map
+		{
+			dataElementType := types.ObjectType{
+				AttrTypes: GetTypeAttrsForPolicyVersion_Rules(),
+			}
+			protoElements := protoValue
+			if protoElements == nil {
+				dataValue = types.MapNull(dataElementType)
+			} else {
+				dataValues := make(map[string]attr.Value, len(protoElements))
+				for key, protoElement := range protoElements {
+					var protoValue *configv1.PolicyVersion_Rules = protoElement
+					var dataValue attr.Value
+					dataValue = ConvertPolicyVersion_RulesToObjectValueFromProto(protoValue)
+					dataValues[key] = dataValue
+				}
+				dataValue = types.MapValueMust(dataElementType, dataValues)
+			}
+		}
+		dst.Rules = dataValue
+	}
+	dst.VersionNumber = types.Int64Value(src.VersionNumber)
+}
+func CopyUpdatePolicyVersionResponse(dst *PolicyVersionResourceModel, src *configv1.UpdatePolicyVersionResponse) {
+	dst.Id = types.StringValue(src.Id)
+	dst.Description = types.StringPointerValue(src.Description)
+	dst.PolicyId = types.StringValue(src.PolicyId)
+	{
+		protoValue := src.Rules
+		var dataValue types.Map
+		{
+			dataElementType := types.ObjectType{
+				AttrTypes: GetTypeAttrsForPolicyVersion_Rules(),
+			}
+			protoElements := protoValue
+			if protoElements == nil {
+				dataValue = types.MapNull(dataElementType)
+			} else {
+				dataValues := make(map[string]attr.Value, len(protoElements))
+				for key, protoElement := range protoElements {
+					var protoValue *configv1.PolicyVersion_Rules = protoElement
+					var dataValue attr.Value
+					dataValue = ConvertPolicyVersion_RulesToObjectValueFromProto(protoValue)
+					dataValues[key] = dataValue
+				}
+				dataValue = types.MapValueMust(dataElementType, dataValues)
+			}
+		}
+		dst.Rules = dataValue
+	}
+	dst.VersionNumber = types.Int64Value(src.VersionNumber)
+}
 func CopyCreateTagToLabelResponse(dst *TagToLabelResourceModel, src *configv1.CreateTagToLabelResponse) {
 	dst.Id = types.StringValue(src.Id)
 	{
@@ -9271,6 +10198,9 @@ func GetTypeAttrsForApplicationPolicyRule_FromLabels() map[string]attr.Type {
 }
 
 func ConvertApplicationPolicyRule_FromLabelsToObjectValueFromProto(proto *configv1.ApplicationPolicyRule_FromLabels) basetypes.ObjectValue {
+	if proto == nil {
+		return types.ObjectNull(GetTypeAttrsForApplicationPolicyRule_FromLabels())
+	}
 	return types.ObjectValueMust(
 		GetTypeAttrsForApplicationPolicyRule_FromLabels(),
 		map[string]attr.Value{
@@ -9281,6 +10211,9 @@ func ConvertApplicationPolicyRule_FromLabelsToObjectValueFromProto(proto *config
 }
 
 func ConvertDataValueToApplicationPolicyRule_FromLabelsProto(ctx context.Context, dataValue attr.Value) (*configv1.ApplicationPolicyRule_FromLabels, diag.Diagnostics) {
+	if dataValue.IsNull() || dataValue.IsUnknown() {
+		return nil, nil
+	}
 	pv := ApplicationPolicyRule_FromLabels{}
 	diags := tfsdk.ValueAs(ctx, dataValue, &pv)
 	if diags.HasError() {
@@ -9305,6 +10238,9 @@ func GetTypeAttrsForApplicationPolicyRule_ToLabels() map[string]attr.Type {
 }
 
 func ConvertApplicationPolicyRule_ToLabelsToObjectValueFromProto(proto *configv1.ApplicationPolicyRule_ToLabels) basetypes.ObjectValue {
+	if proto == nil {
+		return types.ObjectNull(GetTypeAttrsForApplicationPolicyRule_ToLabels())
+	}
 	return types.ObjectValueMust(
 		GetTypeAttrsForApplicationPolicyRule_ToLabels(),
 		map[string]attr.Value{
@@ -9315,6 +10251,9 @@ func ConvertApplicationPolicyRule_ToLabelsToObjectValueFromProto(proto *configv1
 }
 
 func ConvertDataValueToApplicationPolicyRule_ToLabelsProto(ctx context.Context, dataValue attr.Value) (*configv1.ApplicationPolicyRule_ToLabels, diag.Diagnostics) {
+	if dataValue.IsNull() || dataValue.IsUnknown() {
+		return nil, nil
+	}
 	pv := ApplicationPolicyRule_ToLabels{}
 	diags := tfsdk.ValueAs(ctx, dataValue, &pv)
 	if diags.HasError() {
@@ -9341,6 +10280,9 @@ func GetTypeAttrsForApplicationPolicyRule_ToPortRanges() map[string]attr.Type {
 }
 
 func ConvertApplicationPolicyRule_ToPortRangesToObjectValueFromProto(proto *configv1.ApplicationPolicyRule_ToPortRanges) basetypes.ObjectValue {
+	if proto == nil {
+		return types.ObjectNull(GetTypeAttrsForApplicationPolicyRule_ToPortRanges())
+	}
 	return types.ObjectValueMust(
 		GetTypeAttrsForApplicationPolicyRule_ToPortRanges(),
 		map[string]attr.Value{
@@ -9352,6 +10294,9 @@ func ConvertApplicationPolicyRule_ToPortRangesToObjectValueFromProto(proto *conf
 }
 
 func ConvertDataValueToApplicationPolicyRule_ToPortRangesProto(ctx context.Context, dataValue attr.Value) (*configv1.ApplicationPolicyRule_ToPortRanges, diag.Diagnostics) {
+	if dataValue.IsNull() || dataValue.IsUnknown() {
+		return nil, nil
+	}
 	pv := ApplicationPolicyRule_ToPortRanges{}
 	diags := tfsdk.ValueAs(ctx, dataValue, &pv)
 	if diags.HasError() {
@@ -9377,6 +10322,9 @@ func GetTypeAttrsForDeployment_AwsTags() map[string]attr.Type {
 }
 
 func ConvertDeployment_AwsTagsToObjectValueFromProto(proto *configv1.Deployment_AwsTags) basetypes.ObjectValue {
+	if proto == nil {
+		return types.ObjectNull(GetTypeAttrsForDeployment_AwsTags())
+	}
 	return types.ObjectValueMust(
 		GetTypeAttrsForDeployment_AwsTags(),
 		map[string]attr.Value{
@@ -9387,6 +10335,9 @@ func ConvertDeployment_AwsTagsToObjectValueFromProto(proto *configv1.Deployment_
 }
 
 func ConvertDataValueToDeployment_AwsTagsProto(ctx context.Context, dataValue attr.Value) (*configv1.Deployment_AwsTags, diag.Diagnostics) {
+	if dataValue.IsNull() || dataValue.IsUnknown() {
+		return nil, nil
+	}
 	pv := Deployment_AwsTags{}
 	diags := tfsdk.ValueAs(ctx, dataValue, &pv)
 	if diags.HasError() {
@@ -9411,6 +10362,9 @@ func GetTypeAttrsForDeployment_AzureTags() map[string]attr.Type {
 }
 
 func ConvertDeployment_AzureTagsToObjectValueFromProto(proto *configv1.Deployment_AzureTags) basetypes.ObjectValue {
+	if proto == nil {
+		return types.ObjectNull(GetTypeAttrsForDeployment_AzureTags())
+	}
 	return types.ObjectValueMust(
 		GetTypeAttrsForDeployment_AzureTags(),
 		map[string]attr.Value{
@@ -9421,6 +10375,9 @@ func ConvertDeployment_AzureTagsToObjectValueFromProto(proto *configv1.Deploymen
 }
 
 func ConvertDataValueToDeployment_AzureTagsProto(ctx context.Context, dataValue attr.Value) (*configv1.Deployment_AzureTags, diag.Diagnostics) {
+	if dataValue.IsNull() || dataValue.IsUnknown() {
+		return nil, nil
+	}
 	pv := Deployment_AzureTags{}
 	diags := tfsdk.ValueAs(ctx, dataValue, &pv)
 	if diags.HasError() {
@@ -9445,6 +10402,9 @@ func GetTypeAttrsForIpList_IpAddresses() map[string]attr.Type {
 }
 
 func ConvertIpList_IpAddressesToObjectValueFromProto(proto *configv1.IpList_IpAddresses) basetypes.ObjectValue {
+	if proto == nil {
+		return types.ObjectNull(GetTypeAttrsForIpList_IpAddresses())
+	}
 	return types.ObjectValueMust(
 		GetTypeAttrsForIpList_IpAddresses(),
 		map[string]attr.Value{
@@ -9455,6 +10415,9 @@ func ConvertIpList_IpAddressesToObjectValueFromProto(proto *configv1.IpList_IpAd
 }
 
 func ConvertDataValueToIpList_IpAddressesProto(ctx context.Context, dataValue attr.Value) (*configv1.IpList_IpAddresses, diag.Diagnostics) {
+	if dataValue.IsNull() || dataValue.IsUnknown() {
+		return nil, nil
+	}
 	pv := IpList_IpAddresses{}
 	diags := tfsdk.ValueAs(ctx, dataValue, &pv)
 	if diags.HasError() {
@@ -9481,6 +10444,9 @@ func GetTypeAttrsForIpList_IpRanges() map[string]attr.Type {
 }
 
 func ConvertIpList_IpRangesToObjectValueFromProto(proto *configv1.IpList_IpRanges) basetypes.ObjectValue {
+	if proto == nil {
+		return types.ObjectNull(GetTypeAttrsForIpList_IpRanges())
+	}
 	return types.ObjectValueMust(
 		GetTypeAttrsForIpList_IpRanges(),
 		map[string]attr.Value{
@@ -9492,6 +10458,9 @@ func ConvertIpList_IpRangesToObjectValueFromProto(proto *configv1.IpList_IpRange
 }
 
 func ConvertDataValueToIpList_IpRangesProto(ctx context.Context, dataValue attr.Value) (*configv1.IpList_IpRanges, diag.Diagnostics) {
+	if dataValue.IsNull() || dataValue.IsUnknown() {
+		return nil, nil
+	}
 	pv := IpList_IpRanges{}
 	diags := tfsdk.ValueAs(ctx, dataValue, &pv)
 	if diags.HasError() {
@@ -9517,6 +10486,9 @@ func GetTypeAttrsForOrganizationPolicyRule_FromLabels() map[string]attr.Type {
 }
 
 func ConvertOrganizationPolicyRule_FromLabelsToObjectValueFromProto(proto *configv1.OrganizationPolicyRule_FromLabels) basetypes.ObjectValue {
+	if proto == nil {
+		return types.ObjectNull(GetTypeAttrsForOrganizationPolicyRule_FromLabels())
+	}
 	return types.ObjectValueMust(
 		GetTypeAttrsForOrganizationPolicyRule_FromLabels(),
 		map[string]attr.Value{
@@ -9527,6 +10499,9 @@ func ConvertOrganizationPolicyRule_FromLabelsToObjectValueFromProto(proto *confi
 }
 
 func ConvertDataValueToOrganizationPolicyRule_FromLabelsProto(ctx context.Context, dataValue attr.Value) (*configv1.OrganizationPolicyRule_FromLabels, diag.Diagnostics) {
+	if dataValue.IsNull() || dataValue.IsUnknown() {
+		return nil, nil
+	}
 	pv := OrganizationPolicyRule_FromLabels{}
 	diags := tfsdk.ValueAs(ctx, dataValue, &pv)
 	if diags.HasError() {
@@ -9551,6 +10526,9 @@ func GetTypeAttrsForOrganizationPolicyRule_ToLabels() map[string]attr.Type {
 }
 
 func ConvertOrganizationPolicyRule_ToLabelsToObjectValueFromProto(proto *configv1.OrganizationPolicyRule_ToLabels) basetypes.ObjectValue {
+	if proto == nil {
+		return types.ObjectNull(GetTypeAttrsForOrganizationPolicyRule_ToLabels())
+	}
 	return types.ObjectValueMust(
 		GetTypeAttrsForOrganizationPolicyRule_ToLabels(),
 		map[string]attr.Value{
@@ -9561,6 +10539,9 @@ func ConvertOrganizationPolicyRule_ToLabelsToObjectValueFromProto(proto *configv
 }
 
 func ConvertDataValueToOrganizationPolicyRule_ToLabelsProto(ctx context.Context, dataValue attr.Value) (*configv1.OrganizationPolicyRule_ToLabels, diag.Diagnostics) {
+	if dataValue.IsNull() || dataValue.IsUnknown() {
+		return nil, nil
+	}
 	pv := OrganizationPolicyRule_ToLabels{}
 	diags := tfsdk.ValueAs(ctx, dataValue, &pv)
 	if diags.HasError() {
@@ -9587,6 +10568,9 @@ func GetTypeAttrsForOrganizationPolicyRule_ToPortRanges() map[string]attr.Type {
 }
 
 func ConvertOrganizationPolicyRule_ToPortRangesToObjectValueFromProto(proto *configv1.OrganizationPolicyRule_ToPortRanges) basetypes.ObjectValue {
+	if proto == nil {
+		return types.ObjectNull(GetTypeAttrsForOrganizationPolicyRule_ToPortRanges())
+	}
 	return types.ObjectValueMust(
 		GetTypeAttrsForOrganizationPolicyRule_ToPortRanges(),
 		map[string]attr.Value{
@@ -9598,6 +10582,9 @@ func ConvertOrganizationPolicyRule_ToPortRangesToObjectValueFromProto(proto *con
 }
 
 func ConvertDataValueToOrganizationPolicyRule_ToPortRangesProto(ctx context.Context, dataValue attr.Value) (*configv1.OrganizationPolicyRule_ToPortRanges, diag.Diagnostics) {
+	if dataValue.IsNull() || dataValue.IsUnknown() {
+		return nil, nil
+	}
 	pv := OrganizationPolicyRule_ToPortRanges{}
 	diags := tfsdk.ValueAs(ctx, dataValue, &pv)
 	if diags.HasError() {
@@ -9607,6 +10594,5081 @@ func ConvertDataValueToOrganizationPolicyRule_ToPortRangesProto(ctx context.Cont
 	proto.FromPort = pv.FromPort.ValueInt64()
 	proto.Protocol = pv.Protocol.ValueString()
 	proto.ToPort = pv.ToPort.ValueInt64()
+	return proto, diags
+}
+
+type PolicyVersion_Rules struct {
+	Action      types.String `tfsdk:"action"`
+	Destination types.Object `tfsdk:"destination"`
+	PortRanges  types.List   `tfsdk:"port_ranges"`
+	Source      types.Object `tfsdk:"source"`
+}
+
+func GetTypeAttrsForPolicyVersion_Rules() map[string]attr.Type {
+	return map[string]attr.Type{
+		"action": types.StringType,
+		"destination": types.ObjectType{
+			AttrTypes: GetTypeAttrsForPolicyVersion_Rules_Destination(),
+		},
+		"port_ranges": types.ListType{ElemType: types.ObjectType{
+			AttrTypes: GetTypeAttrsForPolicyVersion_Rules_PortRanges(),
+		}},
+		"source": types.ObjectType{
+			AttrTypes: GetTypeAttrsForPolicyVersion_Rules_Source(),
+		},
+	}
+}
+
+func ConvertPolicyVersion_RulesToObjectValueFromProto(proto *configv1.PolicyVersion_Rules) basetypes.ObjectValue {
+	if proto == nil {
+		return types.ObjectNull(GetTypeAttrsForPolicyVersion_Rules())
+	}
+	elementsInPortRanges := make([]attr.Value, 0, len(proto.PortRanges))
+	for _, item := range proto.PortRanges {
+		elementsInPortRanges = append(elementsInPortRanges, ConvertPolicyVersion_Rules_PortRangesToObjectValueFromProto(item))
+	}
+	return types.ObjectValueMust(
+		GetTypeAttrsForPolicyVersion_Rules(),
+		map[string]attr.Value{
+			"action":      types.StringValue(proto.Action),
+			"destination": ConvertPolicyVersion_Rules_DestinationToObjectValueFromProto(proto.Destination),
+			"port_ranges": func() basetypes.ListValue {
+				if proto.PortRanges == nil {
+					return types.ListNull(types.ObjectType{AttrTypes: GetTypeAttrsForPolicyVersion_Rules_PortRanges()})
+				}
+				return types.ListValueMust(types.ObjectType{AttrTypes: GetTypeAttrsForPolicyVersion_Rules_PortRanges()}, elementsInPortRanges)
+			}(),
+			"source": ConvertPolicyVersion_Rules_SourceToObjectValueFromProto(proto.Source),
+		},
+	)
+}
+
+func ConvertDataValueToPolicyVersion_RulesProto(ctx context.Context, dataValue attr.Value) (*configv1.PolicyVersion_Rules, diag.Diagnostics) {
+	if dataValue.IsNull() || dataValue.IsUnknown() {
+		return nil, nil
+	}
+	pv := PolicyVersion_Rules{}
+	diags := tfsdk.ValueAs(ctx, dataValue, &pv)
+	if diags.HasError() {
+		return nil, diags
+	}
+	proto := &configv1.PolicyVersion_Rules{}
+	proto.Action = pv.Action.ValueString()
+	pvModelDestination, dvDiagsDestination := ConvertDataValueToPolicyVersion_Rules_DestinationProto(ctx, pv.Destination)
+	diags.Append(dvDiagsDestination...)
+	if diags.HasError() {
+		return nil, diags
+	}
+	proto.Destination = pvModelDestination
+	pvElemModelPortRanges := pv.PortRanges.Elements()
+	proto.PortRanges = make([]*configv1.PolicyVersion_Rules_PortRanges, 0, len(pvElemModelPortRanges))
+	for _, elem := range pvElemModelPortRanges {
+		pvModel, dvDiags := ConvertDataValueToPolicyVersion_Rules_PortRangesProto(ctx, elem)
+		diags.Append(dvDiags...)
+		if diags.HasError() {
+			return nil, diags
+		}
+		proto.PortRanges = append(proto.PortRanges, pvModel)
+	}
+	pvModelSource, dvDiagsSource := ConvertDataValueToPolicyVersion_Rules_SourceProto(ctx, pv.Source)
+	diags.Append(dvDiagsSource...)
+	if diags.HasError() {
+		return nil, diags
+	}
+	proto.Source = pvModelSource
+	return proto, diags
+}
+
+type PolicyVersion_Rules_Destination struct {
+	Cloud         types.Object `tfsdk:"cloud"`
+	Fqdns         types.Object `tfsdk:"fqdns"`
+	IllumioLabels types.Object `tfsdk:"illumio_labels"`
+	IpLists       types.Object `tfsdk:"ip_lists"`
+	K8S           types.Object `tfsdk:"k8s"`
+}
+
+func GetTypeAttrsForPolicyVersion_Rules_Destination() map[string]attr.Type {
+	return map[string]attr.Type{
+		"cloud": types.ObjectType{
+			AttrTypes: GetTypeAttrsForPolicyVersion_Rules_Destination_Cloud(),
+		},
+		"fqdns": types.ObjectType{
+			AttrTypes: GetTypeAttrsForPolicyVersion_Rules_Destination_Fqdns(),
+		},
+		"illumio_labels": types.ObjectType{
+			AttrTypes: GetTypeAttrsForPolicyVersion_Rules_Destination_IllumioLabels(),
+		},
+		"ip_lists": types.ObjectType{
+			AttrTypes: GetTypeAttrsForPolicyVersion_Rules_Destination_IpLists(),
+		},
+		"k8s": types.ObjectType{
+			AttrTypes: GetTypeAttrsForPolicyVersion_Rules_Destination_K8S(),
+		},
+	}
+}
+
+func ConvertPolicyVersion_Rules_DestinationToObjectValueFromProto(proto *configv1.PolicyVersion_Rules_Destination) basetypes.ObjectValue {
+	if proto == nil {
+		return types.ObjectNull(GetTypeAttrsForPolicyVersion_Rules_Destination())
+	}
+	return types.ObjectValueMust(
+		GetTypeAttrsForPolicyVersion_Rules_Destination(),
+		map[string]attr.Value{
+			"cloud":          ConvertPolicyVersion_Rules_Destination_CloudToObjectValueFromProto(proto.Cloud),
+			"fqdns":          ConvertPolicyVersion_Rules_Destination_FqdnsToObjectValueFromProto(proto.Fqdns),
+			"illumio_labels": ConvertPolicyVersion_Rules_Destination_IllumioLabelsToObjectValueFromProto(proto.IllumioLabels),
+			"ip_lists":       ConvertPolicyVersion_Rules_Destination_IpListsToObjectValueFromProto(proto.IpLists),
+			"k8s":            ConvertPolicyVersion_Rules_Destination_K8SToObjectValueFromProto(proto.K8S),
+		},
+	)
+}
+
+func ConvertDataValueToPolicyVersion_Rules_DestinationProto(ctx context.Context, dataValue attr.Value) (*configv1.PolicyVersion_Rules_Destination, diag.Diagnostics) {
+	if dataValue.IsNull() || dataValue.IsUnknown() {
+		return nil, nil
+	}
+	pv := PolicyVersion_Rules_Destination{}
+	diags := tfsdk.ValueAs(ctx, dataValue, &pv)
+	if diags.HasError() {
+		return nil, diags
+	}
+	proto := &configv1.PolicyVersion_Rules_Destination{}
+	pvModelCloud, dvDiagsCloud := ConvertDataValueToPolicyVersion_Rules_Destination_CloudProto(ctx, pv.Cloud)
+	diags.Append(dvDiagsCloud...)
+	if diags.HasError() {
+		return nil, diags
+	}
+	proto.Cloud = pvModelCloud
+	pvModelFqdns, dvDiagsFqdns := ConvertDataValueToPolicyVersion_Rules_Destination_FqdnsProto(ctx, pv.Fqdns)
+	diags.Append(dvDiagsFqdns...)
+	if diags.HasError() {
+		return nil, diags
+	}
+	proto.Fqdns = pvModelFqdns
+	pvModelIllumioLabels, dvDiagsIllumioLabels := ConvertDataValueToPolicyVersion_Rules_Destination_IllumioLabelsProto(ctx, pv.IllumioLabels)
+	diags.Append(dvDiagsIllumioLabels...)
+	if diags.HasError() {
+		return nil, diags
+	}
+	proto.IllumioLabels = pvModelIllumioLabels
+	pvModelIpLists, dvDiagsIpLists := ConvertDataValueToPolicyVersion_Rules_Destination_IpListsProto(ctx, pv.IpLists)
+	diags.Append(dvDiagsIpLists...)
+	if diags.HasError() {
+		return nil, diags
+	}
+	proto.IpLists = pvModelIpLists
+	pvModelK8S, dvDiagsK8S := ConvertDataValueToPolicyVersion_Rules_Destination_K8SProto(ctx, pv.K8S)
+	diags.Append(dvDiagsK8S...)
+	if diags.HasError() {
+		return nil, diags
+	}
+	proto.K8S = pvModelK8S
+	return proto, diags
+}
+
+type PolicyVersion_Rules_Destination_Cloud struct {
+	Aws   types.Object `tfsdk:"aws"`
+	Azure types.Object `tfsdk:"azure"`
+}
+
+func GetTypeAttrsForPolicyVersion_Rules_Destination_Cloud() map[string]attr.Type {
+	return map[string]attr.Type{
+		"aws": types.ObjectType{
+			AttrTypes: GetTypeAttrsForPolicyVersion_Rules_Destination_Cloud_Aws(),
+		},
+		"azure": types.ObjectType{
+			AttrTypes: GetTypeAttrsForPolicyVersion_Rules_Destination_Cloud_Azure(),
+		},
+	}
+}
+
+func ConvertPolicyVersion_Rules_Destination_CloudToObjectValueFromProto(proto *configv1.PolicyVersion_Rules_Destination_Cloud) basetypes.ObjectValue {
+	if proto == nil {
+		return types.ObjectNull(GetTypeAttrsForPolicyVersion_Rules_Destination_Cloud())
+	}
+	return types.ObjectValueMust(
+		GetTypeAttrsForPolicyVersion_Rules_Destination_Cloud(),
+		map[string]attr.Value{
+			"aws":   ConvertPolicyVersion_Rules_Destination_Cloud_AwsToObjectValueFromProto(proto.Aws),
+			"azure": ConvertPolicyVersion_Rules_Destination_Cloud_AzureToObjectValueFromProto(proto.Azure),
+		},
+	)
+}
+
+func ConvertDataValueToPolicyVersion_Rules_Destination_CloudProto(ctx context.Context, dataValue attr.Value) (*configv1.PolicyVersion_Rules_Destination_Cloud, diag.Diagnostics) {
+	if dataValue.IsNull() || dataValue.IsUnknown() {
+		return nil, nil
+	}
+	pv := PolicyVersion_Rules_Destination_Cloud{}
+	diags := tfsdk.ValueAs(ctx, dataValue, &pv)
+	if diags.HasError() {
+		return nil, diags
+	}
+	proto := &configv1.PolicyVersion_Rules_Destination_Cloud{}
+	pvModelAws, dvDiagsAws := ConvertDataValueToPolicyVersion_Rules_Destination_Cloud_AwsProto(ctx, pv.Aws)
+	diags.Append(dvDiagsAws...)
+	if diags.HasError() {
+		return nil, diags
+	}
+	proto.Aws = pvModelAws
+	pvModelAzure, dvDiagsAzure := ConvertDataValueToPolicyVersion_Rules_Destination_Cloud_AzureProto(ctx, pv.Azure)
+	diags.Append(dvDiagsAzure...)
+	if diags.HasError() {
+		return nil, diags
+	}
+	proto.Azure = pvModelAzure
+	return proto, diags
+}
+
+type PolicyVersion_Rules_Destination_Cloud_Aws struct {
+	Network     types.Object `tfsdk:"network"`
+	OrgSelector types.Object `tfsdk:"org_selector"`
+}
+
+func GetTypeAttrsForPolicyVersion_Rules_Destination_Cloud_Aws() map[string]attr.Type {
+	return map[string]attr.Type{
+		"network": types.ObjectType{
+			AttrTypes: GetTypeAttrsForPolicyVersion_Rules_Destination_Cloud_Aws_Network(),
+		},
+		"org_selector": types.ObjectType{
+			AttrTypes: GetTypeAttrsForPolicyVersion_Rules_Destination_Cloud_Aws_OrgSelector(),
+		},
+	}
+}
+
+func ConvertPolicyVersion_Rules_Destination_Cloud_AwsToObjectValueFromProto(proto *configv1.PolicyVersion_Rules_Destination_Cloud_Aws) basetypes.ObjectValue {
+	if proto == nil {
+		return types.ObjectNull(GetTypeAttrsForPolicyVersion_Rules_Destination_Cloud_Aws())
+	}
+	return types.ObjectValueMust(
+		GetTypeAttrsForPolicyVersion_Rules_Destination_Cloud_Aws(),
+		map[string]attr.Value{
+			"network":      ConvertPolicyVersion_Rules_Destination_Cloud_Aws_NetworkToObjectValueFromProto(proto.Network),
+			"org_selector": ConvertPolicyVersion_Rules_Destination_Cloud_Aws_OrgSelectorToObjectValueFromProto(proto.OrgSelector),
+		},
+	)
+}
+
+func ConvertDataValueToPolicyVersion_Rules_Destination_Cloud_AwsProto(ctx context.Context, dataValue attr.Value) (*configv1.PolicyVersion_Rules_Destination_Cloud_Aws, diag.Diagnostics) {
+	if dataValue.IsNull() || dataValue.IsUnknown() {
+		return nil, nil
+	}
+	pv := PolicyVersion_Rules_Destination_Cloud_Aws{}
+	diags := tfsdk.ValueAs(ctx, dataValue, &pv)
+	if diags.HasError() {
+		return nil, diags
+	}
+	proto := &configv1.PolicyVersion_Rules_Destination_Cloud_Aws{}
+	pvModelNetwork, dvDiagsNetwork := ConvertDataValueToPolicyVersion_Rules_Destination_Cloud_Aws_NetworkProto(ctx, pv.Network)
+	diags.Append(dvDiagsNetwork...)
+	if diags.HasError() {
+		return nil, diags
+	}
+	proto.Network = pvModelNetwork
+	pvModelOrgSelector, dvDiagsOrgSelector := ConvertDataValueToPolicyVersion_Rules_Destination_Cloud_Aws_OrgSelectorProto(ctx, pv.OrgSelector)
+	diags.Append(dvDiagsOrgSelector...)
+	if diags.HasError() {
+		return nil, diags
+	}
+	proto.OrgSelector = pvModelOrgSelector
+	return proto, diags
+}
+
+type PolicyVersion_Rules_Destination_Cloud_Aws_Network struct {
+	Subnets types.List `tfsdk:"subnets"`
+	Vpcs    types.List `tfsdk:"vpcs"`
+}
+
+func GetTypeAttrsForPolicyVersion_Rules_Destination_Cloud_Aws_Network() map[string]attr.Type {
+	return map[string]attr.Type{
+		"subnets": types.ListType{ElemType: types.ObjectType{
+			AttrTypes: GetTypeAttrsForPolicyVersion_Rules_Destination_Cloud_Aws_Network_Subnets(),
+		}},
+		"vpcs": types.ListType{ElemType: types.ObjectType{
+			AttrTypes: GetTypeAttrsForPolicyVersion_Rules_Destination_Cloud_Aws_Network_Vpcs(),
+		}},
+	}
+}
+
+func ConvertPolicyVersion_Rules_Destination_Cloud_Aws_NetworkToObjectValueFromProto(proto *configv1.PolicyVersion_Rules_Destination_Cloud_Aws_Network) basetypes.ObjectValue {
+	if proto == nil {
+		return types.ObjectNull(GetTypeAttrsForPolicyVersion_Rules_Destination_Cloud_Aws_Network())
+	}
+	elementsInSubnets := make([]attr.Value, 0, len(proto.Subnets))
+	for _, item := range proto.Subnets {
+		elementsInSubnets = append(elementsInSubnets, ConvertPolicyVersion_Rules_Destination_Cloud_Aws_Network_SubnetsToObjectValueFromProto(item))
+	}
+	elementsInVpcs := make([]attr.Value, 0, len(proto.Vpcs))
+	for _, item := range proto.Vpcs {
+		elementsInVpcs = append(elementsInVpcs, ConvertPolicyVersion_Rules_Destination_Cloud_Aws_Network_VpcsToObjectValueFromProto(item))
+	}
+	return types.ObjectValueMust(
+		GetTypeAttrsForPolicyVersion_Rules_Destination_Cloud_Aws_Network(),
+		map[string]attr.Value{
+			"subnets": func() basetypes.ListValue {
+				if proto.Subnets == nil {
+					return types.ListNull(types.ObjectType{AttrTypes: GetTypeAttrsForPolicyVersion_Rules_Destination_Cloud_Aws_Network_Subnets()})
+				}
+				return types.ListValueMust(types.ObjectType{AttrTypes: GetTypeAttrsForPolicyVersion_Rules_Destination_Cloud_Aws_Network_Subnets()}, elementsInSubnets)
+			}(),
+			"vpcs": func() basetypes.ListValue {
+				if proto.Vpcs == nil {
+					return types.ListNull(types.ObjectType{AttrTypes: GetTypeAttrsForPolicyVersion_Rules_Destination_Cloud_Aws_Network_Vpcs()})
+				}
+				return types.ListValueMust(types.ObjectType{AttrTypes: GetTypeAttrsForPolicyVersion_Rules_Destination_Cloud_Aws_Network_Vpcs()}, elementsInVpcs)
+			}(),
+		},
+	)
+}
+
+func ConvertDataValueToPolicyVersion_Rules_Destination_Cloud_Aws_NetworkProto(ctx context.Context, dataValue attr.Value) (*configv1.PolicyVersion_Rules_Destination_Cloud_Aws_Network, diag.Diagnostics) {
+	if dataValue.IsNull() || dataValue.IsUnknown() {
+		return nil, nil
+	}
+	pv := PolicyVersion_Rules_Destination_Cloud_Aws_Network{}
+	diags := tfsdk.ValueAs(ctx, dataValue, &pv)
+	if diags.HasError() {
+		return nil, diags
+	}
+	proto := &configv1.PolicyVersion_Rules_Destination_Cloud_Aws_Network{}
+	pvElemModelSubnets := pv.Subnets.Elements()
+	proto.Subnets = make([]*configv1.PolicyVersion_Rules_Destination_Cloud_Aws_Network_Subnets, 0, len(pvElemModelSubnets))
+	for _, elem := range pvElemModelSubnets {
+		pvModel, dvDiags := ConvertDataValueToPolicyVersion_Rules_Destination_Cloud_Aws_Network_SubnetsProto(ctx, elem)
+		diags.Append(dvDiags...)
+		if diags.HasError() {
+			return nil, diags
+		}
+		proto.Subnets = append(proto.Subnets, pvModel)
+	}
+	pvElemModelVpcs := pv.Vpcs.Elements()
+	proto.Vpcs = make([]*configv1.PolicyVersion_Rules_Destination_Cloud_Aws_Network_Vpcs, 0, len(pvElemModelVpcs))
+	for _, elem := range pvElemModelVpcs {
+		pvModel, dvDiags := ConvertDataValueToPolicyVersion_Rules_Destination_Cloud_Aws_Network_VpcsProto(ctx, elem)
+		diags.Append(dvDiags...)
+		if diags.HasError() {
+			return nil, diags
+		}
+		proto.Vpcs = append(proto.Vpcs, pvModel)
+	}
+	return proto, diags
+}
+
+type PolicyVersion_Rules_Destination_Cloud_Aws_Network_Subnets struct {
+	Id        types.String `tfsdk:"id"`
+	AccountId types.String `tfsdk:"account_id"`
+	Region    types.String `tfsdk:"region"`
+}
+
+func GetTypeAttrsForPolicyVersion_Rules_Destination_Cloud_Aws_Network_Subnets() map[string]attr.Type {
+	return map[string]attr.Type{
+		"id":         types.StringType,
+		"account_id": types.StringType,
+		"region":     types.StringType,
+	}
+}
+
+func ConvertPolicyVersion_Rules_Destination_Cloud_Aws_Network_SubnetsToObjectValueFromProto(proto *configv1.PolicyVersion_Rules_Destination_Cloud_Aws_Network_Subnets) basetypes.ObjectValue {
+	if proto == nil {
+		return types.ObjectNull(GetTypeAttrsForPolicyVersion_Rules_Destination_Cloud_Aws_Network_Subnets())
+	}
+	return types.ObjectValueMust(
+		GetTypeAttrsForPolicyVersion_Rules_Destination_Cloud_Aws_Network_Subnets(),
+		map[string]attr.Value{
+			"id":         types.StringValue(proto.Id),
+			"account_id": types.StringValue(proto.AccountId),
+			"region":     types.StringValue(proto.Region),
+		},
+	)
+}
+
+func ConvertDataValueToPolicyVersion_Rules_Destination_Cloud_Aws_Network_SubnetsProto(ctx context.Context, dataValue attr.Value) (*configv1.PolicyVersion_Rules_Destination_Cloud_Aws_Network_Subnets, diag.Diagnostics) {
+	if dataValue.IsNull() || dataValue.IsUnknown() {
+		return nil, nil
+	}
+	pv := PolicyVersion_Rules_Destination_Cloud_Aws_Network_Subnets{}
+	diags := tfsdk.ValueAs(ctx, dataValue, &pv)
+	if diags.HasError() {
+		return nil, diags
+	}
+	proto := &configv1.PolicyVersion_Rules_Destination_Cloud_Aws_Network_Subnets{}
+	proto.Id = pv.Id.ValueString()
+	proto.AccountId = pv.AccountId.ValueString()
+	proto.Region = pv.Region.ValueString()
+	return proto, diags
+}
+
+type PolicyVersion_Rules_Destination_Cloud_Aws_Network_Vpcs struct {
+	Id        types.String `tfsdk:"id"`
+	AccountId types.String `tfsdk:"account_id"`
+	Region    types.String `tfsdk:"region"`
+}
+
+func GetTypeAttrsForPolicyVersion_Rules_Destination_Cloud_Aws_Network_Vpcs() map[string]attr.Type {
+	return map[string]attr.Type{
+		"id":         types.StringType,
+		"account_id": types.StringType,
+		"region":     types.StringType,
+	}
+}
+
+func ConvertPolicyVersion_Rules_Destination_Cloud_Aws_Network_VpcsToObjectValueFromProto(proto *configv1.PolicyVersion_Rules_Destination_Cloud_Aws_Network_Vpcs) basetypes.ObjectValue {
+	if proto == nil {
+		return types.ObjectNull(GetTypeAttrsForPolicyVersion_Rules_Destination_Cloud_Aws_Network_Vpcs())
+	}
+	return types.ObjectValueMust(
+		GetTypeAttrsForPolicyVersion_Rules_Destination_Cloud_Aws_Network_Vpcs(),
+		map[string]attr.Value{
+			"id":         types.StringValue(proto.Id),
+			"account_id": types.StringValue(proto.AccountId),
+			"region":     types.StringValue(proto.Region),
+		},
+	)
+}
+
+func ConvertDataValueToPolicyVersion_Rules_Destination_Cloud_Aws_Network_VpcsProto(ctx context.Context, dataValue attr.Value) (*configv1.PolicyVersion_Rules_Destination_Cloud_Aws_Network_Vpcs, diag.Diagnostics) {
+	if dataValue.IsNull() || dataValue.IsUnknown() {
+		return nil, nil
+	}
+	pv := PolicyVersion_Rules_Destination_Cloud_Aws_Network_Vpcs{}
+	diags := tfsdk.ValueAs(ctx, dataValue, &pv)
+	if diags.HasError() {
+		return nil, diags
+	}
+	proto := &configv1.PolicyVersion_Rules_Destination_Cloud_Aws_Network_Vpcs{}
+	proto.Id = pv.Id.ValueString()
+	proto.AccountId = pv.AccountId.ValueString()
+	proto.Region = pv.Region.ValueString()
+	return proto, diags
+}
+
+type PolicyVersion_Rules_Destination_Cloud_Aws_OrgSelector struct {
+	Accounts types.List `tfsdk:"accounts"`
+}
+
+func GetTypeAttrsForPolicyVersion_Rules_Destination_Cloud_Aws_OrgSelector() map[string]attr.Type {
+	return map[string]attr.Type{
+		"accounts": types.ListType{ElemType: types.ObjectType{
+			AttrTypes: GetTypeAttrsForPolicyVersion_Rules_Destination_Cloud_Aws_OrgSelector_Accounts(),
+		}},
+	}
+}
+
+func ConvertPolicyVersion_Rules_Destination_Cloud_Aws_OrgSelectorToObjectValueFromProto(proto *configv1.PolicyVersion_Rules_Destination_Cloud_Aws_OrgSelector) basetypes.ObjectValue {
+	if proto == nil {
+		return types.ObjectNull(GetTypeAttrsForPolicyVersion_Rules_Destination_Cloud_Aws_OrgSelector())
+	}
+	elementsInAccounts := make([]attr.Value, 0, len(proto.Accounts))
+	for _, item := range proto.Accounts {
+		elementsInAccounts = append(elementsInAccounts, ConvertPolicyVersion_Rules_Destination_Cloud_Aws_OrgSelector_AccountsToObjectValueFromProto(item))
+	}
+	return types.ObjectValueMust(
+		GetTypeAttrsForPolicyVersion_Rules_Destination_Cloud_Aws_OrgSelector(),
+		map[string]attr.Value{
+			"accounts": func() basetypes.ListValue {
+				if proto.Accounts == nil {
+					return types.ListNull(types.ObjectType{AttrTypes: GetTypeAttrsForPolicyVersion_Rules_Destination_Cloud_Aws_OrgSelector_Accounts()})
+				}
+				return types.ListValueMust(types.ObjectType{AttrTypes: GetTypeAttrsForPolicyVersion_Rules_Destination_Cloud_Aws_OrgSelector_Accounts()}, elementsInAccounts)
+			}(),
+		},
+	)
+}
+
+func ConvertDataValueToPolicyVersion_Rules_Destination_Cloud_Aws_OrgSelectorProto(ctx context.Context, dataValue attr.Value) (*configv1.PolicyVersion_Rules_Destination_Cloud_Aws_OrgSelector, diag.Diagnostics) {
+	if dataValue.IsNull() || dataValue.IsUnknown() {
+		return nil, nil
+	}
+	pv := PolicyVersion_Rules_Destination_Cloud_Aws_OrgSelector{}
+	diags := tfsdk.ValueAs(ctx, dataValue, &pv)
+	if diags.HasError() {
+		return nil, diags
+	}
+	proto := &configv1.PolicyVersion_Rules_Destination_Cloud_Aws_OrgSelector{}
+	pvElemModelAccounts := pv.Accounts.Elements()
+	proto.Accounts = make([]*configv1.PolicyVersion_Rules_Destination_Cloud_Aws_OrgSelector_Accounts, 0, len(pvElemModelAccounts))
+	for _, elem := range pvElemModelAccounts {
+		pvModel, dvDiags := ConvertDataValueToPolicyVersion_Rules_Destination_Cloud_Aws_OrgSelector_AccountsProto(ctx, elem)
+		diags.Append(dvDiags...)
+		if diags.HasError() {
+			return nil, diags
+		}
+		proto.Accounts = append(proto.Accounts, pvModel)
+	}
+	return proto, diags
+}
+
+type PolicyVersion_Rules_Destination_Cloud_Aws_OrgSelector_Accounts struct {
+	Id types.String `tfsdk:"id"`
+}
+
+func GetTypeAttrsForPolicyVersion_Rules_Destination_Cloud_Aws_OrgSelector_Accounts() map[string]attr.Type {
+	return map[string]attr.Type{
+		"id": types.StringType,
+	}
+}
+
+func ConvertPolicyVersion_Rules_Destination_Cloud_Aws_OrgSelector_AccountsToObjectValueFromProto(proto *configv1.PolicyVersion_Rules_Destination_Cloud_Aws_OrgSelector_Accounts) basetypes.ObjectValue {
+	if proto == nil {
+		return types.ObjectNull(GetTypeAttrsForPolicyVersion_Rules_Destination_Cloud_Aws_OrgSelector_Accounts())
+	}
+	return types.ObjectValueMust(
+		GetTypeAttrsForPolicyVersion_Rules_Destination_Cloud_Aws_OrgSelector_Accounts(),
+		map[string]attr.Value{
+			"id": types.StringValue(proto.Id),
+		},
+	)
+}
+
+func ConvertDataValueToPolicyVersion_Rules_Destination_Cloud_Aws_OrgSelector_AccountsProto(ctx context.Context, dataValue attr.Value) (*configv1.PolicyVersion_Rules_Destination_Cloud_Aws_OrgSelector_Accounts, diag.Diagnostics) {
+	if dataValue.IsNull() || dataValue.IsUnknown() {
+		return nil, nil
+	}
+	pv := PolicyVersion_Rules_Destination_Cloud_Aws_OrgSelector_Accounts{}
+	diags := tfsdk.ValueAs(ctx, dataValue, &pv)
+	if diags.HasError() {
+		return nil, diags
+	}
+	proto := &configv1.PolicyVersion_Rules_Destination_Cloud_Aws_OrgSelector_Accounts{}
+	proto.Id = pv.Id.ValueString()
+	return proto, diags
+}
+
+type PolicyVersion_Rules_Destination_Cloud_Azure struct {
+	Network     types.Object `tfsdk:"network"`
+	OrgSelector types.Object `tfsdk:"org_selector"`
+}
+
+func GetTypeAttrsForPolicyVersion_Rules_Destination_Cloud_Azure() map[string]attr.Type {
+	return map[string]attr.Type{
+		"network": types.ObjectType{
+			AttrTypes: GetTypeAttrsForPolicyVersion_Rules_Destination_Cloud_Azure_Network(),
+		},
+		"org_selector": types.ObjectType{
+			AttrTypes: GetTypeAttrsForPolicyVersion_Rules_Destination_Cloud_Azure_OrgSelector(),
+		},
+	}
+}
+
+func ConvertPolicyVersion_Rules_Destination_Cloud_AzureToObjectValueFromProto(proto *configv1.PolicyVersion_Rules_Destination_Cloud_Azure) basetypes.ObjectValue {
+	if proto == nil {
+		return types.ObjectNull(GetTypeAttrsForPolicyVersion_Rules_Destination_Cloud_Azure())
+	}
+	return types.ObjectValueMust(
+		GetTypeAttrsForPolicyVersion_Rules_Destination_Cloud_Azure(),
+		map[string]attr.Value{
+			"network":      ConvertPolicyVersion_Rules_Destination_Cloud_Azure_NetworkToObjectValueFromProto(proto.Network),
+			"org_selector": ConvertPolicyVersion_Rules_Destination_Cloud_Azure_OrgSelectorToObjectValueFromProto(proto.OrgSelector),
+		},
+	)
+}
+
+func ConvertDataValueToPolicyVersion_Rules_Destination_Cloud_AzureProto(ctx context.Context, dataValue attr.Value) (*configv1.PolicyVersion_Rules_Destination_Cloud_Azure, diag.Diagnostics) {
+	if dataValue.IsNull() || dataValue.IsUnknown() {
+		return nil, nil
+	}
+	pv := PolicyVersion_Rules_Destination_Cloud_Azure{}
+	diags := tfsdk.ValueAs(ctx, dataValue, &pv)
+	if diags.HasError() {
+		return nil, diags
+	}
+	proto := &configv1.PolicyVersion_Rules_Destination_Cloud_Azure{}
+	pvModelNetwork, dvDiagsNetwork := ConvertDataValueToPolicyVersion_Rules_Destination_Cloud_Azure_NetworkProto(ctx, pv.Network)
+	diags.Append(dvDiagsNetwork...)
+	if diags.HasError() {
+		return nil, diags
+	}
+	proto.Network = pvModelNetwork
+	pvModelOrgSelector, dvDiagsOrgSelector := ConvertDataValueToPolicyVersion_Rules_Destination_Cloud_Azure_OrgSelectorProto(ctx, pv.OrgSelector)
+	diags.Append(dvDiagsOrgSelector...)
+	if diags.HasError() {
+		return nil, diags
+	}
+	proto.OrgSelector = pvModelOrgSelector
+	return proto, diags
+}
+
+type PolicyVersion_Rules_Destination_Cloud_Azure_Network struct {
+	Subnets types.List `tfsdk:"subnets"`
+	Vnets   types.List `tfsdk:"vnets"`
+}
+
+func GetTypeAttrsForPolicyVersion_Rules_Destination_Cloud_Azure_Network() map[string]attr.Type {
+	return map[string]attr.Type{
+		"subnets": types.ListType{ElemType: types.ObjectType{
+			AttrTypes: GetTypeAttrsForPolicyVersion_Rules_Destination_Cloud_Azure_Network_Subnets(),
+		}},
+		"vnets": types.ListType{ElemType: types.ObjectType{
+			AttrTypes: GetTypeAttrsForPolicyVersion_Rules_Destination_Cloud_Azure_Network_Vnets(),
+		}},
+	}
+}
+
+func ConvertPolicyVersion_Rules_Destination_Cloud_Azure_NetworkToObjectValueFromProto(proto *configv1.PolicyVersion_Rules_Destination_Cloud_Azure_Network) basetypes.ObjectValue {
+	if proto == nil {
+		return types.ObjectNull(GetTypeAttrsForPolicyVersion_Rules_Destination_Cloud_Azure_Network())
+	}
+	elementsInSubnets := make([]attr.Value, 0, len(proto.Subnets))
+	for _, item := range proto.Subnets {
+		elementsInSubnets = append(elementsInSubnets, ConvertPolicyVersion_Rules_Destination_Cloud_Azure_Network_SubnetsToObjectValueFromProto(item))
+	}
+	elementsInVnets := make([]attr.Value, 0, len(proto.Vnets))
+	for _, item := range proto.Vnets {
+		elementsInVnets = append(elementsInVnets, ConvertPolicyVersion_Rules_Destination_Cloud_Azure_Network_VnetsToObjectValueFromProto(item))
+	}
+	return types.ObjectValueMust(
+		GetTypeAttrsForPolicyVersion_Rules_Destination_Cloud_Azure_Network(),
+		map[string]attr.Value{
+			"subnets": func() basetypes.ListValue {
+				if proto.Subnets == nil {
+					return types.ListNull(types.ObjectType{AttrTypes: GetTypeAttrsForPolicyVersion_Rules_Destination_Cloud_Azure_Network_Subnets()})
+				}
+				return types.ListValueMust(types.ObjectType{AttrTypes: GetTypeAttrsForPolicyVersion_Rules_Destination_Cloud_Azure_Network_Subnets()}, elementsInSubnets)
+			}(),
+			"vnets": func() basetypes.ListValue {
+				if proto.Vnets == nil {
+					return types.ListNull(types.ObjectType{AttrTypes: GetTypeAttrsForPolicyVersion_Rules_Destination_Cloud_Azure_Network_Vnets()})
+				}
+				return types.ListValueMust(types.ObjectType{AttrTypes: GetTypeAttrsForPolicyVersion_Rules_Destination_Cloud_Azure_Network_Vnets()}, elementsInVnets)
+			}(),
+		},
+	)
+}
+
+func ConvertDataValueToPolicyVersion_Rules_Destination_Cloud_Azure_NetworkProto(ctx context.Context, dataValue attr.Value) (*configv1.PolicyVersion_Rules_Destination_Cloud_Azure_Network, diag.Diagnostics) {
+	if dataValue.IsNull() || dataValue.IsUnknown() {
+		return nil, nil
+	}
+	pv := PolicyVersion_Rules_Destination_Cloud_Azure_Network{}
+	diags := tfsdk.ValueAs(ctx, dataValue, &pv)
+	if diags.HasError() {
+		return nil, diags
+	}
+	proto := &configv1.PolicyVersion_Rules_Destination_Cloud_Azure_Network{}
+	pvElemModelSubnets := pv.Subnets.Elements()
+	proto.Subnets = make([]*configv1.PolicyVersion_Rules_Destination_Cloud_Azure_Network_Subnets, 0, len(pvElemModelSubnets))
+	for _, elem := range pvElemModelSubnets {
+		pvModel, dvDiags := ConvertDataValueToPolicyVersion_Rules_Destination_Cloud_Azure_Network_SubnetsProto(ctx, elem)
+		diags.Append(dvDiags...)
+		if diags.HasError() {
+			return nil, diags
+		}
+		proto.Subnets = append(proto.Subnets, pvModel)
+	}
+	pvElemModelVnets := pv.Vnets.Elements()
+	proto.Vnets = make([]*configv1.PolicyVersion_Rules_Destination_Cloud_Azure_Network_Vnets, 0, len(pvElemModelVnets))
+	for _, elem := range pvElemModelVnets {
+		pvModel, dvDiags := ConvertDataValueToPolicyVersion_Rules_Destination_Cloud_Azure_Network_VnetsProto(ctx, elem)
+		diags.Append(dvDiags...)
+		if diags.HasError() {
+			return nil, diags
+		}
+		proto.Vnets = append(proto.Vnets, pvModel)
+	}
+	return proto, diags
+}
+
+type PolicyVersion_Rules_Destination_Cloud_Azure_Network_Subnets struct {
+	Id types.String `tfsdk:"id"`
+}
+
+func GetTypeAttrsForPolicyVersion_Rules_Destination_Cloud_Azure_Network_Subnets() map[string]attr.Type {
+	return map[string]attr.Type{
+		"id": types.StringType,
+	}
+}
+
+func ConvertPolicyVersion_Rules_Destination_Cloud_Azure_Network_SubnetsToObjectValueFromProto(proto *configv1.PolicyVersion_Rules_Destination_Cloud_Azure_Network_Subnets) basetypes.ObjectValue {
+	if proto == nil {
+		return types.ObjectNull(GetTypeAttrsForPolicyVersion_Rules_Destination_Cloud_Azure_Network_Subnets())
+	}
+	return types.ObjectValueMust(
+		GetTypeAttrsForPolicyVersion_Rules_Destination_Cloud_Azure_Network_Subnets(),
+		map[string]attr.Value{
+			"id": types.StringValue(proto.Id),
+		},
+	)
+}
+
+func ConvertDataValueToPolicyVersion_Rules_Destination_Cloud_Azure_Network_SubnetsProto(ctx context.Context, dataValue attr.Value) (*configv1.PolicyVersion_Rules_Destination_Cloud_Azure_Network_Subnets, diag.Diagnostics) {
+	if dataValue.IsNull() || dataValue.IsUnknown() {
+		return nil, nil
+	}
+	pv := PolicyVersion_Rules_Destination_Cloud_Azure_Network_Subnets{}
+	diags := tfsdk.ValueAs(ctx, dataValue, &pv)
+	if diags.HasError() {
+		return nil, diags
+	}
+	proto := &configv1.PolicyVersion_Rules_Destination_Cloud_Azure_Network_Subnets{}
+	proto.Id = pv.Id.ValueString()
+	return proto, diags
+}
+
+type PolicyVersion_Rules_Destination_Cloud_Azure_Network_Vnets struct {
+	Id             types.String `tfsdk:"id"`
+	ResourceGroup  types.String `tfsdk:"resource_group"`
+	SubscriptionId types.String `tfsdk:"subscription_id"`
+}
+
+func GetTypeAttrsForPolicyVersion_Rules_Destination_Cloud_Azure_Network_Vnets() map[string]attr.Type {
+	return map[string]attr.Type{
+		"id":              types.StringType,
+		"resource_group":  types.StringType,
+		"subscription_id": types.StringType,
+	}
+}
+
+func ConvertPolicyVersion_Rules_Destination_Cloud_Azure_Network_VnetsToObjectValueFromProto(proto *configv1.PolicyVersion_Rules_Destination_Cloud_Azure_Network_Vnets) basetypes.ObjectValue {
+	if proto == nil {
+		return types.ObjectNull(GetTypeAttrsForPolicyVersion_Rules_Destination_Cloud_Azure_Network_Vnets())
+	}
+	return types.ObjectValueMust(
+		GetTypeAttrsForPolicyVersion_Rules_Destination_Cloud_Azure_Network_Vnets(),
+		map[string]attr.Value{
+			"id":              types.StringValue(proto.Id),
+			"resource_group":  types.StringValue(proto.ResourceGroup),
+			"subscription_id": types.StringValue(proto.SubscriptionId),
+		},
+	)
+}
+
+func ConvertDataValueToPolicyVersion_Rules_Destination_Cloud_Azure_Network_VnetsProto(ctx context.Context, dataValue attr.Value) (*configv1.PolicyVersion_Rules_Destination_Cloud_Azure_Network_Vnets, diag.Diagnostics) {
+	if dataValue.IsNull() || dataValue.IsUnknown() {
+		return nil, nil
+	}
+	pv := PolicyVersion_Rules_Destination_Cloud_Azure_Network_Vnets{}
+	diags := tfsdk.ValueAs(ctx, dataValue, &pv)
+	if diags.HasError() {
+		return nil, diags
+	}
+	proto := &configv1.PolicyVersion_Rules_Destination_Cloud_Azure_Network_Vnets{}
+	proto.Id = pv.Id.ValueString()
+	proto.ResourceGroup = pv.ResourceGroup.ValueString()
+	proto.SubscriptionId = pv.SubscriptionId.ValueString()
+	return proto, diags
+}
+
+type PolicyVersion_Rules_Destination_Cloud_Azure_OrgSelector struct {
+	Subscriptions types.List `tfsdk:"subscriptions"`
+}
+
+func GetTypeAttrsForPolicyVersion_Rules_Destination_Cloud_Azure_OrgSelector() map[string]attr.Type {
+	return map[string]attr.Type{
+		"subscriptions": types.ListType{ElemType: types.ObjectType{
+			AttrTypes: GetTypeAttrsForPolicyVersion_Rules_Destination_Cloud_Azure_OrgSelector_Subscriptions(),
+		}},
+	}
+}
+
+func ConvertPolicyVersion_Rules_Destination_Cloud_Azure_OrgSelectorToObjectValueFromProto(proto *configv1.PolicyVersion_Rules_Destination_Cloud_Azure_OrgSelector) basetypes.ObjectValue {
+	if proto == nil {
+		return types.ObjectNull(GetTypeAttrsForPolicyVersion_Rules_Destination_Cloud_Azure_OrgSelector())
+	}
+	elementsInSubscriptions := make([]attr.Value, 0, len(proto.Subscriptions))
+	for _, item := range proto.Subscriptions {
+		elementsInSubscriptions = append(elementsInSubscriptions, ConvertPolicyVersion_Rules_Destination_Cloud_Azure_OrgSelector_SubscriptionsToObjectValueFromProto(item))
+	}
+	return types.ObjectValueMust(
+		GetTypeAttrsForPolicyVersion_Rules_Destination_Cloud_Azure_OrgSelector(),
+		map[string]attr.Value{
+			"subscriptions": func() basetypes.ListValue {
+				if proto.Subscriptions == nil {
+					return types.ListNull(types.ObjectType{AttrTypes: GetTypeAttrsForPolicyVersion_Rules_Destination_Cloud_Azure_OrgSelector_Subscriptions()})
+				}
+				return types.ListValueMust(types.ObjectType{AttrTypes: GetTypeAttrsForPolicyVersion_Rules_Destination_Cloud_Azure_OrgSelector_Subscriptions()}, elementsInSubscriptions)
+			}(),
+		},
+	)
+}
+
+func ConvertDataValueToPolicyVersion_Rules_Destination_Cloud_Azure_OrgSelectorProto(ctx context.Context, dataValue attr.Value) (*configv1.PolicyVersion_Rules_Destination_Cloud_Azure_OrgSelector, diag.Diagnostics) {
+	if dataValue.IsNull() || dataValue.IsUnknown() {
+		return nil, nil
+	}
+	pv := PolicyVersion_Rules_Destination_Cloud_Azure_OrgSelector{}
+	diags := tfsdk.ValueAs(ctx, dataValue, &pv)
+	if diags.HasError() {
+		return nil, diags
+	}
+	proto := &configv1.PolicyVersion_Rules_Destination_Cloud_Azure_OrgSelector{}
+	pvElemModelSubscriptions := pv.Subscriptions.Elements()
+	proto.Subscriptions = make([]*configv1.PolicyVersion_Rules_Destination_Cloud_Azure_OrgSelector_Subscriptions, 0, len(pvElemModelSubscriptions))
+	for _, elem := range pvElemModelSubscriptions {
+		pvModel, dvDiags := ConvertDataValueToPolicyVersion_Rules_Destination_Cloud_Azure_OrgSelector_SubscriptionsProto(ctx, elem)
+		diags.Append(dvDiags...)
+		if diags.HasError() {
+			return nil, diags
+		}
+		proto.Subscriptions = append(proto.Subscriptions, pvModel)
+	}
+	return proto, diags
+}
+
+type PolicyVersion_Rules_Destination_Cloud_Azure_OrgSelector_Subscriptions struct {
+	Id types.String `tfsdk:"id"`
+}
+
+func GetTypeAttrsForPolicyVersion_Rules_Destination_Cloud_Azure_OrgSelector_Subscriptions() map[string]attr.Type {
+	return map[string]attr.Type{
+		"id": types.StringType,
+	}
+}
+
+func ConvertPolicyVersion_Rules_Destination_Cloud_Azure_OrgSelector_SubscriptionsToObjectValueFromProto(proto *configv1.PolicyVersion_Rules_Destination_Cloud_Azure_OrgSelector_Subscriptions) basetypes.ObjectValue {
+	if proto == nil {
+		return types.ObjectNull(GetTypeAttrsForPolicyVersion_Rules_Destination_Cloud_Azure_OrgSelector_Subscriptions())
+	}
+	return types.ObjectValueMust(
+		GetTypeAttrsForPolicyVersion_Rules_Destination_Cloud_Azure_OrgSelector_Subscriptions(),
+		map[string]attr.Value{
+			"id": types.StringValue(proto.Id),
+		},
+	)
+}
+
+func ConvertDataValueToPolicyVersion_Rules_Destination_Cloud_Azure_OrgSelector_SubscriptionsProto(ctx context.Context, dataValue attr.Value) (*configv1.PolicyVersion_Rules_Destination_Cloud_Azure_OrgSelector_Subscriptions, diag.Diagnostics) {
+	if dataValue.IsNull() || dataValue.IsUnknown() {
+		return nil, nil
+	}
+	pv := PolicyVersion_Rules_Destination_Cloud_Azure_OrgSelector_Subscriptions{}
+	diags := tfsdk.ValueAs(ctx, dataValue, &pv)
+	if diags.HasError() {
+		return nil, diags
+	}
+	proto := &configv1.PolicyVersion_Rules_Destination_Cloud_Azure_OrgSelector_Subscriptions{}
+	proto.Id = pv.Id.ValueString()
+	return proto, diags
+}
+
+type PolicyVersion_Rules_Destination_Fqdns struct {
+	Names types.List `tfsdk:"names"`
+}
+
+func GetTypeAttrsForPolicyVersion_Rules_Destination_Fqdns() map[string]attr.Type {
+	return map[string]attr.Type{
+		"names": types.ListType{ElemType: types.StringType},
+	}
+}
+
+func ConvertPolicyVersion_Rules_Destination_FqdnsToObjectValueFromProto(proto *configv1.PolicyVersion_Rules_Destination_Fqdns) basetypes.ObjectValue {
+	if proto == nil {
+		return types.ObjectNull(GetTypeAttrsForPolicyVersion_Rules_Destination_Fqdns())
+	}
+	elementsInNames := make([]attr.Value, 0, len(proto.Names))
+	for _, item := range proto.Names {
+		elementsInNames = append(elementsInNames, types.StringValue(item))
+	}
+	return types.ObjectValueMust(
+		GetTypeAttrsForPolicyVersion_Rules_Destination_Fqdns(),
+		map[string]attr.Value{
+			"names": func() basetypes.ListValue {
+				if proto.Names == nil {
+					return types.ListNull(types.StringType)
+				}
+				return types.ListValueMust(types.StringType, elementsInNames)
+			}(),
+		},
+	)
+}
+
+func ConvertDataValueToPolicyVersion_Rules_Destination_FqdnsProto(ctx context.Context, dataValue attr.Value) (*configv1.PolicyVersion_Rules_Destination_Fqdns, diag.Diagnostics) {
+	if dataValue.IsNull() || dataValue.IsUnknown() {
+		return nil, nil
+	}
+	pv := PolicyVersion_Rules_Destination_Fqdns{}
+	diags := tfsdk.ValueAs(ctx, dataValue, &pv)
+	if diags.HasError() {
+		return nil, diags
+	}
+	proto := &configv1.PolicyVersion_Rules_Destination_Fqdns{}
+	var pvModelNames []string
+	dvDiagsNames := pv.Names.ElementsAs(ctx, &pvModelNames, false)
+	diags.Append(dvDiagsNames...)
+	if diags.HasError() {
+		return nil, diags
+	}
+	proto.Names = pvModelNames
+	return proto, diags
+}
+
+type PolicyVersion_Rules_Destination_IllumioLabels struct {
+	Labels types.List `tfsdk:"labels"`
+}
+
+func GetTypeAttrsForPolicyVersion_Rules_Destination_IllumioLabels() map[string]attr.Type {
+	return map[string]attr.Type{
+		"labels": types.ListType{ElemType: types.ObjectType{
+			AttrTypes: GetTypeAttrsForPolicyVersion_Rules_Destination_IllumioLabels_Labels(),
+		}},
+	}
+}
+
+func ConvertPolicyVersion_Rules_Destination_IllumioLabelsToObjectValueFromProto(proto *configv1.PolicyVersion_Rules_Destination_IllumioLabels) basetypes.ObjectValue {
+	if proto == nil {
+		return types.ObjectNull(GetTypeAttrsForPolicyVersion_Rules_Destination_IllumioLabels())
+	}
+	elementsInLabels := make([]attr.Value, 0, len(proto.Labels))
+	for _, item := range proto.Labels {
+		elementsInLabels = append(elementsInLabels, ConvertPolicyVersion_Rules_Destination_IllumioLabels_LabelsToObjectValueFromProto(item))
+	}
+	return types.ObjectValueMust(
+		GetTypeAttrsForPolicyVersion_Rules_Destination_IllumioLabels(),
+		map[string]attr.Value{
+			"labels": func() basetypes.ListValue {
+				if proto.Labels == nil {
+					return types.ListNull(types.ObjectType{AttrTypes: GetTypeAttrsForPolicyVersion_Rules_Destination_IllumioLabels_Labels()})
+				}
+				return types.ListValueMust(types.ObjectType{AttrTypes: GetTypeAttrsForPolicyVersion_Rules_Destination_IllumioLabels_Labels()}, elementsInLabels)
+			}(),
+		},
+	)
+}
+
+func ConvertDataValueToPolicyVersion_Rules_Destination_IllumioLabelsProto(ctx context.Context, dataValue attr.Value) (*configv1.PolicyVersion_Rules_Destination_IllumioLabels, diag.Diagnostics) {
+	if dataValue.IsNull() || dataValue.IsUnknown() {
+		return nil, nil
+	}
+	pv := PolicyVersion_Rules_Destination_IllumioLabels{}
+	diags := tfsdk.ValueAs(ctx, dataValue, &pv)
+	if diags.HasError() {
+		return nil, diags
+	}
+	proto := &configv1.PolicyVersion_Rules_Destination_IllumioLabels{}
+	pvElemModelLabels := pv.Labels.Elements()
+	proto.Labels = make([]*configv1.PolicyVersion_Rules_Destination_IllumioLabels_Labels, 0, len(pvElemModelLabels))
+	for _, elem := range pvElemModelLabels {
+		pvModel, dvDiags := ConvertDataValueToPolicyVersion_Rules_Destination_IllumioLabels_LabelsProto(ctx, elem)
+		diags.Append(dvDiags...)
+		if diags.HasError() {
+			return nil, diags
+		}
+		proto.Labels = append(proto.Labels, pvModel)
+	}
+	return proto, diags
+}
+
+type PolicyVersion_Rules_Destination_IllumioLabels_Labels struct {
+	Key    types.String `tfsdk:"key"`
+	Values types.List   `tfsdk:"values"`
+}
+
+func GetTypeAttrsForPolicyVersion_Rules_Destination_IllumioLabels_Labels() map[string]attr.Type {
+	return map[string]attr.Type{
+		"key":    types.StringType,
+		"values": types.ListType{ElemType: types.StringType},
+	}
+}
+
+func ConvertPolicyVersion_Rules_Destination_IllumioLabels_LabelsToObjectValueFromProto(proto *configv1.PolicyVersion_Rules_Destination_IllumioLabels_Labels) basetypes.ObjectValue {
+	if proto == nil {
+		return types.ObjectNull(GetTypeAttrsForPolicyVersion_Rules_Destination_IllumioLabels_Labels())
+	}
+	elementsInValues := make([]attr.Value, 0, len(proto.Values))
+	for _, item := range proto.Values {
+		elementsInValues = append(elementsInValues, types.StringValue(item))
+	}
+	return types.ObjectValueMust(
+		GetTypeAttrsForPolicyVersion_Rules_Destination_IllumioLabels_Labels(),
+		map[string]attr.Value{
+			"key": types.StringValue(proto.Key),
+			"values": func() basetypes.ListValue {
+				if proto.Values == nil {
+					return types.ListNull(types.StringType)
+				}
+				return types.ListValueMust(types.StringType, elementsInValues)
+			}(),
+		},
+	)
+}
+
+func ConvertDataValueToPolicyVersion_Rules_Destination_IllumioLabels_LabelsProto(ctx context.Context, dataValue attr.Value) (*configv1.PolicyVersion_Rules_Destination_IllumioLabels_Labels, diag.Diagnostics) {
+	if dataValue.IsNull() || dataValue.IsUnknown() {
+		return nil, nil
+	}
+	pv := PolicyVersion_Rules_Destination_IllumioLabels_Labels{}
+	diags := tfsdk.ValueAs(ctx, dataValue, &pv)
+	if diags.HasError() {
+		return nil, diags
+	}
+	proto := &configv1.PolicyVersion_Rules_Destination_IllumioLabels_Labels{}
+	proto.Key = pv.Key.ValueString()
+	var pvModelValues []string
+	dvDiagsValues := pv.Values.ElementsAs(ctx, &pvModelValues, false)
+	diags.Append(dvDiagsValues...)
+	if diags.HasError() {
+		return nil, diags
+	}
+	proto.Values = pvModelValues
+	return proto, diags
+}
+
+type PolicyVersion_Rules_Destination_IpLists struct {
+	Ids types.List `tfsdk:"ids"`
+}
+
+func GetTypeAttrsForPolicyVersion_Rules_Destination_IpLists() map[string]attr.Type {
+	return map[string]attr.Type{
+		"ids": types.ListType{ElemType: types.StringType},
+	}
+}
+
+func ConvertPolicyVersion_Rules_Destination_IpListsToObjectValueFromProto(proto *configv1.PolicyVersion_Rules_Destination_IpLists) basetypes.ObjectValue {
+	if proto == nil {
+		return types.ObjectNull(GetTypeAttrsForPolicyVersion_Rules_Destination_IpLists())
+	}
+	elementsInIds := make([]attr.Value, 0, len(proto.Ids))
+	for _, item := range proto.Ids {
+		elementsInIds = append(elementsInIds, types.StringValue(item))
+	}
+	return types.ObjectValueMust(
+		GetTypeAttrsForPolicyVersion_Rules_Destination_IpLists(),
+		map[string]attr.Value{
+			"ids": func() basetypes.ListValue {
+				if proto.Ids == nil {
+					return types.ListNull(types.StringType)
+				}
+				return types.ListValueMust(types.StringType, elementsInIds)
+			}(),
+		},
+	)
+}
+
+func ConvertDataValueToPolicyVersion_Rules_Destination_IpListsProto(ctx context.Context, dataValue attr.Value) (*configv1.PolicyVersion_Rules_Destination_IpLists, diag.Diagnostics) {
+	if dataValue.IsNull() || dataValue.IsUnknown() {
+		return nil, nil
+	}
+	pv := PolicyVersion_Rules_Destination_IpLists{}
+	diags := tfsdk.ValueAs(ctx, dataValue, &pv)
+	if diags.HasError() {
+		return nil, diags
+	}
+	proto := &configv1.PolicyVersion_Rules_Destination_IpLists{}
+	var pvModelIds []string
+	dvDiagsIds := pv.Ids.ElementsAs(ctx, &pvModelIds, false)
+	diags.Append(dvDiagsIds...)
+	if diags.HasError() {
+		return nil, diags
+	}
+	proto.Ids = pvModelIds
+	return proto, diags
+}
+
+type PolicyVersion_Rules_Destination_K8S struct {
+	Clusters          types.List   `tfsdk:"clusters"`
+	Gateways          types.List   `tfsdk:"gateways"`
+	Ingresses         types.List   `tfsdk:"ingresses"`
+	NamespaceSelector types.Object `tfsdk:"namespace_selector"`
+	Services          types.List   `tfsdk:"services"`
+	WorkloadSelector  types.Object `tfsdk:"workload_selector"`
+}
+
+func GetTypeAttrsForPolicyVersion_Rules_Destination_K8S() map[string]attr.Type {
+	return map[string]attr.Type{
+		"clusters": types.ListType{ElemType: types.ObjectType{
+			AttrTypes: GetTypeAttrsForPolicyVersion_Rules_Destination_K8S_Clusters(),
+		}},
+		"gateways":  types.ListType{ElemType: types.StringType},
+		"ingresses": types.ListType{ElemType: types.StringType},
+		"namespace_selector": types.ObjectType{
+			AttrTypes: GetTypeAttrsForPolicyVersion_Rules_Destination_K8S_NamespaceSelector(),
+		},
+		"services": types.ListType{ElemType: types.StringType},
+		"workload_selector": types.ObjectType{
+			AttrTypes: GetTypeAttrsForPolicyVersion_Rules_Destination_K8S_WorkloadSelector(),
+		},
+	}
+}
+
+func ConvertPolicyVersion_Rules_Destination_K8SToObjectValueFromProto(proto *configv1.PolicyVersion_Rules_Destination_K8S) basetypes.ObjectValue {
+	if proto == nil {
+		return types.ObjectNull(GetTypeAttrsForPolicyVersion_Rules_Destination_K8S())
+	}
+	elementsInClusters := make([]attr.Value, 0, len(proto.Clusters))
+	for _, item := range proto.Clusters {
+		elementsInClusters = append(elementsInClusters, ConvertPolicyVersion_Rules_Destination_K8S_ClustersToObjectValueFromProto(item))
+	}
+	elementsInGateways := make([]attr.Value, 0, len(proto.Gateways))
+	for _, item := range proto.Gateways {
+		elementsInGateways = append(elementsInGateways, types.StringValue(item))
+	}
+	elementsInIngresses := make([]attr.Value, 0, len(proto.Ingresses))
+	for _, item := range proto.Ingresses {
+		elementsInIngresses = append(elementsInIngresses, types.StringValue(item))
+	}
+	elementsInServices := make([]attr.Value, 0, len(proto.Services))
+	for _, item := range proto.Services {
+		elementsInServices = append(elementsInServices, types.StringValue(item))
+	}
+	return types.ObjectValueMust(
+		GetTypeAttrsForPolicyVersion_Rules_Destination_K8S(),
+		map[string]attr.Value{
+			"clusters": func() basetypes.ListValue {
+				if proto.Clusters == nil {
+					return types.ListNull(types.ObjectType{AttrTypes: GetTypeAttrsForPolicyVersion_Rules_Destination_K8S_Clusters()})
+				}
+				return types.ListValueMust(types.ObjectType{AttrTypes: GetTypeAttrsForPolicyVersion_Rules_Destination_K8S_Clusters()}, elementsInClusters)
+			}(),
+			"gateways": func() basetypes.ListValue {
+				if proto.Gateways == nil {
+					return types.ListNull(types.StringType)
+				}
+				return types.ListValueMust(types.StringType, elementsInGateways)
+			}(),
+			"ingresses": func() basetypes.ListValue {
+				if proto.Ingresses == nil {
+					return types.ListNull(types.StringType)
+				}
+				return types.ListValueMust(types.StringType, elementsInIngresses)
+			}(),
+			"namespace_selector": ConvertPolicyVersion_Rules_Destination_K8S_NamespaceSelectorToObjectValueFromProto(proto.NamespaceSelector),
+			"services": func() basetypes.ListValue {
+				if proto.Services == nil {
+					return types.ListNull(types.StringType)
+				}
+				return types.ListValueMust(types.StringType, elementsInServices)
+			}(),
+			"workload_selector": ConvertPolicyVersion_Rules_Destination_K8S_WorkloadSelectorToObjectValueFromProto(proto.WorkloadSelector),
+		},
+	)
+}
+
+func ConvertDataValueToPolicyVersion_Rules_Destination_K8SProto(ctx context.Context, dataValue attr.Value) (*configv1.PolicyVersion_Rules_Destination_K8S, diag.Diagnostics) {
+	if dataValue.IsNull() || dataValue.IsUnknown() {
+		return nil, nil
+	}
+	pv := PolicyVersion_Rules_Destination_K8S{}
+	diags := tfsdk.ValueAs(ctx, dataValue, &pv)
+	if diags.HasError() {
+		return nil, diags
+	}
+	proto := &configv1.PolicyVersion_Rules_Destination_K8S{}
+	pvElemModelClusters := pv.Clusters.Elements()
+	proto.Clusters = make([]*configv1.PolicyVersion_Rules_Destination_K8S_Clusters, 0, len(pvElemModelClusters))
+	for _, elem := range pvElemModelClusters {
+		pvModel, dvDiags := ConvertDataValueToPolicyVersion_Rules_Destination_K8S_ClustersProto(ctx, elem)
+		diags.Append(dvDiags...)
+		if diags.HasError() {
+			return nil, diags
+		}
+		proto.Clusters = append(proto.Clusters, pvModel)
+	}
+	var pvModelGateways []string
+	dvDiagsGateways := pv.Gateways.ElementsAs(ctx, &pvModelGateways, false)
+	diags.Append(dvDiagsGateways...)
+	if diags.HasError() {
+		return nil, diags
+	}
+	proto.Gateways = pvModelGateways
+	var pvModelIngresses []string
+	dvDiagsIngresses := pv.Ingresses.ElementsAs(ctx, &pvModelIngresses, false)
+	diags.Append(dvDiagsIngresses...)
+	if diags.HasError() {
+		return nil, diags
+	}
+	proto.Ingresses = pvModelIngresses
+	pvModelNamespaceSelector, dvDiagsNamespaceSelector := ConvertDataValueToPolicyVersion_Rules_Destination_K8S_NamespaceSelectorProto(ctx, pv.NamespaceSelector)
+	diags.Append(dvDiagsNamespaceSelector...)
+	if diags.HasError() {
+		return nil, diags
+	}
+	proto.NamespaceSelector = pvModelNamespaceSelector
+	var pvModelServices []string
+	dvDiagsServices := pv.Services.ElementsAs(ctx, &pvModelServices, false)
+	diags.Append(dvDiagsServices...)
+	if diags.HasError() {
+		return nil, diags
+	}
+	proto.Services = pvModelServices
+	pvModelWorkloadSelector, dvDiagsWorkloadSelector := ConvertDataValueToPolicyVersion_Rules_Destination_K8S_WorkloadSelectorProto(ctx, pv.WorkloadSelector)
+	diags.Append(dvDiagsWorkloadSelector...)
+	if diags.HasError() {
+		return nil, diags
+	}
+	proto.WorkloadSelector = pvModelWorkloadSelector
+	return proto, diags
+}
+
+type PolicyVersion_Rules_Destination_K8S_Clusters struct {
+	Id    types.String `tfsdk:"id"`
+	Aws   types.Object `tfsdk:"aws"`
+	Azure types.Object `tfsdk:"azure"`
+	Gcp   types.Object `tfsdk:"gcp"`
+	Oci   types.Object `tfsdk:"oci"`
+}
+
+func GetTypeAttrsForPolicyVersion_Rules_Destination_K8S_Clusters() map[string]attr.Type {
+	return map[string]attr.Type{
+		"id": types.StringType,
+		"aws": types.ObjectType{
+			AttrTypes: GetTypeAttrsForPolicyVersion_Rules_Destination_K8S_Clusters_Aws(),
+		},
+		"azure": types.ObjectType{
+			AttrTypes: GetTypeAttrsForPolicyVersion_Rules_Destination_K8S_Clusters_Azure(),
+		},
+		"gcp": types.ObjectType{
+			AttrTypes: GetTypeAttrsForPolicyVersion_Rules_Destination_K8S_Clusters_Gcp(),
+		},
+		"oci": types.ObjectType{
+			AttrTypes: GetTypeAttrsForPolicyVersion_Rules_Destination_K8S_Clusters_Oci(),
+		},
+	}
+}
+
+func ConvertPolicyVersion_Rules_Destination_K8S_ClustersToObjectValueFromProto(proto *configv1.PolicyVersion_Rules_Destination_K8S_Clusters) basetypes.ObjectValue {
+	if proto == nil {
+		return types.ObjectNull(GetTypeAttrsForPolicyVersion_Rules_Destination_K8S_Clusters())
+	}
+	return types.ObjectValueMust(
+		GetTypeAttrsForPolicyVersion_Rules_Destination_K8S_Clusters(),
+		map[string]attr.Value{
+			"id":    types.StringValue(proto.Id),
+			"aws":   ConvertPolicyVersion_Rules_Destination_K8S_Clusters_AwsToObjectValueFromProto(proto.Aws),
+			"azure": ConvertPolicyVersion_Rules_Destination_K8S_Clusters_AzureToObjectValueFromProto(proto.Azure),
+			"gcp":   ConvertPolicyVersion_Rules_Destination_K8S_Clusters_GcpToObjectValueFromProto(proto.Gcp),
+			"oci":   ConvertPolicyVersion_Rules_Destination_K8S_Clusters_OciToObjectValueFromProto(proto.Oci),
+		},
+	)
+}
+
+func ConvertDataValueToPolicyVersion_Rules_Destination_K8S_ClustersProto(ctx context.Context, dataValue attr.Value) (*configv1.PolicyVersion_Rules_Destination_K8S_Clusters, diag.Diagnostics) {
+	if dataValue.IsNull() || dataValue.IsUnknown() {
+		return nil, nil
+	}
+	pv := PolicyVersion_Rules_Destination_K8S_Clusters{}
+	diags := tfsdk.ValueAs(ctx, dataValue, &pv)
+	if diags.HasError() {
+		return nil, diags
+	}
+	proto := &configv1.PolicyVersion_Rules_Destination_K8S_Clusters{}
+	proto.Id = pv.Id.ValueString()
+	pvModelAws, dvDiagsAws := ConvertDataValueToPolicyVersion_Rules_Destination_K8S_Clusters_AwsProto(ctx, pv.Aws)
+	diags.Append(dvDiagsAws...)
+	if diags.HasError() {
+		return nil, diags
+	}
+	proto.Aws = pvModelAws
+	pvModelAzure, dvDiagsAzure := ConvertDataValueToPolicyVersion_Rules_Destination_K8S_Clusters_AzureProto(ctx, pv.Azure)
+	diags.Append(dvDiagsAzure...)
+	if diags.HasError() {
+		return nil, diags
+	}
+	proto.Azure = pvModelAzure
+	pvModelGcp, dvDiagsGcp := ConvertDataValueToPolicyVersion_Rules_Destination_K8S_Clusters_GcpProto(ctx, pv.Gcp)
+	diags.Append(dvDiagsGcp...)
+	if diags.HasError() {
+		return nil, diags
+	}
+	proto.Gcp = pvModelGcp
+	pvModelOci, dvDiagsOci := ConvertDataValueToPolicyVersion_Rules_Destination_K8S_Clusters_OciProto(ctx, pv.Oci)
+	diags.Append(dvDiagsOci...)
+	if diags.HasError() {
+		return nil, diags
+	}
+	proto.Oci = pvModelOci
+	return proto, diags
+}
+
+type PolicyVersion_Rules_Destination_K8S_Clusters_Aws struct {
+	AccountId        types.String `tfsdk:"account_id"`
+	AccountIdMatch   types.Object `tfsdk:"account_id_match"`
+	ClusterName      types.String `tfsdk:"cluster_name"`
+	ClusterNameMatch types.Object `tfsdk:"cluster_name_match"`
+	Region           types.String `tfsdk:"region"`
+	RegionMatch      types.Object `tfsdk:"region_match"`
+}
+
+func GetTypeAttrsForPolicyVersion_Rules_Destination_K8S_Clusters_Aws() map[string]attr.Type {
+	return map[string]attr.Type{
+		"account_id": types.StringType,
+		"account_id_match": types.ObjectType{
+			AttrTypes: GetTypeAttrsForPolicyVersion_Rules_Destination_K8S_Clusters_Aws_AccountIdMatch(),
+		},
+		"cluster_name": types.StringType,
+		"cluster_name_match": types.ObjectType{
+			AttrTypes: GetTypeAttrsForPolicyVersion_Rules_Destination_K8S_Clusters_Aws_ClusterNameMatch(),
+		},
+		"region": types.StringType,
+		"region_match": types.ObjectType{
+			AttrTypes: GetTypeAttrsForPolicyVersion_Rules_Destination_K8S_Clusters_Aws_RegionMatch(),
+		},
+	}
+}
+
+func ConvertPolicyVersion_Rules_Destination_K8S_Clusters_AwsToObjectValueFromProto(proto *configv1.PolicyVersion_Rules_Destination_K8S_Clusters_Aws) basetypes.ObjectValue {
+	if proto == nil {
+		return types.ObjectNull(GetTypeAttrsForPolicyVersion_Rules_Destination_K8S_Clusters_Aws())
+	}
+	return types.ObjectValueMust(
+		GetTypeAttrsForPolicyVersion_Rules_Destination_K8S_Clusters_Aws(),
+		map[string]attr.Value{
+			"account_id":         types.StringValue(proto.AccountId),
+			"account_id_match":   ConvertPolicyVersion_Rules_Destination_K8S_Clusters_Aws_AccountIdMatchToObjectValueFromProto(proto.AccountIdMatch),
+			"cluster_name":       types.StringValue(proto.ClusterName),
+			"cluster_name_match": ConvertPolicyVersion_Rules_Destination_K8S_Clusters_Aws_ClusterNameMatchToObjectValueFromProto(proto.ClusterNameMatch),
+			"region":             types.StringValue(proto.Region),
+			"region_match":       ConvertPolicyVersion_Rules_Destination_K8S_Clusters_Aws_RegionMatchToObjectValueFromProto(proto.RegionMatch),
+		},
+	)
+}
+
+func ConvertDataValueToPolicyVersion_Rules_Destination_K8S_Clusters_AwsProto(ctx context.Context, dataValue attr.Value) (*configv1.PolicyVersion_Rules_Destination_K8S_Clusters_Aws, diag.Diagnostics) {
+	if dataValue.IsNull() || dataValue.IsUnknown() {
+		return nil, nil
+	}
+	pv := PolicyVersion_Rules_Destination_K8S_Clusters_Aws{}
+	diags := tfsdk.ValueAs(ctx, dataValue, &pv)
+	if diags.HasError() {
+		return nil, diags
+	}
+	proto := &configv1.PolicyVersion_Rules_Destination_K8S_Clusters_Aws{}
+	proto.AccountId = pv.AccountId.ValueString()
+	pvModelAccountIdMatch, dvDiagsAccountIdMatch := ConvertDataValueToPolicyVersion_Rules_Destination_K8S_Clusters_Aws_AccountIdMatchProto(ctx, pv.AccountIdMatch)
+	diags.Append(dvDiagsAccountIdMatch...)
+	if diags.HasError() {
+		return nil, diags
+	}
+	proto.AccountIdMatch = pvModelAccountIdMatch
+	proto.ClusterName = pv.ClusterName.ValueString()
+	pvModelClusterNameMatch, dvDiagsClusterNameMatch := ConvertDataValueToPolicyVersion_Rules_Destination_K8S_Clusters_Aws_ClusterNameMatchProto(ctx, pv.ClusterNameMatch)
+	diags.Append(dvDiagsClusterNameMatch...)
+	if diags.HasError() {
+		return nil, diags
+	}
+	proto.ClusterNameMatch = pvModelClusterNameMatch
+	proto.Region = pv.Region.ValueString()
+	pvModelRegionMatch, dvDiagsRegionMatch := ConvertDataValueToPolicyVersion_Rules_Destination_K8S_Clusters_Aws_RegionMatchProto(ctx, pv.RegionMatch)
+	diags.Append(dvDiagsRegionMatch...)
+	if diags.HasError() {
+		return nil, diags
+	}
+	proto.RegionMatch = pvModelRegionMatch
+	return proto, diags
+}
+
+type PolicyVersion_Rules_Destination_K8S_Clusters_Aws_AccountIdMatch struct {
+	Operator types.String `tfsdk:"operator"`
+	Values   types.List   `tfsdk:"values"`
+}
+
+func GetTypeAttrsForPolicyVersion_Rules_Destination_K8S_Clusters_Aws_AccountIdMatch() map[string]attr.Type {
+	return map[string]attr.Type{
+		"operator": types.StringType,
+		"values":   types.ListType{ElemType: types.StringType},
+	}
+}
+
+func ConvertPolicyVersion_Rules_Destination_K8S_Clusters_Aws_AccountIdMatchToObjectValueFromProto(proto *configv1.PolicyVersion_Rules_Destination_K8S_Clusters_Aws_AccountIdMatch) basetypes.ObjectValue {
+	if proto == nil {
+		return types.ObjectNull(GetTypeAttrsForPolicyVersion_Rules_Destination_K8S_Clusters_Aws_AccountIdMatch())
+	}
+	elementsInValues := make([]attr.Value, 0, len(proto.Values))
+	for _, item := range proto.Values {
+		elementsInValues = append(elementsInValues, types.StringValue(item))
+	}
+	return types.ObjectValueMust(
+		GetTypeAttrsForPolicyVersion_Rules_Destination_K8S_Clusters_Aws_AccountIdMatch(),
+		map[string]attr.Value{
+			"operator": types.StringValue(proto.Operator),
+			"values": func() basetypes.ListValue {
+				if proto.Values == nil {
+					return types.ListNull(types.StringType)
+				}
+				return types.ListValueMust(types.StringType, elementsInValues)
+			}(),
+		},
+	)
+}
+
+func ConvertDataValueToPolicyVersion_Rules_Destination_K8S_Clusters_Aws_AccountIdMatchProto(ctx context.Context, dataValue attr.Value) (*configv1.PolicyVersion_Rules_Destination_K8S_Clusters_Aws_AccountIdMatch, diag.Diagnostics) {
+	if dataValue.IsNull() || dataValue.IsUnknown() {
+		return nil, nil
+	}
+	pv := PolicyVersion_Rules_Destination_K8S_Clusters_Aws_AccountIdMatch{}
+	diags := tfsdk.ValueAs(ctx, dataValue, &pv)
+	if diags.HasError() {
+		return nil, diags
+	}
+	proto := &configv1.PolicyVersion_Rules_Destination_K8S_Clusters_Aws_AccountIdMatch{}
+	proto.Operator = pv.Operator.ValueString()
+	var pvModelValues []string
+	dvDiagsValues := pv.Values.ElementsAs(ctx, &pvModelValues, false)
+	diags.Append(dvDiagsValues...)
+	if diags.HasError() {
+		return nil, diags
+	}
+	proto.Values = pvModelValues
+	return proto, diags
+}
+
+type PolicyVersion_Rules_Destination_K8S_Clusters_Aws_ClusterNameMatch struct {
+	Operator types.String `tfsdk:"operator"`
+	Values   types.List   `tfsdk:"values"`
+}
+
+func GetTypeAttrsForPolicyVersion_Rules_Destination_K8S_Clusters_Aws_ClusterNameMatch() map[string]attr.Type {
+	return map[string]attr.Type{
+		"operator": types.StringType,
+		"values":   types.ListType{ElemType: types.StringType},
+	}
+}
+
+func ConvertPolicyVersion_Rules_Destination_K8S_Clusters_Aws_ClusterNameMatchToObjectValueFromProto(proto *configv1.PolicyVersion_Rules_Destination_K8S_Clusters_Aws_ClusterNameMatch) basetypes.ObjectValue {
+	if proto == nil {
+		return types.ObjectNull(GetTypeAttrsForPolicyVersion_Rules_Destination_K8S_Clusters_Aws_ClusterNameMatch())
+	}
+	elementsInValues := make([]attr.Value, 0, len(proto.Values))
+	for _, item := range proto.Values {
+		elementsInValues = append(elementsInValues, types.StringValue(item))
+	}
+	return types.ObjectValueMust(
+		GetTypeAttrsForPolicyVersion_Rules_Destination_K8S_Clusters_Aws_ClusterNameMatch(),
+		map[string]attr.Value{
+			"operator": types.StringValue(proto.Operator),
+			"values": func() basetypes.ListValue {
+				if proto.Values == nil {
+					return types.ListNull(types.StringType)
+				}
+				return types.ListValueMust(types.StringType, elementsInValues)
+			}(),
+		},
+	)
+}
+
+func ConvertDataValueToPolicyVersion_Rules_Destination_K8S_Clusters_Aws_ClusterNameMatchProto(ctx context.Context, dataValue attr.Value) (*configv1.PolicyVersion_Rules_Destination_K8S_Clusters_Aws_ClusterNameMatch, diag.Diagnostics) {
+	if dataValue.IsNull() || dataValue.IsUnknown() {
+		return nil, nil
+	}
+	pv := PolicyVersion_Rules_Destination_K8S_Clusters_Aws_ClusterNameMatch{}
+	diags := tfsdk.ValueAs(ctx, dataValue, &pv)
+	if diags.HasError() {
+		return nil, diags
+	}
+	proto := &configv1.PolicyVersion_Rules_Destination_K8S_Clusters_Aws_ClusterNameMatch{}
+	proto.Operator = pv.Operator.ValueString()
+	var pvModelValues []string
+	dvDiagsValues := pv.Values.ElementsAs(ctx, &pvModelValues, false)
+	diags.Append(dvDiagsValues...)
+	if diags.HasError() {
+		return nil, diags
+	}
+	proto.Values = pvModelValues
+	return proto, diags
+}
+
+type PolicyVersion_Rules_Destination_K8S_Clusters_Aws_RegionMatch struct {
+	Operator types.String `tfsdk:"operator"`
+	Values   types.List   `tfsdk:"values"`
+}
+
+func GetTypeAttrsForPolicyVersion_Rules_Destination_K8S_Clusters_Aws_RegionMatch() map[string]attr.Type {
+	return map[string]attr.Type{
+		"operator": types.StringType,
+		"values":   types.ListType{ElemType: types.StringType},
+	}
+}
+
+func ConvertPolicyVersion_Rules_Destination_K8S_Clusters_Aws_RegionMatchToObjectValueFromProto(proto *configv1.PolicyVersion_Rules_Destination_K8S_Clusters_Aws_RegionMatch) basetypes.ObjectValue {
+	if proto == nil {
+		return types.ObjectNull(GetTypeAttrsForPolicyVersion_Rules_Destination_K8S_Clusters_Aws_RegionMatch())
+	}
+	elementsInValues := make([]attr.Value, 0, len(proto.Values))
+	for _, item := range proto.Values {
+		elementsInValues = append(elementsInValues, types.StringValue(item))
+	}
+	return types.ObjectValueMust(
+		GetTypeAttrsForPolicyVersion_Rules_Destination_K8S_Clusters_Aws_RegionMatch(),
+		map[string]attr.Value{
+			"operator": types.StringValue(proto.Operator),
+			"values": func() basetypes.ListValue {
+				if proto.Values == nil {
+					return types.ListNull(types.StringType)
+				}
+				return types.ListValueMust(types.StringType, elementsInValues)
+			}(),
+		},
+	)
+}
+
+func ConvertDataValueToPolicyVersion_Rules_Destination_K8S_Clusters_Aws_RegionMatchProto(ctx context.Context, dataValue attr.Value) (*configv1.PolicyVersion_Rules_Destination_K8S_Clusters_Aws_RegionMatch, diag.Diagnostics) {
+	if dataValue.IsNull() || dataValue.IsUnknown() {
+		return nil, nil
+	}
+	pv := PolicyVersion_Rules_Destination_K8S_Clusters_Aws_RegionMatch{}
+	diags := tfsdk.ValueAs(ctx, dataValue, &pv)
+	if diags.HasError() {
+		return nil, diags
+	}
+	proto := &configv1.PolicyVersion_Rules_Destination_K8S_Clusters_Aws_RegionMatch{}
+	proto.Operator = pv.Operator.ValueString()
+	var pvModelValues []string
+	dvDiagsValues := pv.Values.ElementsAs(ctx, &pvModelValues, false)
+	diags.Append(dvDiagsValues...)
+	if diags.HasError() {
+		return nil, diags
+	}
+	proto.Values = pvModelValues
+	return proto, diags
+}
+
+type PolicyVersion_Rules_Destination_K8S_Clusters_Azure struct {
+	ClusterName         types.String `tfsdk:"cluster_name"`
+	ClusterNameMatch    types.Object `tfsdk:"cluster_name_match"`
+	ResourceGroup       types.String `tfsdk:"resource_group"`
+	ResourceGroupMatch  types.Object `tfsdk:"resource_group_match"`
+	SubscriptionId      types.String `tfsdk:"subscription_id"`
+	SubscriptionIdMatch types.Object `tfsdk:"subscription_id_match"`
+}
+
+func GetTypeAttrsForPolicyVersion_Rules_Destination_K8S_Clusters_Azure() map[string]attr.Type {
+	return map[string]attr.Type{
+		"cluster_name": types.StringType,
+		"cluster_name_match": types.ObjectType{
+			AttrTypes: GetTypeAttrsForPolicyVersion_Rules_Destination_K8S_Clusters_Azure_ClusterNameMatch(),
+		},
+		"resource_group": types.StringType,
+		"resource_group_match": types.ObjectType{
+			AttrTypes: GetTypeAttrsForPolicyVersion_Rules_Destination_K8S_Clusters_Azure_ResourceGroupMatch(),
+		},
+		"subscription_id": types.StringType,
+		"subscription_id_match": types.ObjectType{
+			AttrTypes: GetTypeAttrsForPolicyVersion_Rules_Destination_K8S_Clusters_Azure_SubscriptionIdMatch(),
+		},
+	}
+}
+
+func ConvertPolicyVersion_Rules_Destination_K8S_Clusters_AzureToObjectValueFromProto(proto *configv1.PolicyVersion_Rules_Destination_K8S_Clusters_Azure) basetypes.ObjectValue {
+	if proto == nil {
+		return types.ObjectNull(GetTypeAttrsForPolicyVersion_Rules_Destination_K8S_Clusters_Azure())
+	}
+	return types.ObjectValueMust(
+		GetTypeAttrsForPolicyVersion_Rules_Destination_K8S_Clusters_Azure(),
+		map[string]attr.Value{
+			"cluster_name":          types.StringValue(proto.ClusterName),
+			"cluster_name_match":    ConvertPolicyVersion_Rules_Destination_K8S_Clusters_Azure_ClusterNameMatchToObjectValueFromProto(proto.ClusterNameMatch),
+			"resource_group":        types.StringValue(proto.ResourceGroup),
+			"resource_group_match":  ConvertPolicyVersion_Rules_Destination_K8S_Clusters_Azure_ResourceGroupMatchToObjectValueFromProto(proto.ResourceGroupMatch),
+			"subscription_id":       types.StringValue(proto.SubscriptionId),
+			"subscription_id_match": ConvertPolicyVersion_Rules_Destination_K8S_Clusters_Azure_SubscriptionIdMatchToObjectValueFromProto(proto.SubscriptionIdMatch),
+		},
+	)
+}
+
+func ConvertDataValueToPolicyVersion_Rules_Destination_K8S_Clusters_AzureProto(ctx context.Context, dataValue attr.Value) (*configv1.PolicyVersion_Rules_Destination_K8S_Clusters_Azure, diag.Diagnostics) {
+	if dataValue.IsNull() || dataValue.IsUnknown() {
+		return nil, nil
+	}
+	pv := PolicyVersion_Rules_Destination_K8S_Clusters_Azure{}
+	diags := tfsdk.ValueAs(ctx, dataValue, &pv)
+	if diags.HasError() {
+		return nil, diags
+	}
+	proto := &configv1.PolicyVersion_Rules_Destination_K8S_Clusters_Azure{}
+	proto.ClusterName = pv.ClusterName.ValueString()
+	pvModelClusterNameMatch, dvDiagsClusterNameMatch := ConvertDataValueToPolicyVersion_Rules_Destination_K8S_Clusters_Azure_ClusterNameMatchProto(ctx, pv.ClusterNameMatch)
+	diags.Append(dvDiagsClusterNameMatch...)
+	if diags.HasError() {
+		return nil, diags
+	}
+	proto.ClusterNameMatch = pvModelClusterNameMatch
+	proto.ResourceGroup = pv.ResourceGroup.ValueString()
+	pvModelResourceGroupMatch, dvDiagsResourceGroupMatch := ConvertDataValueToPolicyVersion_Rules_Destination_K8S_Clusters_Azure_ResourceGroupMatchProto(ctx, pv.ResourceGroupMatch)
+	diags.Append(dvDiagsResourceGroupMatch...)
+	if diags.HasError() {
+		return nil, diags
+	}
+	proto.ResourceGroupMatch = pvModelResourceGroupMatch
+	proto.SubscriptionId = pv.SubscriptionId.ValueString()
+	pvModelSubscriptionIdMatch, dvDiagsSubscriptionIdMatch := ConvertDataValueToPolicyVersion_Rules_Destination_K8S_Clusters_Azure_SubscriptionIdMatchProto(ctx, pv.SubscriptionIdMatch)
+	diags.Append(dvDiagsSubscriptionIdMatch...)
+	if diags.HasError() {
+		return nil, diags
+	}
+	proto.SubscriptionIdMatch = pvModelSubscriptionIdMatch
+	return proto, diags
+}
+
+type PolicyVersion_Rules_Destination_K8S_Clusters_Azure_ClusterNameMatch struct {
+	Operator types.String `tfsdk:"operator"`
+	Values   types.List   `tfsdk:"values"`
+}
+
+func GetTypeAttrsForPolicyVersion_Rules_Destination_K8S_Clusters_Azure_ClusterNameMatch() map[string]attr.Type {
+	return map[string]attr.Type{
+		"operator": types.StringType,
+		"values":   types.ListType{ElemType: types.StringType},
+	}
+}
+
+func ConvertPolicyVersion_Rules_Destination_K8S_Clusters_Azure_ClusterNameMatchToObjectValueFromProto(proto *configv1.PolicyVersion_Rules_Destination_K8S_Clusters_Azure_ClusterNameMatch) basetypes.ObjectValue {
+	if proto == nil {
+		return types.ObjectNull(GetTypeAttrsForPolicyVersion_Rules_Destination_K8S_Clusters_Azure_ClusterNameMatch())
+	}
+	elementsInValues := make([]attr.Value, 0, len(proto.Values))
+	for _, item := range proto.Values {
+		elementsInValues = append(elementsInValues, types.StringValue(item))
+	}
+	return types.ObjectValueMust(
+		GetTypeAttrsForPolicyVersion_Rules_Destination_K8S_Clusters_Azure_ClusterNameMatch(),
+		map[string]attr.Value{
+			"operator": types.StringValue(proto.Operator),
+			"values": func() basetypes.ListValue {
+				if proto.Values == nil {
+					return types.ListNull(types.StringType)
+				}
+				return types.ListValueMust(types.StringType, elementsInValues)
+			}(),
+		},
+	)
+}
+
+func ConvertDataValueToPolicyVersion_Rules_Destination_K8S_Clusters_Azure_ClusterNameMatchProto(ctx context.Context, dataValue attr.Value) (*configv1.PolicyVersion_Rules_Destination_K8S_Clusters_Azure_ClusterNameMatch, diag.Diagnostics) {
+	if dataValue.IsNull() || dataValue.IsUnknown() {
+		return nil, nil
+	}
+	pv := PolicyVersion_Rules_Destination_K8S_Clusters_Azure_ClusterNameMatch{}
+	diags := tfsdk.ValueAs(ctx, dataValue, &pv)
+	if diags.HasError() {
+		return nil, diags
+	}
+	proto := &configv1.PolicyVersion_Rules_Destination_K8S_Clusters_Azure_ClusterNameMatch{}
+	proto.Operator = pv.Operator.ValueString()
+	var pvModelValues []string
+	dvDiagsValues := pv.Values.ElementsAs(ctx, &pvModelValues, false)
+	diags.Append(dvDiagsValues...)
+	if diags.HasError() {
+		return nil, diags
+	}
+	proto.Values = pvModelValues
+	return proto, diags
+}
+
+type PolicyVersion_Rules_Destination_K8S_Clusters_Azure_ResourceGroupMatch struct {
+	Operator types.String `tfsdk:"operator"`
+	Values   types.List   `tfsdk:"values"`
+}
+
+func GetTypeAttrsForPolicyVersion_Rules_Destination_K8S_Clusters_Azure_ResourceGroupMatch() map[string]attr.Type {
+	return map[string]attr.Type{
+		"operator": types.StringType,
+		"values":   types.ListType{ElemType: types.StringType},
+	}
+}
+
+func ConvertPolicyVersion_Rules_Destination_K8S_Clusters_Azure_ResourceGroupMatchToObjectValueFromProto(proto *configv1.PolicyVersion_Rules_Destination_K8S_Clusters_Azure_ResourceGroupMatch) basetypes.ObjectValue {
+	if proto == nil {
+		return types.ObjectNull(GetTypeAttrsForPolicyVersion_Rules_Destination_K8S_Clusters_Azure_ResourceGroupMatch())
+	}
+	elementsInValues := make([]attr.Value, 0, len(proto.Values))
+	for _, item := range proto.Values {
+		elementsInValues = append(elementsInValues, types.StringValue(item))
+	}
+	return types.ObjectValueMust(
+		GetTypeAttrsForPolicyVersion_Rules_Destination_K8S_Clusters_Azure_ResourceGroupMatch(),
+		map[string]attr.Value{
+			"operator": types.StringValue(proto.Operator),
+			"values": func() basetypes.ListValue {
+				if proto.Values == nil {
+					return types.ListNull(types.StringType)
+				}
+				return types.ListValueMust(types.StringType, elementsInValues)
+			}(),
+		},
+	)
+}
+
+func ConvertDataValueToPolicyVersion_Rules_Destination_K8S_Clusters_Azure_ResourceGroupMatchProto(ctx context.Context, dataValue attr.Value) (*configv1.PolicyVersion_Rules_Destination_K8S_Clusters_Azure_ResourceGroupMatch, diag.Diagnostics) {
+	if dataValue.IsNull() || dataValue.IsUnknown() {
+		return nil, nil
+	}
+	pv := PolicyVersion_Rules_Destination_K8S_Clusters_Azure_ResourceGroupMatch{}
+	diags := tfsdk.ValueAs(ctx, dataValue, &pv)
+	if diags.HasError() {
+		return nil, diags
+	}
+	proto := &configv1.PolicyVersion_Rules_Destination_K8S_Clusters_Azure_ResourceGroupMatch{}
+	proto.Operator = pv.Operator.ValueString()
+	var pvModelValues []string
+	dvDiagsValues := pv.Values.ElementsAs(ctx, &pvModelValues, false)
+	diags.Append(dvDiagsValues...)
+	if diags.HasError() {
+		return nil, diags
+	}
+	proto.Values = pvModelValues
+	return proto, diags
+}
+
+type PolicyVersion_Rules_Destination_K8S_Clusters_Azure_SubscriptionIdMatch struct {
+	Operator types.String `tfsdk:"operator"`
+	Values   types.List   `tfsdk:"values"`
+}
+
+func GetTypeAttrsForPolicyVersion_Rules_Destination_K8S_Clusters_Azure_SubscriptionIdMatch() map[string]attr.Type {
+	return map[string]attr.Type{
+		"operator": types.StringType,
+		"values":   types.ListType{ElemType: types.StringType},
+	}
+}
+
+func ConvertPolicyVersion_Rules_Destination_K8S_Clusters_Azure_SubscriptionIdMatchToObjectValueFromProto(proto *configv1.PolicyVersion_Rules_Destination_K8S_Clusters_Azure_SubscriptionIdMatch) basetypes.ObjectValue {
+	if proto == nil {
+		return types.ObjectNull(GetTypeAttrsForPolicyVersion_Rules_Destination_K8S_Clusters_Azure_SubscriptionIdMatch())
+	}
+	elementsInValues := make([]attr.Value, 0, len(proto.Values))
+	for _, item := range proto.Values {
+		elementsInValues = append(elementsInValues, types.StringValue(item))
+	}
+	return types.ObjectValueMust(
+		GetTypeAttrsForPolicyVersion_Rules_Destination_K8S_Clusters_Azure_SubscriptionIdMatch(),
+		map[string]attr.Value{
+			"operator": types.StringValue(proto.Operator),
+			"values": func() basetypes.ListValue {
+				if proto.Values == nil {
+					return types.ListNull(types.StringType)
+				}
+				return types.ListValueMust(types.StringType, elementsInValues)
+			}(),
+		},
+	)
+}
+
+func ConvertDataValueToPolicyVersion_Rules_Destination_K8S_Clusters_Azure_SubscriptionIdMatchProto(ctx context.Context, dataValue attr.Value) (*configv1.PolicyVersion_Rules_Destination_K8S_Clusters_Azure_SubscriptionIdMatch, diag.Diagnostics) {
+	if dataValue.IsNull() || dataValue.IsUnknown() {
+		return nil, nil
+	}
+	pv := PolicyVersion_Rules_Destination_K8S_Clusters_Azure_SubscriptionIdMatch{}
+	diags := tfsdk.ValueAs(ctx, dataValue, &pv)
+	if diags.HasError() {
+		return nil, diags
+	}
+	proto := &configv1.PolicyVersion_Rules_Destination_K8S_Clusters_Azure_SubscriptionIdMatch{}
+	proto.Operator = pv.Operator.ValueString()
+	var pvModelValues []string
+	dvDiagsValues := pv.Values.ElementsAs(ctx, &pvModelValues, false)
+	diags.Append(dvDiagsValues...)
+	if diags.HasError() {
+		return nil, diags
+	}
+	proto.Values = pvModelValues
+	return proto, diags
+}
+
+type PolicyVersion_Rules_Destination_K8S_Clusters_Gcp struct {
+	ClusterName      types.String `tfsdk:"cluster_name"`
+	ClusterNameMatch types.Object `tfsdk:"cluster_name_match"`
+	Location         types.String `tfsdk:"location"`
+	LocationMatch    types.Object `tfsdk:"location_match"`
+	ProjectId        types.String `tfsdk:"project_id"`
+	ProjectIdMatch   types.Object `tfsdk:"project_id_match"`
+}
+
+func GetTypeAttrsForPolicyVersion_Rules_Destination_K8S_Clusters_Gcp() map[string]attr.Type {
+	return map[string]attr.Type{
+		"cluster_name": types.StringType,
+		"cluster_name_match": types.ObjectType{
+			AttrTypes: GetTypeAttrsForPolicyVersion_Rules_Destination_K8S_Clusters_Gcp_ClusterNameMatch(),
+		},
+		"location": types.StringType,
+		"location_match": types.ObjectType{
+			AttrTypes: GetTypeAttrsForPolicyVersion_Rules_Destination_K8S_Clusters_Gcp_LocationMatch(),
+		},
+		"project_id": types.StringType,
+		"project_id_match": types.ObjectType{
+			AttrTypes: GetTypeAttrsForPolicyVersion_Rules_Destination_K8S_Clusters_Gcp_ProjectIdMatch(),
+		},
+	}
+}
+
+func ConvertPolicyVersion_Rules_Destination_K8S_Clusters_GcpToObjectValueFromProto(proto *configv1.PolicyVersion_Rules_Destination_K8S_Clusters_Gcp) basetypes.ObjectValue {
+	if proto == nil {
+		return types.ObjectNull(GetTypeAttrsForPolicyVersion_Rules_Destination_K8S_Clusters_Gcp())
+	}
+	return types.ObjectValueMust(
+		GetTypeAttrsForPolicyVersion_Rules_Destination_K8S_Clusters_Gcp(),
+		map[string]attr.Value{
+			"cluster_name":       types.StringValue(proto.ClusterName),
+			"cluster_name_match": ConvertPolicyVersion_Rules_Destination_K8S_Clusters_Gcp_ClusterNameMatchToObjectValueFromProto(proto.ClusterNameMatch),
+			"location":           types.StringValue(proto.Location),
+			"location_match":     ConvertPolicyVersion_Rules_Destination_K8S_Clusters_Gcp_LocationMatchToObjectValueFromProto(proto.LocationMatch),
+			"project_id":         types.StringValue(proto.ProjectId),
+			"project_id_match":   ConvertPolicyVersion_Rules_Destination_K8S_Clusters_Gcp_ProjectIdMatchToObjectValueFromProto(proto.ProjectIdMatch),
+		},
+	)
+}
+
+func ConvertDataValueToPolicyVersion_Rules_Destination_K8S_Clusters_GcpProto(ctx context.Context, dataValue attr.Value) (*configv1.PolicyVersion_Rules_Destination_K8S_Clusters_Gcp, diag.Diagnostics) {
+	if dataValue.IsNull() || dataValue.IsUnknown() {
+		return nil, nil
+	}
+	pv := PolicyVersion_Rules_Destination_K8S_Clusters_Gcp{}
+	diags := tfsdk.ValueAs(ctx, dataValue, &pv)
+	if diags.HasError() {
+		return nil, diags
+	}
+	proto := &configv1.PolicyVersion_Rules_Destination_K8S_Clusters_Gcp{}
+	proto.ClusterName = pv.ClusterName.ValueString()
+	pvModelClusterNameMatch, dvDiagsClusterNameMatch := ConvertDataValueToPolicyVersion_Rules_Destination_K8S_Clusters_Gcp_ClusterNameMatchProto(ctx, pv.ClusterNameMatch)
+	diags.Append(dvDiagsClusterNameMatch...)
+	if diags.HasError() {
+		return nil, diags
+	}
+	proto.ClusterNameMatch = pvModelClusterNameMatch
+	proto.Location = pv.Location.ValueString()
+	pvModelLocationMatch, dvDiagsLocationMatch := ConvertDataValueToPolicyVersion_Rules_Destination_K8S_Clusters_Gcp_LocationMatchProto(ctx, pv.LocationMatch)
+	diags.Append(dvDiagsLocationMatch...)
+	if diags.HasError() {
+		return nil, diags
+	}
+	proto.LocationMatch = pvModelLocationMatch
+	proto.ProjectId = pv.ProjectId.ValueString()
+	pvModelProjectIdMatch, dvDiagsProjectIdMatch := ConvertDataValueToPolicyVersion_Rules_Destination_K8S_Clusters_Gcp_ProjectIdMatchProto(ctx, pv.ProjectIdMatch)
+	diags.Append(dvDiagsProjectIdMatch...)
+	if diags.HasError() {
+		return nil, diags
+	}
+	proto.ProjectIdMatch = pvModelProjectIdMatch
+	return proto, diags
+}
+
+type PolicyVersion_Rules_Destination_K8S_Clusters_Gcp_ClusterNameMatch struct {
+	Operator types.String `tfsdk:"operator"`
+	Values   types.List   `tfsdk:"values"`
+}
+
+func GetTypeAttrsForPolicyVersion_Rules_Destination_K8S_Clusters_Gcp_ClusterNameMatch() map[string]attr.Type {
+	return map[string]attr.Type{
+		"operator": types.StringType,
+		"values":   types.ListType{ElemType: types.StringType},
+	}
+}
+
+func ConvertPolicyVersion_Rules_Destination_K8S_Clusters_Gcp_ClusterNameMatchToObjectValueFromProto(proto *configv1.PolicyVersion_Rules_Destination_K8S_Clusters_Gcp_ClusterNameMatch) basetypes.ObjectValue {
+	if proto == nil {
+		return types.ObjectNull(GetTypeAttrsForPolicyVersion_Rules_Destination_K8S_Clusters_Gcp_ClusterNameMatch())
+	}
+	elementsInValues := make([]attr.Value, 0, len(proto.Values))
+	for _, item := range proto.Values {
+		elementsInValues = append(elementsInValues, types.StringValue(item))
+	}
+	return types.ObjectValueMust(
+		GetTypeAttrsForPolicyVersion_Rules_Destination_K8S_Clusters_Gcp_ClusterNameMatch(),
+		map[string]attr.Value{
+			"operator": types.StringValue(proto.Operator),
+			"values": func() basetypes.ListValue {
+				if proto.Values == nil {
+					return types.ListNull(types.StringType)
+				}
+				return types.ListValueMust(types.StringType, elementsInValues)
+			}(),
+		},
+	)
+}
+
+func ConvertDataValueToPolicyVersion_Rules_Destination_K8S_Clusters_Gcp_ClusterNameMatchProto(ctx context.Context, dataValue attr.Value) (*configv1.PolicyVersion_Rules_Destination_K8S_Clusters_Gcp_ClusterNameMatch, diag.Diagnostics) {
+	if dataValue.IsNull() || dataValue.IsUnknown() {
+		return nil, nil
+	}
+	pv := PolicyVersion_Rules_Destination_K8S_Clusters_Gcp_ClusterNameMatch{}
+	diags := tfsdk.ValueAs(ctx, dataValue, &pv)
+	if diags.HasError() {
+		return nil, diags
+	}
+	proto := &configv1.PolicyVersion_Rules_Destination_K8S_Clusters_Gcp_ClusterNameMatch{}
+	proto.Operator = pv.Operator.ValueString()
+	var pvModelValues []string
+	dvDiagsValues := pv.Values.ElementsAs(ctx, &pvModelValues, false)
+	diags.Append(dvDiagsValues...)
+	if diags.HasError() {
+		return nil, diags
+	}
+	proto.Values = pvModelValues
+	return proto, diags
+}
+
+type PolicyVersion_Rules_Destination_K8S_Clusters_Gcp_LocationMatch struct {
+	Operator types.String `tfsdk:"operator"`
+	Values   types.List   `tfsdk:"values"`
+}
+
+func GetTypeAttrsForPolicyVersion_Rules_Destination_K8S_Clusters_Gcp_LocationMatch() map[string]attr.Type {
+	return map[string]attr.Type{
+		"operator": types.StringType,
+		"values":   types.ListType{ElemType: types.StringType},
+	}
+}
+
+func ConvertPolicyVersion_Rules_Destination_K8S_Clusters_Gcp_LocationMatchToObjectValueFromProto(proto *configv1.PolicyVersion_Rules_Destination_K8S_Clusters_Gcp_LocationMatch) basetypes.ObjectValue {
+	if proto == nil {
+		return types.ObjectNull(GetTypeAttrsForPolicyVersion_Rules_Destination_K8S_Clusters_Gcp_LocationMatch())
+	}
+	elementsInValues := make([]attr.Value, 0, len(proto.Values))
+	for _, item := range proto.Values {
+		elementsInValues = append(elementsInValues, types.StringValue(item))
+	}
+	return types.ObjectValueMust(
+		GetTypeAttrsForPolicyVersion_Rules_Destination_K8S_Clusters_Gcp_LocationMatch(),
+		map[string]attr.Value{
+			"operator": types.StringValue(proto.Operator),
+			"values": func() basetypes.ListValue {
+				if proto.Values == nil {
+					return types.ListNull(types.StringType)
+				}
+				return types.ListValueMust(types.StringType, elementsInValues)
+			}(),
+		},
+	)
+}
+
+func ConvertDataValueToPolicyVersion_Rules_Destination_K8S_Clusters_Gcp_LocationMatchProto(ctx context.Context, dataValue attr.Value) (*configv1.PolicyVersion_Rules_Destination_K8S_Clusters_Gcp_LocationMatch, diag.Diagnostics) {
+	if dataValue.IsNull() || dataValue.IsUnknown() {
+		return nil, nil
+	}
+	pv := PolicyVersion_Rules_Destination_K8S_Clusters_Gcp_LocationMatch{}
+	diags := tfsdk.ValueAs(ctx, dataValue, &pv)
+	if diags.HasError() {
+		return nil, diags
+	}
+	proto := &configv1.PolicyVersion_Rules_Destination_K8S_Clusters_Gcp_LocationMatch{}
+	proto.Operator = pv.Operator.ValueString()
+	var pvModelValues []string
+	dvDiagsValues := pv.Values.ElementsAs(ctx, &pvModelValues, false)
+	diags.Append(dvDiagsValues...)
+	if diags.HasError() {
+		return nil, diags
+	}
+	proto.Values = pvModelValues
+	return proto, diags
+}
+
+type PolicyVersion_Rules_Destination_K8S_Clusters_Gcp_ProjectIdMatch struct {
+	Operator types.String `tfsdk:"operator"`
+	Values   types.List   `tfsdk:"values"`
+}
+
+func GetTypeAttrsForPolicyVersion_Rules_Destination_K8S_Clusters_Gcp_ProjectIdMatch() map[string]attr.Type {
+	return map[string]attr.Type{
+		"operator": types.StringType,
+		"values":   types.ListType{ElemType: types.StringType},
+	}
+}
+
+func ConvertPolicyVersion_Rules_Destination_K8S_Clusters_Gcp_ProjectIdMatchToObjectValueFromProto(proto *configv1.PolicyVersion_Rules_Destination_K8S_Clusters_Gcp_ProjectIdMatch) basetypes.ObjectValue {
+	if proto == nil {
+		return types.ObjectNull(GetTypeAttrsForPolicyVersion_Rules_Destination_K8S_Clusters_Gcp_ProjectIdMatch())
+	}
+	elementsInValues := make([]attr.Value, 0, len(proto.Values))
+	for _, item := range proto.Values {
+		elementsInValues = append(elementsInValues, types.StringValue(item))
+	}
+	return types.ObjectValueMust(
+		GetTypeAttrsForPolicyVersion_Rules_Destination_K8S_Clusters_Gcp_ProjectIdMatch(),
+		map[string]attr.Value{
+			"operator": types.StringValue(proto.Operator),
+			"values": func() basetypes.ListValue {
+				if proto.Values == nil {
+					return types.ListNull(types.StringType)
+				}
+				return types.ListValueMust(types.StringType, elementsInValues)
+			}(),
+		},
+	)
+}
+
+func ConvertDataValueToPolicyVersion_Rules_Destination_K8S_Clusters_Gcp_ProjectIdMatchProto(ctx context.Context, dataValue attr.Value) (*configv1.PolicyVersion_Rules_Destination_K8S_Clusters_Gcp_ProjectIdMatch, diag.Diagnostics) {
+	if dataValue.IsNull() || dataValue.IsUnknown() {
+		return nil, nil
+	}
+	pv := PolicyVersion_Rules_Destination_K8S_Clusters_Gcp_ProjectIdMatch{}
+	diags := tfsdk.ValueAs(ctx, dataValue, &pv)
+	if diags.HasError() {
+		return nil, diags
+	}
+	proto := &configv1.PolicyVersion_Rules_Destination_K8S_Clusters_Gcp_ProjectIdMatch{}
+	proto.Operator = pv.Operator.ValueString()
+	var pvModelValues []string
+	dvDiagsValues := pv.Values.ElementsAs(ctx, &pvModelValues, false)
+	diags.Append(dvDiagsValues...)
+	if diags.HasError() {
+		return nil, diags
+	}
+	proto.Values = pvModelValues
+	return proto, diags
+}
+
+type PolicyVersion_Rules_Destination_K8S_Clusters_Oci struct {
+	ClusterName        types.String `tfsdk:"cluster_name"`
+	ClusterNameMatch   types.Object `tfsdk:"cluster_name_match"`
+	CompartmentId      types.String `tfsdk:"compartment_id"`
+	CompartmentIdMatch types.Object `tfsdk:"compartment_id_match"`
+	Region             types.String `tfsdk:"region"`
+	RegionMatch        types.Object `tfsdk:"region_match"`
+}
+
+func GetTypeAttrsForPolicyVersion_Rules_Destination_K8S_Clusters_Oci() map[string]attr.Type {
+	return map[string]attr.Type{
+		"cluster_name": types.StringType,
+		"cluster_name_match": types.ObjectType{
+			AttrTypes: GetTypeAttrsForPolicyVersion_Rules_Destination_K8S_Clusters_Oci_ClusterNameMatch(),
+		},
+		"compartment_id": types.StringType,
+		"compartment_id_match": types.ObjectType{
+			AttrTypes: GetTypeAttrsForPolicyVersion_Rules_Destination_K8S_Clusters_Oci_CompartmentIdMatch(),
+		},
+		"region": types.StringType,
+		"region_match": types.ObjectType{
+			AttrTypes: GetTypeAttrsForPolicyVersion_Rules_Destination_K8S_Clusters_Oci_RegionMatch(),
+		},
+	}
+}
+
+func ConvertPolicyVersion_Rules_Destination_K8S_Clusters_OciToObjectValueFromProto(proto *configv1.PolicyVersion_Rules_Destination_K8S_Clusters_Oci) basetypes.ObjectValue {
+	if proto == nil {
+		return types.ObjectNull(GetTypeAttrsForPolicyVersion_Rules_Destination_K8S_Clusters_Oci())
+	}
+	return types.ObjectValueMust(
+		GetTypeAttrsForPolicyVersion_Rules_Destination_K8S_Clusters_Oci(),
+		map[string]attr.Value{
+			"cluster_name":         types.StringValue(proto.ClusterName),
+			"cluster_name_match":   ConvertPolicyVersion_Rules_Destination_K8S_Clusters_Oci_ClusterNameMatchToObjectValueFromProto(proto.ClusterNameMatch),
+			"compartment_id":       types.StringValue(proto.CompartmentId),
+			"compartment_id_match": ConvertPolicyVersion_Rules_Destination_K8S_Clusters_Oci_CompartmentIdMatchToObjectValueFromProto(proto.CompartmentIdMatch),
+			"region":               types.StringValue(proto.Region),
+			"region_match":         ConvertPolicyVersion_Rules_Destination_K8S_Clusters_Oci_RegionMatchToObjectValueFromProto(proto.RegionMatch),
+		},
+	)
+}
+
+func ConvertDataValueToPolicyVersion_Rules_Destination_K8S_Clusters_OciProto(ctx context.Context, dataValue attr.Value) (*configv1.PolicyVersion_Rules_Destination_K8S_Clusters_Oci, diag.Diagnostics) {
+	if dataValue.IsNull() || dataValue.IsUnknown() {
+		return nil, nil
+	}
+	pv := PolicyVersion_Rules_Destination_K8S_Clusters_Oci{}
+	diags := tfsdk.ValueAs(ctx, dataValue, &pv)
+	if diags.HasError() {
+		return nil, diags
+	}
+	proto := &configv1.PolicyVersion_Rules_Destination_K8S_Clusters_Oci{}
+	proto.ClusterName = pv.ClusterName.ValueString()
+	pvModelClusterNameMatch, dvDiagsClusterNameMatch := ConvertDataValueToPolicyVersion_Rules_Destination_K8S_Clusters_Oci_ClusterNameMatchProto(ctx, pv.ClusterNameMatch)
+	diags.Append(dvDiagsClusterNameMatch...)
+	if diags.HasError() {
+		return nil, diags
+	}
+	proto.ClusterNameMatch = pvModelClusterNameMatch
+	proto.CompartmentId = pv.CompartmentId.ValueString()
+	pvModelCompartmentIdMatch, dvDiagsCompartmentIdMatch := ConvertDataValueToPolicyVersion_Rules_Destination_K8S_Clusters_Oci_CompartmentIdMatchProto(ctx, pv.CompartmentIdMatch)
+	diags.Append(dvDiagsCompartmentIdMatch...)
+	if diags.HasError() {
+		return nil, diags
+	}
+	proto.CompartmentIdMatch = pvModelCompartmentIdMatch
+	proto.Region = pv.Region.ValueString()
+	pvModelRegionMatch, dvDiagsRegionMatch := ConvertDataValueToPolicyVersion_Rules_Destination_K8S_Clusters_Oci_RegionMatchProto(ctx, pv.RegionMatch)
+	diags.Append(dvDiagsRegionMatch...)
+	if diags.HasError() {
+		return nil, diags
+	}
+	proto.RegionMatch = pvModelRegionMatch
+	return proto, diags
+}
+
+type PolicyVersion_Rules_Destination_K8S_Clusters_Oci_ClusterNameMatch struct {
+	Operator types.String `tfsdk:"operator"`
+	Values   types.List   `tfsdk:"values"`
+}
+
+func GetTypeAttrsForPolicyVersion_Rules_Destination_K8S_Clusters_Oci_ClusterNameMatch() map[string]attr.Type {
+	return map[string]attr.Type{
+		"operator": types.StringType,
+		"values":   types.ListType{ElemType: types.StringType},
+	}
+}
+
+func ConvertPolicyVersion_Rules_Destination_K8S_Clusters_Oci_ClusterNameMatchToObjectValueFromProto(proto *configv1.PolicyVersion_Rules_Destination_K8S_Clusters_Oci_ClusterNameMatch) basetypes.ObjectValue {
+	if proto == nil {
+		return types.ObjectNull(GetTypeAttrsForPolicyVersion_Rules_Destination_K8S_Clusters_Oci_ClusterNameMatch())
+	}
+	elementsInValues := make([]attr.Value, 0, len(proto.Values))
+	for _, item := range proto.Values {
+		elementsInValues = append(elementsInValues, types.StringValue(item))
+	}
+	return types.ObjectValueMust(
+		GetTypeAttrsForPolicyVersion_Rules_Destination_K8S_Clusters_Oci_ClusterNameMatch(),
+		map[string]attr.Value{
+			"operator": types.StringValue(proto.Operator),
+			"values": func() basetypes.ListValue {
+				if proto.Values == nil {
+					return types.ListNull(types.StringType)
+				}
+				return types.ListValueMust(types.StringType, elementsInValues)
+			}(),
+		},
+	)
+}
+
+func ConvertDataValueToPolicyVersion_Rules_Destination_K8S_Clusters_Oci_ClusterNameMatchProto(ctx context.Context, dataValue attr.Value) (*configv1.PolicyVersion_Rules_Destination_K8S_Clusters_Oci_ClusterNameMatch, diag.Diagnostics) {
+	if dataValue.IsNull() || dataValue.IsUnknown() {
+		return nil, nil
+	}
+	pv := PolicyVersion_Rules_Destination_K8S_Clusters_Oci_ClusterNameMatch{}
+	diags := tfsdk.ValueAs(ctx, dataValue, &pv)
+	if diags.HasError() {
+		return nil, diags
+	}
+	proto := &configv1.PolicyVersion_Rules_Destination_K8S_Clusters_Oci_ClusterNameMatch{}
+	proto.Operator = pv.Operator.ValueString()
+	var pvModelValues []string
+	dvDiagsValues := pv.Values.ElementsAs(ctx, &pvModelValues, false)
+	diags.Append(dvDiagsValues...)
+	if diags.HasError() {
+		return nil, diags
+	}
+	proto.Values = pvModelValues
+	return proto, diags
+}
+
+type PolicyVersion_Rules_Destination_K8S_Clusters_Oci_CompartmentIdMatch struct {
+	Operator types.String `tfsdk:"operator"`
+	Values   types.List   `tfsdk:"values"`
+}
+
+func GetTypeAttrsForPolicyVersion_Rules_Destination_K8S_Clusters_Oci_CompartmentIdMatch() map[string]attr.Type {
+	return map[string]attr.Type{
+		"operator": types.StringType,
+		"values":   types.ListType{ElemType: types.StringType},
+	}
+}
+
+func ConvertPolicyVersion_Rules_Destination_K8S_Clusters_Oci_CompartmentIdMatchToObjectValueFromProto(proto *configv1.PolicyVersion_Rules_Destination_K8S_Clusters_Oci_CompartmentIdMatch) basetypes.ObjectValue {
+	if proto == nil {
+		return types.ObjectNull(GetTypeAttrsForPolicyVersion_Rules_Destination_K8S_Clusters_Oci_CompartmentIdMatch())
+	}
+	elementsInValues := make([]attr.Value, 0, len(proto.Values))
+	for _, item := range proto.Values {
+		elementsInValues = append(elementsInValues, types.StringValue(item))
+	}
+	return types.ObjectValueMust(
+		GetTypeAttrsForPolicyVersion_Rules_Destination_K8S_Clusters_Oci_CompartmentIdMatch(),
+		map[string]attr.Value{
+			"operator": types.StringValue(proto.Operator),
+			"values": func() basetypes.ListValue {
+				if proto.Values == nil {
+					return types.ListNull(types.StringType)
+				}
+				return types.ListValueMust(types.StringType, elementsInValues)
+			}(),
+		},
+	)
+}
+
+func ConvertDataValueToPolicyVersion_Rules_Destination_K8S_Clusters_Oci_CompartmentIdMatchProto(ctx context.Context, dataValue attr.Value) (*configv1.PolicyVersion_Rules_Destination_K8S_Clusters_Oci_CompartmentIdMatch, diag.Diagnostics) {
+	if dataValue.IsNull() || dataValue.IsUnknown() {
+		return nil, nil
+	}
+	pv := PolicyVersion_Rules_Destination_K8S_Clusters_Oci_CompartmentIdMatch{}
+	diags := tfsdk.ValueAs(ctx, dataValue, &pv)
+	if diags.HasError() {
+		return nil, diags
+	}
+	proto := &configv1.PolicyVersion_Rules_Destination_K8S_Clusters_Oci_CompartmentIdMatch{}
+	proto.Operator = pv.Operator.ValueString()
+	var pvModelValues []string
+	dvDiagsValues := pv.Values.ElementsAs(ctx, &pvModelValues, false)
+	diags.Append(dvDiagsValues...)
+	if diags.HasError() {
+		return nil, diags
+	}
+	proto.Values = pvModelValues
+	return proto, diags
+}
+
+type PolicyVersion_Rules_Destination_K8S_Clusters_Oci_RegionMatch struct {
+	Operator types.String `tfsdk:"operator"`
+	Values   types.List   `tfsdk:"values"`
+}
+
+func GetTypeAttrsForPolicyVersion_Rules_Destination_K8S_Clusters_Oci_RegionMatch() map[string]attr.Type {
+	return map[string]attr.Type{
+		"operator": types.StringType,
+		"values":   types.ListType{ElemType: types.StringType},
+	}
+}
+
+func ConvertPolicyVersion_Rules_Destination_K8S_Clusters_Oci_RegionMatchToObjectValueFromProto(proto *configv1.PolicyVersion_Rules_Destination_K8S_Clusters_Oci_RegionMatch) basetypes.ObjectValue {
+	if proto == nil {
+		return types.ObjectNull(GetTypeAttrsForPolicyVersion_Rules_Destination_K8S_Clusters_Oci_RegionMatch())
+	}
+	elementsInValues := make([]attr.Value, 0, len(proto.Values))
+	for _, item := range proto.Values {
+		elementsInValues = append(elementsInValues, types.StringValue(item))
+	}
+	return types.ObjectValueMust(
+		GetTypeAttrsForPolicyVersion_Rules_Destination_K8S_Clusters_Oci_RegionMatch(),
+		map[string]attr.Value{
+			"operator": types.StringValue(proto.Operator),
+			"values": func() basetypes.ListValue {
+				if proto.Values == nil {
+					return types.ListNull(types.StringType)
+				}
+				return types.ListValueMust(types.StringType, elementsInValues)
+			}(),
+		},
+	)
+}
+
+func ConvertDataValueToPolicyVersion_Rules_Destination_K8S_Clusters_Oci_RegionMatchProto(ctx context.Context, dataValue attr.Value) (*configv1.PolicyVersion_Rules_Destination_K8S_Clusters_Oci_RegionMatch, diag.Diagnostics) {
+	if dataValue.IsNull() || dataValue.IsUnknown() {
+		return nil, nil
+	}
+	pv := PolicyVersion_Rules_Destination_K8S_Clusters_Oci_RegionMatch{}
+	diags := tfsdk.ValueAs(ctx, dataValue, &pv)
+	if diags.HasError() {
+		return nil, diags
+	}
+	proto := &configv1.PolicyVersion_Rules_Destination_K8S_Clusters_Oci_RegionMatch{}
+	proto.Operator = pv.Operator.ValueString()
+	var pvModelValues []string
+	dvDiagsValues := pv.Values.ElementsAs(ctx, &pvModelValues, false)
+	diags.Append(dvDiagsValues...)
+	if diags.HasError() {
+		return nil, diags
+	}
+	proto.Values = pvModelValues
+	return proto, diags
+}
+
+type PolicyVersion_Rules_Destination_K8S_NamespaceSelector struct {
+	MatchExpressions types.List `tfsdk:"match_expressions"`
+	MatchLabels      types.List `tfsdk:"match_labels"`
+}
+
+func GetTypeAttrsForPolicyVersion_Rules_Destination_K8S_NamespaceSelector() map[string]attr.Type {
+	return map[string]attr.Type{
+		"match_expressions": types.ListType{ElemType: types.ObjectType{
+			AttrTypes: GetTypeAttrsForPolicyVersion_Rules_Destination_K8S_NamespaceSelector_MatchExpressions(),
+		}},
+		"match_labels": types.ListType{ElemType: types.ObjectType{
+			AttrTypes: GetTypeAttrsForPolicyVersion_Rules_Destination_K8S_NamespaceSelector_MatchLabels(),
+		}},
+	}
+}
+
+func ConvertPolicyVersion_Rules_Destination_K8S_NamespaceSelectorToObjectValueFromProto(proto *configv1.PolicyVersion_Rules_Destination_K8S_NamespaceSelector) basetypes.ObjectValue {
+	if proto == nil {
+		return types.ObjectNull(GetTypeAttrsForPolicyVersion_Rules_Destination_K8S_NamespaceSelector())
+	}
+	elementsInMatchExpressions := make([]attr.Value, 0, len(proto.MatchExpressions))
+	for _, item := range proto.MatchExpressions {
+		elementsInMatchExpressions = append(elementsInMatchExpressions, ConvertPolicyVersion_Rules_Destination_K8S_NamespaceSelector_MatchExpressionsToObjectValueFromProto(item))
+	}
+	elementsInMatchLabels := make([]attr.Value, 0, len(proto.MatchLabels))
+	for _, item := range proto.MatchLabels {
+		elementsInMatchLabels = append(elementsInMatchLabels, ConvertPolicyVersion_Rules_Destination_K8S_NamespaceSelector_MatchLabelsToObjectValueFromProto(item))
+	}
+	return types.ObjectValueMust(
+		GetTypeAttrsForPolicyVersion_Rules_Destination_K8S_NamespaceSelector(),
+		map[string]attr.Value{
+			"match_expressions": func() basetypes.ListValue {
+				if proto.MatchExpressions == nil {
+					return types.ListNull(types.ObjectType{AttrTypes: GetTypeAttrsForPolicyVersion_Rules_Destination_K8S_NamespaceSelector_MatchExpressions()})
+				}
+				return types.ListValueMust(types.ObjectType{AttrTypes: GetTypeAttrsForPolicyVersion_Rules_Destination_K8S_NamespaceSelector_MatchExpressions()}, elementsInMatchExpressions)
+			}(),
+			"match_labels": func() basetypes.ListValue {
+				if proto.MatchLabels == nil {
+					return types.ListNull(types.ObjectType{AttrTypes: GetTypeAttrsForPolicyVersion_Rules_Destination_K8S_NamespaceSelector_MatchLabels()})
+				}
+				return types.ListValueMust(types.ObjectType{AttrTypes: GetTypeAttrsForPolicyVersion_Rules_Destination_K8S_NamespaceSelector_MatchLabels()}, elementsInMatchLabels)
+			}(),
+		},
+	)
+}
+
+func ConvertDataValueToPolicyVersion_Rules_Destination_K8S_NamespaceSelectorProto(ctx context.Context, dataValue attr.Value) (*configv1.PolicyVersion_Rules_Destination_K8S_NamespaceSelector, diag.Diagnostics) {
+	if dataValue.IsNull() || dataValue.IsUnknown() {
+		return nil, nil
+	}
+	pv := PolicyVersion_Rules_Destination_K8S_NamespaceSelector{}
+	diags := tfsdk.ValueAs(ctx, dataValue, &pv)
+	if diags.HasError() {
+		return nil, diags
+	}
+	proto := &configv1.PolicyVersion_Rules_Destination_K8S_NamespaceSelector{}
+	pvElemModelMatchExpressions := pv.MatchExpressions.Elements()
+	proto.MatchExpressions = make([]*configv1.PolicyVersion_Rules_Destination_K8S_NamespaceSelector_MatchExpressions, 0, len(pvElemModelMatchExpressions))
+	for _, elem := range pvElemModelMatchExpressions {
+		pvModel, dvDiags := ConvertDataValueToPolicyVersion_Rules_Destination_K8S_NamespaceSelector_MatchExpressionsProto(ctx, elem)
+		diags.Append(dvDiags...)
+		if diags.HasError() {
+			return nil, diags
+		}
+		proto.MatchExpressions = append(proto.MatchExpressions, pvModel)
+	}
+	pvElemModelMatchLabels := pv.MatchLabels.Elements()
+	proto.MatchLabels = make([]*configv1.PolicyVersion_Rules_Destination_K8S_NamespaceSelector_MatchLabels, 0, len(pvElemModelMatchLabels))
+	for _, elem := range pvElemModelMatchLabels {
+		pvModel, dvDiags := ConvertDataValueToPolicyVersion_Rules_Destination_K8S_NamespaceSelector_MatchLabelsProto(ctx, elem)
+		diags.Append(dvDiags...)
+		if diags.HasError() {
+			return nil, diags
+		}
+		proto.MatchLabels = append(proto.MatchLabels, pvModel)
+	}
+	return proto, diags
+}
+
+type PolicyVersion_Rules_Destination_K8S_NamespaceSelector_MatchExpressions struct {
+	Key      types.String `tfsdk:"key"`
+	Operator types.String `tfsdk:"operator"`
+	Values   types.List   `tfsdk:"values"`
+}
+
+func GetTypeAttrsForPolicyVersion_Rules_Destination_K8S_NamespaceSelector_MatchExpressions() map[string]attr.Type {
+	return map[string]attr.Type{
+		"key":      types.StringType,
+		"operator": types.StringType,
+		"values":   types.ListType{ElemType: types.StringType},
+	}
+}
+
+func ConvertPolicyVersion_Rules_Destination_K8S_NamespaceSelector_MatchExpressionsToObjectValueFromProto(proto *configv1.PolicyVersion_Rules_Destination_K8S_NamespaceSelector_MatchExpressions) basetypes.ObjectValue {
+	if proto == nil {
+		return types.ObjectNull(GetTypeAttrsForPolicyVersion_Rules_Destination_K8S_NamespaceSelector_MatchExpressions())
+	}
+	elementsInValues := make([]attr.Value, 0, len(proto.Values))
+	for _, item := range proto.Values {
+		elementsInValues = append(elementsInValues, types.StringValue(item))
+	}
+	return types.ObjectValueMust(
+		GetTypeAttrsForPolicyVersion_Rules_Destination_K8S_NamespaceSelector_MatchExpressions(),
+		map[string]attr.Value{
+			"key":      types.StringValue(proto.Key),
+			"operator": types.StringValue(proto.Operator),
+			"values": func() basetypes.ListValue {
+				if proto.Values == nil {
+					return types.ListNull(types.StringType)
+				}
+				return types.ListValueMust(types.StringType, elementsInValues)
+			}(),
+		},
+	)
+}
+
+func ConvertDataValueToPolicyVersion_Rules_Destination_K8S_NamespaceSelector_MatchExpressionsProto(ctx context.Context, dataValue attr.Value) (*configv1.PolicyVersion_Rules_Destination_K8S_NamespaceSelector_MatchExpressions, diag.Diagnostics) {
+	if dataValue.IsNull() || dataValue.IsUnknown() {
+		return nil, nil
+	}
+	pv := PolicyVersion_Rules_Destination_K8S_NamespaceSelector_MatchExpressions{}
+	diags := tfsdk.ValueAs(ctx, dataValue, &pv)
+	if diags.HasError() {
+		return nil, diags
+	}
+	proto := &configv1.PolicyVersion_Rules_Destination_K8S_NamespaceSelector_MatchExpressions{}
+	proto.Key = pv.Key.ValueString()
+	proto.Operator = pv.Operator.ValueString()
+	var pvModelValues []string
+	dvDiagsValues := pv.Values.ElementsAs(ctx, &pvModelValues, false)
+	diags.Append(dvDiagsValues...)
+	if diags.HasError() {
+		return nil, diags
+	}
+	proto.Values = pvModelValues
+	return proto, diags
+}
+
+type PolicyVersion_Rules_Destination_K8S_NamespaceSelector_MatchLabels struct {
+	Key   types.String `tfsdk:"key"`
+	Value types.String `tfsdk:"value"`
+}
+
+func GetTypeAttrsForPolicyVersion_Rules_Destination_K8S_NamespaceSelector_MatchLabels() map[string]attr.Type {
+	return map[string]attr.Type{
+		"key":   types.StringType,
+		"value": types.StringType,
+	}
+}
+
+func ConvertPolicyVersion_Rules_Destination_K8S_NamespaceSelector_MatchLabelsToObjectValueFromProto(proto *configv1.PolicyVersion_Rules_Destination_K8S_NamespaceSelector_MatchLabels) basetypes.ObjectValue {
+	if proto == nil {
+		return types.ObjectNull(GetTypeAttrsForPolicyVersion_Rules_Destination_K8S_NamespaceSelector_MatchLabels())
+	}
+	return types.ObjectValueMust(
+		GetTypeAttrsForPolicyVersion_Rules_Destination_K8S_NamespaceSelector_MatchLabels(),
+		map[string]attr.Value{
+			"key":   types.StringValue(proto.Key),
+			"value": types.StringValue(proto.Value),
+		},
+	)
+}
+
+func ConvertDataValueToPolicyVersion_Rules_Destination_K8S_NamespaceSelector_MatchLabelsProto(ctx context.Context, dataValue attr.Value) (*configv1.PolicyVersion_Rules_Destination_K8S_NamespaceSelector_MatchLabels, diag.Diagnostics) {
+	if dataValue.IsNull() || dataValue.IsUnknown() {
+		return nil, nil
+	}
+	pv := PolicyVersion_Rules_Destination_K8S_NamespaceSelector_MatchLabels{}
+	diags := tfsdk.ValueAs(ctx, dataValue, &pv)
+	if diags.HasError() {
+		return nil, diags
+	}
+	proto := &configv1.PolicyVersion_Rules_Destination_K8S_NamespaceSelector_MatchLabels{}
+	proto.Key = pv.Key.ValueString()
+	proto.Value = pv.Value.ValueString()
+	return proto, diags
+}
+
+type PolicyVersion_Rules_Destination_K8S_WorkloadSelector struct {
+	MatchExpressions types.List `tfsdk:"match_expressions"`
+	MatchLabels      types.List `tfsdk:"match_labels"`
+	ServiceAccounts  types.List `tfsdk:"service_accounts"`
+}
+
+func GetTypeAttrsForPolicyVersion_Rules_Destination_K8S_WorkloadSelector() map[string]attr.Type {
+	return map[string]attr.Type{
+		"match_expressions": types.ListType{ElemType: types.ObjectType{
+			AttrTypes: GetTypeAttrsForPolicyVersion_Rules_Destination_K8S_WorkloadSelector_MatchExpressions(),
+		}},
+		"match_labels": types.ListType{ElemType: types.ObjectType{
+			AttrTypes: GetTypeAttrsForPolicyVersion_Rules_Destination_K8S_WorkloadSelector_MatchLabels(),
+		}},
+		"service_accounts": types.ListType{ElemType: types.StringType},
+	}
+}
+
+func ConvertPolicyVersion_Rules_Destination_K8S_WorkloadSelectorToObjectValueFromProto(proto *configv1.PolicyVersion_Rules_Destination_K8S_WorkloadSelector) basetypes.ObjectValue {
+	if proto == nil {
+		return types.ObjectNull(GetTypeAttrsForPolicyVersion_Rules_Destination_K8S_WorkloadSelector())
+	}
+	elementsInMatchExpressions := make([]attr.Value, 0, len(proto.MatchExpressions))
+	for _, item := range proto.MatchExpressions {
+		elementsInMatchExpressions = append(elementsInMatchExpressions, ConvertPolicyVersion_Rules_Destination_K8S_WorkloadSelector_MatchExpressionsToObjectValueFromProto(item))
+	}
+	elementsInMatchLabels := make([]attr.Value, 0, len(proto.MatchLabels))
+	for _, item := range proto.MatchLabels {
+		elementsInMatchLabels = append(elementsInMatchLabels, ConvertPolicyVersion_Rules_Destination_K8S_WorkloadSelector_MatchLabelsToObjectValueFromProto(item))
+	}
+	elementsInServiceAccounts := make([]attr.Value, 0, len(proto.ServiceAccounts))
+	for _, item := range proto.ServiceAccounts {
+		elementsInServiceAccounts = append(elementsInServiceAccounts, types.StringValue(item))
+	}
+	return types.ObjectValueMust(
+		GetTypeAttrsForPolicyVersion_Rules_Destination_K8S_WorkloadSelector(),
+		map[string]attr.Value{
+			"match_expressions": func() basetypes.ListValue {
+				if proto.MatchExpressions == nil {
+					return types.ListNull(types.ObjectType{AttrTypes: GetTypeAttrsForPolicyVersion_Rules_Destination_K8S_WorkloadSelector_MatchExpressions()})
+				}
+				return types.ListValueMust(types.ObjectType{AttrTypes: GetTypeAttrsForPolicyVersion_Rules_Destination_K8S_WorkloadSelector_MatchExpressions()}, elementsInMatchExpressions)
+			}(),
+			"match_labels": func() basetypes.ListValue {
+				if proto.MatchLabels == nil {
+					return types.ListNull(types.ObjectType{AttrTypes: GetTypeAttrsForPolicyVersion_Rules_Destination_K8S_WorkloadSelector_MatchLabels()})
+				}
+				return types.ListValueMust(types.ObjectType{AttrTypes: GetTypeAttrsForPolicyVersion_Rules_Destination_K8S_WorkloadSelector_MatchLabels()}, elementsInMatchLabels)
+			}(),
+			"service_accounts": func() basetypes.ListValue {
+				if proto.ServiceAccounts == nil {
+					return types.ListNull(types.StringType)
+				}
+				return types.ListValueMust(types.StringType, elementsInServiceAccounts)
+			}(),
+		},
+	)
+}
+
+func ConvertDataValueToPolicyVersion_Rules_Destination_K8S_WorkloadSelectorProto(ctx context.Context, dataValue attr.Value) (*configv1.PolicyVersion_Rules_Destination_K8S_WorkloadSelector, diag.Diagnostics) {
+	if dataValue.IsNull() || dataValue.IsUnknown() {
+		return nil, nil
+	}
+	pv := PolicyVersion_Rules_Destination_K8S_WorkloadSelector{}
+	diags := tfsdk.ValueAs(ctx, dataValue, &pv)
+	if diags.HasError() {
+		return nil, diags
+	}
+	proto := &configv1.PolicyVersion_Rules_Destination_K8S_WorkloadSelector{}
+	pvElemModelMatchExpressions := pv.MatchExpressions.Elements()
+	proto.MatchExpressions = make([]*configv1.PolicyVersion_Rules_Destination_K8S_WorkloadSelector_MatchExpressions, 0, len(pvElemModelMatchExpressions))
+	for _, elem := range pvElemModelMatchExpressions {
+		pvModel, dvDiags := ConvertDataValueToPolicyVersion_Rules_Destination_K8S_WorkloadSelector_MatchExpressionsProto(ctx, elem)
+		diags.Append(dvDiags...)
+		if diags.HasError() {
+			return nil, diags
+		}
+		proto.MatchExpressions = append(proto.MatchExpressions, pvModel)
+	}
+	pvElemModelMatchLabels := pv.MatchLabels.Elements()
+	proto.MatchLabels = make([]*configv1.PolicyVersion_Rules_Destination_K8S_WorkloadSelector_MatchLabels, 0, len(pvElemModelMatchLabels))
+	for _, elem := range pvElemModelMatchLabels {
+		pvModel, dvDiags := ConvertDataValueToPolicyVersion_Rules_Destination_K8S_WorkloadSelector_MatchLabelsProto(ctx, elem)
+		diags.Append(dvDiags...)
+		if diags.HasError() {
+			return nil, diags
+		}
+		proto.MatchLabels = append(proto.MatchLabels, pvModel)
+	}
+	var pvModelServiceAccounts []string
+	dvDiagsServiceAccounts := pv.ServiceAccounts.ElementsAs(ctx, &pvModelServiceAccounts, false)
+	diags.Append(dvDiagsServiceAccounts...)
+	if diags.HasError() {
+		return nil, diags
+	}
+	proto.ServiceAccounts = pvModelServiceAccounts
+	return proto, diags
+}
+
+type PolicyVersion_Rules_Destination_K8S_WorkloadSelector_MatchExpressions struct {
+	Key      types.String `tfsdk:"key"`
+	Operator types.String `tfsdk:"operator"`
+	Values   types.List   `tfsdk:"values"`
+}
+
+func GetTypeAttrsForPolicyVersion_Rules_Destination_K8S_WorkloadSelector_MatchExpressions() map[string]attr.Type {
+	return map[string]attr.Type{
+		"key":      types.StringType,
+		"operator": types.StringType,
+		"values":   types.ListType{ElemType: types.StringType},
+	}
+}
+
+func ConvertPolicyVersion_Rules_Destination_K8S_WorkloadSelector_MatchExpressionsToObjectValueFromProto(proto *configv1.PolicyVersion_Rules_Destination_K8S_WorkloadSelector_MatchExpressions) basetypes.ObjectValue {
+	if proto == nil {
+		return types.ObjectNull(GetTypeAttrsForPolicyVersion_Rules_Destination_K8S_WorkloadSelector_MatchExpressions())
+	}
+	elementsInValues := make([]attr.Value, 0, len(proto.Values))
+	for _, item := range proto.Values {
+		elementsInValues = append(elementsInValues, types.StringValue(item))
+	}
+	return types.ObjectValueMust(
+		GetTypeAttrsForPolicyVersion_Rules_Destination_K8S_WorkloadSelector_MatchExpressions(),
+		map[string]attr.Value{
+			"key":      types.StringValue(proto.Key),
+			"operator": types.StringValue(proto.Operator),
+			"values": func() basetypes.ListValue {
+				if proto.Values == nil {
+					return types.ListNull(types.StringType)
+				}
+				return types.ListValueMust(types.StringType, elementsInValues)
+			}(),
+		},
+	)
+}
+
+func ConvertDataValueToPolicyVersion_Rules_Destination_K8S_WorkloadSelector_MatchExpressionsProto(ctx context.Context, dataValue attr.Value) (*configv1.PolicyVersion_Rules_Destination_K8S_WorkloadSelector_MatchExpressions, diag.Diagnostics) {
+	if dataValue.IsNull() || dataValue.IsUnknown() {
+		return nil, nil
+	}
+	pv := PolicyVersion_Rules_Destination_K8S_WorkloadSelector_MatchExpressions{}
+	diags := tfsdk.ValueAs(ctx, dataValue, &pv)
+	if diags.HasError() {
+		return nil, diags
+	}
+	proto := &configv1.PolicyVersion_Rules_Destination_K8S_WorkloadSelector_MatchExpressions{}
+	proto.Key = pv.Key.ValueString()
+	proto.Operator = pv.Operator.ValueString()
+	var pvModelValues []string
+	dvDiagsValues := pv.Values.ElementsAs(ctx, &pvModelValues, false)
+	diags.Append(dvDiagsValues...)
+	if diags.HasError() {
+		return nil, diags
+	}
+	proto.Values = pvModelValues
+	return proto, diags
+}
+
+type PolicyVersion_Rules_Destination_K8S_WorkloadSelector_MatchLabels struct {
+	Key   types.String `tfsdk:"key"`
+	Value types.String `tfsdk:"value"`
+}
+
+func GetTypeAttrsForPolicyVersion_Rules_Destination_K8S_WorkloadSelector_MatchLabels() map[string]attr.Type {
+	return map[string]attr.Type{
+		"key":   types.StringType,
+		"value": types.StringType,
+	}
+}
+
+func ConvertPolicyVersion_Rules_Destination_K8S_WorkloadSelector_MatchLabelsToObjectValueFromProto(proto *configv1.PolicyVersion_Rules_Destination_K8S_WorkloadSelector_MatchLabels) basetypes.ObjectValue {
+	if proto == nil {
+		return types.ObjectNull(GetTypeAttrsForPolicyVersion_Rules_Destination_K8S_WorkloadSelector_MatchLabels())
+	}
+	return types.ObjectValueMust(
+		GetTypeAttrsForPolicyVersion_Rules_Destination_K8S_WorkloadSelector_MatchLabels(),
+		map[string]attr.Value{
+			"key":   types.StringValue(proto.Key),
+			"value": types.StringValue(proto.Value),
+		},
+	)
+}
+
+func ConvertDataValueToPolicyVersion_Rules_Destination_K8S_WorkloadSelector_MatchLabelsProto(ctx context.Context, dataValue attr.Value) (*configv1.PolicyVersion_Rules_Destination_K8S_WorkloadSelector_MatchLabels, diag.Diagnostics) {
+	if dataValue.IsNull() || dataValue.IsUnknown() {
+		return nil, nil
+	}
+	pv := PolicyVersion_Rules_Destination_K8S_WorkloadSelector_MatchLabels{}
+	diags := tfsdk.ValueAs(ctx, dataValue, &pv)
+	if diags.HasError() {
+		return nil, diags
+	}
+	proto := &configv1.PolicyVersion_Rules_Destination_K8S_WorkloadSelector_MatchLabels{}
+	proto.Key = pv.Key.ValueString()
+	proto.Value = pv.Value.ValueString()
+	return proto, diags
+}
+
+type PolicyVersion_Rules_PortRanges struct {
+	FromPort types.Int64  `tfsdk:"from_port"`
+	Protocol types.String `tfsdk:"protocol"`
+	ToPort   types.Int64  `tfsdk:"to_port"`
+}
+
+func GetTypeAttrsForPolicyVersion_Rules_PortRanges() map[string]attr.Type {
+	return map[string]attr.Type{
+		"from_port": types.Int64Type,
+		"protocol":  types.StringType,
+		"to_port":   types.Int64Type,
+	}
+}
+
+func ConvertPolicyVersion_Rules_PortRangesToObjectValueFromProto(proto *configv1.PolicyVersion_Rules_PortRanges) basetypes.ObjectValue {
+	if proto == nil {
+		return types.ObjectNull(GetTypeAttrsForPolicyVersion_Rules_PortRanges())
+	}
+	return types.ObjectValueMust(
+		GetTypeAttrsForPolicyVersion_Rules_PortRanges(),
+		map[string]attr.Value{
+			"from_port": types.Int64Value(proto.FromPort),
+			"protocol":  types.StringValue(proto.Protocol),
+			"to_port":   types.Int64Value(proto.ToPort),
+		},
+	)
+}
+
+func ConvertDataValueToPolicyVersion_Rules_PortRangesProto(ctx context.Context, dataValue attr.Value) (*configv1.PolicyVersion_Rules_PortRanges, diag.Diagnostics) {
+	if dataValue.IsNull() || dataValue.IsUnknown() {
+		return nil, nil
+	}
+	pv := PolicyVersion_Rules_PortRanges{}
+	diags := tfsdk.ValueAs(ctx, dataValue, &pv)
+	if diags.HasError() {
+		return nil, diags
+	}
+	proto := &configv1.PolicyVersion_Rules_PortRanges{}
+	proto.FromPort = pv.FromPort.ValueInt64()
+	proto.Protocol = pv.Protocol.ValueString()
+	proto.ToPort = pv.ToPort.ValueInt64()
+	return proto, diags
+}
+
+type PolicyVersion_Rules_Source struct {
+	Cloud         types.Object `tfsdk:"cloud"`
+	IllumioLabels types.Object `tfsdk:"illumio_labels"`
+	IpLists       types.Object `tfsdk:"ip_lists"`
+	K8S           types.Object `tfsdk:"k8s"`
+}
+
+func GetTypeAttrsForPolicyVersion_Rules_Source() map[string]attr.Type {
+	return map[string]attr.Type{
+		"cloud": types.ObjectType{
+			AttrTypes: GetTypeAttrsForPolicyVersion_Rules_Source_Cloud(),
+		},
+		"illumio_labels": types.ObjectType{
+			AttrTypes: GetTypeAttrsForPolicyVersion_Rules_Source_IllumioLabels(),
+		},
+		"ip_lists": types.ObjectType{
+			AttrTypes: GetTypeAttrsForPolicyVersion_Rules_Source_IpLists(),
+		},
+		"k8s": types.ObjectType{
+			AttrTypes: GetTypeAttrsForPolicyVersion_Rules_Source_K8S(),
+		},
+	}
+}
+
+func ConvertPolicyVersion_Rules_SourceToObjectValueFromProto(proto *configv1.PolicyVersion_Rules_Source) basetypes.ObjectValue {
+	if proto == nil {
+		return types.ObjectNull(GetTypeAttrsForPolicyVersion_Rules_Source())
+	}
+	return types.ObjectValueMust(
+		GetTypeAttrsForPolicyVersion_Rules_Source(),
+		map[string]attr.Value{
+			"cloud":          ConvertPolicyVersion_Rules_Source_CloudToObjectValueFromProto(proto.Cloud),
+			"illumio_labels": ConvertPolicyVersion_Rules_Source_IllumioLabelsToObjectValueFromProto(proto.IllumioLabels),
+			"ip_lists":       ConvertPolicyVersion_Rules_Source_IpListsToObjectValueFromProto(proto.IpLists),
+			"k8s":            ConvertPolicyVersion_Rules_Source_K8SToObjectValueFromProto(proto.K8S),
+		},
+	)
+}
+
+func ConvertDataValueToPolicyVersion_Rules_SourceProto(ctx context.Context, dataValue attr.Value) (*configv1.PolicyVersion_Rules_Source, diag.Diagnostics) {
+	if dataValue.IsNull() || dataValue.IsUnknown() {
+		return nil, nil
+	}
+	pv := PolicyVersion_Rules_Source{}
+	diags := tfsdk.ValueAs(ctx, dataValue, &pv)
+	if diags.HasError() {
+		return nil, diags
+	}
+	proto := &configv1.PolicyVersion_Rules_Source{}
+	pvModelCloud, dvDiagsCloud := ConvertDataValueToPolicyVersion_Rules_Source_CloudProto(ctx, pv.Cloud)
+	diags.Append(dvDiagsCloud...)
+	if diags.HasError() {
+		return nil, diags
+	}
+	proto.Cloud = pvModelCloud
+	pvModelIllumioLabels, dvDiagsIllumioLabels := ConvertDataValueToPolicyVersion_Rules_Source_IllumioLabelsProto(ctx, pv.IllumioLabels)
+	diags.Append(dvDiagsIllumioLabels...)
+	if diags.HasError() {
+		return nil, diags
+	}
+	proto.IllumioLabels = pvModelIllumioLabels
+	pvModelIpLists, dvDiagsIpLists := ConvertDataValueToPolicyVersion_Rules_Source_IpListsProto(ctx, pv.IpLists)
+	diags.Append(dvDiagsIpLists...)
+	if diags.HasError() {
+		return nil, diags
+	}
+	proto.IpLists = pvModelIpLists
+	pvModelK8S, dvDiagsK8S := ConvertDataValueToPolicyVersion_Rules_Source_K8SProto(ctx, pv.K8S)
+	diags.Append(dvDiagsK8S...)
+	if diags.HasError() {
+		return nil, diags
+	}
+	proto.K8S = pvModelK8S
+	return proto, diags
+}
+
+type PolicyVersion_Rules_Source_Cloud struct {
+	Aws   types.Object `tfsdk:"aws"`
+	Azure types.Object `tfsdk:"azure"`
+}
+
+func GetTypeAttrsForPolicyVersion_Rules_Source_Cloud() map[string]attr.Type {
+	return map[string]attr.Type{
+		"aws": types.ObjectType{
+			AttrTypes: GetTypeAttrsForPolicyVersion_Rules_Source_Cloud_Aws(),
+		},
+		"azure": types.ObjectType{
+			AttrTypes: GetTypeAttrsForPolicyVersion_Rules_Source_Cloud_Azure(),
+		},
+	}
+}
+
+func ConvertPolicyVersion_Rules_Source_CloudToObjectValueFromProto(proto *configv1.PolicyVersion_Rules_Source_Cloud) basetypes.ObjectValue {
+	if proto == nil {
+		return types.ObjectNull(GetTypeAttrsForPolicyVersion_Rules_Source_Cloud())
+	}
+	return types.ObjectValueMust(
+		GetTypeAttrsForPolicyVersion_Rules_Source_Cloud(),
+		map[string]attr.Value{
+			"aws":   ConvertPolicyVersion_Rules_Source_Cloud_AwsToObjectValueFromProto(proto.Aws),
+			"azure": ConvertPolicyVersion_Rules_Source_Cloud_AzureToObjectValueFromProto(proto.Azure),
+		},
+	)
+}
+
+func ConvertDataValueToPolicyVersion_Rules_Source_CloudProto(ctx context.Context, dataValue attr.Value) (*configv1.PolicyVersion_Rules_Source_Cloud, diag.Diagnostics) {
+	if dataValue.IsNull() || dataValue.IsUnknown() {
+		return nil, nil
+	}
+	pv := PolicyVersion_Rules_Source_Cloud{}
+	diags := tfsdk.ValueAs(ctx, dataValue, &pv)
+	if diags.HasError() {
+		return nil, diags
+	}
+	proto := &configv1.PolicyVersion_Rules_Source_Cloud{}
+	pvModelAws, dvDiagsAws := ConvertDataValueToPolicyVersion_Rules_Source_Cloud_AwsProto(ctx, pv.Aws)
+	diags.Append(dvDiagsAws...)
+	if diags.HasError() {
+		return nil, diags
+	}
+	proto.Aws = pvModelAws
+	pvModelAzure, dvDiagsAzure := ConvertDataValueToPolicyVersion_Rules_Source_Cloud_AzureProto(ctx, pv.Azure)
+	diags.Append(dvDiagsAzure...)
+	if diags.HasError() {
+		return nil, diags
+	}
+	proto.Azure = pvModelAzure
+	return proto, diags
+}
+
+type PolicyVersion_Rules_Source_Cloud_Aws struct {
+	Network     types.Object `tfsdk:"network"`
+	OrgSelector types.Object `tfsdk:"org_selector"`
+}
+
+func GetTypeAttrsForPolicyVersion_Rules_Source_Cloud_Aws() map[string]attr.Type {
+	return map[string]attr.Type{
+		"network": types.ObjectType{
+			AttrTypes: GetTypeAttrsForPolicyVersion_Rules_Source_Cloud_Aws_Network(),
+		},
+		"org_selector": types.ObjectType{
+			AttrTypes: GetTypeAttrsForPolicyVersion_Rules_Source_Cloud_Aws_OrgSelector(),
+		},
+	}
+}
+
+func ConvertPolicyVersion_Rules_Source_Cloud_AwsToObjectValueFromProto(proto *configv1.PolicyVersion_Rules_Source_Cloud_Aws) basetypes.ObjectValue {
+	if proto == nil {
+		return types.ObjectNull(GetTypeAttrsForPolicyVersion_Rules_Source_Cloud_Aws())
+	}
+	return types.ObjectValueMust(
+		GetTypeAttrsForPolicyVersion_Rules_Source_Cloud_Aws(),
+		map[string]attr.Value{
+			"network":      ConvertPolicyVersion_Rules_Source_Cloud_Aws_NetworkToObjectValueFromProto(proto.Network),
+			"org_selector": ConvertPolicyVersion_Rules_Source_Cloud_Aws_OrgSelectorToObjectValueFromProto(proto.OrgSelector),
+		},
+	)
+}
+
+func ConvertDataValueToPolicyVersion_Rules_Source_Cloud_AwsProto(ctx context.Context, dataValue attr.Value) (*configv1.PolicyVersion_Rules_Source_Cloud_Aws, diag.Diagnostics) {
+	if dataValue.IsNull() || dataValue.IsUnknown() {
+		return nil, nil
+	}
+	pv := PolicyVersion_Rules_Source_Cloud_Aws{}
+	diags := tfsdk.ValueAs(ctx, dataValue, &pv)
+	if diags.HasError() {
+		return nil, diags
+	}
+	proto := &configv1.PolicyVersion_Rules_Source_Cloud_Aws{}
+	pvModelNetwork, dvDiagsNetwork := ConvertDataValueToPolicyVersion_Rules_Source_Cloud_Aws_NetworkProto(ctx, pv.Network)
+	diags.Append(dvDiagsNetwork...)
+	if diags.HasError() {
+		return nil, diags
+	}
+	proto.Network = pvModelNetwork
+	pvModelOrgSelector, dvDiagsOrgSelector := ConvertDataValueToPolicyVersion_Rules_Source_Cloud_Aws_OrgSelectorProto(ctx, pv.OrgSelector)
+	diags.Append(dvDiagsOrgSelector...)
+	if diags.HasError() {
+		return nil, diags
+	}
+	proto.OrgSelector = pvModelOrgSelector
+	return proto, diags
+}
+
+type PolicyVersion_Rules_Source_Cloud_Aws_Network struct {
+	Subnets types.List `tfsdk:"subnets"`
+	Vpcs    types.List `tfsdk:"vpcs"`
+}
+
+func GetTypeAttrsForPolicyVersion_Rules_Source_Cloud_Aws_Network() map[string]attr.Type {
+	return map[string]attr.Type{
+		"subnets": types.ListType{ElemType: types.ObjectType{
+			AttrTypes: GetTypeAttrsForPolicyVersion_Rules_Source_Cloud_Aws_Network_Subnets(),
+		}},
+		"vpcs": types.ListType{ElemType: types.ObjectType{
+			AttrTypes: GetTypeAttrsForPolicyVersion_Rules_Source_Cloud_Aws_Network_Vpcs(),
+		}},
+	}
+}
+
+func ConvertPolicyVersion_Rules_Source_Cloud_Aws_NetworkToObjectValueFromProto(proto *configv1.PolicyVersion_Rules_Source_Cloud_Aws_Network) basetypes.ObjectValue {
+	if proto == nil {
+		return types.ObjectNull(GetTypeAttrsForPolicyVersion_Rules_Source_Cloud_Aws_Network())
+	}
+	elementsInSubnets := make([]attr.Value, 0, len(proto.Subnets))
+	for _, item := range proto.Subnets {
+		elementsInSubnets = append(elementsInSubnets, ConvertPolicyVersion_Rules_Source_Cloud_Aws_Network_SubnetsToObjectValueFromProto(item))
+	}
+	elementsInVpcs := make([]attr.Value, 0, len(proto.Vpcs))
+	for _, item := range proto.Vpcs {
+		elementsInVpcs = append(elementsInVpcs, ConvertPolicyVersion_Rules_Source_Cloud_Aws_Network_VpcsToObjectValueFromProto(item))
+	}
+	return types.ObjectValueMust(
+		GetTypeAttrsForPolicyVersion_Rules_Source_Cloud_Aws_Network(),
+		map[string]attr.Value{
+			"subnets": func() basetypes.ListValue {
+				if proto.Subnets == nil {
+					return types.ListNull(types.ObjectType{AttrTypes: GetTypeAttrsForPolicyVersion_Rules_Source_Cloud_Aws_Network_Subnets()})
+				}
+				return types.ListValueMust(types.ObjectType{AttrTypes: GetTypeAttrsForPolicyVersion_Rules_Source_Cloud_Aws_Network_Subnets()}, elementsInSubnets)
+			}(),
+			"vpcs": func() basetypes.ListValue {
+				if proto.Vpcs == nil {
+					return types.ListNull(types.ObjectType{AttrTypes: GetTypeAttrsForPolicyVersion_Rules_Source_Cloud_Aws_Network_Vpcs()})
+				}
+				return types.ListValueMust(types.ObjectType{AttrTypes: GetTypeAttrsForPolicyVersion_Rules_Source_Cloud_Aws_Network_Vpcs()}, elementsInVpcs)
+			}(),
+		},
+	)
+}
+
+func ConvertDataValueToPolicyVersion_Rules_Source_Cloud_Aws_NetworkProto(ctx context.Context, dataValue attr.Value) (*configv1.PolicyVersion_Rules_Source_Cloud_Aws_Network, diag.Diagnostics) {
+	if dataValue.IsNull() || dataValue.IsUnknown() {
+		return nil, nil
+	}
+	pv := PolicyVersion_Rules_Source_Cloud_Aws_Network{}
+	diags := tfsdk.ValueAs(ctx, dataValue, &pv)
+	if diags.HasError() {
+		return nil, diags
+	}
+	proto := &configv1.PolicyVersion_Rules_Source_Cloud_Aws_Network{}
+	pvElemModelSubnets := pv.Subnets.Elements()
+	proto.Subnets = make([]*configv1.PolicyVersion_Rules_Source_Cloud_Aws_Network_Subnets, 0, len(pvElemModelSubnets))
+	for _, elem := range pvElemModelSubnets {
+		pvModel, dvDiags := ConvertDataValueToPolicyVersion_Rules_Source_Cloud_Aws_Network_SubnetsProto(ctx, elem)
+		diags.Append(dvDiags...)
+		if diags.HasError() {
+			return nil, diags
+		}
+		proto.Subnets = append(proto.Subnets, pvModel)
+	}
+	pvElemModelVpcs := pv.Vpcs.Elements()
+	proto.Vpcs = make([]*configv1.PolicyVersion_Rules_Source_Cloud_Aws_Network_Vpcs, 0, len(pvElemModelVpcs))
+	for _, elem := range pvElemModelVpcs {
+		pvModel, dvDiags := ConvertDataValueToPolicyVersion_Rules_Source_Cloud_Aws_Network_VpcsProto(ctx, elem)
+		diags.Append(dvDiags...)
+		if diags.HasError() {
+			return nil, diags
+		}
+		proto.Vpcs = append(proto.Vpcs, pvModel)
+	}
+	return proto, diags
+}
+
+type PolicyVersion_Rules_Source_Cloud_Aws_Network_Subnets struct {
+	Id        types.String `tfsdk:"id"`
+	AccountId types.String `tfsdk:"account_id"`
+	Region    types.String `tfsdk:"region"`
+}
+
+func GetTypeAttrsForPolicyVersion_Rules_Source_Cloud_Aws_Network_Subnets() map[string]attr.Type {
+	return map[string]attr.Type{
+		"id":         types.StringType,
+		"account_id": types.StringType,
+		"region":     types.StringType,
+	}
+}
+
+func ConvertPolicyVersion_Rules_Source_Cloud_Aws_Network_SubnetsToObjectValueFromProto(proto *configv1.PolicyVersion_Rules_Source_Cloud_Aws_Network_Subnets) basetypes.ObjectValue {
+	if proto == nil {
+		return types.ObjectNull(GetTypeAttrsForPolicyVersion_Rules_Source_Cloud_Aws_Network_Subnets())
+	}
+	return types.ObjectValueMust(
+		GetTypeAttrsForPolicyVersion_Rules_Source_Cloud_Aws_Network_Subnets(),
+		map[string]attr.Value{
+			"id":         types.StringValue(proto.Id),
+			"account_id": types.StringValue(proto.AccountId),
+			"region":     types.StringValue(proto.Region),
+		},
+	)
+}
+
+func ConvertDataValueToPolicyVersion_Rules_Source_Cloud_Aws_Network_SubnetsProto(ctx context.Context, dataValue attr.Value) (*configv1.PolicyVersion_Rules_Source_Cloud_Aws_Network_Subnets, diag.Diagnostics) {
+	if dataValue.IsNull() || dataValue.IsUnknown() {
+		return nil, nil
+	}
+	pv := PolicyVersion_Rules_Source_Cloud_Aws_Network_Subnets{}
+	diags := tfsdk.ValueAs(ctx, dataValue, &pv)
+	if diags.HasError() {
+		return nil, diags
+	}
+	proto := &configv1.PolicyVersion_Rules_Source_Cloud_Aws_Network_Subnets{}
+	proto.Id = pv.Id.ValueString()
+	proto.AccountId = pv.AccountId.ValueString()
+	proto.Region = pv.Region.ValueString()
+	return proto, diags
+}
+
+type PolicyVersion_Rules_Source_Cloud_Aws_Network_Vpcs struct {
+	Id        types.String `tfsdk:"id"`
+	AccountId types.String `tfsdk:"account_id"`
+	Region    types.String `tfsdk:"region"`
+}
+
+func GetTypeAttrsForPolicyVersion_Rules_Source_Cloud_Aws_Network_Vpcs() map[string]attr.Type {
+	return map[string]attr.Type{
+		"id":         types.StringType,
+		"account_id": types.StringType,
+		"region":     types.StringType,
+	}
+}
+
+func ConvertPolicyVersion_Rules_Source_Cloud_Aws_Network_VpcsToObjectValueFromProto(proto *configv1.PolicyVersion_Rules_Source_Cloud_Aws_Network_Vpcs) basetypes.ObjectValue {
+	if proto == nil {
+		return types.ObjectNull(GetTypeAttrsForPolicyVersion_Rules_Source_Cloud_Aws_Network_Vpcs())
+	}
+	return types.ObjectValueMust(
+		GetTypeAttrsForPolicyVersion_Rules_Source_Cloud_Aws_Network_Vpcs(),
+		map[string]attr.Value{
+			"id":         types.StringValue(proto.Id),
+			"account_id": types.StringValue(proto.AccountId),
+			"region":     types.StringValue(proto.Region),
+		},
+	)
+}
+
+func ConvertDataValueToPolicyVersion_Rules_Source_Cloud_Aws_Network_VpcsProto(ctx context.Context, dataValue attr.Value) (*configv1.PolicyVersion_Rules_Source_Cloud_Aws_Network_Vpcs, diag.Diagnostics) {
+	if dataValue.IsNull() || dataValue.IsUnknown() {
+		return nil, nil
+	}
+	pv := PolicyVersion_Rules_Source_Cloud_Aws_Network_Vpcs{}
+	diags := tfsdk.ValueAs(ctx, dataValue, &pv)
+	if diags.HasError() {
+		return nil, diags
+	}
+	proto := &configv1.PolicyVersion_Rules_Source_Cloud_Aws_Network_Vpcs{}
+	proto.Id = pv.Id.ValueString()
+	proto.AccountId = pv.AccountId.ValueString()
+	proto.Region = pv.Region.ValueString()
+	return proto, diags
+}
+
+type PolicyVersion_Rules_Source_Cloud_Aws_OrgSelector struct {
+	Accounts types.List `tfsdk:"accounts"`
+}
+
+func GetTypeAttrsForPolicyVersion_Rules_Source_Cloud_Aws_OrgSelector() map[string]attr.Type {
+	return map[string]attr.Type{
+		"accounts": types.ListType{ElemType: types.ObjectType{
+			AttrTypes: GetTypeAttrsForPolicyVersion_Rules_Source_Cloud_Aws_OrgSelector_Accounts(),
+		}},
+	}
+}
+
+func ConvertPolicyVersion_Rules_Source_Cloud_Aws_OrgSelectorToObjectValueFromProto(proto *configv1.PolicyVersion_Rules_Source_Cloud_Aws_OrgSelector) basetypes.ObjectValue {
+	if proto == nil {
+		return types.ObjectNull(GetTypeAttrsForPolicyVersion_Rules_Source_Cloud_Aws_OrgSelector())
+	}
+	elementsInAccounts := make([]attr.Value, 0, len(proto.Accounts))
+	for _, item := range proto.Accounts {
+		elementsInAccounts = append(elementsInAccounts, ConvertPolicyVersion_Rules_Source_Cloud_Aws_OrgSelector_AccountsToObjectValueFromProto(item))
+	}
+	return types.ObjectValueMust(
+		GetTypeAttrsForPolicyVersion_Rules_Source_Cloud_Aws_OrgSelector(),
+		map[string]attr.Value{
+			"accounts": func() basetypes.ListValue {
+				if proto.Accounts == nil {
+					return types.ListNull(types.ObjectType{AttrTypes: GetTypeAttrsForPolicyVersion_Rules_Source_Cloud_Aws_OrgSelector_Accounts()})
+				}
+				return types.ListValueMust(types.ObjectType{AttrTypes: GetTypeAttrsForPolicyVersion_Rules_Source_Cloud_Aws_OrgSelector_Accounts()}, elementsInAccounts)
+			}(),
+		},
+	)
+}
+
+func ConvertDataValueToPolicyVersion_Rules_Source_Cloud_Aws_OrgSelectorProto(ctx context.Context, dataValue attr.Value) (*configv1.PolicyVersion_Rules_Source_Cloud_Aws_OrgSelector, diag.Diagnostics) {
+	if dataValue.IsNull() || dataValue.IsUnknown() {
+		return nil, nil
+	}
+	pv := PolicyVersion_Rules_Source_Cloud_Aws_OrgSelector{}
+	diags := tfsdk.ValueAs(ctx, dataValue, &pv)
+	if diags.HasError() {
+		return nil, diags
+	}
+	proto := &configv1.PolicyVersion_Rules_Source_Cloud_Aws_OrgSelector{}
+	pvElemModelAccounts := pv.Accounts.Elements()
+	proto.Accounts = make([]*configv1.PolicyVersion_Rules_Source_Cloud_Aws_OrgSelector_Accounts, 0, len(pvElemModelAccounts))
+	for _, elem := range pvElemModelAccounts {
+		pvModel, dvDiags := ConvertDataValueToPolicyVersion_Rules_Source_Cloud_Aws_OrgSelector_AccountsProto(ctx, elem)
+		diags.Append(dvDiags...)
+		if diags.HasError() {
+			return nil, diags
+		}
+		proto.Accounts = append(proto.Accounts, pvModel)
+	}
+	return proto, diags
+}
+
+type PolicyVersion_Rules_Source_Cloud_Aws_OrgSelector_Accounts struct {
+	Id types.String `tfsdk:"id"`
+}
+
+func GetTypeAttrsForPolicyVersion_Rules_Source_Cloud_Aws_OrgSelector_Accounts() map[string]attr.Type {
+	return map[string]attr.Type{
+		"id": types.StringType,
+	}
+}
+
+func ConvertPolicyVersion_Rules_Source_Cloud_Aws_OrgSelector_AccountsToObjectValueFromProto(proto *configv1.PolicyVersion_Rules_Source_Cloud_Aws_OrgSelector_Accounts) basetypes.ObjectValue {
+	if proto == nil {
+		return types.ObjectNull(GetTypeAttrsForPolicyVersion_Rules_Source_Cloud_Aws_OrgSelector_Accounts())
+	}
+	return types.ObjectValueMust(
+		GetTypeAttrsForPolicyVersion_Rules_Source_Cloud_Aws_OrgSelector_Accounts(),
+		map[string]attr.Value{
+			"id": types.StringValue(proto.Id),
+		},
+	)
+}
+
+func ConvertDataValueToPolicyVersion_Rules_Source_Cloud_Aws_OrgSelector_AccountsProto(ctx context.Context, dataValue attr.Value) (*configv1.PolicyVersion_Rules_Source_Cloud_Aws_OrgSelector_Accounts, diag.Diagnostics) {
+	if dataValue.IsNull() || dataValue.IsUnknown() {
+		return nil, nil
+	}
+	pv := PolicyVersion_Rules_Source_Cloud_Aws_OrgSelector_Accounts{}
+	diags := tfsdk.ValueAs(ctx, dataValue, &pv)
+	if diags.HasError() {
+		return nil, diags
+	}
+	proto := &configv1.PolicyVersion_Rules_Source_Cloud_Aws_OrgSelector_Accounts{}
+	proto.Id = pv.Id.ValueString()
+	return proto, diags
+}
+
+type PolicyVersion_Rules_Source_Cloud_Azure struct {
+	Network     types.Object `tfsdk:"network"`
+	OrgSelector types.Object `tfsdk:"org_selector"`
+}
+
+func GetTypeAttrsForPolicyVersion_Rules_Source_Cloud_Azure() map[string]attr.Type {
+	return map[string]attr.Type{
+		"network": types.ObjectType{
+			AttrTypes: GetTypeAttrsForPolicyVersion_Rules_Source_Cloud_Azure_Network(),
+		},
+		"org_selector": types.ObjectType{
+			AttrTypes: GetTypeAttrsForPolicyVersion_Rules_Source_Cloud_Azure_OrgSelector(),
+		},
+	}
+}
+
+func ConvertPolicyVersion_Rules_Source_Cloud_AzureToObjectValueFromProto(proto *configv1.PolicyVersion_Rules_Source_Cloud_Azure) basetypes.ObjectValue {
+	if proto == nil {
+		return types.ObjectNull(GetTypeAttrsForPolicyVersion_Rules_Source_Cloud_Azure())
+	}
+	return types.ObjectValueMust(
+		GetTypeAttrsForPolicyVersion_Rules_Source_Cloud_Azure(),
+		map[string]attr.Value{
+			"network":      ConvertPolicyVersion_Rules_Source_Cloud_Azure_NetworkToObjectValueFromProto(proto.Network),
+			"org_selector": ConvertPolicyVersion_Rules_Source_Cloud_Azure_OrgSelectorToObjectValueFromProto(proto.OrgSelector),
+		},
+	)
+}
+
+func ConvertDataValueToPolicyVersion_Rules_Source_Cloud_AzureProto(ctx context.Context, dataValue attr.Value) (*configv1.PolicyVersion_Rules_Source_Cloud_Azure, diag.Diagnostics) {
+	if dataValue.IsNull() || dataValue.IsUnknown() {
+		return nil, nil
+	}
+	pv := PolicyVersion_Rules_Source_Cloud_Azure{}
+	diags := tfsdk.ValueAs(ctx, dataValue, &pv)
+	if diags.HasError() {
+		return nil, diags
+	}
+	proto := &configv1.PolicyVersion_Rules_Source_Cloud_Azure{}
+	pvModelNetwork, dvDiagsNetwork := ConvertDataValueToPolicyVersion_Rules_Source_Cloud_Azure_NetworkProto(ctx, pv.Network)
+	diags.Append(dvDiagsNetwork...)
+	if diags.HasError() {
+		return nil, diags
+	}
+	proto.Network = pvModelNetwork
+	pvModelOrgSelector, dvDiagsOrgSelector := ConvertDataValueToPolicyVersion_Rules_Source_Cloud_Azure_OrgSelectorProto(ctx, pv.OrgSelector)
+	diags.Append(dvDiagsOrgSelector...)
+	if diags.HasError() {
+		return nil, diags
+	}
+	proto.OrgSelector = pvModelOrgSelector
+	return proto, diags
+}
+
+type PolicyVersion_Rules_Source_Cloud_Azure_Network struct {
+	Subnets types.List `tfsdk:"subnets"`
+	Vnets   types.List `tfsdk:"vnets"`
+}
+
+func GetTypeAttrsForPolicyVersion_Rules_Source_Cloud_Azure_Network() map[string]attr.Type {
+	return map[string]attr.Type{
+		"subnets": types.ListType{ElemType: types.ObjectType{
+			AttrTypes: GetTypeAttrsForPolicyVersion_Rules_Source_Cloud_Azure_Network_Subnets(),
+		}},
+		"vnets": types.ListType{ElemType: types.ObjectType{
+			AttrTypes: GetTypeAttrsForPolicyVersion_Rules_Source_Cloud_Azure_Network_Vnets(),
+		}},
+	}
+}
+
+func ConvertPolicyVersion_Rules_Source_Cloud_Azure_NetworkToObjectValueFromProto(proto *configv1.PolicyVersion_Rules_Source_Cloud_Azure_Network) basetypes.ObjectValue {
+	if proto == nil {
+		return types.ObjectNull(GetTypeAttrsForPolicyVersion_Rules_Source_Cloud_Azure_Network())
+	}
+	elementsInSubnets := make([]attr.Value, 0, len(proto.Subnets))
+	for _, item := range proto.Subnets {
+		elementsInSubnets = append(elementsInSubnets, ConvertPolicyVersion_Rules_Source_Cloud_Azure_Network_SubnetsToObjectValueFromProto(item))
+	}
+	elementsInVnets := make([]attr.Value, 0, len(proto.Vnets))
+	for _, item := range proto.Vnets {
+		elementsInVnets = append(elementsInVnets, ConvertPolicyVersion_Rules_Source_Cloud_Azure_Network_VnetsToObjectValueFromProto(item))
+	}
+	return types.ObjectValueMust(
+		GetTypeAttrsForPolicyVersion_Rules_Source_Cloud_Azure_Network(),
+		map[string]attr.Value{
+			"subnets": func() basetypes.ListValue {
+				if proto.Subnets == nil {
+					return types.ListNull(types.ObjectType{AttrTypes: GetTypeAttrsForPolicyVersion_Rules_Source_Cloud_Azure_Network_Subnets()})
+				}
+				return types.ListValueMust(types.ObjectType{AttrTypes: GetTypeAttrsForPolicyVersion_Rules_Source_Cloud_Azure_Network_Subnets()}, elementsInSubnets)
+			}(),
+			"vnets": func() basetypes.ListValue {
+				if proto.Vnets == nil {
+					return types.ListNull(types.ObjectType{AttrTypes: GetTypeAttrsForPolicyVersion_Rules_Source_Cloud_Azure_Network_Vnets()})
+				}
+				return types.ListValueMust(types.ObjectType{AttrTypes: GetTypeAttrsForPolicyVersion_Rules_Source_Cloud_Azure_Network_Vnets()}, elementsInVnets)
+			}(),
+		},
+	)
+}
+
+func ConvertDataValueToPolicyVersion_Rules_Source_Cloud_Azure_NetworkProto(ctx context.Context, dataValue attr.Value) (*configv1.PolicyVersion_Rules_Source_Cloud_Azure_Network, diag.Diagnostics) {
+	if dataValue.IsNull() || dataValue.IsUnknown() {
+		return nil, nil
+	}
+	pv := PolicyVersion_Rules_Source_Cloud_Azure_Network{}
+	diags := tfsdk.ValueAs(ctx, dataValue, &pv)
+	if diags.HasError() {
+		return nil, diags
+	}
+	proto := &configv1.PolicyVersion_Rules_Source_Cloud_Azure_Network{}
+	pvElemModelSubnets := pv.Subnets.Elements()
+	proto.Subnets = make([]*configv1.PolicyVersion_Rules_Source_Cloud_Azure_Network_Subnets, 0, len(pvElemModelSubnets))
+	for _, elem := range pvElemModelSubnets {
+		pvModel, dvDiags := ConvertDataValueToPolicyVersion_Rules_Source_Cloud_Azure_Network_SubnetsProto(ctx, elem)
+		diags.Append(dvDiags...)
+		if diags.HasError() {
+			return nil, diags
+		}
+		proto.Subnets = append(proto.Subnets, pvModel)
+	}
+	pvElemModelVnets := pv.Vnets.Elements()
+	proto.Vnets = make([]*configv1.PolicyVersion_Rules_Source_Cloud_Azure_Network_Vnets, 0, len(pvElemModelVnets))
+	for _, elem := range pvElemModelVnets {
+		pvModel, dvDiags := ConvertDataValueToPolicyVersion_Rules_Source_Cloud_Azure_Network_VnetsProto(ctx, elem)
+		diags.Append(dvDiags...)
+		if diags.HasError() {
+			return nil, diags
+		}
+		proto.Vnets = append(proto.Vnets, pvModel)
+	}
+	return proto, diags
+}
+
+type PolicyVersion_Rules_Source_Cloud_Azure_Network_Subnets struct {
+	Id types.String `tfsdk:"id"`
+}
+
+func GetTypeAttrsForPolicyVersion_Rules_Source_Cloud_Azure_Network_Subnets() map[string]attr.Type {
+	return map[string]attr.Type{
+		"id": types.StringType,
+	}
+}
+
+func ConvertPolicyVersion_Rules_Source_Cloud_Azure_Network_SubnetsToObjectValueFromProto(proto *configv1.PolicyVersion_Rules_Source_Cloud_Azure_Network_Subnets) basetypes.ObjectValue {
+	if proto == nil {
+		return types.ObjectNull(GetTypeAttrsForPolicyVersion_Rules_Source_Cloud_Azure_Network_Subnets())
+	}
+	return types.ObjectValueMust(
+		GetTypeAttrsForPolicyVersion_Rules_Source_Cloud_Azure_Network_Subnets(),
+		map[string]attr.Value{
+			"id": types.StringValue(proto.Id),
+		},
+	)
+}
+
+func ConvertDataValueToPolicyVersion_Rules_Source_Cloud_Azure_Network_SubnetsProto(ctx context.Context, dataValue attr.Value) (*configv1.PolicyVersion_Rules_Source_Cloud_Azure_Network_Subnets, diag.Diagnostics) {
+	if dataValue.IsNull() || dataValue.IsUnknown() {
+		return nil, nil
+	}
+	pv := PolicyVersion_Rules_Source_Cloud_Azure_Network_Subnets{}
+	diags := tfsdk.ValueAs(ctx, dataValue, &pv)
+	if diags.HasError() {
+		return nil, diags
+	}
+	proto := &configv1.PolicyVersion_Rules_Source_Cloud_Azure_Network_Subnets{}
+	proto.Id = pv.Id.ValueString()
+	return proto, diags
+}
+
+type PolicyVersion_Rules_Source_Cloud_Azure_Network_Vnets struct {
+	Id             types.String `tfsdk:"id"`
+	ResourceGroup  types.String `tfsdk:"resource_group"`
+	SubscriptionId types.String `tfsdk:"subscription_id"`
+}
+
+func GetTypeAttrsForPolicyVersion_Rules_Source_Cloud_Azure_Network_Vnets() map[string]attr.Type {
+	return map[string]attr.Type{
+		"id":              types.StringType,
+		"resource_group":  types.StringType,
+		"subscription_id": types.StringType,
+	}
+}
+
+func ConvertPolicyVersion_Rules_Source_Cloud_Azure_Network_VnetsToObjectValueFromProto(proto *configv1.PolicyVersion_Rules_Source_Cloud_Azure_Network_Vnets) basetypes.ObjectValue {
+	if proto == nil {
+		return types.ObjectNull(GetTypeAttrsForPolicyVersion_Rules_Source_Cloud_Azure_Network_Vnets())
+	}
+	return types.ObjectValueMust(
+		GetTypeAttrsForPolicyVersion_Rules_Source_Cloud_Azure_Network_Vnets(),
+		map[string]attr.Value{
+			"id":              types.StringValue(proto.Id),
+			"resource_group":  types.StringValue(proto.ResourceGroup),
+			"subscription_id": types.StringValue(proto.SubscriptionId),
+		},
+	)
+}
+
+func ConvertDataValueToPolicyVersion_Rules_Source_Cloud_Azure_Network_VnetsProto(ctx context.Context, dataValue attr.Value) (*configv1.PolicyVersion_Rules_Source_Cloud_Azure_Network_Vnets, diag.Diagnostics) {
+	if dataValue.IsNull() || dataValue.IsUnknown() {
+		return nil, nil
+	}
+	pv := PolicyVersion_Rules_Source_Cloud_Azure_Network_Vnets{}
+	diags := tfsdk.ValueAs(ctx, dataValue, &pv)
+	if diags.HasError() {
+		return nil, diags
+	}
+	proto := &configv1.PolicyVersion_Rules_Source_Cloud_Azure_Network_Vnets{}
+	proto.Id = pv.Id.ValueString()
+	proto.ResourceGroup = pv.ResourceGroup.ValueString()
+	proto.SubscriptionId = pv.SubscriptionId.ValueString()
+	return proto, diags
+}
+
+type PolicyVersion_Rules_Source_Cloud_Azure_OrgSelector struct {
+	Subscriptions types.List `tfsdk:"subscriptions"`
+}
+
+func GetTypeAttrsForPolicyVersion_Rules_Source_Cloud_Azure_OrgSelector() map[string]attr.Type {
+	return map[string]attr.Type{
+		"subscriptions": types.ListType{ElemType: types.ObjectType{
+			AttrTypes: GetTypeAttrsForPolicyVersion_Rules_Source_Cloud_Azure_OrgSelector_Subscriptions(),
+		}},
+	}
+}
+
+func ConvertPolicyVersion_Rules_Source_Cloud_Azure_OrgSelectorToObjectValueFromProto(proto *configv1.PolicyVersion_Rules_Source_Cloud_Azure_OrgSelector) basetypes.ObjectValue {
+	if proto == nil {
+		return types.ObjectNull(GetTypeAttrsForPolicyVersion_Rules_Source_Cloud_Azure_OrgSelector())
+	}
+	elementsInSubscriptions := make([]attr.Value, 0, len(proto.Subscriptions))
+	for _, item := range proto.Subscriptions {
+		elementsInSubscriptions = append(elementsInSubscriptions, ConvertPolicyVersion_Rules_Source_Cloud_Azure_OrgSelector_SubscriptionsToObjectValueFromProto(item))
+	}
+	return types.ObjectValueMust(
+		GetTypeAttrsForPolicyVersion_Rules_Source_Cloud_Azure_OrgSelector(),
+		map[string]attr.Value{
+			"subscriptions": func() basetypes.ListValue {
+				if proto.Subscriptions == nil {
+					return types.ListNull(types.ObjectType{AttrTypes: GetTypeAttrsForPolicyVersion_Rules_Source_Cloud_Azure_OrgSelector_Subscriptions()})
+				}
+				return types.ListValueMust(types.ObjectType{AttrTypes: GetTypeAttrsForPolicyVersion_Rules_Source_Cloud_Azure_OrgSelector_Subscriptions()}, elementsInSubscriptions)
+			}(),
+		},
+	)
+}
+
+func ConvertDataValueToPolicyVersion_Rules_Source_Cloud_Azure_OrgSelectorProto(ctx context.Context, dataValue attr.Value) (*configv1.PolicyVersion_Rules_Source_Cloud_Azure_OrgSelector, diag.Diagnostics) {
+	if dataValue.IsNull() || dataValue.IsUnknown() {
+		return nil, nil
+	}
+	pv := PolicyVersion_Rules_Source_Cloud_Azure_OrgSelector{}
+	diags := tfsdk.ValueAs(ctx, dataValue, &pv)
+	if diags.HasError() {
+		return nil, diags
+	}
+	proto := &configv1.PolicyVersion_Rules_Source_Cloud_Azure_OrgSelector{}
+	pvElemModelSubscriptions := pv.Subscriptions.Elements()
+	proto.Subscriptions = make([]*configv1.PolicyVersion_Rules_Source_Cloud_Azure_OrgSelector_Subscriptions, 0, len(pvElemModelSubscriptions))
+	for _, elem := range pvElemModelSubscriptions {
+		pvModel, dvDiags := ConvertDataValueToPolicyVersion_Rules_Source_Cloud_Azure_OrgSelector_SubscriptionsProto(ctx, elem)
+		diags.Append(dvDiags...)
+		if diags.HasError() {
+			return nil, diags
+		}
+		proto.Subscriptions = append(proto.Subscriptions, pvModel)
+	}
+	return proto, diags
+}
+
+type PolicyVersion_Rules_Source_Cloud_Azure_OrgSelector_Subscriptions struct {
+	Id types.String `tfsdk:"id"`
+}
+
+func GetTypeAttrsForPolicyVersion_Rules_Source_Cloud_Azure_OrgSelector_Subscriptions() map[string]attr.Type {
+	return map[string]attr.Type{
+		"id": types.StringType,
+	}
+}
+
+func ConvertPolicyVersion_Rules_Source_Cloud_Azure_OrgSelector_SubscriptionsToObjectValueFromProto(proto *configv1.PolicyVersion_Rules_Source_Cloud_Azure_OrgSelector_Subscriptions) basetypes.ObjectValue {
+	if proto == nil {
+		return types.ObjectNull(GetTypeAttrsForPolicyVersion_Rules_Source_Cloud_Azure_OrgSelector_Subscriptions())
+	}
+	return types.ObjectValueMust(
+		GetTypeAttrsForPolicyVersion_Rules_Source_Cloud_Azure_OrgSelector_Subscriptions(),
+		map[string]attr.Value{
+			"id": types.StringValue(proto.Id),
+		},
+	)
+}
+
+func ConvertDataValueToPolicyVersion_Rules_Source_Cloud_Azure_OrgSelector_SubscriptionsProto(ctx context.Context, dataValue attr.Value) (*configv1.PolicyVersion_Rules_Source_Cloud_Azure_OrgSelector_Subscriptions, diag.Diagnostics) {
+	if dataValue.IsNull() || dataValue.IsUnknown() {
+		return nil, nil
+	}
+	pv := PolicyVersion_Rules_Source_Cloud_Azure_OrgSelector_Subscriptions{}
+	diags := tfsdk.ValueAs(ctx, dataValue, &pv)
+	if diags.HasError() {
+		return nil, diags
+	}
+	proto := &configv1.PolicyVersion_Rules_Source_Cloud_Azure_OrgSelector_Subscriptions{}
+	proto.Id = pv.Id.ValueString()
+	return proto, diags
+}
+
+type PolicyVersion_Rules_Source_IllumioLabels struct {
+	Labels types.List `tfsdk:"labels"`
+}
+
+func GetTypeAttrsForPolicyVersion_Rules_Source_IllumioLabels() map[string]attr.Type {
+	return map[string]attr.Type{
+		"labels": types.ListType{ElemType: types.ObjectType{
+			AttrTypes: GetTypeAttrsForPolicyVersion_Rules_Source_IllumioLabels_Labels(),
+		}},
+	}
+}
+
+func ConvertPolicyVersion_Rules_Source_IllumioLabelsToObjectValueFromProto(proto *configv1.PolicyVersion_Rules_Source_IllumioLabels) basetypes.ObjectValue {
+	if proto == nil {
+		return types.ObjectNull(GetTypeAttrsForPolicyVersion_Rules_Source_IllumioLabels())
+	}
+	elementsInLabels := make([]attr.Value, 0, len(proto.Labels))
+	for _, item := range proto.Labels {
+		elementsInLabels = append(elementsInLabels, ConvertPolicyVersion_Rules_Source_IllumioLabels_LabelsToObjectValueFromProto(item))
+	}
+	return types.ObjectValueMust(
+		GetTypeAttrsForPolicyVersion_Rules_Source_IllumioLabels(),
+		map[string]attr.Value{
+			"labels": func() basetypes.ListValue {
+				if proto.Labels == nil {
+					return types.ListNull(types.ObjectType{AttrTypes: GetTypeAttrsForPolicyVersion_Rules_Source_IllumioLabels_Labels()})
+				}
+				return types.ListValueMust(types.ObjectType{AttrTypes: GetTypeAttrsForPolicyVersion_Rules_Source_IllumioLabels_Labels()}, elementsInLabels)
+			}(),
+		},
+	)
+}
+
+func ConvertDataValueToPolicyVersion_Rules_Source_IllumioLabelsProto(ctx context.Context, dataValue attr.Value) (*configv1.PolicyVersion_Rules_Source_IllumioLabels, diag.Diagnostics) {
+	if dataValue.IsNull() || dataValue.IsUnknown() {
+		return nil, nil
+	}
+	pv := PolicyVersion_Rules_Source_IllumioLabels{}
+	diags := tfsdk.ValueAs(ctx, dataValue, &pv)
+	if diags.HasError() {
+		return nil, diags
+	}
+	proto := &configv1.PolicyVersion_Rules_Source_IllumioLabels{}
+	pvElemModelLabels := pv.Labels.Elements()
+	proto.Labels = make([]*configv1.PolicyVersion_Rules_Source_IllumioLabels_Labels, 0, len(pvElemModelLabels))
+	for _, elem := range pvElemModelLabels {
+		pvModel, dvDiags := ConvertDataValueToPolicyVersion_Rules_Source_IllumioLabels_LabelsProto(ctx, elem)
+		diags.Append(dvDiags...)
+		if diags.HasError() {
+			return nil, diags
+		}
+		proto.Labels = append(proto.Labels, pvModel)
+	}
+	return proto, diags
+}
+
+type PolicyVersion_Rules_Source_IllumioLabels_Labels struct {
+	Key    types.String `tfsdk:"key"`
+	Values types.List   `tfsdk:"values"`
+}
+
+func GetTypeAttrsForPolicyVersion_Rules_Source_IllumioLabels_Labels() map[string]attr.Type {
+	return map[string]attr.Type{
+		"key":    types.StringType,
+		"values": types.ListType{ElemType: types.StringType},
+	}
+}
+
+func ConvertPolicyVersion_Rules_Source_IllumioLabels_LabelsToObjectValueFromProto(proto *configv1.PolicyVersion_Rules_Source_IllumioLabels_Labels) basetypes.ObjectValue {
+	if proto == nil {
+		return types.ObjectNull(GetTypeAttrsForPolicyVersion_Rules_Source_IllumioLabels_Labels())
+	}
+	elementsInValues := make([]attr.Value, 0, len(proto.Values))
+	for _, item := range proto.Values {
+		elementsInValues = append(elementsInValues, types.StringValue(item))
+	}
+	return types.ObjectValueMust(
+		GetTypeAttrsForPolicyVersion_Rules_Source_IllumioLabels_Labels(),
+		map[string]attr.Value{
+			"key": types.StringValue(proto.Key),
+			"values": func() basetypes.ListValue {
+				if proto.Values == nil {
+					return types.ListNull(types.StringType)
+				}
+				return types.ListValueMust(types.StringType, elementsInValues)
+			}(),
+		},
+	)
+}
+
+func ConvertDataValueToPolicyVersion_Rules_Source_IllumioLabels_LabelsProto(ctx context.Context, dataValue attr.Value) (*configv1.PolicyVersion_Rules_Source_IllumioLabels_Labels, diag.Diagnostics) {
+	if dataValue.IsNull() || dataValue.IsUnknown() {
+		return nil, nil
+	}
+	pv := PolicyVersion_Rules_Source_IllumioLabels_Labels{}
+	diags := tfsdk.ValueAs(ctx, dataValue, &pv)
+	if diags.HasError() {
+		return nil, diags
+	}
+	proto := &configv1.PolicyVersion_Rules_Source_IllumioLabels_Labels{}
+	proto.Key = pv.Key.ValueString()
+	var pvModelValues []string
+	dvDiagsValues := pv.Values.ElementsAs(ctx, &pvModelValues, false)
+	diags.Append(dvDiagsValues...)
+	if diags.HasError() {
+		return nil, diags
+	}
+	proto.Values = pvModelValues
+	return proto, diags
+}
+
+type PolicyVersion_Rules_Source_IpLists struct {
+	Ids types.List `tfsdk:"ids"`
+}
+
+func GetTypeAttrsForPolicyVersion_Rules_Source_IpLists() map[string]attr.Type {
+	return map[string]attr.Type{
+		"ids": types.ListType{ElemType: types.StringType},
+	}
+}
+
+func ConvertPolicyVersion_Rules_Source_IpListsToObjectValueFromProto(proto *configv1.PolicyVersion_Rules_Source_IpLists) basetypes.ObjectValue {
+	if proto == nil {
+		return types.ObjectNull(GetTypeAttrsForPolicyVersion_Rules_Source_IpLists())
+	}
+	elementsInIds := make([]attr.Value, 0, len(proto.Ids))
+	for _, item := range proto.Ids {
+		elementsInIds = append(elementsInIds, types.StringValue(item))
+	}
+	return types.ObjectValueMust(
+		GetTypeAttrsForPolicyVersion_Rules_Source_IpLists(),
+		map[string]attr.Value{
+			"ids": func() basetypes.ListValue {
+				if proto.Ids == nil {
+					return types.ListNull(types.StringType)
+				}
+				return types.ListValueMust(types.StringType, elementsInIds)
+			}(),
+		},
+	)
+}
+
+func ConvertDataValueToPolicyVersion_Rules_Source_IpListsProto(ctx context.Context, dataValue attr.Value) (*configv1.PolicyVersion_Rules_Source_IpLists, diag.Diagnostics) {
+	if dataValue.IsNull() || dataValue.IsUnknown() {
+		return nil, nil
+	}
+	pv := PolicyVersion_Rules_Source_IpLists{}
+	diags := tfsdk.ValueAs(ctx, dataValue, &pv)
+	if diags.HasError() {
+		return nil, diags
+	}
+	proto := &configv1.PolicyVersion_Rules_Source_IpLists{}
+	var pvModelIds []string
+	dvDiagsIds := pv.Ids.ElementsAs(ctx, &pvModelIds, false)
+	diags.Append(dvDiagsIds...)
+	if diags.HasError() {
+		return nil, diags
+	}
+	proto.Ids = pvModelIds
+	return proto, diags
+}
+
+type PolicyVersion_Rules_Source_K8S struct {
+	Clusters          types.List   `tfsdk:"clusters"`
+	NamespaceSelector types.Object `tfsdk:"namespace_selector"`
+	WorkloadSelector  types.Object `tfsdk:"workload_selector"`
+}
+
+func GetTypeAttrsForPolicyVersion_Rules_Source_K8S() map[string]attr.Type {
+	return map[string]attr.Type{
+		"clusters": types.ListType{ElemType: types.ObjectType{
+			AttrTypes: GetTypeAttrsForPolicyVersion_Rules_Source_K8S_Clusters(),
+		}},
+		"namespace_selector": types.ObjectType{
+			AttrTypes: GetTypeAttrsForPolicyVersion_Rules_Source_K8S_NamespaceSelector(),
+		},
+		"workload_selector": types.ObjectType{
+			AttrTypes: GetTypeAttrsForPolicyVersion_Rules_Source_K8S_WorkloadSelector(),
+		},
+	}
+}
+
+func ConvertPolicyVersion_Rules_Source_K8SToObjectValueFromProto(proto *configv1.PolicyVersion_Rules_Source_K8S) basetypes.ObjectValue {
+	if proto == nil {
+		return types.ObjectNull(GetTypeAttrsForPolicyVersion_Rules_Source_K8S())
+	}
+	elementsInClusters := make([]attr.Value, 0, len(proto.Clusters))
+	for _, item := range proto.Clusters {
+		elementsInClusters = append(elementsInClusters, ConvertPolicyVersion_Rules_Source_K8S_ClustersToObjectValueFromProto(item))
+	}
+	return types.ObjectValueMust(
+		GetTypeAttrsForPolicyVersion_Rules_Source_K8S(),
+		map[string]attr.Value{
+			"clusters": func() basetypes.ListValue {
+				if proto.Clusters == nil {
+					return types.ListNull(types.ObjectType{AttrTypes: GetTypeAttrsForPolicyVersion_Rules_Source_K8S_Clusters()})
+				}
+				return types.ListValueMust(types.ObjectType{AttrTypes: GetTypeAttrsForPolicyVersion_Rules_Source_K8S_Clusters()}, elementsInClusters)
+			}(),
+			"namespace_selector": ConvertPolicyVersion_Rules_Source_K8S_NamespaceSelectorToObjectValueFromProto(proto.NamespaceSelector),
+			"workload_selector":  ConvertPolicyVersion_Rules_Source_K8S_WorkloadSelectorToObjectValueFromProto(proto.WorkloadSelector),
+		},
+	)
+}
+
+func ConvertDataValueToPolicyVersion_Rules_Source_K8SProto(ctx context.Context, dataValue attr.Value) (*configv1.PolicyVersion_Rules_Source_K8S, diag.Diagnostics) {
+	if dataValue.IsNull() || dataValue.IsUnknown() {
+		return nil, nil
+	}
+	pv := PolicyVersion_Rules_Source_K8S{}
+	diags := tfsdk.ValueAs(ctx, dataValue, &pv)
+	if diags.HasError() {
+		return nil, diags
+	}
+	proto := &configv1.PolicyVersion_Rules_Source_K8S{}
+	pvElemModelClusters := pv.Clusters.Elements()
+	proto.Clusters = make([]*configv1.PolicyVersion_Rules_Source_K8S_Clusters, 0, len(pvElemModelClusters))
+	for _, elem := range pvElemModelClusters {
+		pvModel, dvDiags := ConvertDataValueToPolicyVersion_Rules_Source_K8S_ClustersProto(ctx, elem)
+		diags.Append(dvDiags...)
+		if diags.HasError() {
+			return nil, diags
+		}
+		proto.Clusters = append(proto.Clusters, pvModel)
+	}
+	pvModelNamespaceSelector, dvDiagsNamespaceSelector := ConvertDataValueToPolicyVersion_Rules_Source_K8S_NamespaceSelectorProto(ctx, pv.NamespaceSelector)
+	diags.Append(dvDiagsNamespaceSelector...)
+	if diags.HasError() {
+		return nil, diags
+	}
+	proto.NamespaceSelector = pvModelNamespaceSelector
+	pvModelWorkloadSelector, dvDiagsWorkloadSelector := ConvertDataValueToPolicyVersion_Rules_Source_K8S_WorkloadSelectorProto(ctx, pv.WorkloadSelector)
+	diags.Append(dvDiagsWorkloadSelector...)
+	if diags.HasError() {
+		return nil, diags
+	}
+	proto.WorkloadSelector = pvModelWorkloadSelector
+	return proto, diags
+}
+
+type PolicyVersion_Rules_Source_K8S_Clusters struct {
+	Id    types.String `tfsdk:"id"`
+	Aws   types.Object `tfsdk:"aws"`
+	Azure types.Object `tfsdk:"azure"`
+	Gcp   types.Object `tfsdk:"gcp"`
+	Oci   types.Object `tfsdk:"oci"`
+}
+
+func GetTypeAttrsForPolicyVersion_Rules_Source_K8S_Clusters() map[string]attr.Type {
+	return map[string]attr.Type{
+		"id": types.StringType,
+		"aws": types.ObjectType{
+			AttrTypes: GetTypeAttrsForPolicyVersion_Rules_Source_K8S_Clusters_Aws(),
+		},
+		"azure": types.ObjectType{
+			AttrTypes: GetTypeAttrsForPolicyVersion_Rules_Source_K8S_Clusters_Azure(),
+		},
+		"gcp": types.ObjectType{
+			AttrTypes: GetTypeAttrsForPolicyVersion_Rules_Source_K8S_Clusters_Gcp(),
+		},
+		"oci": types.ObjectType{
+			AttrTypes: GetTypeAttrsForPolicyVersion_Rules_Source_K8S_Clusters_Oci(),
+		},
+	}
+}
+
+func ConvertPolicyVersion_Rules_Source_K8S_ClustersToObjectValueFromProto(proto *configv1.PolicyVersion_Rules_Source_K8S_Clusters) basetypes.ObjectValue {
+	if proto == nil {
+		return types.ObjectNull(GetTypeAttrsForPolicyVersion_Rules_Source_K8S_Clusters())
+	}
+	return types.ObjectValueMust(
+		GetTypeAttrsForPolicyVersion_Rules_Source_K8S_Clusters(),
+		map[string]attr.Value{
+			"id":    types.StringValue(proto.Id),
+			"aws":   ConvertPolicyVersion_Rules_Source_K8S_Clusters_AwsToObjectValueFromProto(proto.Aws),
+			"azure": ConvertPolicyVersion_Rules_Source_K8S_Clusters_AzureToObjectValueFromProto(proto.Azure),
+			"gcp":   ConvertPolicyVersion_Rules_Source_K8S_Clusters_GcpToObjectValueFromProto(proto.Gcp),
+			"oci":   ConvertPolicyVersion_Rules_Source_K8S_Clusters_OciToObjectValueFromProto(proto.Oci),
+		},
+	)
+}
+
+func ConvertDataValueToPolicyVersion_Rules_Source_K8S_ClustersProto(ctx context.Context, dataValue attr.Value) (*configv1.PolicyVersion_Rules_Source_K8S_Clusters, diag.Diagnostics) {
+	if dataValue.IsNull() || dataValue.IsUnknown() {
+		return nil, nil
+	}
+	pv := PolicyVersion_Rules_Source_K8S_Clusters{}
+	diags := tfsdk.ValueAs(ctx, dataValue, &pv)
+	if diags.HasError() {
+		return nil, diags
+	}
+	proto := &configv1.PolicyVersion_Rules_Source_K8S_Clusters{}
+	proto.Id = pv.Id.ValueString()
+	pvModelAws, dvDiagsAws := ConvertDataValueToPolicyVersion_Rules_Source_K8S_Clusters_AwsProto(ctx, pv.Aws)
+	diags.Append(dvDiagsAws...)
+	if diags.HasError() {
+		return nil, diags
+	}
+	proto.Aws = pvModelAws
+	pvModelAzure, dvDiagsAzure := ConvertDataValueToPolicyVersion_Rules_Source_K8S_Clusters_AzureProto(ctx, pv.Azure)
+	diags.Append(dvDiagsAzure...)
+	if diags.HasError() {
+		return nil, diags
+	}
+	proto.Azure = pvModelAzure
+	pvModelGcp, dvDiagsGcp := ConvertDataValueToPolicyVersion_Rules_Source_K8S_Clusters_GcpProto(ctx, pv.Gcp)
+	diags.Append(dvDiagsGcp...)
+	if diags.HasError() {
+		return nil, diags
+	}
+	proto.Gcp = pvModelGcp
+	pvModelOci, dvDiagsOci := ConvertDataValueToPolicyVersion_Rules_Source_K8S_Clusters_OciProto(ctx, pv.Oci)
+	diags.Append(dvDiagsOci...)
+	if diags.HasError() {
+		return nil, diags
+	}
+	proto.Oci = pvModelOci
+	return proto, diags
+}
+
+type PolicyVersion_Rules_Source_K8S_Clusters_Aws struct {
+	AccountId        types.String `tfsdk:"account_id"`
+	AccountIdMatch   types.Object `tfsdk:"account_id_match"`
+	ClusterName      types.String `tfsdk:"cluster_name"`
+	ClusterNameMatch types.Object `tfsdk:"cluster_name_match"`
+	Region           types.String `tfsdk:"region"`
+	RegionMatch      types.Object `tfsdk:"region_match"`
+}
+
+func GetTypeAttrsForPolicyVersion_Rules_Source_K8S_Clusters_Aws() map[string]attr.Type {
+	return map[string]attr.Type{
+		"account_id": types.StringType,
+		"account_id_match": types.ObjectType{
+			AttrTypes: GetTypeAttrsForPolicyVersion_Rules_Source_K8S_Clusters_Aws_AccountIdMatch(),
+		},
+		"cluster_name": types.StringType,
+		"cluster_name_match": types.ObjectType{
+			AttrTypes: GetTypeAttrsForPolicyVersion_Rules_Source_K8S_Clusters_Aws_ClusterNameMatch(),
+		},
+		"region": types.StringType,
+		"region_match": types.ObjectType{
+			AttrTypes: GetTypeAttrsForPolicyVersion_Rules_Source_K8S_Clusters_Aws_RegionMatch(),
+		},
+	}
+}
+
+func ConvertPolicyVersion_Rules_Source_K8S_Clusters_AwsToObjectValueFromProto(proto *configv1.PolicyVersion_Rules_Source_K8S_Clusters_Aws) basetypes.ObjectValue {
+	if proto == nil {
+		return types.ObjectNull(GetTypeAttrsForPolicyVersion_Rules_Source_K8S_Clusters_Aws())
+	}
+	return types.ObjectValueMust(
+		GetTypeAttrsForPolicyVersion_Rules_Source_K8S_Clusters_Aws(),
+		map[string]attr.Value{
+			"account_id":         types.StringValue(proto.AccountId),
+			"account_id_match":   ConvertPolicyVersion_Rules_Source_K8S_Clusters_Aws_AccountIdMatchToObjectValueFromProto(proto.AccountIdMatch),
+			"cluster_name":       types.StringValue(proto.ClusterName),
+			"cluster_name_match": ConvertPolicyVersion_Rules_Source_K8S_Clusters_Aws_ClusterNameMatchToObjectValueFromProto(proto.ClusterNameMatch),
+			"region":             types.StringValue(proto.Region),
+			"region_match":       ConvertPolicyVersion_Rules_Source_K8S_Clusters_Aws_RegionMatchToObjectValueFromProto(proto.RegionMatch),
+		},
+	)
+}
+
+func ConvertDataValueToPolicyVersion_Rules_Source_K8S_Clusters_AwsProto(ctx context.Context, dataValue attr.Value) (*configv1.PolicyVersion_Rules_Source_K8S_Clusters_Aws, diag.Diagnostics) {
+	if dataValue.IsNull() || dataValue.IsUnknown() {
+		return nil, nil
+	}
+	pv := PolicyVersion_Rules_Source_K8S_Clusters_Aws{}
+	diags := tfsdk.ValueAs(ctx, dataValue, &pv)
+	if diags.HasError() {
+		return nil, diags
+	}
+	proto := &configv1.PolicyVersion_Rules_Source_K8S_Clusters_Aws{}
+	proto.AccountId = pv.AccountId.ValueString()
+	pvModelAccountIdMatch, dvDiagsAccountIdMatch := ConvertDataValueToPolicyVersion_Rules_Source_K8S_Clusters_Aws_AccountIdMatchProto(ctx, pv.AccountIdMatch)
+	diags.Append(dvDiagsAccountIdMatch...)
+	if diags.HasError() {
+		return nil, diags
+	}
+	proto.AccountIdMatch = pvModelAccountIdMatch
+	proto.ClusterName = pv.ClusterName.ValueString()
+	pvModelClusterNameMatch, dvDiagsClusterNameMatch := ConvertDataValueToPolicyVersion_Rules_Source_K8S_Clusters_Aws_ClusterNameMatchProto(ctx, pv.ClusterNameMatch)
+	diags.Append(dvDiagsClusterNameMatch...)
+	if diags.HasError() {
+		return nil, diags
+	}
+	proto.ClusterNameMatch = pvModelClusterNameMatch
+	proto.Region = pv.Region.ValueString()
+	pvModelRegionMatch, dvDiagsRegionMatch := ConvertDataValueToPolicyVersion_Rules_Source_K8S_Clusters_Aws_RegionMatchProto(ctx, pv.RegionMatch)
+	diags.Append(dvDiagsRegionMatch...)
+	if diags.HasError() {
+		return nil, diags
+	}
+	proto.RegionMatch = pvModelRegionMatch
+	return proto, diags
+}
+
+type PolicyVersion_Rules_Source_K8S_Clusters_Aws_AccountIdMatch struct {
+	Operator types.String `tfsdk:"operator"`
+	Values   types.List   `tfsdk:"values"`
+}
+
+func GetTypeAttrsForPolicyVersion_Rules_Source_K8S_Clusters_Aws_AccountIdMatch() map[string]attr.Type {
+	return map[string]attr.Type{
+		"operator": types.StringType,
+		"values":   types.ListType{ElemType: types.StringType},
+	}
+}
+
+func ConvertPolicyVersion_Rules_Source_K8S_Clusters_Aws_AccountIdMatchToObjectValueFromProto(proto *configv1.PolicyVersion_Rules_Source_K8S_Clusters_Aws_AccountIdMatch) basetypes.ObjectValue {
+	if proto == nil {
+		return types.ObjectNull(GetTypeAttrsForPolicyVersion_Rules_Source_K8S_Clusters_Aws_AccountIdMatch())
+	}
+	elementsInValues := make([]attr.Value, 0, len(proto.Values))
+	for _, item := range proto.Values {
+		elementsInValues = append(elementsInValues, types.StringValue(item))
+	}
+	return types.ObjectValueMust(
+		GetTypeAttrsForPolicyVersion_Rules_Source_K8S_Clusters_Aws_AccountIdMatch(),
+		map[string]attr.Value{
+			"operator": types.StringValue(proto.Operator),
+			"values": func() basetypes.ListValue {
+				if proto.Values == nil {
+					return types.ListNull(types.StringType)
+				}
+				return types.ListValueMust(types.StringType, elementsInValues)
+			}(),
+		},
+	)
+}
+
+func ConvertDataValueToPolicyVersion_Rules_Source_K8S_Clusters_Aws_AccountIdMatchProto(ctx context.Context, dataValue attr.Value) (*configv1.PolicyVersion_Rules_Source_K8S_Clusters_Aws_AccountIdMatch, diag.Diagnostics) {
+	if dataValue.IsNull() || dataValue.IsUnknown() {
+		return nil, nil
+	}
+	pv := PolicyVersion_Rules_Source_K8S_Clusters_Aws_AccountIdMatch{}
+	diags := tfsdk.ValueAs(ctx, dataValue, &pv)
+	if diags.HasError() {
+		return nil, diags
+	}
+	proto := &configv1.PolicyVersion_Rules_Source_K8S_Clusters_Aws_AccountIdMatch{}
+	proto.Operator = pv.Operator.ValueString()
+	var pvModelValues []string
+	dvDiagsValues := pv.Values.ElementsAs(ctx, &pvModelValues, false)
+	diags.Append(dvDiagsValues...)
+	if diags.HasError() {
+		return nil, diags
+	}
+	proto.Values = pvModelValues
+	return proto, diags
+}
+
+type PolicyVersion_Rules_Source_K8S_Clusters_Aws_ClusterNameMatch struct {
+	Operator types.String `tfsdk:"operator"`
+	Values   types.List   `tfsdk:"values"`
+}
+
+func GetTypeAttrsForPolicyVersion_Rules_Source_K8S_Clusters_Aws_ClusterNameMatch() map[string]attr.Type {
+	return map[string]attr.Type{
+		"operator": types.StringType,
+		"values":   types.ListType{ElemType: types.StringType},
+	}
+}
+
+func ConvertPolicyVersion_Rules_Source_K8S_Clusters_Aws_ClusterNameMatchToObjectValueFromProto(proto *configv1.PolicyVersion_Rules_Source_K8S_Clusters_Aws_ClusterNameMatch) basetypes.ObjectValue {
+	if proto == nil {
+		return types.ObjectNull(GetTypeAttrsForPolicyVersion_Rules_Source_K8S_Clusters_Aws_ClusterNameMatch())
+	}
+	elementsInValues := make([]attr.Value, 0, len(proto.Values))
+	for _, item := range proto.Values {
+		elementsInValues = append(elementsInValues, types.StringValue(item))
+	}
+	return types.ObjectValueMust(
+		GetTypeAttrsForPolicyVersion_Rules_Source_K8S_Clusters_Aws_ClusterNameMatch(),
+		map[string]attr.Value{
+			"operator": types.StringValue(proto.Operator),
+			"values": func() basetypes.ListValue {
+				if proto.Values == nil {
+					return types.ListNull(types.StringType)
+				}
+				return types.ListValueMust(types.StringType, elementsInValues)
+			}(),
+		},
+	)
+}
+
+func ConvertDataValueToPolicyVersion_Rules_Source_K8S_Clusters_Aws_ClusterNameMatchProto(ctx context.Context, dataValue attr.Value) (*configv1.PolicyVersion_Rules_Source_K8S_Clusters_Aws_ClusterNameMatch, diag.Diagnostics) {
+	if dataValue.IsNull() || dataValue.IsUnknown() {
+		return nil, nil
+	}
+	pv := PolicyVersion_Rules_Source_K8S_Clusters_Aws_ClusterNameMatch{}
+	diags := tfsdk.ValueAs(ctx, dataValue, &pv)
+	if diags.HasError() {
+		return nil, diags
+	}
+	proto := &configv1.PolicyVersion_Rules_Source_K8S_Clusters_Aws_ClusterNameMatch{}
+	proto.Operator = pv.Operator.ValueString()
+	var pvModelValues []string
+	dvDiagsValues := pv.Values.ElementsAs(ctx, &pvModelValues, false)
+	diags.Append(dvDiagsValues...)
+	if diags.HasError() {
+		return nil, diags
+	}
+	proto.Values = pvModelValues
+	return proto, diags
+}
+
+type PolicyVersion_Rules_Source_K8S_Clusters_Aws_RegionMatch struct {
+	Operator types.String `tfsdk:"operator"`
+	Values   types.List   `tfsdk:"values"`
+}
+
+func GetTypeAttrsForPolicyVersion_Rules_Source_K8S_Clusters_Aws_RegionMatch() map[string]attr.Type {
+	return map[string]attr.Type{
+		"operator": types.StringType,
+		"values":   types.ListType{ElemType: types.StringType},
+	}
+}
+
+func ConvertPolicyVersion_Rules_Source_K8S_Clusters_Aws_RegionMatchToObjectValueFromProto(proto *configv1.PolicyVersion_Rules_Source_K8S_Clusters_Aws_RegionMatch) basetypes.ObjectValue {
+	if proto == nil {
+		return types.ObjectNull(GetTypeAttrsForPolicyVersion_Rules_Source_K8S_Clusters_Aws_RegionMatch())
+	}
+	elementsInValues := make([]attr.Value, 0, len(proto.Values))
+	for _, item := range proto.Values {
+		elementsInValues = append(elementsInValues, types.StringValue(item))
+	}
+	return types.ObjectValueMust(
+		GetTypeAttrsForPolicyVersion_Rules_Source_K8S_Clusters_Aws_RegionMatch(),
+		map[string]attr.Value{
+			"operator": types.StringValue(proto.Operator),
+			"values": func() basetypes.ListValue {
+				if proto.Values == nil {
+					return types.ListNull(types.StringType)
+				}
+				return types.ListValueMust(types.StringType, elementsInValues)
+			}(),
+		},
+	)
+}
+
+func ConvertDataValueToPolicyVersion_Rules_Source_K8S_Clusters_Aws_RegionMatchProto(ctx context.Context, dataValue attr.Value) (*configv1.PolicyVersion_Rules_Source_K8S_Clusters_Aws_RegionMatch, diag.Diagnostics) {
+	if dataValue.IsNull() || dataValue.IsUnknown() {
+		return nil, nil
+	}
+	pv := PolicyVersion_Rules_Source_K8S_Clusters_Aws_RegionMatch{}
+	diags := tfsdk.ValueAs(ctx, dataValue, &pv)
+	if diags.HasError() {
+		return nil, diags
+	}
+	proto := &configv1.PolicyVersion_Rules_Source_K8S_Clusters_Aws_RegionMatch{}
+	proto.Operator = pv.Operator.ValueString()
+	var pvModelValues []string
+	dvDiagsValues := pv.Values.ElementsAs(ctx, &pvModelValues, false)
+	diags.Append(dvDiagsValues...)
+	if diags.HasError() {
+		return nil, diags
+	}
+	proto.Values = pvModelValues
+	return proto, diags
+}
+
+type PolicyVersion_Rules_Source_K8S_Clusters_Azure struct {
+	ClusterName         types.String `tfsdk:"cluster_name"`
+	ClusterNameMatch    types.Object `tfsdk:"cluster_name_match"`
+	ResourceGroup       types.String `tfsdk:"resource_group"`
+	ResourceGroupMatch  types.Object `tfsdk:"resource_group_match"`
+	SubscriptionId      types.String `tfsdk:"subscription_id"`
+	SubscriptionIdMatch types.Object `tfsdk:"subscription_id_match"`
+}
+
+func GetTypeAttrsForPolicyVersion_Rules_Source_K8S_Clusters_Azure() map[string]attr.Type {
+	return map[string]attr.Type{
+		"cluster_name": types.StringType,
+		"cluster_name_match": types.ObjectType{
+			AttrTypes: GetTypeAttrsForPolicyVersion_Rules_Source_K8S_Clusters_Azure_ClusterNameMatch(),
+		},
+		"resource_group": types.StringType,
+		"resource_group_match": types.ObjectType{
+			AttrTypes: GetTypeAttrsForPolicyVersion_Rules_Source_K8S_Clusters_Azure_ResourceGroupMatch(),
+		},
+		"subscription_id": types.StringType,
+		"subscription_id_match": types.ObjectType{
+			AttrTypes: GetTypeAttrsForPolicyVersion_Rules_Source_K8S_Clusters_Azure_SubscriptionIdMatch(),
+		},
+	}
+}
+
+func ConvertPolicyVersion_Rules_Source_K8S_Clusters_AzureToObjectValueFromProto(proto *configv1.PolicyVersion_Rules_Source_K8S_Clusters_Azure) basetypes.ObjectValue {
+	if proto == nil {
+		return types.ObjectNull(GetTypeAttrsForPolicyVersion_Rules_Source_K8S_Clusters_Azure())
+	}
+	return types.ObjectValueMust(
+		GetTypeAttrsForPolicyVersion_Rules_Source_K8S_Clusters_Azure(),
+		map[string]attr.Value{
+			"cluster_name":          types.StringValue(proto.ClusterName),
+			"cluster_name_match":    ConvertPolicyVersion_Rules_Source_K8S_Clusters_Azure_ClusterNameMatchToObjectValueFromProto(proto.ClusterNameMatch),
+			"resource_group":        types.StringValue(proto.ResourceGroup),
+			"resource_group_match":  ConvertPolicyVersion_Rules_Source_K8S_Clusters_Azure_ResourceGroupMatchToObjectValueFromProto(proto.ResourceGroupMatch),
+			"subscription_id":       types.StringValue(proto.SubscriptionId),
+			"subscription_id_match": ConvertPolicyVersion_Rules_Source_K8S_Clusters_Azure_SubscriptionIdMatchToObjectValueFromProto(proto.SubscriptionIdMatch),
+		},
+	)
+}
+
+func ConvertDataValueToPolicyVersion_Rules_Source_K8S_Clusters_AzureProto(ctx context.Context, dataValue attr.Value) (*configv1.PolicyVersion_Rules_Source_K8S_Clusters_Azure, diag.Diagnostics) {
+	if dataValue.IsNull() || dataValue.IsUnknown() {
+		return nil, nil
+	}
+	pv := PolicyVersion_Rules_Source_K8S_Clusters_Azure{}
+	diags := tfsdk.ValueAs(ctx, dataValue, &pv)
+	if diags.HasError() {
+		return nil, diags
+	}
+	proto := &configv1.PolicyVersion_Rules_Source_K8S_Clusters_Azure{}
+	proto.ClusterName = pv.ClusterName.ValueString()
+	pvModelClusterNameMatch, dvDiagsClusterNameMatch := ConvertDataValueToPolicyVersion_Rules_Source_K8S_Clusters_Azure_ClusterNameMatchProto(ctx, pv.ClusterNameMatch)
+	diags.Append(dvDiagsClusterNameMatch...)
+	if diags.HasError() {
+		return nil, diags
+	}
+	proto.ClusterNameMatch = pvModelClusterNameMatch
+	proto.ResourceGroup = pv.ResourceGroup.ValueString()
+	pvModelResourceGroupMatch, dvDiagsResourceGroupMatch := ConvertDataValueToPolicyVersion_Rules_Source_K8S_Clusters_Azure_ResourceGroupMatchProto(ctx, pv.ResourceGroupMatch)
+	diags.Append(dvDiagsResourceGroupMatch...)
+	if diags.HasError() {
+		return nil, diags
+	}
+	proto.ResourceGroupMatch = pvModelResourceGroupMatch
+	proto.SubscriptionId = pv.SubscriptionId.ValueString()
+	pvModelSubscriptionIdMatch, dvDiagsSubscriptionIdMatch := ConvertDataValueToPolicyVersion_Rules_Source_K8S_Clusters_Azure_SubscriptionIdMatchProto(ctx, pv.SubscriptionIdMatch)
+	diags.Append(dvDiagsSubscriptionIdMatch...)
+	if diags.HasError() {
+		return nil, diags
+	}
+	proto.SubscriptionIdMatch = pvModelSubscriptionIdMatch
+	return proto, diags
+}
+
+type PolicyVersion_Rules_Source_K8S_Clusters_Azure_ClusterNameMatch struct {
+	Operator types.String `tfsdk:"operator"`
+	Values   types.List   `tfsdk:"values"`
+}
+
+func GetTypeAttrsForPolicyVersion_Rules_Source_K8S_Clusters_Azure_ClusterNameMatch() map[string]attr.Type {
+	return map[string]attr.Type{
+		"operator": types.StringType,
+		"values":   types.ListType{ElemType: types.StringType},
+	}
+}
+
+func ConvertPolicyVersion_Rules_Source_K8S_Clusters_Azure_ClusterNameMatchToObjectValueFromProto(proto *configv1.PolicyVersion_Rules_Source_K8S_Clusters_Azure_ClusterNameMatch) basetypes.ObjectValue {
+	if proto == nil {
+		return types.ObjectNull(GetTypeAttrsForPolicyVersion_Rules_Source_K8S_Clusters_Azure_ClusterNameMatch())
+	}
+	elementsInValues := make([]attr.Value, 0, len(proto.Values))
+	for _, item := range proto.Values {
+		elementsInValues = append(elementsInValues, types.StringValue(item))
+	}
+	return types.ObjectValueMust(
+		GetTypeAttrsForPolicyVersion_Rules_Source_K8S_Clusters_Azure_ClusterNameMatch(),
+		map[string]attr.Value{
+			"operator": types.StringValue(proto.Operator),
+			"values": func() basetypes.ListValue {
+				if proto.Values == nil {
+					return types.ListNull(types.StringType)
+				}
+				return types.ListValueMust(types.StringType, elementsInValues)
+			}(),
+		},
+	)
+}
+
+func ConvertDataValueToPolicyVersion_Rules_Source_K8S_Clusters_Azure_ClusterNameMatchProto(ctx context.Context, dataValue attr.Value) (*configv1.PolicyVersion_Rules_Source_K8S_Clusters_Azure_ClusterNameMatch, diag.Diagnostics) {
+	if dataValue.IsNull() || dataValue.IsUnknown() {
+		return nil, nil
+	}
+	pv := PolicyVersion_Rules_Source_K8S_Clusters_Azure_ClusterNameMatch{}
+	diags := tfsdk.ValueAs(ctx, dataValue, &pv)
+	if diags.HasError() {
+		return nil, diags
+	}
+	proto := &configv1.PolicyVersion_Rules_Source_K8S_Clusters_Azure_ClusterNameMatch{}
+	proto.Operator = pv.Operator.ValueString()
+	var pvModelValues []string
+	dvDiagsValues := pv.Values.ElementsAs(ctx, &pvModelValues, false)
+	diags.Append(dvDiagsValues...)
+	if diags.HasError() {
+		return nil, diags
+	}
+	proto.Values = pvModelValues
+	return proto, diags
+}
+
+type PolicyVersion_Rules_Source_K8S_Clusters_Azure_ResourceGroupMatch struct {
+	Operator types.String `tfsdk:"operator"`
+	Values   types.List   `tfsdk:"values"`
+}
+
+func GetTypeAttrsForPolicyVersion_Rules_Source_K8S_Clusters_Azure_ResourceGroupMatch() map[string]attr.Type {
+	return map[string]attr.Type{
+		"operator": types.StringType,
+		"values":   types.ListType{ElemType: types.StringType},
+	}
+}
+
+func ConvertPolicyVersion_Rules_Source_K8S_Clusters_Azure_ResourceGroupMatchToObjectValueFromProto(proto *configv1.PolicyVersion_Rules_Source_K8S_Clusters_Azure_ResourceGroupMatch) basetypes.ObjectValue {
+	if proto == nil {
+		return types.ObjectNull(GetTypeAttrsForPolicyVersion_Rules_Source_K8S_Clusters_Azure_ResourceGroupMatch())
+	}
+	elementsInValues := make([]attr.Value, 0, len(proto.Values))
+	for _, item := range proto.Values {
+		elementsInValues = append(elementsInValues, types.StringValue(item))
+	}
+	return types.ObjectValueMust(
+		GetTypeAttrsForPolicyVersion_Rules_Source_K8S_Clusters_Azure_ResourceGroupMatch(),
+		map[string]attr.Value{
+			"operator": types.StringValue(proto.Operator),
+			"values": func() basetypes.ListValue {
+				if proto.Values == nil {
+					return types.ListNull(types.StringType)
+				}
+				return types.ListValueMust(types.StringType, elementsInValues)
+			}(),
+		},
+	)
+}
+
+func ConvertDataValueToPolicyVersion_Rules_Source_K8S_Clusters_Azure_ResourceGroupMatchProto(ctx context.Context, dataValue attr.Value) (*configv1.PolicyVersion_Rules_Source_K8S_Clusters_Azure_ResourceGroupMatch, diag.Diagnostics) {
+	if dataValue.IsNull() || dataValue.IsUnknown() {
+		return nil, nil
+	}
+	pv := PolicyVersion_Rules_Source_K8S_Clusters_Azure_ResourceGroupMatch{}
+	diags := tfsdk.ValueAs(ctx, dataValue, &pv)
+	if diags.HasError() {
+		return nil, diags
+	}
+	proto := &configv1.PolicyVersion_Rules_Source_K8S_Clusters_Azure_ResourceGroupMatch{}
+	proto.Operator = pv.Operator.ValueString()
+	var pvModelValues []string
+	dvDiagsValues := pv.Values.ElementsAs(ctx, &pvModelValues, false)
+	diags.Append(dvDiagsValues...)
+	if diags.HasError() {
+		return nil, diags
+	}
+	proto.Values = pvModelValues
+	return proto, diags
+}
+
+type PolicyVersion_Rules_Source_K8S_Clusters_Azure_SubscriptionIdMatch struct {
+	Operator types.String `tfsdk:"operator"`
+	Values   types.List   `tfsdk:"values"`
+}
+
+func GetTypeAttrsForPolicyVersion_Rules_Source_K8S_Clusters_Azure_SubscriptionIdMatch() map[string]attr.Type {
+	return map[string]attr.Type{
+		"operator": types.StringType,
+		"values":   types.ListType{ElemType: types.StringType},
+	}
+}
+
+func ConvertPolicyVersion_Rules_Source_K8S_Clusters_Azure_SubscriptionIdMatchToObjectValueFromProto(proto *configv1.PolicyVersion_Rules_Source_K8S_Clusters_Azure_SubscriptionIdMatch) basetypes.ObjectValue {
+	if proto == nil {
+		return types.ObjectNull(GetTypeAttrsForPolicyVersion_Rules_Source_K8S_Clusters_Azure_SubscriptionIdMatch())
+	}
+	elementsInValues := make([]attr.Value, 0, len(proto.Values))
+	for _, item := range proto.Values {
+		elementsInValues = append(elementsInValues, types.StringValue(item))
+	}
+	return types.ObjectValueMust(
+		GetTypeAttrsForPolicyVersion_Rules_Source_K8S_Clusters_Azure_SubscriptionIdMatch(),
+		map[string]attr.Value{
+			"operator": types.StringValue(proto.Operator),
+			"values": func() basetypes.ListValue {
+				if proto.Values == nil {
+					return types.ListNull(types.StringType)
+				}
+				return types.ListValueMust(types.StringType, elementsInValues)
+			}(),
+		},
+	)
+}
+
+func ConvertDataValueToPolicyVersion_Rules_Source_K8S_Clusters_Azure_SubscriptionIdMatchProto(ctx context.Context, dataValue attr.Value) (*configv1.PolicyVersion_Rules_Source_K8S_Clusters_Azure_SubscriptionIdMatch, diag.Diagnostics) {
+	if dataValue.IsNull() || dataValue.IsUnknown() {
+		return nil, nil
+	}
+	pv := PolicyVersion_Rules_Source_K8S_Clusters_Azure_SubscriptionIdMatch{}
+	diags := tfsdk.ValueAs(ctx, dataValue, &pv)
+	if diags.HasError() {
+		return nil, diags
+	}
+	proto := &configv1.PolicyVersion_Rules_Source_K8S_Clusters_Azure_SubscriptionIdMatch{}
+	proto.Operator = pv.Operator.ValueString()
+	var pvModelValues []string
+	dvDiagsValues := pv.Values.ElementsAs(ctx, &pvModelValues, false)
+	diags.Append(dvDiagsValues...)
+	if diags.HasError() {
+		return nil, diags
+	}
+	proto.Values = pvModelValues
+	return proto, diags
+}
+
+type PolicyVersion_Rules_Source_K8S_Clusters_Gcp struct {
+	ClusterName      types.String `tfsdk:"cluster_name"`
+	ClusterNameMatch types.Object `tfsdk:"cluster_name_match"`
+	Location         types.String `tfsdk:"location"`
+	LocationMatch    types.Object `tfsdk:"location_match"`
+	ProjectId        types.String `tfsdk:"project_id"`
+	ProjectIdMatch   types.Object `tfsdk:"project_id_match"`
+}
+
+func GetTypeAttrsForPolicyVersion_Rules_Source_K8S_Clusters_Gcp() map[string]attr.Type {
+	return map[string]attr.Type{
+		"cluster_name": types.StringType,
+		"cluster_name_match": types.ObjectType{
+			AttrTypes: GetTypeAttrsForPolicyVersion_Rules_Source_K8S_Clusters_Gcp_ClusterNameMatch(),
+		},
+		"location": types.StringType,
+		"location_match": types.ObjectType{
+			AttrTypes: GetTypeAttrsForPolicyVersion_Rules_Source_K8S_Clusters_Gcp_LocationMatch(),
+		},
+		"project_id": types.StringType,
+		"project_id_match": types.ObjectType{
+			AttrTypes: GetTypeAttrsForPolicyVersion_Rules_Source_K8S_Clusters_Gcp_ProjectIdMatch(),
+		},
+	}
+}
+
+func ConvertPolicyVersion_Rules_Source_K8S_Clusters_GcpToObjectValueFromProto(proto *configv1.PolicyVersion_Rules_Source_K8S_Clusters_Gcp) basetypes.ObjectValue {
+	if proto == nil {
+		return types.ObjectNull(GetTypeAttrsForPolicyVersion_Rules_Source_K8S_Clusters_Gcp())
+	}
+	return types.ObjectValueMust(
+		GetTypeAttrsForPolicyVersion_Rules_Source_K8S_Clusters_Gcp(),
+		map[string]attr.Value{
+			"cluster_name":       types.StringValue(proto.ClusterName),
+			"cluster_name_match": ConvertPolicyVersion_Rules_Source_K8S_Clusters_Gcp_ClusterNameMatchToObjectValueFromProto(proto.ClusterNameMatch),
+			"location":           types.StringValue(proto.Location),
+			"location_match":     ConvertPolicyVersion_Rules_Source_K8S_Clusters_Gcp_LocationMatchToObjectValueFromProto(proto.LocationMatch),
+			"project_id":         types.StringValue(proto.ProjectId),
+			"project_id_match":   ConvertPolicyVersion_Rules_Source_K8S_Clusters_Gcp_ProjectIdMatchToObjectValueFromProto(proto.ProjectIdMatch),
+		},
+	)
+}
+
+func ConvertDataValueToPolicyVersion_Rules_Source_K8S_Clusters_GcpProto(ctx context.Context, dataValue attr.Value) (*configv1.PolicyVersion_Rules_Source_K8S_Clusters_Gcp, diag.Diagnostics) {
+	if dataValue.IsNull() || dataValue.IsUnknown() {
+		return nil, nil
+	}
+	pv := PolicyVersion_Rules_Source_K8S_Clusters_Gcp{}
+	diags := tfsdk.ValueAs(ctx, dataValue, &pv)
+	if diags.HasError() {
+		return nil, diags
+	}
+	proto := &configv1.PolicyVersion_Rules_Source_K8S_Clusters_Gcp{}
+	proto.ClusterName = pv.ClusterName.ValueString()
+	pvModelClusterNameMatch, dvDiagsClusterNameMatch := ConvertDataValueToPolicyVersion_Rules_Source_K8S_Clusters_Gcp_ClusterNameMatchProto(ctx, pv.ClusterNameMatch)
+	diags.Append(dvDiagsClusterNameMatch...)
+	if diags.HasError() {
+		return nil, diags
+	}
+	proto.ClusterNameMatch = pvModelClusterNameMatch
+	proto.Location = pv.Location.ValueString()
+	pvModelLocationMatch, dvDiagsLocationMatch := ConvertDataValueToPolicyVersion_Rules_Source_K8S_Clusters_Gcp_LocationMatchProto(ctx, pv.LocationMatch)
+	diags.Append(dvDiagsLocationMatch...)
+	if diags.HasError() {
+		return nil, diags
+	}
+	proto.LocationMatch = pvModelLocationMatch
+	proto.ProjectId = pv.ProjectId.ValueString()
+	pvModelProjectIdMatch, dvDiagsProjectIdMatch := ConvertDataValueToPolicyVersion_Rules_Source_K8S_Clusters_Gcp_ProjectIdMatchProto(ctx, pv.ProjectIdMatch)
+	diags.Append(dvDiagsProjectIdMatch...)
+	if diags.HasError() {
+		return nil, diags
+	}
+	proto.ProjectIdMatch = pvModelProjectIdMatch
+	return proto, diags
+}
+
+type PolicyVersion_Rules_Source_K8S_Clusters_Gcp_ClusterNameMatch struct {
+	Operator types.String `tfsdk:"operator"`
+	Values   types.List   `tfsdk:"values"`
+}
+
+func GetTypeAttrsForPolicyVersion_Rules_Source_K8S_Clusters_Gcp_ClusterNameMatch() map[string]attr.Type {
+	return map[string]attr.Type{
+		"operator": types.StringType,
+		"values":   types.ListType{ElemType: types.StringType},
+	}
+}
+
+func ConvertPolicyVersion_Rules_Source_K8S_Clusters_Gcp_ClusterNameMatchToObjectValueFromProto(proto *configv1.PolicyVersion_Rules_Source_K8S_Clusters_Gcp_ClusterNameMatch) basetypes.ObjectValue {
+	if proto == nil {
+		return types.ObjectNull(GetTypeAttrsForPolicyVersion_Rules_Source_K8S_Clusters_Gcp_ClusterNameMatch())
+	}
+	elementsInValues := make([]attr.Value, 0, len(proto.Values))
+	for _, item := range proto.Values {
+		elementsInValues = append(elementsInValues, types.StringValue(item))
+	}
+	return types.ObjectValueMust(
+		GetTypeAttrsForPolicyVersion_Rules_Source_K8S_Clusters_Gcp_ClusterNameMatch(),
+		map[string]attr.Value{
+			"operator": types.StringValue(proto.Operator),
+			"values": func() basetypes.ListValue {
+				if proto.Values == nil {
+					return types.ListNull(types.StringType)
+				}
+				return types.ListValueMust(types.StringType, elementsInValues)
+			}(),
+		},
+	)
+}
+
+func ConvertDataValueToPolicyVersion_Rules_Source_K8S_Clusters_Gcp_ClusterNameMatchProto(ctx context.Context, dataValue attr.Value) (*configv1.PolicyVersion_Rules_Source_K8S_Clusters_Gcp_ClusterNameMatch, diag.Diagnostics) {
+	if dataValue.IsNull() || dataValue.IsUnknown() {
+		return nil, nil
+	}
+	pv := PolicyVersion_Rules_Source_K8S_Clusters_Gcp_ClusterNameMatch{}
+	diags := tfsdk.ValueAs(ctx, dataValue, &pv)
+	if diags.HasError() {
+		return nil, diags
+	}
+	proto := &configv1.PolicyVersion_Rules_Source_K8S_Clusters_Gcp_ClusterNameMatch{}
+	proto.Operator = pv.Operator.ValueString()
+	var pvModelValues []string
+	dvDiagsValues := pv.Values.ElementsAs(ctx, &pvModelValues, false)
+	diags.Append(dvDiagsValues...)
+	if diags.HasError() {
+		return nil, diags
+	}
+	proto.Values = pvModelValues
+	return proto, diags
+}
+
+type PolicyVersion_Rules_Source_K8S_Clusters_Gcp_LocationMatch struct {
+	Operator types.String `tfsdk:"operator"`
+	Values   types.List   `tfsdk:"values"`
+}
+
+func GetTypeAttrsForPolicyVersion_Rules_Source_K8S_Clusters_Gcp_LocationMatch() map[string]attr.Type {
+	return map[string]attr.Type{
+		"operator": types.StringType,
+		"values":   types.ListType{ElemType: types.StringType},
+	}
+}
+
+func ConvertPolicyVersion_Rules_Source_K8S_Clusters_Gcp_LocationMatchToObjectValueFromProto(proto *configv1.PolicyVersion_Rules_Source_K8S_Clusters_Gcp_LocationMatch) basetypes.ObjectValue {
+	if proto == nil {
+		return types.ObjectNull(GetTypeAttrsForPolicyVersion_Rules_Source_K8S_Clusters_Gcp_LocationMatch())
+	}
+	elementsInValues := make([]attr.Value, 0, len(proto.Values))
+	for _, item := range proto.Values {
+		elementsInValues = append(elementsInValues, types.StringValue(item))
+	}
+	return types.ObjectValueMust(
+		GetTypeAttrsForPolicyVersion_Rules_Source_K8S_Clusters_Gcp_LocationMatch(),
+		map[string]attr.Value{
+			"operator": types.StringValue(proto.Operator),
+			"values": func() basetypes.ListValue {
+				if proto.Values == nil {
+					return types.ListNull(types.StringType)
+				}
+				return types.ListValueMust(types.StringType, elementsInValues)
+			}(),
+		},
+	)
+}
+
+func ConvertDataValueToPolicyVersion_Rules_Source_K8S_Clusters_Gcp_LocationMatchProto(ctx context.Context, dataValue attr.Value) (*configv1.PolicyVersion_Rules_Source_K8S_Clusters_Gcp_LocationMatch, diag.Diagnostics) {
+	if dataValue.IsNull() || dataValue.IsUnknown() {
+		return nil, nil
+	}
+	pv := PolicyVersion_Rules_Source_K8S_Clusters_Gcp_LocationMatch{}
+	diags := tfsdk.ValueAs(ctx, dataValue, &pv)
+	if diags.HasError() {
+		return nil, diags
+	}
+	proto := &configv1.PolicyVersion_Rules_Source_K8S_Clusters_Gcp_LocationMatch{}
+	proto.Operator = pv.Operator.ValueString()
+	var pvModelValues []string
+	dvDiagsValues := pv.Values.ElementsAs(ctx, &pvModelValues, false)
+	diags.Append(dvDiagsValues...)
+	if diags.HasError() {
+		return nil, diags
+	}
+	proto.Values = pvModelValues
+	return proto, diags
+}
+
+type PolicyVersion_Rules_Source_K8S_Clusters_Gcp_ProjectIdMatch struct {
+	Operator types.String `tfsdk:"operator"`
+	Values   types.List   `tfsdk:"values"`
+}
+
+func GetTypeAttrsForPolicyVersion_Rules_Source_K8S_Clusters_Gcp_ProjectIdMatch() map[string]attr.Type {
+	return map[string]attr.Type{
+		"operator": types.StringType,
+		"values":   types.ListType{ElemType: types.StringType},
+	}
+}
+
+func ConvertPolicyVersion_Rules_Source_K8S_Clusters_Gcp_ProjectIdMatchToObjectValueFromProto(proto *configv1.PolicyVersion_Rules_Source_K8S_Clusters_Gcp_ProjectIdMatch) basetypes.ObjectValue {
+	if proto == nil {
+		return types.ObjectNull(GetTypeAttrsForPolicyVersion_Rules_Source_K8S_Clusters_Gcp_ProjectIdMatch())
+	}
+	elementsInValues := make([]attr.Value, 0, len(proto.Values))
+	for _, item := range proto.Values {
+		elementsInValues = append(elementsInValues, types.StringValue(item))
+	}
+	return types.ObjectValueMust(
+		GetTypeAttrsForPolicyVersion_Rules_Source_K8S_Clusters_Gcp_ProjectIdMatch(),
+		map[string]attr.Value{
+			"operator": types.StringValue(proto.Operator),
+			"values": func() basetypes.ListValue {
+				if proto.Values == nil {
+					return types.ListNull(types.StringType)
+				}
+				return types.ListValueMust(types.StringType, elementsInValues)
+			}(),
+		},
+	)
+}
+
+func ConvertDataValueToPolicyVersion_Rules_Source_K8S_Clusters_Gcp_ProjectIdMatchProto(ctx context.Context, dataValue attr.Value) (*configv1.PolicyVersion_Rules_Source_K8S_Clusters_Gcp_ProjectIdMatch, diag.Diagnostics) {
+	if dataValue.IsNull() || dataValue.IsUnknown() {
+		return nil, nil
+	}
+	pv := PolicyVersion_Rules_Source_K8S_Clusters_Gcp_ProjectIdMatch{}
+	diags := tfsdk.ValueAs(ctx, dataValue, &pv)
+	if diags.HasError() {
+		return nil, diags
+	}
+	proto := &configv1.PolicyVersion_Rules_Source_K8S_Clusters_Gcp_ProjectIdMatch{}
+	proto.Operator = pv.Operator.ValueString()
+	var pvModelValues []string
+	dvDiagsValues := pv.Values.ElementsAs(ctx, &pvModelValues, false)
+	diags.Append(dvDiagsValues...)
+	if diags.HasError() {
+		return nil, diags
+	}
+	proto.Values = pvModelValues
+	return proto, diags
+}
+
+type PolicyVersion_Rules_Source_K8S_Clusters_Oci struct {
+	ClusterName        types.String `tfsdk:"cluster_name"`
+	ClusterNameMatch   types.Object `tfsdk:"cluster_name_match"`
+	CompartmentId      types.String `tfsdk:"compartment_id"`
+	CompartmentIdMatch types.Object `tfsdk:"compartment_id_match"`
+	Region             types.String `tfsdk:"region"`
+	RegionMatch        types.Object `tfsdk:"region_match"`
+}
+
+func GetTypeAttrsForPolicyVersion_Rules_Source_K8S_Clusters_Oci() map[string]attr.Type {
+	return map[string]attr.Type{
+		"cluster_name": types.StringType,
+		"cluster_name_match": types.ObjectType{
+			AttrTypes: GetTypeAttrsForPolicyVersion_Rules_Source_K8S_Clusters_Oci_ClusterNameMatch(),
+		},
+		"compartment_id": types.StringType,
+		"compartment_id_match": types.ObjectType{
+			AttrTypes: GetTypeAttrsForPolicyVersion_Rules_Source_K8S_Clusters_Oci_CompartmentIdMatch(),
+		},
+		"region": types.StringType,
+		"region_match": types.ObjectType{
+			AttrTypes: GetTypeAttrsForPolicyVersion_Rules_Source_K8S_Clusters_Oci_RegionMatch(),
+		},
+	}
+}
+
+func ConvertPolicyVersion_Rules_Source_K8S_Clusters_OciToObjectValueFromProto(proto *configv1.PolicyVersion_Rules_Source_K8S_Clusters_Oci) basetypes.ObjectValue {
+	if proto == nil {
+		return types.ObjectNull(GetTypeAttrsForPolicyVersion_Rules_Source_K8S_Clusters_Oci())
+	}
+	return types.ObjectValueMust(
+		GetTypeAttrsForPolicyVersion_Rules_Source_K8S_Clusters_Oci(),
+		map[string]attr.Value{
+			"cluster_name":         types.StringValue(proto.ClusterName),
+			"cluster_name_match":   ConvertPolicyVersion_Rules_Source_K8S_Clusters_Oci_ClusterNameMatchToObjectValueFromProto(proto.ClusterNameMatch),
+			"compartment_id":       types.StringValue(proto.CompartmentId),
+			"compartment_id_match": ConvertPolicyVersion_Rules_Source_K8S_Clusters_Oci_CompartmentIdMatchToObjectValueFromProto(proto.CompartmentIdMatch),
+			"region":               types.StringValue(proto.Region),
+			"region_match":         ConvertPolicyVersion_Rules_Source_K8S_Clusters_Oci_RegionMatchToObjectValueFromProto(proto.RegionMatch),
+		},
+	)
+}
+
+func ConvertDataValueToPolicyVersion_Rules_Source_K8S_Clusters_OciProto(ctx context.Context, dataValue attr.Value) (*configv1.PolicyVersion_Rules_Source_K8S_Clusters_Oci, diag.Diagnostics) {
+	if dataValue.IsNull() || dataValue.IsUnknown() {
+		return nil, nil
+	}
+	pv := PolicyVersion_Rules_Source_K8S_Clusters_Oci{}
+	diags := tfsdk.ValueAs(ctx, dataValue, &pv)
+	if diags.HasError() {
+		return nil, diags
+	}
+	proto := &configv1.PolicyVersion_Rules_Source_K8S_Clusters_Oci{}
+	proto.ClusterName = pv.ClusterName.ValueString()
+	pvModelClusterNameMatch, dvDiagsClusterNameMatch := ConvertDataValueToPolicyVersion_Rules_Source_K8S_Clusters_Oci_ClusterNameMatchProto(ctx, pv.ClusterNameMatch)
+	diags.Append(dvDiagsClusterNameMatch...)
+	if diags.HasError() {
+		return nil, diags
+	}
+	proto.ClusterNameMatch = pvModelClusterNameMatch
+	proto.CompartmentId = pv.CompartmentId.ValueString()
+	pvModelCompartmentIdMatch, dvDiagsCompartmentIdMatch := ConvertDataValueToPolicyVersion_Rules_Source_K8S_Clusters_Oci_CompartmentIdMatchProto(ctx, pv.CompartmentIdMatch)
+	diags.Append(dvDiagsCompartmentIdMatch...)
+	if diags.HasError() {
+		return nil, diags
+	}
+	proto.CompartmentIdMatch = pvModelCompartmentIdMatch
+	proto.Region = pv.Region.ValueString()
+	pvModelRegionMatch, dvDiagsRegionMatch := ConvertDataValueToPolicyVersion_Rules_Source_K8S_Clusters_Oci_RegionMatchProto(ctx, pv.RegionMatch)
+	diags.Append(dvDiagsRegionMatch...)
+	if diags.HasError() {
+		return nil, diags
+	}
+	proto.RegionMatch = pvModelRegionMatch
+	return proto, diags
+}
+
+type PolicyVersion_Rules_Source_K8S_Clusters_Oci_ClusterNameMatch struct {
+	Operator types.String `tfsdk:"operator"`
+	Values   types.List   `tfsdk:"values"`
+}
+
+func GetTypeAttrsForPolicyVersion_Rules_Source_K8S_Clusters_Oci_ClusterNameMatch() map[string]attr.Type {
+	return map[string]attr.Type{
+		"operator": types.StringType,
+		"values":   types.ListType{ElemType: types.StringType},
+	}
+}
+
+func ConvertPolicyVersion_Rules_Source_K8S_Clusters_Oci_ClusterNameMatchToObjectValueFromProto(proto *configv1.PolicyVersion_Rules_Source_K8S_Clusters_Oci_ClusterNameMatch) basetypes.ObjectValue {
+	if proto == nil {
+		return types.ObjectNull(GetTypeAttrsForPolicyVersion_Rules_Source_K8S_Clusters_Oci_ClusterNameMatch())
+	}
+	elementsInValues := make([]attr.Value, 0, len(proto.Values))
+	for _, item := range proto.Values {
+		elementsInValues = append(elementsInValues, types.StringValue(item))
+	}
+	return types.ObjectValueMust(
+		GetTypeAttrsForPolicyVersion_Rules_Source_K8S_Clusters_Oci_ClusterNameMatch(),
+		map[string]attr.Value{
+			"operator": types.StringValue(proto.Operator),
+			"values": func() basetypes.ListValue {
+				if proto.Values == nil {
+					return types.ListNull(types.StringType)
+				}
+				return types.ListValueMust(types.StringType, elementsInValues)
+			}(),
+		},
+	)
+}
+
+func ConvertDataValueToPolicyVersion_Rules_Source_K8S_Clusters_Oci_ClusterNameMatchProto(ctx context.Context, dataValue attr.Value) (*configv1.PolicyVersion_Rules_Source_K8S_Clusters_Oci_ClusterNameMatch, diag.Diagnostics) {
+	if dataValue.IsNull() || dataValue.IsUnknown() {
+		return nil, nil
+	}
+	pv := PolicyVersion_Rules_Source_K8S_Clusters_Oci_ClusterNameMatch{}
+	diags := tfsdk.ValueAs(ctx, dataValue, &pv)
+	if diags.HasError() {
+		return nil, diags
+	}
+	proto := &configv1.PolicyVersion_Rules_Source_K8S_Clusters_Oci_ClusterNameMatch{}
+	proto.Operator = pv.Operator.ValueString()
+	var pvModelValues []string
+	dvDiagsValues := pv.Values.ElementsAs(ctx, &pvModelValues, false)
+	diags.Append(dvDiagsValues...)
+	if diags.HasError() {
+		return nil, diags
+	}
+	proto.Values = pvModelValues
+	return proto, diags
+}
+
+type PolicyVersion_Rules_Source_K8S_Clusters_Oci_CompartmentIdMatch struct {
+	Operator types.String `tfsdk:"operator"`
+	Values   types.List   `tfsdk:"values"`
+}
+
+func GetTypeAttrsForPolicyVersion_Rules_Source_K8S_Clusters_Oci_CompartmentIdMatch() map[string]attr.Type {
+	return map[string]attr.Type{
+		"operator": types.StringType,
+		"values":   types.ListType{ElemType: types.StringType},
+	}
+}
+
+func ConvertPolicyVersion_Rules_Source_K8S_Clusters_Oci_CompartmentIdMatchToObjectValueFromProto(proto *configv1.PolicyVersion_Rules_Source_K8S_Clusters_Oci_CompartmentIdMatch) basetypes.ObjectValue {
+	if proto == nil {
+		return types.ObjectNull(GetTypeAttrsForPolicyVersion_Rules_Source_K8S_Clusters_Oci_CompartmentIdMatch())
+	}
+	elementsInValues := make([]attr.Value, 0, len(proto.Values))
+	for _, item := range proto.Values {
+		elementsInValues = append(elementsInValues, types.StringValue(item))
+	}
+	return types.ObjectValueMust(
+		GetTypeAttrsForPolicyVersion_Rules_Source_K8S_Clusters_Oci_CompartmentIdMatch(),
+		map[string]attr.Value{
+			"operator": types.StringValue(proto.Operator),
+			"values": func() basetypes.ListValue {
+				if proto.Values == nil {
+					return types.ListNull(types.StringType)
+				}
+				return types.ListValueMust(types.StringType, elementsInValues)
+			}(),
+		},
+	)
+}
+
+func ConvertDataValueToPolicyVersion_Rules_Source_K8S_Clusters_Oci_CompartmentIdMatchProto(ctx context.Context, dataValue attr.Value) (*configv1.PolicyVersion_Rules_Source_K8S_Clusters_Oci_CompartmentIdMatch, diag.Diagnostics) {
+	if dataValue.IsNull() || dataValue.IsUnknown() {
+		return nil, nil
+	}
+	pv := PolicyVersion_Rules_Source_K8S_Clusters_Oci_CompartmentIdMatch{}
+	diags := tfsdk.ValueAs(ctx, dataValue, &pv)
+	if diags.HasError() {
+		return nil, diags
+	}
+	proto := &configv1.PolicyVersion_Rules_Source_K8S_Clusters_Oci_CompartmentIdMatch{}
+	proto.Operator = pv.Operator.ValueString()
+	var pvModelValues []string
+	dvDiagsValues := pv.Values.ElementsAs(ctx, &pvModelValues, false)
+	diags.Append(dvDiagsValues...)
+	if diags.HasError() {
+		return nil, diags
+	}
+	proto.Values = pvModelValues
+	return proto, diags
+}
+
+type PolicyVersion_Rules_Source_K8S_Clusters_Oci_RegionMatch struct {
+	Operator types.String `tfsdk:"operator"`
+	Values   types.List   `tfsdk:"values"`
+}
+
+func GetTypeAttrsForPolicyVersion_Rules_Source_K8S_Clusters_Oci_RegionMatch() map[string]attr.Type {
+	return map[string]attr.Type{
+		"operator": types.StringType,
+		"values":   types.ListType{ElemType: types.StringType},
+	}
+}
+
+func ConvertPolicyVersion_Rules_Source_K8S_Clusters_Oci_RegionMatchToObjectValueFromProto(proto *configv1.PolicyVersion_Rules_Source_K8S_Clusters_Oci_RegionMatch) basetypes.ObjectValue {
+	if proto == nil {
+		return types.ObjectNull(GetTypeAttrsForPolicyVersion_Rules_Source_K8S_Clusters_Oci_RegionMatch())
+	}
+	elementsInValues := make([]attr.Value, 0, len(proto.Values))
+	for _, item := range proto.Values {
+		elementsInValues = append(elementsInValues, types.StringValue(item))
+	}
+	return types.ObjectValueMust(
+		GetTypeAttrsForPolicyVersion_Rules_Source_K8S_Clusters_Oci_RegionMatch(),
+		map[string]attr.Value{
+			"operator": types.StringValue(proto.Operator),
+			"values": func() basetypes.ListValue {
+				if proto.Values == nil {
+					return types.ListNull(types.StringType)
+				}
+				return types.ListValueMust(types.StringType, elementsInValues)
+			}(),
+		},
+	)
+}
+
+func ConvertDataValueToPolicyVersion_Rules_Source_K8S_Clusters_Oci_RegionMatchProto(ctx context.Context, dataValue attr.Value) (*configv1.PolicyVersion_Rules_Source_K8S_Clusters_Oci_RegionMatch, diag.Diagnostics) {
+	if dataValue.IsNull() || dataValue.IsUnknown() {
+		return nil, nil
+	}
+	pv := PolicyVersion_Rules_Source_K8S_Clusters_Oci_RegionMatch{}
+	diags := tfsdk.ValueAs(ctx, dataValue, &pv)
+	if diags.HasError() {
+		return nil, diags
+	}
+	proto := &configv1.PolicyVersion_Rules_Source_K8S_Clusters_Oci_RegionMatch{}
+	proto.Operator = pv.Operator.ValueString()
+	var pvModelValues []string
+	dvDiagsValues := pv.Values.ElementsAs(ctx, &pvModelValues, false)
+	diags.Append(dvDiagsValues...)
+	if diags.HasError() {
+		return nil, diags
+	}
+	proto.Values = pvModelValues
+	return proto, diags
+}
+
+type PolicyVersion_Rules_Source_K8S_NamespaceSelector struct {
+	MatchExpressions types.List `tfsdk:"match_expressions"`
+	MatchLabels      types.List `tfsdk:"match_labels"`
+}
+
+func GetTypeAttrsForPolicyVersion_Rules_Source_K8S_NamespaceSelector() map[string]attr.Type {
+	return map[string]attr.Type{
+		"match_expressions": types.ListType{ElemType: types.ObjectType{
+			AttrTypes: GetTypeAttrsForPolicyVersion_Rules_Source_K8S_NamespaceSelector_MatchExpressions(),
+		}},
+		"match_labels": types.ListType{ElemType: types.ObjectType{
+			AttrTypes: GetTypeAttrsForPolicyVersion_Rules_Source_K8S_NamespaceSelector_MatchLabels(),
+		}},
+	}
+}
+
+func ConvertPolicyVersion_Rules_Source_K8S_NamespaceSelectorToObjectValueFromProto(proto *configv1.PolicyVersion_Rules_Source_K8S_NamespaceSelector) basetypes.ObjectValue {
+	if proto == nil {
+		return types.ObjectNull(GetTypeAttrsForPolicyVersion_Rules_Source_K8S_NamespaceSelector())
+	}
+	elementsInMatchExpressions := make([]attr.Value, 0, len(proto.MatchExpressions))
+	for _, item := range proto.MatchExpressions {
+		elementsInMatchExpressions = append(elementsInMatchExpressions, ConvertPolicyVersion_Rules_Source_K8S_NamespaceSelector_MatchExpressionsToObjectValueFromProto(item))
+	}
+	elementsInMatchLabels := make([]attr.Value, 0, len(proto.MatchLabels))
+	for _, item := range proto.MatchLabels {
+		elementsInMatchLabels = append(elementsInMatchLabels, ConvertPolicyVersion_Rules_Source_K8S_NamespaceSelector_MatchLabelsToObjectValueFromProto(item))
+	}
+	return types.ObjectValueMust(
+		GetTypeAttrsForPolicyVersion_Rules_Source_K8S_NamespaceSelector(),
+		map[string]attr.Value{
+			"match_expressions": func() basetypes.ListValue {
+				if proto.MatchExpressions == nil {
+					return types.ListNull(types.ObjectType{AttrTypes: GetTypeAttrsForPolicyVersion_Rules_Source_K8S_NamespaceSelector_MatchExpressions()})
+				}
+				return types.ListValueMust(types.ObjectType{AttrTypes: GetTypeAttrsForPolicyVersion_Rules_Source_K8S_NamespaceSelector_MatchExpressions()}, elementsInMatchExpressions)
+			}(),
+			"match_labels": func() basetypes.ListValue {
+				if proto.MatchLabels == nil {
+					return types.ListNull(types.ObjectType{AttrTypes: GetTypeAttrsForPolicyVersion_Rules_Source_K8S_NamespaceSelector_MatchLabels()})
+				}
+				return types.ListValueMust(types.ObjectType{AttrTypes: GetTypeAttrsForPolicyVersion_Rules_Source_K8S_NamespaceSelector_MatchLabels()}, elementsInMatchLabels)
+			}(),
+		},
+	)
+}
+
+func ConvertDataValueToPolicyVersion_Rules_Source_K8S_NamespaceSelectorProto(ctx context.Context, dataValue attr.Value) (*configv1.PolicyVersion_Rules_Source_K8S_NamespaceSelector, diag.Diagnostics) {
+	if dataValue.IsNull() || dataValue.IsUnknown() {
+		return nil, nil
+	}
+	pv := PolicyVersion_Rules_Source_K8S_NamespaceSelector{}
+	diags := tfsdk.ValueAs(ctx, dataValue, &pv)
+	if diags.HasError() {
+		return nil, diags
+	}
+	proto := &configv1.PolicyVersion_Rules_Source_K8S_NamespaceSelector{}
+	pvElemModelMatchExpressions := pv.MatchExpressions.Elements()
+	proto.MatchExpressions = make([]*configv1.PolicyVersion_Rules_Source_K8S_NamespaceSelector_MatchExpressions, 0, len(pvElemModelMatchExpressions))
+	for _, elem := range pvElemModelMatchExpressions {
+		pvModel, dvDiags := ConvertDataValueToPolicyVersion_Rules_Source_K8S_NamespaceSelector_MatchExpressionsProto(ctx, elem)
+		diags.Append(dvDiags...)
+		if diags.HasError() {
+			return nil, diags
+		}
+		proto.MatchExpressions = append(proto.MatchExpressions, pvModel)
+	}
+	pvElemModelMatchLabels := pv.MatchLabels.Elements()
+	proto.MatchLabels = make([]*configv1.PolicyVersion_Rules_Source_K8S_NamespaceSelector_MatchLabels, 0, len(pvElemModelMatchLabels))
+	for _, elem := range pvElemModelMatchLabels {
+		pvModel, dvDiags := ConvertDataValueToPolicyVersion_Rules_Source_K8S_NamespaceSelector_MatchLabelsProto(ctx, elem)
+		diags.Append(dvDiags...)
+		if diags.HasError() {
+			return nil, diags
+		}
+		proto.MatchLabels = append(proto.MatchLabels, pvModel)
+	}
+	return proto, diags
+}
+
+type PolicyVersion_Rules_Source_K8S_NamespaceSelector_MatchExpressions struct {
+	Key      types.String `tfsdk:"key"`
+	Operator types.String `tfsdk:"operator"`
+	Values   types.List   `tfsdk:"values"`
+}
+
+func GetTypeAttrsForPolicyVersion_Rules_Source_K8S_NamespaceSelector_MatchExpressions() map[string]attr.Type {
+	return map[string]attr.Type{
+		"key":      types.StringType,
+		"operator": types.StringType,
+		"values":   types.ListType{ElemType: types.StringType},
+	}
+}
+
+func ConvertPolicyVersion_Rules_Source_K8S_NamespaceSelector_MatchExpressionsToObjectValueFromProto(proto *configv1.PolicyVersion_Rules_Source_K8S_NamespaceSelector_MatchExpressions) basetypes.ObjectValue {
+	if proto == nil {
+		return types.ObjectNull(GetTypeAttrsForPolicyVersion_Rules_Source_K8S_NamespaceSelector_MatchExpressions())
+	}
+	elementsInValues := make([]attr.Value, 0, len(proto.Values))
+	for _, item := range proto.Values {
+		elementsInValues = append(elementsInValues, types.StringValue(item))
+	}
+	return types.ObjectValueMust(
+		GetTypeAttrsForPolicyVersion_Rules_Source_K8S_NamespaceSelector_MatchExpressions(),
+		map[string]attr.Value{
+			"key":      types.StringValue(proto.Key),
+			"operator": types.StringValue(proto.Operator),
+			"values": func() basetypes.ListValue {
+				if proto.Values == nil {
+					return types.ListNull(types.StringType)
+				}
+				return types.ListValueMust(types.StringType, elementsInValues)
+			}(),
+		},
+	)
+}
+
+func ConvertDataValueToPolicyVersion_Rules_Source_K8S_NamespaceSelector_MatchExpressionsProto(ctx context.Context, dataValue attr.Value) (*configv1.PolicyVersion_Rules_Source_K8S_NamespaceSelector_MatchExpressions, diag.Diagnostics) {
+	if dataValue.IsNull() || dataValue.IsUnknown() {
+		return nil, nil
+	}
+	pv := PolicyVersion_Rules_Source_K8S_NamespaceSelector_MatchExpressions{}
+	diags := tfsdk.ValueAs(ctx, dataValue, &pv)
+	if diags.HasError() {
+		return nil, diags
+	}
+	proto := &configv1.PolicyVersion_Rules_Source_K8S_NamespaceSelector_MatchExpressions{}
+	proto.Key = pv.Key.ValueString()
+	proto.Operator = pv.Operator.ValueString()
+	var pvModelValues []string
+	dvDiagsValues := pv.Values.ElementsAs(ctx, &pvModelValues, false)
+	diags.Append(dvDiagsValues...)
+	if diags.HasError() {
+		return nil, diags
+	}
+	proto.Values = pvModelValues
+	return proto, diags
+}
+
+type PolicyVersion_Rules_Source_K8S_NamespaceSelector_MatchLabels struct {
+	Key   types.String `tfsdk:"key"`
+	Value types.String `tfsdk:"value"`
+}
+
+func GetTypeAttrsForPolicyVersion_Rules_Source_K8S_NamespaceSelector_MatchLabels() map[string]attr.Type {
+	return map[string]attr.Type{
+		"key":   types.StringType,
+		"value": types.StringType,
+	}
+}
+
+func ConvertPolicyVersion_Rules_Source_K8S_NamespaceSelector_MatchLabelsToObjectValueFromProto(proto *configv1.PolicyVersion_Rules_Source_K8S_NamespaceSelector_MatchLabels) basetypes.ObjectValue {
+	if proto == nil {
+		return types.ObjectNull(GetTypeAttrsForPolicyVersion_Rules_Source_K8S_NamespaceSelector_MatchLabels())
+	}
+	return types.ObjectValueMust(
+		GetTypeAttrsForPolicyVersion_Rules_Source_K8S_NamespaceSelector_MatchLabels(),
+		map[string]attr.Value{
+			"key":   types.StringValue(proto.Key),
+			"value": types.StringValue(proto.Value),
+		},
+	)
+}
+
+func ConvertDataValueToPolicyVersion_Rules_Source_K8S_NamespaceSelector_MatchLabelsProto(ctx context.Context, dataValue attr.Value) (*configv1.PolicyVersion_Rules_Source_K8S_NamespaceSelector_MatchLabels, diag.Diagnostics) {
+	if dataValue.IsNull() || dataValue.IsUnknown() {
+		return nil, nil
+	}
+	pv := PolicyVersion_Rules_Source_K8S_NamespaceSelector_MatchLabels{}
+	diags := tfsdk.ValueAs(ctx, dataValue, &pv)
+	if diags.HasError() {
+		return nil, diags
+	}
+	proto := &configv1.PolicyVersion_Rules_Source_K8S_NamespaceSelector_MatchLabels{}
+	proto.Key = pv.Key.ValueString()
+	proto.Value = pv.Value.ValueString()
+	return proto, diags
+}
+
+type PolicyVersion_Rules_Source_K8S_WorkloadSelector struct {
+	MatchExpressions types.List `tfsdk:"match_expressions"`
+	MatchLabels      types.List `tfsdk:"match_labels"`
+	ServiceAccounts  types.List `tfsdk:"service_accounts"`
+}
+
+func GetTypeAttrsForPolicyVersion_Rules_Source_K8S_WorkloadSelector() map[string]attr.Type {
+	return map[string]attr.Type{
+		"match_expressions": types.ListType{ElemType: types.ObjectType{
+			AttrTypes: GetTypeAttrsForPolicyVersion_Rules_Source_K8S_WorkloadSelector_MatchExpressions(),
+		}},
+		"match_labels": types.ListType{ElemType: types.ObjectType{
+			AttrTypes: GetTypeAttrsForPolicyVersion_Rules_Source_K8S_WorkloadSelector_MatchLabels(),
+		}},
+		"service_accounts": types.ListType{ElemType: types.StringType},
+	}
+}
+
+func ConvertPolicyVersion_Rules_Source_K8S_WorkloadSelectorToObjectValueFromProto(proto *configv1.PolicyVersion_Rules_Source_K8S_WorkloadSelector) basetypes.ObjectValue {
+	if proto == nil {
+		return types.ObjectNull(GetTypeAttrsForPolicyVersion_Rules_Source_K8S_WorkloadSelector())
+	}
+	elementsInMatchExpressions := make([]attr.Value, 0, len(proto.MatchExpressions))
+	for _, item := range proto.MatchExpressions {
+		elementsInMatchExpressions = append(elementsInMatchExpressions, ConvertPolicyVersion_Rules_Source_K8S_WorkloadSelector_MatchExpressionsToObjectValueFromProto(item))
+	}
+	elementsInMatchLabels := make([]attr.Value, 0, len(proto.MatchLabels))
+	for _, item := range proto.MatchLabels {
+		elementsInMatchLabels = append(elementsInMatchLabels, ConvertPolicyVersion_Rules_Source_K8S_WorkloadSelector_MatchLabelsToObjectValueFromProto(item))
+	}
+	elementsInServiceAccounts := make([]attr.Value, 0, len(proto.ServiceAccounts))
+	for _, item := range proto.ServiceAccounts {
+		elementsInServiceAccounts = append(elementsInServiceAccounts, types.StringValue(item))
+	}
+	return types.ObjectValueMust(
+		GetTypeAttrsForPolicyVersion_Rules_Source_K8S_WorkloadSelector(),
+		map[string]attr.Value{
+			"match_expressions": func() basetypes.ListValue {
+				if proto.MatchExpressions == nil {
+					return types.ListNull(types.ObjectType{AttrTypes: GetTypeAttrsForPolicyVersion_Rules_Source_K8S_WorkloadSelector_MatchExpressions()})
+				}
+				return types.ListValueMust(types.ObjectType{AttrTypes: GetTypeAttrsForPolicyVersion_Rules_Source_K8S_WorkloadSelector_MatchExpressions()}, elementsInMatchExpressions)
+			}(),
+			"match_labels": func() basetypes.ListValue {
+				if proto.MatchLabels == nil {
+					return types.ListNull(types.ObjectType{AttrTypes: GetTypeAttrsForPolicyVersion_Rules_Source_K8S_WorkloadSelector_MatchLabels()})
+				}
+				return types.ListValueMust(types.ObjectType{AttrTypes: GetTypeAttrsForPolicyVersion_Rules_Source_K8S_WorkloadSelector_MatchLabels()}, elementsInMatchLabels)
+			}(),
+			"service_accounts": func() basetypes.ListValue {
+				if proto.ServiceAccounts == nil {
+					return types.ListNull(types.StringType)
+				}
+				return types.ListValueMust(types.StringType, elementsInServiceAccounts)
+			}(),
+		},
+	)
+}
+
+func ConvertDataValueToPolicyVersion_Rules_Source_K8S_WorkloadSelectorProto(ctx context.Context, dataValue attr.Value) (*configv1.PolicyVersion_Rules_Source_K8S_WorkloadSelector, diag.Diagnostics) {
+	if dataValue.IsNull() || dataValue.IsUnknown() {
+		return nil, nil
+	}
+	pv := PolicyVersion_Rules_Source_K8S_WorkloadSelector{}
+	diags := tfsdk.ValueAs(ctx, dataValue, &pv)
+	if diags.HasError() {
+		return nil, diags
+	}
+	proto := &configv1.PolicyVersion_Rules_Source_K8S_WorkloadSelector{}
+	pvElemModelMatchExpressions := pv.MatchExpressions.Elements()
+	proto.MatchExpressions = make([]*configv1.PolicyVersion_Rules_Source_K8S_WorkloadSelector_MatchExpressions, 0, len(pvElemModelMatchExpressions))
+	for _, elem := range pvElemModelMatchExpressions {
+		pvModel, dvDiags := ConvertDataValueToPolicyVersion_Rules_Source_K8S_WorkloadSelector_MatchExpressionsProto(ctx, elem)
+		diags.Append(dvDiags...)
+		if diags.HasError() {
+			return nil, diags
+		}
+		proto.MatchExpressions = append(proto.MatchExpressions, pvModel)
+	}
+	pvElemModelMatchLabels := pv.MatchLabels.Elements()
+	proto.MatchLabels = make([]*configv1.PolicyVersion_Rules_Source_K8S_WorkloadSelector_MatchLabels, 0, len(pvElemModelMatchLabels))
+	for _, elem := range pvElemModelMatchLabels {
+		pvModel, dvDiags := ConvertDataValueToPolicyVersion_Rules_Source_K8S_WorkloadSelector_MatchLabelsProto(ctx, elem)
+		diags.Append(dvDiags...)
+		if diags.HasError() {
+			return nil, diags
+		}
+		proto.MatchLabels = append(proto.MatchLabels, pvModel)
+	}
+	var pvModelServiceAccounts []string
+	dvDiagsServiceAccounts := pv.ServiceAccounts.ElementsAs(ctx, &pvModelServiceAccounts, false)
+	diags.Append(dvDiagsServiceAccounts...)
+	if diags.HasError() {
+		return nil, diags
+	}
+	proto.ServiceAccounts = pvModelServiceAccounts
+	return proto, diags
+}
+
+type PolicyVersion_Rules_Source_K8S_WorkloadSelector_MatchExpressions struct {
+	Key      types.String `tfsdk:"key"`
+	Operator types.String `tfsdk:"operator"`
+	Values   types.List   `tfsdk:"values"`
+}
+
+func GetTypeAttrsForPolicyVersion_Rules_Source_K8S_WorkloadSelector_MatchExpressions() map[string]attr.Type {
+	return map[string]attr.Type{
+		"key":      types.StringType,
+		"operator": types.StringType,
+		"values":   types.ListType{ElemType: types.StringType},
+	}
+}
+
+func ConvertPolicyVersion_Rules_Source_K8S_WorkloadSelector_MatchExpressionsToObjectValueFromProto(proto *configv1.PolicyVersion_Rules_Source_K8S_WorkloadSelector_MatchExpressions) basetypes.ObjectValue {
+	if proto == nil {
+		return types.ObjectNull(GetTypeAttrsForPolicyVersion_Rules_Source_K8S_WorkloadSelector_MatchExpressions())
+	}
+	elementsInValues := make([]attr.Value, 0, len(proto.Values))
+	for _, item := range proto.Values {
+		elementsInValues = append(elementsInValues, types.StringValue(item))
+	}
+	return types.ObjectValueMust(
+		GetTypeAttrsForPolicyVersion_Rules_Source_K8S_WorkloadSelector_MatchExpressions(),
+		map[string]attr.Value{
+			"key":      types.StringValue(proto.Key),
+			"operator": types.StringValue(proto.Operator),
+			"values": func() basetypes.ListValue {
+				if proto.Values == nil {
+					return types.ListNull(types.StringType)
+				}
+				return types.ListValueMust(types.StringType, elementsInValues)
+			}(),
+		},
+	)
+}
+
+func ConvertDataValueToPolicyVersion_Rules_Source_K8S_WorkloadSelector_MatchExpressionsProto(ctx context.Context, dataValue attr.Value) (*configv1.PolicyVersion_Rules_Source_K8S_WorkloadSelector_MatchExpressions, diag.Diagnostics) {
+	if dataValue.IsNull() || dataValue.IsUnknown() {
+		return nil, nil
+	}
+	pv := PolicyVersion_Rules_Source_K8S_WorkloadSelector_MatchExpressions{}
+	diags := tfsdk.ValueAs(ctx, dataValue, &pv)
+	if diags.HasError() {
+		return nil, diags
+	}
+	proto := &configv1.PolicyVersion_Rules_Source_K8S_WorkloadSelector_MatchExpressions{}
+	proto.Key = pv.Key.ValueString()
+	proto.Operator = pv.Operator.ValueString()
+	var pvModelValues []string
+	dvDiagsValues := pv.Values.ElementsAs(ctx, &pvModelValues, false)
+	diags.Append(dvDiagsValues...)
+	if diags.HasError() {
+		return nil, diags
+	}
+	proto.Values = pvModelValues
+	return proto, diags
+}
+
+type PolicyVersion_Rules_Source_K8S_WorkloadSelector_MatchLabels struct {
+	Key   types.String `tfsdk:"key"`
+	Value types.String `tfsdk:"value"`
+}
+
+func GetTypeAttrsForPolicyVersion_Rules_Source_K8S_WorkloadSelector_MatchLabels() map[string]attr.Type {
+	return map[string]attr.Type{
+		"key":   types.StringType,
+		"value": types.StringType,
+	}
+}
+
+func ConvertPolicyVersion_Rules_Source_K8S_WorkloadSelector_MatchLabelsToObjectValueFromProto(proto *configv1.PolicyVersion_Rules_Source_K8S_WorkloadSelector_MatchLabels) basetypes.ObjectValue {
+	if proto == nil {
+		return types.ObjectNull(GetTypeAttrsForPolicyVersion_Rules_Source_K8S_WorkloadSelector_MatchLabels())
+	}
+	return types.ObjectValueMust(
+		GetTypeAttrsForPolicyVersion_Rules_Source_K8S_WorkloadSelector_MatchLabels(),
+		map[string]attr.Value{
+			"key":   types.StringValue(proto.Key),
+			"value": types.StringValue(proto.Value),
+		},
+	)
+}
+
+func ConvertDataValueToPolicyVersion_Rules_Source_K8S_WorkloadSelector_MatchLabelsProto(ctx context.Context, dataValue attr.Value) (*configv1.PolicyVersion_Rules_Source_K8S_WorkloadSelector_MatchLabels, diag.Diagnostics) {
+	if dataValue.IsNull() || dataValue.IsUnknown() {
+		return nil, nil
+	}
+	pv := PolicyVersion_Rules_Source_K8S_WorkloadSelector_MatchLabels{}
+	diags := tfsdk.ValueAs(ctx, dataValue, &pv)
+	if diags.HasError() {
+		return nil, diags
+	}
+	proto := &configv1.PolicyVersion_Rules_Source_K8S_WorkloadSelector_MatchLabels{}
+	proto.Key = pv.Key.ValueString()
+	proto.Value = pv.Value.ValueString()
 	return proto, diags
 }
 
@@ -9625,6 +15687,9 @@ func GetTypeAttrsForTagToLabel_Icon() map[string]attr.Type {
 }
 
 func ConvertTagToLabel_IconToObjectValueFromProto(proto *configv1.TagToLabel_Icon) basetypes.ObjectValue {
+	if proto == nil {
+		return types.ObjectNull(GetTypeAttrsForTagToLabel_Icon())
+	}
 	return types.ObjectValueMust(
 		GetTypeAttrsForTagToLabel_Icon(),
 		map[string]attr.Value{
@@ -9636,6 +15701,9 @@ func ConvertTagToLabel_IconToObjectValueFromProto(proto *configv1.TagToLabel_Ico
 }
 
 func ConvertDataValueToTagToLabel_IconProto(ctx context.Context, dataValue attr.Value) (*configv1.TagToLabel_Icon, diag.Diagnostics) {
+	if dataValue.IsNull() || dataValue.IsUnknown() {
+		return nil, nil
+	}
 	pv := TagToLabel_Icon{}
 	diags := tfsdk.ValueAs(ctx, dataValue, &pv)
 	if diags.HasError() {

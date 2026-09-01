@@ -6,6 +6,7 @@ package main
 import (
 	"fmt"
 	"io"
+	"strings"
 	"text/template" // nosemgrep: go.lang.security.audit.xss.import-text-template.import-text-template
 
 	"github.com/hashicorp/terraform-plugin-framework/attr"
@@ -169,8 +170,9 @@ func GenerateGRPCAPISpec(dst io.Writer, src schema.Schema, tagger *apiSpecTagger
 				//
 				// Nesting each message (2.) would cause too much overhead as it would require generating duplicate code for handling those duplicate messages.
 				// Therefore, define it globally, but prefix the message name with the resource name to make it globally unique.
+				unprefixedName := msg.Name
 				msg.Name = resourceMessageName + MessageNameSeperator + msg.Name
-				t = msg.Name
+				t = strings.Replace(t, unprefixedName, msg.Name, 1)
 
 				data.Messages = append(data.Messages, *msg)
 			}

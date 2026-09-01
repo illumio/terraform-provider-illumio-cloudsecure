@@ -52,6 +52,12 @@ type FakeConfigServer struct {
 	OrganizationPolicyMutex             sync.RWMutex
 	OrganizationPolicyRuleMap           map[string]*OrganizationPolicyRule
 	OrganizationPolicyRuleMutex         sync.RWMutex
+	PolicyMap                           map[string]*Policy
+	PolicyMutex                         sync.RWMutex
+	PolicyProvisionMap                  map[string]*PolicyProvision
+	PolicyProvisionMutex                sync.RWMutex
+	PolicyVersionMap                    map[string]*PolicyVersion
+	PolicyVersionMutex                  sync.RWMutex
 	TagToLabelMap                       map[string]*TagToLabel
 	TagToLabelMutex                     sync.RWMutex
 }
@@ -78,6 +84,9 @@ func NewFakeConfigServer(logger *zap.Logger) configv1.ConfigServiceServer {
 		K8SClusterOnboardingCredentialMap: make(map[string]*K8SClusterOnboardingCredential),
 		OrganizationPolicyMap:             make(map[string]*OrganizationPolicy),
 		OrganizationPolicyRuleMap:         make(map[string]*OrganizationPolicyRule),
+		PolicyMap:                         make(map[string]*Policy),
+		PolicyProvisionMap:                make(map[string]*PolicyProvision),
+		PolicyVersionMap:                  make(map[string]*PolicyVersion),
 		TagToLabelMap:                     make(map[string]*TagToLabel),
 	}
 }
@@ -236,6 +245,25 @@ type OrganizationPolicyRule struct {
 	ToIpListIds          []string
 	ToLabels             []*configv1.OrganizationPolicyRule_ToLabels
 	ToPortRanges         []*configv1.OrganizationPolicyRule_ToPortRanges
+}
+
+type Policy struct {
+	Id          string
+	Description *string
+	Name        string
+}
+
+type PolicyProvision struct {
+	Id              string
+	PolicyVersionId string
+}
+
+type PolicyVersion struct {
+	Id            string
+	Description   *string
+	PolicyId      string
+	Rules         map[string]*configv1.PolicyVersion_Rules
+	VersionNumber int64
 }
 
 type TagToLabel struct {
@@ -2494,6 +2522,375 @@ func (s *FakeConfigServer) DeleteOrganizationPolicyRule(ctx context.Context, req
 	s.Logger.Info("deleted resource",
 		zap.String("type", "organization_policy_rule"),
 		zap.String("method", "DeleteOrganizationPolicyRule"),
+		zap.String("id", id),
+	)
+	return &emptypb.Empty{}, nil
+}
+func (s *FakeConfigServer) CreatePolicy(ctx context.Context, req *configv1.CreatePolicyRequest) (*configv1.CreatePolicyResponse, error) {
+	id := uuid.New().String()
+	model := &Policy{
+		Id:          id,
+		Description: req.Description,
+		Name:        req.Name,
+	}
+	resp := &configv1.CreatePolicyResponse{
+		Id:          id,
+		Description: model.Description,
+		Name:        model.Name,
+	}
+	s.PolicyMutex.Lock()
+	s.PolicyMap[id] = model
+	s.PolicyMutex.Unlock()
+	s.Logger.Info("created resource",
+		zap.String("type", "policy"),
+		zap.String("method", "CreatePolicy"),
+		zap.String("id", id),
+	)
+	return resp, nil
+}
+
+func (s *FakeConfigServer) ReadPolicy(ctx context.Context, req *configv1.ReadPolicyRequest) (*configv1.ReadPolicyResponse, error) {
+	id := req.Id
+	s.PolicyMutex.RLock()
+	model, found := s.PolicyMap[id]
+	if !found {
+		s.PolicyMutex.RUnlock()
+		s.Logger.Error("attempted to read resource with unknown id",
+			zap.String("type", "policy"),
+			zap.String("method", "ReadPolicy"),
+			zap.String("id", id),
+		)
+		return nil, status.Errorf(codes.NotFound, "no policy found with id %s", id)
+	}
+	resp := &configv1.ReadPolicyResponse{
+		Id:          id,
+		Description: model.Description,
+		Name:        model.Name,
+	}
+	s.PolicyMutex.RUnlock()
+	s.Logger.Info("read resource",
+		zap.String("type", "policy"),
+		zap.String("method", "ReadPolicy"),
+		zap.String("id", id),
+	)
+	return resp, nil
+}
+
+func (s *FakeConfigServer) UpdatePolicy(ctx context.Context, req *configv1.UpdatePolicyRequest) (*configv1.UpdatePolicyResponse, error) {
+	id := req.Id
+	s.PolicyMutex.Lock()
+	model, found := s.PolicyMap[id]
+	if !found {
+		s.PolicyMutex.Unlock()
+		s.Logger.Error("attempted to update resource with unknown id",
+			zap.String("type", "policy"),
+			zap.String("method", "UpdatePolicy"),
+			zap.String("id", id),
+		)
+		return nil, status.Errorf(codes.NotFound, "no policy found with id %s", id)
+	}
+	updateMask := req.UpdateMask
+	var updateMaskPaths []string
+	if updateMask != nil {
+		updateMaskPaths = updateMask.Paths
+	}
+	for _, path := range updateMaskPaths {
+		switch path {
+		case "description":
+			model.Description = req.Description
+		case "name":
+			model.Name = req.Name
+		default:
+			s.AwsAccountMutex.Unlock()
+			s.Logger.Error("attempted to update resource using invalid update_mask path",
+				zap.String("type", "policy"),
+				zap.String("method", "UpdatePolicy"),
+				zap.String("id", id),
+				zap.Strings("updateMaskPaths", updateMaskPaths),
+				zap.String("invalidUpdateMaskPath", path),
+			)
+			return nil, status.Errorf(codes.InvalidArgument, "invalid path in update_mask for policy: %s", path)
+		}
+	}
+	resp := &configv1.UpdatePolicyResponse{
+		Id:          id,
+		Description: model.Description,
+		Name:        model.Name,
+	}
+	s.PolicyMutex.Unlock()
+	s.Logger.Info("updated resource",
+		zap.String("type", "policy"),
+		zap.String("method", "UpdatePolicy"),
+		zap.String("id", id),
+		zap.Strings("updateMaskPaths", updateMaskPaths),
+	)
+	return resp, nil
+}
+
+func (s *FakeConfigServer) DeletePolicy(ctx context.Context, req *configv1.DeletePolicyRequest) (*emptypb.Empty, error) {
+	id := req.Id
+	s.PolicyMutex.Lock()
+	_, found := s.PolicyMap[id]
+	if !found {
+		s.PolicyMutex.Unlock()
+		s.Logger.Error("attempted to delete resource with unknown id",
+			zap.String("type", "policy"),
+			zap.String("method", "DeletePolicy"),
+			zap.String("id", id),
+		)
+		return nil, status.Errorf(codes.NotFound, "no policy found with id %s", id)
+	}
+	delete(s.PolicyMap, id)
+	s.PolicyMutex.Unlock()
+	s.Logger.Info("deleted resource",
+		zap.String("type", "policy"),
+		zap.String("method", "DeletePolicy"),
+		zap.String("id", id),
+	)
+	return &emptypb.Empty{}, nil
+}
+func (s *FakeConfigServer) CreatePolicyProvision(ctx context.Context, req *configv1.CreatePolicyProvisionRequest) (*configv1.CreatePolicyProvisionResponse, error) {
+	id := uuid.New().String()
+	model := &PolicyProvision{
+		Id:              id,
+		PolicyVersionId: req.PolicyVersionId,
+	}
+	resp := &configv1.CreatePolicyProvisionResponse{
+		Id:              id,
+		PolicyVersionId: model.PolicyVersionId,
+	}
+	s.PolicyProvisionMutex.Lock()
+	s.PolicyProvisionMap[id] = model
+	s.PolicyProvisionMutex.Unlock()
+	s.Logger.Info("created resource",
+		zap.String("type", "policy_provision"),
+		zap.String("method", "CreatePolicyProvision"),
+		zap.String("id", id),
+	)
+	return resp, nil
+}
+
+func (s *FakeConfigServer) ReadPolicyProvision(ctx context.Context, req *configv1.ReadPolicyProvisionRequest) (*configv1.ReadPolicyProvisionResponse, error) {
+	id := req.Id
+	s.PolicyProvisionMutex.RLock()
+	model, found := s.PolicyProvisionMap[id]
+	if !found {
+		s.PolicyProvisionMutex.RUnlock()
+		s.Logger.Error("attempted to read resource with unknown id",
+			zap.String("type", "policy_provision"),
+			zap.String("method", "ReadPolicyProvision"),
+			zap.String("id", id),
+		)
+		return nil, status.Errorf(codes.NotFound, "no policy_provision found with id %s", id)
+	}
+	resp := &configv1.ReadPolicyProvisionResponse{
+		Id:              id,
+		PolicyVersionId: model.PolicyVersionId,
+	}
+	s.PolicyProvisionMutex.RUnlock()
+	s.Logger.Info("read resource",
+		zap.String("type", "policy_provision"),
+		zap.String("method", "ReadPolicyProvision"),
+		zap.String("id", id),
+	)
+	return resp, nil
+}
+
+func (s *FakeConfigServer) UpdatePolicyProvision(ctx context.Context, req *configv1.UpdatePolicyProvisionRequest) (*configv1.UpdatePolicyProvisionResponse, error) {
+	id := req.Id
+	s.PolicyProvisionMutex.Lock()
+	model, found := s.PolicyProvisionMap[id]
+	if !found {
+		s.PolicyProvisionMutex.Unlock()
+		s.Logger.Error("attempted to update resource with unknown id",
+			zap.String("type", "policy_provision"),
+			zap.String("method", "UpdatePolicyProvision"),
+			zap.String("id", id),
+		)
+		return nil, status.Errorf(codes.NotFound, "no policy_provision found with id %s", id)
+	}
+	updateMask := req.UpdateMask
+	var updateMaskPaths []string
+	if updateMask != nil {
+		updateMaskPaths = updateMask.Paths
+	}
+	for _, path := range updateMaskPaths {
+		switch path {
+		case "policy_version_id":
+			model.PolicyVersionId = req.PolicyVersionId
+		default:
+			s.AwsAccountMutex.Unlock()
+			s.Logger.Error("attempted to update resource using invalid update_mask path",
+				zap.String("type", "policy_provision"),
+				zap.String("method", "UpdatePolicyProvision"),
+				zap.String("id", id),
+				zap.Strings("updateMaskPaths", updateMaskPaths),
+				zap.String("invalidUpdateMaskPath", path),
+			)
+			return nil, status.Errorf(codes.InvalidArgument, "invalid path in update_mask for policy_provision: %s", path)
+		}
+	}
+	resp := &configv1.UpdatePolicyProvisionResponse{
+		Id:              id,
+		PolicyVersionId: model.PolicyVersionId,
+	}
+	s.PolicyProvisionMutex.Unlock()
+	s.Logger.Info("updated resource",
+		zap.String("type", "policy_provision"),
+		zap.String("method", "UpdatePolicyProvision"),
+		zap.String("id", id),
+		zap.Strings("updateMaskPaths", updateMaskPaths),
+	)
+	return resp, nil
+}
+
+func (s *FakeConfigServer) DeletePolicyProvision(ctx context.Context, req *configv1.DeletePolicyProvisionRequest) (*emptypb.Empty, error) {
+	id := req.Id
+	s.PolicyProvisionMutex.Lock()
+	_, found := s.PolicyProvisionMap[id]
+	if !found {
+		s.PolicyProvisionMutex.Unlock()
+		s.Logger.Error("attempted to delete resource with unknown id",
+			zap.String("type", "policy_provision"),
+			zap.String("method", "DeletePolicyProvision"),
+			zap.String("id", id),
+		)
+		return nil, status.Errorf(codes.NotFound, "no policy_provision found with id %s", id)
+	}
+	delete(s.PolicyProvisionMap, id)
+	s.PolicyProvisionMutex.Unlock()
+	s.Logger.Info("deleted resource",
+		zap.String("type", "policy_provision"),
+		zap.String("method", "DeletePolicyProvision"),
+		zap.String("id", id),
+	)
+	return &emptypb.Empty{}, nil
+}
+func (s *FakeConfigServer) CreatePolicyVersion(ctx context.Context, req *configv1.CreatePolicyVersionRequest) (*configv1.CreatePolicyVersionResponse, error) {
+	id := uuid.New().String()
+	model := &PolicyVersion{
+		Id:            id,
+		Description:   req.Description,
+		PolicyId:      req.PolicyId,
+		Rules:         req.Rules,
+		VersionNumber: req.VersionNumber,
+	}
+	resp := &configv1.CreatePolicyVersionResponse{
+		Id:            id,
+		Description:   model.Description,
+		PolicyId:      model.PolicyId,
+		Rules:         model.Rules,
+		VersionNumber: model.VersionNumber,
+	}
+	s.PolicyVersionMutex.Lock()
+	s.PolicyVersionMap[id] = model
+	s.PolicyVersionMutex.Unlock()
+	s.Logger.Info("created resource",
+		zap.String("type", "policy_version"),
+		zap.String("method", "CreatePolicyVersion"),
+		zap.String("id", id),
+	)
+	return resp, nil
+}
+
+func (s *FakeConfigServer) ReadPolicyVersion(ctx context.Context, req *configv1.ReadPolicyVersionRequest) (*configv1.ReadPolicyVersionResponse, error) {
+	id := req.Id
+	s.PolicyVersionMutex.RLock()
+	model, found := s.PolicyVersionMap[id]
+	if !found {
+		s.PolicyVersionMutex.RUnlock()
+		s.Logger.Error("attempted to read resource with unknown id",
+			zap.String("type", "policy_version"),
+			zap.String("method", "ReadPolicyVersion"),
+			zap.String("id", id),
+		)
+		return nil, status.Errorf(codes.NotFound, "no policy_version found with id %s", id)
+	}
+	resp := &configv1.ReadPolicyVersionResponse{
+		Id:            id,
+		Description:   model.Description,
+		PolicyId:      model.PolicyId,
+		Rules:         model.Rules,
+		VersionNumber: model.VersionNumber,
+	}
+	s.PolicyVersionMutex.RUnlock()
+	s.Logger.Info("read resource",
+		zap.String("type", "policy_version"),
+		zap.String("method", "ReadPolicyVersion"),
+		zap.String("id", id),
+	)
+	return resp, nil
+}
+
+func (s *FakeConfigServer) UpdatePolicyVersion(ctx context.Context, req *configv1.UpdatePolicyVersionRequest) (*configv1.UpdatePolicyVersionResponse, error) {
+	id := req.Id
+	s.PolicyVersionMutex.Lock()
+	model, found := s.PolicyVersionMap[id]
+	if !found {
+		s.PolicyVersionMutex.Unlock()
+		s.Logger.Error("attempted to update resource with unknown id",
+			zap.String("type", "policy_version"),
+			zap.String("method", "UpdatePolicyVersion"),
+			zap.String("id", id),
+		)
+		return nil, status.Errorf(codes.NotFound, "no policy_version found with id %s", id)
+	}
+	updateMask := req.UpdateMask
+	var updateMaskPaths []string
+	if updateMask != nil {
+		updateMaskPaths = updateMask.Paths
+	}
+	for _, path := range updateMaskPaths {
+		switch path {
+		case "version_number":
+			model.VersionNumber = req.VersionNumber
+		default:
+			s.AwsAccountMutex.Unlock()
+			s.Logger.Error("attempted to update resource using invalid update_mask path",
+				zap.String("type", "policy_version"),
+				zap.String("method", "UpdatePolicyVersion"),
+				zap.String("id", id),
+				zap.Strings("updateMaskPaths", updateMaskPaths),
+				zap.String("invalidUpdateMaskPath", path),
+			)
+			return nil, status.Errorf(codes.InvalidArgument, "invalid path in update_mask for policy_version: %s", path)
+		}
+	}
+	resp := &configv1.UpdatePolicyVersionResponse{
+		Id:            id,
+		Description:   model.Description,
+		PolicyId:      model.PolicyId,
+		Rules:         model.Rules,
+		VersionNumber: model.VersionNumber,
+	}
+	s.PolicyVersionMutex.Unlock()
+	s.Logger.Info("updated resource",
+		zap.String("type", "policy_version"),
+		zap.String("method", "UpdatePolicyVersion"),
+		zap.String("id", id),
+		zap.Strings("updateMaskPaths", updateMaskPaths),
+	)
+	return resp, nil
+}
+
+func (s *FakeConfigServer) DeletePolicyVersion(ctx context.Context, req *configv1.DeletePolicyVersionRequest) (*emptypb.Empty, error) {
+	id := req.Id
+	s.PolicyVersionMutex.Lock()
+	_, found := s.PolicyVersionMap[id]
+	if !found {
+		s.PolicyVersionMutex.Unlock()
+		s.Logger.Error("attempted to delete resource with unknown id",
+			zap.String("type", "policy_version"),
+			zap.String("method", "DeletePolicyVersion"),
+			zap.String("id", id),
+		)
+		return nil, status.Errorf(codes.NotFound, "no policy_version found with id %s", id)
+	}
+	delete(s.PolicyVersionMap, id)
+	s.PolicyVersionMutex.Unlock()
+	s.Logger.Info("deleted resource",
+		zap.String("type", "policy_version"),
+		zap.String("method", "DeletePolicyVersion"),
 		zap.String("id", id),
 	)
 	return &emptypb.Empty{}, nil
