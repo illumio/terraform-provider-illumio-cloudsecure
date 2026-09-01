@@ -64,25 +64,32 @@ var labelSelectorAttributes = map[string]resource_schema.Attribute{
 }
 
 // stringMatchAttributes is one cluster matching criterion expressed as an operator and
-// values, mirroring match_expressions on the namespace and workload selectors so the two
-// read the same way.
+// values, in the style of match_expressions on the namespace and workload selectors.
 //
-// Whether values is required depends on the operator: In and NotIn need at least one, while
-// Exists and DoesNotExist take none. That is a cross-field rule the framework cannot express
-// on a single attribute, so it is stated here and enforced by the server, matching how
-// match_expressions handles the same rule.
+// Unlike those, the operator set is limited to In and NotIn. The remaining two ask whether a
+// key is present at all, which only means something for labels: a cluster's account, scope,
+// and name are structural, so Exists would match every cluster in the provider and
+// DoesNotExist none of them. Exists on a required criterion would also satisfy the
+// ExactlyOneOf below while constraining nothing, reopening the tenant-wide widening that
+// making the criterion required is meant to prevent.
+//
+// With only In and NotIn left, values is always required, so the rule is a plain per-attribute
+// one the framework checks at plan time rather than a cross-field rule deferred to the server.
 var stringMatchAttributes = map[string]resource_schema.Attribute{
 	"operator": resource_schema.StringAttribute{
-		Description: "Match operator. Must be one of: In, NotIn, Exists, DoesNotExist.",
+		Description: "Match operator. Must be one of: In, NotIn.",
 		Required:    true,
 		Validators: []validator.String{
-			stringvalidator.OneOf("In", "NotIn", "Exists", "DoesNotExist"),
+			stringvalidator.OneOf("In", "NotIn"),
 		},
 	},
 	"values": resource_schema.ListAttribute{
-		Description: "Values to match against. Required for In and NotIn, and must be omitted for Exists and DoesNotExist.",
-		Optional:    true,
+		Description: "Values to match against. Must contain at least one value.",
+		Required:    true,
 		ElementType: types.StringType,
+		Validators: []validator.List{
+			listvalidator.SizeAtLeast(1),
+		},
 	},
 }
 
@@ -138,8 +145,8 @@ func clusterCriterion(name, description string, required bool) map[string]resour
 //
 // The two locator criteria are required, since between them they bound a selector to a single
 // account and scope. That keeps a selector from silently widening to every cluster in the
-// tenant, and it keeps the negative operators cheap to evaluate: NotIn and DoesNotExist are
-// only ever applied within an already narrow set rather than against everything.
+// tenant, and it keeps NotIn cheap to evaluate: it is only ever applied within an already
+// narrow set rather than against everything.
 //
 // The cluster name is optional. Omitting it selects every cluster in that account and scope,
 // which is the case the operators exist to serve.
@@ -148,6 +155,7 @@ func clusterProviderAttributes(accountName, accountDescription, scopeName, scope
 	maps.Copy(attributes, clusterCriterion(accountName, accountDescription, true))
 	maps.Copy(attributes, clusterCriterion(scopeName, scopeDescription, true))
 	maps.Copy(attributes, clusterCriterion("cluster_name", clusterNameDescription, false))
+
 	return attributes
 }
 
