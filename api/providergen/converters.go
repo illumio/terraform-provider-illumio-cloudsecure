@@ -37,30 +37,40 @@ func GetTypeAttrsFor{{.Name}}() map[string]attr.Type {
 
 func Convert{{.Name}}ToObjectValueFromProto(proto *configv1.{{.Name}}) basetypes.ObjectValue  {
 	{{- range $field := .Fields}}
-	{{- if and (ne $field.Type.CollectionElementType nil) (ne $field.Type.CollectionElementType.NestedModel nil)}}
-	{{- if eq $field.Type.ModelTypeName "Map"}}
-	elementsIn{{$field.Name}} := make(map[string]attr.Value, len(proto.{{$field.Name}}))
-	for key, item := range proto.{{$field.Name}} {
-		elementsIn{{$field.Name}}[key] = Convert{{$field.Type.CollectionElementType.NestedModel.Name}}ToObjectValueFromProto(item)
+	{{- if and (ne $field.Type.CollectionElementType nil)}}
+	var collectionValue{{$field.Name}} types.{{$field.Type.ModelTypeName}}
+	if proto.{{$field.Name}} == nil {
+		{{- if ne $field.Type.CollectionElementType.NestedModel nil}}
+		collectionValue{{$field.Name}} = types.{{$field.Type.ModelTypeName}}Null(types.ObjectType{AttrTypes: GetTypeAttrsFor{{$field.Type.CollectionElementType.NestedModel.Name}}()})
+		{{- else}}
+		collectionValue{{$field.Name}} = types.{{$field.Type.ModelTypeName}}Null(types.{{$field.Type.CollectionElementType.ModelTypeName}}Type)
+		{{- end}}
+	} else {
+		{{- if eq $field.Type.ModelTypeName "Map"}}
+		elementsIn{{$field.Name}} := make(map[string]attr.Value, len(proto.{{$field.Name}}))
+		for key, item := range proto.{{$field.Name}} {
+			{{- if ne $field.Type.CollectionElementType.NestedModel nil}}
+			elementsIn{{$field.Name}}[key] = Convert{{$field.Type.CollectionElementType.NestedModel.Name}}ToObjectValueFromProto(item)
+			{{- else}}
+			elementsIn{{$field.Name}}[key] = types.{{$field.Type.CollectionElementType.ModelTypeName}}Value(item)
+			{{- end}}
+		}
+		{{- else}}
+		elementsIn{{$field.Name}} := make([]attr.Value, 0, len(proto.{{$field.Name}}))
+		for _, item := range proto.{{$field.Name}} {
+			{{- if ne $field.Type.CollectionElementType.NestedModel nil}}
+			elementsIn{{$field.Name}} = append(elementsIn{{$field.Name}}, Convert{{$field.Type.CollectionElementType.NestedModel.Name}}ToObjectValueFromProto(item))
+			{{- else}}
+			elementsIn{{$field.Name}} = append(elementsIn{{$field.Name}}, types.{{$field.Type.CollectionElementType.ModelTypeName}}Value(item))
+			{{- end}}
+		}
+		{{- end}}
+		{{- if ne $field.Type.CollectionElementType.NestedModel nil}}
+		collectionValue{{$field.Name}} = types.{{$field.Type.ModelTypeName}}ValueMust(types.ObjectType{AttrTypes: GetTypeAttrsFor{{$field.Type.CollectionElementType.NestedModel.Name}}()}, elementsIn{{$field.Name}})
+		{{- else}}
+		collectionValue{{$field.Name}} = types.{{$field.Type.ModelTypeName}}ValueMust(types.{{$field.Type.CollectionElementType.ModelTypeName}}Type, elementsIn{{$field.Name}})
+		{{- end}}
 	}
-	{{- else}}{{- /* "List" or "Set" */}}
-	elementsIn{{$field.Name}} := make([]attr.Value, 0, len(proto.{{$field.Name}}))
-	for _, item := range proto.{{$field.Name}} {
-		elementsIn{{$field.Name}} = append(elementsIn{{$field.Name}}, Convert{{$field.Type.CollectionElementType.NestedModel.Name}}ToObjectValueFromProto(item))
-	}
-	{{- end}}
-	{{- else if ne $field.Type.CollectionElementType nil}}
-	{{- if eq $field.Type.ModelTypeName "Map"}}
-	elementsIn{{$field.Name}} := make(map[string]attr.Value, len(proto.{{$field.Name}}))
-	for key, item := range proto.{{$field.Name}} {
-		elementsIn{{$field.Name}}[key] = types.{{$field.Type.CollectionElementType.ModelTypeName}}Value(item)
-	}
-	{{- else}}{{- /* "List" or "Set" */}}
-	elementsIn{{$field.Name}} := make([]attr.Value, 0, len(proto.{{$field.Name}}))
-	for _, item := range proto.{{$field.Name}} {
-		elementsIn{{$field.Name}} = append(elementsIn{{$field.Name}}, types.{{$field.Type.CollectionElementType.ModelTypeName}}Value(item))
-	}
-	{{- end}}
 	{{- end}}
 	{{- end}}
 	return types.ObjectValueMust(
@@ -69,10 +79,8 @@ func Convert{{.Name}}ToObjectValueFromProto(proto *configv1.{{.Name}}) basetypes
 			{{- range $field := .Fields}}
 			{{- if ne $field.Type.NestedModel nil}}
 			"{{$field.AttributeName}}": Convert{{$field.Type.NestedModel.Name}}ToObjectValueFromProto(proto.{{$field.Name}}),
-			{{- else if and (ne $field.Type.CollectionElementType nil) (ne $field.Type.CollectionElementType.NestedModel nil)}}
-			"{{$field.AttributeName}}": types.{{$field.Type.ModelTypeName}}ValueMust(types.ObjectType{AttrTypes: GetTypeAttrsFor{{$field.Type.CollectionElementType.NestedModel.Name}}()}, elementsIn{{$field.Name}}),
-			{{- else if ne $field.Type.CollectionElementType nil}}
-			"{{$field.AttributeName}}": types.{{$field.Type.ModelTypeName}}ValueMust(types.{{$field.Type.CollectionElementType.ModelTypeName}}Type, elementsIn{{$field.Name}}),
+			{{- else if and (ne $field.Type.CollectionElementType nil)}}
+			"{{$field.AttributeName}}": collectionValue{{$field.Name}},
 			{{- else}}
 			"{{$field.AttributeName}}": types.{{$field.Type.ModelTypeName}}Value(proto.{{$field.Name}}),
 			{{- end}}
@@ -99,25 +107,29 @@ func ConvertDataValueTo{{.Name}}Proto(ctx context.Context, dataValue attr.Value)
 	{{- else if and (ne $field.Type.CollectionElementType nil) (ne $field.Type.CollectionElementType.NestedModel nil)}}
 	{{- if eq $field.Type.ModelTypeName "Map"}}
 	pvElemModel{{$field.Name}} := pv.{{$field.Name}}.Elements()
-	proto.{{$field.Name}} = make(map[string]*configv1.{{$field.Type.CollectionElementType.NestedModel.Name}}, len(pvElemModel{{$field.Name}}))
-	for key, elem := range pvElemModel{{$field.Name}} {
-		pvModel, dvDiags := ConvertDataValueTo{{$field.Type.CollectionElementType.NestedModel.Name}}Proto(ctx, elem)
-		diags.Append(dvDiags...)
-		if diags.HasError() {
-			return nil, diags
+	if len(pvElemModel{{$field.Name}}) > 0 {
+		proto.{{$field.Name}} = make(map[string]*configv1.{{$field.Type.CollectionElementType.NestedModel.Name}}, len(pvElemModel{{$field.Name}}))
+		for key, elem := range pvElemModel{{$field.Name}} {
+			pvModel, dvDiags := ConvertDataValueTo{{$field.Type.CollectionElementType.NestedModel.Name}}Proto(ctx, elem)
+			diags.Append(dvDiags...)
+			if diags.HasError() {
+				return nil, diags
+			}
+			proto.{{$field.Name}}[key] = pvModel
 		}
-		proto.{{$field.Name}}[key] = pvModel
 	}
 	{{- else}}{{- /* "List" or "Set" */}}
 	pvElemModel{{$field.Name}} := pv.{{$field.Name}}.Elements()
-	proto.{{$field.Name}} = make([]*configv1.{{$field.Type.CollectionElementType.NestedModel.Name}}, 0, len(pvElemModel{{$field.Name}}))
-	for _, elem := range pvElemModel{{$field.Name}} {
-		pvModel, dvDiags := ConvertDataValueTo{{$field.Type.CollectionElementType.NestedModel.Name}}Proto(ctx, elem)
-		diags.Append(dvDiags...)
-		if diags.HasError() {
-			return nil, diags
+	if len(pvElemModel{{$field.Name}}) > 0 {
+		proto.{{$field.Name}} = make([]*configv1.{{$field.Type.CollectionElementType.NestedModel.Name}}, 0, len(pvElemModel{{$field.Name}}))
+		for _, elem := range pvElemModel{{$field.Name}} {
+			pvModel, dvDiags := ConvertDataValueTo{{$field.Type.CollectionElementType.NestedModel.Name}}Proto(ctx, elem)
+			diags.Append(dvDiags...)
+			if diags.HasError() {
+				return nil, diags
+			}
+			proto.{{$field.Name}} = append(proto.{{$field.Name}}, pvModel)
 		}
-		proto.{{$field.Name}} = append(proto.{{$field.Name}}, pvModel)
 	}
 	{{- end}}
 	{{- else if ne $field.Type.CollectionElementType nil}}
