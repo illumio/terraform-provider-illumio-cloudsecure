@@ -87,6 +87,18 @@ const (
 	ConfigService_ReadOrganizationPolicyRule_FullMethodName           = "/illumio.cloud.config.v1.ConfigService/ReadOrganizationPolicyRule"
 	ConfigService_UpdateOrganizationPolicyRule_FullMethodName         = "/illumio.cloud.config.v1.ConfigService/UpdateOrganizationPolicyRule"
 	ConfigService_DeleteOrganizationPolicyRule_FullMethodName         = "/illumio.cloud.config.v1.ConfigService/DeleteOrganizationPolicyRule"
+	ConfigService_CreatePolicy_FullMethodName                         = "/illumio.cloud.config.v1.ConfigService/CreatePolicy"
+	ConfigService_ReadPolicy_FullMethodName                           = "/illumio.cloud.config.v1.ConfigService/ReadPolicy"
+	ConfigService_UpdatePolicy_FullMethodName                         = "/illumio.cloud.config.v1.ConfigService/UpdatePolicy"
+	ConfigService_DeletePolicy_FullMethodName                         = "/illumio.cloud.config.v1.ConfigService/DeletePolicy"
+	ConfigService_CreatePolicyProvision_FullMethodName                = "/illumio.cloud.config.v1.ConfigService/CreatePolicyProvision"
+	ConfigService_ReadPolicyProvision_FullMethodName                  = "/illumio.cloud.config.v1.ConfigService/ReadPolicyProvision"
+	ConfigService_UpdatePolicyProvision_FullMethodName                = "/illumio.cloud.config.v1.ConfigService/UpdatePolicyProvision"
+	ConfigService_DeletePolicyProvision_FullMethodName                = "/illumio.cloud.config.v1.ConfigService/DeletePolicyProvision"
+	ConfigService_CreatePolicyVersion_FullMethodName                  = "/illumio.cloud.config.v1.ConfigService/CreatePolicyVersion"
+	ConfigService_ReadPolicyVersion_FullMethodName                    = "/illumio.cloud.config.v1.ConfigService/ReadPolicyVersion"
+	ConfigService_UpdatePolicyVersion_FullMethodName                  = "/illumio.cloud.config.v1.ConfigService/UpdatePolicyVersion"
+	ConfigService_DeletePolicyVersion_FullMethodName                  = "/illumio.cloud.config.v1.ConfigService/DeletePolicyVersion"
 	ConfigService_CreateTagToLabel_FullMethodName                     = "/illumio.cloud.config.v1.ConfigService/CreateTagToLabel"
 	ConfigService_ReadTagToLabel_FullMethodName                       = "/illumio.cloud.config.v1.ConfigService/ReadTagToLabel"
 	ConfigService_UpdateTagToLabel_FullMethodName                     = "/illumio.cloud.config.v1.ConfigService/UpdateTagToLabel"
@@ -161,6 +173,18 @@ type ConfigServiceClient interface {
 	ReadOrganizationPolicyRule(ctx context.Context, in *ReadOrganizationPolicyRuleRequest, opts ...grpc.CallOption) (*ReadOrganizationPolicyRuleResponse, error)
 	UpdateOrganizationPolicyRule(ctx context.Context, in *UpdateOrganizationPolicyRuleRequest, opts ...grpc.CallOption) (*UpdateOrganizationPolicyRuleResponse, error)
 	DeleteOrganizationPolicyRule(ctx context.Context, in *DeleteOrganizationPolicyRuleRequest, opts ...grpc.CallOption) (*emptypb.Empty, error)
+	CreatePolicy(ctx context.Context, in *CreatePolicyRequest, opts ...grpc.CallOption) (*CreatePolicyResponse, error)
+	ReadPolicy(ctx context.Context, in *ReadPolicyRequest, opts ...grpc.CallOption) (*ReadPolicyResponse, error)
+	UpdatePolicy(ctx context.Context, in *UpdatePolicyRequest, opts ...grpc.CallOption) (*UpdatePolicyResponse, error)
+	DeletePolicy(ctx context.Context, in *DeletePolicyRequest, opts ...grpc.CallOption) (*emptypb.Empty, error)
+	CreatePolicyProvision(ctx context.Context, in *CreatePolicyProvisionRequest, opts ...grpc.CallOption) (*CreatePolicyProvisionResponse, error)
+	ReadPolicyProvision(ctx context.Context, in *ReadPolicyProvisionRequest, opts ...grpc.CallOption) (*ReadPolicyProvisionResponse, error)
+	UpdatePolicyProvision(ctx context.Context, in *UpdatePolicyProvisionRequest, opts ...grpc.CallOption) (*UpdatePolicyProvisionResponse, error)
+	DeletePolicyProvision(ctx context.Context, in *DeletePolicyProvisionRequest, opts ...grpc.CallOption) (*emptypb.Empty, error)
+	CreatePolicyVersion(ctx context.Context, in *CreatePolicyVersionRequest, opts ...grpc.CallOption) (*CreatePolicyVersionResponse, error)
+	ReadPolicyVersion(ctx context.Context, in *ReadPolicyVersionRequest, opts ...grpc.CallOption) (*ReadPolicyVersionResponse, error)
+	UpdatePolicyVersion(ctx context.Context, in *UpdatePolicyVersionRequest, opts ...grpc.CallOption) (*UpdatePolicyVersionResponse, error)
+	DeletePolicyVersion(ctx context.Context, in *DeletePolicyVersionRequest, opts ...grpc.CallOption) (*emptypb.Empty, error)
 	CreateTagToLabel(ctx context.Context, in *CreateTagToLabelRequest, opts ...grpc.CallOption) (*CreateTagToLabelResponse, error)
 	ReadTagToLabel(ctx context.Context, in *ReadTagToLabelRequest, opts ...grpc.CallOption) (*ReadTagToLabelResponse, error)
 	UpdateTagToLabel(ctx context.Context, in *UpdateTagToLabelRequest, opts ...grpc.CallOption) (*UpdateTagToLabelResponse, error)
@@ -815,6 +839,126 @@ func (c *configServiceClient) DeleteOrganizationPolicyRule(ctx context.Context, 
 	return out, nil
 }
 
+func (c *configServiceClient) CreatePolicy(ctx context.Context, in *CreatePolicyRequest, opts ...grpc.CallOption) (*CreatePolicyResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(CreatePolicyResponse)
+	err := c.cc.Invoke(ctx, ConfigService_CreatePolicy_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *configServiceClient) ReadPolicy(ctx context.Context, in *ReadPolicyRequest, opts ...grpc.CallOption) (*ReadPolicyResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(ReadPolicyResponse)
+	err := c.cc.Invoke(ctx, ConfigService_ReadPolicy_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *configServiceClient) UpdatePolicy(ctx context.Context, in *UpdatePolicyRequest, opts ...grpc.CallOption) (*UpdatePolicyResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(UpdatePolicyResponse)
+	err := c.cc.Invoke(ctx, ConfigService_UpdatePolicy_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *configServiceClient) DeletePolicy(ctx context.Context, in *DeletePolicyRequest, opts ...grpc.CallOption) (*emptypb.Empty, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(emptypb.Empty)
+	err := c.cc.Invoke(ctx, ConfigService_DeletePolicy_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *configServiceClient) CreatePolicyProvision(ctx context.Context, in *CreatePolicyProvisionRequest, opts ...grpc.CallOption) (*CreatePolicyProvisionResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(CreatePolicyProvisionResponse)
+	err := c.cc.Invoke(ctx, ConfigService_CreatePolicyProvision_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *configServiceClient) ReadPolicyProvision(ctx context.Context, in *ReadPolicyProvisionRequest, opts ...grpc.CallOption) (*ReadPolicyProvisionResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(ReadPolicyProvisionResponse)
+	err := c.cc.Invoke(ctx, ConfigService_ReadPolicyProvision_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *configServiceClient) UpdatePolicyProvision(ctx context.Context, in *UpdatePolicyProvisionRequest, opts ...grpc.CallOption) (*UpdatePolicyProvisionResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(UpdatePolicyProvisionResponse)
+	err := c.cc.Invoke(ctx, ConfigService_UpdatePolicyProvision_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *configServiceClient) DeletePolicyProvision(ctx context.Context, in *DeletePolicyProvisionRequest, opts ...grpc.CallOption) (*emptypb.Empty, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(emptypb.Empty)
+	err := c.cc.Invoke(ctx, ConfigService_DeletePolicyProvision_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *configServiceClient) CreatePolicyVersion(ctx context.Context, in *CreatePolicyVersionRequest, opts ...grpc.CallOption) (*CreatePolicyVersionResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(CreatePolicyVersionResponse)
+	err := c.cc.Invoke(ctx, ConfigService_CreatePolicyVersion_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *configServiceClient) ReadPolicyVersion(ctx context.Context, in *ReadPolicyVersionRequest, opts ...grpc.CallOption) (*ReadPolicyVersionResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(ReadPolicyVersionResponse)
+	err := c.cc.Invoke(ctx, ConfigService_ReadPolicyVersion_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *configServiceClient) UpdatePolicyVersion(ctx context.Context, in *UpdatePolicyVersionRequest, opts ...grpc.CallOption) (*UpdatePolicyVersionResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(UpdatePolicyVersionResponse)
+	err := c.cc.Invoke(ctx, ConfigService_UpdatePolicyVersion_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *configServiceClient) DeletePolicyVersion(ctx context.Context, in *DeletePolicyVersionRequest, opts ...grpc.CallOption) (*emptypb.Empty, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(emptypb.Empty)
+	err := c.cc.Invoke(ctx, ConfigService_DeletePolicyVersion_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 func (c *configServiceClient) CreateTagToLabel(ctx context.Context, in *CreateTagToLabelRequest, opts ...grpc.CallOption) (*CreateTagToLabelResponse, error) {
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
 	out := new(CreateTagToLabelResponse)
@@ -923,6 +1067,18 @@ type ConfigServiceServer interface {
 	ReadOrganizationPolicyRule(context.Context, *ReadOrganizationPolicyRuleRequest) (*ReadOrganizationPolicyRuleResponse, error)
 	UpdateOrganizationPolicyRule(context.Context, *UpdateOrganizationPolicyRuleRequest) (*UpdateOrganizationPolicyRuleResponse, error)
 	DeleteOrganizationPolicyRule(context.Context, *DeleteOrganizationPolicyRuleRequest) (*emptypb.Empty, error)
+	CreatePolicy(context.Context, *CreatePolicyRequest) (*CreatePolicyResponse, error)
+	ReadPolicy(context.Context, *ReadPolicyRequest) (*ReadPolicyResponse, error)
+	UpdatePolicy(context.Context, *UpdatePolicyRequest) (*UpdatePolicyResponse, error)
+	DeletePolicy(context.Context, *DeletePolicyRequest) (*emptypb.Empty, error)
+	CreatePolicyProvision(context.Context, *CreatePolicyProvisionRequest) (*CreatePolicyProvisionResponse, error)
+	ReadPolicyProvision(context.Context, *ReadPolicyProvisionRequest) (*ReadPolicyProvisionResponse, error)
+	UpdatePolicyProvision(context.Context, *UpdatePolicyProvisionRequest) (*UpdatePolicyProvisionResponse, error)
+	DeletePolicyProvision(context.Context, *DeletePolicyProvisionRequest) (*emptypb.Empty, error)
+	CreatePolicyVersion(context.Context, *CreatePolicyVersionRequest) (*CreatePolicyVersionResponse, error)
+	ReadPolicyVersion(context.Context, *ReadPolicyVersionRequest) (*ReadPolicyVersionResponse, error)
+	UpdatePolicyVersion(context.Context, *UpdatePolicyVersionRequest) (*UpdatePolicyVersionResponse, error)
+	DeletePolicyVersion(context.Context, *DeletePolicyVersionRequest) (*emptypb.Empty, error)
 	CreateTagToLabel(context.Context, *CreateTagToLabelRequest) (*CreateTagToLabelResponse, error)
 	ReadTagToLabel(context.Context, *ReadTagToLabelRequest) (*ReadTagToLabelResponse, error)
 	UpdateTagToLabel(context.Context, *UpdateTagToLabelRequest) (*UpdateTagToLabelResponse, error)
@@ -1128,6 +1284,42 @@ func (UnimplementedConfigServiceServer) UpdateOrganizationPolicyRule(context.Con
 }
 func (UnimplementedConfigServiceServer) DeleteOrganizationPolicyRule(context.Context, *DeleteOrganizationPolicyRuleRequest) (*emptypb.Empty, error) {
 	return nil, status.Error(codes.Unimplemented, "method DeleteOrganizationPolicyRule not implemented")
+}
+func (UnimplementedConfigServiceServer) CreatePolicy(context.Context, *CreatePolicyRequest) (*CreatePolicyResponse, error) {
+	return nil, status.Error(codes.Unimplemented, "method CreatePolicy not implemented")
+}
+func (UnimplementedConfigServiceServer) ReadPolicy(context.Context, *ReadPolicyRequest) (*ReadPolicyResponse, error) {
+	return nil, status.Error(codes.Unimplemented, "method ReadPolicy not implemented")
+}
+func (UnimplementedConfigServiceServer) UpdatePolicy(context.Context, *UpdatePolicyRequest) (*UpdatePolicyResponse, error) {
+	return nil, status.Error(codes.Unimplemented, "method UpdatePolicy not implemented")
+}
+func (UnimplementedConfigServiceServer) DeletePolicy(context.Context, *DeletePolicyRequest) (*emptypb.Empty, error) {
+	return nil, status.Error(codes.Unimplemented, "method DeletePolicy not implemented")
+}
+func (UnimplementedConfigServiceServer) CreatePolicyProvision(context.Context, *CreatePolicyProvisionRequest) (*CreatePolicyProvisionResponse, error) {
+	return nil, status.Error(codes.Unimplemented, "method CreatePolicyProvision not implemented")
+}
+func (UnimplementedConfigServiceServer) ReadPolicyProvision(context.Context, *ReadPolicyProvisionRequest) (*ReadPolicyProvisionResponse, error) {
+	return nil, status.Error(codes.Unimplemented, "method ReadPolicyProvision not implemented")
+}
+func (UnimplementedConfigServiceServer) UpdatePolicyProvision(context.Context, *UpdatePolicyProvisionRequest) (*UpdatePolicyProvisionResponse, error) {
+	return nil, status.Error(codes.Unimplemented, "method UpdatePolicyProvision not implemented")
+}
+func (UnimplementedConfigServiceServer) DeletePolicyProvision(context.Context, *DeletePolicyProvisionRequest) (*emptypb.Empty, error) {
+	return nil, status.Error(codes.Unimplemented, "method DeletePolicyProvision not implemented")
+}
+func (UnimplementedConfigServiceServer) CreatePolicyVersion(context.Context, *CreatePolicyVersionRequest) (*CreatePolicyVersionResponse, error) {
+	return nil, status.Error(codes.Unimplemented, "method CreatePolicyVersion not implemented")
+}
+func (UnimplementedConfigServiceServer) ReadPolicyVersion(context.Context, *ReadPolicyVersionRequest) (*ReadPolicyVersionResponse, error) {
+	return nil, status.Error(codes.Unimplemented, "method ReadPolicyVersion not implemented")
+}
+func (UnimplementedConfigServiceServer) UpdatePolicyVersion(context.Context, *UpdatePolicyVersionRequest) (*UpdatePolicyVersionResponse, error) {
+	return nil, status.Error(codes.Unimplemented, "method UpdatePolicyVersion not implemented")
+}
+func (UnimplementedConfigServiceServer) DeletePolicyVersion(context.Context, *DeletePolicyVersionRequest) (*emptypb.Empty, error) {
+	return nil, status.Error(codes.Unimplemented, "method DeletePolicyVersion not implemented")
 }
 func (UnimplementedConfigServiceServer) CreateTagToLabel(context.Context, *CreateTagToLabelRequest) (*CreateTagToLabelResponse, error) {
 	return nil, status.Error(codes.Unimplemented, "method CreateTagToLabel not implemented")
@@ -2314,6 +2506,222 @@ func _ConfigService_DeleteOrganizationPolicyRule_Handler(srv interface{}, ctx co
 	return interceptor(ctx, in, info, handler)
 }
 
+func _ConfigService_CreatePolicy_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(CreatePolicyRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(ConfigServiceServer).CreatePolicy(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: ConfigService_CreatePolicy_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(ConfigServiceServer).CreatePolicy(ctx, req.(*CreatePolicyRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _ConfigService_ReadPolicy_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(ReadPolicyRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(ConfigServiceServer).ReadPolicy(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: ConfigService_ReadPolicy_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(ConfigServiceServer).ReadPolicy(ctx, req.(*ReadPolicyRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _ConfigService_UpdatePolicy_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(UpdatePolicyRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(ConfigServiceServer).UpdatePolicy(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: ConfigService_UpdatePolicy_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(ConfigServiceServer).UpdatePolicy(ctx, req.(*UpdatePolicyRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _ConfigService_DeletePolicy_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(DeletePolicyRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(ConfigServiceServer).DeletePolicy(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: ConfigService_DeletePolicy_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(ConfigServiceServer).DeletePolicy(ctx, req.(*DeletePolicyRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _ConfigService_CreatePolicyProvision_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(CreatePolicyProvisionRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(ConfigServiceServer).CreatePolicyProvision(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: ConfigService_CreatePolicyProvision_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(ConfigServiceServer).CreatePolicyProvision(ctx, req.(*CreatePolicyProvisionRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _ConfigService_ReadPolicyProvision_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(ReadPolicyProvisionRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(ConfigServiceServer).ReadPolicyProvision(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: ConfigService_ReadPolicyProvision_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(ConfigServiceServer).ReadPolicyProvision(ctx, req.(*ReadPolicyProvisionRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _ConfigService_UpdatePolicyProvision_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(UpdatePolicyProvisionRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(ConfigServiceServer).UpdatePolicyProvision(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: ConfigService_UpdatePolicyProvision_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(ConfigServiceServer).UpdatePolicyProvision(ctx, req.(*UpdatePolicyProvisionRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _ConfigService_DeletePolicyProvision_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(DeletePolicyProvisionRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(ConfigServiceServer).DeletePolicyProvision(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: ConfigService_DeletePolicyProvision_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(ConfigServiceServer).DeletePolicyProvision(ctx, req.(*DeletePolicyProvisionRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _ConfigService_CreatePolicyVersion_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(CreatePolicyVersionRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(ConfigServiceServer).CreatePolicyVersion(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: ConfigService_CreatePolicyVersion_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(ConfigServiceServer).CreatePolicyVersion(ctx, req.(*CreatePolicyVersionRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _ConfigService_ReadPolicyVersion_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(ReadPolicyVersionRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(ConfigServiceServer).ReadPolicyVersion(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: ConfigService_ReadPolicyVersion_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(ConfigServiceServer).ReadPolicyVersion(ctx, req.(*ReadPolicyVersionRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _ConfigService_UpdatePolicyVersion_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(UpdatePolicyVersionRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(ConfigServiceServer).UpdatePolicyVersion(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: ConfigService_UpdatePolicyVersion_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(ConfigServiceServer).UpdatePolicyVersion(ctx, req.(*UpdatePolicyVersionRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _ConfigService_DeletePolicyVersion_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(DeletePolicyVersionRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(ConfigServiceServer).DeletePolicyVersion(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: ConfigService_DeletePolicyVersion_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(ConfigServiceServer).DeletePolicyVersion(ctx, req.(*DeletePolicyVersionRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 func _ConfigService_CreateTagToLabel_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(CreateTagToLabelRequest)
 	if err := dec(in); err != nil {
@@ -2648,6 +3056,54 @@ var ConfigService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "DeleteOrganizationPolicyRule",
 			Handler:    _ConfigService_DeleteOrganizationPolicyRule_Handler,
+		},
+		{
+			MethodName: "CreatePolicy",
+			Handler:    _ConfigService_CreatePolicy_Handler,
+		},
+		{
+			MethodName: "ReadPolicy",
+			Handler:    _ConfigService_ReadPolicy_Handler,
+		},
+		{
+			MethodName: "UpdatePolicy",
+			Handler:    _ConfigService_UpdatePolicy_Handler,
+		},
+		{
+			MethodName: "DeletePolicy",
+			Handler:    _ConfigService_DeletePolicy_Handler,
+		},
+		{
+			MethodName: "CreatePolicyProvision",
+			Handler:    _ConfigService_CreatePolicyProvision_Handler,
+		},
+		{
+			MethodName: "ReadPolicyProvision",
+			Handler:    _ConfigService_ReadPolicyProvision_Handler,
+		},
+		{
+			MethodName: "UpdatePolicyProvision",
+			Handler:    _ConfigService_UpdatePolicyProvision_Handler,
+		},
+		{
+			MethodName: "DeletePolicyProvision",
+			Handler:    _ConfigService_DeletePolicyProvision_Handler,
+		},
+		{
+			MethodName: "CreatePolicyVersion",
+			Handler:    _ConfigService_CreatePolicyVersion_Handler,
+		},
+		{
+			MethodName: "ReadPolicyVersion",
+			Handler:    _ConfigService_ReadPolicyVersion_Handler,
+		},
+		{
+			MethodName: "UpdatePolicyVersion",
+			Handler:    _ConfigService_UpdatePolicyVersion_Handler,
+		},
+		{
+			MethodName: "DeletePolicyVersion",
+			Handler:    _ConfigService_DeletePolicyVersion_Handler,
 		},
 		{
 			MethodName: "CreateTagToLabel",

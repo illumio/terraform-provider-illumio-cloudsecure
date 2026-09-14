@@ -36,6 +36,9 @@ func GetTypeAttrsFor{{.Name}}() map[string]attr.Type {
 }
 
 func Convert{{.Name}}ToObjectValueFromProto(proto *configv1.{{.Name}}) basetypes.ObjectValue  {
+	if proto == nil {
+		return types.ObjectNull(GetTypeAttrsFor{{.Name}}())
+	}
 	{{- range $field := .Fields}}
 	{{- if and (ne $field.Type.CollectionElementType nil) (ne $field.Type.CollectionElementType.NestedModel nil)}}
 	{{- if eq $field.Type.ModelTypeName "Map"}}
@@ -70,9 +73,9 @@ func Convert{{.Name}}ToObjectValueFromProto(proto *configv1.{{.Name}}) basetypes
 			{{- if ne $field.Type.NestedModel nil}}
 			"{{$field.AttributeName}}": Convert{{$field.Type.NestedModel.Name}}ToObjectValueFromProto(proto.{{$field.Name}}),
 			{{- else if and (ne $field.Type.CollectionElementType nil) (ne $field.Type.CollectionElementType.NestedModel nil)}}
-			"{{$field.AttributeName}}": types.{{$field.Type.ModelTypeName}}ValueMust(types.ObjectType{AttrTypes: GetTypeAttrsFor{{$field.Type.CollectionElementType.NestedModel.Name}}()}, elementsIn{{$field.Name}}),
+			"{{$field.AttributeName}}": func() basetypes.{{$field.Type.ModelTypeName}}Value { if proto.{{$field.Name}} == nil { return types.{{$field.Type.ModelTypeName}}Null(types.ObjectType{AttrTypes: GetTypeAttrsFor{{$field.Type.CollectionElementType.NestedModel.Name}}()}) }; return types.{{$field.Type.ModelTypeName}}ValueMust(types.ObjectType{AttrTypes: GetTypeAttrsFor{{$field.Type.CollectionElementType.NestedModel.Name}}()}, elementsIn{{$field.Name}}) }(),
 			{{- else if ne $field.Type.CollectionElementType nil}}
-			"{{$field.AttributeName}}": types.{{$field.Type.ModelTypeName}}ValueMust(types.{{$field.Type.CollectionElementType.ModelTypeName}}Type, elementsIn{{$field.Name}}),
+			"{{$field.AttributeName}}": func() basetypes.{{$field.Type.ModelTypeName}}Value { if proto.{{$field.Name}} == nil { return types.{{$field.Type.ModelTypeName}}Null(types.{{$field.Type.CollectionElementType.ModelTypeName}}Type) }; return types.{{$field.Type.ModelTypeName}}ValueMust(types.{{$field.Type.CollectionElementType.ModelTypeName}}Type, elementsIn{{$field.Name}}) }(),
 			{{- else}}
 			"{{$field.AttributeName}}": types.{{$field.Type.ModelTypeName}}Value(proto.{{$field.Name}}),
 			{{- end}}
@@ -82,6 +85,9 @@ func Convert{{.Name}}ToObjectValueFromProto(proto *configv1.{{.Name}}) basetypes
 }
 
 func ConvertDataValueTo{{.Name}}Proto(ctx context.Context, dataValue attr.Value) (*configv1.{{.Name}}, diag.Diagnostics) {
+	if dataValue.IsNull() || dataValue.IsUnknown() {
+		return nil, nil
+	}
 	pv := {{.Name}}{}
 	diags := tfsdk.ValueAs(ctx, dataValue, &pv)
 	if diags.HasError() {
