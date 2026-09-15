@@ -19,41 +19,47 @@ import (
 // FakeConfigServer is a fake server implementation of ConfigService that can be used for testing API clients.
 type FakeConfigServer struct {
 	configv1.UnimplementedConfigServiceServer
-	Logger                              *zap.Logger
-	ApplicationMap                      map[string]*Application
-	ApplicationMutex                    sync.RWMutex
-	ApplicationAwsResourcesMap          map[string]*ApplicationAwsResources
-	ApplicationAwsResourcesMutex        sync.RWMutex
-	ApplicationAzureResourcesMap        map[string]*ApplicationAzureResources
-	ApplicationAzureResourcesMutex      sync.RWMutex
-	ApplicationPolicyRuleMap            map[string]*ApplicationPolicyRule
-	ApplicationPolicyRuleMutex          sync.RWMutex
-	AwsAccountMap                       map[string]*AwsAccount
-	AwsAccountMutex                     sync.RWMutex
-	AwsFlowLogsS3BucketMap              map[string]*AwsFlowLogsS3Bucket
-	AwsFlowLogsS3BucketMutex            sync.RWMutex
-	AzureFlowLogsStorageAccountMap      map[string]*AzureFlowLogsStorageAccount
-	AzureFlowLogsStorageAccountMutex    sync.RWMutex
-	AzureSubscriptionMap                map[string]*AzureSubscription
-	AzureSubscriptionMutex              sync.RWMutex
-	DeploymentMap                       map[string]*Deployment
-	DeploymentMutex                     sync.RWMutex
-	GcpFlowLogsPubsubTopicMap           map[string]*GcpFlowLogsPubsubTopic
-	GcpFlowLogsPubsubTopicMutex         sync.RWMutex
-	GcpProjectMap                       map[string]*GcpProject
-	GcpProjectMutex                     sync.RWMutex
-	IpListMap                           map[string]*IpList
-	IpListMutex                         sync.RWMutex
-	K8SClusterMap                       map[string]*K8SCluster
-	K8SClusterMutex                     sync.RWMutex
-	K8SClusterOnboardingCredentialMap   map[string]*K8SClusterOnboardingCredential
-	K8SClusterOnboardingCredentialMutex sync.RWMutex
-	OrganizationPolicyMap               map[string]*OrganizationPolicy
-	OrganizationPolicyMutex             sync.RWMutex
-	OrganizationPolicyRuleMap           map[string]*OrganizationPolicyRule
-	OrganizationPolicyRuleMutex         sync.RWMutex
-	TagToLabelMap                       map[string]*TagToLabel
-	TagToLabelMutex                     sync.RWMutex
+	Logger                                 *zap.Logger
+	ApplicationMap                         map[string]*Application
+	ApplicationMutex                       sync.RWMutex
+	ApplicationAwsResourcesMap             map[string]*ApplicationAwsResources
+	ApplicationAwsResourcesMutex           sync.RWMutex
+	ApplicationAzureResourcesMap           map[string]*ApplicationAzureResources
+	ApplicationAzureResourcesMutex         sync.RWMutex
+	ApplicationPolicyRuleMap               map[string]*ApplicationPolicyRule
+	ApplicationPolicyRuleMutex             sync.RWMutex
+	AwsAccountMap                          map[string]*AwsAccount
+	AwsAccountMutex                        sync.RWMutex
+	AwsFlowLogsS3BucketMap                 map[string]*AwsFlowLogsS3Bucket
+	AwsFlowLogsS3BucketMutex               sync.RWMutex
+	AwsFlowLogsS3BucketSourceMap           map[string]*AwsFlowLogsS3BucketSource
+	AwsFlowLogsS3BucketSourceMutex         sync.RWMutex
+	AzureFlowLogsStorageAccountMap         map[string]*AzureFlowLogsStorageAccount
+	AzureFlowLogsStorageAccountMutex       sync.RWMutex
+	AzureFlowLogsStorageAccountSourceMap   map[string]*AzureFlowLogsStorageAccountSource
+	AzureFlowLogsStorageAccountSourceMutex sync.RWMutex
+	AzureSubscriptionMap                   map[string]*AzureSubscription
+	AzureSubscriptionMutex                 sync.RWMutex
+	DeploymentMap                          map[string]*Deployment
+	DeploymentMutex                        sync.RWMutex
+	GcpFlowLogsPubsubTopicMap              map[string]*GcpFlowLogsPubsubTopic
+	GcpFlowLogsPubsubTopicMutex            sync.RWMutex
+	GcpFlowLogsStorageBucketSourceMap      map[string]*GcpFlowLogsStorageBucketSource
+	GcpFlowLogsStorageBucketSourceMutex    sync.RWMutex
+	GcpProjectMap                          map[string]*GcpProject
+	GcpProjectMutex                        sync.RWMutex
+	IpListMap                              map[string]*IpList
+	IpListMutex                            sync.RWMutex
+	K8SClusterMap                          map[string]*K8SCluster
+	K8SClusterMutex                        sync.RWMutex
+	K8SClusterOnboardingCredentialMap      map[string]*K8SClusterOnboardingCredential
+	K8SClusterOnboardingCredentialMutex    sync.RWMutex
+	OrganizationPolicyMap                  map[string]*OrganizationPolicy
+	OrganizationPolicyMutex                sync.RWMutex
+	OrganizationPolicyRuleMap              map[string]*OrganizationPolicyRule
+	OrganizationPolicyRuleMutex            sync.RWMutex
+	TagToLabelMap                          map[string]*TagToLabel
+	TagToLabelMutex                        sync.RWMutex
 }
 
 var _ configv1.ConfigServiceServer = &FakeConfigServer{}
@@ -61,24 +67,27 @@ var _ configv1.ConfigServiceServer = &FakeConfigServer{}
 // NewFakeConfigServer creates a fake server implementation of ConfigService that can be used for testing API clients.
 func NewFakeConfigServer(logger *zap.Logger) configv1.ConfigServiceServer {
 	return &FakeConfigServer{
-		Logger:                            logger,
-		ApplicationMap:                    make(map[string]*Application),
-		ApplicationAwsResourcesMap:        make(map[string]*ApplicationAwsResources),
-		ApplicationAzureResourcesMap:      make(map[string]*ApplicationAzureResources),
-		ApplicationPolicyRuleMap:          make(map[string]*ApplicationPolicyRule),
-		AwsAccountMap:                     make(map[string]*AwsAccount),
-		AwsFlowLogsS3BucketMap:            make(map[string]*AwsFlowLogsS3Bucket),
-		AzureFlowLogsStorageAccountMap:    make(map[string]*AzureFlowLogsStorageAccount),
-		AzureSubscriptionMap:              make(map[string]*AzureSubscription),
-		DeploymentMap:                     make(map[string]*Deployment),
-		GcpFlowLogsPubsubTopicMap:         make(map[string]*GcpFlowLogsPubsubTopic),
-		GcpProjectMap:                     make(map[string]*GcpProject),
-		IpListMap:                         make(map[string]*IpList),
-		K8SClusterMap:                     make(map[string]*K8SCluster),
-		K8SClusterOnboardingCredentialMap: make(map[string]*K8SClusterOnboardingCredential),
-		OrganizationPolicyMap:             make(map[string]*OrganizationPolicy),
-		OrganizationPolicyRuleMap:         make(map[string]*OrganizationPolicyRule),
-		TagToLabelMap:                     make(map[string]*TagToLabel),
+		Logger:                               logger,
+		ApplicationMap:                       make(map[string]*Application),
+		ApplicationAwsResourcesMap:           make(map[string]*ApplicationAwsResources),
+		ApplicationAzureResourcesMap:         make(map[string]*ApplicationAzureResources),
+		ApplicationPolicyRuleMap:             make(map[string]*ApplicationPolicyRule),
+		AwsAccountMap:                        make(map[string]*AwsAccount),
+		AwsFlowLogsS3BucketMap:               make(map[string]*AwsFlowLogsS3Bucket),
+		AwsFlowLogsS3BucketSourceMap:         make(map[string]*AwsFlowLogsS3BucketSource),
+		AzureFlowLogsStorageAccountMap:       make(map[string]*AzureFlowLogsStorageAccount),
+		AzureFlowLogsStorageAccountSourceMap: make(map[string]*AzureFlowLogsStorageAccountSource),
+		AzureSubscriptionMap:                 make(map[string]*AzureSubscription),
+		DeploymentMap:                        make(map[string]*Deployment),
+		GcpFlowLogsPubsubTopicMap:            make(map[string]*GcpFlowLogsPubsubTopic),
+		GcpFlowLogsStorageBucketSourceMap:    make(map[string]*GcpFlowLogsStorageBucketSource),
+		GcpProjectMap:                        make(map[string]*GcpProject),
+		IpListMap:                            make(map[string]*IpList),
+		K8SClusterMap:                        make(map[string]*K8SCluster),
+		K8SClusterOnboardingCredentialMap:    make(map[string]*K8SClusterOnboardingCredential),
+		OrganizationPolicyMap:                make(map[string]*OrganizationPolicy),
+		OrganizationPolicyRuleMap:            make(map[string]*OrganizationPolicyRule),
+		TagToLabelMap:                        make(map[string]*TagToLabel),
 	}
 }
 
@@ -145,10 +154,25 @@ type AwsFlowLogsS3Bucket struct {
 	S3BucketArn string
 }
 
+type AwsFlowLogsS3BucketSource struct {
+	Id         string
+	AccountId  string
+	BucketName string
+	PathPrefix *string
+}
+
 type AzureFlowLogsStorageAccount struct {
 	Id                       string
 	StorageAccountResourceId string
 	SubscriptionId           string
+}
+
+type AzureFlowLogsStorageAccountSource struct {
+	Id                 string
+	ContainerName      *string
+	PathPrefix         *string
+	StorageAccountName string
+	SubscriptionId     string
 }
 
 type AzureSubscription struct {
@@ -181,6 +205,13 @@ type GcpFlowLogsPubsubTopic struct {
 	Id            string
 	ProjectId     string
 	PubsubTopicId string
+}
+
+type GcpFlowLogsStorageBucketSource struct {
+	Id         string
+	BucketName string
+	PathPrefix *string
+	ProjectId  string
 }
 
 type GcpProject struct {
@@ -1122,6 +1153,129 @@ func (s *FakeConfigServer) DeleteAwsFlowLogsS3Bucket(ctx context.Context, req *c
 	)
 	return &emptypb.Empty{}, nil
 }
+func (s *FakeConfigServer) CreateAwsFlowLogsS3BucketSource(ctx context.Context, req *configv1.CreateAwsFlowLogsS3BucketSourceRequest) (*configv1.CreateAwsFlowLogsS3BucketSourceResponse, error) {
+	id := uuid.New().String()
+	model := &AwsFlowLogsS3BucketSource{
+		Id:         id,
+		AccountId:  req.AccountId,
+		BucketName: req.BucketName,
+		PathPrefix: req.PathPrefix,
+	}
+	resp := &configv1.CreateAwsFlowLogsS3BucketSourceResponse{
+		Id:         id,
+		AccountId:  model.AccountId,
+		BucketName: model.BucketName,
+		PathPrefix: model.PathPrefix,
+	}
+	s.AwsFlowLogsS3BucketSourceMutex.Lock()
+	s.AwsFlowLogsS3BucketSourceMap[id] = model
+	s.AwsFlowLogsS3BucketSourceMutex.Unlock()
+	s.Logger.Info("created resource",
+		zap.String("type", "aws_flow_logs_s3_bucket_source"),
+		zap.String("method", "CreateAwsFlowLogsS3BucketSource"),
+		zap.String("id", id),
+	)
+	return resp, nil
+}
+
+func (s *FakeConfigServer) ReadAwsFlowLogsS3BucketSource(ctx context.Context, req *configv1.ReadAwsFlowLogsS3BucketSourceRequest) (*configv1.ReadAwsFlowLogsS3BucketSourceResponse, error) {
+	id := req.Id
+	s.AwsFlowLogsS3BucketSourceMutex.RLock()
+	model, found := s.AwsFlowLogsS3BucketSourceMap[id]
+	if !found {
+		s.AwsFlowLogsS3BucketSourceMutex.RUnlock()
+		s.Logger.Error("attempted to read resource with unknown id",
+			zap.String("type", "aws_flow_logs_s3_bucket_source"),
+			zap.String("method", "ReadAwsFlowLogsS3BucketSource"),
+			zap.String("id", id),
+		)
+		return nil, status.Errorf(codes.NotFound, "no aws_flow_logs_s3_bucket_source found with id %s", id)
+	}
+	resp := &configv1.ReadAwsFlowLogsS3BucketSourceResponse{
+		Id:         id,
+		AccountId:  model.AccountId,
+		BucketName: model.BucketName,
+		PathPrefix: model.PathPrefix,
+	}
+	s.AwsFlowLogsS3BucketSourceMutex.RUnlock()
+	s.Logger.Info("read resource",
+		zap.String("type", "aws_flow_logs_s3_bucket_source"),
+		zap.String("method", "ReadAwsFlowLogsS3BucketSource"),
+		zap.String("id", id),
+	)
+	return resp, nil
+}
+
+func (s *FakeConfigServer) UpdateAwsFlowLogsS3BucketSource(ctx context.Context, req *configv1.UpdateAwsFlowLogsS3BucketSourceRequest) (*configv1.UpdateAwsFlowLogsS3BucketSourceResponse, error) {
+	id := req.Id
+	s.AwsFlowLogsS3BucketSourceMutex.Lock()
+	model, found := s.AwsFlowLogsS3BucketSourceMap[id]
+	if !found {
+		s.AwsFlowLogsS3BucketSourceMutex.Unlock()
+		s.Logger.Error("attempted to update resource with unknown id",
+			zap.String("type", "aws_flow_logs_s3_bucket_source"),
+			zap.String("method", "UpdateAwsFlowLogsS3BucketSource"),
+			zap.String("id", id),
+		)
+		return nil, status.Errorf(codes.NotFound, "no aws_flow_logs_s3_bucket_source found with id %s", id)
+	}
+	updateMask := req.UpdateMask
+	var updateMaskPaths []string
+	if updateMask != nil {
+		updateMaskPaths = updateMask.Paths
+	}
+	for _, path := range updateMaskPaths {
+		switch path {
+		default:
+			s.AwsAccountMutex.Unlock()
+			s.Logger.Error("attempted to update resource using invalid update_mask path",
+				zap.String("type", "aws_flow_logs_s3_bucket_source"),
+				zap.String("method", "UpdateAwsFlowLogsS3BucketSource"),
+				zap.String("id", id),
+				zap.Strings("updateMaskPaths", updateMaskPaths),
+				zap.String("invalidUpdateMaskPath", path),
+			)
+			return nil, status.Errorf(codes.InvalidArgument, "invalid path in update_mask for aws_flow_logs_s3_bucket_source: %s", path)
+		}
+	}
+	resp := &configv1.UpdateAwsFlowLogsS3BucketSourceResponse{
+		Id:         id,
+		AccountId:  model.AccountId,
+		BucketName: model.BucketName,
+		PathPrefix: model.PathPrefix,
+	}
+	s.AwsFlowLogsS3BucketSourceMutex.Unlock()
+	s.Logger.Info("updated resource",
+		zap.String("type", "aws_flow_logs_s3_bucket_source"),
+		zap.String("method", "UpdateAwsFlowLogsS3BucketSource"),
+		zap.String("id", id),
+		zap.Strings("updateMaskPaths", updateMaskPaths),
+	)
+	return resp, nil
+}
+
+func (s *FakeConfigServer) DeleteAwsFlowLogsS3BucketSource(ctx context.Context, req *configv1.DeleteAwsFlowLogsS3BucketSourceRequest) (*emptypb.Empty, error) {
+	id := req.Id
+	s.AwsFlowLogsS3BucketSourceMutex.Lock()
+	_, found := s.AwsFlowLogsS3BucketSourceMap[id]
+	if !found {
+		s.AwsFlowLogsS3BucketSourceMutex.Unlock()
+		s.Logger.Error("attempted to delete resource with unknown id",
+			zap.String("type", "aws_flow_logs_s3_bucket_source"),
+			zap.String("method", "DeleteAwsFlowLogsS3BucketSource"),
+			zap.String("id", id),
+		)
+		return nil, status.Errorf(codes.NotFound, "no aws_flow_logs_s3_bucket_source found with id %s", id)
+	}
+	delete(s.AwsFlowLogsS3BucketSourceMap, id)
+	s.AwsFlowLogsS3BucketSourceMutex.Unlock()
+	s.Logger.Info("deleted resource",
+		zap.String("type", "aws_flow_logs_s3_bucket_source"),
+		zap.String("method", "DeleteAwsFlowLogsS3BucketSource"),
+		zap.String("id", id),
+	)
+	return &emptypb.Empty{}, nil
+}
 func (s *FakeConfigServer) CreateAzureFlowLogsStorageAccount(ctx context.Context, req *configv1.CreateAzureFlowLogsStorageAccountRequest) (*configv1.CreateAzureFlowLogsStorageAccountResponse, error) {
 	id := uuid.New().String()
 	model := &AzureFlowLogsStorageAccount{
@@ -1237,6 +1391,133 @@ func (s *FakeConfigServer) DeleteAzureFlowLogsStorageAccount(ctx context.Context
 	s.Logger.Info("deleted resource",
 		zap.String("type", "azure_flow_logs_storage_account"),
 		zap.String("method", "DeleteAzureFlowLogsStorageAccount"),
+		zap.String("id", id),
+	)
+	return &emptypb.Empty{}, nil
+}
+func (s *FakeConfigServer) CreateAzureFlowLogsStorageAccountSource(ctx context.Context, req *configv1.CreateAzureFlowLogsStorageAccountSourceRequest) (*configv1.CreateAzureFlowLogsStorageAccountSourceResponse, error) {
+	id := uuid.New().String()
+	model := &AzureFlowLogsStorageAccountSource{
+		Id:                 id,
+		ContainerName:      req.ContainerName,
+		PathPrefix:         req.PathPrefix,
+		StorageAccountName: req.StorageAccountName,
+		SubscriptionId:     req.SubscriptionId,
+	}
+	resp := &configv1.CreateAzureFlowLogsStorageAccountSourceResponse{
+		Id:                 id,
+		ContainerName:      model.ContainerName,
+		PathPrefix:         model.PathPrefix,
+		StorageAccountName: model.StorageAccountName,
+		SubscriptionId:     model.SubscriptionId,
+	}
+	s.AzureFlowLogsStorageAccountSourceMutex.Lock()
+	s.AzureFlowLogsStorageAccountSourceMap[id] = model
+	s.AzureFlowLogsStorageAccountSourceMutex.Unlock()
+	s.Logger.Info("created resource",
+		zap.String("type", "azure_flow_logs_storage_account_source"),
+		zap.String("method", "CreateAzureFlowLogsStorageAccountSource"),
+		zap.String("id", id),
+	)
+	return resp, nil
+}
+
+func (s *FakeConfigServer) ReadAzureFlowLogsStorageAccountSource(ctx context.Context, req *configv1.ReadAzureFlowLogsStorageAccountSourceRequest) (*configv1.ReadAzureFlowLogsStorageAccountSourceResponse, error) {
+	id := req.Id
+	s.AzureFlowLogsStorageAccountSourceMutex.RLock()
+	model, found := s.AzureFlowLogsStorageAccountSourceMap[id]
+	if !found {
+		s.AzureFlowLogsStorageAccountSourceMutex.RUnlock()
+		s.Logger.Error("attempted to read resource with unknown id",
+			zap.String("type", "azure_flow_logs_storage_account_source"),
+			zap.String("method", "ReadAzureFlowLogsStorageAccountSource"),
+			zap.String("id", id),
+		)
+		return nil, status.Errorf(codes.NotFound, "no azure_flow_logs_storage_account_source found with id %s", id)
+	}
+	resp := &configv1.ReadAzureFlowLogsStorageAccountSourceResponse{
+		Id:                 id,
+		ContainerName:      model.ContainerName,
+		PathPrefix:         model.PathPrefix,
+		StorageAccountName: model.StorageAccountName,
+		SubscriptionId:     model.SubscriptionId,
+	}
+	s.AzureFlowLogsStorageAccountSourceMutex.RUnlock()
+	s.Logger.Info("read resource",
+		zap.String("type", "azure_flow_logs_storage_account_source"),
+		zap.String("method", "ReadAzureFlowLogsStorageAccountSource"),
+		zap.String("id", id),
+	)
+	return resp, nil
+}
+
+func (s *FakeConfigServer) UpdateAzureFlowLogsStorageAccountSource(ctx context.Context, req *configv1.UpdateAzureFlowLogsStorageAccountSourceRequest) (*configv1.UpdateAzureFlowLogsStorageAccountSourceResponse, error) {
+	id := req.Id
+	s.AzureFlowLogsStorageAccountSourceMutex.Lock()
+	model, found := s.AzureFlowLogsStorageAccountSourceMap[id]
+	if !found {
+		s.AzureFlowLogsStorageAccountSourceMutex.Unlock()
+		s.Logger.Error("attempted to update resource with unknown id",
+			zap.String("type", "azure_flow_logs_storage_account_source"),
+			zap.String("method", "UpdateAzureFlowLogsStorageAccountSource"),
+			zap.String("id", id),
+		)
+		return nil, status.Errorf(codes.NotFound, "no azure_flow_logs_storage_account_source found with id %s", id)
+	}
+	updateMask := req.UpdateMask
+	var updateMaskPaths []string
+	if updateMask != nil {
+		updateMaskPaths = updateMask.Paths
+	}
+	for _, path := range updateMaskPaths {
+		switch path {
+		default:
+			s.AwsAccountMutex.Unlock()
+			s.Logger.Error("attempted to update resource using invalid update_mask path",
+				zap.String("type", "azure_flow_logs_storage_account_source"),
+				zap.String("method", "UpdateAzureFlowLogsStorageAccountSource"),
+				zap.String("id", id),
+				zap.Strings("updateMaskPaths", updateMaskPaths),
+				zap.String("invalidUpdateMaskPath", path),
+			)
+			return nil, status.Errorf(codes.InvalidArgument, "invalid path in update_mask for azure_flow_logs_storage_account_source: %s", path)
+		}
+	}
+	resp := &configv1.UpdateAzureFlowLogsStorageAccountSourceResponse{
+		Id:                 id,
+		ContainerName:      model.ContainerName,
+		PathPrefix:         model.PathPrefix,
+		StorageAccountName: model.StorageAccountName,
+		SubscriptionId:     model.SubscriptionId,
+	}
+	s.AzureFlowLogsStorageAccountSourceMutex.Unlock()
+	s.Logger.Info("updated resource",
+		zap.String("type", "azure_flow_logs_storage_account_source"),
+		zap.String("method", "UpdateAzureFlowLogsStorageAccountSource"),
+		zap.String("id", id),
+		zap.Strings("updateMaskPaths", updateMaskPaths),
+	)
+	return resp, nil
+}
+
+func (s *FakeConfigServer) DeleteAzureFlowLogsStorageAccountSource(ctx context.Context, req *configv1.DeleteAzureFlowLogsStorageAccountSourceRequest) (*emptypb.Empty, error) {
+	id := req.Id
+	s.AzureFlowLogsStorageAccountSourceMutex.Lock()
+	_, found := s.AzureFlowLogsStorageAccountSourceMap[id]
+	if !found {
+		s.AzureFlowLogsStorageAccountSourceMutex.Unlock()
+		s.Logger.Error("attempted to delete resource with unknown id",
+			zap.String("type", "azure_flow_logs_storage_account_source"),
+			zap.String("method", "DeleteAzureFlowLogsStorageAccountSource"),
+			zap.String("id", id),
+		)
+		return nil, status.Errorf(codes.NotFound, "no azure_flow_logs_storage_account_source found with id %s", id)
+	}
+	delete(s.AzureFlowLogsStorageAccountSourceMap, id)
+	s.AzureFlowLogsStorageAccountSourceMutex.Unlock()
+	s.Logger.Info("deleted resource",
+		zap.String("type", "azure_flow_logs_storage_account_source"),
+		zap.String("method", "DeleteAzureFlowLogsStorageAccountSource"),
 		zap.String("id", id),
 	)
 	return &emptypb.Empty{}, nil
@@ -1673,6 +1954,129 @@ func (s *FakeConfigServer) DeleteGcpFlowLogsPubsubTopic(ctx context.Context, req
 	s.Logger.Info("deleted resource",
 		zap.String("type", "gcp_flow_logs_pubsub_topic"),
 		zap.String("method", "DeleteGcpFlowLogsPubsubTopic"),
+		zap.String("id", id),
+	)
+	return &emptypb.Empty{}, nil
+}
+func (s *FakeConfigServer) CreateGcpFlowLogsStorageBucketSource(ctx context.Context, req *configv1.CreateGcpFlowLogsStorageBucketSourceRequest) (*configv1.CreateGcpFlowLogsStorageBucketSourceResponse, error) {
+	id := uuid.New().String()
+	model := &GcpFlowLogsStorageBucketSource{
+		Id:         id,
+		BucketName: req.BucketName,
+		PathPrefix: req.PathPrefix,
+		ProjectId:  req.ProjectId,
+	}
+	resp := &configv1.CreateGcpFlowLogsStorageBucketSourceResponse{
+		Id:         id,
+		BucketName: model.BucketName,
+		PathPrefix: model.PathPrefix,
+		ProjectId:  model.ProjectId,
+	}
+	s.GcpFlowLogsStorageBucketSourceMutex.Lock()
+	s.GcpFlowLogsStorageBucketSourceMap[id] = model
+	s.GcpFlowLogsStorageBucketSourceMutex.Unlock()
+	s.Logger.Info("created resource",
+		zap.String("type", "gcp_flow_logs_storage_bucket_source"),
+		zap.String("method", "CreateGcpFlowLogsStorageBucketSource"),
+		zap.String("id", id),
+	)
+	return resp, nil
+}
+
+func (s *FakeConfigServer) ReadGcpFlowLogsStorageBucketSource(ctx context.Context, req *configv1.ReadGcpFlowLogsStorageBucketSourceRequest) (*configv1.ReadGcpFlowLogsStorageBucketSourceResponse, error) {
+	id := req.Id
+	s.GcpFlowLogsStorageBucketSourceMutex.RLock()
+	model, found := s.GcpFlowLogsStorageBucketSourceMap[id]
+	if !found {
+		s.GcpFlowLogsStorageBucketSourceMutex.RUnlock()
+		s.Logger.Error("attempted to read resource with unknown id",
+			zap.String("type", "gcp_flow_logs_storage_bucket_source"),
+			zap.String("method", "ReadGcpFlowLogsStorageBucketSource"),
+			zap.String("id", id),
+		)
+		return nil, status.Errorf(codes.NotFound, "no gcp_flow_logs_storage_bucket_source found with id %s", id)
+	}
+	resp := &configv1.ReadGcpFlowLogsStorageBucketSourceResponse{
+		Id:         id,
+		BucketName: model.BucketName,
+		PathPrefix: model.PathPrefix,
+		ProjectId:  model.ProjectId,
+	}
+	s.GcpFlowLogsStorageBucketSourceMutex.RUnlock()
+	s.Logger.Info("read resource",
+		zap.String("type", "gcp_flow_logs_storage_bucket_source"),
+		zap.String("method", "ReadGcpFlowLogsStorageBucketSource"),
+		zap.String("id", id),
+	)
+	return resp, nil
+}
+
+func (s *FakeConfigServer) UpdateGcpFlowLogsStorageBucketSource(ctx context.Context, req *configv1.UpdateGcpFlowLogsStorageBucketSourceRequest) (*configv1.UpdateGcpFlowLogsStorageBucketSourceResponse, error) {
+	id := req.Id
+	s.GcpFlowLogsStorageBucketSourceMutex.Lock()
+	model, found := s.GcpFlowLogsStorageBucketSourceMap[id]
+	if !found {
+		s.GcpFlowLogsStorageBucketSourceMutex.Unlock()
+		s.Logger.Error("attempted to update resource with unknown id",
+			zap.String("type", "gcp_flow_logs_storage_bucket_source"),
+			zap.String("method", "UpdateGcpFlowLogsStorageBucketSource"),
+			zap.String("id", id),
+		)
+		return nil, status.Errorf(codes.NotFound, "no gcp_flow_logs_storage_bucket_source found with id %s", id)
+	}
+	updateMask := req.UpdateMask
+	var updateMaskPaths []string
+	if updateMask != nil {
+		updateMaskPaths = updateMask.Paths
+	}
+	for _, path := range updateMaskPaths {
+		switch path {
+		default:
+			s.AwsAccountMutex.Unlock()
+			s.Logger.Error("attempted to update resource using invalid update_mask path",
+				zap.String("type", "gcp_flow_logs_storage_bucket_source"),
+				zap.String("method", "UpdateGcpFlowLogsStorageBucketSource"),
+				zap.String("id", id),
+				zap.Strings("updateMaskPaths", updateMaskPaths),
+				zap.String("invalidUpdateMaskPath", path),
+			)
+			return nil, status.Errorf(codes.InvalidArgument, "invalid path in update_mask for gcp_flow_logs_storage_bucket_source: %s", path)
+		}
+	}
+	resp := &configv1.UpdateGcpFlowLogsStorageBucketSourceResponse{
+		Id:         id,
+		BucketName: model.BucketName,
+		PathPrefix: model.PathPrefix,
+		ProjectId:  model.ProjectId,
+	}
+	s.GcpFlowLogsStorageBucketSourceMutex.Unlock()
+	s.Logger.Info("updated resource",
+		zap.String("type", "gcp_flow_logs_storage_bucket_source"),
+		zap.String("method", "UpdateGcpFlowLogsStorageBucketSource"),
+		zap.String("id", id),
+		zap.Strings("updateMaskPaths", updateMaskPaths),
+	)
+	return resp, nil
+}
+
+func (s *FakeConfigServer) DeleteGcpFlowLogsStorageBucketSource(ctx context.Context, req *configv1.DeleteGcpFlowLogsStorageBucketSourceRequest) (*emptypb.Empty, error) {
+	id := req.Id
+	s.GcpFlowLogsStorageBucketSourceMutex.Lock()
+	_, found := s.GcpFlowLogsStorageBucketSourceMap[id]
+	if !found {
+		s.GcpFlowLogsStorageBucketSourceMutex.Unlock()
+		s.Logger.Error("attempted to delete resource with unknown id",
+			zap.String("type", "gcp_flow_logs_storage_bucket_source"),
+			zap.String("method", "DeleteGcpFlowLogsStorageBucketSource"),
+			zap.String("id", id),
+		)
+		return nil, status.Errorf(codes.NotFound, "no gcp_flow_logs_storage_bucket_source found with id %s", id)
+	}
+	delete(s.GcpFlowLogsStorageBucketSourceMap, id)
+	s.GcpFlowLogsStorageBucketSourceMutex.Unlock()
+	s.Logger.Info("deleted resource",
+		zap.String("type", "gcp_flow_logs_storage_bucket_source"),
+		zap.String("method", "DeleteGcpFlowLogsStorageBucketSource"),
 		zap.String("id", id),
 	)
 	return &emptypb.Empty{}, nil

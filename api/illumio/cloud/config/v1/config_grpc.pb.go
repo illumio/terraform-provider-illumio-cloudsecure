@@ -23,74 +23,86 @@ import (
 const _ = grpc.SupportPackageIsVersion9
 
 const (
-	ConfigService_CreateApplication_FullMethodName                    = "/illumio.cloud.config.v1.ConfigService/CreateApplication"
-	ConfigService_ReadApplication_FullMethodName                      = "/illumio.cloud.config.v1.ConfigService/ReadApplication"
-	ConfigService_UpdateApplication_FullMethodName                    = "/illumio.cloud.config.v1.ConfigService/UpdateApplication"
-	ConfigService_DeleteApplication_FullMethodName                    = "/illumio.cloud.config.v1.ConfigService/DeleteApplication"
-	ConfigService_CreateApplicationAwsResources_FullMethodName        = "/illumio.cloud.config.v1.ConfigService/CreateApplicationAwsResources"
-	ConfigService_ReadApplicationAwsResources_FullMethodName          = "/illumio.cloud.config.v1.ConfigService/ReadApplicationAwsResources"
-	ConfigService_UpdateApplicationAwsResources_FullMethodName        = "/illumio.cloud.config.v1.ConfigService/UpdateApplicationAwsResources"
-	ConfigService_DeleteApplicationAwsResources_FullMethodName        = "/illumio.cloud.config.v1.ConfigService/DeleteApplicationAwsResources"
-	ConfigService_CreateApplicationAzureResources_FullMethodName      = "/illumio.cloud.config.v1.ConfigService/CreateApplicationAzureResources"
-	ConfigService_ReadApplicationAzureResources_FullMethodName        = "/illumio.cloud.config.v1.ConfigService/ReadApplicationAzureResources"
-	ConfigService_UpdateApplicationAzureResources_FullMethodName      = "/illumio.cloud.config.v1.ConfigService/UpdateApplicationAzureResources"
-	ConfigService_DeleteApplicationAzureResources_FullMethodName      = "/illumio.cloud.config.v1.ConfigService/DeleteApplicationAzureResources"
-	ConfigService_CreateApplicationPolicyRule_FullMethodName          = "/illumio.cloud.config.v1.ConfigService/CreateApplicationPolicyRule"
-	ConfigService_ReadApplicationPolicyRule_FullMethodName            = "/illumio.cloud.config.v1.ConfigService/ReadApplicationPolicyRule"
-	ConfigService_UpdateApplicationPolicyRule_FullMethodName          = "/illumio.cloud.config.v1.ConfigService/UpdateApplicationPolicyRule"
-	ConfigService_DeleteApplicationPolicyRule_FullMethodName          = "/illumio.cloud.config.v1.ConfigService/DeleteApplicationPolicyRule"
-	ConfigService_CreateAwsAccount_FullMethodName                     = "/illumio.cloud.config.v1.ConfigService/CreateAwsAccount"
-	ConfigService_ReadAwsAccount_FullMethodName                       = "/illumio.cloud.config.v1.ConfigService/ReadAwsAccount"
-	ConfigService_UpdateAwsAccount_FullMethodName                     = "/illumio.cloud.config.v1.ConfigService/UpdateAwsAccount"
-	ConfigService_DeleteAwsAccount_FullMethodName                     = "/illumio.cloud.config.v1.ConfigService/DeleteAwsAccount"
-	ConfigService_CreateAwsFlowLogsS3Bucket_FullMethodName            = "/illumio.cloud.config.v1.ConfigService/CreateAwsFlowLogsS3Bucket"
-	ConfigService_ReadAwsFlowLogsS3Bucket_FullMethodName              = "/illumio.cloud.config.v1.ConfigService/ReadAwsFlowLogsS3Bucket"
-	ConfigService_UpdateAwsFlowLogsS3Bucket_FullMethodName            = "/illumio.cloud.config.v1.ConfigService/UpdateAwsFlowLogsS3Bucket"
-	ConfigService_DeleteAwsFlowLogsS3Bucket_FullMethodName            = "/illumio.cloud.config.v1.ConfigService/DeleteAwsFlowLogsS3Bucket"
-	ConfigService_CreateAzureFlowLogsStorageAccount_FullMethodName    = "/illumio.cloud.config.v1.ConfigService/CreateAzureFlowLogsStorageAccount"
-	ConfigService_ReadAzureFlowLogsStorageAccount_FullMethodName      = "/illumio.cloud.config.v1.ConfigService/ReadAzureFlowLogsStorageAccount"
-	ConfigService_UpdateAzureFlowLogsStorageAccount_FullMethodName    = "/illumio.cloud.config.v1.ConfigService/UpdateAzureFlowLogsStorageAccount"
-	ConfigService_DeleteAzureFlowLogsStorageAccount_FullMethodName    = "/illumio.cloud.config.v1.ConfigService/DeleteAzureFlowLogsStorageAccount"
-	ConfigService_CreateAzureSubscription_FullMethodName              = "/illumio.cloud.config.v1.ConfigService/CreateAzureSubscription"
-	ConfigService_ReadAzureSubscription_FullMethodName                = "/illumio.cloud.config.v1.ConfigService/ReadAzureSubscription"
-	ConfigService_UpdateAzureSubscription_FullMethodName              = "/illumio.cloud.config.v1.ConfigService/UpdateAzureSubscription"
-	ConfigService_DeleteAzureSubscription_FullMethodName              = "/illumio.cloud.config.v1.ConfigService/DeleteAzureSubscription"
-	ConfigService_CreateDeployment_FullMethodName                     = "/illumio.cloud.config.v1.ConfigService/CreateDeployment"
-	ConfigService_ReadDeployment_FullMethodName                       = "/illumio.cloud.config.v1.ConfigService/ReadDeployment"
-	ConfigService_UpdateDeployment_FullMethodName                     = "/illumio.cloud.config.v1.ConfigService/UpdateDeployment"
-	ConfigService_DeleteDeployment_FullMethodName                     = "/illumio.cloud.config.v1.ConfigService/DeleteDeployment"
-	ConfigService_CreateGcpFlowLogsPubsubTopic_FullMethodName         = "/illumio.cloud.config.v1.ConfigService/CreateGcpFlowLogsPubsubTopic"
-	ConfigService_ReadGcpFlowLogsPubsubTopic_FullMethodName           = "/illumio.cloud.config.v1.ConfigService/ReadGcpFlowLogsPubsubTopic"
-	ConfigService_UpdateGcpFlowLogsPubsubTopic_FullMethodName         = "/illumio.cloud.config.v1.ConfigService/UpdateGcpFlowLogsPubsubTopic"
-	ConfigService_DeleteGcpFlowLogsPubsubTopic_FullMethodName         = "/illumio.cloud.config.v1.ConfigService/DeleteGcpFlowLogsPubsubTopic"
-	ConfigService_CreateGcpProject_FullMethodName                     = "/illumio.cloud.config.v1.ConfigService/CreateGcpProject"
-	ConfigService_ReadGcpProject_FullMethodName                       = "/illumio.cloud.config.v1.ConfigService/ReadGcpProject"
-	ConfigService_UpdateGcpProject_FullMethodName                     = "/illumio.cloud.config.v1.ConfigService/UpdateGcpProject"
-	ConfigService_DeleteGcpProject_FullMethodName                     = "/illumio.cloud.config.v1.ConfigService/DeleteGcpProject"
-	ConfigService_CreateIpList_FullMethodName                         = "/illumio.cloud.config.v1.ConfigService/CreateIpList"
-	ConfigService_ReadIpList_FullMethodName                           = "/illumio.cloud.config.v1.ConfigService/ReadIpList"
-	ConfigService_UpdateIpList_FullMethodName                         = "/illumio.cloud.config.v1.ConfigService/UpdateIpList"
-	ConfigService_DeleteIpList_FullMethodName                         = "/illumio.cloud.config.v1.ConfigService/DeleteIpList"
-	ConfigService_CreateK8SCluster_FullMethodName                     = "/illumio.cloud.config.v1.ConfigService/CreateK8SCluster"
-	ConfigService_ReadK8SCluster_FullMethodName                       = "/illumio.cloud.config.v1.ConfigService/ReadK8SCluster"
-	ConfigService_UpdateK8SCluster_FullMethodName                     = "/illumio.cloud.config.v1.ConfigService/UpdateK8SCluster"
-	ConfigService_DeleteK8SCluster_FullMethodName                     = "/illumio.cloud.config.v1.ConfigService/DeleteK8SCluster"
-	ConfigService_CreateK8SClusterOnboardingCredential_FullMethodName = "/illumio.cloud.config.v1.ConfigService/CreateK8SClusterOnboardingCredential"
-	ConfigService_ReadK8SClusterOnboardingCredential_FullMethodName   = "/illumio.cloud.config.v1.ConfigService/ReadK8SClusterOnboardingCredential"
-	ConfigService_UpdateK8SClusterOnboardingCredential_FullMethodName = "/illumio.cloud.config.v1.ConfigService/UpdateK8SClusterOnboardingCredential"
-	ConfigService_DeleteK8SClusterOnboardingCredential_FullMethodName = "/illumio.cloud.config.v1.ConfigService/DeleteK8SClusterOnboardingCredential"
-	ConfigService_CreateOrganizationPolicy_FullMethodName             = "/illumio.cloud.config.v1.ConfigService/CreateOrganizationPolicy"
-	ConfigService_ReadOrganizationPolicy_FullMethodName               = "/illumio.cloud.config.v1.ConfigService/ReadOrganizationPolicy"
-	ConfigService_UpdateOrganizationPolicy_FullMethodName             = "/illumio.cloud.config.v1.ConfigService/UpdateOrganizationPolicy"
-	ConfigService_DeleteOrganizationPolicy_FullMethodName             = "/illumio.cloud.config.v1.ConfigService/DeleteOrganizationPolicy"
-	ConfigService_CreateOrganizationPolicyRule_FullMethodName         = "/illumio.cloud.config.v1.ConfigService/CreateOrganizationPolicyRule"
-	ConfigService_ReadOrganizationPolicyRule_FullMethodName           = "/illumio.cloud.config.v1.ConfigService/ReadOrganizationPolicyRule"
-	ConfigService_UpdateOrganizationPolicyRule_FullMethodName         = "/illumio.cloud.config.v1.ConfigService/UpdateOrganizationPolicyRule"
-	ConfigService_DeleteOrganizationPolicyRule_FullMethodName         = "/illumio.cloud.config.v1.ConfigService/DeleteOrganizationPolicyRule"
-	ConfigService_CreateTagToLabel_FullMethodName                     = "/illumio.cloud.config.v1.ConfigService/CreateTagToLabel"
-	ConfigService_ReadTagToLabel_FullMethodName                       = "/illumio.cloud.config.v1.ConfigService/ReadTagToLabel"
-	ConfigService_UpdateTagToLabel_FullMethodName                     = "/illumio.cloud.config.v1.ConfigService/UpdateTagToLabel"
-	ConfigService_DeleteTagToLabel_FullMethodName                     = "/illumio.cloud.config.v1.ConfigService/DeleteTagToLabel"
+	ConfigService_CreateApplication_FullMethodName                       = "/illumio.cloud.config.v1.ConfigService/CreateApplication"
+	ConfigService_ReadApplication_FullMethodName                         = "/illumio.cloud.config.v1.ConfigService/ReadApplication"
+	ConfigService_UpdateApplication_FullMethodName                       = "/illumio.cloud.config.v1.ConfigService/UpdateApplication"
+	ConfigService_DeleteApplication_FullMethodName                       = "/illumio.cloud.config.v1.ConfigService/DeleteApplication"
+	ConfigService_CreateApplicationAwsResources_FullMethodName           = "/illumio.cloud.config.v1.ConfigService/CreateApplicationAwsResources"
+	ConfigService_ReadApplicationAwsResources_FullMethodName             = "/illumio.cloud.config.v1.ConfigService/ReadApplicationAwsResources"
+	ConfigService_UpdateApplicationAwsResources_FullMethodName           = "/illumio.cloud.config.v1.ConfigService/UpdateApplicationAwsResources"
+	ConfigService_DeleteApplicationAwsResources_FullMethodName           = "/illumio.cloud.config.v1.ConfigService/DeleteApplicationAwsResources"
+	ConfigService_CreateApplicationAzureResources_FullMethodName         = "/illumio.cloud.config.v1.ConfigService/CreateApplicationAzureResources"
+	ConfigService_ReadApplicationAzureResources_FullMethodName           = "/illumio.cloud.config.v1.ConfigService/ReadApplicationAzureResources"
+	ConfigService_UpdateApplicationAzureResources_FullMethodName         = "/illumio.cloud.config.v1.ConfigService/UpdateApplicationAzureResources"
+	ConfigService_DeleteApplicationAzureResources_FullMethodName         = "/illumio.cloud.config.v1.ConfigService/DeleteApplicationAzureResources"
+	ConfigService_CreateApplicationPolicyRule_FullMethodName             = "/illumio.cloud.config.v1.ConfigService/CreateApplicationPolicyRule"
+	ConfigService_ReadApplicationPolicyRule_FullMethodName               = "/illumio.cloud.config.v1.ConfigService/ReadApplicationPolicyRule"
+	ConfigService_UpdateApplicationPolicyRule_FullMethodName             = "/illumio.cloud.config.v1.ConfigService/UpdateApplicationPolicyRule"
+	ConfigService_DeleteApplicationPolicyRule_FullMethodName             = "/illumio.cloud.config.v1.ConfigService/DeleteApplicationPolicyRule"
+	ConfigService_CreateAwsAccount_FullMethodName                        = "/illumio.cloud.config.v1.ConfigService/CreateAwsAccount"
+	ConfigService_ReadAwsAccount_FullMethodName                          = "/illumio.cloud.config.v1.ConfigService/ReadAwsAccount"
+	ConfigService_UpdateAwsAccount_FullMethodName                        = "/illumio.cloud.config.v1.ConfigService/UpdateAwsAccount"
+	ConfigService_DeleteAwsAccount_FullMethodName                        = "/illumio.cloud.config.v1.ConfigService/DeleteAwsAccount"
+	ConfigService_CreateAwsFlowLogsS3Bucket_FullMethodName               = "/illumio.cloud.config.v1.ConfigService/CreateAwsFlowLogsS3Bucket"
+	ConfigService_ReadAwsFlowLogsS3Bucket_FullMethodName                 = "/illumio.cloud.config.v1.ConfigService/ReadAwsFlowLogsS3Bucket"
+	ConfigService_UpdateAwsFlowLogsS3Bucket_FullMethodName               = "/illumio.cloud.config.v1.ConfigService/UpdateAwsFlowLogsS3Bucket"
+	ConfigService_DeleteAwsFlowLogsS3Bucket_FullMethodName               = "/illumio.cloud.config.v1.ConfigService/DeleteAwsFlowLogsS3Bucket"
+	ConfigService_CreateAwsFlowLogsS3BucketSource_FullMethodName         = "/illumio.cloud.config.v1.ConfigService/CreateAwsFlowLogsS3BucketSource"
+	ConfigService_ReadAwsFlowLogsS3BucketSource_FullMethodName           = "/illumio.cloud.config.v1.ConfigService/ReadAwsFlowLogsS3BucketSource"
+	ConfigService_UpdateAwsFlowLogsS3BucketSource_FullMethodName         = "/illumio.cloud.config.v1.ConfigService/UpdateAwsFlowLogsS3BucketSource"
+	ConfigService_DeleteAwsFlowLogsS3BucketSource_FullMethodName         = "/illumio.cloud.config.v1.ConfigService/DeleteAwsFlowLogsS3BucketSource"
+	ConfigService_CreateAzureFlowLogsStorageAccount_FullMethodName       = "/illumio.cloud.config.v1.ConfigService/CreateAzureFlowLogsStorageAccount"
+	ConfigService_ReadAzureFlowLogsStorageAccount_FullMethodName         = "/illumio.cloud.config.v1.ConfigService/ReadAzureFlowLogsStorageAccount"
+	ConfigService_UpdateAzureFlowLogsStorageAccount_FullMethodName       = "/illumio.cloud.config.v1.ConfigService/UpdateAzureFlowLogsStorageAccount"
+	ConfigService_DeleteAzureFlowLogsStorageAccount_FullMethodName       = "/illumio.cloud.config.v1.ConfigService/DeleteAzureFlowLogsStorageAccount"
+	ConfigService_CreateAzureFlowLogsStorageAccountSource_FullMethodName = "/illumio.cloud.config.v1.ConfigService/CreateAzureFlowLogsStorageAccountSource"
+	ConfigService_ReadAzureFlowLogsStorageAccountSource_FullMethodName   = "/illumio.cloud.config.v1.ConfigService/ReadAzureFlowLogsStorageAccountSource"
+	ConfigService_UpdateAzureFlowLogsStorageAccountSource_FullMethodName = "/illumio.cloud.config.v1.ConfigService/UpdateAzureFlowLogsStorageAccountSource"
+	ConfigService_DeleteAzureFlowLogsStorageAccountSource_FullMethodName = "/illumio.cloud.config.v1.ConfigService/DeleteAzureFlowLogsStorageAccountSource"
+	ConfigService_CreateAzureSubscription_FullMethodName                 = "/illumio.cloud.config.v1.ConfigService/CreateAzureSubscription"
+	ConfigService_ReadAzureSubscription_FullMethodName                   = "/illumio.cloud.config.v1.ConfigService/ReadAzureSubscription"
+	ConfigService_UpdateAzureSubscription_FullMethodName                 = "/illumio.cloud.config.v1.ConfigService/UpdateAzureSubscription"
+	ConfigService_DeleteAzureSubscription_FullMethodName                 = "/illumio.cloud.config.v1.ConfigService/DeleteAzureSubscription"
+	ConfigService_CreateDeployment_FullMethodName                        = "/illumio.cloud.config.v1.ConfigService/CreateDeployment"
+	ConfigService_ReadDeployment_FullMethodName                          = "/illumio.cloud.config.v1.ConfigService/ReadDeployment"
+	ConfigService_UpdateDeployment_FullMethodName                        = "/illumio.cloud.config.v1.ConfigService/UpdateDeployment"
+	ConfigService_DeleteDeployment_FullMethodName                        = "/illumio.cloud.config.v1.ConfigService/DeleteDeployment"
+	ConfigService_CreateGcpFlowLogsPubsubTopic_FullMethodName            = "/illumio.cloud.config.v1.ConfigService/CreateGcpFlowLogsPubsubTopic"
+	ConfigService_ReadGcpFlowLogsPubsubTopic_FullMethodName              = "/illumio.cloud.config.v1.ConfigService/ReadGcpFlowLogsPubsubTopic"
+	ConfigService_UpdateGcpFlowLogsPubsubTopic_FullMethodName            = "/illumio.cloud.config.v1.ConfigService/UpdateGcpFlowLogsPubsubTopic"
+	ConfigService_DeleteGcpFlowLogsPubsubTopic_FullMethodName            = "/illumio.cloud.config.v1.ConfigService/DeleteGcpFlowLogsPubsubTopic"
+	ConfigService_CreateGcpFlowLogsStorageBucketSource_FullMethodName    = "/illumio.cloud.config.v1.ConfigService/CreateGcpFlowLogsStorageBucketSource"
+	ConfigService_ReadGcpFlowLogsStorageBucketSource_FullMethodName      = "/illumio.cloud.config.v1.ConfigService/ReadGcpFlowLogsStorageBucketSource"
+	ConfigService_UpdateGcpFlowLogsStorageBucketSource_FullMethodName    = "/illumio.cloud.config.v1.ConfigService/UpdateGcpFlowLogsStorageBucketSource"
+	ConfigService_DeleteGcpFlowLogsStorageBucketSource_FullMethodName    = "/illumio.cloud.config.v1.ConfigService/DeleteGcpFlowLogsStorageBucketSource"
+	ConfigService_CreateGcpProject_FullMethodName                        = "/illumio.cloud.config.v1.ConfigService/CreateGcpProject"
+	ConfigService_ReadGcpProject_FullMethodName                          = "/illumio.cloud.config.v1.ConfigService/ReadGcpProject"
+	ConfigService_UpdateGcpProject_FullMethodName                        = "/illumio.cloud.config.v1.ConfigService/UpdateGcpProject"
+	ConfigService_DeleteGcpProject_FullMethodName                        = "/illumio.cloud.config.v1.ConfigService/DeleteGcpProject"
+	ConfigService_CreateIpList_FullMethodName                            = "/illumio.cloud.config.v1.ConfigService/CreateIpList"
+	ConfigService_ReadIpList_FullMethodName                              = "/illumio.cloud.config.v1.ConfigService/ReadIpList"
+	ConfigService_UpdateIpList_FullMethodName                            = "/illumio.cloud.config.v1.ConfigService/UpdateIpList"
+	ConfigService_DeleteIpList_FullMethodName                            = "/illumio.cloud.config.v1.ConfigService/DeleteIpList"
+	ConfigService_CreateK8SCluster_FullMethodName                        = "/illumio.cloud.config.v1.ConfigService/CreateK8SCluster"
+	ConfigService_ReadK8SCluster_FullMethodName                          = "/illumio.cloud.config.v1.ConfigService/ReadK8SCluster"
+	ConfigService_UpdateK8SCluster_FullMethodName                        = "/illumio.cloud.config.v1.ConfigService/UpdateK8SCluster"
+	ConfigService_DeleteK8SCluster_FullMethodName                        = "/illumio.cloud.config.v1.ConfigService/DeleteK8SCluster"
+	ConfigService_CreateK8SClusterOnboardingCredential_FullMethodName    = "/illumio.cloud.config.v1.ConfigService/CreateK8SClusterOnboardingCredential"
+	ConfigService_ReadK8SClusterOnboardingCredential_FullMethodName      = "/illumio.cloud.config.v1.ConfigService/ReadK8SClusterOnboardingCredential"
+	ConfigService_UpdateK8SClusterOnboardingCredential_FullMethodName    = "/illumio.cloud.config.v1.ConfigService/UpdateK8SClusterOnboardingCredential"
+	ConfigService_DeleteK8SClusterOnboardingCredential_FullMethodName    = "/illumio.cloud.config.v1.ConfigService/DeleteK8SClusterOnboardingCredential"
+	ConfigService_CreateOrganizationPolicy_FullMethodName                = "/illumio.cloud.config.v1.ConfigService/CreateOrganizationPolicy"
+	ConfigService_ReadOrganizationPolicy_FullMethodName                  = "/illumio.cloud.config.v1.ConfigService/ReadOrganizationPolicy"
+	ConfigService_UpdateOrganizationPolicy_FullMethodName                = "/illumio.cloud.config.v1.ConfigService/UpdateOrganizationPolicy"
+	ConfigService_DeleteOrganizationPolicy_FullMethodName                = "/illumio.cloud.config.v1.ConfigService/DeleteOrganizationPolicy"
+	ConfigService_CreateOrganizationPolicyRule_FullMethodName            = "/illumio.cloud.config.v1.ConfigService/CreateOrganizationPolicyRule"
+	ConfigService_ReadOrganizationPolicyRule_FullMethodName              = "/illumio.cloud.config.v1.ConfigService/ReadOrganizationPolicyRule"
+	ConfigService_UpdateOrganizationPolicyRule_FullMethodName            = "/illumio.cloud.config.v1.ConfigService/UpdateOrganizationPolicyRule"
+	ConfigService_DeleteOrganizationPolicyRule_FullMethodName            = "/illumio.cloud.config.v1.ConfigService/DeleteOrganizationPolicyRule"
+	ConfigService_CreateTagToLabel_FullMethodName                        = "/illumio.cloud.config.v1.ConfigService/CreateTagToLabel"
+	ConfigService_ReadTagToLabel_FullMethodName                          = "/illumio.cloud.config.v1.ConfigService/ReadTagToLabel"
+	ConfigService_UpdateTagToLabel_FullMethodName                        = "/illumio.cloud.config.v1.ConfigService/UpdateTagToLabel"
+	ConfigService_DeleteTagToLabel_FullMethodName                        = "/illumio.cloud.config.v1.ConfigService/DeleteTagToLabel"
 )
 
 // ConfigServiceClient is the client API for ConfigService service.
@@ -121,10 +133,18 @@ type ConfigServiceClient interface {
 	ReadAwsFlowLogsS3Bucket(ctx context.Context, in *ReadAwsFlowLogsS3BucketRequest, opts ...grpc.CallOption) (*ReadAwsFlowLogsS3BucketResponse, error)
 	UpdateAwsFlowLogsS3Bucket(ctx context.Context, in *UpdateAwsFlowLogsS3BucketRequest, opts ...grpc.CallOption) (*UpdateAwsFlowLogsS3BucketResponse, error)
 	DeleteAwsFlowLogsS3Bucket(ctx context.Context, in *DeleteAwsFlowLogsS3BucketRequest, opts ...grpc.CallOption) (*emptypb.Empty, error)
+	CreateAwsFlowLogsS3BucketSource(ctx context.Context, in *CreateAwsFlowLogsS3BucketSourceRequest, opts ...grpc.CallOption) (*CreateAwsFlowLogsS3BucketSourceResponse, error)
+	ReadAwsFlowLogsS3BucketSource(ctx context.Context, in *ReadAwsFlowLogsS3BucketSourceRequest, opts ...grpc.CallOption) (*ReadAwsFlowLogsS3BucketSourceResponse, error)
+	UpdateAwsFlowLogsS3BucketSource(ctx context.Context, in *UpdateAwsFlowLogsS3BucketSourceRequest, opts ...grpc.CallOption) (*UpdateAwsFlowLogsS3BucketSourceResponse, error)
+	DeleteAwsFlowLogsS3BucketSource(ctx context.Context, in *DeleteAwsFlowLogsS3BucketSourceRequest, opts ...grpc.CallOption) (*emptypb.Empty, error)
 	CreateAzureFlowLogsStorageAccount(ctx context.Context, in *CreateAzureFlowLogsStorageAccountRequest, opts ...grpc.CallOption) (*CreateAzureFlowLogsStorageAccountResponse, error)
 	ReadAzureFlowLogsStorageAccount(ctx context.Context, in *ReadAzureFlowLogsStorageAccountRequest, opts ...grpc.CallOption) (*ReadAzureFlowLogsStorageAccountResponse, error)
 	UpdateAzureFlowLogsStorageAccount(ctx context.Context, in *UpdateAzureFlowLogsStorageAccountRequest, opts ...grpc.CallOption) (*UpdateAzureFlowLogsStorageAccountResponse, error)
 	DeleteAzureFlowLogsStorageAccount(ctx context.Context, in *DeleteAzureFlowLogsStorageAccountRequest, opts ...grpc.CallOption) (*emptypb.Empty, error)
+	CreateAzureFlowLogsStorageAccountSource(ctx context.Context, in *CreateAzureFlowLogsStorageAccountSourceRequest, opts ...grpc.CallOption) (*CreateAzureFlowLogsStorageAccountSourceResponse, error)
+	ReadAzureFlowLogsStorageAccountSource(ctx context.Context, in *ReadAzureFlowLogsStorageAccountSourceRequest, opts ...grpc.CallOption) (*ReadAzureFlowLogsStorageAccountSourceResponse, error)
+	UpdateAzureFlowLogsStorageAccountSource(ctx context.Context, in *UpdateAzureFlowLogsStorageAccountSourceRequest, opts ...grpc.CallOption) (*UpdateAzureFlowLogsStorageAccountSourceResponse, error)
+	DeleteAzureFlowLogsStorageAccountSource(ctx context.Context, in *DeleteAzureFlowLogsStorageAccountSourceRequest, opts ...grpc.CallOption) (*emptypb.Empty, error)
 	CreateAzureSubscription(ctx context.Context, in *CreateAzureSubscriptionRequest, opts ...grpc.CallOption) (*CreateAzureSubscriptionResponse, error)
 	ReadAzureSubscription(ctx context.Context, in *ReadAzureSubscriptionRequest, opts ...grpc.CallOption) (*ReadAzureSubscriptionResponse, error)
 	UpdateAzureSubscription(ctx context.Context, in *UpdateAzureSubscriptionRequest, opts ...grpc.CallOption) (*UpdateAzureSubscriptionResponse, error)
@@ -137,6 +157,10 @@ type ConfigServiceClient interface {
 	ReadGcpFlowLogsPubsubTopic(ctx context.Context, in *ReadGcpFlowLogsPubsubTopicRequest, opts ...grpc.CallOption) (*ReadGcpFlowLogsPubsubTopicResponse, error)
 	UpdateGcpFlowLogsPubsubTopic(ctx context.Context, in *UpdateGcpFlowLogsPubsubTopicRequest, opts ...grpc.CallOption) (*UpdateGcpFlowLogsPubsubTopicResponse, error)
 	DeleteGcpFlowLogsPubsubTopic(ctx context.Context, in *DeleteGcpFlowLogsPubsubTopicRequest, opts ...grpc.CallOption) (*emptypb.Empty, error)
+	CreateGcpFlowLogsStorageBucketSource(ctx context.Context, in *CreateGcpFlowLogsStorageBucketSourceRequest, opts ...grpc.CallOption) (*CreateGcpFlowLogsStorageBucketSourceResponse, error)
+	ReadGcpFlowLogsStorageBucketSource(ctx context.Context, in *ReadGcpFlowLogsStorageBucketSourceRequest, opts ...grpc.CallOption) (*ReadGcpFlowLogsStorageBucketSourceResponse, error)
+	UpdateGcpFlowLogsStorageBucketSource(ctx context.Context, in *UpdateGcpFlowLogsStorageBucketSourceRequest, opts ...grpc.CallOption) (*UpdateGcpFlowLogsStorageBucketSourceResponse, error)
+	DeleteGcpFlowLogsStorageBucketSource(ctx context.Context, in *DeleteGcpFlowLogsStorageBucketSourceRequest, opts ...grpc.CallOption) (*emptypb.Empty, error)
 	CreateGcpProject(ctx context.Context, in *CreateGcpProjectRequest, opts ...grpc.CallOption) (*CreateGcpProjectResponse, error)
 	ReadGcpProject(ctx context.Context, in *ReadGcpProjectRequest, opts ...grpc.CallOption) (*ReadGcpProjectResponse, error)
 	UpdateGcpProject(ctx context.Context, in *UpdateGcpProjectRequest, opts ...grpc.CallOption) (*UpdateGcpProjectResponse, error)
@@ -415,6 +439,46 @@ func (c *configServiceClient) DeleteAwsFlowLogsS3Bucket(ctx context.Context, in 
 	return out, nil
 }
 
+func (c *configServiceClient) CreateAwsFlowLogsS3BucketSource(ctx context.Context, in *CreateAwsFlowLogsS3BucketSourceRequest, opts ...grpc.CallOption) (*CreateAwsFlowLogsS3BucketSourceResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(CreateAwsFlowLogsS3BucketSourceResponse)
+	err := c.cc.Invoke(ctx, ConfigService_CreateAwsFlowLogsS3BucketSource_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *configServiceClient) ReadAwsFlowLogsS3BucketSource(ctx context.Context, in *ReadAwsFlowLogsS3BucketSourceRequest, opts ...grpc.CallOption) (*ReadAwsFlowLogsS3BucketSourceResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(ReadAwsFlowLogsS3BucketSourceResponse)
+	err := c.cc.Invoke(ctx, ConfigService_ReadAwsFlowLogsS3BucketSource_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *configServiceClient) UpdateAwsFlowLogsS3BucketSource(ctx context.Context, in *UpdateAwsFlowLogsS3BucketSourceRequest, opts ...grpc.CallOption) (*UpdateAwsFlowLogsS3BucketSourceResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(UpdateAwsFlowLogsS3BucketSourceResponse)
+	err := c.cc.Invoke(ctx, ConfigService_UpdateAwsFlowLogsS3BucketSource_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *configServiceClient) DeleteAwsFlowLogsS3BucketSource(ctx context.Context, in *DeleteAwsFlowLogsS3BucketSourceRequest, opts ...grpc.CallOption) (*emptypb.Empty, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(emptypb.Empty)
+	err := c.cc.Invoke(ctx, ConfigService_DeleteAwsFlowLogsS3BucketSource_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 func (c *configServiceClient) CreateAzureFlowLogsStorageAccount(ctx context.Context, in *CreateAzureFlowLogsStorageAccountRequest, opts ...grpc.CallOption) (*CreateAzureFlowLogsStorageAccountResponse, error) {
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
 	out := new(CreateAzureFlowLogsStorageAccountResponse)
@@ -449,6 +513,46 @@ func (c *configServiceClient) DeleteAzureFlowLogsStorageAccount(ctx context.Cont
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
 	out := new(emptypb.Empty)
 	err := c.cc.Invoke(ctx, ConfigService_DeleteAzureFlowLogsStorageAccount_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *configServiceClient) CreateAzureFlowLogsStorageAccountSource(ctx context.Context, in *CreateAzureFlowLogsStorageAccountSourceRequest, opts ...grpc.CallOption) (*CreateAzureFlowLogsStorageAccountSourceResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(CreateAzureFlowLogsStorageAccountSourceResponse)
+	err := c.cc.Invoke(ctx, ConfigService_CreateAzureFlowLogsStorageAccountSource_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *configServiceClient) ReadAzureFlowLogsStorageAccountSource(ctx context.Context, in *ReadAzureFlowLogsStorageAccountSourceRequest, opts ...grpc.CallOption) (*ReadAzureFlowLogsStorageAccountSourceResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(ReadAzureFlowLogsStorageAccountSourceResponse)
+	err := c.cc.Invoke(ctx, ConfigService_ReadAzureFlowLogsStorageAccountSource_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *configServiceClient) UpdateAzureFlowLogsStorageAccountSource(ctx context.Context, in *UpdateAzureFlowLogsStorageAccountSourceRequest, opts ...grpc.CallOption) (*UpdateAzureFlowLogsStorageAccountSourceResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(UpdateAzureFlowLogsStorageAccountSourceResponse)
+	err := c.cc.Invoke(ctx, ConfigService_UpdateAzureFlowLogsStorageAccountSource_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *configServiceClient) DeleteAzureFlowLogsStorageAccountSource(ctx context.Context, in *DeleteAzureFlowLogsStorageAccountSourceRequest, opts ...grpc.CallOption) (*emptypb.Empty, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(emptypb.Empty)
+	err := c.cc.Invoke(ctx, ConfigService_DeleteAzureFlowLogsStorageAccountSource_FullMethodName, in, out, cOpts...)
 	if err != nil {
 		return nil, err
 	}
@@ -569,6 +673,46 @@ func (c *configServiceClient) DeleteGcpFlowLogsPubsubTopic(ctx context.Context, 
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
 	out := new(emptypb.Empty)
 	err := c.cc.Invoke(ctx, ConfigService_DeleteGcpFlowLogsPubsubTopic_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *configServiceClient) CreateGcpFlowLogsStorageBucketSource(ctx context.Context, in *CreateGcpFlowLogsStorageBucketSourceRequest, opts ...grpc.CallOption) (*CreateGcpFlowLogsStorageBucketSourceResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(CreateGcpFlowLogsStorageBucketSourceResponse)
+	err := c.cc.Invoke(ctx, ConfigService_CreateGcpFlowLogsStorageBucketSource_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *configServiceClient) ReadGcpFlowLogsStorageBucketSource(ctx context.Context, in *ReadGcpFlowLogsStorageBucketSourceRequest, opts ...grpc.CallOption) (*ReadGcpFlowLogsStorageBucketSourceResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(ReadGcpFlowLogsStorageBucketSourceResponse)
+	err := c.cc.Invoke(ctx, ConfigService_ReadGcpFlowLogsStorageBucketSource_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *configServiceClient) UpdateGcpFlowLogsStorageBucketSource(ctx context.Context, in *UpdateGcpFlowLogsStorageBucketSourceRequest, opts ...grpc.CallOption) (*UpdateGcpFlowLogsStorageBucketSourceResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(UpdateGcpFlowLogsStorageBucketSourceResponse)
+	err := c.cc.Invoke(ctx, ConfigService_UpdateGcpFlowLogsStorageBucketSource_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *configServiceClient) DeleteGcpFlowLogsStorageBucketSource(ctx context.Context, in *DeleteGcpFlowLogsStorageBucketSourceRequest, opts ...grpc.CallOption) (*emptypb.Empty, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(emptypb.Empty)
+	err := c.cc.Invoke(ctx, ConfigService_DeleteGcpFlowLogsStorageBucketSource_FullMethodName, in, out, cOpts...)
 	if err != nil {
 		return nil, err
 	}
@@ -883,10 +1027,18 @@ type ConfigServiceServer interface {
 	ReadAwsFlowLogsS3Bucket(context.Context, *ReadAwsFlowLogsS3BucketRequest) (*ReadAwsFlowLogsS3BucketResponse, error)
 	UpdateAwsFlowLogsS3Bucket(context.Context, *UpdateAwsFlowLogsS3BucketRequest) (*UpdateAwsFlowLogsS3BucketResponse, error)
 	DeleteAwsFlowLogsS3Bucket(context.Context, *DeleteAwsFlowLogsS3BucketRequest) (*emptypb.Empty, error)
+	CreateAwsFlowLogsS3BucketSource(context.Context, *CreateAwsFlowLogsS3BucketSourceRequest) (*CreateAwsFlowLogsS3BucketSourceResponse, error)
+	ReadAwsFlowLogsS3BucketSource(context.Context, *ReadAwsFlowLogsS3BucketSourceRequest) (*ReadAwsFlowLogsS3BucketSourceResponse, error)
+	UpdateAwsFlowLogsS3BucketSource(context.Context, *UpdateAwsFlowLogsS3BucketSourceRequest) (*UpdateAwsFlowLogsS3BucketSourceResponse, error)
+	DeleteAwsFlowLogsS3BucketSource(context.Context, *DeleteAwsFlowLogsS3BucketSourceRequest) (*emptypb.Empty, error)
 	CreateAzureFlowLogsStorageAccount(context.Context, *CreateAzureFlowLogsStorageAccountRequest) (*CreateAzureFlowLogsStorageAccountResponse, error)
 	ReadAzureFlowLogsStorageAccount(context.Context, *ReadAzureFlowLogsStorageAccountRequest) (*ReadAzureFlowLogsStorageAccountResponse, error)
 	UpdateAzureFlowLogsStorageAccount(context.Context, *UpdateAzureFlowLogsStorageAccountRequest) (*UpdateAzureFlowLogsStorageAccountResponse, error)
 	DeleteAzureFlowLogsStorageAccount(context.Context, *DeleteAzureFlowLogsStorageAccountRequest) (*emptypb.Empty, error)
+	CreateAzureFlowLogsStorageAccountSource(context.Context, *CreateAzureFlowLogsStorageAccountSourceRequest) (*CreateAzureFlowLogsStorageAccountSourceResponse, error)
+	ReadAzureFlowLogsStorageAccountSource(context.Context, *ReadAzureFlowLogsStorageAccountSourceRequest) (*ReadAzureFlowLogsStorageAccountSourceResponse, error)
+	UpdateAzureFlowLogsStorageAccountSource(context.Context, *UpdateAzureFlowLogsStorageAccountSourceRequest) (*UpdateAzureFlowLogsStorageAccountSourceResponse, error)
+	DeleteAzureFlowLogsStorageAccountSource(context.Context, *DeleteAzureFlowLogsStorageAccountSourceRequest) (*emptypb.Empty, error)
 	CreateAzureSubscription(context.Context, *CreateAzureSubscriptionRequest) (*CreateAzureSubscriptionResponse, error)
 	ReadAzureSubscription(context.Context, *ReadAzureSubscriptionRequest) (*ReadAzureSubscriptionResponse, error)
 	UpdateAzureSubscription(context.Context, *UpdateAzureSubscriptionRequest) (*UpdateAzureSubscriptionResponse, error)
@@ -899,6 +1051,10 @@ type ConfigServiceServer interface {
 	ReadGcpFlowLogsPubsubTopic(context.Context, *ReadGcpFlowLogsPubsubTopicRequest) (*ReadGcpFlowLogsPubsubTopicResponse, error)
 	UpdateGcpFlowLogsPubsubTopic(context.Context, *UpdateGcpFlowLogsPubsubTopicRequest) (*UpdateGcpFlowLogsPubsubTopicResponse, error)
 	DeleteGcpFlowLogsPubsubTopic(context.Context, *DeleteGcpFlowLogsPubsubTopicRequest) (*emptypb.Empty, error)
+	CreateGcpFlowLogsStorageBucketSource(context.Context, *CreateGcpFlowLogsStorageBucketSourceRequest) (*CreateGcpFlowLogsStorageBucketSourceResponse, error)
+	ReadGcpFlowLogsStorageBucketSource(context.Context, *ReadGcpFlowLogsStorageBucketSourceRequest) (*ReadGcpFlowLogsStorageBucketSourceResponse, error)
+	UpdateGcpFlowLogsStorageBucketSource(context.Context, *UpdateGcpFlowLogsStorageBucketSourceRequest) (*UpdateGcpFlowLogsStorageBucketSourceResponse, error)
+	DeleteGcpFlowLogsStorageBucketSource(context.Context, *DeleteGcpFlowLogsStorageBucketSourceRequest) (*emptypb.Empty, error)
 	CreateGcpProject(context.Context, *CreateGcpProjectRequest) (*CreateGcpProjectResponse, error)
 	ReadGcpProject(context.Context, *ReadGcpProjectRequest) (*ReadGcpProjectResponse, error)
 	UpdateGcpProject(context.Context, *UpdateGcpProjectRequest) (*UpdateGcpProjectResponse, error)
@@ -1009,6 +1165,18 @@ func (UnimplementedConfigServiceServer) UpdateAwsFlowLogsS3Bucket(context.Contex
 func (UnimplementedConfigServiceServer) DeleteAwsFlowLogsS3Bucket(context.Context, *DeleteAwsFlowLogsS3BucketRequest) (*emptypb.Empty, error) {
 	return nil, status.Error(codes.Unimplemented, "method DeleteAwsFlowLogsS3Bucket not implemented")
 }
+func (UnimplementedConfigServiceServer) CreateAwsFlowLogsS3BucketSource(context.Context, *CreateAwsFlowLogsS3BucketSourceRequest) (*CreateAwsFlowLogsS3BucketSourceResponse, error) {
+	return nil, status.Error(codes.Unimplemented, "method CreateAwsFlowLogsS3BucketSource not implemented")
+}
+func (UnimplementedConfigServiceServer) ReadAwsFlowLogsS3BucketSource(context.Context, *ReadAwsFlowLogsS3BucketSourceRequest) (*ReadAwsFlowLogsS3BucketSourceResponse, error) {
+	return nil, status.Error(codes.Unimplemented, "method ReadAwsFlowLogsS3BucketSource not implemented")
+}
+func (UnimplementedConfigServiceServer) UpdateAwsFlowLogsS3BucketSource(context.Context, *UpdateAwsFlowLogsS3BucketSourceRequest) (*UpdateAwsFlowLogsS3BucketSourceResponse, error) {
+	return nil, status.Error(codes.Unimplemented, "method UpdateAwsFlowLogsS3BucketSource not implemented")
+}
+func (UnimplementedConfigServiceServer) DeleteAwsFlowLogsS3BucketSource(context.Context, *DeleteAwsFlowLogsS3BucketSourceRequest) (*emptypb.Empty, error) {
+	return nil, status.Error(codes.Unimplemented, "method DeleteAwsFlowLogsS3BucketSource not implemented")
+}
 func (UnimplementedConfigServiceServer) CreateAzureFlowLogsStorageAccount(context.Context, *CreateAzureFlowLogsStorageAccountRequest) (*CreateAzureFlowLogsStorageAccountResponse, error) {
 	return nil, status.Error(codes.Unimplemented, "method CreateAzureFlowLogsStorageAccount not implemented")
 }
@@ -1020,6 +1188,18 @@ func (UnimplementedConfigServiceServer) UpdateAzureFlowLogsStorageAccount(contex
 }
 func (UnimplementedConfigServiceServer) DeleteAzureFlowLogsStorageAccount(context.Context, *DeleteAzureFlowLogsStorageAccountRequest) (*emptypb.Empty, error) {
 	return nil, status.Error(codes.Unimplemented, "method DeleteAzureFlowLogsStorageAccount not implemented")
+}
+func (UnimplementedConfigServiceServer) CreateAzureFlowLogsStorageAccountSource(context.Context, *CreateAzureFlowLogsStorageAccountSourceRequest) (*CreateAzureFlowLogsStorageAccountSourceResponse, error) {
+	return nil, status.Error(codes.Unimplemented, "method CreateAzureFlowLogsStorageAccountSource not implemented")
+}
+func (UnimplementedConfigServiceServer) ReadAzureFlowLogsStorageAccountSource(context.Context, *ReadAzureFlowLogsStorageAccountSourceRequest) (*ReadAzureFlowLogsStorageAccountSourceResponse, error) {
+	return nil, status.Error(codes.Unimplemented, "method ReadAzureFlowLogsStorageAccountSource not implemented")
+}
+func (UnimplementedConfigServiceServer) UpdateAzureFlowLogsStorageAccountSource(context.Context, *UpdateAzureFlowLogsStorageAccountSourceRequest) (*UpdateAzureFlowLogsStorageAccountSourceResponse, error) {
+	return nil, status.Error(codes.Unimplemented, "method UpdateAzureFlowLogsStorageAccountSource not implemented")
+}
+func (UnimplementedConfigServiceServer) DeleteAzureFlowLogsStorageAccountSource(context.Context, *DeleteAzureFlowLogsStorageAccountSourceRequest) (*emptypb.Empty, error) {
+	return nil, status.Error(codes.Unimplemented, "method DeleteAzureFlowLogsStorageAccountSource not implemented")
 }
 func (UnimplementedConfigServiceServer) CreateAzureSubscription(context.Context, *CreateAzureSubscriptionRequest) (*CreateAzureSubscriptionResponse, error) {
 	return nil, status.Error(codes.Unimplemented, "method CreateAzureSubscription not implemented")
@@ -1056,6 +1236,18 @@ func (UnimplementedConfigServiceServer) UpdateGcpFlowLogsPubsubTopic(context.Con
 }
 func (UnimplementedConfigServiceServer) DeleteGcpFlowLogsPubsubTopic(context.Context, *DeleteGcpFlowLogsPubsubTopicRequest) (*emptypb.Empty, error) {
 	return nil, status.Error(codes.Unimplemented, "method DeleteGcpFlowLogsPubsubTopic not implemented")
+}
+func (UnimplementedConfigServiceServer) CreateGcpFlowLogsStorageBucketSource(context.Context, *CreateGcpFlowLogsStorageBucketSourceRequest) (*CreateGcpFlowLogsStorageBucketSourceResponse, error) {
+	return nil, status.Error(codes.Unimplemented, "method CreateGcpFlowLogsStorageBucketSource not implemented")
+}
+func (UnimplementedConfigServiceServer) ReadGcpFlowLogsStorageBucketSource(context.Context, *ReadGcpFlowLogsStorageBucketSourceRequest) (*ReadGcpFlowLogsStorageBucketSourceResponse, error) {
+	return nil, status.Error(codes.Unimplemented, "method ReadGcpFlowLogsStorageBucketSource not implemented")
+}
+func (UnimplementedConfigServiceServer) UpdateGcpFlowLogsStorageBucketSource(context.Context, *UpdateGcpFlowLogsStorageBucketSourceRequest) (*UpdateGcpFlowLogsStorageBucketSourceResponse, error) {
+	return nil, status.Error(codes.Unimplemented, "method UpdateGcpFlowLogsStorageBucketSource not implemented")
+}
+func (UnimplementedConfigServiceServer) DeleteGcpFlowLogsStorageBucketSource(context.Context, *DeleteGcpFlowLogsStorageBucketSourceRequest) (*emptypb.Empty, error) {
+	return nil, status.Error(codes.Unimplemented, "method DeleteGcpFlowLogsStorageBucketSource not implemented")
 }
 func (UnimplementedConfigServiceServer) CreateGcpProject(context.Context, *CreateGcpProjectRequest) (*CreateGcpProjectResponse, error) {
 	return nil, status.Error(codes.Unimplemented, "method CreateGcpProject not implemented")
@@ -1594,6 +1786,78 @@ func _ConfigService_DeleteAwsFlowLogsS3Bucket_Handler(srv interface{}, ctx conte
 	return interceptor(ctx, in, info, handler)
 }
 
+func _ConfigService_CreateAwsFlowLogsS3BucketSource_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(CreateAwsFlowLogsS3BucketSourceRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(ConfigServiceServer).CreateAwsFlowLogsS3BucketSource(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: ConfigService_CreateAwsFlowLogsS3BucketSource_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(ConfigServiceServer).CreateAwsFlowLogsS3BucketSource(ctx, req.(*CreateAwsFlowLogsS3BucketSourceRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _ConfigService_ReadAwsFlowLogsS3BucketSource_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(ReadAwsFlowLogsS3BucketSourceRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(ConfigServiceServer).ReadAwsFlowLogsS3BucketSource(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: ConfigService_ReadAwsFlowLogsS3BucketSource_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(ConfigServiceServer).ReadAwsFlowLogsS3BucketSource(ctx, req.(*ReadAwsFlowLogsS3BucketSourceRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _ConfigService_UpdateAwsFlowLogsS3BucketSource_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(UpdateAwsFlowLogsS3BucketSourceRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(ConfigServiceServer).UpdateAwsFlowLogsS3BucketSource(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: ConfigService_UpdateAwsFlowLogsS3BucketSource_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(ConfigServiceServer).UpdateAwsFlowLogsS3BucketSource(ctx, req.(*UpdateAwsFlowLogsS3BucketSourceRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _ConfigService_DeleteAwsFlowLogsS3BucketSource_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(DeleteAwsFlowLogsS3BucketSourceRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(ConfigServiceServer).DeleteAwsFlowLogsS3BucketSource(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: ConfigService_DeleteAwsFlowLogsS3BucketSource_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(ConfigServiceServer).DeleteAwsFlowLogsS3BucketSource(ctx, req.(*DeleteAwsFlowLogsS3BucketSourceRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 func _ConfigService_CreateAzureFlowLogsStorageAccount_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(CreateAzureFlowLogsStorageAccountRequest)
 	if err := dec(in); err != nil {
@@ -1662,6 +1926,78 @@ func _ConfigService_DeleteAzureFlowLogsStorageAccount_Handler(srv interface{}, c
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(ConfigServiceServer).DeleteAzureFlowLogsStorageAccount(ctx, req.(*DeleteAzureFlowLogsStorageAccountRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _ConfigService_CreateAzureFlowLogsStorageAccountSource_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(CreateAzureFlowLogsStorageAccountSourceRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(ConfigServiceServer).CreateAzureFlowLogsStorageAccountSource(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: ConfigService_CreateAzureFlowLogsStorageAccountSource_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(ConfigServiceServer).CreateAzureFlowLogsStorageAccountSource(ctx, req.(*CreateAzureFlowLogsStorageAccountSourceRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _ConfigService_ReadAzureFlowLogsStorageAccountSource_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(ReadAzureFlowLogsStorageAccountSourceRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(ConfigServiceServer).ReadAzureFlowLogsStorageAccountSource(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: ConfigService_ReadAzureFlowLogsStorageAccountSource_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(ConfigServiceServer).ReadAzureFlowLogsStorageAccountSource(ctx, req.(*ReadAzureFlowLogsStorageAccountSourceRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _ConfigService_UpdateAzureFlowLogsStorageAccountSource_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(UpdateAzureFlowLogsStorageAccountSourceRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(ConfigServiceServer).UpdateAzureFlowLogsStorageAccountSource(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: ConfigService_UpdateAzureFlowLogsStorageAccountSource_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(ConfigServiceServer).UpdateAzureFlowLogsStorageAccountSource(ctx, req.(*UpdateAzureFlowLogsStorageAccountSourceRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _ConfigService_DeleteAzureFlowLogsStorageAccountSource_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(DeleteAzureFlowLogsStorageAccountSourceRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(ConfigServiceServer).DeleteAzureFlowLogsStorageAccountSource(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: ConfigService_DeleteAzureFlowLogsStorageAccountSource_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(ConfigServiceServer).DeleteAzureFlowLogsStorageAccountSource(ctx, req.(*DeleteAzureFlowLogsStorageAccountSourceRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -1878,6 +2214,78 @@ func _ConfigService_DeleteGcpFlowLogsPubsubTopic_Handler(srv interface{}, ctx co
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(ConfigServiceServer).DeleteGcpFlowLogsPubsubTopic(ctx, req.(*DeleteGcpFlowLogsPubsubTopicRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _ConfigService_CreateGcpFlowLogsStorageBucketSource_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(CreateGcpFlowLogsStorageBucketSourceRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(ConfigServiceServer).CreateGcpFlowLogsStorageBucketSource(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: ConfigService_CreateGcpFlowLogsStorageBucketSource_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(ConfigServiceServer).CreateGcpFlowLogsStorageBucketSource(ctx, req.(*CreateGcpFlowLogsStorageBucketSourceRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _ConfigService_ReadGcpFlowLogsStorageBucketSource_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(ReadGcpFlowLogsStorageBucketSourceRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(ConfigServiceServer).ReadGcpFlowLogsStorageBucketSource(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: ConfigService_ReadGcpFlowLogsStorageBucketSource_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(ConfigServiceServer).ReadGcpFlowLogsStorageBucketSource(ctx, req.(*ReadGcpFlowLogsStorageBucketSourceRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _ConfigService_UpdateGcpFlowLogsStorageBucketSource_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(UpdateGcpFlowLogsStorageBucketSourceRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(ConfigServiceServer).UpdateGcpFlowLogsStorageBucketSource(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: ConfigService_UpdateGcpFlowLogsStorageBucketSource_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(ConfigServiceServer).UpdateGcpFlowLogsStorageBucketSource(ctx, req.(*UpdateGcpFlowLogsStorageBucketSourceRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _ConfigService_DeleteGcpFlowLogsStorageBucketSource_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(DeleteGcpFlowLogsStorageBucketSourceRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(ConfigServiceServer).DeleteGcpFlowLogsStorageBucketSource(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: ConfigService_DeleteGcpFlowLogsStorageBucketSource_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(ConfigServiceServer).DeleteGcpFlowLogsStorageBucketSource(ctx, req.(*DeleteGcpFlowLogsStorageBucketSourceRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -2490,6 +2898,22 @@ var ConfigService_ServiceDesc = grpc.ServiceDesc{
 			Handler:    _ConfigService_DeleteAwsFlowLogsS3Bucket_Handler,
 		},
 		{
+			MethodName: "CreateAwsFlowLogsS3BucketSource",
+			Handler:    _ConfigService_CreateAwsFlowLogsS3BucketSource_Handler,
+		},
+		{
+			MethodName: "ReadAwsFlowLogsS3BucketSource",
+			Handler:    _ConfigService_ReadAwsFlowLogsS3BucketSource_Handler,
+		},
+		{
+			MethodName: "UpdateAwsFlowLogsS3BucketSource",
+			Handler:    _ConfigService_UpdateAwsFlowLogsS3BucketSource_Handler,
+		},
+		{
+			MethodName: "DeleteAwsFlowLogsS3BucketSource",
+			Handler:    _ConfigService_DeleteAwsFlowLogsS3BucketSource_Handler,
+		},
+		{
 			MethodName: "CreateAzureFlowLogsStorageAccount",
 			Handler:    _ConfigService_CreateAzureFlowLogsStorageAccount_Handler,
 		},
@@ -2504,6 +2928,22 @@ var ConfigService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "DeleteAzureFlowLogsStorageAccount",
 			Handler:    _ConfigService_DeleteAzureFlowLogsStorageAccount_Handler,
+		},
+		{
+			MethodName: "CreateAzureFlowLogsStorageAccountSource",
+			Handler:    _ConfigService_CreateAzureFlowLogsStorageAccountSource_Handler,
+		},
+		{
+			MethodName: "ReadAzureFlowLogsStorageAccountSource",
+			Handler:    _ConfigService_ReadAzureFlowLogsStorageAccountSource_Handler,
+		},
+		{
+			MethodName: "UpdateAzureFlowLogsStorageAccountSource",
+			Handler:    _ConfigService_UpdateAzureFlowLogsStorageAccountSource_Handler,
+		},
+		{
+			MethodName: "DeleteAzureFlowLogsStorageAccountSource",
+			Handler:    _ConfigService_DeleteAzureFlowLogsStorageAccountSource_Handler,
 		},
 		{
 			MethodName: "CreateAzureSubscription",
@@ -2552,6 +2992,22 @@ var ConfigService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "DeleteGcpFlowLogsPubsubTopic",
 			Handler:    _ConfigService_DeleteGcpFlowLogsPubsubTopic_Handler,
+		},
+		{
+			MethodName: "CreateGcpFlowLogsStorageBucketSource",
+			Handler:    _ConfigService_CreateGcpFlowLogsStorageBucketSource_Handler,
+		},
+		{
+			MethodName: "ReadGcpFlowLogsStorageBucketSource",
+			Handler:    _ConfigService_ReadGcpFlowLogsStorageBucketSource_Handler,
+		},
+		{
+			MethodName: "UpdateGcpFlowLogsStorageBucketSource",
+			Handler:    _ConfigService_UpdateGcpFlowLogsStorageBucketSource_Handler,
+		},
+		{
+			MethodName: "DeleteGcpFlowLogsStorageBucketSource",
+			Handler:    _ConfigService_DeleteGcpFlowLogsStorageBucketSource_Handler,
 		},
 		{
 			MethodName: "CreateGcpProject",
