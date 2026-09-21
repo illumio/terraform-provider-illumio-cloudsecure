@@ -326,7 +326,7 @@ func (s *FakeConfigServer) UpdateApplication(ctx context.Context, req *configv1.
 		case "name":
 			model.Name = req.Name
 		default:
-			s.AwsAccountMutex.Unlock()
+			s.ApplicationMutex.Unlock()
 			s.Logger.Error("attempted to update resource using invalid update_mask path",
 				zap.String("type", "application"),
 				zap.String("method", "UpdateApplication"),
@@ -514,7 +514,7 @@ func (s *FakeConfigServer) UpdateApplicationAwsResources(ctx context.Context, re
 		case "aws_vpc_peering_connection_ids":
 			model.AwsVpcPeeringConnectionIds = req.AwsVpcPeeringConnectionIds
 		default:
-			s.AwsAccountMutex.Unlock()
+			s.ApplicationAwsResourcesMutex.Unlock()
 			s.Logger.Error("attempted to update resource using invalid update_mask path",
 				zap.String("type", "application_aws_resources"),
 				zap.String("method", "UpdateApplicationAwsResources"),
@@ -659,7 +659,7 @@ func (s *FakeConfigServer) UpdateApplicationAzureResources(ctx context.Context, 
 		case "subscription_id":
 			model.SubscriptionId = req.SubscriptionId
 		default:
-			s.AwsAccountMutex.Unlock()
+			s.ApplicationAzureResourcesMutex.Unlock()
 			s.Logger.Error("attempted to update resource using invalid update_mask path",
 				zap.String("type", "application_azure_resources"),
 				zap.String("method", "UpdateApplicationAzureResources"),
@@ -815,7 +815,7 @@ func (s *FakeConfigServer) UpdateApplicationPolicyRule(ctx context.Context, req 
 		case "to_port_ranges":
 			model.ToPortRanges = req.ToPortRanges
 		default:
-			s.AwsAccountMutex.Unlock()
+			s.ApplicationPolicyRuleMutex.Unlock()
 			s.Logger.Error("attempted to update resource using invalid update_mask path",
 				zap.String("type", "application_policy_rule"),
 				zap.String("method", "UpdateApplicationPolicyRule"),
@@ -1074,7 +1074,7 @@ func (s *FakeConfigServer) UpdateAwsFlowLogsS3Bucket(ctx context.Context, req *c
 	for _, path := range updateMaskPaths {
 		switch path {
 		default:
-			s.AwsAccountMutex.Unlock()
+			s.AwsFlowLogsS3BucketMutex.Unlock()
 			s.Logger.Error("attempted to update resource using invalid update_mask path",
 				zap.String("type", "aws_flow_logs_s3_bucket"),
 				zap.String("method", "UpdateAwsFlowLogsS3Bucket"),
@@ -1193,7 +1193,7 @@ func (s *FakeConfigServer) UpdateAzureFlowLogsStorageAccount(ctx context.Context
 	for _, path := range updateMaskPaths {
 		switch path {
 		default:
-			s.AwsAccountMutex.Unlock()
+			s.AzureFlowLogsStorageAccountMutex.Unlock()
 			s.Logger.Error("attempted to update resource using invalid update_mask path",
 				zap.String("type", "azure_flow_logs_storage_account"),
 				zap.String("method", "UpdateAzureFlowLogsStorageAccount"),
@@ -1324,7 +1324,7 @@ func (s *FakeConfigServer) UpdateAzureSubscription(ctx context.Context, req *con
 		case "name":
 			model.Name = req.Name
 		default:
-			s.AwsAccountMutex.Unlock()
+			s.AzureSubscriptionMutex.Unlock()
 			s.Logger.Error("attempted to update resource using invalid update_mask path",
 				zap.String("type", "azure_subscription"),
 				zap.String("method", "UpdateAzureSubscription"),
@@ -1500,7 +1500,7 @@ func (s *FakeConfigServer) UpdateDeployment(ctx context.Context, req *configv1.U
 		case "name":
 			model.Name = req.Name
 		default:
-			s.AwsAccountMutex.Unlock()
+			s.DeploymentMutex.Unlock()
 			s.Logger.Error("attempted to update resource using invalid update_mask path",
 				zap.String("type", "deployment"),
 				zap.String("method", "UpdateDeployment"),
@@ -1629,7 +1629,7 @@ func (s *FakeConfigServer) UpdateGcpFlowLogsPubsubTopic(ctx context.Context, req
 	for _, path := range updateMaskPaths {
 		switch path {
 		default:
-			s.AwsAccountMutex.Unlock()
+			s.GcpFlowLogsPubsubTopicMutex.Unlock()
 			s.Logger.Error("attempted to update resource using invalid update_mask path",
 				zap.String("type", "gcp_flow_logs_pubsub_topic"),
 				zap.String("method", "UpdateGcpFlowLogsPubsubTopic"),
@@ -1759,7 +1759,7 @@ func (s *FakeConfigServer) UpdateGcpProject(ctx context.Context, req *configv1.U
 		case "name":
 			model.Name = req.Name
 		default:
-			s.AwsAccountMutex.Unlock()
+			s.GcpProjectMutex.Unlock()
 			s.Logger.Error("attempted to update resource using invalid update_mask path",
 				zap.String("type", "gcp_project"),
 				zap.String("method", "UpdateGcpProject"),
@@ -1895,7 +1895,7 @@ func (s *FakeConfigServer) UpdateIpList(ctx context.Context, req *configv1.Updat
 		case "name":
 			model.Name = req.Name
 		default:
-			s.AwsAccountMutex.Unlock()
+			s.IpListMutex.Unlock()
 			s.Logger.Error("attempted to update resource using invalid update_mask path",
 				zap.String("type", "ip_list"),
 				zap.String("method", "UpdateIpList"),
@@ -2021,7 +2021,7 @@ func (s *FakeConfigServer) UpdateK8SCluster(ctx context.Context, req *configv1.U
 		case "log_level":
 			model.LogLevel = req.LogLevel
 		default:
-			s.AwsAccountMutex.Unlock()
+			s.K8SClusterMutex.Unlock()
 			s.Logger.Error("attempted to update resource using invalid update_mask path",
 				zap.String("type", "k8s_cluster"),
 				zap.String("method", "UpdateK8SCluster"),
@@ -2153,7 +2153,7 @@ func (s *FakeConfigServer) UpdateK8SClusterOnboardingCredential(ctx context.Cont
 		case "name":
 			model.Name = req.Name
 		default:
-			s.AwsAccountMutex.Unlock()
+			s.K8SClusterOnboardingCredentialMutex.Unlock()
 			s.Logger.Error("attempted to update resource using invalid update_mask path",
 				zap.String("type", "k8s_cluster_onboarding_credential"),
 				zap.String("method", "UpdateK8SClusterOnboardingCredential"),
@@ -2284,7 +2284,7 @@ func (s *FakeConfigServer) UpdateOrganizationPolicy(ctx context.Context, req *co
 		case "name":
 			model.Name = req.Name
 		default:
-			s.AwsAccountMutex.Unlock()
+			s.OrganizationPolicyMutex.Unlock()
 			s.Logger.Error("attempted to update resource using invalid update_mask path",
 				zap.String("type", "organization_policy"),
 				zap.String("method", "UpdateOrganizationPolicy"),
@@ -2443,7 +2443,7 @@ func (s *FakeConfigServer) UpdateOrganizationPolicyRule(ctx context.Context, req
 		case "to_port_ranges":
 			model.ToPortRanges = req.ToPortRanges
 		default:
-			s.AwsAccountMutex.Unlock()
+			s.OrganizationPolicyRuleMutex.Unlock()
 			s.Logger.Error("attempted to update resource using invalid update_mask path",
 				zap.String("type", "organization_policy_rule"),
 				zap.String("method", "UpdateOrganizationPolicyRule"),
@@ -2593,7 +2593,7 @@ func (s *FakeConfigServer) UpdateTagToLabel(ctx context.Context, req *configv1.U
 		case "name":
 			model.Name = req.Name
 		default:
-			s.AwsAccountMutex.Unlock()
+			s.TagToLabelMutex.Unlock()
 			s.Logger.Error("attempted to update resource using invalid update_mask path",
 				zap.String("type", "tag_to_label"),
 				zap.String("method", "UpdateTagToLabel"),

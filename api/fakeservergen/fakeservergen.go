@@ -150,7 +150,7 @@ func (s *{{.ServerTypeName}}) {{$resource.UpdateRPC.Name}}(ctx context.Context, 
 			model.{{$field.Name}} = req.{{$field.Name}}
 		{{- end}}
 		default:
-			s.AwsAccountMutex.Unlock()
+			s.{{$resource.ModelName}}Mutex.Unlock()
 			s.Logger.Error("attempted to update resource using invalid update_mask path",
 				zap.String("type", "{{$resource.Name}}"),
 				zap.String("method", "{{$resource.UpdateRPC.Name}}"),
