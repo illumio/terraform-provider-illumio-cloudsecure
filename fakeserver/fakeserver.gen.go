@@ -30,6 +30,8 @@ type FakeConfigServer struct {
 	ApplicationPolicyRuleMutex          sync.RWMutex
 	AwsAccountMap                       map[string]*AwsAccount
 	AwsAccountMutex                     sync.RWMutex
+	AwsCloudtrailS3BucketMap            map[string]*AwsCloudtrailS3Bucket
+	AwsCloudtrailS3BucketMutex          sync.RWMutex
 	AwsFlowLogsS3BucketMap              map[string]*AwsFlowLogsS3Bucket
 	AwsFlowLogsS3BucketMutex            sync.RWMutex
 	AzureFlowLogsStorageAccountMap      map[string]*AzureFlowLogsStorageAccount
@@ -67,6 +69,7 @@ func NewFakeConfigServer(logger *zap.Logger) configv1.ConfigServiceServer {
 		ApplicationAzureResourcesMap:      make(map[string]*ApplicationAzureResources),
 		ApplicationPolicyRuleMap:          make(map[string]*ApplicationPolicyRule),
 		AwsAccountMap:                     make(map[string]*AwsAccount),
+		AwsCloudtrailS3BucketMap:          make(map[string]*AwsCloudtrailS3Bucket),
 		AwsFlowLogsS3BucketMap:            make(map[string]*AwsFlowLogsS3Bucket),
 		AzureFlowLogsStorageAccountMap:    make(map[string]*AzureFlowLogsStorageAccount),
 		AzureSubscriptionMap:              make(map[string]*AzureSubscription),
@@ -137,6 +140,13 @@ type AwsAccount struct {
 	OrganizationId *string
 	RoleArn        string
 	RoleExternalId string
+}
+
+type AwsCloudtrailS3Bucket struct {
+	Id          string
+	AccountId   string
+	S3BucketArn string
+	S3KeyPrefix *string
 }
 
 type AwsFlowLogsS3Bucket struct {
@@ -999,6 +1009,129 @@ func (s *FakeConfigServer) DeleteAwsAccount(ctx context.Context, req *configv1.D
 	s.Logger.Info("deleted resource",
 		zap.String("type", "aws_account"),
 		zap.String("method", "DeleteAwsAccount"),
+		zap.String("id", id),
+	)
+	return &emptypb.Empty{}, nil
+}
+func (s *FakeConfigServer) CreateAwsCloudtrailS3Bucket(ctx context.Context, req *configv1.CreateAwsCloudtrailS3BucketRequest) (*configv1.CreateAwsCloudtrailS3BucketResponse, error) {
+	id := uuid.New().String()
+	model := &AwsCloudtrailS3Bucket{
+		Id:          id,
+		AccountId:   req.AccountId,
+		S3BucketArn: req.S3BucketArn,
+		S3KeyPrefix: req.S3KeyPrefix,
+	}
+	resp := &configv1.CreateAwsCloudtrailS3BucketResponse{
+		Id:          id,
+		AccountId:   model.AccountId,
+		S3BucketArn: model.S3BucketArn,
+		S3KeyPrefix: model.S3KeyPrefix,
+	}
+	s.AwsCloudtrailS3BucketMutex.Lock()
+	s.AwsCloudtrailS3BucketMap[id] = model
+	s.AwsCloudtrailS3BucketMutex.Unlock()
+	s.Logger.Info("created resource",
+		zap.String("type", "aws_cloudtrail_s3_bucket"),
+		zap.String("method", "CreateAwsCloudtrailS3Bucket"),
+		zap.String("id", id),
+	)
+	return resp, nil
+}
+
+func (s *FakeConfigServer) ReadAwsCloudtrailS3Bucket(ctx context.Context, req *configv1.ReadAwsCloudtrailS3BucketRequest) (*configv1.ReadAwsCloudtrailS3BucketResponse, error) {
+	id := req.Id
+	s.AwsCloudtrailS3BucketMutex.RLock()
+	model, found := s.AwsCloudtrailS3BucketMap[id]
+	if !found {
+		s.AwsCloudtrailS3BucketMutex.RUnlock()
+		s.Logger.Error("attempted to read resource with unknown id",
+			zap.String("type", "aws_cloudtrail_s3_bucket"),
+			zap.String("method", "ReadAwsCloudtrailS3Bucket"),
+			zap.String("id", id),
+		)
+		return nil, status.Errorf(codes.NotFound, "no aws_cloudtrail_s3_bucket found with id %s", id)
+	}
+	resp := &configv1.ReadAwsCloudtrailS3BucketResponse{
+		Id:          id,
+		AccountId:   model.AccountId,
+		S3BucketArn: model.S3BucketArn,
+		S3KeyPrefix: model.S3KeyPrefix,
+	}
+	s.AwsCloudtrailS3BucketMutex.RUnlock()
+	s.Logger.Info("read resource",
+		zap.String("type", "aws_cloudtrail_s3_bucket"),
+		zap.String("method", "ReadAwsCloudtrailS3Bucket"),
+		zap.String("id", id),
+	)
+	return resp, nil
+}
+
+func (s *FakeConfigServer) UpdateAwsCloudtrailS3Bucket(ctx context.Context, req *configv1.UpdateAwsCloudtrailS3BucketRequest) (*configv1.UpdateAwsCloudtrailS3BucketResponse, error) {
+	id := req.Id
+	s.AwsCloudtrailS3BucketMutex.Lock()
+	model, found := s.AwsCloudtrailS3BucketMap[id]
+	if !found {
+		s.AwsCloudtrailS3BucketMutex.Unlock()
+		s.Logger.Error("attempted to update resource with unknown id",
+			zap.String("type", "aws_cloudtrail_s3_bucket"),
+			zap.String("method", "UpdateAwsCloudtrailS3Bucket"),
+			zap.String("id", id),
+		)
+		return nil, status.Errorf(codes.NotFound, "no aws_cloudtrail_s3_bucket found with id %s", id)
+	}
+	updateMask := req.UpdateMask
+	var updateMaskPaths []string
+	if updateMask != nil {
+		updateMaskPaths = updateMask.Paths
+	}
+	for _, path := range updateMaskPaths {
+		switch path {
+		default:
+			s.AwsAccountMutex.Unlock()
+			s.Logger.Error("attempted to update resource using invalid update_mask path",
+				zap.String("type", "aws_cloudtrail_s3_bucket"),
+				zap.String("method", "UpdateAwsCloudtrailS3Bucket"),
+				zap.String("id", id),
+				zap.Strings("updateMaskPaths", updateMaskPaths),
+				zap.String("invalidUpdateMaskPath", path),
+			)
+			return nil, status.Errorf(codes.InvalidArgument, "invalid path in update_mask for aws_cloudtrail_s3_bucket: %s", path)
+		}
+	}
+	resp := &configv1.UpdateAwsCloudtrailS3BucketResponse{
+		Id:          id,
+		AccountId:   model.AccountId,
+		S3BucketArn: model.S3BucketArn,
+		S3KeyPrefix: model.S3KeyPrefix,
+	}
+	s.AwsCloudtrailS3BucketMutex.Unlock()
+	s.Logger.Info("updated resource",
+		zap.String("type", "aws_cloudtrail_s3_bucket"),
+		zap.String("method", "UpdateAwsCloudtrailS3Bucket"),
+		zap.String("id", id),
+		zap.Strings("updateMaskPaths", updateMaskPaths),
+	)
+	return resp, nil
+}
+
+func (s *FakeConfigServer) DeleteAwsCloudtrailS3Bucket(ctx context.Context, req *configv1.DeleteAwsCloudtrailS3BucketRequest) (*emptypb.Empty, error) {
+	id := req.Id
+	s.AwsCloudtrailS3BucketMutex.Lock()
+	_, found := s.AwsCloudtrailS3BucketMap[id]
+	if !found {
+		s.AwsCloudtrailS3BucketMutex.Unlock()
+		s.Logger.Error("attempted to delete resource with unknown id",
+			zap.String("type", "aws_cloudtrail_s3_bucket"),
+			zap.String("method", "DeleteAwsCloudtrailS3Bucket"),
+			zap.String("id", id),
+		)
+		return nil, status.Errorf(codes.NotFound, "no aws_cloudtrail_s3_bucket found with id %s", id)
+	}
+	delete(s.AwsCloudtrailS3BucketMap, id)
+	s.AwsCloudtrailS3BucketMutex.Unlock()
+	s.Logger.Info("deleted resource",
+		zap.String("type", "aws_cloudtrail_s3_bucket"),
+		zap.String("method", "DeleteAwsCloudtrailS3Bucket"),
 		zap.String("id", id),
 	)
 	return &emptypb.Empty{}, nil
