@@ -48,6 +48,8 @@ func (p *Provider) Resources(ctx context.Context) []func() resource.Resource {
 			resp = append(resp, func() resource.Resource { return NewApplicationPolicyRuleResource(r.Schema) })
 		case "aws_account":
 			resp = append(resp, func() resource.Resource { return NewAwsAccountResource(r.Schema) })
+		case "aws_cloudtrail_s3_bucket":
+			resp = append(resp, func() resource.Resource { return NewAwsCloudtrailS3BucketResource(r.Schema) })
 		case "aws_flow_logs_s3_bucket":
 			resp = append(resp, func() resource.Resource { return NewAwsFlowLogsS3BucketResource(r.Schema) })
 		case "azure_flow_logs_storage_account":
@@ -1050,6 +1052,200 @@ func (r *AwsAccountResource) Delete(ctx context.Context, req resource.DeleteRequ
 }
 
 func (r *AwsAccountResource) ImportState(ctx context.Context, req resource.ImportStateRequest, resp *resource.ImportStateResponse) {
+	// TODO
+}
+
+// AwsCloudtrailS3BucketResource implements the aws_cloudtrail_s3_bucket resource.
+type AwsCloudtrailS3BucketResource struct {
+	// schema is the schema of the aws_cloudtrail_s3_bucket resource.
+	schema resource_schema.Schema
+
+	// providerData is the provider configuration.
+	config ProviderData
+}
+
+var _ resource.ResourceWithConfigure = &AwsCloudtrailS3BucketResource{}
+var _ resource.ResourceWithImportState = &AwsCloudtrailS3BucketResource{}
+
+// NewAwsCloudtrailS3BucketResource returns a new aws_cloudtrail_s3_bucket resource.
+func NewAwsCloudtrailS3BucketResource(schema resource_schema.Schema) resource.Resource {
+	return &AwsCloudtrailS3BucketResource{
+		schema: schema,
+	}
+}
+
+func (r *AwsCloudtrailS3BucketResource) Metadata(ctx context.Context, req resource.MetadataRequest, resp *resource.MetadataResponse) {
+	resp.TypeName = req.ProviderTypeName + "_aws_cloudtrail_s3_bucket"
+}
+
+func (r *AwsCloudtrailS3BucketResource) Schema(ctx context.Context, req resource.SchemaRequest, resp *resource.SchemaResponse) {
+	resp.Schema = r.schema
+}
+
+func (r *AwsCloudtrailS3BucketResource) Configure(ctx context.Context, req resource.ConfigureRequest, resp *resource.ConfigureResponse) {
+	if req.ProviderData == nil {
+		return
+	}
+
+	providerData, ok := req.ProviderData.(ProviderData)
+	if !ok {
+		resp.Diagnostics.AddError(
+			"Unexpected Resource Configure Type",
+			fmt.Sprintf("Expected ProviderData, got: %T. Please report this issue to the provider developers.", req.ProviderData),
+		)
+
+		return
+	}
+
+	r.config = providerData
+}
+
+func (r *AwsCloudtrailS3BucketResource) Create(ctx context.Context, req resource.CreateRequest, resp *resource.CreateResponse) {
+	var data AwsCloudtrailS3BucketResourceModel
+
+	resp.Diagnostics.Append(req.Plan.Get(ctx, &data)...)
+	if resp.Diagnostics.HasError() {
+		return
+	}
+
+	protoReq, diagReq := NewCreateAwsCloudtrailS3BucketRequest(ctx, &data)
+	resp.Diagnostics.Append(diagReq...)
+	if resp.Diagnostics.HasError() {
+		return
+	}
+
+	tflog.Trace(ctx, "creating a resource", map[string]any{"type": "aws_cloudtrail_s3_bucket"})
+
+	rpcCtx, rpcCancel := context.WithTimeout(ctx, r.config.RequestTimeout())
+	protoResp, err := r.config.Client().CreateAwsCloudtrailS3Bucket(rpcCtx, protoReq)
+	rpcCancel()
+	if err != nil {
+		resp.Diagnostics.AddError("Config API Error", fmt.Sprintf("Unable to create aws_cloudtrail_s3_bucket, got error: %s", err))
+		return
+	}
+
+	CopyCreateAwsCloudtrailS3BucketResponse(&data, protoResp)
+
+	tflog.Trace(ctx, "created a resource", map[string]any{"type": "aws_cloudtrail_s3_bucket", "id": protoResp.Id})
+
+	resp.Diagnostics.Append(resp.State.Set(ctx, &data)...)
+}
+
+func (r *AwsCloudtrailS3BucketResource) Read(ctx context.Context, req resource.ReadRequest, resp *resource.ReadResponse) {
+	var data AwsCloudtrailS3BucketResourceModel
+
+	resp.Diagnostics.Append(req.State.Get(ctx, &data)...)
+	if resp.Diagnostics.HasError() {
+		return
+	}
+
+	protoReq, diagsReq := NewReadAwsCloudtrailS3BucketRequest(ctx, &data)
+	resp.Diagnostics.Append(diagsReq...)
+	if resp.Diagnostics.HasError() {
+		return
+	}
+
+	tflog.Trace(ctx, "reading a resource", map[string]any{"type": "aws_cloudtrail_s3_bucket", "id": protoReq.Id})
+
+	rpcCtx, rpcCancel := context.WithTimeout(ctx, r.config.RequestTimeout())
+	protoResp, err := r.config.Client().ReadAwsCloudtrailS3Bucket(rpcCtx, protoReq)
+	rpcCancel()
+	if err != nil {
+		switch status.Code(err) {
+		case codes.NotFound:
+			resp.Diagnostics.AddWarning("Resource Not Found", fmt.Sprintf("No aws_cloudtrail_s3_bucket found with id %s", protoReq.Id))
+			resp.State.RemoveResource(ctx)
+			return
+		default:
+			resp.Diagnostics.AddError("Config API Error", fmt.Sprintf("Unable to read aws_cloudtrail_s3_bucket, got error: %s", err))
+			return
+		}
+	}
+
+	CopyReadAwsCloudtrailS3BucketResponse(&data, protoResp)
+
+	tflog.Trace(ctx, "read a resource", map[string]any{"type": "aws_cloudtrail_s3_bucket", "id": protoResp.Id})
+
+	resp.Diagnostics.Append(resp.State.Set(ctx, &data)...)
+}
+
+func (r *AwsCloudtrailS3BucketResource) Update(ctx context.Context, req resource.UpdateRequest, resp *resource.UpdateResponse) {
+	var beforeData AwsCloudtrailS3BucketResourceModel
+	var afterData AwsCloudtrailS3BucketResourceModel
+
+	resp.Diagnostics.Append(req.State.Get(ctx, &beforeData)...)
+	if resp.Diagnostics.HasError() {
+		return
+	}
+
+	resp.Diagnostics.Append(req.Plan.Get(ctx, &afterData)...)
+	if resp.Diagnostics.HasError() {
+		return
+	}
+
+	protoReq, diags := NewUpdateAwsCloudtrailS3BucketRequest(ctx, &beforeData, &afterData)
+	resp.Diagnostics.Append(diags...)
+	if resp.Diagnostics.HasError() {
+		return
+	}
+
+	tflog.Trace(ctx, "updating a resource", map[string]any{"type": "aws_cloudtrail_s3_bucket", "id": protoReq.Id, "update_mask": protoReq.UpdateMask.Paths})
+
+	rpcCtx, rpcCancel := context.WithTimeout(ctx, r.config.RequestTimeout())
+	protoResp, err := r.config.Client().UpdateAwsCloudtrailS3Bucket(rpcCtx, protoReq)
+	rpcCancel()
+	if err != nil {
+		switch status.Code(err) {
+		case codes.NotFound:
+			resp.Diagnostics.AddError("Resource Not Found", fmt.Sprintf("No aws_cloudtrail_s3_bucket found with id %s", protoReq.Id))
+			resp.State.RemoveResource(ctx)
+			return
+		default:
+			resp.Diagnostics.AddError("Config API Error", fmt.Sprintf("Unable to update aws_cloudtrail_s3_bucket, got error: %s", err))
+			return
+		}
+	}
+
+	CopyUpdateAwsCloudtrailS3BucketResponse(&afterData, protoResp)
+
+	tflog.Trace(ctx, "updated a resource", map[string]any{"type": "aws_cloudtrail_s3_bucket", "id": protoResp.Id})
+
+	resp.Diagnostics.Append(resp.State.Set(ctx, &afterData)...)
+}
+
+func (r *AwsCloudtrailS3BucketResource) Delete(ctx context.Context, req resource.DeleteRequest, resp *resource.DeleteResponse) {
+	var data AwsCloudtrailS3BucketResourceModel
+
+	resp.Diagnostics.Append(req.State.Get(ctx, &data)...)
+	if resp.Diagnostics.HasError() {
+		return
+	}
+
+	protoReq, diags := NewDeleteAwsCloudtrailS3BucketRequest(ctx, &data)
+	resp.Diagnostics.Append(diags...)
+	if resp.Diagnostics.HasError() {
+		return
+	}
+
+	tflog.Trace(ctx, "deleting a resource", map[string]any{"type": "aws_cloudtrail_s3_bucket", "id": protoReq.Id})
+
+	rpcCtx, rpcCancel := context.WithTimeout(ctx, r.config.RequestTimeout())
+	_, err := r.config.Client().DeleteAwsCloudtrailS3Bucket(rpcCtx, protoReq)
+	rpcCancel()
+	if err != nil {
+		switch status.Code(err) {
+		case codes.NotFound:
+			tflog.Trace(ctx, "resource was already deleted", map[string]any{"type": "aws_cloudtrail_s3_bucket", "id": protoReq.Id})
+		default:
+			resp.Diagnostics.AddError("Config API Error", fmt.Sprintf("Unable to delete aws_cloudtrail_s3_bucket, got error: %s", err))
+			return
+		}
+	}
+
+	tflog.Trace(ctx, "deleted a resource", map[string]any{"type": "aws_cloudtrail_s3_bucket", "id": protoReq.Id})
+}
+
+func (r *AwsCloudtrailS3BucketResource) ImportState(ctx context.Context, req resource.ImportStateRequest, resp *resource.ImportStateResponse) {
 	// TODO
 }
 
@@ -3438,6 +3634,13 @@ type AwsAccountResourceModel struct {
 	RoleExternalId types.String `tfsdk:"role_external_id"`
 }
 
+type AwsCloudtrailS3BucketResourceModel struct {
+	Id          types.String `tfsdk:"id"`
+	AccountId   types.String `tfsdk:"account_id"`
+	S3BucketArn types.String `tfsdk:"s3_bucket_arn"`
+	S3KeyPrefix types.String `tfsdk:"s3_key_prefix"`
+}
+
 type AwsFlowLogsS3BucketResourceModel struct {
 	Id          types.String `tfsdk:"id"`
 	AccountId   types.String `tfsdk:"account_id"`
@@ -4226,6 +4429,54 @@ func NewReadAwsAccountRequest(ctx context.Context, data *AwsAccountResourceModel
 func NewDeleteAwsAccountRequest(ctx context.Context, data *AwsAccountResourceModel) (*configv1.DeleteAwsAccountRequest, diag.Diagnostics) {
 	var diags diag.Diagnostics
 	proto := &configv1.DeleteAwsAccountRequest{}
+	if !data.Id.IsUnknown() && !data.Id.IsNull() {
+		var dataValue attr.Value = data.Id
+		var protoValue string
+		protoValue = dataValue.(types.String).ValueString()
+		proto.Id = protoValue
+	}
+	return proto, diags
+}
+
+func NewCreateAwsCloudtrailS3BucketRequest(ctx context.Context, data *AwsCloudtrailS3BucketResourceModel) (*configv1.CreateAwsCloudtrailS3BucketRequest, diag.Diagnostics) {
+	var diags diag.Diagnostics
+	proto := &configv1.CreateAwsCloudtrailS3BucketRequest{}
+	if !data.AccountId.IsUnknown() && !data.AccountId.IsNull() {
+		var dataValue attr.Value = data.AccountId
+		var protoValue string
+		protoValue = dataValue.(types.String).ValueString()
+		proto.AccountId = protoValue
+	}
+	if !data.S3BucketArn.IsUnknown() && !data.S3BucketArn.IsNull() {
+		var dataValue attr.Value = data.S3BucketArn
+		var protoValue string
+		protoValue = dataValue.(types.String).ValueString()
+		proto.S3BucketArn = protoValue
+	}
+	if !data.S3KeyPrefix.IsUnknown() && !data.S3KeyPrefix.IsNull() {
+		var dataValue attr.Value = data.S3KeyPrefix
+		var protoValue string
+		protoValue = dataValue.(types.String).ValueString()
+		proto.S3KeyPrefix = &protoValue
+	}
+	return proto, diags
+}
+
+func NewReadAwsCloudtrailS3BucketRequest(ctx context.Context, data *AwsCloudtrailS3BucketResourceModel) (*configv1.ReadAwsCloudtrailS3BucketRequest, diag.Diagnostics) {
+	var diags diag.Diagnostics
+	proto := &configv1.ReadAwsCloudtrailS3BucketRequest{}
+	if !data.Id.IsUnknown() && !data.Id.IsNull() {
+		var dataValue attr.Value = data.Id
+		var protoValue string
+		protoValue = dataValue.(types.String).ValueString()
+		proto.Id = protoValue
+	}
+	return proto, diags
+}
+
+func NewDeleteAwsCloudtrailS3BucketRequest(ctx context.Context, data *AwsCloudtrailS3BucketResourceModel) (*configv1.DeleteAwsCloudtrailS3BucketRequest, diag.Diagnostics) {
+	var diags diag.Diagnostics
+	proto := &configv1.DeleteAwsCloudtrailS3BucketRequest{}
 	if !data.Id.IsUnknown() && !data.Id.IsNull() {
 		var dataValue attr.Value = data.Id
 		var protoValue string
@@ -5682,6 +5933,14 @@ func NewUpdateAwsAccountRequest(ctx context.Context, beforeData, afterData *AwsA
 			proto.Name = protoValue
 		}
 	}
+	return proto, diags
+}
+
+func NewUpdateAwsCloudtrailS3BucketRequest(ctx context.Context, beforeData, afterData *AwsCloudtrailS3BucketResourceModel) (*configv1.UpdateAwsCloudtrailS3BucketRequest, diag.Diagnostics) {
+	var diags diag.Diagnostics
+	proto := &configv1.UpdateAwsCloudtrailS3BucketRequest{}
+	proto.UpdateMask, _ = fieldmaskpb.New(proto)
+	proto.Id = beforeData.Id.ValueString()
 	return proto, diags
 }
 
@@ -7730,6 +7989,24 @@ func CopyUpdateAwsAccountResponse(dst *AwsAccountResourceModel, src *configv1.Up
 	dst.Name = types.StringValue(src.Name)
 	dst.OrganizationId = types.StringPointerValue(src.OrganizationId)
 	dst.RoleArn = types.StringValue(src.RoleArn)
+}
+func CopyCreateAwsCloudtrailS3BucketResponse(dst *AwsCloudtrailS3BucketResourceModel, src *configv1.CreateAwsCloudtrailS3BucketResponse) {
+	dst.Id = types.StringValue(src.Id)
+	dst.AccountId = types.StringValue(src.AccountId)
+	dst.S3BucketArn = types.StringValue(src.S3BucketArn)
+	dst.S3KeyPrefix = types.StringPointerValue(src.S3KeyPrefix)
+}
+func CopyReadAwsCloudtrailS3BucketResponse(dst *AwsCloudtrailS3BucketResourceModel, src *configv1.ReadAwsCloudtrailS3BucketResponse) {
+	dst.Id = types.StringValue(src.Id)
+	dst.AccountId = types.StringValue(src.AccountId)
+	dst.S3BucketArn = types.StringValue(src.S3BucketArn)
+	dst.S3KeyPrefix = types.StringPointerValue(src.S3KeyPrefix)
+}
+func CopyUpdateAwsCloudtrailS3BucketResponse(dst *AwsCloudtrailS3BucketResourceModel, src *configv1.UpdateAwsCloudtrailS3BucketResponse) {
+	dst.Id = types.StringValue(src.Id)
+	dst.AccountId = types.StringValue(src.AccountId)
+	dst.S3BucketArn = types.StringValue(src.S3BucketArn)
+	dst.S3KeyPrefix = types.StringPointerValue(src.S3KeyPrefix)
 }
 func CopyCreateAwsFlowLogsS3BucketResponse(dst *AwsFlowLogsS3BucketResourceModel, src *configv1.CreateAwsFlowLogsS3BucketResponse) {
 	dst.Id = types.StringValue(src.Id)
