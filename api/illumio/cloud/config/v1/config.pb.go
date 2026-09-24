@@ -3590,6 +3590,410 @@ func (x *DeleteAwsFlowLogsS3BucketRequest) GetId() string {
 	return ""
 }
 
+type CreateAwsFlowLogsS3BucketSourceRequest struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	AccountId     string                 `protobuf:"bytes,2,opt,name=account_id,json=accountId,proto3" json:"account_id,omitempty"`
+	BucketName    string                 `protobuf:"bytes,3,opt,name=bucket_name,json=bucketName,proto3" json:"bucket_name,omitempty"`
+	PathPrefix    *string                `protobuf:"bytes,4,opt,name=path_prefix,json=pathPrefix,proto3,oneof" json:"path_prefix,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *CreateAwsFlowLogsS3BucketSourceRequest) Reset() {
+	*x = CreateAwsFlowLogsS3BucketSourceRequest{}
+	mi := &file_illumio_cloud_config_v1_config_proto_msgTypes[45]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *CreateAwsFlowLogsS3BucketSourceRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*CreateAwsFlowLogsS3BucketSourceRequest) ProtoMessage() {}
+
+func (x *CreateAwsFlowLogsS3BucketSourceRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_illumio_cloud_config_v1_config_proto_msgTypes[45]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use CreateAwsFlowLogsS3BucketSourceRequest.ProtoReflect.Descriptor instead.
+func (*CreateAwsFlowLogsS3BucketSourceRequest) Descriptor() ([]byte, []int) {
+	return file_illumio_cloud_config_v1_config_proto_rawDescGZIP(), []int{45}
+}
+
+func (x *CreateAwsFlowLogsS3BucketSourceRequest) GetAccountId() string {
+	if x != nil {
+		return x.AccountId
+	}
+	return ""
+}
+
+func (x *CreateAwsFlowLogsS3BucketSourceRequest) GetBucketName() string {
+	if x != nil {
+		return x.BucketName
+	}
+	return ""
+}
+
+func (x *CreateAwsFlowLogsS3BucketSourceRequest) GetPathPrefix() string {
+	if x != nil && x.PathPrefix != nil {
+		return *x.PathPrefix
+	}
+	return ""
+}
+
+type CreateAwsFlowLogsS3BucketSourceResponse struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Id            string                 `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
+	AccountId     string                 `protobuf:"bytes,2,opt,name=account_id,json=accountId,proto3" json:"account_id,omitempty"`
+	BucketName    string                 `protobuf:"bytes,3,opt,name=bucket_name,json=bucketName,proto3" json:"bucket_name,omitempty"`
+	PathPrefix    *string                `protobuf:"bytes,4,opt,name=path_prefix,json=pathPrefix,proto3,oneof" json:"path_prefix,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *CreateAwsFlowLogsS3BucketSourceResponse) Reset() {
+	*x = CreateAwsFlowLogsS3BucketSourceResponse{}
+	mi := &file_illumio_cloud_config_v1_config_proto_msgTypes[46]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *CreateAwsFlowLogsS3BucketSourceResponse) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*CreateAwsFlowLogsS3BucketSourceResponse) ProtoMessage() {}
+
+func (x *CreateAwsFlowLogsS3BucketSourceResponse) ProtoReflect() protoreflect.Message {
+	mi := &file_illumio_cloud_config_v1_config_proto_msgTypes[46]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use CreateAwsFlowLogsS3BucketSourceResponse.ProtoReflect.Descriptor instead.
+func (*CreateAwsFlowLogsS3BucketSourceResponse) Descriptor() ([]byte, []int) {
+	return file_illumio_cloud_config_v1_config_proto_rawDescGZIP(), []int{46}
+}
+
+func (x *CreateAwsFlowLogsS3BucketSourceResponse) GetId() string {
+	if x != nil {
+		return x.Id
+	}
+	return ""
+}
+
+func (x *CreateAwsFlowLogsS3BucketSourceResponse) GetAccountId() string {
+	if x != nil {
+		return x.AccountId
+	}
+	return ""
+}
+
+func (x *CreateAwsFlowLogsS3BucketSourceResponse) GetBucketName() string {
+	if x != nil {
+		return x.BucketName
+	}
+	return ""
+}
+
+func (x *CreateAwsFlowLogsS3BucketSourceResponse) GetPathPrefix() string {
+	if x != nil && x.PathPrefix != nil {
+		return *x.PathPrefix
+	}
+	return ""
+}
+
+type ReadAwsFlowLogsS3BucketSourceRequest struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Id            string                 `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *ReadAwsFlowLogsS3BucketSourceRequest) Reset() {
+	*x = ReadAwsFlowLogsS3BucketSourceRequest{}
+	mi := &file_illumio_cloud_config_v1_config_proto_msgTypes[47]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *ReadAwsFlowLogsS3BucketSourceRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*ReadAwsFlowLogsS3BucketSourceRequest) ProtoMessage() {}
+
+func (x *ReadAwsFlowLogsS3BucketSourceRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_illumio_cloud_config_v1_config_proto_msgTypes[47]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use ReadAwsFlowLogsS3BucketSourceRequest.ProtoReflect.Descriptor instead.
+func (*ReadAwsFlowLogsS3BucketSourceRequest) Descriptor() ([]byte, []int) {
+	return file_illumio_cloud_config_v1_config_proto_rawDescGZIP(), []int{47}
+}
+
+func (x *ReadAwsFlowLogsS3BucketSourceRequest) GetId() string {
+	if x != nil {
+		return x.Id
+	}
+	return ""
+}
+
+type ReadAwsFlowLogsS3BucketSourceResponse struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Id            string                 `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
+	AccountId     string                 `protobuf:"bytes,2,opt,name=account_id,json=accountId,proto3" json:"account_id,omitempty"`
+	BucketName    string                 `protobuf:"bytes,3,opt,name=bucket_name,json=bucketName,proto3" json:"bucket_name,omitempty"`
+	PathPrefix    *string                `protobuf:"bytes,4,opt,name=path_prefix,json=pathPrefix,proto3,oneof" json:"path_prefix,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *ReadAwsFlowLogsS3BucketSourceResponse) Reset() {
+	*x = ReadAwsFlowLogsS3BucketSourceResponse{}
+	mi := &file_illumio_cloud_config_v1_config_proto_msgTypes[48]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *ReadAwsFlowLogsS3BucketSourceResponse) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*ReadAwsFlowLogsS3BucketSourceResponse) ProtoMessage() {}
+
+func (x *ReadAwsFlowLogsS3BucketSourceResponse) ProtoReflect() protoreflect.Message {
+	mi := &file_illumio_cloud_config_v1_config_proto_msgTypes[48]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use ReadAwsFlowLogsS3BucketSourceResponse.ProtoReflect.Descriptor instead.
+func (*ReadAwsFlowLogsS3BucketSourceResponse) Descriptor() ([]byte, []int) {
+	return file_illumio_cloud_config_v1_config_proto_rawDescGZIP(), []int{48}
+}
+
+func (x *ReadAwsFlowLogsS3BucketSourceResponse) GetId() string {
+	if x != nil {
+		return x.Id
+	}
+	return ""
+}
+
+func (x *ReadAwsFlowLogsS3BucketSourceResponse) GetAccountId() string {
+	if x != nil {
+		return x.AccountId
+	}
+	return ""
+}
+
+func (x *ReadAwsFlowLogsS3BucketSourceResponse) GetBucketName() string {
+	if x != nil {
+		return x.BucketName
+	}
+	return ""
+}
+
+func (x *ReadAwsFlowLogsS3BucketSourceResponse) GetPathPrefix() string {
+	if x != nil && x.PathPrefix != nil {
+		return *x.PathPrefix
+	}
+	return ""
+}
+
+type UpdateAwsFlowLogsS3BucketSourceRequest struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Id            string                 `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
+	UpdateMask    *fieldmaskpb.FieldMask `protobuf:"bytes,5,opt,name=update_mask,json=updateMask,proto3" json:"update_mask,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *UpdateAwsFlowLogsS3BucketSourceRequest) Reset() {
+	*x = UpdateAwsFlowLogsS3BucketSourceRequest{}
+	mi := &file_illumio_cloud_config_v1_config_proto_msgTypes[49]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *UpdateAwsFlowLogsS3BucketSourceRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*UpdateAwsFlowLogsS3BucketSourceRequest) ProtoMessage() {}
+
+func (x *UpdateAwsFlowLogsS3BucketSourceRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_illumio_cloud_config_v1_config_proto_msgTypes[49]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use UpdateAwsFlowLogsS3BucketSourceRequest.ProtoReflect.Descriptor instead.
+func (*UpdateAwsFlowLogsS3BucketSourceRequest) Descriptor() ([]byte, []int) {
+	return file_illumio_cloud_config_v1_config_proto_rawDescGZIP(), []int{49}
+}
+
+func (x *UpdateAwsFlowLogsS3BucketSourceRequest) GetId() string {
+	if x != nil {
+		return x.Id
+	}
+	return ""
+}
+
+func (x *UpdateAwsFlowLogsS3BucketSourceRequest) GetUpdateMask() *fieldmaskpb.FieldMask {
+	if x != nil {
+		return x.UpdateMask
+	}
+	return nil
+}
+
+type UpdateAwsFlowLogsS3BucketSourceResponse struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Id            string                 `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
+	AccountId     string                 `protobuf:"bytes,2,opt,name=account_id,json=accountId,proto3" json:"account_id,omitempty"`
+	BucketName    string                 `protobuf:"bytes,3,opt,name=bucket_name,json=bucketName,proto3" json:"bucket_name,omitempty"`
+	PathPrefix    *string                `protobuf:"bytes,4,opt,name=path_prefix,json=pathPrefix,proto3,oneof" json:"path_prefix,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *UpdateAwsFlowLogsS3BucketSourceResponse) Reset() {
+	*x = UpdateAwsFlowLogsS3BucketSourceResponse{}
+	mi := &file_illumio_cloud_config_v1_config_proto_msgTypes[50]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *UpdateAwsFlowLogsS3BucketSourceResponse) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*UpdateAwsFlowLogsS3BucketSourceResponse) ProtoMessage() {}
+
+func (x *UpdateAwsFlowLogsS3BucketSourceResponse) ProtoReflect() protoreflect.Message {
+	mi := &file_illumio_cloud_config_v1_config_proto_msgTypes[50]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use UpdateAwsFlowLogsS3BucketSourceResponse.ProtoReflect.Descriptor instead.
+func (*UpdateAwsFlowLogsS3BucketSourceResponse) Descriptor() ([]byte, []int) {
+	return file_illumio_cloud_config_v1_config_proto_rawDescGZIP(), []int{50}
+}
+
+func (x *UpdateAwsFlowLogsS3BucketSourceResponse) GetId() string {
+	if x != nil {
+		return x.Id
+	}
+	return ""
+}
+
+func (x *UpdateAwsFlowLogsS3BucketSourceResponse) GetAccountId() string {
+	if x != nil {
+		return x.AccountId
+	}
+	return ""
+}
+
+func (x *UpdateAwsFlowLogsS3BucketSourceResponse) GetBucketName() string {
+	if x != nil {
+		return x.BucketName
+	}
+	return ""
+}
+
+func (x *UpdateAwsFlowLogsS3BucketSourceResponse) GetPathPrefix() string {
+	if x != nil && x.PathPrefix != nil {
+		return *x.PathPrefix
+	}
+	return ""
+}
+
+type DeleteAwsFlowLogsS3BucketSourceRequest struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Id            string                 `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *DeleteAwsFlowLogsS3BucketSourceRequest) Reset() {
+	*x = DeleteAwsFlowLogsS3BucketSourceRequest{}
+	mi := &file_illumio_cloud_config_v1_config_proto_msgTypes[51]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *DeleteAwsFlowLogsS3BucketSourceRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*DeleteAwsFlowLogsS3BucketSourceRequest) ProtoMessage() {}
+
+func (x *DeleteAwsFlowLogsS3BucketSourceRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_illumio_cloud_config_v1_config_proto_msgTypes[51]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use DeleteAwsFlowLogsS3BucketSourceRequest.ProtoReflect.Descriptor instead.
+func (*DeleteAwsFlowLogsS3BucketSourceRequest) Descriptor() ([]byte, []int) {
+	return file_illumio_cloud_config_v1_config_proto_rawDescGZIP(), []int{51}
+}
+
+func (x *DeleteAwsFlowLogsS3BucketSourceRequest) GetId() string {
+	if x != nil {
+		return x.Id
+	}
+	return ""
+}
+
 type CreateAzureFlowLogsStorageAccountRequest struct {
 	state                    protoimpl.MessageState `protogen:"open.v1"`
 	StorageAccountResourceId string                 `protobuf:"bytes,2,opt,name=storage_account_resource_id,json=storageAccountResourceId,proto3" json:"storage_account_resource_id,omitempty"`
@@ -3600,7 +4004,7 @@ type CreateAzureFlowLogsStorageAccountRequest struct {
 
 func (x *CreateAzureFlowLogsStorageAccountRequest) Reset() {
 	*x = CreateAzureFlowLogsStorageAccountRequest{}
-	mi := &file_illumio_cloud_config_v1_config_proto_msgTypes[45]
+	mi := &file_illumio_cloud_config_v1_config_proto_msgTypes[52]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -3612,7 +4016,7 @@ func (x *CreateAzureFlowLogsStorageAccountRequest) String() string {
 func (*CreateAzureFlowLogsStorageAccountRequest) ProtoMessage() {}
 
 func (x *CreateAzureFlowLogsStorageAccountRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_illumio_cloud_config_v1_config_proto_msgTypes[45]
+	mi := &file_illumio_cloud_config_v1_config_proto_msgTypes[52]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -3625,7 +4029,7 @@ func (x *CreateAzureFlowLogsStorageAccountRequest) ProtoReflect() protoreflect.M
 
 // Deprecated: Use CreateAzureFlowLogsStorageAccountRequest.ProtoReflect.Descriptor instead.
 func (*CreateAzureFlowLogsStorageAccountRequest) Descriptor() ([]byte, []int) {
-	return file_illumio_cloud_config_v1_config_proto_rawDescGZIP(), []int{45}
+	return file_illumio_cloud_config_v1_config_proto_rawDescGZIP(), []int{52}
 }
 
 func (x *CreateAzureFlowLogsStorageAccountRequest) GetStorageAccountResourceId() string {
@@ -3653,7 +4057,7 @@ type CreateAzureFlowLogsStorageAccountResponse struct {
 
 func (x *CreateAzureFlowLogsStorageAccountResponse) Reset() {
 	*x = CreateAzureFlowLogsStorageAccountResponse{}
-	mi := &file_illumio_cloud_config_v1_config_proto_msgTypes[46]
+	mi := &file_illumio_cloud_config_v1_config_proto_msgTypes[53]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -3665,7 +4069,7 @@ func (x *CreateAzureFlowLogsStorageAccountResponse) String() string {
 func (*CreateAzureFlowLogsStorageAccountResponse) ProtoMessage() {}
 
 func (x *CreateAzureFlowLogsStorageAccountResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_illumio_cloud_config_v1_config_proto_msgTypes[46]
+	mi := &file_illumio_cloud_config_v1_config_proto_msgTypes[53]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -3678,7 +4082,7 @@ func (x *CreateAzureFlowLogsStorageAccountResponse) ProtoReflect() protoreflect.
 
 // Deprecated: Use CreateAzureFlowLogsStorageAccountResponse.ProtoReflect.Descriptor instead.
 func (*CreateAzureFlowLogsStorageAccountResponse) Descriptor() ([]byte, []int) {
-	return file_illumio_cloud_config_v1_config_proto_rawDescGZIP(), []int{46}
+	return file_illumio_cloud_config_v1_config_proto_rawDescGZIP(), []int{53}
 }
 
 func (x *CreateAzureFlowLogsStorageAccountResponse) GetId() string {
@@ -3711,7 +4115,7 @@ type ReadAzureFlowLogsStorageAccountRequest struct {
 
 func (x *ReadAzureFlowLogsStorageAccountRequest) Reset() {
 	*x = ReadAzureFlowLogsStorageAccountRequest{}
-	mi := &file_illumio_cloud_config_v1_config_proto_msgTypes[47]
+	mi := &file_illumio_cloud_config_v1_config_proto_msgTypes[54]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -3723,7 +4127,7 @@ func (x *ReadAzureFlowLogsStorageAccountRequest) String() string {
 func (*ReadAzureFlowLogsStorageAccountRequest) ProtoMessage() {}
 
 func (x *ReadAzureFlowLogsStorageAccountRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_illumio_cloud_config_v1_config_proto_msgTypes[47]
+	mi := &file_illumio_cloud_config_v1_config_proto_msgTypes[54]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -3736,7 +4140,7 @@ func (x *ReadAzureFlowLogsStorageAccountRequest) ProtoReflect() protoreflect.Mes
 
 // Deprecated: Use ReadAzureFlowLogsStorageAccountRequest.ProtoReflect.Descriptor instead.
 func (*ReadAzureFlowLogsStorageAccountRequest) Descriptor() ([]byte, []int) {
-	return file_illumio_cloud_config_v1_config_proto_rawDescGZIP(), []int{47}
+	return file_illumio_cloud_config_v1_config_proto_rawDescGZIP(), []int{54}
 }
 
 func (x *ReadAzureFlowLogsStorageAccountRequest) GetId() string {
@@ -3757,7 +4161,7 @@ type ReadAzureFlowLogsStorageAccountResponse struct {
 
 func (x *ReadAzureFlowLogsStorageAccountResponse) Reset() {
 	*x = ReadAzureFlowLogsStorageAccountResponse{}
-	mi := &file_illumio_cloud_config_v1_config_proto_msgTypes[48]
+	mi := &file_illumio_cloud_config_v1_config_proto_msgTypes[55]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -3769,7 +4173,7 @@ func (x *ReadAzureFlowLogsStorageAccountResponse) String() string {
 func (*ReadAzureFlowLogsStorageAccountResponse) ProtoMessage() {}
 
 func (x *ReadAzureFlowLogsStorageAccountResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_illumio_cloud_config_v1_config_proto_msgTypes[48]
+	mi := &file_illumio_cloud_config_v1_config_proto_msgTypes[55]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -3782,7 +4186,7 @@ func (x *ReadAzureFlowLogsStorageAccountResponse) ProtoReflect() protoreflect.Me
 
 // Deprecated: Use ReadAzureFlowLogsStorageAccountResponse.ProtoReflect.Descriptor instead.
 func (*ReadAzureFlowLogsStorageAccountResponse) Descriptor() ([]byte, []int) {
-	return file_illumio_cloud_config_v1_config_proto_rawDescGZIP(), []int{48}
+	return file_illumio_cloud_config_v1_config_proto_rawDescGZIP(), []int{55}
 }
 
 func (x *ReadAzureFlowLogsStorageAccountResponse) GetId() string {
@@ -3816,7 +4220,7 @@ type UpdateAzureFlowLogsStorageAccountRequest struct {
 
 func (x *UpdateAzureFlowLogsStorageAccountRequest) Reset() {
 	*x = UpdateAzureFlowLogsStorageAccountRequest{}
-	mi := &file_illumio_cloud_config_v1_config_proto_msgTypes[49]
+	mi := &file_illumio_cloud_config_v1_config_proto_msgTypes[56]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -3828,7 +4232,7 @@ func (x *UpdateAzureFlowLogsStorageAccountRequest) String() string {
 func (*UpdateAzureFlowLogsStorageAccountRequest) ProtoMessage() {}
 
 func (x *UpdateAzureFlowLogsStorageAccountRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_illumio_cloud_config_v1_config_proto_msgTypes[49]
+	mi := &file_illumio_cloud_config_v1_config_proto_msgTypes[56]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -3841,7 +4245,7 @@ func (x *UpdateAzureFlowLogsStorageAccountRequest) ProtoReflect() protoreflect.M
 
 // Deprecated: Use UpdateAzureFlowLogsStorageAccountRequest.ProtoReflect.Descriptor instead.
 func (*UpdateAzureFlowLogsStorageAccountRequest) Descriptor() ([]byte, []int) {
-	return file_illumio_cloud_config_v1_config_proto_rawDescGZIP(), []int{49}
+	return file_illumio_cloud_config_v1_config_proto_rawDescGZIP(), []int{56}
 }
 
 func (x *UpdateAzureFlowLogsStorageAccountRequest) GetId() string {
@@ -3869,7 +4273,7 @@ type UpdateAzureFlowLogsStorageAccountResponse struct {
 
 func (x *UpdateAzureFlowLogsStorageAccountResponse) Reset() {
 	*x = UpdateAzureFlowLogsStorageAccountResponse{}
-	mi := &file_illumio_cloud_config_v1_config_proto_msgTypes[50]
+	mi := &file_illumio_cloud_config_v1_config_proto_msgTypes[57]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -3881,7 +4285,7 @@ func (x *UpdateAzureFlowLogsStorageAccountResponse) String() string {
 func (*UpdateAzureFlowLogsStorageAccountResponse) ProtoMessage() {}
 
 func (x *UpdateAzureFlowLogsStorageAccountResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_illumio_cloud_config_v1_config_proto_msgTypes[50]
+	mi := &file_illumio_cloud_config_v1_config_proto_msgTypes[57]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -3894,7 +4298,7 @@ func (x *UpdateAzureFlowLogsStorageAccountResponse) ProtoReflect() protoreflect.
 
 // Deprecated: Use UpdateAzureFlowLogsStorageAccountResponse.ProtoReflect.Descriptor instead.
 func (*UpdateAzureFlowLogsStorageAccountResponse) Descriptor() ([]byte, []int) {
-	return file_illumio_cloud_config_v1_config_proto_rawDescGZIP(), []int{50}
+	return file_illumio_cloud_config_v1_config_proto_rawDescGZIP(), []int{57}
 }
 
 func (x *UpdateAzureFlowLogsStorageAccountResponse) GetId() string {
@@ -3927,7 +4331,7 @@ type DeleteAzureFlowLogsStorageAccountRequest struct {
 
 func (x *DeleteAzureFlowLogsStorageAccountRequest) Reset() {
 	*x = DeleteAzureFlowLogsStorageAccountRequest{}
-	mi := &file_illumio_cloud_config_v1_config_proto_msgTypes[51]
+	mi := &file_illumio_cloud_config_v1_config_proto_msgTypes[58]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -3939,7 +4343,7 @@ func (x *DeleteAzureFlowLogsStorageAccountRequest) String() string {
 func (*DeleteAzureFlowLogsStorageAccountRequest) ProtoMessage() {}
 
 func (x *DeleteAzureFlowLogsStorageAccountRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_illumio_cloud_config_v1_config_proto_msgTypes[51]
+	mi := &file_illumio_cloud_config_v1_config_proto_msgTypes[58]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -3952,10 +4356,446 @@ func (x *DeleteAzureFlowLogsStorageAccountRequest) ProtoReflect() protoreflect.M
 
 // Deprecated: Use DeleteAzureFlowLogsStorageAccountRequest.ProtoReflect.Descriptor instead.
 func (*DeleteAzureFlowLogsStorageAccountRequest) Descriptor() ([]byte, []int) {
-	return file_illumio_cloud_config_v1_config_proto_rawDescGZIP(), []int{51}
+	return file_illumio_cloud_config_v1_config_proto_rawDescGZIP(), []int{58}
 }
 
 func (x *DeleteAzureFlowLogsStorageAccountRequest) GetId() string {
+	if x != nil {
+		return x.Id
+	}
+	return ""
+}
+
+type CreateAzureFlowLogsStorageAccountSourceRequest struct {
+	state              protoimpl.MessageState `protogen:"open.v1"`
+	ContainerName      *string                `protobuf:"bytes,2,opt,name=container_name,json=containerName,proto3,oneof" json:"container_name,omitempty"`
+	PathPrefix         *string                `protobuf:"bytes,3,opt,name=path_prefix,json=pathPrefix,proto3,oneof" json:"path_prefix,omitempty"`
+	StorageAccountName string                 `protobuf:"bytes,4,opt,name=storage_account_name,json=storageAccountName,proto3" json:"storage_account_name,omitempty"`
+	SubscriptionId     string                 `protobuf:"bytes,5,opt,name=subscription_id,json=subscriptionId,proto3" json:"subscription_id,omitempty"`
+	unknownFields      protoimpl.UnknownFields
+	sizeCache          protoimpl.SizeCache
+}
+
+func (x *CreateAzureFlowLogsStorageAccountSourceRequest) Reset() {
+	*x = CreateAzureFlowLogsStorageAccountSourceRequest{}
+	mi := &file_illumio_cloud_config_v1_config_proto_msgTypes[59]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *CreateAzureFlowLogsStorageAccountSourceRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*CreateAzureFlowLogsStorageAccountSourceRequest) ProtoMessage() {}
+
+func (x *CreateAzureFlowLogsStorageAccountSourceRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_illumio_cloud_config_v1_config_proto_msgTypes[59]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use CreateAzureFlowLogsStorageAccountSourceRequest.ProtoReflect.Descriptor instead.
+func (*CreateAzureFlowLogsStorageAccountSourceRequest) Descriptor() ([]byte, []int) {
+	return file_illumio_cloud_config_v1_config_proto_rawDescGZIP(), []int{59}
+}
+
+func (x *CreateAzureFlowLogsStorageAccountSourceRequest) GetContainerName() string {
+	if x != nil && x.ContainerName != nil {
+		return *x.ContainerName
+	}
+	return ""
+}
+
+func (x *CreateAzureFlowLogsStorageAccountSourceRequest) GetPathPrefix() string {
+	if x != nil && x.PathPrefix != nil {
+		return *x.PathPrefix
+	}
+	return ""
+}
+
+func (x *CreateAzureFlowLogsStorageAccountSourceRequest) GetStorageAccountName() string {
+	if x != nil {
+		return x.StorageAccountName
+	}
+	return ""
+}
+
+func (x *CreateAzureFlowLogsStorageAccountSourceRequest) GetSubscriptionId() string {
+	if x != nil {
+		return x.SubscriptionId
+	}
+	return ""
+}
+
+type CreateAzureFlowLogsStorageAccountSourceResponse struct {
+	state              protoimpl.MessageState `protogen:"open.v1"`
+	Id                 string                 `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
+	ContainerName      *string                `protobuf:"bytes,2,opt,name=container_name,json=containerName,proto3,oneof" json:"container_name,omitempty"`
+	PathPrefix         *string                `protobuf:"bytes,3,opt,name=path_prefix,json=pathPrefix,proto3,oneof" json:"path_prefix,omitempty"`
+	StorageAccountName string                 `protobuf:"bytes,4,opt,name=storage_account_name,json=storageAccountName,proto3" json:"storage_account_name,omitempty"`
+	SubscriptionId     string                 `protobuf:"bytes,5,opt,name=subscription_id,json=subscriptionId,proto3" json:"subscription_id,omitempty"`
+	unknownFields      protoimpl.UnknownFields
+	sizeCache          protoimpl.SizeCache
+}
+
+func (x *CreateAzureFlowLogsStorageAccountSourceResponse) Reset() {
+	*x = CreateAzureFlowLogsStorageAccountSourceResponse{}
+	mi := &file_illumio_cloud_config_v1_config_proto_msgTypes[60]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *CreateAzureFlowLogsStorageAccountSourceResponse) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*CreateAzureFlowLogsStorageAccountSourceResponse) ProtoMessage() {}
+
+func (x *CreateAzureFlowLogsStorageAccountSourceResponse) ProtoReflect() protoreflect.Message {
+	mi := &file_illumio_cloud_config_v1_config_proto_msgTypes[60]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use CreateAzureFlowLogsStorageAccountSourceResponse.ProtoReflect.Descriptor instead.
+func (*CreateAzureFlowLogsStorageAccountSourceResponse) Descriptor() ([]byte, []int) {
+	return file_illumio_cloud_config_v1_config_proto_rawDescGZIP(), []int{60}
+}
+
+func (x *CreateAzureFlowLogsStorageAccountSourceResponse) GetId() string {
+	if x != nil {
+		return x.Id
+	}
+	return ""
+}
+
+func (x *CreateAzureFlowLogsStorageAccountSourceResponse) GetContainerName() string {
+	if x != nil && x.ContainerName != nil {
+		return *x.ContainerName
+	}
+	return ""
+}
+
+func (x *CreateAzureFlowLogsStorageAccountSourceResponse) GetPathPrefix() string {
+	if x != nil && x.PathPrefix != nil {
+		return *x.PathPrefix
+	}
+	return ""
+}
+
+func (x *CreateAzureFlowLogsStorageAccountSourceResponse) GetStorageAccountName() string {
+	if x != nil {
+		return x.StorageAccountName
+	}
+	return ""
+}
+
+func (x *CreateAzureFlowLogsStorageAccountSourceResponse) GetSubscriptionId() string {
+	if x != nil {
+		return x.SubscriptionId
+	}
+	return ""
+}
+
+type ReadAzureFlowLogsStorageAccountSourceRequest struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Id            string                 `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *ReadAzureFlowLogsStorageAccountSourceRequest) Reset() {
+	*x = ReadAzureFlowLogsStorageAccountSourceRequest{}
+	mi := &file_illumio_cloud_config_v1_config_proto_msgTypes[61]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *ReadAzureFlowLogsStorageAccountSourceRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*ReadAzureFlowLogsStorageAccountSourceRequest) ProtoMessage() {}
+
+func (x *ReadAzureFlowLogsStorageAccountSourceRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_illumio_cloud_config_v1_config_proto_msgTypes[61]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use ReadAzureFlowLogsStorageAccountSourceRequest.ProtoReflect.Descriptor instead.
+func (*ReadAzureFlowLogsStorageAccountSourceRequest) Descriptor() ([]byte, []int) {
+	return file_illumio_cloud_config_v1_config_proto_rawDescGZIP(), []int{61}
+}
+
+func (x *ReadAzureFlowLogsStorageAccountSourceRequest) GetId() string {
+	if x != nil {
+		return x.Id
+	}
+	return ""
+}
+
+type ReadAzureFlowLogsStorageAccountSourceResponse struct {
+	state              protoimpl.MessageState `protogen:"open.v1"`
+	Id                 string                 `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
+	ContainerName      *string                `protobuf:"bytes,2,opt,name=container_name,json=containerName,proto3,oneof" json:"container_name,omitempty"`
+	PathPrefix         *string                `protobuf:"bytes,3,opt,name=path_prefix,json=pathPrefix,proto3,oneof" json:"path_prefix,omitempty"`
+	StorageAccountName string                 `protobuf:"bytes,4,opt,name=storage_account_name,json=storageAccountName,proto3" json:"storage_account_name,omitempty"`
+	SubscriptionId     string                 `protobuf:"bytes,5,opt,name=subscription_id,json=subscriptionId,proto3" json:"subscription_id,omitempty"`
+	unknownFields      protoimpl.UnknownFields
+	sizeCache          protoimpl.SizeCache
+}
+
+func (x *ReadAzureFlowLogsStorageAccountSourceResponse) Reset() {
+	*x = ReadAzureFlowLogsStorageAccountSourceResponse{}
+	mi := &file_illumio_cloud_config_v1_config_proto_msgTypes[62]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *ReadAzureFlowLogsStorageAccountSourceResponse) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*ReadAzureFlowLogsStorageAccountSourceResponse) ProtoMessage() {}
+
+func (x *ReadAzureFlowLogsStorageAccountSourceResponse) ProtoReflect() protoreflect.Message {
+	mi := &file_illumio_cloud_config_v1_config_proto_msgTypes[62]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use ReadAzureFlowLogsStorageAccountSourceResponse.ProtoReflect.Descriptor instead.
+func (*ReadAzureFlowLogsStorageAccountSourceResponse) Descriptor() ([]byte, []int) {
+	return file_illumio_cloud_config_v1_config_proto_rawDescGZIP(), []int{62}
+}
+
+func (x *ReadAzureFlowLogsStorageAccountSourceResponse) GetId() string {
+	if x != nil {
+		return x.Id
+	}
+	return ""
+}
+
+func (x *ReadAzureFlowLogsStorageAccountSourceResponse) GetContainerName() string {
+	if x != nil && x.ContainerName != nil {
+		return *x.ContainerName
+	}
+	return ""
+}
+
+func (x *ReadAzureFlowLogsStorageAccountSourceResponse) GetPathPrefix() string {
+	if x != nil && x.PathPrefix != nil {
+		return *x.PathPrefix
+	}
+	return ""
+}
+
+func (x *ReadAzureFlowLogsStorageAccountSourceResponse) GetStorageAccountName() string {
+	if x != nil {
+		return x.StorageAccountName
+	}
+	return ""
+}
+
+func (x *ReadAzureFlowLogsStorageAccountSourceResponse) GetSubscriptionId() string {
+	if x != nil {
+		return x.SubscriptionId
+	}
+	return ""
+}
+
+type UpdateAzureFlowLogsStorageAccountSourceRequest struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Id            string                 `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
+	UpdateMask    *fieldmaskpb.FieldMask `protobuf:"bytes,6,opt,name=update_mask,json=updateMask,proto3" json:"update_mask,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *UpdateAzureFlowLogsStorageAccountSourceRequest) Reset() {
+	*x = UpdateAzureFlowLogsStorageAccountSourceRequest{}
+	mi := &file_illumio_cloud_config_v1_config_proto_msgTypes[63]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *UpdateAzureFlowLogsStorageAccountSourceRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*UpdateAzureFlowLogsStorageAccountSourceRequest) ProtoMessage() {}
+
+func (x *UpdateAzureFlowLogsStorageAccountSourceRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_illumio_cloud_config_v1_config_proto_msgTypes[63]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use UpdateAzureFlowLogsStorageAccountSourceRequest.ProtoReflect.Descriptor instead.
+func (*UpdateAzureFlowLogsStorageAccountSourceRequest) Descriptor() ([]byte, []int) {
+	return file_illumio_cloud_config_v1_config_proto_rawDescGZIP(), []int{63}
+}
+
+func (x *UpdateAzureFlowLogsStorageAccountSourceRequest) GetId() string {
+	if x != nil {
+		return x.Id
+	}
+	return ""
+}
+
+func (x *UpdateAzureFlowLogsStorageAccountSourceRequest) GetUpdateMask() *fieldmaskpb.FieldMask {
+	if x != nil {
+		return x.UpdateMask
+	}
+	return nil
+}
+
+type UpdateAzureFlowLogsStorageAccountSourceResponse struct {
+	state              protoimpl.MessageState `protogen:"open.v1"`
+	Id                 string                 `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
+	ContainerName      *string                `protobuf:"bytes,2,opt,name=container_name,json=containerName,proto3,oneof" json:"container_name,omitempty"`
+	PathPrefix         *string                `protobuf:"bytes,3,opt,name=path_prefix,json=pathPrefix,proto3,oneof" json:"path_prefix,omitempty"`
+	StorageAccountName string                 `protobuf:"bytes,4,opt,name=storage_account_name,json=storageAccountName,proto3" json:"storage_account_name,omitempty"`
+	SubscriptionId     string                 `protobuf:"bytes,5,opt,name=subscription_id,json=subscriptionId,proto3" json:"subscription_id,omitempty"`
+	unknownFields      protoimpl.UnknownFields
+	sizeCache          protoimpl.SizeCache
+}
+
+func (x *UpdateAzureFlowLogsStorageAccountSourceResponse) Reset() {
+	*x = UpdateAzureFlowLogsStorageAccountSourceResponse{}
+	mi := &file_illumio_cloud_config_v1_config_proto_msgTypes[64]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *UpdateAzureFlowLogsStorageAccountSourceResponse) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*UpdateAzureFlowLogsStorageAccountSourceResponse) ProtoMessage() {}
+
+func (x *UpdateAzureFlowLogsStorageAccountSourceResponse) ProtoReflect() protoreflect.Message {
+	mi := &file_illumio_cloud_config_v1_config_proto_msgTypes[64]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use UpdateAzureFlowLogsStorageAccountSourceResponse.ProtoReflect.Descriptor instead.
+func (*UpdateAzureFlowLogsStorageAccountSourceResponse) Descriptor() ([]byte, []int) {
+	return file_illumio_cloud_config_v1_config_proto_rawDescGZIP(), []int{64}
+}
+
+func (x *UpdateAzureFlowLogsStorageAccountSourceResponse) GetId() string {
+	if x != nil {
+		return x.Id
+	}
+	return ""
+}
+
+func (x *UpdateAzureFlowLogsStorageAccountSourceResponse) GetContainerName() string {
+	if x != nil && x.ContainerName != nil {
+		return *x.ContainerName
+	}
+	return ""
+}
+
+func (x *UpdateAzureFlowLogsStorageAccountSourceResponse) GetPathPrefix() string {
+	if x != nil && x.PathPrefix != nil {
+		return *x.PathPrefix
+	}
+	return ""
+}
+
+func (x *UpdateAzureFlowLogsStorageAccountSourceResponse) GetStorageAccountName() string {
+	if x != nil {
+		return x.StorageAccountName
+	}
+	return ""
+}
+
+func (x *UpdateAzureFlowLogsStorageAccountSourceResponse) GetSubscriptionId() string {
+	if x != nil {
+		return x.SubscriptionId
+	}
+	return ""
+}
+
+type DeleteAzureFlowLogsStorageAccountSourceRequest struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Id            string                 `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *DeleteAzureFlowLogsStorageAccountSourceRequest) Reset() {
+	*x = DeleteAzureFlowLogsStorageAccountSourceRequest{}
+	mi := &file_illumio_cloud_config_v1_config_proto_msgTypes[65]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *DeleteAzureFlowLogsStorageAccountSourceRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*DeleteAzureFlowLogsStorageAccountSourceRequest) ProtoMessage() {}
+
+func (x *DeleteAzureFlowLogsStorageAccountSourceRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_illumio_cloud_config_v1_config_proto_msgTypes[65]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use DeleteAzureFlowLogsStorageAccountSourceRequest.ProtoReflect.Descriptor instead.
+func (*DeleteAzureFlowLogsStorageAccountSourceRequest) Descriptor() ([]byte, []int) {
+	return file_illumio_cloud_config_v1_config_proto_rawDescGZIP(), []int{65}
+}
+
+func (x *DeleteAzureFlowLogsStorageAccountSourceRequest) GetId() string {
 	if x != nil {
 		return x.Id
 	}
@@ -3976,7 +4816,7 @@ type CreateAzureSubscriptionRequest struct {
 
 func (x *CreateAzureSubscriptionRequest) Reset() {
 	*x = CreateAzureSubscriptionRequest{}
-	mi := &file_illumio_cloud_config_v1_config_proto_msgTypes[52]
+	mi := &file_illumio_cloud_config_v1_config_proto_msgTypes[66]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -3988,7 +4828,7 @@ func (x *CreateAzureSubscriptionRequest) String() string {
 func (*CreateAzureSubscriptionRequest) ProtoMessage() {}
 
 func (x *CreateAzureSubscriptionRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_illumio_cloud_config_v1_config_proto_msgTypes[52]
+	mi := &file_illumio_cloud_config_v1_config_proto_msgTypes[66]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -4001,7 +4841,7 @@ func (x *CreateAzureSubscriptionRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use CreateAzureSubscriptionRequest.ProtoReflect.Descriptor instead.
 func (*CreateAzureSubscriptionRequest) Descriptor() ([]byte, []int) {
-	return file_illumio_cloud_config_v1_config_proto_rawDescGZIP(), []int{52}
+	return file_illumio_cloud_config_v1_config_proto_rawDescGZIP(), []int{66}
 }
 
 func (x *CreateAzureSubscriptionRequest) GetClientId() string {
@@ -4060,7 +4900,7 @@ type CreateAzureSubscriptionResponse struct {
 
 func (x *CreateAzureSubscriptionResponse) Reset() {
 	*x = CreateAzureSubscriptionResponse{}
-	mi := &file_illumio_cloud_config_v1_config_proto_msgTypes[53]
+	mi := &file_illumio_cloud_config_v1_config_proto_msgTypes[67]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -4072,7 +4912,7 @@ func (x *CreateAzureSubscriptionResponse) String() string {
 func (*CreateAzureSubscriptionResponse) ProtoMessage() {}
 
 func (x *CreateAzureSubscriptionResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_illumio_cloud_config_v1_config_proto_msgTypes[53]
+	mi := &file_illumio_cloud_config_v1_config_proto_msgTypes[67]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -4085,7 +4925,7 @@ func (x *CreateAzureSubscriptionResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use CreateAzureSubscriptionResponse.ProtoReflect.Descriptor instead.
 func (*CreateAzureSubscriptionResponse) Descriptor() ([]byte, []int) {
-	return file_illumio_cloud_config_v1_config_proto_rawDescGZIP(), []int{53}
+	return file_illumio_cloud_config_v1_config_proto_rawDescGZIP(), []int{67}
 }
 
 func (x *CreateAzureSubscriptionResponse) GetId() string {
@@ -4139,7 +4979,7 @@ type ReadAzureSubscriptionRequest struct {
 
 func (x *ReadAzureSubscriptionRequest) Reset() {
 	*x = ReadAzureSubscriptionRequest{}
-	mi := &file_illumio_cloud_config_v1_config_proto_msgTypes[54]
+	mi := &file_illumio_cloud_config_v1_config_proto_msgTypes[68]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -4151,7 +4991,7 @@ func (x *ReadAzureSubscriptionRequest) String() string {
 func (*ReadAzureSubscriptionRequest) ProtoMessage() {}
 
 func (x *ReadAzureSubscriptionRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_illumio_cloud_config_v1_config_proto_msgTypes[54]
+	mi := &file_illumio_cloud_config_v1_config_proto_msgTypes[68]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -4164,7 +5004,7 @@ func (x *ReadAzureSubscriptionRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use ReadAzureSubscriptionRequest.ProtoReflect.Descriptor instead.
 func (*ReadAzureSubscriptionRequest) Descriptor() ([]byte, []int) {
-	return file_illumio_cloud_config_v1_config_proto_rawDescGZIP(), []int{54}
+	return file_illumio_cloud_config_v1_config_proto_rawDescGZIP(), []int{68}
 }
 
 func (x *ReadAzureSubscriptionRequest) GetId() string {
@@ -4188,7 +5028,7 @@ type ReadAzureSubscriptionResponse struct {
 
 func (x *ReadAzureSubscriptionResponse) Reset() {
 	*x = ReadAzureSubscriptionResponse{}
-	mi := &file_illumio_cloud_config_v1_config_proto_msgTypes[55]
+	mi := &file_illumio_cloud_config_v1_config_proto_msgTypes[69]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -4200,7 +5040,7 @@ func (x *ReadAzureSubscriptionResponse) String() string {
 func (*ReadAzureSubscriptionResponse) ProtoMessage() {}
 
 func (x *ReadAzureSubscriptionResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_illumio_cloud_config_v1_config_proto_msgTypes[55]
+	mi := &file_illumio_cloud_config_v1_config_proto_msgTypes[69]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -4213,7 +5053,7 @@ func (x *ReadAzureSubscriptionResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use ReadAzureSubscriptionResponse.ProtoReflect.Descriptor instead.
 func (*ReadAzureSubscriptionResponse) Descriptor() ([]byte, []int) {
-	return file_illumio_cloud_config_v1_config_proto_rawDescGZIP(), []int{55}
+	return file_illumio_cloud_config_v1_config_proto_rawDescGZIP(), []int{69}
 }
 
 func (x *ReadAzureSubscriptionResponse) GetId() string {
@@ -4269,7 +5109,7 @@ type UpdateAzureSubscriptionRequest struct {
 
 func (x *UpdateAzureSubscriptionRequest) Reset() {
 	*x = UpdateAzureSubscriptionRequest{}
-	mi := &file_illumio_cloud_config_v1_config_proto_msgTypes[56]
+	mi := &file_illumio_cloud_config_v1_config_proto_msgTypes[70]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -4281,7 +5121,7 @@ func (x *UpdateAzureSubscriptionRequest) String() string {
 func (*UpdateAzureSubscriptionRequest) ProtoMessage() {}
 
 func (x *UpdateAzureSubscriptionRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_illumio_cloud_config_v1_config_proto_msgTypes[56]
+	mi := &file_illumio_cloud_config_v1_config_proto_msgTypes[70]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -4294,7 +5134,7 @@ func (x *UpdateAzureSubscriptionRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use UpdateAzureSubscriptionRequest.ProtoReflect.Descriptor instead.
 func (*UpdateAzureSubscriptionRequest) Descriptor() ([]byte, []int) {
-	return file_illumio_cloud_config_v1_config_proto_rawDescGZIP(), []int{56}
+	return file_illumio_cloud_config_v1_config_proto_rawDescGZIP(), []int{70}
 }
 
 func (x *UpdateAzureSubscriptionRequest) GetId() string {
@@ -4332,7 +5172,7 @@ type UpdateAzureSubscriptionResponse struct {
 
 func (x *UpdateAzureSubscriptionResponse) Reset() {
 	*x = UpdateAzureSubscriptionResponse{}
-	mi := &file_illumio_cloud_config_v1_config_proto_msgTypes[57]
+	mi := &file_illumio_cloud_config_v1_config_proto_msgTypes[71]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -4344,7 +5184,7 @@ func (x *UpdateAzureSubscriptionResponse) String() string {
 func (*UpdateAzureSubscriptionResponse) ProtoMessage() {}
 
 func (x *UpdateAzureSubscriptionResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_illumio_cloud_config_v1_config_proto_msgTypes[57]
+	mi := &file_illumio_cloud_config_v1_config_proto_msgTypes[71]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -4357,7 +5197,7 @@ func (x *UpdateAzureSubscriptionResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use UpdateAzureSubscriptionResponse.ProtoReflect.Descriptor instead.
 func (*UpdateAzureSubscriptionResponse) Descriptor() ([]byte, []int) {
-	return file_illumio_cloud_config_v1_config_proto_rawDescGZIP(), []int{57}
+	return file_illumio_cloud_config_v1_config_proto_rawDescGZIP(), []int{71}
 }
 
 func (x *UpdateAzureSubscriptionResponse) GetId() string {
@@ -4411,7 +5251,7 @@ type DeleteAzureSubscriptionRequest struct {
 
 func (x *DeleteAzureSubscriptionRequest) Reset() {
 	*x = DeleteAzureSubscriptionRequest{}
-	mi := &file_illumio_cloud_config_v1_config_proto_msgTypes[58]
+	mi := &file_illumio_cloud_config_v1_config_proto_msgTypes[72]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -4423,7 +5263,7 @@ func (x *DeleteAzureSubscriptionRequest) String() string {
 func (*DeleteAzureSubscriptionRequest) ProtoMessage() {}
 
 func (x *DeleteAzureSubscriptionRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_illumio_cloud_config_v1_config_proto_msgTypes[58]
+	mi := &file_illumio_cloud_config_v1_config_proto_msgTypes[72]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -4436,7 +5276,7 @@ func (x *DeleteAzureSubscriptionRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use DeleteAzureSubscriptionRequest.ProtoReflect.Descriptor instead.
 func (*DeleteAzureSubscriptionRequest) Descriptor() ([]byte, []int) {
-	return file_illumio_cloud_config_v1_config_proto_rawDescGZIP(), []int{58}
+	return file_illumio_cloud_config_v1_config_proto_rawDescGZIP(), []int{72}
 }
 
 func (x *DeleteAzureSubscriptionRequest) GetId() string {
@@ -4456,7 +5296,7 @@ type Deployment_AwsTags struct {
 
 func (x *Deployment_AwsTags) Reset() {
 	*x = Deployment_AwsTags{}
-	mi := &file_illumio_cloud_config_v1_config_proto_msgTypes[59]
+	mi := &file_illumio_cloud_config_v1_config_proto_msgTypes[73]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -4468,7 +5308,7 @@ func (x *Deployment_AwsTags) String() string {
 func (*Deployment_AwsTags) ProtoMessage() {}
 
 func (x *Deployment_AwsTags) ProtoReflect() protoreflect.Message {
-	mi := &file_illumio_cloud_config_v1_config_proto_msgTypes[59]
+	mi := &file_illumio_cloud_config_v1_config_proto_msgTypes[73]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -4481,7 +5321,7 @@ func (x *Deployment_AwsTags) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use Deployment_AwsTags.ProtoReflect.Descriptor instead.
 func (*Deployment_AwsTags) Descriptor() ([]byte, []int) {
-	return file_illumio_cloud_config_v1_config_proto_rawDescGZIP(), []int{59}
+	return file_illumio_cloud_config_v1_config_proto_rawDescGZIP(), []int{73}
 }
 
 func (x *Deployment_AwsTags) GetKey() string {
@@ -4508,7 +5348,7 @@ type Deployment_AzureTags struct {
 
 func (x *Deployment_AzureTags) Reset() {
 	*x = Deployment_AzureTags{}
-	mi := &file_illumio_cloud_config_v1_config_proto_msgTypes[60]
+	mi := &file_illumio_cloud_config_v1_config_proto_msgTypes[74]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -4520,7 +5360,7 @@ func (x *Deployment_AzureTags) String() string {
 func (*Deployment_AzureTags) ProtoMessage() {}
 
 func (x *Deployment_AzureTags) ProtoReflect() protoreflect.Message {
-	mi := &file_illumio_cloud_config_v1_config_proto_msgTypes[60]
+	mi := &file_illumio_cloud_config_v1_config_proto_msgTypes[74]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -4533,7 +5373,7 @@ func (x *Deployment_AzureTags) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use Deployment_AzureTags.ProtoReflect.Descriptor instead.
 func (*Deployment_AzureTags) Descriptor() ([]byte, []int) {
-	return file_illumio_cloud_config_v1_config_proto_rawDescGZIP(), []int{60}
+	return file_illumio_cloud_config_v1_config_proto_rawDescGZIP(), []int{74}
 }
 
 func (x *Deployment_AzureTags) GetKey() string {
@@ -4570,7 +5410,7 @@ type CreateDeploymentRequest struct {
 
 func (x *CreateDeploymentRequest) Reset() {
 	*x = CreateDeploymentRequest{}
-	mi := &file_illumio_cloud_config_v1_config_proto_msgTypes[61]
+	mi := &file_illumio_cloud_config_v1_config_proto_msgTypes[75]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -4582,7 +5422,7 @@ func (x *CreateDeploymentRequest) String() string {
 func (*CreateDeploymentRequest) ProtoMessage() {}
 
 func (x *CreateDeploymentRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_illumio_cloud_config_v1_config_proto_msgTypes[61]
+	mi := &file_illumio_cloud_config_v1_config_proto_msgTypes[75]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -4595,7 +5435,7 @@ func (x *CreateDeploymentRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use CreateDeploymentRequest.ProtoReflect.Descriptor instead.
 func (*CreateDeploymentRequest) Descriptor() ([]byte, []int) {
-	return file_illumio_cloud_config_v1_config_proto_rawDescGZIP(), []int{61}
+	return file_illumio_cloud_config_v1_config_proto_rawDescGZIP(), []int{75}
 }
 
 func (x *CreateDeploymentRequest) GetAwsAccountIds() []string {
@@ -4703,7 +5543,7 @@ type CreateDeploymentResponse struct {
 
 func (x *CreateDeploymentResponse) Reset() {
 	*x = CreateDeploymentResponse{}
-	mi := &file_illumio_cloud_config_v1_config_proto_msgTypes[62]
+	mi := &file_illumio_cloud_config_v1_config_proto_msgTypes[76]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -4715,7 +5555,7 @@ func (x *CreateDeploymentResponse) String() string {
 func (*CreateDeploymentResponse) ProtoMessage() {}
 
 func (x *CreateDeploymentResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_illumio_cloud_config_v1_config_proto_msgTypes[62]
+	mi := &file_illumio_cloud_config_v1_config_proto_msgTypes[76]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -4728,7 +5568,7 @@ func (x *CreateDeploymentResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use CreateDeploymentResponse.ProtoReflect.Descriptor instead.
 func (*CreateDeploymentResponse) Descriptor() ([]byte, []int) {
-	return file_illumio_cloud_config_v1_config_proto_rawDescGZIP(), []int{62}
+	return file_illumio_cloud_config_v1_config_proto_rawDescGZIP(), []int{76}
 }
 
 func (x *CreateDeploymentResponse) GetId() string {
@@ -4831,7 +5671,7 @@ type ReadDeploymentRequest struct {
 
 func (x *ReadDeploymentRequest) Reset() {
 	*x = ReadDeploymentRequest{}
-	mi := &file_illumio_cloud_config_v1_config_proto_msgTypes[63]
+	mi := &file_illumio_cloud_config_v1_config_proto_msgTypes[77]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -4843,7 +5683,7 @@ func (x *ReadDeploymentRequest) String() string {
 func (*ReadDeploymentRequest) ProtoMessage() {}
 
 func (x *ReadDeploymentRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_illumio_cloud_config_v1_config_proto_msgTypes[63]
+	mi := &file_illumio_cloud_config_v1_config_proto_msgTypes[77]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -4856,7 +5696,7 @@ func (x *ReadDeploymentRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use ReadDeploymentRequest.ProtoReflect.Descriptor instead.
 func (*ReadDeploymentRequest) Descriptor() ([]byte, []int) {
-	return file_illumio_cloud_config_v1_config_proto_rawDescGZIP(), []int{63}
+	return file_illumio_cloud_config_v1_config_proto_rawDescGZIP(), []int{77}
 }
 
 func (x *ReadDeploymentRequest) GetId() string {
@@ -4887,7 +5727,7 @@ type ReadDeploymentResponse struct {
 
 func (x *ReadDeploymentResponse) Reset() {
 	*x = ReadDeploymentResponse{}
-	mi := &file_illumio_cloud_config_v1_config_proto_msgTypes[64]
+	mi := &file_illumio_cloud_config_v1_config_proto_msgTypes[78]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -4899,7 +5739,7 @@ func (x *ReadDeploymentResponse) String() string {
 func (*ReadDeploymentResponse) ProtoMessage() {}
 
 func (x *ReadDeploymentResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_illumio_cloud_config_v1_config_proto_msgTypes[64]
+	mi := &file_illumio_cloud_config_v1_config_proto_msgTypes[78]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -4912,7 +5752,7 @@ func (x *ReadDeploymentResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use ReadDeploymentResponse.ProtoReflect.Descriptor instead.
 func (*ReadDeploymentResponse) Descriptor() ([]byte, []int) {
-	return file_illumio_cloud_config_v1_config_proto_rawDescGZIP(), []int{64}
+	return file_illumio_cloud_config_v1_config_proto_rawDescGZIP(), []int{78}
 }
 
 func (x *ReadDeploymentResponse) GetId() string {
@@ -5028,7 +5868,7 @@ type UpdateDeploymentRequest struct {
 
 func (x *UpdateDeploymentRequest) Reset() {
 	*x = UpdateDeploymentRequest{}
-	mi := &file_illumio_cloud_config_v1_config_proto_msgTypes[65]
+	mi := &file_illumio_cloud_config_v1_config_proto_msgTypes[79]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -5040,7 +5880,7 @@ func (x *UpdateDeploymentRequest) String() string {
 func (*UpdateDeploymentRequest) ProtoMessage() {}
 
 func (x *UpdateDeploymentRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_illumio_cloud_config_v1_config_proto_msgTypes[65]
+	mi := &file_illumio_cloud_config_v1_config_proto_msgTypes[79]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -5053,7 +5893,7 @@ func (x *UpdateDeploymentRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use UpdateDeploymentRequest.ProtoReflect.Descriptor instead.
 func (*UpdateDeploymentRequest) Descriptor() ([]byte, []int) {
-	return file_illumio_cloud_config_v1_config_proto_rawDescGZIP(), []int{65}
+	return file_illumio_cloud_config_v1_config_proto_rawDescGZIP(), []int{79}
 }
 
 func (x *UpdateDeploymentRequest) GetId() string {
@@ -5175,7 +6015,7 @@ type UpdateDeploymentResponse struct {
 
 func (x *UpdateDeploymentResponse) Reset() {
 	*x = UpdateDeploymentResponse{}
-	mi := &file_illumio_cloud_config_v1_config_proto_msgTypes[66]
+	mi := &file_illumio_cloud_config_v1_config_proto_msgTypes[80]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -5187,7 +6027,7 @@ func (x *UpdateDeploymentResponse) String() string {
 func (*UpdateDeploymentResponse) ProtoMessage() {}
 
 func (x *UpdateDeploymentResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_illumio_cloud_config_v1_config_proto_msgTypes[66]
+	mi := &file_illumio_cloud_config_v1_config_proto_msgTypes[80]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -5200,7 +6040,7 @@ func (x *UpdateDeploymentResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use UpdateDeploymentResponse.ProtoReflect.Descriptor instead.
 func (*UpdateDeploymentResponse) Descriptor() ([]byte, []int) {
-	return file_illumio_cloud_config_v1_config_proto_rawDescGZIP(), []int{66}
+	return file_illumio_cloud_config_v1_config_proto_rawDescGZIP(), []int{80}
 }
 
 func (x *UpdateDeploymentResponse) GetId() string {
@@ -5303,7 +6143,7 @@ type DeleteDeploymentRequest struct {
 
 func (x *DeleteDeploymentRequest) Reset() {
 	*x = DeleteDeploymentRequest{}
-	mi := &file_illumio_cloud_config_v1_config_proto_msgTypes[67]
+	mi := &file_illumio_cloud_config_v1_config_proto_msgTypes[81]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -5315,7 +6155,7 @@ func (x *DeleteDeploymentRequest) String() string {
 func (*DeleteDeploymentRequest) ProtoMessage() {}
 
 func (x *DeleteDeploymentRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_illumio_cloud_config_v1_config_proto_msgTypes[67]
+	mi := &file_illumio_cloud_config_v1_config_proto_msgTypes[81]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -5328,7 +6168,7 @@ func (x *DeleteDeploymentRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use DeleteDeploymentRequest.ProtoReflect.Descriptor instead.
 func (*DeleteDeploymentRequest) Descriptor() ([]byte, []int) {
-	return file_illumio_cloud_config_v1_config_proto_rawDescGZIP(), []int{67}
+	return file_illumio_cloud_config_v1_config_proto_rawDescGZIP(), []int{81}
 }
 
 func (x *DeleteDeploymentRequest) GetId() string {
@@ -5348,7 +6188,7 @@ type CreateGcpFlowLogsPubsubTopicRequest struct {
 
 func (x *CreateGcpFlowLogsPubsubTopicRequest) Reset() {
 	*x = CreateGcpFlowLogsPubsubTopicRequest{}
-	mi := &file_illumio_cloud_config_v1_config_proto_msgTypes[68]
+	mi := &file_illumio_cloud_config_v1_config_proto_msgTypes[82]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -5360,7 +6200,7 @@ func (x *CreateGcpFlowLogsPubsubTopicRequest) String() string {
 func (*CreateGcpFlowLogsPubsubTopicRequest) ProtoMessage() {}
 
 func (x *CreateGcpFlowLogsPubsubTopicRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_illumio_cloud_config_v1_config_proto_msgTypes[68]
+	mi := &file_illumio_cloud_config_v1_config_proto_msgTypes[82]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -5373,7 +6213,7 @@ func (x *CreateGcpFlowLogsPubsubTopicRequest) ProtoReflect() protoreflect.Messag
 
 // Deprecated: Use CreateGcpFlowLogsPubsubTopicRequest.ProtoReflect.Descriptor instead.
 func (*CreateGcpFlowLogsPubsubTopicRequest) Descriptor() ([]byte, []int) {
-	return file_illumio_cloud_config_v1_config_proto_rawDescGZIP(), []int{68}
+	return file_illumio_cloud_config_v1_config_proto_rawDescGZIP(), []int{82}
 }
 
 func (x *CreateGcpFlowLogsPubsubTopicRequest) GetProjectId() string {
@@ -5401,7 +6241,7 @@ type CreateGcpFlowLogsPubsubTopicResponse struct {
 
 func (x *CreateGcpFlowLogsPubsubTopicResponse) Reset() {
 	*x = CreateGcpFlowLogsPubsubTopicResponse{}
-	mi := &file_illumio_cloud_config_v1_config_proto_msgTypes[69]
+	mi := &file_illumio_cloud_config_v1_config_proto_msgTypes[83]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -5413,7 +6253,7 @@ func (x *CreateGcpFlowLogsPubsubTopicResponse) String() string {
 func (*CreateGcpFlowLogsPubsubTopicResponse) ProtoMessage() {}
 
 func (x *CreateGcpFlowLogsPubsubTopicResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_illumio_cloud_config_v1_config_proto_msgTypes[69]
+	mi := &file_illumio_cloud_config_v1_config_proto_msgTypes[83]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -5426,7 +6266,7 @@ func (x *CreateGcpFlowLogsPubsubTopicResponse) ProtoReflect() protoreflect.Messa
 
 // Deprecated: Use CreateGcpFlowLogsPubsubTopicResponse.ProtoReflect.Descriptor instead.
 func (*CreateGcpFlowLogsPubsubTopicResponse) Descriptor() ([]byte, []int) {
-	return file_illumio_cloud_config_v1_config_proto_rawDescGZIP(), []int{69}
+	return file_illumio_cloud_config_v1_config_proto_rawDescGZIP(), []int{83}
 }
 
 func (x *CreateGcpFlowLogsPubsubTopicResponse) GetId() string {
@@ -5459,7 +6299,7 @@ type ReadGcpFlowLogsPubsubTopicRequest struct {
 
 func (x *ReadGcpFlowLogsPubsubTopicRequest) Reset() {
 	*x = ReadGcpFlowLogsPubsubTopicRequest{}
-	mi := &file_illumio_cloud_config_v1_config_proto_msgTypes[70]
+	mi := &file_illumio_cloud_config_v1_config_proto_msgTypes[84]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -5471,7 +6311,7 @@ func (x *ReadGcpFlowLogsPubsubTopicRequest) String() string {
 func (*ReadGcpFlowLogsPubsubTopicRequest) ProtoMessage() {}
 
 func (x *ReadGcpFlowLogsPubsubTopicRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_illumio_cloud_config_v1_config_proto_msgTypes[70]
+	mi := &file_illumio_cloud_config_v1_config_proto_msgTypes[84]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -5484,7 +6324,7 @@ func (x *ReadGcpFlowLogsPubsubTopicRequest) ProtoReflect() protoreflect.Message 
 
 // Deprecated: Use ReadGcpFlowLogsPubsubTopicRequest.ProtoReflect.Descriptor instead.
 func (*ReadGcpFlowLogsPubsubTopicRequest) Descriptor() ([]byte, []int) {
-	return file_illumio_cloud_config_v1_config_proto_rawDescGZIP(), []int{70}
+	return file_illumio_cloud_config_v1_config_proto_rawDescGZIP(), []int{84}
 }
 
 func (x *ReadGcpFlowLogsPubsubTopicRequest) GetId() string {
@@ -5505,7 +6345,7 @@ type ReadGcpFlowLogsPubsubTopicResponse struct {
 
 func (x *ReadGcpFlowLogsPubsubTopicResponse) Reset() {
 	*x = ReadGcpFlowLogsPubsubTopicResponse{}
-	mi := &file_illumio_cloud_config_v1_config_proto_msgTypes[71]
+	mi := &file_illumio_cloud_config_v1_config_proto_msgTypes[85]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -5517,7 +6357,7 @@ func (x *ReadGcpFlowLogsPubsubTopicResponse) String() string {
 func (*ReadGcpFlowLogsPubsubTopicResponse) ProtoMessage() {}
 
 func (x *ReadGcpFlowLogsPubsubTopicResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_illumio_cloud_config_v1_config_proto_msgTypes[71]
+	mi := &file_illumio_cloud_config_v1_config_proto_msgTypes[85]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -5530,7 +6370,7 @@ func (x *ReadGcpFlowLogsPubsubTopicResponse) ProtoReflect() protoreflect.Message
 
 // Deprecated: Use ReadGcpFlowLogsPubsubTopicResponse.ProtoReflect.Descriptor instead.
 func (*ReadGcpFlowLogsPubsubTopicResponse) Descriptor() ([]byte, []int) {
-	return file_illumio_cloud_config_v1_config_proto_rawDescGZIP(), []int{71}
+	return file_illumio_cloud_config_v1_config_proto_rawDescGZIP(), []int{85}
 }
 
 func (x *ReadGcpFlowLogsPubsubTopicResponse) GetId() string {
@@ -5564,7 +6404,7 @@ type UpdateGcpFlowLogsPubsubTopicRequest struct {
 
 func (x *UpdateGcpFlowLogsPubsubTopicRequest) Reset() {
 	*x = UpdateGcpFlowLogsPubsubTopicRequest{}
-	mi := &file_illumio_cloud_config_v1_config_proto_msgTypes[72]
+	mi := &file_illumio_cloud_config_v1_config_proto_msgTypes[86]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -5576,7 +6416,7 @@ func (x *UpdateGcpFlowLogsPubsubTopicRequest) String() string {
 func (*UpdateGcpFlowLogsPubsubTopicRequest) ProtoMessage() {}
 
 func (x *UpdateGcpFlowLogsPubsubTopicRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_illumio_cloud_config_v1_config_proto_msgTypes[72]
+	mi := &file_illumio_cloud_config_v1_config_proto_msgTypes[86]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -5589,7 +6429,7 @@ func (x *UpdateGcpFlowLogsPubsubTopicRequest) ProtoReflect() protoreflect.Messag
 
 // Deprecated: Use UpdateGcpFlowLogsPubsubTopicRequest.ProtoReflect.Descriptor instead.
 func (*UpdateGcpFlowLogsPubsubTopicRequest) Descriptor() ([]byte, []int) {
-	return file_illumio_cloud_config_v1_config_proto_rawDescGZIP(), []int{72}
+	return file_illumio_cloud_config_v1_config_proto_rawDescGZIP(), []int{86}
 }
 
 func (x *UpdateGcpFlowLogsPubsubTopicRequest) GetId() string {
@@ -5617,7 +6457,7 @@ type UpdateGcpFlowLogsPubsubTopicResponse struct {
 
 func (x *UpdateGcpFlowLogsPubsubTopicResponse) Reset() {
 	*x = UpdateGcpFlowLogsPubsubTopicResponse{}
-	mi := &file_illumio_cloud_config_v1_config_proto_msgTypes[73]
+	mi := &file_illumio_cloud_config_v1_config_proto_msgTypes[87]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -5629,7 +6469,7 @@ func (x *UpdateGcpFlowLogsPubsubTopicResponse) String() string {
 func (*UpdateGcpFlowLogsPubsubTopicResponse) ProtoMessage() {}
 
 func (x *UpdateGcpFlowLogsPubsubTopicResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_illumio_cloud_config_v1_config_proto_msgTypes[73]
+	mi := &file_illumio_cloud_config_v1_config_proto_msgTypes[87]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -5642,7 +6482,7 @@ func (x *UpdateGcpFlowLogsPubsubTopicResponse) ProtoReflect() protoreflect.Messa
 
 // Deprecated: Use UpdateGcpFlowLogsPubsubTopicResponse.ProtoReflect.Descriptor instead.
 func (*UpdateGcpFlowLogsPubsubTopicResponse) Descriptor() ([]byte, []int) {
-	return file_illumio_cloud_config_v1_config_proto_rawDescGZIP(), []int{73}
+	return file_illumio_cloud_config_v1_config_proto_rawDescGZIP(), []int{87}
 }
 
 func (x *UpdateGcpFlowLogsPubsubTopicResponse) GetId() string {
@@ -5675,7 +6515,7 @@ type DeleteGcpFlowLogsPubsubTopicRequest struct {
 
 func (x *DeleteGcpFlowLogsPubsubTopicRequest) Reset() {
 	*x = DeleteGcpFlowLogsPubsubTopicRequest{}
-	mi := &file_illumio_cloud_config_v1_config_proto_msgTypes[74]
+	mi := &file_illumio_cloud_config_v1_config_proto_msgTypes[88]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -5687,7 +6527,7 @@ func (x *DeleteGcpFlowLogsPubsubTopicRequest) String() string {
 func (*DeleteGcpFlowLogsPubsubTopicRequest) ProtoMessage() {}
 
 func (x *DeleteGcpFlowLogsPubsubTopicRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_illumio_cloud_config_v1_config_proto_msgTypes[74]
+	mi := &file_illumio_cloud_config_v1_config_proto_msgTypes[88]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -5700,10 +6540,414 @@ func (x *DeleteGcpFlowLogsPubsubTopicRequest) ProtoReflect() protoreflect.Messag
 
 // Deprecated: Use DeleteGcpFlowLogsPubsubTopicRequest.ProtoReflect.Descriptor instead.
 func (*DeleteGcpFlowLogsPubsubTopicRequest) Descriptor() ([]byte, []int) {
-	return file_illumio_cloud_config_v1_config_proto_rawDescGZIP(), []int{74}
+	return file_illumio_cloud_config_v1_config_proto_rawDescGZIP(), []int{88}
 }
 
 func (x *DeleteGcpFlowLogsPubsubTopicRequest) GetId() string {
+	if x != nil {
+		return x.Id
+	}
+	return ""
+}
+
+type CreateGcpFlowLogsStorageBucketSourceRequest struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	BucketName    string                 `protobuf:"bytes,2,opt,name=bucket_name,json=bucketName,proto3" json:"bucket_name,omitempty"`
+	PathPrefix    *string                `protobuf:"bytes,3,opt,name=path_prefix,json=pathPrefix,proto3,oneof" json:"path_prefix,omitempty"`
+	ProjectId     string                 `protobuf:"bytes,4,opt,name=project_id,json=projectId,proto3" json:"project_id,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *CreateGcpFlowLogsStorageBucketSourceRequest) Reset() {
+	*x = CreateGcpFlowLogsStorageBucketSourceRequest{}
+	mi := &file_illumio_cloud_config_v1_config_proto_msgTypes[89]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *CreateGcpFlowLogsStorageBucketSourceRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*CreateGcpFlowLogsStorageBucketSourceRequest) ProtoMessage() {}
+
+func (x *CreateGcpFlowLogsStorageBucketSourceRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_illumio_cloud_config_v1_config_proto_msgTypes[89]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use CreateGcpFlowLogsStorageBucketSourceRequest.ProtoReflect.Descriptor instead.
+func (*CreateGcpFlowLogsStorageBucketSourceRequest) Descriptor() ([]byte, []int) {
+	return file_illumio_cloud_config_v1_config_proto_rawDescGZIP(), []int{89}
+}
+
+func (x *CreateGcpFlowLogsStorageBucketSourceRequest) GetBucketName() string {
+	if x != nil {
+		return x.BucketName
+	}
+	return ""
+}
+
+func (x *CreateGcpFlowLogsStorageBucketSourceRequest) GetPathPrefix() string {
+	if x != nil && x.PathPrefix != nil {
+		return *x.PathPrefix
+	}
+	return ""
+}
+
+func (x *CreateGcpFlowLogsStorageBucketSourceRequest) GetProjectId() string {
+	if x != nil {
+		return x.ProjectId
+	}
+	return ""
+}
+
+type CreateGcpFlowLogsStorageBucketSourceResponse struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Id            string                 `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
+	BucketName    string                 `protobuf:"bytes,2,opt,name=bucket_name,json=bucketName,proto3" json:"bucket_name,omitempty"`
+	PathPrefix    *string                `protobuf:"bytes,3,opt,name=path_prefix,json=pathPrefix,proto3,oneof" json:"path_prefix,omitempty"`
+	ProjectId     string                 `protobuf:"bytes,4,opt,name=project_id,json=projectId,proto3" json:"project_id,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *CreateGcpFlowLogsStorageBucketSourceResponse) Reset() {
+	*x = CreateGcpFlowLogsStorageBucketSourceResponse{}
+	mi := &file_illumio_cloud_config_v1_config_proto_msgTypes[90]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *CreateGcpFlowLogsStorageBucketSourceResponse) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*CreateGcpFlowLogsStorageBucketSourceResponse) ProtoMessage() {}
+
+func (x *CreateGcpFlowLogsStorageBucketSourceResponse) ProtoReflect() protoreflect.Message {
+	mi := &file_illumio_cloud_config_v1_config_proto_msgTypes[90]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use CreateGcpFlowLogsStorageBucketSourceResponse.ProtoReflect.Descriptor instead.
+func (*CreateGcpFlowLogsStorageBucketSourceResponse) Descriptor() ([]byte, []int) {
+	return file_illumio_cloud_config_v1_config_proto_rawDescGZIP(), []int{90}
+}
+
+func (x *CreateGcpFlowLogsStorageBucketSourceResponse) GetId() string {
+	if x != nil {
+		return x.Id
+	}
+	return ""
+}
+
+func (x *CreateGcpFlowLogsStorageBucketSourceResponse) GetBucketName() string {
+	if x != nil {
+		return x.BucketName
+	}
+	return ""
+}
+
+func (x *CreateGcpFlowLogsStorageBucketSourceResponse) GetPathPrefix() string {
+	if x != nil && x.PathPrefix != nil {
+		return *x.PathPrefix
+	}
+	return ""
+}
+
+func (x *CreateGcpFlowLogsStorageBucketSourceResponse) GetProjectId() string {
+	if x != nil {
+		return x.ProjectId
+	}
+	return ""
+}
+
+type ReadGcpFlowLogsStorageBucketSourceRequest struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Id            string                 `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *ReadGcpFlowLogsStorageBucketSourceRequest) Reset() {
+	*x = ReadGcpFlowLogsStorageBucketSourceRequest{}
+	mi := &file_illumio_cloud_config_v1_config_proto_msgTypes[91]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *ReadGcpFlowLogsStorageBucketSourceRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*ReadGcpFlowLogsStorageBucketSourceRequest) ProtoMessage() {}
+
+func (x *ReadGcpFlowLogsStorageBucketSourceRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_illumio_cloud_config_v1_config_proto_msgTypes[91]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use ReadGcpFlowLogsStorageBucketSourceRequest.ProtoReflect.Descriptor instead.
+func (*ReadGcpFlowLogsStorageBucketSourceRequest) Descriptor() ([]byte, []int) {
+	return file_illumio_cloud_config_v1_config_proto_rawDescGZIP(), []int{91}
+}
+
+func (x *ReadGcpFlowLogsStorageBucketSourceRequest) GetId() string {
+	if x != nil {
+		return x.Id
+	}
+	return ""
+}
+
+type ReadGcpFlowLogsStorageBucketSourceResponse struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Id            string                 `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
+	BucketName    string                 `protobuf:"bytes,2,opt,name=bucket_name,json=bucketName,proto3" json:"bucket_name,omitempty"`
+	PathPrefix    *string                `protobuf:"bytes,3,opt,name=path_prefix,json=pathPrefix,proto3,oneof" json:"path_prefix,omitempty"`
+	ProjectId     string                 `protobuf:"bytes,4,opt,name=project_id,json=projectId,proto3" json:"project_id,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *ReadGcpFlowLogsStorageBucketSourceResponse) Reset() {
+	*x = ReadGcpFlowLogsStorageBucketSourceResponse{}
+	mi := &file_illumio_cloud_config_v1_config_proto_msgTypes[92]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *ReadGcpFlowLogsStorageBucketSourceResponse) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*ReadGcpFlowLogsStorageBucketSourceResponse) ProtoMessage() {}
+
+func (x *ReadGcpFlowLogsStorageBucketSourceResponse) ProtoReflect() protoreflect.Message {
+	mi := &file_illumio_cloud_config_v1_config_proto_msgTypes[92]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use ReadGcpFlowLogsStorageBucketSourceResponse.ProtoReflect.Descriptor instead.
+func (*ReadGcpFlowLogsStorageBucketSourceResponse) Descriptor() ([]byte, []int) {
+	return file_illumio_cloud_config_v1_config_proto_rawDescGZIP(), []int{92}
+}
+
+func (x *ReadGcpFlowLogsStorageBucketSourceResponse) GetId() string {
+	if x != nil {
+		return x.Id
+	}
+	return ""
+}
+
+func (x *ReadGcpFlowLogsStorageBucketSourceResponse) GetBucketName() string {
+	if x != nil {
+		return x.BucketName
+	}
+	return ""
+}
+
+func (x *ReadGcpFlowLogsStorageBucketSourceResponse) GetPathPrefix() string {
+	if x != nil && x.PathPrefix != nil {
+		return *x.PathPrefix
+	}
+	return ""
+}
+
+func (x *ReadGcpFlowLogsStorageBucketSourceResponse) GetProjectId() string {
+	if x != nil {
+		return x.ProjectId
+	}
+	return ""
+}
+
+type UpdateGcpFlowLogsStorageBucketSourceRequest struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Id            string                 `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
+	UpdateMask    *fieldmaskpb.FieldMask `protobuf:"bytes,5,opt,name=update_mask,json=updateMask,proto3" json:"update_mask,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *UpdateGcpFlowLogsStorageBucketSourceRequest) Reset() {
+	*x = UpdateGcpFlowLogsStorageBucketSourceRequest{}
+	mi := &file_illumio_cloud_config_v1_config_proto_msgTypes[93]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *UpdateGcpFlowLogsStorageBucketSourceRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*UpdateGcpFlowLogsStorageBucketSourceRequest) ProtoMessage() {}
+
+func (x *UpdateGcpFlowLogsStorageBucketSourceRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_illumio_cloud_config_v1_config_proto_msgTypes[93]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use UpdateGcpFlowLogsStorageBucketSourceRequest.ProtoReflect.Descriptor instead.
+func (*UpdateGcpFlowLogsStorageBucketSourceRequest) Descriptor() ([]byte, []int) {
+	return file_illumio_cloud_config_v1_config_proto_rawDescGZIP(), []int{93}
+}
+
+func (x *UpdateGcpFlowLogsStorageBucketSourceRequest) GetId() string {
+	if x != nil {
+		return x.Id
+	}
+	return ""
+}
+
+func (x *UpdateGcpFlowLogsStorageBucketSourceRequest) GetUpdateMask() *fieldmaskpb.FieldMask {
+	if x != nil {
+		return x.UpdateMask
+	}
+	return nil
+}
+
+type UpdateGcpFlowLogsStorageBucketSourceResponse struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Id            string                 `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
+	BucketName    string                 `protobuf:"bytes,2,opt,name=bucket_name,json=bucketName,proto3" json:"bucket_name,omitempty"`
+	PathPrefix    *string                `protobuf:"bytes,3,opt,name=path_prefix,json=pathPrefix,proto3,oneof" json:"path_prefix,omitempty"`
+	ProjectId     string                 `protobuf:"bytes,4,opt,name=project_id,json=projectId,proto3" json:"project_id,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *UpdateGcpFlowLogsStorageBucketSourceResponse) Reset() {
+	*x = UpdateGcpFlowLogsStorageBucketSourceResponse{}
+	mi := &file_illumio_cloud_config_v1_config_proto_msgTypes[94]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *UpdateGcpFlowLogsStorageBucketSourceResponse) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*UpdateGcpFlowLogsStorageBucketSourceResponse) ProtoMessage() {}
+
+func (x *UpdateGcpFlowLogsStorageBucketSourceResponse) ProtoReflect() protoreflect.Message {
+	mi := &file_illumio_cloud_config_v1_config_proto_msgTypes[94]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use UpdateGcpFlowLogsStorageBucketSourceResponse.ProtoReflect.Descriptor instead.
+func (*UpdateGcpFlowLogsStorageBucketSourceResponse) Descriptor() ([]byte, []int) {
+	return file_illumio_cloud_config_v1_config_proto_rawDescGZIP(), []int{94}
+}
+
+func (x *UpdateGcpFlowLogsStorageBucketSourceResponse) GetId() string {
+	if x != nil {
+		return x.Id
+	}
+	return ""
+}
+
+func (x *UpdateGcpFlowLogsStorageBucketSourceResponse) GetBucketName() string {
+	if x != nil {
+		return x.BucketName
+	}
+	return ""
+}
+
+func (x *UpdateGcpFlowLogsStorageBucketSourceResponse) GetPathPrefix() string {
+	if x != nil && x.PathPrefix != nil {
+		return *x.PathPrefix
+	}
+	return ""
+}
+
+func (x *UpdateGcpFlowLogsStorageBucketSourceResponse) GetProjectId() string {
+	if x != nil {
+		return x.ProjectId
+	}
+	return ""
+}
+
+type DeleteGcpFlowLogsStorageBucketSourceRequest struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Id            string                 `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *DeleteGcpFlowLogsStorageBucketSourceRequest) Reset() {
+	*x = DeleteGcpFlowLogsStorageBucketSourceRequest{}
+	mi := &file_illumio_cloud_config_v1_config_proto_msgTypes[95]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *DeleteGcpFlowLogsStorageBucketSourceRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*DeleteGcpFlowLogsStorageBucketSourceRequest) ProtoMessage() {}
+
+func (x *DeleteGcpFlowLogsStorageBucketSourceRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_illumio_cloud_config_v1_config_proto_msgTypes[95]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use DeleteGcpFlowLogsStorageBucketSourceRequest.ProtoReflect.Descriptor instead.
+func (*DeleteGcpFlowLogsStorageBucketSourceRequest) Descriptor() ([]byte, []int) {
+	return file_illumio_cloud_config_v1_config_proto_rawDescGZIP(), []int{95}
+}
+
+func (x *DeleteGcpFlowLogsStorageBucketSourceRequest) GetId() string {
 	if x != nil {
 		return x.Id
 	}
@@ -5723,7 +6967,7 @@ type CreateGcpProjectRequest struct {
 
 func (x *CreateGcpProjectRequest) Reset() {
 	*x = CreateGcpProjectRequest{}
-	mi := &file_illumio_cloud_config_v1_config_proto_msgTypes[75]
+	mi := &file_illumio_cloud_config_v1_config_proto_msgTypes[96]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -5735,7 +6979,7 @@ func (x *CreateGcpProjectRequest) String() string {
 func (*CreateGcpProjectRequest) ProtoMessage() {}
 
 func (x *CreateGcpProjectRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_illumio_cloud_config_v1_config_proto_msgTypes[75]
+	mi := &file_illumio_cloud_config_v1_config_proto_msgTypes[96]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -5748,7 +6992,7 @@ func (x *CreateGcpProjectRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use CreateGcpProjectRequest.ProtoReflect.Descriptor instead.
 func (*CreateGcpProjectRequest) Descriptor() ([]byte, []int) {
-	return file_illumio_cloud_config_v1_config_proto_rawDescGZIP(), []int{75}
+	return file_illumio_cloud_config_v1_config_proto_rawDescGZIP(), []int{96}
 }
 
 func (x *CreateGcpProjectRequest) GetMode() string {
@@ -5800,7 +7044,7 @@ type CreateGcpProjectResponse struct {
 
 func (x *CreateGcpProjectResponse) Reset() {
 	*x = CreateGcpProjectResponse{}
-	mi := &file_illumio_cloud_config_v1_config_proto_msgTypes[76]
+	mi := &file_illumio_cloud_config_v1_config_proto_msgTypes[97]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -5812,7 +7056,7 @@ func (x *CreateGcpProjectResponse) String() string {
 func (*CreateGcpProjectResponse) ProtoMessage() {}
 
 func (x *CreateGcpProjectResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_illumio_cloud_config_v1_config_proto_msgTypes[76]
+	mi := &file_illumio_cloud_config_v1_config_proto_msgTypes[97]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -5825,7 +7069,7 @@ func (x *CreateGcpProjectResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use CreateGcpProjectResponse.ProtoReflect.Descriptor instead.
 func (*CreateGcpProjectResponse) Descriptor() ([]byte, []int) {
-	return file_illumio_cloud_config_v1_config_proto_rawDescGZIP(), []int{76}
+	return file_illumio_cloud_config_v1_config_proto_rawDescGZIP(), []int{97}
 }
 
 func (x *CreateGcpProjectResponse) GetId() string {
@@ -5879,7 +7123,7 @@ type ReadGcpProjectRequest struct {
 
 func (x *ReadGcpProjectRequest) Reset() {
 	*x = ReadGcpProjectRequest{}
-	mi := &file_illumio_cloud_config_v1_config_proto_msgTypes[77]
+	mi := &file_illumio_cloud_config_v1_config_proto_msgTypes[98]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -5891,7 +7135,7 @@ func (x *ReadGcpProjectRequest) String() string {
 func (*ReadGcpProjectRequest) ProtoMessage() {}
 
 func (x *ReadGcpProjectRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_illumio_cloud_config_v1_config_proto_msgTypes[77]
+	mi := &file_illumio_cloud_config_v1_config_proto_msgTypes[98]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -5904,7 +7148,7 @@ func (x *ReadGcpProjectRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use ReadGcpProjectRequest.ProtoReflect.Descriptor instead.
 func (*ReadGcpProjectRequest) Descriptor() ([]byte, []int) {
-	return file_illumio_cloud_config_v1_config_proto_rawDescGZIP(), []int{77}
+	return file_illumio_cloud_config_v1_config_proto_rawDescGZIP(), []int{98}
 }
 
 func (x *ReadGcpProjectRequest) GetId() string {
@@ -5928,7 +7172,7 @@ type ReadGcpProjectResponse struct {
 
 func (x *ReadGcpProjectResponse) Reset() {
 	*x = ReadGcpProjectResponse{}
-	mi := &file_illumio_cloud_config_v1_config_proto_msgTypes[78]
+	mi := &file_illumio_cloud_config_v1_config_proto_msgTypes[99]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -5940,7 +7184,7 @@ func (x *ReadGcpProjectResponse) String() string {
 func (*ReadGcpProjectResponse) ProtoMessage() {}
 
 func (x *ReadGcpProjectResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_illumio_cloud_config_v1_config_proto_msgTypes[78]
+	mi := &file_illumio_cloud_config_v1_config_proto_msgTypes[99]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -5953,7 +7197,7 @@ func (x *ReadGcpProjectResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use ReadGcpProjectResponse.ProtoReflect.Descriptor instead.
 func (*ReadGcpProjectResponse) Descriptor() ([]byte, []int) {
-	return file_illumio_cloud_config_v1_config_proto_rawDescGZIP(), []int{78}
+	return file_illumio_cloud_config_v1_config_proto_rawDescGZIP(), []int{99}
 }
 
 func (x *ReadGcpProjectResponse) GetId() string {
@@ -6009,7 +7253,7 @@ type UpdateGcpProjectRequest struct {
 
 func (x *UpdateGcpProjectRequest) Reset() {
 	*x = UpdateGcpProjectRequest{}
-	mi := &file_illumio_cloud_config_v1_config_proto_msgTypes[79]
+	mi := &file_illumio_cloud_config_v1_config_proto_msgTypes[100]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -6021,7 +7265,7 @@ func (x *UpdateGcpProjectRequest) String() string {
 func (*UpdateGcpProjectRequest) ProtoMessage() {}
 
 func (x *UpdateGcpProjectRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_illumio_cloud_config_v1_config_proto_msgTypes[79]
+	mi := &file_illumio_cloud_config_v1_config_proto_msgTypes[100]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -6034,7 +7278,7 @@ func (x *UpdateGcpProjectRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use UpdateGcpProjectRequest.ProtoReflect.Descriptor instead.
 func (*UpdateGcpProjectRequest) Descriptor() ([]byte, []int) {
-	return file_illumio_cloud_config_v1_config_proto_rawDescGZIP(), []int{79}
+	return file_illumio_cloud_config_v1_config_proto_rawDescGZIP(), []int{100}
 }
 
 func (x *UpdateGcpProjectRequest) GetId() string {
@@ -6072,7 +7316,7 @@ type UpdateGcpProjectResponse struct {
 
 func (x *UpdateGcpProjectResponse) Reset() {
 	*x = UpdateGcpProjectResponse{}
-	mi := &file_illumio_cloud_config_v1_config_proto_msgTypes[80]
+	mi := &file_illumio_cloud_config_v1_config_proto_msgTypes[101]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -6084,7 +7328,7 @@ func (x *UpdateGcpProjectResponse) String() string {
 func (*UpdateGcpProjectResponse) ProtoMessage() {}
 
 func (x *UpdateGcpProjectResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_illumio_cloud_config_v1_config_proto_msgTypes[80]
+	mi := &file_illumio_cloud_config_v1_config_proto_msgTypes[101]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -6097,7 +7341,7 @@ func (x *UpdateGcpProjectResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use UpdateGcpProjectResponse.ProtoReflect.Descriptor instead.
 func (*UpdateGcpProjectResponse) Descriptor() ([]byte, []int) {
-	return file_illumio_cloud_config_v1_config_proto_rawDescGZIP(), []int{80}
+	return file_illumio_cloud_config_v1_config_proto_rawDescGZIP(), []int{101}
 }
 
 func (x *UpdateGcpProjectResponse) GetId() string {
@@ -6151,7 +7395,7 @@ type DeleteGcpProjectRequest struct {
 
 func (x *DeleteGcpProjectRequest) Reset() {
 	*x = DeleteGcpProjectRequest{}
-	mi := &file_illumio_cloud_config_v1_config_proto_msgTypes[81]
+	mi := &file_illumio_cloud_config_v1_config_proto_msgTypes[102]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -6163,7 +7407,7 @@ func (x *DeleteGcpProjectRequest) String() string {
 func (*DeleteGcpProjectRequest) ProtoMessage() {}
 
 func (x *DeleteGcpProjectRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_illumio_cloud_config_v1_config_proto_msgTypes[81]
+	mi := &file_illumio_cloud_config_v1_config_proto_msgTypes[102]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -6176,7 +7420,7 @@ func (x *DeleteGcpProjectRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use DeleteGcpProjectRequest.ProtoReflect.Descriptor instead.
 func (*DeleteGcpProjectRequest) Descriptor() ([]byte, []int) {
-	return file_illumio_cloud_config_v1_config_proto_rawDescGZIP(), []int{81}
+	return file_illumio_cloud_config_v1_config_proto_rawDescGZIP(), []int{102}
 }
 
 func (x *DeleteGcpProjectRequest) GetId() string {
@@ -6196,7 +7440,7 @@ type IpList_IpAddresses struct {
 
 func (x *IpList_IpAddresses) Reset() {
 	*x = IpList_IpAddresses{}
-	mi := &file_illumio_cloud_config_v1_config_proto_msgTypes[82]
+	mi := &file_illumio_cloud_config_v1_config_proto_msgTypes[103]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -6208,7 +7452,7 @@ func (x *IpList_IpAddresses) String() string {
 func (*IpList_IpAddresses) ProtoMessage() {}
 
 func (x *IpList_IpAddresses) ProtoReflect() protoreflect.Message {
-	mi := &file_illumio_cloud_config_v1_config_proto_msgTypes[82]
+	mi := &file_illumio_cloud_config_v1_config_proto_msgTypes[103]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -6221,7 +7465,7 @@ func (x *IpList_IpAddresses) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use IpList_IpAddresses.ProtoReflect.Descriptor instead.
 func (*IpList_IpAddresses) Descriptor() ([]byte, []int) {
-	return file_illumio_cloud_config_v1_config_proto_rawDescGZIP(), []int{82}
+	return file_illumio_cloud_config_v1_config_proto_rawDescGZIP(), []int{103}
 }
 
 func (x *IpList_IpAddresses) GetExclusion() bool {
@@ -6249,7 +7493,7 @@ type IpList_IpRanges struct {
 
 func (x *IpList_IpRanges) Reset() {
 	*x = IpList_IpRanges{}
-	mi := &file_illumio_cloud_config_v1_config_proto_msgTypes[83]
+	mi := &file_illumio_cloud_config_v1_config_proto_msgTypes[104]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -6261,7 +7505,7 @@ func (x *IpList_IpRanges) String() string {
 func (*IpList_IpRanges) ProtoMessage() {}
 
 func (x *IpList_IpRanges) ProtoReflect() protoreflect.Message {
-	mi := &file_illumio_cloud_config_v1_config_proto_msgTypes[83]
+	mi := &file_illumio_cloud_config_v1_config_proto_msgTypes[104]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -6274,7 +7518,7 @@ func (x *IpList_IpRanges) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use IpList_IpRanges.ProtoReflect.Descriptor instead.
 func (*IpList_IpRanges) Descriptor() ([]byte, []int) {
-	return file_illumio_cloud_config_v1_config_proto_rawDescGZIP(), []int{83}
+	return file_illumio_cloud_config_v1_config_proto_rawDescGZIP(), []int{104}
 }
 
 func (x *IpList_IpRanges) GetExclusion() bool {
@@ -6310,7 +7554,7 @@ type CreateIpListRequest struct {
 
 func (x *CreateIpListRequest) Reset() {
 	*x = CreateIpListRequest{}
-	mi := &file_illumio_cloud_config_v1_config_proto_msgTypes[84]
+	mi := &file_illumio_cloud_config_v1_config_proto_msgTypes[105]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -6322,7 +7566,7 @@ func (x *CreateIpListRequest) String() string {
 func (*CreateIpListRequest) ProtoMessage() {}
 
 func (x *CreateIpListRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_illumio_cloud_config_v1_config_proto_msgTypes[84]
+	mi := &file_illumio_cloud_config_v1_config_proto_msgTypes[105]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -6335,7 +7579,7 @@ func (x *CreateIpListRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use CreateIpListRequest.ProtoReflect.Descriptor instead.
 func (*CreateIpListRequest) Descriptor() ([]byte, []int) {
-	return file_illumio_cloud_config_v1_config_proto_rawDescGZIP(), []int{84}
+	return file_illumio_cloud_config_v1_config_proto_rawDescGZIP(), []int{105}
 }
 
 func (x *CreateIpListRequest) GetDescription() string {
@@ -6379,7 +7623,7 @@ type CreateIpListResponse struct {
 
 func (x *CreateIpListResponse) Reset() {
 	*x = CreateIpListResponse{}
-	mi := &file_illumio_cloud_config_v1_config_proto_msgTypes[85]
+	mi := &file_illumio_cloud_config_v1_config_proto_msgTypes[106]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -6391,7 +7635,7 @@ func (x *CreateIpListResponse) String() string {
 func (*CreateIpListResponse) ProtoMessage() {}
 
 func (x *CreateIpListResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_illumio_cloud_config_v1_config_proto_msgTypes[85]
+	mi := &file_illumio_cloud_config_v1_config_proto_msgTypes[106]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -6404,7 +7648,7 @@ func (x *CreateIpListResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use CreateIpListResponse.ProtoReflect.Descriptor instead.
 func (*CreateIpListResponse) Descriptor() ([]byte, []int) {
-	return file_illumio_cloud_config_v1_config_proto_rawDescGZIP(), []int{85}
+	return file_illumio_cloud_config_v1_config_proto_rawDescGZIP(), []int{106}
 }
 
 func (x *CreateIpListResponse) GetId() string {
@@ -6451,7 +7695,7 @@ type ReadIpListRequest struct {
 
 func (x *ReadIpListRequest) Reset() {
 	*x = ReadIpListRequest{}
-	mi := &file_illumio_cloud_config_v1_config_proto_msgTypes[86]
+	mi := &file_illumio_cloud_config_v1_config_proto_msgTypes[107]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -6463,7 +7707,7 @@ func (x *ReadIpListRequest) String() string {
 func (*ReadIpListRequest) ProtoMessage() {}
 
 func (x *ReadIpListRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_illumio_cloud_config_v1_config_proto_msgTypes[86]
+	mi := &file_illumio_cloud_config_v1_config_proto_msgTypes[107]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -6476,7 +7720,7 @@ func (x *ReadIpListRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use ReadIpListRequest.ProtoReflect.Descriptor instead.
 func (*ReadIpListRequest) Descriptor() ([]byte, []int) {
-	return file_illumio_cloud_config_v1_config_proto_rawDescGZIP(), []int{86}
+	return file_illumio_cloud_config_v1_config_proto_rawDescGZIP(), []int{107}
 }
 
 func (x *ReadIpListRequest) GetId() string {
@@ -6499,7 +7743,7 @@ type ReadIpListResponse struct {
 
 func (x *ReadIpListResponse) Reset() {
 	*x = ReadIpListResponse{}
-	mi := &file_illumio_cloud_config_v1_config_proto_msgTypes[87]
+	mi := &file_illumio_cloud_config_v1_config_proto_msgTypes[108]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -6511,7 +7755,7 @@ func (x *ReadIpListResponse) String() string {
 func (*ReadIpListResponse) ProtoMessage() {}
 
 func (x *ReadIpListResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_illumio_cloud_config_v1_config_proto_msgTypes[87]
+	mi := &file_illumio_cloud_config_v1_config_proto_msgTypes[108]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -6524,7 +7768,7 @@ func (x *ReadIpListResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use ReadIpListResponse.ProtoReflect.Descriptor instead.
 func (*ReadIpListResponse) Descriptor() ([]byte, []int) {
-	return file_illumio_cloud_config_v1_config_proto_rawDescGZIP(), []int{87}
+	return file_illumio_cloud_config_v1_config_proto_rawDescGZIP(), []int{108}
 }
 
 func (x *ReadIpListResponse) GetId() string {
@@ -6576,7 +7820,7 @@ type UpdateIpListRequest struct {
 
 func (x *UpdateIpListRequest) Reset() {
 	*x = UpdateIpListRequest{}
-	mi := &file_illumio_cloud_config_v1_config_proto_msgTypes[88]
+	mi := &file_illumio_cloud_config_v1_config_proto_msgTypes[109]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -6588,7 +7832,7 @@ func (x *UpdateIpListRequest) String() string {
 func (*UpdateIpListRequest) ProtoMessage() {}
 
 func (x *UpdateIpListRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_illumio_cloud_config_v1_config_proto_msgTypes[88]
+	mi := &file_illumio_cloud_config_v1_config_proto_msgTypes[109]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -6601,7 +7845,7 @@ func (x *UpdateIpListRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use UpdateIpListRequest.ProtoReflect.Descriptor instead.
 func (*UpdateIpListRequest) Descriptor() ([]byte, []int) {
-	return file_illumio_cloud_config_v1_config_proto_rawDescGZIP(), []int{88}
+	return file_illumio_cloud_config_v1_config_proto_rawDescGZIP(), []int{109}
 }
 
 func (x *UpdateIpListRequest) GetId() string {
@@ -6659,7 +7903,7 @@ type UpdateIpListResponse struct {
 
 func (x *UpdateIpListResponse) Reset() {
 	*x = UpdateIpListResponse{}
-	mi := &file_illumio_cloud_config_v1_config_proto_msgTypes[89]
+	mi := &file_illumio_cloud_config_v1_config_proto_msgTypes[110]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -6671,7 +7915,7 @@ func (x *UpdateIpListResponse) String() string {
 func (*UpdateIpListResponse) ProtoMessage() {}
 
 func (x *UpdateIpListResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_illumio_cloud_config_v1_config_proto_msgTypes[89]
+	mi := &file_illumio_cloud_config_v1_config_proto_msgTypes[110]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -6684,7 +7928,7 @@ func (x *UpdateIpListResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use UpdateIpListResponse.ProtoReflect.Descriptor instead.
 func (*UpdateIpListResponse) Descriptor() ([]byte, []int) {
-	return file_illumio_cloud_config_v1_config_proto_rawDescGZIP(), []int{89}
+	return file_illumio_cloud_config_v1_config_proto_rawDescGZIP(), []int{110}
 }
 
 func (x *UpdateIpListResponse) GetId() string {
@@ -6731,7 +7975,7 @@ type DeleteIpListRequest struct {
 
 func (x *DeleteIpListRequest) Reset() {
 	*x = DeleteIpListRequest{}
-	mi := &file_illumio_cloud_config_v1_config_proto_msgTypes[90]
+	mi := &file_illumio_cloud_config_v1_config_proto_msgTypes[111]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -6743,7 +7987,7 @@ func (x *DeleteIpListRequest) String() string {
 func (*DeleteIpListRequest) ProtoMessage() {}
 
 func (x *DeleteIpListRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_illumio_cloud_config_v1_config_proto_msgTypes[90]
+	mi := &file_illumio_cloud_config_v1_config_proto_msgTypes[111]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -6756,7 +8000,7 @@ func (x *DeleteIpListRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use DeleteIpListRequest.ProtoReflect.Descriptor instead.
 func (*DeleteIpListRequest) Descriptor() ([]byte, []int) {
-	return file_illumio_cloud_config_v1_config_proto_rawDescGZIP(), []int{90}
+	return file_illumio_cloud_config_v1_config_proto_rawDescGZIP(), []int{111}
 }
 
 func (x *DeleteIpListRequest) GetId() string {
@@ -6776,7 +8020,7 @@ type CreateK8SClusterRequest struct {
 
 func (x *CreateK8SClusterRequest) Reset() {
 	*x = CreateK8SClusterRequest{}
-	mi := &file_illumio_cloud_config_v1_config_proto_msgTypes[91]
+	mi := &file_illumio_cloud_config_v1_config_proto_msgTypes[112]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -6788,7 +8032,7 @@ func (x *CreateK8SClusterRequest) String() string {
 func (*CreateK8SClusterRequest) ProtoMessage() {}
 
 func (x *CreateK8SClusterRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_illumio_cloud_config_v1_config_proto_msgTypes[91]
+	mi := &file_illumio_cloud_config_v1_config_proto_msgTypes[112]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -6801,7 +8045,7 @@ func (x *CreateK8SClusterRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use CreateK8SClusterRequest.ProtoReflect.Descriptor instead.
 func (*CreateK8SClusterRequest) Descriptor() ([]byte, []int) {
-	return file_illumio_cloud_config_v1_config_proto_rawDescGZIP(), []int{91}
+	return file_illumio_cloud_config_v1_config_proto_rawDescGZIP(), []int{112}
 }
 
 func (x *CreateK8SClusterRequest) GetIllumioRegion() string {
@@ -6831,7 +8075,7 @@ type CreateK8SClusterResponse struct {
 
 func (x *CreateK8SClusterResponse) Reset() {
 	*x = CreateK8SClusterResponse{}
-	mi := &file_illumio_cloud_config_v1_config_proto_msgTypes[92]
+	mi := &file_illumio_cloud_config_v1_config_proto_msgTypes[113]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -6843,7 +8087,7 @@ func (x *CreateK8SClusterResponse) String() string {
 func (*CreateK8SClusterResponse) ProtoMessage() {}
 
 func (x *CreateK8SClusterResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_illumio_cloud_config_v1_config_proto_msgTypes[92]
+	mi := &file_illumio_cloud_config_v1_config_proto_msgTypes[113]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -6856,7 +8100,7 @@ func (x *CreateK8SClusterResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use CreateK8SClusterResponse.ProtoReflect.Descriptor instead.
 func (*CreateK8SClusterResponse) Descriptor() ([]byte, []int) {
-	return file_illumio_cloud_config_v1_config_proto_rawDescGZIP(), []int{92}
+	return file_illumio_cloud_config_v1_config_proto_rawDescGZIP(), []int{113}
 }
 
 func (x *CreateK8SClusterResponse) GetId() string {
@@ -6903,7 +8147,7 @@ type ReadK8SClusterRequest struct {
 
 func (x *ReadK8SClusterRequest) Reset() {
 	*x = ReadK8SClusterRequest{}
-	mi := &file_illumio_cloud_config_v1_config_proto_msgTypes[93]
+	mi := &file_illumio_cloud_config_v1_config_proto_msgTypes[114]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -6915,7 +8159,7 @@ func (x *ReadK8SClusterRequest) String() string {
 func (*ReadK8SClusterRequest) ProtoMessage() {}
 
 func (x *ReadK8SClusterRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_illumio_cloud_config_v1_config_proto_msgTypes[93]
+	mi := &file_illumio_cloud_config_v1_config_proto_msgTypes[114]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -6928,7 +8172,7 @@ func (x *ReadK8SClusterRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use ReadK8SClusterRequest.ProtoReflect.Descriptor instead.
 func (*ReadK8SClusterRequest) Descriptor() ([]byte, []int) {
-	return file_illumio_cloud_config_v1_config_proto_rawDescGZIP(), []int{93}
+	return file_illumio_cloud_config_v1_config_proto_rawDescGZIP(), []int{114}
 }
 
 func (x *ReadK8SClusterRequest) GetId() string {
@@ -6950,7 +8194,7 @@ type ReadK8SClusterResponse struct {
 
 func (x *ReadK8SClusterResponse) Reset() {
 	*x = ReadK8SClusterResponse{}
-	mi := &file_illumio_cloud_config_v1_config_proto_msgTypes[94]
+	mi := &file_illumio_cloud_config_v1_config_proto_msgTypes[115]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -6962,7 +8206,7 @@ func (x *ReadK8SClusterResponse) String() string {
 func (*ReadK8SClusterResponse) ProtoMessage() {}
 
 func (x *ReadK8SClusterResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_illumio_cloud_config_v1_config_proto_msgTypes[94]
+	mi := &file_illumio_cloud_config_v1_config_proto_msgTypes[115]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -6975,7 +8219,7 @@ func (x *ReadK8SClusterResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use ReadK8SClusterResponse.ProtoReflect.Descriptor instead.
 func (*ReadK8SClusterResponse) Descriptor() ([]byte, []int) {
-	return file_illumio_cloud_config_v1_config_proto_rawDescGZIP(), []int{94}
+	return file_illumio_cloud_config_v1_config_proto_rawDescGZIP(), []int{115}
 }
 
 func (x *ReadK8SClusterResponse) GetId() string {
@@ -7017,7 +8261,7 @@ type UpdateK8SClusterRequest struct {
 
 func (x *UpdateK8SClusterRequest) Reset() {
 	*x = UpdateK8SClusterRequest{}
-	mi := &file_illumio_cloud_config_v1_config_proto_msgTypes[95]
+	mi := &file_illumio_cloud_config_v1_config_proto_msgTypes[116]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -7029,7 +8273,7 @@ func (x *UpdateK8SClusterRequest) String() string {
 func (*UpdateK8SClusterRequest) ProtoMessage() {}
 
 func (x *UpdateK8SClusterRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_illumio_cloud_config_v1_config_proto_msgTypes[95]
+	mi := &file_illumio_cloud_config_v1_config_proto_msgTypes[116]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -7042,7 +8286,7 @@ func (x *UpdateK8SClusterRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use UpdateK8SClusterRequest.ProtoReflect.Descriptor instead.
 func (*UpdateK8SClusterRequest) Descriptor() ([]byte, []int) {
-	return file_illumio_cloud_config_v1_config_proto_rawDescGZIP(), []int{95}
+	return file_illumio_cloud_config_v1_config_proto_rawDescGZIP(), []int{116}
 }
 
 func (x *UpdateK8SClusterRequest) GetId() string {
@@ -7078,7 +8322,7 @@ type UpdateK8SClusterResponse struct {
 
 func (x *UpdateK8SClusterResponse) Reset() {
 	*x = UpdateK8SClusterResponse{}
-	mi := &file_illumio_cloud_config_v1_config_proto_msgTypes[96]
+	mi := &file_illumio_cloud_config_v1_config_proto_msgTypes[117]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -7090,7 +8334,7 @@ func (x *UpdateK8SClusterResponse) String() string {
 func (*UpdateK8SClusterResponse) ProtoMessage() {}
 
 func (x *UpdateK8SClusterResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_illumio_cloud_config_v1_config_proto_msgTypes[96]
+	mi := &file_illumio_cloud_config_v1_config_proto_msgTypes[117]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -7103,7 +8347,7 @@ func (x *UpdateK8SClusterResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use UpdateK8SClusterResponse.ProtoReflect.Descriptor instead.
 func (*UpdateK8SClusterResponse) Descriptor() ([]byte, []int) {
-	return file_illumio_cloud_config_v1_config_proto_rawDescGZIP(), []int{96}
+	return file_illumio_cloud_config_v1_config_proto_rawDescGZIP(), []int{117}
 }
 
 func (x *UpdateK8SClusterResponse) GetId() string {
@@ -7143,7 +8387,7 @@ type DeleteK8SClusterRequest struct {
 
 func (x *DeleteK8SClusterRequest) Reset() {
 	*x = DeleteK8SClusterRequest{}
-	mi := &file_illumio_cloud_config_v1_config_proto_msgTypes[97]
+	mi := &file_illumio_cloud_config_v1_config_proto_msgTypes[118]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -7155,7 +8399,7 @@ func (x *DeleteK8SClusterRequest) String() string {
 func (*DeleteK8SClusterRequest) ProtoMessage() {}
 
 func (x *DeleteK8SClusterRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_illumio_cloud_config_v1_config_proto_msgTypes[97]
+	mi := &file_illumio_cloud_config_v1_config_proto_msgTypes[118]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -7168,7 +8412,7 @@ func (x *DeleteK8SClusterRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use DeleteK8SClusterRequest.ProtoReflect.Descriptor instead.
 func (*DeleteK8SClusterRequest) Descriptor() ([]byte, []int) {
-	return file_illumio_cloud_config_v1_config_proto_rawDescGZIP(), []int{97}
+	return file_illumio_cloud_config_v1_config_proto_rawDescGZIP(), []int{118}
 }
 
 func (x *DeleteK8SClusterRequest) GetId() string {
@@ -7189,7 +8433,7 @@ type CreateK8SClusterOnboardingCredentialRequest struct {
 
 func (x *CreateK8SClusterOnboardingCredentialRequest) Reset() {
 	*x = CreateK8SClusterOnboardingCredentialRequest{}
-	mi := &file_illumio_cloud_config_v1_config_proto_msgTypes[98]
+	mi := &file_illumio_cloud_config_v1_config_proto_msgTypes[119]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -7201,7 +8445,7 @@ func (x *CreateK8SClusterOnboardingCredentialRequest) String() string {
 func (*CreateK8SClusterOnboardingCredentialRequest) ProtoMessage() {}
 
 func (x *CreateK8SClusterOnboardingCredentialRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_illumio_cloud_config_v1_config_proto_msgTypes[98]
+	mi := &file_illumio_cloud_config_v1_config_proto_msgTypes[119]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -7214,7 +8458,7 @@ func (x *CreateK8SClusterOnboardingCredentialRequest) ProtoReflect() protoreflec
 
 // Deprecated: Use CreateK8SClusterOnboardingCredentialRequest.ProtoReflect.Descriptor instead.
 func (*CreateK8SClusterOnboardingCredentialRequest) Descriptor() ([]byte, []int) {
-	return file_illumio_cloud_config_v1_config_proto_rawDescGZIP(), []int{98}
+	return file_illumio_cloud_config_v1_config_proto_rawDescGZIP(), []int{119}
 }
 
 func (x *CreateK8SClusterOnboardingCredentialRequest) GetDescription() string {
@@ -7253,7 +8497,7 @@ type CreateK8SClusterOnboardingCredentialResponse struct {
 
 func (x *CreateK8SClusterOnboardingCredentialResponse) Reset() {
 	*x = CreateK8SClusterOnboardingCredentialResponse{}
-	mi := &file_illumio_cloud_config_v1_config_proto_msgTypes[99]
+	mi := &file_illumio_cloud_config_v1_config_proto_msgTypes[120]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -7265,7 +8509,7 @@ func (x *CreateK8SClusterOnboardingCredentialResponse) String() string {
 func (*CreateK8SClusterOnboardingCredentialResponse) ProtoMessage() {}
 
 func (x *CreateK8SClusterOnboardingCredentialResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_illumio_cloud_config_v1_config_proto_msgTypes[99]
+	mi := &file_illumio_cloud_config_v1_config_proto_msgTypes[120]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -7278,7 +8522,7 @@ func (x *CreateK8SClusterOnboardingCredentialResponse) ProtoReflect() protorefle
 
 // Deprecated: Use CreateK8SClusterOnboardingCredentialResponse.ProtoReflect.Descriptor instead.
 func (*CreateK8SClusterOnboardingCredentialResponse) Descriptor() ([]byte, []int) {
-	return file_illumio_cloud_config_v1_config_proto_rawDescGZIP(), []int{99}
+	return file_illumio_cloud_config_v1_config_proto_rawDescGZIP(), []int{120}
 }
 
 func (x *CreateK8SClusterOnboardingCredentialResponse) GetId() string {
@@ -7339,7 +8583,7 @@ type ReadK8SClusterOnboardingCredentialRequest struct {
 
 func (x *ReadK8SClusterOnboardingCredentialRequest) Reset() {
 	*x = ReadK8SClusterOnboardingCredentialRequest{}
-	mi := &file_illumio_cloud_config_v1_config_proto_msgTypes[100]
+	mi := &file_illumio_cloud_config_v1_config_proto_msgTypes[121]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -7351,7 +8595,7 @@ func (x *ReadK8SClusterOnboardingCredentialRequest) String() string {
 func (*ReadK8SClusterOnboardingCredentialRequest) ProtoMessage() {}
 
 func (x *ReadK8SClusterOnboardingCredentialRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_illumio_cloud_config_v1_config_proto_msgTypes[100]
+	mi := &file_illumio_cloud_config_v1_config_proto_msgTypes[121]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -7364,7 +8608,7 @@ func (x *ReadK8SClusterOnboardingCredentialRequest) ProtoReflect() protoreflect.
 
 // Deprecated: Use ReadK8SClusterOnboardingCredentialRequest.ProtoReflect.Descriptor instead.
 func (*ReadK8SClusterOnboardingCredentialRequest) Descriptor() ([]byte, []int) {
-	return file_illumio_cloud_config_v1_config_proto_rawDescGZIP(), []int{100}
+	return file_illumio_cloud_config_v1_config_proto_rawDescGZIP(), []int{121}
 }
 
 func (x *ReadK8SClusterOnboardingCredentialRequest) GetId() string {
@@ -7388,7 +8632,7 @@ type ReadK8SClusterOnboardingCredentialResponse struct {
 
 func (x *ReadK8SClusterOnboardingCredentialResponse) Reset() {
 	*x = ReadK8SClusterOnboardingCredentialResponse{}
-	mi := &file_illumio_cloud_config_v1_config_proto_msgTypes[101]
+	mi := &file_illumio_cloud_config_v1_config_proto_msgTypes[122]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -7400,7 +8644,7 @@ func (x *ReadK8SClusterOnboardingCredentialResponse) String() string {
 func (*ReadK8SClusterOnboardingCredentialResponse) ProtoMessage() {}
 
 func (x *ReadK8SClusterOnboardingCredentialResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_illumio_cloud_config_v1_config_proto_msgTypes[101]
+	mi := &file_illumio_cloud_config_v1_config_proto_msgTypes[122]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -7413,7 +8657,7 @@ func (x *ReadK8SClusterOnboardingCredentialResponse) ProtoReflect() protoreflect
 
 // Deprecated: Use ReadK8SClusterOnboardingCredentialResponse.ProtoReflect.Descriptor instead.
 func (*ReadK8SClusterOnboardingCredentialResponse) Descriptor() ([]byte, []int) {
-	return file_illumio_cloud_config_v1_config_proto_rawDescGZIP(), []int{101}
+	return file_illumio_cloud_config_v1_config_proto_rawDescGZIP(), []int{122}
 }
 
 func (x *ReadK8SClusterOnboardingCredentialResponse) GetId() string {
@@ -7470,7 +8714,7 @@ type UpdateK8SClusterOnboardingCredentialRequest struct {
 
 func (x *UpdateK8SClusterOnboardingCredentialRequest) Reset() {
 	*x = UpdateK8SClusterOnboardingCredentialRequest{}
-	mi := &file_illumio_cloud_config_v1_config_proto_msgTypes[102]
+	mi := &file_illumio_cloud_config_v1_config_proto_msgTypes[123]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -7482,7 +8726,7 @@ func (x *UpdateK8SClusterOnboardingCredentialRequest) String() string {
 func (*UpdateK8SClusterOnboardingCredentialRequest) ProtoMessage() {}
 
 func (x *UpdateK8SClusterOnboardingCredentialRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_illumio_cloud_config_v1_config_proto_msgTypes[102]
+	mi := &file_illumio_cloud_config_v1_config_proto_msgTypes[123]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -7495,7 +8739,7 @@ func (x *UpdateK8SClusterOnboardingCredentialRequest) ProtoReflect() protoreflec
 
 // Deprecated: Use UpdateK8SClusterOnboardingCredentialRequest.ProtoReflect.Descriptor instead.
 func (*UpdateK8SClusterOnboardingCredentialRequest) Descriptor() ([]byte, []int) {
-	return file_illumio_cloud_config_v1_config_proto_rawDescGZIP(), []int{102}
+	return file_illumio_cloud_config_v1_config_proto_rawDescGZIP(), []int{123}
 }
 
 func (x *UpdateK8SClusterOnboardingCredentialRequest) GetId() string {
@@ -7540,7 +8784,7 @@ type UpdateK8SClusterOnboardingCredentialResponse struct {
 
 func (x *UpdateK8SClusterOnboardingCredentialResponse) Reset() {
 	*x = UpdateK8SClusterOnboardingCredentialResponse{}
-	mi := &file_illumio_cloud_config_v1_config_proto_msgTypes[103]
+	mi := &file_illumio_cloud_config_v1_config_proto_msgTypes[124]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -7552,7 +8796,7 @@ func (x *UpdateK8SClusterOnboardingCredentialResponse) String() string {
 func (*UpdateK8SClusterOnboardingCredentialResponse) ProtoMessage() {}
 
 func (x *UpdateK8SClusterOnboardingCredentialResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_illumio_cloud_config_v1_config_proto_msgTypes[103]
+	mi := &file_illumio_cloud_config_v1_config_proto_msgTypes[124]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -7565,7 +8809,7 @@ func (x *UpdateK8SClusterOnboardingCredentialResponse) ProtoReflect() protorefle
 
 // Deprecated: Use UpdateK8SClusterOnboardingCredentialResponse.ProtoReflect.Descriptor instead.
 func (*UpdateK8SClusterOnboardingCredentialResponse) Descriptor() ([]byte, []int) {
-	return file_illumio_cloud_config_v1_config_proto_rawDescGZIP(), []int{103}
+	return file_illumio_cloud_config_v1_config_proto_rawDescGZIP(), []int{124}
 }
 
 func (x *UpdateK8SClusterOnboardingCredentialResponse) GetId() string {
@@ -7619,7 +8863,7 @@ type DeleteK8SClusterOnboardingCredentialRequest struct {
 
 func (x *DeleteK8SClusterOnboardingCredentialRequest) Reset() {
 	*x = DeleteK8SClusterOnboardingCredentialRequest{}
-	mi := &file_illumio_cloud_config_v1_config_proto_msgTypes[104]
+	mi := &file_illumio_cloud_config_v1_config_proto_msgTypes[125]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -7631,7 +8875,7 @@ func (x *DeleteK8SClusterOnboardingCredentialRequest) String() string {
 func (*DeleteK8SClusterOnboardingCredentialRequest) ProtoMessage() {}
 
 func (x *DeleteK8SClusterOnboardingCredentialRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_illumio_cloud_config_v1_config_proto_msgTypes[104]
+	mi := &file_illumio_cloud_config_v1_config_proto_msgTypes[125]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -7644,7 +8888,7 @@ func (x *DeleteK8SClusterOnboardingCredentialRequest) ProtoReflect() protoreflec
 
 // Deprecated: Use DeleteK8SClusterOnboardingCredentialRequest.ProtoReflect.Descriptor instead.
 func (*DeleteK8SClusterOnboardingCredentialRequest) Descriptor() ([]byte, []int) {
-	return file_illumio_cloud_config_v1_config_proto_rawDescGZIP(), []int{104}
+	return file_illumio_cloud_config_v1_config_proto_rawDescGZIP(), []int{125}
 }
 
 func (x *DeleteK8SClusterOnboardingCredentialRequest) GetId() string {
@@ -7665,7 +8909,7 @@ type CreateOrganizationPolicyRequest struct {
 
 func (x *CreateOrganizationPolicyRequest) Reset() {
 	*x = CreateOrganizationPolicyRequest{}
-	mi := &file_illumio_cloud_config_v1_config_proto_msgTypes[105]
+	mi := &file_illumio_cloud_config_v1_config_proto_msgTypes[126]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -7677,7 +8921,7 @@ func (x *CreateOrganizationPolicyRequest) String() string {
 func (*CreateOrganizationPolicyRequest) ProtoMessage() {}
 
 func (x *CreateOrganizationPolicyRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_illumio_cloud_config_v1_config_proto_msgTypes[105]
+	mi := &file_illumio_cloud_config_v1_config_proto_msgTypes[126]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -7690,7 +8934,7 @@ func (x *CreateOrganizationPolicyRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use CreateOrganizationPolicyRequest.ProtoReflect.Descriptor instead.
 func (*CreateOrganizationPolicyRequest) Descriptor() ([]byte, []int) {
-	return file_illumio_cloud_config_v1_config_proto_rawDescGZIP(), []int{105}
+	return file_illumio_cloud_config_v1_config_proto_rawDescGZIP(), []int{126}
 }
 
 func (x *CreateOrganizationPolicyRequest) GetDescription() string {
@@ -7726,7 +8970,7 @@ type CreateOrganizationPolicyResponse struct {
 
 func (x *CreateOrganizationPolicyResponse) Reset() {
 	*x = CreateOrganizationPolicyResponse{}
-	mi := &file_illumio_cloud_config_v1_config_proto_msgTypes[106]
+	mi := &file_illumio_cloud_config_v1_config_proto_msgTypes[127]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -7738,7 +8982,7 @@ func (x *CreateOrganizationPolicyResponse) String() string {
 func (*CreateOrganizationPolicyResponse) ProtoMessage() {}
 
 func (x *CreateOrganizationPolicyResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_illumio_cloud_config_v1_config_proto_msgTypes[106]
+	mi := &file_illumio_cloud_config_v1_config_proto_msgTypes[127]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -7751,7 +8995,7 @@ func (x *CreateOrganizationPolicyResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use CreateOrganizationPolicyResponse.ProtoReflect.Descriptor instead.
 func (*CreateOrganizationPolicyResponse) Descriptor() ([]byte, []int) {
-	return file_illumio_cloud_config_v1_config_proto_rawDescGZIP(), []int{106}
+	return file_illumio_cloud_config_v1_config_proto_rawDescGZIP(), []int{127}
 }
 
 func (x *CreateOrganizationPolicyResponse) GetId() string {
@@ -7791,7 +9035,7 @@ type ReadOrganizationPolicyRequest struct {
 
 func (x *ReadOrganizationPolicyRequest) Reset() {
 	*x = ReadOrganizationPolicyRequest{}
-	mi := &file_illumio_cloud_config_v1_config_proto_msgTypes[107]
+	mi := &file_illumio_cloud_config_v1_config_proto_msgTypes[128]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -7803,7 +9047,7 @@ func (x *ReadOrganizationPolicyRequest) String() string {
 func (*ReadOrganizationPolicyRequest) ProtoMessage() {}
 
 func (x *ReadOrganizationPolicyRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_illumio_cloud_config_v1_config_proto_msgTypes[107]
+	mi := &file_illumio_cloud_config_v1_config_proto_msgTypes[128]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -7816,7 +9060,7 @@ func (x *ReadOrganizationPolicyRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use ReadOrganizationPolicyRequest.ProtoReflect.Descriptor instead.
 func (*ReadOrganizationPolicyRequest) Descriptor() ([]byte, []int) {
-	return file_illumio_cloud_config_v1_config_proto_rawDescGZIP(), []int{107}
+	return file_illumio_cloud_config_v1_config_proto_rawDescGZIP(), []int{128}
 }
 
 func (x *ReadOrganizationPolicyRequest) GetId() string {
@@ -7838,7 +9082,7 @@ type ReadOrganizationPolicyResponse struct {
 
 func (x *ReadOrganizationPolicyResponse) Reset() {
 	*x = ReadOrganizationPolicyResponse{}
-	mi := &file_illumio_cloud_config_v1_config_proto_msgTypes[108]
+	mi := &file_illumio_cloud_config_v1_config_proto_msgTypes[129]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -7850,7 +9094,7 @@ func (x *ReadOrganizationPolicyResponse) String() string {
 func (*ReadOrganizationPolicyResponse) ProtoMessage() {}
 
 func (x *ReadOrganizationPolicyResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_illumio_cloud_config_v1_config_proto_msgTypes[108]
+	mi := &file_illumio_cloud_config_v1_config_proto_msgTypes[129]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -7863,7 +9107,7 @@ func (x *ReadOrganizationPolicyResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use ReadOrganizationPolicyResponse.ProtoReflect.Descriptor instead.
 func (*ReadOrganizationPolicyResponse) Descriptor() ([]byte, []int) {
-	return file_illumio_cloud_config_v1_config_proto_rawDescGZIP(), []int{108}
+	return file_illumio_cloud_config_v1_config_proto_rawDescGZIP(), []int{129}
 }
 
 func (x *ReadOrganizationPolicyResponse) GetId() string {
@@ -7907,7 +9151,7 @@ type UpdateOrganizationPolicyRequest struct {
 
 func (x *UpdateOrganizationPolicyRequest) Reset() {
 	*x = UpdateOrganizationPolicyRequest{}
-	mi := &file_illumio_cloud_config_v1_config_proto_msgTypes[109]
+	mi := &file_illumio_cloud_config_v1_config_proto_msgTypes[130]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -7919,7 +9163,7 @@ func (x *UpdateOrganizationPolicyRequest) String() string {
 func (*UpdateOrganizationPolicyRequest) ProtoMessage() {}
 
 func (x *UpdateOrganizationPolicyRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_illumio_cloud_config_v1_config_proto_msgTypes[109]
+	mi := &file_illumio_cloud_config_v1_config_proto_msgTypes[130]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -7932,7 +9176,7 @@ func (x *UpdateOrganizationPolicyRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use UpdateOrganizationPolicyRequest.ProtoReflect.Descriptor instead.
 func (*UpdateOrganizationPolicyRequest) Descriptor() ([]byte, []int) {
-	return file_illumio_cloud_config_v1_config_proto_rawDescGZIP(), []int{109}
+	return file_illumio_cloud_config_v1_config_proto_rawDescGZIP(), []int{130}
 }
 
 func (x *UpdateOrganizationPolicyRequest) GetId() string {
@@ -7982,7 +9226,7 @@ type UpdateOrganizationPolicyResponse struct {
 
 func (x *UpdateOrganizationPolicyResponse) Reset() {
 	*x = UpdateOrganizationPolicyResponse{}
-	mi := &file_illumio_cloud_config_v1_config_proto_msgTypes[110]
+	mi := &file_illumio_cloud_config_v1_config_proto_msgTypes[131]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -7994,7 +9238,7 @@ func (x *UpdateOrganizationPolicyResponse) String() string {
 func (*UpdateOrganizationPolicyResponse) ProtoMessage() {}
 
 func (x *UpdateOrganizationPolicyResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_illumio_cloud_config_v1_config_proto_msgTypes[110]
+	mi := &file_illumio_cloud_config_v1_config_proto_msgTypes[131]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -8007,7 +9251,7 @@ func (x *UpdateOrganizationPolicyResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use UpdateOrganizationPolicyResponse.ProtoReflect.Descriptor instead.
 func (*UpdateOrganizationPolicyResponse) Descriptor() ([]byte, []int) {
-	return file_illumio_cloud_config_v1_config_proto_rawDescGZIP(), []int{110}
+	return file_illumio_cloud_config_v1_config_proto_rawDescGZIP(), []int{131}
 }
 
 func (x *UpdateOrganizationPolicyResponse) GetId() string {
@@ -8047,7 +9291,7 @@ type DeleteOrganizationPolicyRequest struct {
 
 func (x *DeleteOrganizationPolicyRequest) Reset() {
 	*x = DeleteOrganizationPolicyRequest{}
-	mi := &file_illumio_cloud_config_v1_config_proto_msgTypes[111]
+	mi := &file_illumio_cloud_config_v1_config_proto_msgTypes[132]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -8059,7 +9303,7 @@ func (x *DeleteOrganizationPolicyRequest) String() string {
 func (*DeleteOrganizationPolicyRequest) ProtoMessage() {}
 
 func (x *DeleteOrganizationPolicyRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_illumio_cloud_config_v1_config_proto_msgTypes[111]
+	mi := &file_illumio_cloud_config_v1_config_proto_msgTypes[132]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -8072,7 +9316,7 @@ func (x *DeleteOrganizationPolicyRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use DeleteOrganizationPolicyRequest.ProtoReflect.Descriptor instead.
 func (*DeleteOrganizationPolicyRequest) Descriptor() ([]byte, []int) {
-	return file_illumio_cloud_config_v1_config_proto_rawDescGZIP(), []int{111}
+	return file_illumio_cloud_config_v1_config_proto_rawDescGZIP(), []int{132}
 }
 
 func (x *DeleteOrganizationPolicyRequest) GetId() string {
@@ -8092,7 +9336,7 @@ type OrganizationPolicyRule_FromLabels struct {
 
 func (x *OrganizationPolicyRule_FromLabels) Reset() {
 	*x = OrganizationPolicyRule_FromLabels{}
-	mi := &file_illumio_cloud_config_v1_config_proto_msgTypes[112]
+	mi := &file_illumio_cloud_config_v1_config_proto_msgTypes[133]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -8104,7 +9348,7 @@ func (x *OrganizationPolicyRule_FromLabels) String() string {
 func (*OrganizationPolicyRule_FromLabels) ProtoMessage() {}
 
 func (x *OrganizationPolicyRule_FromLabels) ProtoReflect() protoreflect.Message {
-	mi := &file_illumio_cloud_config_v1_config_proto_msgTypes[112]
+	mi := &file_illumio_cloud_config_v1_config_proto_msgTypes[133]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -8117,7 +9361,7 @@ func (x *OrganizationPolicyRule_FromLabels) ProtoReflect() protoreflect.Message 
 
 // Deprecated: Use OrganizationPolicyRule_FromLabels.ProtoReflect.Descriptor instead.
 func (*OrganizationPolicyRule_FromLabels) Descriptor() ([]byte, []int) {
-	return file_illumio_cloud_config_v1_config_proto_rawDescGZIP(), []int{112}
+	return file_illumio_cloud_config_v1_config_proto_rawDescGZIP(), []int{133}
 }
 
 func (x *OrganizationPolicyRule_FromLabels) GetKey() string {
@@ -8144,7 +9388,7 @@ type OrganizationPolicyRule_ToLabels struct {
 
 func (x *OrganizationPolicyRule_ToLabels) Reset() {
 	*x = OrganizationPolicyRule_ToLabels{}
-	mi := &file_illumio_cloud_config_v1_config_proto_msgTypes[113]
+	mi := &file_illumio_cloud_config_v1_config_proto_msgTypes[134]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -8156,7 +9400,7 @@ func (x *OrganizationPolicyRule_ToLabels) String() string {
 func (*OrganizationPolicyRule_ToLabels) ProtoMessage() {}
 
 func (x *OrganizationPolicyRule_ToLabels) ProtoReflect() protoreflect.Message {
-	mi := &file_illumio_cloud_config_v1_config_proto_msgTypes[113]
+	mi := &file_illumio_cloud_config_v1_config_proto_msgTypes[134]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -8169,7 +9413,7 @@ func (x *OrganizationPolicyRule_ToLabels) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use OrganizationPolicyRule_ToLabels.ProtoReflect.Descriptor instead.
 func (*OrganizationPolicyRule_ToLabels) Descriptor() ([]byte, []int) {
-	return file_illumio_cloud_config_v1_config_proto_rawDescGZIP(), []int{113}
+	return file_illumio_cloud_config_v1_config_proto_rawDescGZIP(), []int{134}
 }
 
 func (x *OrganizationPolicyRule_ToLabels) GetKey() string {
@@ -8197,7 +9441,7 @@ type OrganizationPolicyRule_ToPortRanges struct {
 
 func (x *OrganizationPolicyRule_ToPortRanges) Reset() {
 	*x = OrganizationPolicyRule_ToPortRanges{}
-	mi := &file_illumio_cloud_config_v1_config_proto_msgTypes[114]
+	mi := &file_illumio_cloud_config_v1_config_proto_msgTypes[135]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -8209,7 +9453,7 @@ func (x *OrganizationPolicyRule_ToPortRanges) String() string {
 func (*OrganizationPolicyRule_ToPortRanges) ProtoMessage() {}
 
 func (x *OrganizationPolicyRule_ToPortRanges) ProtoReflect() protoreflect.Message {
-	mi := &file_illumio_cloud_config_v1_config_proto_msgTypes[114]
+	mi := &file_illumio_cloud_config_v1_config_proto_msgTypes[135]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -8222,7 +9466,7 @@ func (x *OrganizationPolicyRule_ToPortRanges) ProtoReflect() protoreflect.Messag
 
 // Deprecated: Use OrganizationPolicyRule_ToPortRanges.ProtoReflect.Descriptor instead.
 func (*OrganizationPolicyRule_ToPortRanges) Descriptor() ([]byte, []int) {
-	return file_illumio_cloud_config_v1_config_proto_rawDescGZIP(), []int{114}
+	return file_illumio_cloud_config_v1_config_proto_rawDescGZIP(), []int{135}
 }
 
 func (x *OrganizationPolicyRule_ToPortRanges) GetFromPort() int64 {
@@ -8263,7 +9507,7 @@ type CreateOrganizationPolicyRuleRequest struct {
 
 func (x *CreateOrganizationPolicyRuleRequest) Reset() {
 	*x = CreateOrganizationPolicyRuleRequest{}
-	mi := &file_illumio_cloud_config_v1_config_proto_msgTypes[115]
+	mi := &file_illumio_cloud_config_v1_config_proto_msgTypes[136]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -8275,7 +9519,7 @@ func (x *CreateOrganizationPolicyRuleRequest) String() string {
 func (*CreateOrganizationPolicyRuleRequest) ProtoMessage() {}
 
 func (x *CreateOrganizationPolicyRuleRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_illumio_cloud_config_v1_config_proto_msgTypes[115]
+	mi := &file_illumio_cloud_config_v1_config_proto_msgTypes[136]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -8288,7 +9532,7 @@ func (x *CreateOrganizationPolicyRuleRequest) ProtoReflect() protoreflect.Messag
 
 // Deprecated: Use CreateOrganizationPolicyRuleRequest.ProtoReflect.Descriptor instead.
 func (*CreateOrganizationPolicyRuleRequest) Descriptor() ([]byte, []int) {
-	return file_illumio_cloud_config_v1_config_proto_rawDescGZIP(), []int{115}
+	return file_illumio_cloud_config_v1_config_proto_rawDescGZIP(), []int{136}
 }
 
 func (x *CreateOrganizationPolicyRuleRequest) GetAction() string {
@@ -8372,7 +9616,7 @@ type CreateOrganizationPolicyRuleResponse struct {
 
 func (x *CreateOrganizationPolicyRuleResponse) Reset() {
 	*x = CreateOrganizationPolicyRuleResponse{}
-	mi := &file_illumio_cloud_config_v1_config_proto_msgTypes[116]
+	mi := &file_illumio_cloud_config_v1_config_proto_msgTypes[137]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -8384,7 +9628,7 @@ func (x *CreateOrganizationPolicyRuleResponse) String() string {
 func (*CreateOrganizationPolicyRuleResponse) ProtoMessage() {}
 
 func (x *CreateOrganizationPolicyRuleResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_illumio_cloud_config_v1_config_proto_msgTypes[116]
+	mi := &file_illumio_cloud_config_v1_config_proto_msgTypes[137]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -8397,7 +9641,7 @@ func (x *CreateOrganizationPolicyRuleResponse) ProtoReflect() protoreflect.Messa
 
 // Deprecated: Use CreateOrganizationPolicyRuleResponse.ProtoReflect.Descriptor instead.
 func (*CreateOrganizationPolicyRuleResponse) Descriptor() ([]byte, []int) {
-	return file_illumio_cloud_config_v1_config_proto_rawDescGZIP(), []int{116}
+	return file_illumio_cloud_config_v1_config_proto_rawDescGZIP(), []int{137}
 }
 
 func (x *CreateOrganizationPolicyRuleResponse) GetId() string {
@@ -8479,7 +9723,7 @@ type ReadOrganizationPolicyRuleRequest struct {
 
 func (x *ReadOrganizationPolicyRuleRequest) Reset() {
 	*x = ReadOrganizationPolicyRuleRequest{}
-	mi := &file_illumio_cloud_config_v1_config_proto_msgTypes[117]
+	mi := &file_illumio_cloud_config_v1_config_proto_msgTypes[138]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -8491,7 +9735,7 @@ func (x *ReadOrganizationPolicyRuleRequest) String() string {
 func (*ReadOrganizationPolicyRuleRequest) ProtoMessage() {}
 
 func (x *ReadOrganizationPolicyRuleRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_illumio_cloud_config_v1_config_proto_msgTypes[117]
+	mi := &file_illumio_cloud_config_v1_config_proto_msgTypes[138]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -8504,7 +9748,7 @@ func (x *ReadOrganizationPolicyRuleRequest) ProtoReflect() protoreflect.Message 
 
 // Deprecated: Use ReadOrganizationPolicyRuleRequest.ProtoReflect.Descriptor instead.
 func (*ReadOrganizationPolicyRuleRequest) Descriptor() ([]byte, []int) {
-	return file_illumio_cloud_config_v1_config_proto_rawDescGZIP(), []int{117}
+	return file_illumio_cloud_config_v1_config_proto_rawDescGZIP(), []int{138}
 }
 
 func (x *ReadOrganizationPolicyRuleRequest) GetId() string {
@@ -8532,7 +9776,7 @@ type ReadOrganizationPolicyRuleResponse struct {
 
 func (x *ReadOrganizationPolicyRuleResponse) Reset() {
 	*x = ReadOrganizationPolicyRuleResponse{}
-	mi := &file_illumio_cloud_config_v1_config_proto_msgTypes[118]
+	mi := &file_illumio_cloud_config_v1_config_proto_msgTypes[139]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -8544,7 +9788,7 @@ func (x *ReadOrganizationPolicyRuleResponse) String() string {
 func (*ReadOrganizationPolicyRuleResponse) ProtoMessage() {}
 
 func (x *ReadOrganizationPolicyRuleResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_illumio_cloud_config_v1_config_proto_msgTypes[118]
+	mi := &file_illumio_cloud_config_v1_config_proto_msgTypes[139]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -8557,7 +9801,7 @@ func (x *ReadOrganizationPolicyRuleResponse) ProtoReflect() protoreflect.Message
 
 // Deprecated: Use ReadOrganizationPolicyRuleResponse.ProtoReflect.Descriptor instead.
 func (*ReadOrganizationPolicyRuleResponse) Descriptor() ([]byte, []int) {
-	return file_illumio_cloud_config_v1_config_proto_rawDescGZIP(), []int{118}
+	return file_illumio_cloud_config_v1_config_proto_rawDescGZIP(), []int{139}
 }
 
 func (x *ReadOrganizationPolicyRuleResponse) GetId() string {
@@ -8649,7 +9893,7 @@ type UpdateOrganizationPolicyRuleRequest struct {
 
 func (x *UpdateOrganizationPolicyRuleRequest) Reset() {
 	*x = UpdateOrganizationPolicyRuleRequest{}
-	mi := &file_illumio_cloud_config_v1_config_proto_msgTypes[119]
+	mi := &file_illumio_cloud_config_v1_config_proto_msgTypes[140]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -8661,7 +9905,7 @@ func (x *UpdateOrganizationPolicyRuleRequest) String() string {
 func (*UpdateOrganizationPolicyRuleRequest) ProtoMessage() {}
 
 func (x *UpdateOrganizationPolicyRuleRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_illumio_cloud_config_v1_config_proto_msgTypes[119]
+	mi := &file_illumio_cloud_config_v1_config_proto_msgTypes[140]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -8674,7 +9918,7 @@ func (x *UpdateOrganizationPolicyRuleRequest) ProtoReflect() protoreflect.Messag
 
 // Deprecated: Use UpdateOrganizationPolicyRuleRequest.ProtoReflect.Descriptor instead.
 func (*UpdateOrganizationPolicyRuleRequest) Descriptor() ([]byte, []int) {
-	return file_illumio_cloud_config_v1_config_proto_rawDescGZIP(), []int{119}
+	return file_illumio_cloud_config_v1_config_proto_rawDescGZIP(), []int{140}
 }
 
 func (x *UpdateOrganizationPolicyRuleRequest) GetId() string {
@@ -8772,7 +10016,7 @@ type UpdateOrganizationPolicyRuleResponse struct {
 
 func (x *UpdateOrganizationPolicyRuleResponse) Reset() {
 	*x = UpdateOrganizationPolicyRuleResponse{}
-	mi := &file_illumio_cloud_config_v1_config_proto_msgTypes[120]
+	mi := &file_illumio_cloud_config_v1_config_proto_msgTypes[141]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -8784,7 +10028,7 @@ func (x *UpdateOrganizationPolicyRuleResponse) String() string {
 func (*UpdateOrganizationPolicyRuleResponse) ProtoMessage() {}
 
 func (x *UpdateOrganizationPolicyRuleResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_illumio_cloud_config_v1_config_proto_msgTypes[120]
+	mi := &file_illumio_cloud_config_v1_config_proto_msgTypes[141]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -8797,7 +10041,7 @@ func (x *UpdateOrganizationPolicyRuleResponse) ProtoReflect() protoreflect.Messa
 
 // Deprecated: Use UpdateOrganizationPolicyRuleResponse.ProtoReflect.Descriptor instead.
 func (*UpdateOrganizationPolicyRuleResponse) Descriptor() ([]byte, []int) {
-	return file_illumio_cloud_config_v1_config_proto_rawDescGZIP(), []int{120}
+	return file_illumio_cloud_config_v1_config_proto_rawDescGZIP(), []int{141}
 }
 
 func (x *UpdateOrganizationPolicyRuleResponse) GetId() string {
@@ -8879,7 +10123,7 @@ type DeleteOrganizationPolicyRuleRequest struct {
 
 func (x *DeleteOrganizationPolicyRuleRequest) Reset() {
 	*x = DeleteOrganizationPolicyRuleRequest{}
-	mi := &file_illumio_cloud_config_v1_config_proto_msgTypes[121]
+	mi := &file_illumio_cloud_config_v1_config_proto_msgTypes[142]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -8891,7 +10135,7 @@ func (x *DeleteOrganizationPolicyRuleRequest) String() string {
 func (*DeleteOrganizationPolicyRuleRequest) ProtoMessage() {}
 
 func (x *DeleteOrganizationPolicyRuleRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_illumio_cloud_config_v1_config_proto_msgTypes[121]
+	mi := &file_illumio_cloud_config_v1_config_proto_msgTypes[142]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -8904,7 +10148,7 @@ func (x *DeleteOrganizationPolicyRuleRequest) ProtoReflect() protoreflect.Messag
 
 // Deprecated: Use DeleteOrganizationPolicyRuleRequest.ProtoReflect.Descriptor instead.
 func (*DeleteOrganizationPolicyRuleRequest) Descriptor() ([]byte, []int) {
-	return file_illumio_cloud_config_v1_config_proto_rawDescGZIP(), []int{121}
+	return file_illumio_cloud_config_v1_config_proto_rawDescGZIP(), []int{142}
 }
 
 func (x *DeleteOrganizationPolicyRuleRequest) GetId() string {
@@ -8925,7 +10169,7 @@ type TagToLabel_Icon struct {
 
 func (x *TagToLabel_Icon) Reset() {
 	*x = TagToLabel_Icon{}
-	mi := &file_illumio_cloud_config_v1_config_proto_msgTypes[122]
+	mi := &file_illumio_cloud_config_v1_config_proto_msgTypes[143]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -8937,7 +10181,7 @@ func (x *TagToLabel_Icon) String() string {
 func (*TagToLabel_Icon) ProtoMessage() {}
 
 func (x *TagToLabel_Icon) ProtoReflect() protoreflect.Message {
-	mi := &file_illumio_cloud_config_v1_config_proto_msgTypes[122]
+	mi := &file_illumio_cloud_config_v1_config_proto_msgTypes[143]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -8950,7 +10194,7 @@ func (x *TagToLabel_Icon) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use TagToLabel_Icon.ProtoReflect.Descriptor instead.
 func (*TagToLabel_Icon) Descriptor() ([]byte, []int) {
-	return file_illumio_cloud_config_v1_config_proto_rawDescGZIP(), []int{122}
+	return file_illumio_cloud_config_v1_config_proto_rawDescGZIP(), []int{143}
 }
 
 func (x *TagToLabel_Icon) GetBackgroundColor() string {
@@ -8988,7 +10232,7 @@ type CreateTagToLabelRequest struct {
 
 func (x *CreateTagToLabelRequest) Reset() {
 	*x = CreateTagToLabelRequest{}
-	mi := &file_illumio_cloud_config_v1_config_proto_msgTypes[123]
+	mi := &file_illumio_cloud_config_v1_config_proto_msgTypes[144]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -9000,7 +10244,7 @@ func (x *CreateTagToLabelRequest) String() string {
 func (*CreateTagToLabelRequest) ProtoMessage() {}
 
 func (x *CreateTagToLabelRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_illumio_cloud_config_v1_config_proto_msgTypes[123]
+	mi := &file_illumio_cloud_config_v1_config_proto_msgTypes[144]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -9013,7 +10257,7 @@ func (x *CreateTagToLabelRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use CreateTagToLabelRequest.ProtoReflect.Descriptor instead.
 func (*CreateTagToLabelRequest) Descriptor() ([]byte, []int) {
-	return file_illumio_cloud_config_v1_config_proto_rawDescGZIP(), []int{123}
+	return file_illumio_cloud_config_v1_config_proto_rawDescGZIP(), []int{144}
 }
 
 func (x *CreateTagToLabelRequest) GetAwsTagKeys() []string {
@@ -9073,7 +10317,7 @@ type CreateTagToLabelResponse struct {
 
 func (x *CreateTagToLabelResponse) Reset() {
 	*x = CreateTagToLabelResponse{}
-	mi := &file_illumio_cloud_config_v1_config_proto_msgTypes[124]
+	mi := &file_illumio_cloud_config_v1_config_proto_msgTypes[145]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -9085,7 +10329,7 @@ func (x *CreateTagToLabelResponse) String() string {
 func (*CreateTagToLabelResponse) ProtoMessage() {}
 
 func (x *CreateTagToLabelResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_illumio_cloud_config_v1_config_proto_msgTypes[124]
+	mi := &file_illumio_cloud_config_v1_config_proto_msgTypes[145]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -9098,7 +10342,7 @@ func (x *CreateTagToLabelResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use CreateTagToLabelResponse.ProtoReflect.Descriptor instead.
 func (*CreateTagToLabelResponse) Descriptor() ([]byte, []int) {
-	return file_illumio_cloud_config_v1_config_proto_rawDescGZIP(), []int{124}
+	return file_illumio_cloud_config_v1_config_proto_rawDescGZIP(), []int{145}
 }
 
 func (x *CreateTagToLabelResponse) GetId() string {
@@ -9159,7 +10403,7 @@ type ReadTagToLabelRequest struct {
 
 func (x *ReadTagToLabelRequest) Reset() {
 	*x = ReadTagToLabelRequest{}
-	mi := &file_illumio_cloud_config_v1_config_proto_msgTypes[125]
+	mi := &file_illumio_cloud_config_v1_config_proto_msgTypes[146]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -9171,7 +10415,7 @@ func (x *ReadTagToLabelRequest) String() string {
 func (*ReadTagToLabelRequest) ProtoMessage() {}
 
 func (x *ReadTagToLabelRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_illumio_cloud_config_v1_config_proto_msgTypes[125]
+	mi := &file_illumio_cloud_config_v1_config_proto_msgTypes[146]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -9184,7 +10428,7 @@ func (x *ReadTagToLabelRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use ReadTagToLabelRequest.ProtoReflect.Descriptor instead.
 func (*ReadTagToLabelRequest) Descriptor() ([]byte, []int) {
-	return file_illumio_cloud_config_v1_config_proto_rawDescGZIP(), []int{125}
+	return file_illumio_cloud_config_v1_config_proto_rawDescGZIP(), []int{146}
 }
 
 func (x *ReadTagToLabelRequest) GetId() string {
@@ -9209,7 +10453,7 @@ type ReadTagToLabelResponse struct {
 
 func (x *ReadTagToLabelResponse) Reset() {
 	*x = ReadTagToLabelResponse{}
-	mi := &file_illumio_cloud_config_v1_config_proto_msgTypes[126]
+	mi := &file_illumio_cloud_config_v1_config_proto_msgTypes[147]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -9221,7 +10465,7 @@ func (x *ReadTagToLabelResponse) String() string {
 func (*ReadTagToLabelResponse) ProtoMessage() {}
 
 func (x *ReadTagToLabelResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_illumio_cloud_config_v1_config_proto_msgTypes[126]
+	mi := &file_illumio_cloud_config_v1_config_proto_msgTypes[147]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -9234,7 +10478,7 @@ func (x *ReadTagToLabelResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use ReadTagToLabelResponse.ProtoReflect.Descriptor instead.
 func (*ReadTagToLabelResponse) Descriptor() ([]byte, []int) {
-	return file_illumio_cloud_config_v1_config_proto_rawDescGZIP(), []int{126}
+	return file_illumio_cloud_config_v1_config_proto_rawDescGZIP(), []int{147}
 }
 
 func (x *ReadTagToLabelResponse) GetId() string {
@@ -9302,7 +10546,7 @@ type UpdateTagToLabelRequest struct {
 
 func (x *UpdateTagToLabelRequest) Reset() {
 	*x = UpdateTagToLabelRequest{}
-	mi := &file_illumio_cloud_config_v1_config_proto_msgTypes[127]
+	mi := &file_illumio_cloud_config_v1_config_proto_msgTypes[148]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -9314,7 +10558,7 @@ func (x *UpdateTagToLabelRequest) String() string {
 func (*UpdateTagToLabelRequest) ProtoMessage() {}
 
 func (x *UpdateTagToLabelRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_illumio_cloud_config_v1_config_proto_msgTypes[127]
+	mi := &file_illumio_cloud_config_v1_config_proto_msgTypes[148]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -9327,7 +10571,7 @@ func (x *UpdateTagToLabelRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use UpdateTagToLabelRequest.ProtoReflect.Descriptor instead.
 func (*UpdateTagToLabelRequest) Descriptor() ([]byte, []int) {
-	return file_illumio_cloud_config_v1_config_proto_rawDescGZIP(), []int{127}
+	return file_illumio_cloud_config_v1_config_proto_rawDescGZIP(), []int{148}
 }
 
 func (x *UpdateTagToLabelRequest) GetId() string {
@@ -9401,7 +10645,7 @@ type UpdateTagToLabelResponse struct {
 
 func (x *UpdateTagToLabelResponse) Reset() {
 	*x = UpdateTagToLabelResponse{}
-	mi := &file_illumio_cloud_config_v1_config_proto_msgTypes[128]
+	mi := &file_illumio_cloud_config_v1_config_proto_msgTypes[149]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -9413,7 +10657,7 @@ func (x *UpdateTagToLabelResponse) String() string {
 func (*UpdateTagToLabelResponse) ProtoMessage() {}
 
 func (x *UpdateTagToLabelResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_illumio_cloud_config_v1_config_proto_msgTypes[128]
+	mi := &file_illumio_cloud_config_v1_config_proto_msgTypes[149]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -9426,7 +10670,7 @@ func (x *UpdateTagToLabelResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use UpdateTagToLabelResponse.ProtoReflect.Descriptor instead.
 func (*UpdateTagToLabelResponse) Descriptor() ([]byte, []int) {
-	return file_illumio_cloud_config_v1_config_proto_rawDescGZIP(), []int{128}
+	return file_illumio_cloud_config_v1_config_proto_rawDescGZIP(), []int{149}
 }
 
 func (x *UpdateTagToLabelResponse) GetId() string {
@@ -9487,7 +10731,7 @@ type DeleteTagToLabelRequest struct {
 
 func (x *DeleteTagToLabelRequest) Reset() {
 	*x = DeleteTagToLabelRequest{}
-	mi := &file_illumio_cloud_config_v1_config_proto_msgTypes[129]
+	mi := &file_illumio_cloud_config_v1_config_proto_msgTypes[150]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -9499,7 +10743,7 @@ func (x *DeleteTagToLabelRequest) String() string {
 func (*DeleteTagToLabelRequest) ProtoMessage() {}
 
 func (x *DeleteTagToLabelRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_illumio_cloud_config_v1_config_proto_msgTypes[129]
+	mi := &file_illumio_cloud_config_v1_config_proto_msgTypes[150]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -9512,7 +10756,7 @@ func (x *DeleteTagToLabelRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use DeleteTagToLabelRequest.ProtoReflect.Descriptor instead.
 func (*DeleteTagToLabelRequest) Descriptor() ([]byte, []int) {
-	return file_illumio_cloud_config_v1_config_proto_rawDescGZIP(), []int{129}
+	return file_illumio_cloud_config_v1_config_proto_rawDescGZIP(), []int{150}
 }
 
 func (x *DeleteTagToLabelRequest) GetId() string {
@@ -9868,6 +11112,49 @@ const file_illumio_cloud_config_v1_config_proto_rawDesc = "" +
 	"account_id\x18\x02 \x01(\tR\taccountId\x12\"\n" +
 	"\rs3_bucket_arn\x18\x03 \x01(\tR\vs3BucketArn\"2\n" +
 	" DeleteAwsFlowLogsS3BucketRequest\x12\x0e\n" +
+	"\x02id\x18\x01 \x01(\tR\x02id\"\x9e\x01\n" +
+	"&CreateAwsFlowLogsS3BucketSourceRequest\x12\x1d\n" +
+	"\n" +
+	"account_id\x18\x02 \x01(\tR\taccountId\x12\x1f\n" +
+	"\vbucket_name\x18\x03 \x01(\tR\n" +
+	"bucketName\x12$\n" +
+	"\vpath_prefix\x18\x04 \x01(\tH\x00R\n" +
+	"pathPrefix\x88\x01\x01B\x0e\n" +
+	"\f_path_prefix\"\xaf\x01\n" +
+	"'CreateAwsFlowLogsS3BucketSourceResponse\x12\x0e\n" +
+	"\x02id\x18\x01 \x01(\tR\x02id\x12\x1d\n" +
+	"\n" +
+	"account_id\x18\x02 \x01(\tR\taccountId\x12\x1f\n" +
+	"\vbucket_name\x18\x03 \x01(\tR\n" +
+	"bucketName\x12$\n" +
+	"\vpath_prefix\x18\x04 \x01(\tH\x00R\n" +
+	"pathPrefix\x88\x01\x01B\x0e\n" +
+	"\f_path_prefix\"6\n" +
+	"$ReadAwsFlowLogsS3BucketSourceRequest\x12\x0e\n" +
+	"\x02id\x18\x01 \x01(\tR\x02id\"\xad\x01\n" +
+	"%ReadAwsFlowLogsS3BucketSourceResponse\x12\x0e\n" +
+	"\x02id\x18\x01 \x01(\tR\x02id\x12\x1d\n" +
+	"\n" +
+	"account_id\x18\x02 \x01(\tR\taccountId\x12\x1f\n" +
+	"\vbucket_name\x18\x03 \x01(\tR\n" +
+	"bucketName\x12$\n" +
+	"\vpath_prefix\x18\x04 \x01(\tH\x00R\n" +
+	"pathPrefix\x88\x01\x01B\x0e\n" +
+	"\f_path_prefix\"u\n" +
+	"&UpdateAwsFlowLogsS3BucketSourceRequest\x12\x0e\n" +
+	"\x02id\x18\x01 \x01(\tR\x02id\x12;\n" +
+	"\vupdate_mask\x18\x05 \x01(\v2\x1a.google.protobuf.FieldMaskR\n" +
+	"updateMask\"\xaf\x01\n" +
+	"'UpdateAwsFlowLogsS3BucketSourceResponse\x12\x0e\n" +
+	"\x02id\x18\x01 \x01(\tR\x02id\x12\x1d\n" +
+	"\n" +
+	"account_id\x18\x02 \x01(\tR\taccountId\x12\x1f\n" +
+	"\vbucket_name\x18\x03 \x01(\tR\n" +
+	"bucketName\x12$\n" +
+	"\vpath_prefix\x18\x04 \x01(\tH\x00R\n" +
+	"pathPrefix\x88\x01\x01B\x0e\n" +
+	"\f_path_prefix\"8\n" +
+	"&DeleteAwsFlowLogsS3BucketSourceRequest\x12\x0e\n" +
 	"\x02id\x18\x01 \x01(\tR\x02id\"\x92\x01\n" +
 	"(CreateAzureFlowLogsStorageAccountRequest\x12=\n" +
 	"\x1bstorage_account_resource_id\x18\x02 \x01(\tR\x18storageAccountResourceId\x12'\n" +
@@ -9891,6 +11178,49 @@ const file_illumio_cloud_config_v1_config_proto_rawDesc = "" +
 	"\x1bstorage_account_resource_id\x18\x02 \x01(\tR\x18storageAccountResourceId\x12'\n" +
 	"\x0fsubscription_id\x18\x03 \x01(\tR\x0esubscriptionId\":\n" +
 	"(DeleteAzureFlowLogsStorageAccountRequest\x12\x0e\n" +
+	"\x02id\x18\x01 \x01(\tR\x02id\"\x80\x02\n" +
+	".CreateAzureFlowLogsStorageAccountSourceRequest\x12*\n" +
+	"\x0econtainer_name\x18\x02 \x01(\tH\x00R\rcontainerName\x88\x01\x01\x12$\n" +
+	"\vpath_prefix\x18\x03 \x01(\tH\x01R\n" +
+	"pathPrefix\x88\x01\x01\x120\n" +
+	"\x14storage_account_name\x18\x04 \x01(\tR\x12storageAccountName\x12'\n" +
+	"\x0fsubscription_id\x18\x05 \x01(\tR\x0esubscriptionIdB\x11\n" +
+	"\x0f_container_nameB\x0e\n" +
+	"\f_path_prefix\"\x91\x02\n" +
+	"/CreateAzureFlowLogsStorageAccountSourceResponse\x12\x0e\n" +
+	"\x02id\x18\x01 \x01(\tR\x02id\x12*\n" +
+	"\x0econtainer_name\x18\x02 \x01(\tH\x00R\rcontainerName\x88\x01\x01\x12$\n" +
+	"\vpath_prefix\x18\x03 \x01(\tH\x01R\n" +
+	"pathPrefix\x88\x01\x01\x120\n" +
+	"\x14storage_account_name\x18\x04 \x01(\tR\x12storageAccountName\x12'\n" +
+	"\x0fsubscription_id\x18\x05 \x01(\tR\x0esubscriptionIdB\x11\n" +
+	"\x0f_container_nameB\x0e\n" +
+	"\f_path_prefix\">\n" +
+	",ReadAzureFlowLogsStorageAccountSourceRequest\x12\x0e\n" +
+	"\x02id\x18\x01 \x01(\tR\x02id\"\x8f\x02\n" +
+	"-ReadAzureFlowLogsStorageAccountSourceResponse\x12\x0e\n" +
+	"\x02id\x18\x01 \x01(\tR\x02id\x12*\n" +
+	"\x0econtainer_name\x18\x02 \x01(\tH\x00R\rcontainerName\x88\x01\x01\x12$\n" +
+	"\vpath_prefix\x18\x03 \x01(\tH\x01R\n" +
+	"pathPrefix\x88\x01\x01\x120\n" +
+	"\x14storage_account_name\x18\x04 \x01(\tR\x12storageAccountName\x12'\n" +
+	"\x0fsubscription_id\x18\x05 \x01(\tR\x0esubscriptionIdB\x11\n" +
+	"\x0f_container_nameB\x0e\n" +
+	"\f_path_prefix\"}\n" +
+	".UpdateAzureFlowLogsStorageAccountSourceRequest\x12\x0e\n" +
+	"\x02id\x18\x01 \x01(\tR\x02id\x12;\n" +
+	"\vupdate_mask\x18\x06 \x01(\v2\x1a.google.protobuf.FieldMaskR\n" +
+	"updateMask\"\x91\x02\n" +
+	"/UpdateAzureFlowLogsStorageAccountSourceResponse\x12\x0e\n" +
+	"\x02id\x18\x01 \x01(\tR\x02id\x12*\n" +
+	"\x0econtainer_name\x18\x02 \x01(\tH\x00R\rcontainerName\x88\x01\x01\x12$\n" +
+	"\vpath_prefix\x18\x03 \x01(\tH\x01R\n" +
+	"pathPrefix\x88\x01\x01\x120\n" +
+	"\x14storage_account_name\x18\x04 \x01(\tR\x12storageAccountName\x12'\n" +
+	"\x0fsubscription_id\x18\x05 \x01(\tR\x0esubscriptionIdB\x11\n" +
+	"\x0f_container_nameB\x0e\n" +
+	"\f_path_prefix\"@\n" +
+	".DeleteAzureFlowLogsStorageAccountSourceRequest\x12\x0e\n" +
 	"\x02id\x18\x01 \x01(\tR\x02id\"\xd0\x01\n" +
 	"\x1eCreateAzureSubscriptionRequest\x12\x1b\n" +
 	"\tclient_id\x18\x02 \x01(\tR\bclientId\x12#\n" +
@@ -10056,6 +11386,49 @@ const file_illumio_cloud_config_v1_config_proto_rawDesc = "" +
 	"project_id\x18\x02 \x01(\tR\tprojectId\x12&\n" +
 	"\x0fpubsub_topic_id\x18\x03 \x01(\tR\rpubsubTopicId\"5\n" +
 	"#DeleteGcpFlowLogsPubsubTopicRequest\x12\x0e\n" +
+	"\x02id\x18\x01 \x01(\tR\x02id\"\xa3\x01\n" +
+	"+CreateGcpFlowLogsStorageBucketSourceRequest\x12\x1f\n" +
+	"\vbucket_name\x18\x02 \x01(\tR\n" +
+	"bucketName\x12$\n" +
+	"\vpath_prefix\x18\x03 \x01(\tH\x00R\n" +
+	"pathPrefix\x88\x01\x01\x12\x1d\n" +
+	"\n" +
+	"project_id\x18\x04 \x01(\tR\tprojectIdB\x0e\n" +
+	"\f_path_prefix\"\xb4\x01\n" +
+	",CreateGcpFlowLogsStorageBucketSourceResponse\x12\x0e\n" +
+	"\x02id\x18\x01 \x01(\tR\x02id\x12\x1f\n" +
+	"\vbucket_name\x18\x02 \x01(\tR\n" +
+	"bucketName\x12$\n" +
+	"\vpath_prefix\x18\x03 \x01(\tH\x00R\n" +
+	"pathPrefix\x88\x01\x01\x12\x1d\n" +
+	"\n" +
+	"project_id\x18\x04 \x01(\tR\tprojectIdB\x0e\n" +
+	"\f_path_prefix\";\n" +
+	")ReadGcpFlowLogsStorageBucketSourceRequest\x12\x0e\n" +
+	"\x02id\x18\x01 \x01(\tR\x02id\"\xb2\x01\n" +
+	"*ReadGcpFlowLogsStorageBucketSourceResponse\x12\x0e\n" +
+	"\x02id\x18\x01 \x01(\tR\x02id\x12\x1f\n" +
+	"\vbucket_name\x18\x02 \x01(\tR\n" +
+	"bucketName\x12$\n" +
+	"\vpath_prefix\x18\x03 \x01(\tH\x00R\n" +
+	"pathPrefix\x88\x01\x01\x12\x1d\n" +
+	"\n" +
+	"project_id\x18\x04 \x01(\tR\tprojectIdB\x0e\n" +
+	"\f_path_prefix\"z\n" +
+	"+UpdateGcpFlowLogsStorageBucketSourceRequest\x12\x0e\n" +
+	"\x02id\x18\x01 \x01(\tR\x02id\x12;\n" +
+	"\vupdate_mask\x18\x05 \x01(\v2\x1a.google.protobuf.FieldMaskR\n" +
+	"updateMask\"\xb4\x01\n" +
+	",UpdateGcpFlowLogsStorageBucketSourceResponse\x12\x0e\n" +
+	"\x02id\x18\x01 \x01(\tR\x02id\x12\x1f\n" +
+	"\vbucket_name\x18\x02 \x01(\tR\n" +
+	"bucketName\x12$\n" +
+	"\vpath_prefix\x18\x03 \x01(\tH\x00R\n" +
+	"pathPrefix\x88\x01\x01\x12\x1d\n" +
+	"\n" +
+	"project_id\x18\x04 \x01(\tR\tprojectIdB\x0e\n" +
+	"\f_path_prefix\"=\n" +
+	"+DeleteGcpFlowLogsStorageBucketSourceRequest\x12\x0e\n" +
 	"\x02id\x18\x01 \x01(\tR\x02id\"\xbd\x01\n" +
 	"\x17CreateGcpProjectRequest\x12\x12\n" +
 	"\x04mode\x18\x02 \x01(\tR\x04mode\x12\x12\n" +
@@ -10391,7 +11764,7 @@ const file_illumio_cloud_config_v1_config_proto_rawDesc = "" +
 	"\x03key\x18\x05 \x01(\tR\x03key\x12\x12\n" +
 	"\x04name\x18\x06 \x01(\tR\x04name\")\n" +
 	"\x17DeleteTagToLabelRequest\x12\x0e\n" +
-	"\x02id\x18\x01 \x01(\tR\x02id2\xd4F\n" +
+	"\x02id\x18\x01 \x01(\tR\x02id2\xa6V\n" +
 	"\rConfigService\x12z\n" +
 	"\x11CreateApplication\x121.illumio.cloud.config.v1.CreateApplicationRequest\x1a2.illumio.cloud.config.v1.CreateApplicationResponse\x12t\n" +
 	"\x0fReadApplication\x12/.illumio.cloud.config.v1.ReadApplicationRequest\x1a0.illumio.cloud.config.v1.ReadApplicationResponse\x12z\n" +
@@ -10416,11 +11789,19 @@ const file_illumio_cloud_config_v1_config_proto_rawDesc = "" +
 	"\x19CreateAwsFlowLogsS3Bucket\x129.illumio.cloud.config.v1.CreateAwsFlowLogsS3BucketRequest\x1a:.illumio.cloud.config.v1.CreateAwsFlowLogsS3BucketResponse\x12\x8c\x01\n" +
 	"\x17ReadAwsFlowLogsS3Bucket\x127.illumio.cloud.config.v1.ReadAwsFlowLogsS3BucketRequest\x1a8.illumio.cloud.config.v1.ReadAwsFlowLogsS3BucketResponse\x12\x92\x01\n" +
 	"\x19UpdateAwsFlowLogsS3Bucket\x129.illumio.cloud.config.v1.UpdateAwsFlowLogsS3BucketRequest\x1a:.illumio.cloud.config.v1.UpdateAwsFlowLogsS3BucketResponse\x12n\n" +
-	"\x19DeleteAwsFlowLogsS3Bucket\x129.illumio.cloud.config.v1.DeleteAwsFlowLogsS3BucketRequest\x1a\x16.google.protobuf.Empty\x12\xaa\x01\n" +
+	"\x19DeleteAwsFlowLogsS3Bucket\x129.illumio.cloud.config.v1.DeleteAwsFlowLogsS3BucketRequest\x1a\x16.google.protobuf.Empty\x12\xa4\x01\n" +
+	"\x1fCreateAwsFlowLogsS3BucketSource\x12?.illumio.cloud.config.v1.CreateAwsFlowLogsS3BucketSourceRequest\x1a@.illumio.cloud.config.v1.CreateAwsFlowLogsS3BucketSourceResponse\x12\x9e\x01\n" +
+	"\x1dReadAwsFlowLogsS3BucketSource\x12=.illumio.cloud.config.v1.ReadAwsFlowLogsS3BucketSourceRequest\x1a>.illumio.cloud.config.v1.ReadAwsFlowLogsS3BucketSourceResponse\x12\xa4\x01\n" +
+	"\x1fUpdateAwsFlowLogsS3BucketSource\x12?.illumio.cloud.config.v1.UpdateAwsFlowLogsS3BucketSourceRequest\x1a@.illumio.cloud.config.v1.UpdateAwsFlowLogsS3BucketSourceResponse\x12z\n" +
+	"\x1fDeleteAwsFlowLogsS3BucketSource\x12?.illumio.cloud.config.v1.DeleteAwsFlowLogsS3BucketSourceRequest\x1a\x16.google.protobuf.Empty\x12\xaa\x01\n" +
 	"!CreateAzureFlowLogsStorageAccount\x12A.illumio.cloud.config.v1.CreateAzureFlowLogsStorageAccountRequest\x1aB.illumio.cloud.config.v1.CreateAzureFlowLogsStorageAccountResponse\x12\xa4\x01\n" +
 	"\x1fReadAzureFlowLogsStorageAccount\x12?.illumio.cloud.config.v1.ReadAzureFlowLogsStorageAccountRequest\x1a@.illumio.cloud.config.v1.ReadAzureFlowLogsStorageAccountResponse\x12\xaa\x01\n" +
 	"!UpdateAzureFlowLogsStorageAccount\x12A.illumio.cloud.config.v1.UpdateAzureFlowLogsStorageAccountRequest\x1aB.illumio.cloud.config.v1.UpdateAzureFlowLogsStorageAccountResponse\x12~\n" +
-	"!DeleteAzureFlowLogsStorageAccount\x12A.illumio.cloud.config.v1.DeleteAzureFlowLogsStorageAccountRequest\x1a\x16.google.protobuf.Empty\x12\x8c\x01\n" +
+	"!DeleteAzureFlowLogsStorageAccount\x12A.illumio.cloud.config.v1.DeleteAzureFlowLogsStorageAccountRequest\x1a\x16.google.protobuf.Empty\x12\xbc\x01\n" +
+	"'CreateAzureFlowLogsStorageAccountSource\x12G.illumio.cloud.config.v1.CreateAzureFlowLogsStorageAccountSourceRequest\x1aH.illumio.cloud.config.v1.CreateAzureFlowLogsStorageAccountSourceResponse\x12\xb6\x01\n" +
+	"%ReadAzureFlowLogsStorageAccountSource\x12E.illumio.cloud.config.v1.ReadAzureFlowLogsStorageAccountSourceRequest\x1aF.illumio.cloud.config.v1.ReadAzureFlowLogsStorageAccountSourceResponse\x12\xbc\x01\n" +
+	"'UpdateAzureFlowLogsStorageAccountSource\x12G.illumio.cloud.config.v1.UpdateAzureFlowLogsStorageAccountSourceRequest\x1aH.illumio.cloud.config.v1.UpdateAzureFlowLogsStorageAccountSourceResponse\x12\x8a\x01\n" +
+	"'DeleteAzureFlowLogsStorageAccountSource\x12G.illumio.cloud.config.v1.DeleteAzureFlowLogsStorageAccountSourceRequest\x1a\x16.google.protobuf.Empty\x12\x8c\x01\n" +
 	"\x17CreateAzureSubscription\x127.illumio.cloud.config.v1.CreateAzureSubscriptionRequest\x1a8.illumio.cloud.config.v1.CreateAzureSubscriptionResponse\x12\x86\x01\n" +
 	"\x15ReadAzureSubscription\x125.illumio.cloud.config.v1.ReadAzureSubscriptionRequest\x1a6.illumio.cloud.config.v1.ReadAzureSubscriptionResponse\x12\x8c\x01\n" +
 	"\x17UpdateAzureSubscription\x127.illumio.cloud.config.v1.UpdateAzureSubscriptionRequest\x1a8.illumio.cloud.config.v1.UpdateAzureSubscriptionResponse\x12j\n" +
@@ -10432,7 +11813,11 @@ const file_illumio_cloud_config_v1_config_proto_rawDesc = "" +
 	"\x1cCreateGcpFlowLogsPubsubTopic\x12<.illumio.cloud.config.v1.CreateGcpFlowLogsPubsubTopicRequest\x1a=.illumio.cloud.config.v1.CreateGcpFlowLogsPubsubTopicResponse\x12\x95\x01\n" +
 	"\x1aReadGcpFlowLogsPubsubTopic\x12:.illumio.cloud.config.v1.ReadGcpFlowLogsPubsubTopicRequest\x1a;.illumio.cloud.config.v1.ReadGcpFlowLogsPubsubTopicResponse\x12\x9b\x01\n" +
 	"\x1cUpdateGcpFlowLogsPubsubTopic\x12<.illumio.cloud.config.v1.UpdateGcpFlowLogsPubsubTopicRequest\x1a=.illumio.cloud.config.v1.UpdateGcpFlowLogsPubsubTopicResponse\x12t\n" +
-	"\x1cDeleteGcpFlowLogsPubsubTopic\x12<.illumio.cloud.config.v1.DeleteGcpFlowLogsPubsubTopicRequest\x1a\x16.google.protobuf.Empty\x12w\n" +
+	"\x1cDeleteGcpFlowLogsPubsubTopic\x12<.illumio.cloud.config.v1.DeleteGcpFlowLogsPubsubTopicRequest\x1a\x16.google.protobuf.Empty\x12\xb3\x01\n" +
+	"$CreateGcpFlowLogsStorageBucketSource\x12D.illumio.cloud.config.v1.CreateGcpFlowLogsStorageBucketSourceRequest\x1aE.illumio.cloud.config.v1.CreateGcpFlowLogsStorageBucketSourceResponse\x12\xad\x01\n" +
+	"\"ReadGcpFlowLogsStorageBucketSource\x12B.illumio.cloud.config.v1.ReadGcpFlowLogsStorageBucketSourceRequest\x1aC.illumio.cloud.config.v1.ReadGcpFlowLogsStorageBucketSourceResponse\x12\xb3\x01\n" +
+	"$UpdateGcpFlowLogsStorageBucketSource\x12D.illumio.cloud.config.v1.UpdateGcpFlowLogsStorageBucketSourceRequest\x1aE.illumio.cloud.config.v1.UpdateGcpFlowLogsStorageBucketSourceResponse\x12\x84\x01\n" +
+	"$DeleteGcpFlowLogsStorageBucketSource\x12D.illumio.cloud.config.v1.DeleteGcpFlowLogsStorageBucketSourceRequest\x1a\x16.google.protobuf.Empty\x12w\n" +
 	"\x10CreateGcpProject\x120.illumio.cloud.config.v1.CreateGcpProjectRequest\x1a1.illumio.cloud.config.v1.CreateGcpProjectResponse\x12q\n" +
 	"\x0eReadGcpProject\x12..illumio.cloud.config.v1.ReadGcpProjectRequest\x1a/.illumio.cloud.config.v1.ReadGcpProjectResponse\x12w\n" +
 	"\x10UpdateGcpProject\x120.illumio.cloud.config.v1.UpdateGcpProjectRequest\x1a1.illumio.cloud.config.v1.UpdateGcpProjectResponse\x12\\\n" +
@@ -10476,145 +11861,166 @@ func file_illumio_cloud_config_v1_config_proto_rawDescGZIP() []byte {
 	return file_illumio_cloud_config_v1_config_proto_rawDescData
 }
 
-var file_illumio_cloud_config_v1_config_proto_msgTypes = make([]protoimpl.MessageInfo, 130)
+var file_illumio_cloud_config_v1_config_proto_msgTypes = make([]protoimpl.MessageInfo, 151)
 var file_illumio_cloud_config_v1_config_proto_goTypes = []any{
-	(*CreateApplicationRequest)(nil),                     // 0: illumio.cloud.config.v1.CreateApplicationRequest
-	(*CreateApplicationResponse)(nil),                    // 1: illumio.cloud.config.v1.CreateApplicationResponse
-	(*ReadApplicationRequest)(nil),                       // 2: illumio.cloud.config.v1.ReadApplicationRequest
-	(*ReadApplicationResponse)(nil),                      // 3: illumio.cloud.config.v1.ReadApplicationResponse
-	(*UpdateApplicationRequest)(nil),                     // 4: illumio.cloud.config.v1.UpdateApplicationRequest
-	(*UpdateApplicationResponse)(nil),                    // 5: illumio.cloud.config.v1.UpdateApplicationResponse
-	(*DeleteApplicationRequest)(nil),                     // 6: illumio.cloud.config.v1.DeleteApplicationRequest
-	(*CreateApplicationAwsResourcesRequest)(nil),         // 7: illumio.cloud.config.v1.CreateApplicationAwsResourcesRequest
-	(*CreateApplicationAwsResourcesResponse)(nil),        // 8: illumio.cloud.config.v1.CreateApplicationAwsResourcesResponse
-	(*ReadApplicationAwsResourcesRequest)(nil),           // 9: illumio.cloud.config.v1.ReadApplicationAwsResourcesRequest
-	(*ReadApplicationAwsResourcesResponse)(nil),          // 10: illumio.cloud.config.v1.ReadApplicationAwsResourcesResponse
-	(*UpdateApplicationAwsResourcesRequest)(nil),         // 11: illumio.cloud.config.v1.UpdateApplicationAwsResourcesRequest
-	(*UpdateApplicationAwsResourcesResponse)(nil),        // 12: illumio.cloud.config.v1.UpdateApplicationAwsResourcesResponse
-	(*DeleteApplicationAwsResourcesRequest)(nil),         // 13: illumio.cloud.config.v1.DeleteApplicationAwsResourcesRequest
-	(*CreateApplicationAzureResourcesRequest)(nil),       // 14: illumio.cloud.config.v1.CreateApplicationAzureResourcesRequest
-	(*CreateApplicationAzureResourcesResponse)(nil),      // 15: illumio.cloud.config.v1.CreateApplicationAzureResourcesResponse
-	(*ReadApplicationAzureResourcesRequest)(nil),         // 16: illumio.cloud.config.v1.ReadApplicationAzureResourcesRequest
-	(*ReadApplicationAzureResourcesResponse)(nil),        // 17: illumio.cloud.config.v1.ReadApplicationAzureResourcesResponse
-	(*UpdateApplicationAzureResourcesRequest)(nil),       // 18: illumio.cloud.config.v1.UpdateApplicationAzureResourcesRequest
-	(*UpdateApplicationAzureResourcesResponse)(nil),      // 19: illumio.cloud.config.v1.UpdateApplicationAzureResourcesResponse
-	(*DeleteApplicationAzureResourcesRequest)(nil),       // 20: illumio.cloud.config.v1.DeleteApplicationAzureResourcesRequest
-	(*ApplicationPolicyRule_FromLabels)(nil),             // 21: illumio.cloud.config.v1.ApplicationPolicyRule_FromLabels
-	(*ApplicationPolicyRule_ToLabels)(nil),               // 22: illumio.cloud.config.v1.ApplicationPolicyRule_ToLabels
-	(*ApplicationPolicyRule_ToPortRanges)(nil),           // 23: illumio.cloud.config.v1.ApplicationPolicyRule_ToPortRanges
-	(*CreateApplicationPolicyRuleRequest)(nil),           // 24: illumio.cloud.config.v1.CreateApplicationPolicyRuleRequest
-	(*CreateApplicationPolicyRuleResponse)(nil),          // 25: illumio.cloud.config.v1.CreateApplicationPolicyRuleResponse
-	(*ReadApplicationPolicyRuleRequest)(nil),             // 26: illumio.cloud.config.v1.ReadApplicationPolicyRuleRequest
-	(*ReadApplicationPolicyRuleResponse)(nil),            // 27: illumio.cloud.config.v1.ReadApplicationPolicyRuleResponse
-	(*UpdateApplicationPolicyRuleRequest)(nil),           // 28: illumio.cloud.config.v1.UpdateApplicationPolicyRuleRequest
-	(*UpdateApplicationPolicyRuleResponse)(nil),          // 29: illumio.cloud.config.v1.UpdateApplicationPolicyRuleResponse
-	(*DeleteApplicationPolicyRuleRequest)(nil),           // 30: illumio.cloud.config.v1.DeleteApplicationPolicyRuleRequest
-	(*CreateAwsAccountRequest)(nil),                      // 31: illumio.cloud.config.v1.CreateAwsAccountRequest
-	(*CreateAwsAccountResponse)(nil),                     // 32: illumio.cloud.config.v1.CreateAwsAccountResponse
-	(*ReadAwsAccountRequest)(nil),                        // 33: illumio.cloud.config.v1.ReadAwsAccountRequest
-	(*ReadAwsAccountResponse)(nil),                       // 34: illumio.cloud.config.v1.ReadAwsAccountResponse
-	(*UpdateAwsAccountRequest)(nil),                      // 35: illumio.cloud.config.v1.UpdateAwsAccountRequest
-	(*UpdateAwsAccountResponse)(nil),                     // 36: illumio.cloud.config.v1.UpdateAwsAccountResponse
-	(*DeleteAwsAccountRequest)(nil),                      // 37: illumio.cloud.config.v1.DeleteAwsAccountRequest
-	(*CreateAwsFlowLogsS3BucketRequest)(nil),             // 38: illumio.cloud.config.v1.CreateAwsFlowLogsS3BucketRequest
-	(*CreateAwsFlowLogsS3BucketResponse)(nil),            // 39: illumio.cloud.config.v1.CreateAwsFlowLogsS3BucketResponse
-	(*ReadAwsFlowLogsS3BucketRequest)(nil),               // 40: illumio.cloud.config.v1.ReadAwsFlowLogsS3BucketRequest
-	(*ReadAwsFlowLogsS3BucketResponse)(nil),              // 41: illumio.cloud.config.v1.ReadAwsFlowLogsS3BucketResponse
-	(*UpdateAwsFlowLogsS3BucketRequest)(nil),             // 42: illumio.cloud.config.v1.UpdateAwsFlowLogsS3BucketRequest
-	(*UpdateAwsFlowLogsS3BucketResponse)(nil),            // 43: illumio.cloud.config.v1.UpdateAwsFlowLogsS3BucketResponse
-	(*DeleteAwsFlowLogsS3BucketRequest)(nil),             // 44: illumio.cloud.config.v1.DeleteAwsFlowLogsS3BucketRequest
-	(*CreateAzureFlowLogsStorageAccountRequest)(nil),     // 45: illumio.cloud.config.v1.CreateAzureFlowLogsStorageAccountRequest
-	(*CreateAzureFlowLogsStorageAccountResponse)(nil),    // 46: illumio.cloud.config.v1.CreateAzureFlowLogsStorageAccountResponse
-	(*ReadAzureFlowLogsStorageAccountRequest)(nil),       // 47: illumio.cloud.config.v1.ReadAzureFlowLogsStorageAccountRequest
-	(*ReadAzureFlowLogsStorageAccountResponse)(nil),      // 48: illumio.cloud.config.v1.ReadAzureFlowLogsStorageAccountResponse
-	(*UpdateAzureFlowLogsStorageAccountRequest)(nil),     // 49: illumio.cloud.config.v1.UpdateAzureFlowLogsStorageAccountRequest
-	(*UpdateAzureFlowLogsStorageAccountResponse)(nil),    // 50: illumio.cloud.config.v1.UpdateAzureFlowLogsStorageAccountResponse
-	(*DeleteAzureFlowLogsStorageAccountRequest)(nil),     // 51: illumio.cloud.config.v1.DeleteAzureFlowLogsStorageAccountRequest
-	(*CreateAzureSubscriptionRequest)(nil),               // 52: illumio.cloud.config.v1.CreateAzureSubscriptionRequest
-	(*CreateAzureSubscriptionResponse)(nil),              // 53: illumio.cloud.config.v1.CreateAzureSubscriptionResponse
-	(*ReadAzureSubscriptionRequest)(nil),                 // 54: illumio.cloud.config.v1.ReadAzureSubscriptionRequest
-	(*ReadAzureSubscriptionResponse)(nil),                // 55: illumio.cloud.config.v1.ReadAzureSubscriptionResponse
-	(*UpdateAzureSubscriptionRequest)(nil),               // 56: illumio.cloud.config.v1.UpdateAzureSubscriptionRequest
-	(*UpdateAzureSubscriptionResponse)(nil),              // 57: illumio.cloud.config.v1.UpdateAzureSubscriptionResponse
-	(*DeleteAzureSubscriptionRequest)(nil),               // 58: illumio.cloud.config.v1.DeleteAzureSubscriptionRequest
-	(*Deployment_AwsTags)(nil),                           // 59: illumio.cloud.config.v1.Deployment_AwsTags
-	(*Deployment_AzureTags)(nil),                         // 60: illumio.cloud.config.v1.Deployment_AzureTags
-	(*CreateDeploymentRequest)(nil),                      // 61: illumio.cloud.config.v1.CreateDeploymentRequest
-	(*CreateDeploymentResponse)(nil),                     // 62: illumio.cloud.config.v1.CreateDeploymentResponse
-	(*ReadDeploymentRequest)(nil),                        // 63: illumio.cloud.config.v1.ReadDeploymentRequest
-	(*ReadDeploymentResponse)(nil),                       // 64: illumio.cloud.config.v1.ReadDeploymentResponse
-	(*UpdateDeploymentRequest)(nil),                      // 65: illumio.cloud.config.v1.UpdateDeploymentRequest
-	(*UpdateDeploymentResponse)(nil),                     // 66: illumio.cloud.config.v1.UpdateDeploymentResponse
-	(*DeleteDeploymentRequest)(nil),                      // 67: illumio.cloud.config.v1.DeleteDeploymentRequest
-	(*CreateGcpFlowLogsPubsubTopicRequest)(nil),          // 68: illumio.cloud.config.v1.CreateGcpFlowLogsPubsubTopicRequest
-	(*CreateGcpFlowLogsPubsubTopicResponse)(nil),         // 69: illumio.cloud.config.v1.CreateGcpFlowLogsPubsubTopicResponse
-	(*ReadGcpFlowLogsPubsubTopicRequest)(nil),            // 70: illumio.cloud.config.v1.ReadGcpFlowLogsPubsubTopicRequest
-	(*ReadGcpFlowLogsPubsubTopicResponse)(nil),           // 71: illumio.cloud.config.v1.ReadGcpFlowLogsPubsubTopicResponse
-	(*UpdateGcpFlowLogsPubsubTopicRequest)(nil),          // 72: illumio.cloud.config.v1.UpdateGcpFlowLogsPubsubTopicRequest
-	(*UpdateGcpFlowLogsPubsubTopicResponse)(nil),         // 73: illumio.cloud.config.v1.UpdateGcpFlowLogsPubsubTopicResponse
-	(*DeleteGcpFlowLogsPubsubTopicRequest)(nil),          // 74: illumio.cloud.config.v1.DeleteGcpFlowLogsPubsubTopicRequest
-	(*CreateGcpProjectRequest)(nil),                      // 75: illumio.cloud.config.v1.CreateGcpProjectRequest
-	(*CreateGcpProjectResponse)(nil),                     // 76: illumio.cloud.config.v1.CreateGcpProjectResponse
-	(*ReadGcpProjectRequest)(nil),                        // 77: illumio.cloud.config.v1.ReadGcpProjectRequest
-	(*ReadGcpProjectResponse)(nil),                       // 78: illumio.cloud.config.v1.ReadGcpProjectResponse
-	(*UpdateGcpProjectRequest)(nil),                      // 79: illumio.cloud.config.v1.UpdateGcpProjectRequest
-	(*UpdateGcpProjectResponse)(nil),                     // 80: illumio.cloud.config.v1.UpdateGcpProjectResponse
-	(*DeleteGcpProjectRequest)(nil),                      // 81: illumio.cloud.config.v1.DeleteGcpProjectRequest
-	(*IpList_IpAddresses)(nil),                           // 82: illumio.cloud.config.v1.IpList_IpAddresses
-	(*IpList_IpRanges)(nil),                              // 83: illumio.cloud.config.v1.IpList_IpRanges
-	(*CreateIpListRequest)(nil),                          // 84: illumio.cloud.config.v1.CreateIpListRequest
-	(*CreateIpListResponse)(nil),                         // 85: illumio.cloud.config.v1.CreateIpListResponse
-	(*ReadIpListRequest)(nil),                            // 86: illumio.cloud.config.v1.ReadIpListRequest
-	(*ReadIpListResponse)(nil),                           // 87: illumio.cloud.config.v1.ReadIpListResponse
-	(*UpdateIpListRequest)(nil),                          // 88: illumio.cloud.config.v1.UpdateIpListRequest
-	(*UpdateIpListResponse)(nil),                         // 89: illumio.cloud.config.v1.UpdateIpListResponse
-	(*DeleteIpListRequest)(nil),                          // 90: illumio.cloud.config.v1.DeleteIpListRequest
-	(*CreateK8SClusterRequest)(nil),                      // 91: illumio.cloud.config.v1.CreateK8SClusterRequest
-	(*CreateK8SClusterResponse)(nil),                     // 92: illumio.cloud.config.v1.CreateK8SClusterResponse
-	(*ReadK8SClusterRequest)(nil),                        // 93: illumio.cloud.config.v1.ReadK8SClusterRequest
-	(*ReadK8SClusterResponse)(nil),                       // 94: illumio.cloud.config.v1.ReadK8SClusterResponse
-	(*UpdateK8SClusterRequest)(nil),                      // 95: illumio.cloud.config.v1.UpdateK8SClusterRequest
-	(*UpdateK8SClusterResponse)(nil),                     // 96: illumio.cloud.config.v1.UpdateK8SClusterResponse
-	(*DeleteK8SClusterRequest)(nil),                      // 97: illumio.cloud.config.v1.DeleteK8SClusterRequest
-	(*CreateK8SClusterOnboardingCredentialRequest)(nil),  // 98: illumio.cloud.config.v1.CreateK8SClusterOnboardingCredentialRequest
-	(*CreateK8SClusterOnboardingCredentialResponse)(nil), // 99: illumio.cloud.config.v1.CreateK8SClusterOnboardingCredentialResponse
-	(*ReadK8SClusterOnboardingCredentialRequest)(nil),    // 100: illumio.cloud.config.v1.ReadK8SClusterOnboardingCredentialRequest
-	(*ReadK8SClusterOnboardingCredentialResponse)(nil),   // 101: illumio.cloud.config.v1.ReadK8SClusterOnboardingCredentialResponse
-	(*UpdateK8SClusterOnboardingCredentialRequest)(nil),  // 102: illumio.cloud.config.v1.UpdateK8SClusterOnboardingCredentialRequest
-	(*UpdateK8SClusterOnboardingCredentialResponse)(nil), // 103: illumio.cloud.config.v1.UpdateK8SClusterOnboardingCredentialResponse
-	(*DeleteK8SClusterOnboardingCredentialRequest)(nil),  // 104: illumio.cloud.config.v1.DeleteK8SClusterOnboardingCredentialRequest
-	(*CreateOrganizationPolicyRequest)(nil),              // 105: illumio.cloud.config.v1.CreateOrganizationPolicyRequest
-	(*CreateOrganizationPolicyResponse)(nil),             // 106: illumio.cloud.config.v1.CreateOrganizationPolicyResponse
-	(*ReadOrganizationPolicyRequest)(nil),                // 107: illumio.cloud.config.v1.ReadOrganizationPolicyRequest
-	(*ReadOrganizationPolicyResponse)(nil),               // 108: illumio.cloud.config.v1.ReadOrganizationPolicyResponse
-	(*UpdateOrganizationPolicyRequest)(nil),              // 109: illumio.cloud.config.v1.UpdateOrganizationPolicyRequest
-	(*UpdateOrganizationPolicyResponse)(nil),             // 110: illumio.cloud.config.v1.UpdateOrganizationPolicyResponse
-	(*DeleteOrganizationPolicyRequest)(nil),              // 111: illumio.cloud.config.v1.DeleteOrganizationPolicyRequest
-	(*OrganizationPolicyRule_FromLabels)(nil),            // 112: illumio.cloud.config.v1.OrganizationPolicyRule_FromLabels
-	(*OrganizationPolicyRule_ToLabels)(nil),              // 113: illumio.cloud.config.v1.OrganizationPolicyRule_ToLabels
-	(*OrganizationPolicyRule_ToPortRanges)(nil),          // 114: illumio.cloud.config.v1.OrganizationPolicyRule_ToPortRanges
-	(*CreateOrganizationPolicyRuleRequest)(nil),          // 115: illumio.cloud.config.v1.CreateOrganizationPolicyRuleRequest
-	(*CreateOrganizationPolicyRuleResponse)(nil),         // 116: illumio.cloud.config.v1.CreateOrganizationPolicyRuleResponse
-	(*ReadOrganizationPolicyRuleRequest)(nil),            // 117: illumio.cloud.config.v1.ReadOrganizationPolicyRuleRequest
-	(*ReadOrganizationPolicyRuleResponse)(nil),           // 118: illumio.cloud.config.v1.ReadOrganizationPolicyRuleResponse
-	(*UpdateOrganizationPolicyRuleRequest)(nil),          // 119: illumio.cloud.config.v1.UpdateOrganizationPolicyRuleRequest
-	(*UpdateOrganizationPolicyRuleResponse)(nil),         // 120: illumio.cloud.config.v1.UpdateOrganizationPolicyRuleResponse
-	(*DeleteOrganizationPolicyRuleRequest)(nil),          // 121: illumio.cloud.config.v1.DeleteOrganizationPolicyRuleRequest
-	(*TagToLabel_Icon)(nil),                              // 122: illumio.cloud.config.v1.TagToLabel_Icon
-	(*CreateTagToLabelRequest)(nil),                      // 123: illumio.cloud.config.v1.CreateTagToLabelRequest
-	(*CreateTagToLabelResponse)(nil),                     // 124: illumio.cloud.config.v1.CreateTagToLabelResponse
-	(*ReadTagToLabelRequest)(nil),                        // 125: illumio.cloud.config.v1.ReadTagToLabelRequest
-	(*ReadTagToLabelResponse)(nil),                       // 126: illumio.cloud.config.v1.ReadTagToLabelResponse
-	(*UpdateTagToLabelRequest)(nil),                      // 127: illumio.cloud.config.v1.UpdateTagToLabelRequest
-	(*UpdateTagToLabelResponse)(nil),                     // 128: illumio.cloud.config.v1.UpdateTagToLabelResponse
-	(*DeleteTagToLabelRequest)(nil),                      // 129: illumio.cloud.config.v1.DeleteTagToLabelRequest
-	(*fieldmaskpb.FieldMask)(nil),                        // 130: google.protobuf.FieldMask
-	(*emptypb.Empty)(nil),                                // 131: google.protobuf.Empty
+	(*CreateApplicationRequest)(nil),                        // 0: illumio.cloud.config.v1.CreateApplicationRequest
+	(*CreateApplicationResponse)(nil),                       // 1: illumio.cloud.config.v1.CreateApplicationResponse
+	(*ReadApplicationRequest)(nil),                          // 2: illumio.cloud.config.v1.ReadApplicationRequest
+	(*ReadApplicationResponse)(nil),                         // 3: illumio.cloud.config.v1.ReadApplicationResponse
+	(*UpdateApplicationRequest)(nil),                        // 4: illumio.cloud.config.v1.UpdateApplicationRequest
+	(*UpdateApplicationResponse)(nil),                       // 5: illumio.cloud.config.v1.UpdateApplicationResponse
+	(*DeleteApplicationRequest)(nil),                        // 6: illumio.cloud.config.v1.DeleteApplicationRequest
+	(*CreateApplicationAwsResourcesRequest)(nil),            // 7: illumio.cloud.config.v1.CreateApplicationAwsResourcesRequest
+	(*CreateApplicationAwsResourcesResponse)(nil),           // 8: illumio.cloud.config.v1.CreateApplicationAwsResourcesResponse
+	(*ReadApplicationAwsResourcesRequest)(nil),              // 9: illumio.cloud.config.v1.ReadApplicationAwsResourcesRequest
+	(*ReadApplicationAwsResourcesResponse)(nil),             // 10: illumio.cloud.config.v1.ReadApplicationAwsResourcesResponse
+	(*UpdateApplicationAwsResourcesRequest)(nil),            // 11: illumio.cloud.config.v1.UpdateApplicationAwsResourcesRequest
+	(*UpdateApplicationAwsResourcesResponse)(nil),           // 12: illumio.cloud.config.v1.UpdateApplicationAwsResourcesResponse
+	(*DeleteApplicationAwsResourcesRequest)(nil),            // 13: illumio.cloud.config.v1.DeleteApplicationAwsResourcesRequest
+	(*CreateApplicationAzureResourcesRequest)(nil),          // 14: illumio.cloud.config.v1.CreateApplicationAzureResourcesRequest
+	(*CreateApplicationAzureResourcesResponse)(nil),         // 15: illumio.cloud.config.v1.CreateApplicationAzureResourcesResponse
+	(*ReadApplicationAzureResourcesRequest)(nil),            // 16: illumio.cloud.config.v1.ReadApplicationAzureResourcesRequest
+	(*ReadApplicationAzureResourcesResponse)(nil),           // 17: illumio.cloud.config.v1.ReadApplicationAzureResourcesResponse
+	(*UpdateApplicationAzureResourcesRequest)(nil),          // 18: illumio.cloud.config.v1.UpdateApplicationAzureResourcesRequest
+	(*UpdateApplicationAzureResourcesResponse)(nil),         // 19: illumio.cloud.config.v1.UpdateApplicationAzureResourcesResponse
+	(*DeleteApplicationAzureResourcesRequest)(nil),          // 20: illumio.cloud.config.v1.DeleteApplicationAzureResourcesRequest
+	(*ApplicationPolicyRule_FromLabels)(nil),                // 21: illumio.cloud.config.v1.ApplicationPolicyRule_FromLabels
+	(*ApplicationPolicyRule_ToLabels)(nil),                  // 22: illumio.cloud.config.v1.ApplicationPolicyRule_ToLabels
+	(*ApplicationPolicyRule_ToPortRanges)(nil),              // 23: illumio.cloud.config.v1.ApplicationPolicyRule_ToPortRanges
+	(*CreateApplicationPolicyRuleRequest)(nil),              // 24: illumio.cloud.config.v1.CreateApplicationPolicyRuleRequest
+	(*CreateApplicationPolicyRuleResponse)(nil),             // 25: illumio.cloud.config.v1.CreateApplicationPolicyRuleResponse
+	(*ReadApplicationPolicyRuleRequest)(nil),                // 26: illumio.cloud.config.v1.ReadApplicationPolicyRuleRequest
+	(*ReadApplicationPolicyRuleResponse)(nil),               // 27: illumio.cloud.config.v1.ReadApplicationPolicyRuleResponse
+	(*UpdateApplicationPolicyRuleRequest)(nil),              // 28: illumio.cloud.config.v1.UpdateApplicationPolicyRuleRequest
+	(*UpdateApplicationPolicyRuleResponse)(nil),             // 29: illumio.cloud.config.v1.UpdateApplicationPolicyRuleResponse
+	(*DeleteApplicationPolicyRuleRequest)(nil),              // 30: illumio.cloud.config.v1.DeleteApplicationPolicyRuleRequest
+	(*CreateAwsAccountRequest)(nil),                         // 31: illumio.cloud.config.v1.CreateAwsAccountRequest
+	(*CreateAwsAccountResponse)(nil),                        // 32: illumio.cloud.config.v1.CreateAwsAccountResponse
+	(*ReadAwsAccountRequest)(nil),                           // 33: illumio.cloud.config.v1.ReadAwsAccountRequest
+	(*ReadAwsAccountResponse)(nil),                          // 34: illumio.cloud.config.v1.ReadAwsAccountResponse
+	(*UpdateAwsAccountRequest)(nil),                         // 35: illumio.cloud.config.v1.UpdateAwsAccountRequest
+	(*UpdateAwsAccountResponse)(nil),                        // 36: illumio.cloud.config.v1.UpdateAwsAccountResponse
+	(*DeleteAwsAccountRequest)(nil),                         // 37: illumio.cloud.config.v1.DeleteAwsAccountRequest
+	(*CreateAwsFlowLogsS3BucketRequest)(nil),                // 38: illumio.cloud.config.v1.CreateAwsFlowLogsS3BucketRequest
+	(*CreateAwsFlowLogsS3BucketResponse)(nil),               // 39: illumio.cloud.config.v1.CreateAwsFlowLogsS3BucketResponse
+	(*ReadAwsFlowLogsS3BucketRequest)(nil),                  // 40: illumio.cloud.config.v1.ReadAwsFlowLogsS3BucketRequest
+	(*ReadAwsFlowLogsS3BucketResponse)(nil),                 // 41: illumio.cloud.config.v1.ReadAwsFlowLogsS3BucketResponse
+	(*UpdateAwsFlowLogsS3BucketRequest)(nil),                // 42: illumio.cloud.config.v1.UpdateAwsFlowLogsS3BucketRequest
+	(*UpdateAwsFlowLogsS3BucketResponse)(nil),               // 43: illumio.cloud.config.v1.UpdateAwsFlowLogsS3BucketResponse
+	(*DeleteAwsFlowLogsS3BucketRequest)(nil),                // 44: illumio.cloud.config.v1.DeleteAwsFlowLogsS3BucketRequest
+	(*CreateAwsFlowLogsS3BucketSourceRequest)(nil),          // 45: illumio.cloud.config.v1.CreateAwsFlowLogsS3BucketSourceRequest
+	(*CreateAwsFlowLogsS3BucketSourceResponse)(nil),         // 46: illumio.cloud.config.v1.CreateAwsFlowLogsS3BucketSourceResponse
+	(*ReadAwsFlowLogsS3BucketSourceRequest)(nil),            // 47: illumio.cloud.config.v1.ReadAwsFlowLogsS3BucketSourceRequest
+	(*ReadAwsFlowLogsS3BucketSourceResponse)(nil),           // 48: illumio.cloud.config.v1.ReadAwsFlowLogsS3BucketSourceResponse
+	(*UpdateAwsFlowLogsS3BucketSourceRequest)(nil),          // 49: illumio.cloud.config.v1.UpdateAwsFlowLogsS3BucketSourceRequest
+	(*UpdateAwsFlowLogsS3BucketSourceResponse)(nil),         // 50: illumio.cloud.config.v1.UpdateAwsFlowLogsS3BucketSourceResponse
+	(*DeleteAwsFlowLogsS3BucketSourceRequest)(nil),          // 51: illumio.cloud.config.v1.DeleteAwsFlowLogsS3BucketSourceRequest
+	(*CreateAzureFlowLogsStorageAccountRequest)(nil),        // 52: illumio.cloud.config.v1.CreateAzureFlowLogsStorageAccountRequest
+	(*CreateAzureFlowLogsStorageAccountResponse)(nil),       // 53: illumio.cloud.config.v1.CreateAzureFlowLogsStorageAccountResponse
+	(*ReadAzureFlowLogsStorageAccountRequest)(nil),          // 54: illumio.cloud.config.v1.ReadAzureFlowLogsStorageAccountRequest
+	(*ReadAzureFlowLogsStorageAccountResponse)(nil),         // 55: illumio.cloud.config.v1.ReadAzureFlowLogsStorageAccountResponse
+	(*UpdateAzureFlowLogsStorageAccountRequest)(nil),        // 56: illumio.cloud.config.v1.UpdateAzureFlowLogsStorageAccountRequest
+	(*UpdateAzureFlowLogsStorageAccountResponse)(nil),       // 57: illumio.cloud.config.v1.UpdateAzureFlowLogsStorageAccountResponse
+	(*DeleteAzureFlowLogsStorageAccountRequest)(nil),        // 58: illumio.cloud.config.v1.DeleteAzureFlowLogsStorageAccountRequest
+	(*CreateAzureFlowLogsStorageAccountSourceRequest)(nil),  // 59: illumio.cloud.config.v1.CreateAzureFlowLogsStorageAccountSourceRequest
+	(*CreateAzureFlowLogsStorageAccountSourceResponse)(nil), // 60: illumio.cloud.config.v1.CreateAzureFlowLogsStorageAccountSourceResponse
+	(*ReadAzureFlowLogsStorageAccountSourceRequest)(nil),    // 61: illumio.cloud.config.v1.ReadAzureFlowLogsStorageAccountSourceRequest
+	(*ReadAzureFlowLogsStorageAccountSourceResponse)(nil),   // 62: illumio.cloud.config.v1.ReadAzureFlowLogsStorageAccountSourceResponse
+	(*UpdateAzureFlowLogsStorageAccountSourceRequest)(nil),  // 63: illumio.cloud.config.v1.UpdateAzureFlowLogsStorageAccountSourceRequest
+	(*UpdateAzureFlowLogsStorageAccountSourceResponse)(nil), // 64: illumio.cloud.config.v1.UpdateAzureFlowLogsStorageAccountSourceResponse
+	(*DeleteAzureFlowLogsStorageAccountSourceRequest)(nil),  // 65: illumio.cloud.config.v1.DeleteAzureFlowLogsStorageAccountSourceRequest
+	(*CreateAzureSubscriptionRequest)(nil),                  // 66: illumio.cloud.config.v1.CreateAzureSubscriptionRequest
+	(*CreateAzureSubscriptionResponse)(nil),                 // 67: illumio.cloud.config.v1.CreateAzureSubscriptionResponse
+	(*ReadAzureSubscriptionRequest)(nil),                    // 68: illumio.cloud.config.v1.ReadAzureSubscriptionRequest
+	(*ReadAzureSubscriptionResponse)(nil),                   // 69: illumio.cloud.config.v1.ReadAzureSubscriptionResponse
+	(*UpdateAzureSubscriptionRequest)(nil),                  // 70: illumio.cloud.config.v1.UpdateAzureSubscriptionRequest
+	(*UpdateAzureSubscriptionResponse)(nil),                 // 71: illumio.cloud.config.v1.UpdateAzureSubscriptionResponse
+	(*DeleteAzureSubscriptionRequest)(nil),                  // 72: illumio.cloud.config.v1.DeleteAzureSubscriptionRequest
+	(*Deployment_AwsTags)(nil),                              // 73: illumio.cloud.config.v1.Deployment_AwsTags
+	(*Deployment_AzureTags)(nil),                            // 74: illumio.cloud.config.v1.Deployment_AzureTags
+	(*CreateDeploymentRequest)(nil),                         // 75: illumio.cloud.config.v1.CreateDeploymentRequest
+	(*CreateDeploymentResponse)(nil),                        // 76: illumio.cloud.config.v1.CreateDeploymentResponse
+	(*ReadDeploymentRequest)(nil),                           // 77: illumio.cloud.config.v1.ReadDeploymentRequest
+	(*ReadDeploymentResponse)(nil),                          // 78: illumio.cloud.config.v1.ReadDeploymentResponse
+	(*UpdateDeploymentRequest)(nil),                         // 79: illumio.cloud.config.v1.UpdateDeploymentRequest
+	(*UpdateDeploymentResponse)(nil),                        // 80: illumio.cloud.config.v1.UpdateDeploymentResponse
+	(*DeleteDeploymentRequest)(nil),                         // 81: illumio.cloud.config.v1.DeleteDeploymentRequest
+	(*CreateGcpFlowLogsPubsubTopicRequest)(nil),             // 82: illumio.cloud.config.v1.CreateGcpFlowLogsPubsubTopicRequest
+	(*CreateGcpFlowLogsPubsubTopicResponse)(nil),            // 83: illumio.cloud.config.v1.CreateGcpFlowLogsPubsubTopicResponse
+	(*ReadGcpFlowLogsPubsubTopicRequest)(nil),               // 84: illumio.cloud.config.v1.ReadGcpFlowLogsPubsubTopicRequest
+	(*ReadGcpFlowLogsPubsubTopicResponse)(nil),              // 85: illumio.cloud.config.v1.ReadGcpFlowLogsPubsubTopicResponse
+	(*UpdateGcpFlowLogsPubsubTopicRequest)(nil),             // 86: illumio.cloud.config.v1.UpdateGcpFlowLogsPubsubTopicRequest
+	(*UpdateGcpFlowLogsPubsubTopicResponse)(nil),            // 87: illumio.cloud.config.v1.UpdateGcpFlowLogsPubsubTopicResponse
+	(*DeleteGcpFlowLogsPubsubTopicRequest)(nil),             // 88: illumio.cloud.config.v1.DeleteGcpFlowLogsPubsubTopicRequest
+	(*CreateGcpFlowLogsStorageBucketSourceRequest)(nil),     // 89: illumio.cloud.config.v1.CreateGcpFlowLogsStorageBucketSourceRequest
+	(*CreateGcpFlowLogsStorageBucketSourceResponse)(nil),    // 90: illumio.cloud.config.v1.CreateGcpFlowLogsStorageBucketSourceResponse
+	(*ReadGcpFlowLogsStorageBucketSourceRequest)(nil),       // 91: illumio.cloud.config.v1.ReadGcpFlowLogsStorageBucketSourceRequest
+	(*ReadGcpFlowLogsStorageBucketSourceResponse)(nil),      // 92: illumio.cloud.config.v1.ReadGcpFlowLogsStorageBucketSourceResponse
+	(*UpdateGcpFlowLogsStorageBucketSourceRequest)(nil),     // 93: illumio.cloud.config.v1.UpdateGcpFlowLogsStorageBucketSourceRequest
+	(*UpdateGcpFlowLogsStorageBucketSourceResponse)(nil),    // 94: illumio.cloud.config.v1.UpdateGcpFlowLogsStorageBucketSourceResponse
+	(*DeleteGcpFlowLogsStorageBucketSourceRequest)(nil),     // 95: illumio.cloud.config.v1.DeleteGcpFlowLogsStorageBucketSourceRequest
+	(*CreateGcpProjectRequest)(nil),                         // 96: illumio.cloud.config.v1.CreateGcpProjectRequest
+	(*CreateGcpProjectResponse)(nil),                        // 97: illumio.cloud.config.v1.CreateGcpProjectResponse
+	(*ReadGcpProjectRequest)(nil),                           // 98: illumio.cloud.config.v1.ReadGcpProjectRequest
+	(*ReadGcpProjectResponse)(nil),                          // 99: illumio.cloud.config.v1.ReadGcpProjectResponse
+	(*UpdateGcpProjectRequest)(nil),                         // 100: illumio.cloud.config.v1.UpdateGcpProjectRequest
+	(*UpdateGcpProjectResponse)(nil),                        // 101: illumio.cloud.config.v1.UpdateGcpProjectResponse
+	(*DeleteGcpProjectRequest)(nil),                         // 102: illumio.cloud.config.v1.DeleteGcpProjectRequest
+	(*IpList_IpAddresses)(nil),                              // 103: illumio.cloud.config.v1.IpList_IpAddresses
+	(*IpList_IpRanges)(nil),                                 // 104: illumio.cloud.config.v1.IpList_IpRanges
+	(*CreateIpListRequest)(nil),                             // 105: illumio.cloud.config.v1.CreateIpListRequest
+	(*CreateIpListResponse)(nil),                            // 106: illumio.cloud.config.v1.CreateIpListResponse
+	(*ReadIpListRequest)(nil),                               // 107: illumio.cloud.config.v1.ReadIpListRequest
+	(*ReadIpListResponse)(nil),                              // 108: illumio.cloud.config.v1.ReadIpListResponse
+	(*UpdateIpListRequest)(nil),                             // 109: illumio.cloud.config.v1.UpdateIpListRequest
+	(*UpdateIpListResponse)(nil),                            // 110: illumio.cloud.config.v1.UpdateIpListResponse
+	(*DeleteIpListRequest)(nil),                             // 111: illumio.cloud.config.v1.DeleteIpListRequest
+	(*CreateK8SClusterRequest)(nil),                         // 112: illumio.cloud.config.v1.CreateK8SClusterRequest
+	(*CreateK8SClusterResponse)(nil),                        // 113: illumio.cloud.config.v1.CreateK8SClusterResponse
+	(*ReadK8SClusterRequest)(nil),                           // 114: illumio.cloud.config.v1.ReadK8SClusterRequest
+	(*ReadK8SClusterResponse)(nil),                          // 115: illumio.cloud.config.v1.ReadK8SClusterResponse
+	(*UpdateK8SClusterRequest)(nil),                         // 116: illumio.cloud.config.v1.UpdateK8SClusterRequest
+	(*UpdateK8SClusterResponse)(nil),                        // 117: illumio.cloud.config.v1.UpdateK8SClusterResponse
+	(*DeleteK8SClusterRequest)(nil),                         // 118: illumio.cloud.config.v1.DeleteK8SClusterRequest
+	(*CreateK8SClusterOnboardingCredentialRequest)(nil),     // 119: illumio.cloud.config.v1.CreateK8SClusterOnboardingCredentialRequest
+	(*CreateK8SClusterOnboardingCredentialResponse)(nil),    // 120: illumio.cloud.config.v1.CreateK8SClusterOnboardingCredentialResponse
+	(*ReadK8SClusterOnboardingCredentialRequest)(nil),       // 121: illumio.cloud.config.v1.ReadK8SClusterOnboardingCredentialRequest
+	(*ReadK8SClusterOnboardingCredentialResponse)(nil),      // 122: illumio.cloud.config.v1.ReadK8SClusterOnboardingCredentialResponse
+	(*UpdateK8SClusterOnboardingCredentialRequest)(nil),     // 123: illumio.cloud.config.v1.UpdateK8SClusterOnboardingCredentialRequest
+	(*UpdateK8SClusterOnboardingCredentialResponse)(nil),    // 124: illumio.cloud.config.v1.UpdateK8SClusterOnboardingCredentialResponse
+	(*DeleteK8SClusterOnboardingCredentialRequest)(nil),     // 125: illumio.cloud.config.v1.DeleteK8SClusterOnboardingCredentialRequest
+	(*CreateOrganizationPolicyRequest)(nil),                 // 126: illumio.cloud.config.v1.CreateOrganizationPolicyRequest
+	(*CreateOrganizationPolicyResponse)(nil),                // 127: illumio.cloud.config.v1.CreateOrganizationPolicyResponse
+	(*ReadOrganizationPolicyRequest)(nil),                   // 128: illumio.cloud.config.v1.ReadOrganizationPolicyRequest
+	(*ReadOrganizationPolicyResponse)(nil),                  // 129: illumio.cloud.config.v1.ReadOrganizationPolicyResponse
+	(*UpdateOrganizationPolicyRequest)(nil),                 // 130: illumio.cloud.config.v1.UpdateOrganizationPolicyRequest
+	(*UpdateOrganizationPolicyResponse)(nil),                // 131: illumio.cloud.config.v1.UpdateOrganizationPolicyResponse
+	(*DeleteOrganizationPolicyRequest)(nil),                 // 132: illumio.cloud.config.v1.DeleteOrganizationPolicyRequest
+	(*OrganizationPolicyRule_FromLabels)(nil),               // 133: illumio.cloud.config.v1.OrganizationPolicyRule_FromLabels
+	(*OrganizationPolicyRule_ToLabels)(nil),                 // 134: illumio.cloud.config.v1.OrganizationPolicyRule_ToLabels
+	(*OrganizationPolicyRule_ToPortRanges)(nil),             // 135: illumio.cloud.config.v1.OrganizationPolicyRule_ToPortRanges
+	(*CreateOrganizationPolicyRuleRequest)(nil),             // 136: illumio.cloud.config.v1.CreateOrganizationPolicyRuleRequest
+	(*CreateOrganizationPolicyRuleResponse)(nil),            // 137: illumio.cloud.config.v1.CreateOrganizationPolicyRuleResponse
+	(*ReadOrganizationPolicyRuleRequest)(nil),               // 138: illumio.cloud.config.v1.ReadOrganizationPolicyRuleRequest
+	(*ReadOrganizationPolicyRuleResponse)(nil),              // 139: illumio.cloud.config.v1.ReadOrganizationPolicyRuleResponse
+	(*UpdateOrganizationPolicyRuleRequest)(nil),             // 140: illumio.cloud.config.v1.UpdateOrganizationPolicyRuleRequest
+	(*UpdateOrganizationPolicyRuleResponse)(nil),            // 141: illumio.cloud.config.v1.UpdateOrganizationPolicyRuleResponse
+	(*DeleteOrganizationPolicyRuleRequest)(nil),             // 142: illumio.cloud.config.v1.DeleteOrganizationPolicyRuleRequest
+	(*TagToLabel_Icon)(nil),                                 // 143: illumio.cloud.config.v1.TagToLabel_Icon
+	(*CreateTagToLabelRequest)(nil),                         // 144: illumio.cloud.config.v1.CreateTagToLabelRequest
+	(*CreateTagToLabelResponse)(nil),                        // 145: illumio.cloud.config.v1.CreateTagToLabelResponse
+	(*ReadTagToLabelRequest)(nil),                           // 146: illumio.cloud.config.v1.ReadTagToLabelRequest
+	(*ReadTagToLabelResponse)(nil),                          // 147: illumio.cloud.config.v1.ReadTagToLabelResponse
+	(*UpdateTagToLabelRequest)(nil),                         // 148: illumio.cloud.config.v1.UpdateTagToLabelRequest
+	(*UpdateTagToLabelResponse)(nil),                        // 149: illumio.cloud.config.v1.UpdateTagToLabelResponse
+	(*DeleteTagToLabelRequest)(nil),                         // 150: illumio.cloud.config.v1.DeleteTagToLabelRequest
+	(*fieldmaskpb.FieldMask)(nil),                           // 151: google.protobuf.FieldMask
+	(*emptypb.Empty)(nil),                                   // 152: google.protobuf.Empty
 }
 var file_illumio_cloud_config_v1_config_proto_depIdxs = []int32{
-	130, // 0: illumio.cloud.config.v1.UpdateApplicationRequest.update_mask:type_name -> google.protobuf.FieldMask
-	130, // 1: illumio.cloud.config.v1.UpdateApplicationAwsResourcesRequest.update_mask:type_name -> google.protobuf.FieldMask
-	130, // 2: illumio.cloud.config.v1.UpdateApplicationAzureResourcesRequest.update_mask:type_name -> google.protobuf.FieldMask
+	151, // 0: illumio.cloud.config.v1.UpdateApplicationRequest.update_mask:type_name -> google.protobuf.FieldMask
+	151, // 1: illumio.cloud.config.v1.UpdateApplicationAwsResourcesRequest.update_mask:type_name -> google.protobuf.FieldMask
+	151, // 2: illumio.cloud.config.v1.UpdateApplicationAzureResourcesRequest.update_mask:type_name -> google.protobuf.FieldMask
 	21,  // 3: illumio.cloud.config.v1.CreateApplicationPolicyRuleRequest.from_labels:type_name -> illumio.cloud.config.v1.ApplicationPolicyRule_FromLabels
 	22,  // 4: illumio.cloud.config.v1.CreateApplicationPolicyRuleRequest.to_labels:type_name -> illumio.cloud.config.v1.ApplicationPolicyRule_ToLabels
 	23,  // 5: illumio.cloud.config.v1.CreateApplicationPolicyRuleRequest.to_port_ranges:type_name -> illumio.cloud.config.v1.ApplicationPolicyRule_ToPortRanges
@@ -10627,204 +12033,231 @@ var file_illumio_cloud_config_v1_config_proto_depIdxs = []int32{
 	21,  // 12: illumio.cloud.config.v1.UpdateApplicationPolicyRuleRequest.from_labels:type_name -> illumio.cloud.config.v1.ApplicationPolicyRule_FromLabels
 	22,  // 13: illumio.cloud.config.v1.UpdateApplicationPolicyRuleRequest.to_labels:type_name -> illumio.cloud.config.v1.ApplicationPolicyRule_ToLabels
 	23,  // 14: illumio.cloud.config.v1.UpdateApplicationPolicyRuleRequest.to_port_ranges:type_name -> illumio.cloud.config.v1.ApplicationPolicyRule_ToPortRanges
-	130, // 15: illumio.cloud.config.v1.UpdateApplicationPolicyRuleRequest.update_mask:type_name -> google.protobuf.FieldMask
+	151, // 15: illumio.cloud.config.v1.UpdateApplicationPolicyRuleRequest.update_mask:type_name -> google.protobuf.FieldMask
 	21,  // 16: illumio.cloud.config.v1.UpdateApplicationPolicyRuleResponse.from_labels:type_name -> illumio.cloud.config.v1.ApplicationPolicyRule_FromLabels
 	22,  // 17: illumio.cloud.config.v1.UpdateApplicationPolicyRuleResponse.to_labels:type_name -> illumio.cloud.config.v1.ApplicationPolicyRule_ToLabels
 	23,  // 18: illumio.cloud.config.v1.UpdateApplicationPolicyRuleResponse.to_port_ranges:type_name -> illumio.cloud.config.v1.ApplicationPolicyRule_ToPortRanges
-	130, // 19: illumio.cloud.config.v1.UpdateAwsAccountRequest.update_mask:type_name -> google.protobuf.FieldMask
-	130, // 20: illumio.cloud.config.v1.UpdateAwsFlowLogsS3BucketRequest.update_mask:type_name -> google.protobuf.FieldMask
-	130, // 21: illumio.cloud.config.v1.UpdateAzureFlowLogsStorageAccountRequest.update_mask:type_name -> google.protobuf.FieldMask
-	130, // 22: illumio.cloud.config.v1.UpdateAzureSubscriptionRequest.update_mask:type_name -> google.protobuf.FieldMask
-	59,  // 23: illumio.cloud.config.v1.CreateDeploymentRequest.aws_tags:type_name -> illumio.cloud.config.v1.Deployment_AwsTags
-	60,  // 24: illumio.cloud.config.v1.CreateDeploymentRequest.azure_tags:type_name -> illumio.cloud.config.v1.Deployment_AzureTags
-	59,  // 25: illumio.cloud.config.v1.CreateDeploymentResponse.aws_tags:type_name -> illumio.cloud.config.v1.Deployment_AwsTags
-	60,  // 26: illumio.cloud.config.v1.CreateDeploymentResponse.azure_tags:type_name -> illumio.cloud.config.v1.Deployment_AzureTags
-	59,  // 27: illumio.cloud.config.v1.ReadDeploymentResponse.aws_tags:type_name -> illumio.cloud.config.v1.Deployment_AwsTags
-	60,  // 28: illumio.cloud.config.v1.ReadDeploymentResponse.azure_tags:type_name -> illumio.cloud.config.v1.Deployment_AzureTags
-	59,  // 29: illumio.cloud.config.v1.UpdateDeploymentRequest.aws_tags:type_name -> illumio.cloud.config.v1.Deployment_AwsTags
-	60,  // 30: illumio.cloud.config.v1.UpdateDeploymentRequest.azure_tags:type_name -> illumio.cloud.config.v1.Deployment_AzureTags
-	130, // 31: illumio.cloud.config.v1.UpdateDeploymentRequest.update_mask:type_name -> google.protobuf.FieldMask
-	59,  // 32: illumio.cloud.config.v1.UpdateDeploymentResponse.aws_tags:type_name -> illumio.cloud.config.v1.Deployment_AwsTags
-	60,  // 33: illumio.cloud.config.v1.UpdateDeploymentResponse.azure_tags:type_name -> illumio.cloud.config.v1.Deployment_AzureTags
-	130, // 34: illumio.cloud.config.v1.UpdateGcpFlowLogsPubsubTopicRequest.update_mask:type_name -> google.protobuf.FieldMask
-	130, // 35: illumio.cloud.config.v1.UpdateGcpProjectRequest.update_mask:type_name -> google.protobuf.FieldMask
-	82,  // 36: illumio.cloud.config.v1.CreateIpListRequest.ip_addresses:type_name -> illumio.cloud.config.v1.IpList_IpAddresses
-	83,  // 37: illumio.cloud.config.v1.CreateIpListRequest.ip_ranges:type_name -> illumio.cloud.config.v1.IpList_IpRanges
-	82,  // 38: illumio.cloud.config.v1.CreateIpListResponse.ip_addresses:type_name -> illumio.cloud.config.v1.IpList_IpAddresses
-	83,  // 39: illumio.cloud.config.v1.CreateIpListResponse.ip_ranges:type_name -> illumio.cloud.config.v1.IpList_IpRanges
-	82,  // 40: illumio.cloud.config.v1.ReadIpListResponse.ip_addresses:type_name -> illumio.cloud.config.v1.IpList_IpAddresses
-	83,  // 41: illumio.cloud.config.v1.ReadIpListResponse.ip_ranges:type_name -> illumio.cloud.config.v1.IpList_IpRanges
-	82,  // 42: illumio.cloud.config.v1.UpdateIpListRequest.ip_addresses:type_name -> illumio.cloud.config.v1.IpList_IpAddresses
-	83,  // 43: illumio.cloud.config.v1.UpdateIpListRequest.ip_ranges:type_name -> illumio.cloud.config.v1.IpList_IpRanges
-	130, // 44: illumio.cloud.config.v1.UpdateIpListRequest.update_mask:type_name -> google.protobuf.FieldMask
-	82,  // 45: illumio.cloud.config.v1.UpdateIpListResponse.ip_addresses:type_name -> illumio.cloud.config.v1.IpList_IpAddresses
-	83,  // 46: illumio.cloud.config.v1.UpdateIpListResponse.ip_ranges:type_name -> illumio.cloud.config.v1.IpList_IpRanges
-	130, // 47: illumio.cloud.config.v1.UpdateK8SClusterRequest.update_mask:type_name -> google.protobuf.FieldMask
-	130, // 48: illumio.cloud.config.v1.UpdateK8SClusterOnboardingCredentialRequest.update_mask:type_name -> google.protobuf.FieldMask
-	130, // 49: illumio.cloud.config.v1.UpdateOrganizationPolicyRequest.update_mask:type_name -> google.protobuf.FieldMask
-	112, // 50: illumio.cloud.config.v1.CreateOrganizationPolicyRuleRequest.from_labels:type_name -> illumio.cloud.config.v1.OrganizationPolicyRule_FromLabels
-	113, // 51: illumio.cloud.config.v1.CreateOrganizationPolicyRuleRequest.to_labels:type_name -> illumio.cloud.config.v1.OrganizationPolicyRule_ToLabels
-	114, // 52: illumio.cloud.config.v1.CreateOrganizationPolicyRuleRequest.to_port_ranges:type_name -> illumio.cloud.config.v1.OrganizationPolicyRule_ToPortRanges
-	112, // 53: illumio.cloud.config.v1.CreateOrganizationPolicyRuleResponse.from_labels:type_name -> illumio.cloud.config.v1.OrganizationPolicyRule_FromLabels
-	113, // 54: illumio.cloud.config.v1.CreateOrganizationPolicyRuleResponse.to_labels:type_name -> illumio.cloud.config.v1.OrganizationPolicyRule_ToLabels
-	114, // 55: illumio.cloud.config.v1.CreateOrganizationPolicyRuleResponse.to_port_ranges:type_name -> illumio.cloud.config.v1.OrganizationPolicyRule_ToPortRanges
-	112, // 56: illumio.cloud.config.v1.ReadOrganizationPolicyRuleResponse.from_labels:type_name -> illumio.cloud.config.v1.OrganizationPolicyRule_FromLabels
-	113, // 57: illumio.cloud.config.v1.ReadOrganizationPolicyRuleResponse.to_labels:type_name -> illumio.cloud.config.v1.OrganizationPolicyRule_ToLabels
-	114, // 58: illumio.cloud.config.v1.ReadOrganizationPolicyRuleResponse.to_port_ranges:type_name -> illumio.cloud.config.v1.OrganizationPolicyRule_ToPortRanges
-	112, // 59: illumio.cloud.config.v1.UpdateOrganizationPolicyRuleRequest.from_labels:type_name -> illumio.cloud.config.v1.OrganizationPolicyRule_FromLabels
-	113, // 60: illumio.cloud.config.v1.UpdateOrganizationPolicyRuleRequest.to_labels:type_name -> illumio.cloud.config.v1.OrganizationPolicyRule_ToLabels
-	114, // 61: illumio.cloud.config.v1.UpdateOrganizationPolicyRuleRequest.to_port_ranges:type_name -> illumio.cloud.config.v1.OrganizationPolicyRule_ToPortRanges
-	130, // 62: illumio.cloud.config.v1.UpdateOrganizationPolicyRuleRequest.update_mask:type_name -> google.protobuf.FieldMask
-	112, // 63: illumio.cloud.config.v1.UpdateOrganizationPolicyRuleResponse.from_labels:type_name -> illumio.cloud.config.v1.OrganizationPolicyRule_FromLabels
-	113, // 64: illumio.cloud.config.v1.UpdateOrganizationPolicyRuleResponse.to_labels:type_name -> illumio.cloud.config.v1.OrganizationPolicyRule_ToLabels
-	114, // 65: illumio.cloud.config.v1.UpdateOrganizationPolicyRuleResponse.to_port_ranges:type_name -> illumio.cloud.config.v1.OrganizationPolicyRule_ToPortRanges
-	122, // 66: illumio.cloud.config.v1.CreateTagToLabelRequest.icon:type_name -> illumio.cloud.config.v1.TagToLabel_Icon
-	122, // 67: illumio.cloud.config.v1.CreateTagToLabelResponse.icon:type_name -> illumio.cloud.config.v1.TagToLabel_Icon
-	122, // 68: illumio.cloud.config.v1.ReadTagToLabelResponse.icon:type_name -> illumio.cloud.config.v1.TagToLabel_Icon
-	122, // 69: illumio.cloud.config.v1.UpdateTagToLabelRequest.icon:type_name -> illumio.cloud.config.v1.TagToLabel_Icon
-	130, // 70: illumio.cloud.config.v1.UpdateTagToLabelRequest.update_mask:type_name -> google.protobuf.FieldMask
-	122, // 71: illumio.cloud.config.v1.UpdateTagToLabelResponse.icon:type_name -> illumio.cloud.config.v1.TagToLabel_Icon
-	0,   // 72: illumio.cloud.config.v1.ConfigService.CreateApplication:input_type -> illumio.cloud.config.v1.CreateApplicationRequest
-	2,   // 73: illumio.cloud.config.v1.ConfigService.ReadApplication:input_type -> illumio.cloud.config.v1.ReadApplicationRequest
-	4,   // 74: illumio.cloud.config.v1.ConfigService.UpdateApplication:input_type -> illumio.cloud.config.v1.UpdateApplicationRequest
-	6,   // 75: illumio.cloud.config.v1.ConfigService.DeleteApplication:input_type -> illumio.cloud.config.v1.DeleteApplicationRequest
-	7,   // 76: illumio.cloud.config.v1.ConfigService.CreateApplicationAwsResources:input_type -> illumio.cloud.config.v1.CreateApplicationAwsResourcesRequest
-	9,   // 77: illumio.cloud.config.v1.ConfigService.ReadApplicationAwsResources:input_type -> illumio.cloud.config.v1.ReadApplicationAwsResourcesRequest
-	11,  // 78: illumio.cloud.config.v1.ConfigService.UpdateApplicationAwsResources:input_type -> illumio.cloud.config.v1.UpdateApplicationAwsResourcesRequest
-	13,  // 79: illumio.cloud.config.v1.ConfigService.DeleteApplicationAwsResources:input_type -> illumio.cloud.config.v1.DeleteApplicationAwsResourcesRequest
-	14,  // 80: illumio.cloud.config.v1.ConfigService.CreateApplicationAzureResources:input_type -> illumio.cloud.config.v1.CreateApplicationAzureResourcesRequest
-	16,  // 81: illumio.cloud.config.v1.ConfigService.ReadApplicationAzureResources:input_type -> illumio.cloud.config.v1.ReadApplicationAzureResourcesRequest
-	18,  // 82: illumio.cloud.config.v1.ConfigService.UpdateApplicationAzureResources:input_type -> illumio.cloud.config.v1.UpdateApplicationAzureResourcesRequest
-	20,  // 83: illumio.cloud.config.v1.ConfigService.DeleteApplicationAzureResources:input_type -> illumio.cloud.config.v1.DeleteApplicationAzureResourcesRequest
-	24,  // 84: illumio.cloud.config.v1.ConfigService.CreateApplicationPolicyRule:input_type -> illumio.cloud.config.v1.CreateApplicationPolicyRuleRequest
-	26,  // 85: illumio.cloud.config.v1.ConfigService.ReadApplicationPolicyRule:input_type -> illumio.cloud.config.v1.ReadApplicationPolicyRuleRequest
-	28,  // 86: illumio.cloud.config.v1.ConfigService.UpdateApplicationPolicyRule:input_type -> illumio.cloud.config.v1.UpdateApplicationPolicyRuleRequest
-	30,  // 87: illumio.cloud.config.v1.ConfigService.DeleteApplicationPolicyRule:input_type -> illumio.cloud.config.v1.DeleteApplicationPolicyRuleRequest
-	31,  // 88: illumio.cloud.config.v1.ConfigService.CreateAwsAccount:input_type -> illumio.cloud.config.v1.CreateAwsAccountRequest
-	33,  // 89: illumio.cloud.config.v1.ConfigService.ReadAwsAccount:input_type -> illumio.cloud.config.v1.ReadAwsAccountRequest
-	35,  // 90: illumio.cloud.config.v1.ConfigService.UpdateAwsAccount:input_type -> illumio.cloud.config.v1.UpdateAwsAccountRequest
-	37,  // 91: illumio.cloud.config.v1.ConfigService.DeleteAwsAccount:input_type -> illumio.cloud.config.v1.DeleteAwsAccountRequest
-	38,  // 92: illumio.cloud.config.v1.ConfigService.CreateAwsFlowLogsS3Bucket:input_type -> illumio.cloud.config.v1.CreateAwsFlowLogsS3BucketRequest
-	40,  // 93: illumio.cloud.config.v1.ConfigService.ReadAwsFlowLogsS3Bucket:input_type -> illumio.cloud.config.v1.ReadAwsFlowLogsS3BucketRequest
-	42,  // 94: illumio.cloud.config.v1.ConfigService.UpdateAwsFlowLogsS3Bucket:input_type -> illumio.cloud.config.v1.UpdateAwsFlowLogsS3BucketRequest
-	44,  // 95: illumio.cloud.config.v1.ConfigService.DeleteAwsFlowLogsS3Bucket:input_type -> illumio.cloud.config.v1.DeleteAwsFlowLogsS3BucketRequest
-	45,  // 96: illumio.cloud.config.v1.ConfigService.CreateAzureFlowLogsStorageAccount:input_type -> illumio.cloud.config.v1.CreateAzureFlowLogsStorageAccountRequest
-	47,  // 97: illumio.cloud.config.v1.ConfigService.ReadAzureFlowLogsStorageAccount:input_type -> illumio.cloud.config.v1.ReadAzureFlowLogsStorageAccountRequest
-	49,  // 98: illumio.cloud.config.v1.ConfigService.UpdateAzureFlowLogsStorageAccount:input_type -> illumio.cloud.config.v1.UpdateAzureFlowLogsStorageAccountRequest
-	51,  // 99: illumio.cloud.config.v1.ConfigService.DeleteAzureFlowLogsStorageAccount:input_type -> illumio.cloud.config.v1.DeleteAzureFlowLogsStorageAccountRequest
-	52,  // 100: illumio.cloud.config.v1.ConfigService.CreateAzureSubscription:input_type -> illumio.cloud.config.v1.CreateAzureSubscriptionRequest
-	54,  // 101: illumio.cloud.config.v1.ConfigService.ReadAzureSubscription:input_type -> illumio.cloud.config.v1.ReadAzureSubscriptionRequest
-	56,  // 102: illumio.cloud.config.v1.ConfigService.UpdateAzureSubscription:input_type -> illumio.cloud.config.v1.UpdateAzureSubscriptionRequest
-	58,  // 103: illumio.cloud.config.v1.ConfigService.DeleteAzureSubscription:input_type -> illumio.cloud.config.v1.DeleteAzureSubscriptionRequest
-	61,  // 104: illumio.cloud.config.v1.ConfigService.CreateDeployment:input_type -> illumio.cloud.config.v1.CreateDeploymentRequest
-	63,  // 105: illumio.cloud.config.v1.ConfigService.ReadDeployment:input_type -> illumio.cloud.config.v1.ReadDeploymentRequest
-	65,  // 106: illumio.cloud.config.v1.ConfigService.UpdateDeployment:input_type -> illumio.cloud.config.v1.UpdateDeploymentRequest
-	67,  // 107: illumio.cloud.config.v1.ConfigService.DeleteDeployment:input_type -> illumio.cloud.config.v1.DeleteDeploymentRequest
-	68,  // 108: illumio.cloud.config.v1.ConfigService.CreateGcpFlowLogsPubsubTopic:input_type -> illumio.cloud.config.v1.CreateGcpFlowLogsPubsubTopicRequest
-	70,  // 109: illumio.cloud.config.v1.ConfigService.ReadGcpFlowLogsPubsubTopic:input_type -> illumio.cloud.config.v1.ReadGcpFlowLogsPubsubTopicRequest
-	72,  // 110: illumio.cloud.config.v1.ConfigService.UpdateGcpFlowLogsPubsubTopic:input_type -> illumio.cloud.config.v1.UpdateGcpFlowLogsPubsubTopicRequest
-	74,  // 111: illumio.cloud.config.v1.ConfigService.DeleteGcpFlowLogsPubsubTopic:input_type -> illumio.cloud.config.v1.DeleteGcpFlowLogsPubsubTopicRequest
-	75,  // 112: illumio.cloud.config.v1.ConfigService.CreateGcpProject:input_type -> illumio.cloud.config.v1.CreateGcpProjectRequest
-	77,  // 113: illumio.cloud.config.v1.ConfigService.ReadGcpProject:input_type -> illumio.cloud.config.v1.ReadGcpProjectRequest
-	79,  // 114: illumio.cloud.config.v1.ConfigService.UpdateGcpProject:input_type -> illumio.cloud.config.v1.UpdateGcpProjectRequest
-	81,  // 115: illumio.cloud.config.v1.ConfigService.DeleteGcpProject:input_type -> illumio.cloud.config.v1.DeleteGcpProjectRequest
-	84,  // 116: illumio.cloud.config.v1.ConfigService.CreateIpList:input_type -> illumio.cloud.config.v1.CreateIpListRequest
-	86,  // 117: illumio.cloud.config.v1.ConfigService.ReadIpList:input_type -> illumio.cloud.config.v1.ReadIpListRequest
-	88,  // 118: illumio.cloud.config.v1.ConfigService.UpdateIpList:input_type -> illumio.cloud.config.v1.UpdateIpListRequest
-	90,  // 119: illumio.cloud.config.v1.ConfigService.DeleteIpList:input_type -> illumio.cloud.config.v1.DeleteIpListRequest
-	91,  // 120: illumio.cloud.config.v1.ConfigService.CreateK8SCluster:input_type -> illumio.cloud.config.v1.CreateK8SClusterRequest
-	93,  // 121: illumio.cloud.config.v1.ConfigService.ReadK8SCluster:input_type -> illumio.cloud.config.v1.ReadK8SClusterRequest
-	95,  // 122: illumio.cloud.config.v1.ConfigService.UpdateK8SCluster:input_type -> illumio.cloud.config.v1.UpdateK8SClusterRequest
-	97,  // 123: illumio.cloud.config.v1.ConfigService.DeleteK8SCluster:input_type -> illumio.cloud.config.v1.DeleteK8SClusterRequest
-	98,  // 124: illumio.cloud.config.v1.ConfigService.CreateK8SClusterOnboardingCredential:input_type -> illumio.cloud.config.v1.CreateK8SClusterOnboardingCredentialRequest
-	100, // 125: illumio.cloud.config.v1.ConfigService.ReadK8SClusterOnboardingCredential:input_type -> illumio.cloud.config.v1.ReadK8SClusterOnboardingCredentialRequest
-	102, // 126: illumio.cloud.config.v1.ConfigService.UpdateK8SClusterOnboardingCredential:input_type -> illumio.cloud.config.v1.UpdateK8SClusterOnboardingCredentialRequest
-	104, // 127: illumio.cloud.config.v1.ConfigService.DeleteK8SClusterOnboardingCredential:input_type -> illumio.cloud.config.v1.DeleteK8SClusterOnboardingCredentialRequest
-	105, // 128: illumio.cloud.config.v1.ConfigService.CreateOrganizationPolicy:input_type -> illumio.cloud.config.v1.CreateOrganizationPolicyRequest
-	107, // 129: illumio.cloud.config.v1.ConfigService.ReadOrganizationPolicy:input_type -> illumio.cloud.config.v1.ReadOrganizationPolicyRequest
-	109, // 130: illumio.cloud.config.v1.ConfigService.UpdateOrganizationPolicy:input_type -> illumio.cloud.config.v1.UpdateOrganizationPolicyRequest
-	111, // 131: illumio.cloud.config.v1.ConfigService.DeleteOrganizationPolicy:input_type -> illumio.cloud.config.v1.DeleteOrganizationPolicyRequest
-	115, // 132: illumio.cloud.config.v1.ConfigService.CreateOrganizationPolicyRule:input_type -> illumio.cloud.config.v1.CreateOrganizationPolicyRuleRequest
-	117, // 133: illumio.cloud.config.v1.ConfigService.ReadOrganizationPolicyRule:input_type -> illumio.cloud.config.v1.ReadOrganizationPolicyRuleRequest
-	119, // 134: illumio.cloud.config.v1.ConfigService.UpdateOrganizationPolicyRule:input_type -> illumio.cloud.config.v1.UpdateOrganizationPolicyRuleRequest
-	121, // 135: illumio.cloud.config.v1.ConfigService.DeleteOrganizationPolicyRule:input_type -> illumio.cloud.config.v1.DeleteOrganizationPolicyRuleRequest
-	123, // 136: illumio.cloud.config.v1.ConfigService.CreateTagToLabel:input_type -> illumio.cloud.config.v1.CreateTagToLabelRequest
-	125, // 137: illumio.cloud.config.v1.ConfigService.ReadTagToLabel:input_type -> illumio.cloud.config.v1.ReadTagToLabelRequest
-	127, // 138: illumio.cloud.config.v1.ConfigService.UpdateTagToLabel:input_type -> illumio.cloud.config.v1.UpdateTagToLabelRequest
-	129, // 139: illumio.cloud.config.v1.ConfigService.DeleteTagToLabel:input_type -> illumio.cloud.config.v1.DeleteTagToLabelRequest
-	1,   // 140: illumio.cloud.config.v1.ConfigService.CreateApplication:output_type -> illumio.cloud.config.v1.CreateApplicationResponse
-	3,   // 141: illumio.cloud.config.v1.ConfigService.ReadApplication:output_type -> illumio.cloud.config.v1.ReadApplicationResponse
-	5,   // 142: illumio.cloud.config.v1.ConfigService.UpdateApplication:output_type -> illumio.cloud.config.v1.UpdateApplicationResponse
-	131, // 143: illumio.cloud.config.v1.ConfigService.DeleteApplication:output_type -> google.protobuf.Empty
-	8,   // 144: illumio.cloud.config.v1.ConfigService.CreateApplicationAwsResources:output_type -> illumio.cloud.config.v1.CreateApplicationAwsResourcesResponse
-	10,  // 145: illumio.cloud.config.v1.ConfigService.ReadApplicationAwsResources:output_type -> illumio.cloud.config.v1.ReadApplicationAwsResourcesResponse
-	12,  // 146: illumio.cloud.config.v1.ConfigService.UpdateApplicationAwsResources:output_type -> illumio.cloud.config.v1.UpdateApplicationAwsResourcesResponse
-	131, // 147: illumio.cloud.config.v1.ConfigService.DeleteApplicationAwsResources:output_type -> google.protobuf.Empty
-	15,  // 148: illumio.cloud.config.v1.ConfigService.CreateApplicationAzureResources:output_type -> illumio.cloud.config.v1.CreateApplicationAzureResourcesResponse
-	17,  // 149: illumio.cloud.config.v1.ConfigService.ReadApplicationAzureResources:output_type -> illumio.cloud.config.v1.ReadApplicationAzureResourcesResponse
-	19,  // 150: illumio.cloud.config.v1.ConfigService.UpdateApplicationAzureResources:output_type -> illumio.cloud.config.v1.UpdateApplicationAzureResourcesResponse
-	131, // 151: illumio.cloud.config.v1.ConfigService.DeleteApplicationAzureResources:output_type -> google.protobuf.Empty
-	25,  // 152: illumio.cloud.config.v1.ConfigService.CreateApplicationPolicyRule:output_type -> illumio.cloud.config.v1.CreateApplicationPolicyRuleResponse
-	27,  // 153: illumio.cloud.config.v1.ConfigService.ReadApplicationPolicyRule:output_type -> illumio.cloud.config.v1.ReadApplicationPolicyRuleResponse
-	29,  // 154: illumio.cloud.config.v1.ConfigService.UpdateApplicationPolicyRule:output_type -> illumio.cloud.config.v1.UpdateApplicationPolicyRuleResponse
-	131, // 155: illumio.cloud.config.v1.ConfigService.DeleteApplicationPolicyRule:output_type -> google.protobuf.Empty
-	32,  // 156: illumio.cloud.config.v1.ConfigService.CreateAwsAccount:output_type -> illumio.cloud.config.v1.CreateAwsAccountResponse
-	34,  // 157: illumio.cloud.config.v1.ConfigService.ReadAwsAccount:output_type -> illumio.cloud.config.v1.ReadAwsAccountResponse
-	36,  // 158: illumio.cloud.config.v1.ConfigService.UpdateAwsAccount:output_type -> illumio.cloud.config.v1.UpdateAwsAccountResponse
-	131, // 159: illumio.cloud.config.v1.ConfigService.DeleteAwsAccount:output_type -> google.protobuf.Empty
-	39,  // 160: illumio.cloud.config.v1.ConfigService.CreateAwsFlowLogsS3Bucket:output_type -> illumio.cloud.config.v1.CreateAwsFlowLogsS3BucketResponse
-	41,  // 161: illumio.cloud.config.v1.ConfigService.ReadAwsFlowLogsS3Bucket:output_type -> illumio.cloud.config.v1.ReadAwsFlowLogsS3BucketResponse
-	43,  // 162: illumio.cloud.config.v1.ConfigService.UpdateAwsFlowLogsS3Bucket:output_type -> illumio.cloud.config.v1.UpdateAwsFlowLogsS3BucketResponse
-	131, // 163: illumio.cloud.config.v1.ConfigService.DeleteAwsFlowLogsS3Bucket:output_type -> google.protobuf.Empty
-	46,  // 164: illumio.cloud.config.v1.ConfigService.CreateAzureFlowLogsStorageAccount:output_type -> illumio.cloud.config.v1.CreateAzureFlowLogsStorageAccountResponse
-	48,  // 165: illumio.cloud.config.v1.ConfigService.ReadAzureFlowLogsStorageAccount:output_type -> illumio.cloud.config.v1.ReadAzureFlowLogsStorageAccountResponse
-	50,  // 166: illumio.cloud.config.v1.ConfigService.UpdateAzureFlowLogsStorageAccount:output_type -> illumio.cloud.config.v1.UpdateAzureFlowLogsStorageAccountResponse
-	131, // 167: illumio.cloud.config.v1.ConfigService.DeleteAzureFlowLogsStorageAccount:output_type -> google.protobuf.Empty
-	53,  // 168: illumio.cloud.config.v1.ConfigService.CreateAzureSubscription:output_type -> illumio.cloud.config.v1.CreateAzureSubscriptionResponse
-	55,  // 169: illumio.cloud.config.v1.ConfigService.ReadAzureSubscription:output_type -> illumio.cloud.config.v1.ReadAzureSubscriptionResponse
-	57,  // 170: illumio.cloud.config.v1.ConfigService.UpdateAzureSubscription:output_type -> illumio.cloud.config.v1.UpdateAzureSubscriptionResponse
-	131, // 171: illumio.cloud.config.v1.ConfigService.DeleteAzureSubscription:output_type -> google.protobuf.Empty
-	62,  // 172: illumio.cloud.config.v1.ConfigService.CreateDeployment:output_type -> illumio.cloud.config.v1.CreateDeploymentResponse
-	64,  // 173: illumio.cloud.config.v1.ConfigService.ReadDeployment:output_type -> illumio.cloud.config.v1.ReadDeploymentResponse
-	66,  // 174: illumio.cloud.config.v1.ConfigService.UpdateDeployment:output_type -> illumio.cloud.config.v1.UpdateDeploymentResponse
-	131, // 175: illumio.cloud.config.v1.ConfigService.DeleteDeployment:output_type -> google.protobuf.Empty
-	69,  // 176: illumio.cloud.config.v1.ConfigService.CreateGcpFlowLogsPubsubTopic:output_type -> illumio.cloud.config.v1.CreateGcpFlowLogsPubsubTopicResponse
-	71,  // 177: illumio.cloud.config.v1.ConfigService.ReadGcpFlowLogsPubsubTopic:output_type -> illumio.cloud.config.v1.ReadGcpFlowLogsPubsubTopicResponse
-	73,  // 178: illumio.cloud.config.v1.ConfigService.UpdateGcpFlowLogsPubsubTopic:output_type -> illumio.cloud.config.v1.UpdateGcpFlowLogsPubsubTopicResponse
-	131, // 179: illumio.cloud.config.v1.ConfigService.DeleteGcpFlowLogsPubsubTopic:output_type -> google.protobuf.Empty
-	76,  // 180: illumio.cloud.config.v1.ConfigService.CreateGcpProject:output_type -> illumio.cloud.config.v1.CreateGcpProjectResponse
-	78,  // 181: illumio.cloud.config.v1.ConfigService.ReadGcpProject:output_type -> illumio.cloud.config.v1.ReadGcpProjectResponse
-	80,  // 182: illumio.cloud.config.v1.ConfigService.UpdateGcpProject:output_type -> illumio.cloud.config.v1.UpdateGcpProjectResponse
-	131, // 183: illumio.cloud.config.v1.ConfigService.DeleteGcpProject:output_type -> google.protobuf.Empty
-	85,  // 184: illumio.cloud.config.v1.ConfigService.CreateIpList:output_type -> illumio.cloud.config.v1.CreateIpListResponse
-	87,  // 185: illumio.cloud.config.v1.ConfigService.ReadIpList:output_type -> illumio.cloud.config.v1.ReadIpListResponse
-	89,  // 186: illumio.cloud.config.v1.ConfigService.UpdateIpList:output_type -> illumio.cloud.config.v1.UpdateIpListResponse
-	131, // 187: illumio.cloud.config.v1.ConfigService.DeleteIpList:output_type -> google.protobuf.Empty
-	92,  // 188: illumio.cloud.config.v1.ConfigService.CreateK8SCluster:output_type -> illumio.cloud.config.v1.CreateK8SClusterResponse
-	94,  // 189: illumio.cloud.config.v1.ConfigService.ReadK8SCluster:output_type -> illumio.cloud.config.v1.ReadK8SClusterResponse
-	96,  // 190: illumio.cloud.config.v1.ConfigService.UpdateK8SCluster:output_type -> illumio.cloud.config.v1.UpdateK8SClusterResponse
-	131, // 191: illumio.cloud.config.v1.ConfigService.DeleteK8SCluster:output_type -> google.protobuf.Empty
-	99,  // 192: illumio.cloud.config.v1.ConfigService.CreateK8SClusterOnboardingCredential:output_type -> illumio.cloud.config.v1.CreateK8SClusterOnboardingCredentialResponse
-	101, // 193: illumio.cloud.config.v1.ConfigService.ReadK8SClusterOnboardingCredential:output_type -> illumio.cloud.config.v1.ReadK8SClusterOnboardingCredentialResponse
-	103, // 194: illumio.cloud.config.v1.ConfigService.UpdateK8SClusterOnboardingCredential:output_type -> illumio.cloud.config.v1.UpdateK8SClusterOnboardingCredentialResponse
-	131, // 195: illumio.cloud.config.v1.ConfigService.DeleteK8SClusterOnboardingCredential:output_type -> google.protobuf.Empty
-	106, // 196: illumio.cloud.config.v1.ConfigService.CreateOrganizationPolicy:output_type -> illumio.cloud.config.v1.CreateOrganizationPolicyResponse
-	108, // 197: illumio.cloud.config.v1.ConfigService.ReadOrganizationPolicy:output_type -> illumio.cloud.config.v1.ReadOrganizationPolicyResponse
-	110, // 198: illumio.cloud.config.v1.ConfigService.UpdateOrganizationPolicy:output_type -> illumio.cloud.config.v1.UpdateOrganizationPolicyResponse
-	131, // 199: illumio.cloud.config.v1.ConfigService.DeleteOrganizationPolicy:output_type -> google.protobuf.Empty
-	116, // 200: illumio.cloud.config.v1.ConfigService.CreateOrganizationPolicyRule:output_type -> illumio.cloud.config.v1.CreateOrganizationPolicyRuleResponse
-	118, // 201: illumio.cloud.config.v1.ConfigService.ReadOrganizationPolicyRule:output_type -> illumio.cloud.config.v1.ReadOrganizationPolicyRuleResponse
-	120, // 202: illumio.cloud.config.v1.ConfigService.UpdateOrganizationPolicyRule:output_type -> illumio.cloud.config.v1.UpdateOrganizationPolicyRuleResponse
-	131, // 203: illumio.cloud.config.v1.ConfigService.DeleteOrganizationPolicyRule:output_type -> google.protobuf.Empty
-	124, // 204: illumio.cloud.config.v1.ConfigService.CreateTagToLabel:output_type -> illumio.cloud.config.v1.CreateTagToLabelResponse
-	126, // 205: illumio.cloud.config.v1.ConfigService.ReadTagToLabel:output_type -> illumio.cloud.config.v1.ReadTagToLabelResponse
-	128, // 206: illumio.cloud.config.v1.ConfigService.UpdateTagToLabel:output_type -> illumio.cloud.config.v1.UpdateTagToLabelResponse
-	131, // 207: illumio.cloud.config.v1.ConfigService.DeleteTagToLabel:output_type -> google.protobuf.Empty
-	140, // [140:208] is the sub-list for method output_type
-	72,  // [72:140] is the sub-list for method input_type
-	72,  // [72:72] is the sub-list for extension type_name
-	72,  // [72:72] is the sub-list for extension extendee
-	0,   // [0:72] is the sub-list for field type_name
+	151, // 19: illumio.cloud.config.v1.UpdateAwsAccountRequest.update_mask:type_name -> google.protobuf.FieldMask
+	151, // 20: illumio.cloud.config.v1.UpdateAwsFlowLogsS3BucketRequest.update_mask:type_name -> google.protobuf.FieldMask
+	151, // 21: illumio.cloud.config.v1.UpdateAwsFlowLogsS3BucketSourceRequest.update_mask:type_name -> google.protobuf.FieldMask
+	151, // 22: illumio.cloud.config.v1.UpdateAzureFlowLogsStorageAccountRequest.update_mask:type_name -> google.protobuf.FieldMask
+	151, // 23: illumio.cloud.config.v1.UpdateAzureFlowLogsStorageAccountSourceRequest.update_mask:type_name -> google.protobuf.FieldMask
+	151, // 24: illumio.cloud.config.v1.UpdateAzureSubscriptionRequest.update_mask:type_name -> google.protobuf.FieldMask
+	73,  // 25: illumio.cloud.config.v1.CreateDeploymentRequest.aws_tags:type_name -> illumio.cloud.config.v1.Deployment_AwsTags
+	74,  // 26: illumio.cloud.config.v1.CreateDeploymentRequest.azure_tags:type_name -> illumio.cloud.config.v1.Deployment_AzureTags
+	73,  // 27: illumio.cloud.config.v1.CreateDeploymentResponse.aws_tags:type_name -> illumio.cloud.config.v1.Deployment_AwsTags
+	74,  // 28: illumio.cloud.config.v1.CreateDeploymentResponse.azure_tags:type_name -> illumio.cloud.config.v1.Deployment_AzureTags
+	73,  // 29: illumio.cloud.config.v1.ReadDeploymentResponse.aws_tags:type_name -> illumio.cloud.config.v1.Deployment_AwsTags
+	74,  // 30: illumio.cloud.config.v1.ReadDeploymentResponse.azure_tags:type_name -> illumio.cloud.config.v1.Deployment_AzureTags
+	73,  // 31: illumio.cloud.config.v1.UpdateDeploymentRequest.aws_tags:type_name -> illumio.cloud.config.v1.Deployment_AwsTags
+	74,  // 32: illumio.cloud.config.v1.UpdateDeploymentRequest.azure_tags:type_name -> illumio.cloud.config.v1.Deployment_AzureTags
+	151, // 33: illumio.cloud.config.v1.UpdateDeploymentRequest.update_mask:type_name -> google.protobuf.FieldMask
+	73,  // 34: illumio.cloud.config.v1.UpdateDeploymentResponse.aws_tags:type_name -> illumio.cloud.config.v1.Deployment_AwsTags
+	74,  // 35: illumio.cloud.config.v1.UpdateDeploymentResponse.azure_tags:type_name -> illumio.cloud.config.v1.Deployment_AzureTags
+	151, // 36: illumio.cloud.config.v1.UpdateGcpFlowLogsPubsubTopicRequest.update_mask:type_name -> google.protobuf.FieldMask
+	151, // 37: illumio.cloud.config.v1.UpdateGcpFlowLogsStorageBucketSourceRequest.update_mask:type_name -> google.protobuf.FieldMask
+	151, // 38: illumio.cloud.config.v1.UpdateGcpProjectRequest.update_mask:type_name -> google.protobuf.FieldMask
+	103, // 39: illumio.cloud.config.v1.CreateIpListRequest.ip_addresses:type_name -> illumio.cloud.config.v1.IpList_IpAddresses
+	104, // 40: illumio.cloud.config.v1.CreateIpListRequest.ip_ranges:type_name -> illumio.cloud.config.v1.IpList_IpRanges
+	103, // 41: illumio.cloud.config.v1.CreateIpListResponse.ip_addresses:type_name -> illumio.cloud.config.v1.IpList_IpAddresses
+	104, // 42: illumio.cloud.config.v1.CreateIpListResponse.ip_ranges:type_name -> illumio.cloud.config.v1.IpList_IpRanges
+	103, // 43: illumio.cloud.config.v1.ReadIpListResponse.ip_addresses:type_name -> illumio.cloud.config.v1.IpList_IpAddresses
+	104, // 44: illumio.cloud.config.v1.ReadIpListResponse.ip_ranges:type_name -> illumio.cloud.config.v1.IpList_IpRanges
+	103, // 45: illumio.cloud.config.v1.UpdateIpListRequest.ip_addresses:type_name -> illumio.cloud.config.v1.IpList_IpAddresses
+	104, // 46: illumio.cloud.config.v1.UpdateIpListRequest.ip_ranges:type_name -> illumio.cloud.config.v1.IpList_IpRanges
+	151, // 47: illumio.cloud.config.v1.UpdateIpListRequest.update_mask:type_name -> google.protobuf.FieldMask
+	103, // 48: illumio.cloud.config.v1.UpdateIpListResponse.ip_addresses:type_name -> illumio.cloud.config.v1.IpList_IpAddresses
+	104, // 49: illumio.cloud.config.v1.UpdateIpListResponse.ip_ranges:type_name -> illumio.cloud.config.v1.IpList_IpRanges
+	151, // 50: illumio.cloud.config.v1.UpdateK8SClusterRequest.update_mask:type_name -> google.protobuf.FieldMask
+	151, // 51: illumio.cloud.config.v1.UpdateK8SClusterOnboardingCredentialRequest.update_mask:type_name -> google.protobuf.FieldMask
+	151, // 52: illumio.cloud.config.v1.UpdateOrganizationPolicyRequest.update_mask:type_name -> google.protobuf.FieldMask
+	133, // 53: illumio.cloud.config.v1.CreateOrganizationPolicyRuleRequest.from_labels:type_name -> illumio.cloud.config.v1.OrganizationPolicyRule_FromLabels
+	134, // 54: illumio.cloud.config.v1.CreateOrganizationPolicyRuleRequest.to_labels:type_name -> illumio.cloud.config.v1.OrganizationPolicyRule_ToLabels
+	135, // 55: illumio.cloud.config.v1.CreateOrganizationPolicyRuleRequest.to_port_ranges:type_name -> illumio.cloud.config.v1.OrganizationPolicyRule_ToPortRanges
+	133, // 56: illumio.cloud.config.v1.CreateOrganizationPolicyRuleResponse.from_labels:type_name -> illumio.cloud.config.v1.OrganizationPolicyRule_FromLabels
+	134, // 57: illumio.cloud.config.v1.CreateOrganizationPolicyRuleResponse.to_labels:type_name -> illumio.cloud.config.v1.OrganizationPolicyRule_ToLabels
+	135, // 58: illumio.cloud.config.v1.CreateOrganizationPolicyRuleResponse.to_port_ranges:type_name -> illumio.cloud.config.v1.OrganizationPolicyRule_ToPortRanges
+	133, // 59: illumio.cloud.config.v1.ReadOrganizationPolicyRuleResponse.from_labels:type_name -> illumio.cloud.config.v1.OrganizationPolicyRule_FromLabels
+	134, // 60: illumio.cloud.config.v1.ReadOrganizationPolicyRuleResponse.to_labels:type_name -> illumio.cloud.config.v1.OrganizationPolicyRule_ToLabels
+	135, // 61: illumio.cloud.config.v1.ReadOrganizationPolicyRuleResponse.to_port_ranges:type_name -> illumio.cloud.config.v1.OrganizationPolicyRule_ToPortRanges
+	133, // 62: illumio.cloud.config.v1.UpdateOrganizationPolicyRuleRequest.from_labels:type_name -> illumio.cloud.config.v1.OrganizationPolicyRule_FromLabels
+	134, // 63: illumio.cloud.config.v1.UpdateOrganizationPolicyRuleRequest.to_labels:type_name -> illumio.cloud.config.v1.OrganizationPolicyRule_ToLabels
+	135, // 64: illumio.cloud.config.v1.UpdateOrganizationPolicyRuleRequest.to_port_ranges:type_name -> illumio.cloud.config.v1.OrganizationPolicyRule_ToPortRanges
+	151, // 65: illumio.cloud.config.v1.UpdateOrganizationPolicyRuleRequest.update_mask:type_name -> google.protobuf.FieldMask
+	133, // 66: illumio.cloud.config.v1.UpdateOrganizationPolicyRuleResponse.from_labels:type_name -> illumio.cloud.config.v1.OrganizationPolicyRule_FromLabels
+	134, // 67: illumio.cloud.config.v1.UpdateOrganizationPolicyRuleResponse.to_labels:type_name -> illumio.cloud.config.v1.OrganizationPolicyRule_ToLabels
+	135, // 68: illumio.cloud.config.v1.UpdateOrganizationPolicyRuleResponse.to_port_ranges:type_name -> illumio.cloud.config.v1.OrganizationPolicyRule_ToPortRanges
+	143, // 69: illumio.cloud.config.v1.CreateTagToLabelRequest.icon:type_name -> illumio.cloud.config.v1.TagToLabel_Icon
+	143, // 70: illumio.cloud.config.v1.CreateTagToLabelResponse.icon:type_name -> illumio.cloud.config.v1.TagToLabel_Icon
+	143, // 71: illumio.cloud.config.v1.ReadTagToLabelResponse.icon:type_name -> illumio.cloud.config.v1.TagToLabel_Icon
+	143, // 72: illumio.cloud.config.v1.UpdateTagToLabelRequest.icon:type_name -> illumio.cloud.config.v1.TagToLabel_Icon
+	151, // 73: illumio.cloud.config.v1.UpdateTagToLabelRequest.update_mask:type_name -> google.protobuf.FieldMask
+	143, // 74: illumio.cloud.config.v1.UpdateTagToLabelResponse.icon:type_name -> illumio.cloud.config.v1.TagToLabel_Icon
+	0,   // 75: illumio.cloud.config.v1.ConfigService.CreateApplication:input_type -> illumio.cloud.config.v1.CreateApplicationRequest
+	2,   // 76: illumio.cloud.config.v1.ConfigService.ReadApplication:input_type -> illumio.cloud.config.v1.ReadApplicationRequest
+	4,   // 77: illumio.cloud.config.v1.ConfigService.UpdateApplication:input_type -> illumio.cloud.config.v1.UpdateApplicationRequest
+	6,   // 78: illumio.cloud.config.v1.ConfigService.DeleteApplication:input_type -> illumio.cloud.config.v1.DeleteApplicationRequest
+	7,   // 79: illumio.cloud.config.v1.ConfigService.CreateApplicationAwsResources:input_type -> illumio.cloud.config.v1.CreateApplicationAwsResourcesRequest
+	9,   // 80: illumio.cloud.config.v1.ConfigService.ReadApplicationAwsResources:input_type -> illumio.cloud.config.v1.ReadApplicationAwsResourcesRequest
+	11,  // 81: illumio.cloud.config.v1.ConfigService.UpdateApplicationAwsResources:input_type -> illumio.cloud.config.v1.UpdateApplicationAwsResourcesRequest
+	13,  // 82: illumio.cloud.config.v1.ConfigService.DeleteApplicationAwsResources:input_type -> illumio.cloud.config.v1.DeleteApplicationAwsResourcesRequest
+	14,  // 83: illumio.cloud.config.v1.ConfigService.CreateApplicationAzureResources:input_type -> illumio.cloud.config.v1.CreateApplicationAzureResourcesRequest
+	16,  // 84: illumio.cloud.config.v1.ConfigService.ReadApplicationAzureResources:input_type -> illumio.cloud.config.v1.ReadApplicationAzureResourcesRequest
+	18,  // 85: illumio.cloud.config.v1.ConfigService.UpdateApplicationAzureResources:input_type -> illumio.cloud.config.v1.UpdateApplicationAzureResourcesRequest
+	20,  // 86: illumio.cloud.config.v1.ConfigService.DeleteApplicationAzureResources:input_type -> illumio.cloud.config.v1.DeleteApplicationAzureResourcesRequest
+	24,  // 87: illumio.cloud.config.v1.ConfigService.CreateApplicationPolicyRule:input_type -> illumio.cloud.config.v1.CreateApplicationPolicyRuleRequest
+	26,  // 88: illumio.cloud.config.v1.ConfigService.ReadApplicationPolicyRule:input_type -> illumio.cloud.config.v1.ReadApplicationPolicyRuleRequest
+	28,  // 89: illumio.cloud.config.v1.ConfigService.UpdateApplicationPolicyRule:input_type -> illumio.cloud.config.v1.UpdateApplicationPolicyRuleRequest
+	30,  // 90: illumio.cloud.config.v1.ConfigService.DeleteApplicationPolicyRule:input_type -> illumio.cloud.config.v1.DeleteApplicationPolicyRuleRequest
+	31,  // 91: illumio.cloud.config.v1.ConfigService.CreateAwsAccount:input_type -> illumio.cloud.config.v1.CreateAwsAccountRequest
+	33,  // 92: illumio.cloud.config.v1.ConfigService.ReadAwsAccount:input_type -> illumio.cloud.config.v1.ReadAwsAccountRequest
+	35,  // 93: illumio.cloud.config.v1.ConfigService.UpdateAwsAccount:input_type -> illumio.cloud.config.v1.UpdateAwsAccountRequest
+	37,  // 94: illumio.cloud.config.v1.ConfigService.DeleteAwsAccount:input_type -> illumio.cloud.config.v1.DeleteAwsAccountRequest
+	38,  // 95: illumio.cloud.config.v1.ConfigService.CreateAwsFlowLogsS3Bucket:input_type -> illumio.cloud.config.v1.CreateAwsFlowLogsS3BucketRequest
+	40,  // 96: illumio.cloud.config.v1.ConfigService.ReadAwsFlowLogsS3Bucket:input_type -> illumio.cloud.config.v1.ReadAwsFlowLogsS3BucketRequest
+	42,  // 97: illumio.cloud.config.v1.ConfigService.UpdateAwsFlowLogsS3Bucket:input_type -> illumio.cloud.config.v1.UpdateAwsFlowLogsS3BucketRequest
+	44,  // 98: illumio.cloud.config.v1.ConfigService.DeleteAwsFlowLogsS3Bucket:input_type -> illumio.cloud.config.v1.DeleteAwsFlowLogsS3BucketRequest
+	45,  // 99: illumio.cloud.config.v1.ConfigService.CreateAwsFlowLogsS3BucketSource:input_type -> illumio.cloud.config.v1.CreateAwsFlowLogsS3BucketSourceRequest
+	47,  // 100: illumio.cloud.config.v1.ConfigService.ReadAwsFlowLogsS3BucketSource:input_type -> illumio.cloud.config.v1.ReadAwsFlowLogsS3BucketSourceRequest
+	49,  // 101: illumio.cloud.config.v1.ConfigService.UpdateAwsFlowLogsS3BucketSource:input_type -> illumio.cloud.config.v1.UpdateAwsFlowLogsS3BucketSourceRequest
+	51,  // 102: illumio.cloud.config.v1.ConfigService.DeleteAwsFlowLogsS3BucketSource:input_type -> illumio.cloud.config.v1.DeleteAwsFlowLogsS3BucketSourceRequest
+	52,  // 103: illumio.cloud.config.v1.ConfigService.CreateAzureFlowLogsStorageAccount:input_type -> illumio.cloud.config.v1.CreateAzureFlowLogsStorageAccountRequest
+	54,  // 104: illumio.cloud.config.v1.ConfigService.ReadAzureFlowLogsStorageAccount:input_type -> illumio.cloud.config.v1.ReadAzureFlowLogsStorageAccountRequest
+	56,  // 105: illumio.cloud.config.v1.ConfigService.UpdateAzureFlowLogsStorageAccount:input_type -> illumio.cloud.config.v1.UpdateAzureFlowLogsStorageAccountRequest
+	58,  // 106: illumio.cloud.config.v1.ConfigService.DeleteAzureFlowLogsStorageAccount:input_type -> illumio.cloud.config.v1.DeleteAzureFlowLogsStorageAccountRequest
+	59,  // 107: illumio.cloud.config.v1.ConfigService.CreateAzureFlowLogsStorageAccountSource:input_type -> illumio.cloud.config.v1.CreateAzureFlowLogsStorageAccountSourceRequest
+	61,  // 108: illumio.cloud.config.v1.ConfigService.ReadAzureFlowLogsStorageAccountSource:input_type -> illumio.cloud.config.v1.ReadAzureFlowLogsStorageAccountSourceRequest
+	63,  // 109: illumio.cloud.config.v1.ConfigService.UpdateAzureFlowLogsStorageAccountSource:input_type -> illumio.cloud.config.v1.UpdateAzureFlowLogsStorageAccountSourceRequest
+	65,  // 110: illumio.cloud.config.v1.ConfigService.DeleteAzureFlowLogsStorageAccountSource:input_type -> illumio.cloud.config.v1.DeleteAzureFlowLogsStorageAccountSourceRequest
+	66,  // 111: illumio.cloud.config.v1.ConfigService.CreateAzureSubscription:input_type -> illumio.cloud.config.v1.CreateAzureSubscriptionRequest
+	68,  // 112: illumio.cloud.config.v1.ConfigService.ReadAzureSubscription:input_type -> illumio.cloud.config.v1.ReadAzureSubscriptionRequest
+	70,  // 113: illumio.cloud.config.v1.ConfigService.UpdateAzureSubscription:input_type -> illumio.cloud.config.v1.UpdateAzureSubscriptionRequest
+	72,  // 114: illumio.cloud.config.v1.ConfigService.DeleteAzureSubscription:input_type -> illumio.cloud.config.v1.DeleteAzureSubscriptionRequest
+	75,  // 115: illumio.cloud.config.v1.ConfigService.CreateDeployment:input_type -> illumio.cloud.config.v1.CreateDeploymentRequest
+	77,  // 116: illumio.cloud.config.v1.ConfigService.ReadDeployment:input_type -> illumio.cloud.config.v1.ReadDeploymentRequest
+	79,  // 117: illumio.cloud.config.v1.ConfigService.UpdateDeployment:input_type -> illumio.cloud.config.v1.UpdateDeploymentRequest
+	81,  // 118: illumio.cloud.config.v1.ConfigService.DeleteDeployment:input_type -> illumio.cloud.config.v1.DeleteDeploymentRequest
+	82,  // 119: illumio.cloud.config.v1.ConfigService.CreateGcpFlowLogsPubsubTopic:input_type -> illumio.cloud.config.v1.CreateGcpFlowLogsPubsubTopicRequest
+	84,  // 120: illumio.cloud.config.v1.ConfigService.ReadGcpFlowLogsPubsubTopic:input_type -> illumio.cloud.config.v1.ReadGcpFlowLogsPubsubTopicRequest
+	86,  // 121: illumio.cloud.config.v1.ConfigService.UpdateGcpFlowLogsPubsubTopic:input_type -> illumio.cloud.config.v1.UpdateGcpFlowLogsPubsubTopicRequest
+	88,  // 122: illumio.cloud.config.v1.ConfigService.DeleteGcpFlowLogsPubsubTopic:input_type -> illumio.cloud.config.v1.DeleteGcpFlowLogsPubsubTopicRequest
+	89,  // 123: illumio.cloud.config.v1.ConfigService.CreateGcpFlowLogsStorageBucketSource:input_type -> illumio.cloud.config.v1.CreateGcpFlowLogsStorageBucketSourceRequest
+	91,  // 124: illumio.cloud.config.v1.ConfigService.ReadGcpFlowLogsStorageBucketSource:input_type -> illumio.cloud.config.v1.ReadGcpFlowLogsStorageBucketSourceRequest
+	93,  // 125: illumio.cloud.config.v1.ConfigService.UpdateGcpFlowLogsStorageBucketSource:input_type -> illumio.cloud.config.v1.UpdateGcpFlowLogsStorageBucketSourceRequest
+	95,  // 126: illumio.cloud.config.v1.ConfigService.DeleteGcpFlowLogsStorageBucketSource:input_type -> illumio.cloud.config.v1.DeleteGcpFlowLogsStorageBucketSourceRequest
+	96,  // 127: illumio.cloud.config.v1.ConfigService.CreateGcpProject:input_type -> illumio.cloud.config.v1.CreateGcpProjectRequest
+	98,  // 128: illumio.cloud.config.v1.ConfigService.ReadGcpProject:input_type -> illumio.cloud.config.v1.ReadGcpProjectRequest
+	100, // 129: illumio.cloud.config.v1.ConfigService.UpdateGcpProject:input_type -> illumio.cloud.config.v1.UpdateGcpProjectRequest
+	102, // 130: illumio.cloud.config.v1.ConfigService.DeleteGcpProject:input_type -> illumio.cloud.config.v1.DeleteGcpProjectRequest
+	105, // 131: illumio.cloud.config.v1.ConfigService.CreateIpList:input_type -> illumio.cloud.config.v1.CreateIpListRequest
+	107, // 132: illumio.cloud.config.v1.ConfigService.ReadIpList:input_type -> illumio.cloud.config.v1.ReadIpListRequest
+	109, // 133: illumio.cloud.config.v1.ConfigService.UpdateIpList:input_type -> illumio.cloud.config.v1.UpdateIpListRequest
+	111, // 134: illumio.cloud.config.v1.ConfigService.DeleteIpList:input_type -> illumio.cloud.config.v1.DeleteIpListRequest
+	112, // 135: illumio.cloud.config.v1.ConfigService.CreateK8SCluster:input_type -> illumio.cloud.config.v1.CreateK8SClusterRequest
+	114, // 136: illumio.cloud.config.v1.ConfigService.ReadK8SCluster:input_type -> illumio.cloud.config.v1.ReadK8SClusterRequest
+	116, // 137: illumio.cloud.config.v1.ConfigService.UpdateK8SCluster:input_type -> illumio.cloud.config.v1.UpdateK8SClusterRequest
+	118, // 138: illumio.cloud.config.v1.ConfigService.DeleteK8SCluster:input_type -> illumio.cloud.config.v1.DeleteK8SClusterRequest
+	119, // 139: illumio.cloud.config.v1.ConfigService.CreateK8SClusterOnboardingCredential:input_type -> illumio.cloud.config.v1.CreateK8SClusterOnboardingCredentialRequest
+	121, // 140: illumio.cloud.config.v1.ConfigService.ReadK8SClusterOnboardingCredential:input_type -> illumio.cloud.config.v1.ReadK8SClusterOnboardingCredentialRequest
+	123, // 141: illumio.cloud.config.v1.ConfigService.UpdateK8SClusterOnboardingCredential:input_type -> illumio.cloud.config.v1.UpdateK8SClusterOnboardingCredentialRequest
+	125, // 142: illumio.cloud.config.v1.ConfigService.DeleteK8SClusterOnboardingCredential:input_type -> illumio.cloud.config.v1.DeleteK8SClusterOnboardingCredentialRequest
+	126, // 143: illumio.cloud.config.v1.ConfigService.CreateOrganizationPolicy:input_type -> illumio.cloud.config.v1.CreateOrganizationPolicyRequest
+	128, // 144: illumio.cloud.config.v1.ConfigService.ReadOrganizationPolicy:input_type -> illumio.cloud.config.v1.ReadOrganizationPolicyRequest
+	130, // 145: illumio.cloud.config.v1.ConfigService.UpdateOrganizationPolicy:input_type -> illumio.cloud.config.v1.UpdateOrganizationPolicyRequest
+	132, // 146: illumio.cloud.config.v1.ConfigService.DeleteOrganizationPolicy:input_type -> illumio.cloud.config.v1.DeleteOrganizationPolicyRequest
+	136, // 147: illumio.cloud.config.v1.ConfigService.CreateOrganizationPolicyRule:input_type -> illumio.cloud.config.v1.CreateOrganizationPolicyRuleRequest
+	138, // 148: illumio.cloud.config.v1.ConfigService.ReadOrganizationPolicyRule:input_type -> illumio.cloud.config.v1.ReadOrganizationPolicyRuleRequest
+	140, // 149: illumio.cloud.config.v1.ConfigService.UpdateOrganizationPolicyRule:input_type -> illumio.cloud.config.v1.UpdateOrganizationPolicyRuleRequest
+	142, // 150: illumio.cloud.config.v1.ConfigService.DeleteOrganizationPolicyRule:input_type -> illumio.cloud.config.v1.DeleteOrganizationPolicyRuleRequest
+	144, // 151: illumio.cloud.config.v1.ConfigService.CreateTagToLabel:input_type -> illumio.cloud.config.v1.CreateTagToLabelRequest
+	146, // 152: illumio.cloud.config.v1.ConfigService.ReadTagToLabel:input_type -> illumio.cloud.config.v1.ReadTagToLabelRequest
+	148, // 153: illumio.cloud.config.v1.ConfigService.UpdateTagToLabel:input_type -> illumio.cloud.config.v1.UpdateTagToLabelRequest
+	150, // 154: illumio.cloud.config.v1.ConfigService.DeleteTagToLabel:input_type -> illumio.cloud.config.v1.DeleteTagToLabelRequest
+	1,   // 155: illumio.cloud.config.v1.ConfigService.CreateApplication:output_type -> illumio.cloud.config.v1.CreateApplicationResponse
+	3,   // 156: illumio.cloud.config.v1.ConfigService.ReadApplication:output_type -> illumio.cloud.config.v1.ReadApplicationResponse
+	5,   // 157: illumio.cloud.config.v1.ConfigService.UpdateApplication:output_type -> illumio.cloud.config.v1.UpdateApplicationResponse
+	152, // 158: illumio.cloud.config.v1.ConfigService.DeleteApplication:output_type -> google.protobuf.Empty
+	8,   // 159: illumio.cloud.config.v1.ConfigService.CreateApplicationAwsResources:output_type -> illumio.cloud.config.v1.CreateApplicationAwsResourcesResponse
+	10,  // 160: illumio.cloud.config.v1.ConfigService.ReadApplicationAwsResources:output_type -> illumio.cloud.config.v1.ReadApplicationAwsResourcesResponse
+	12,  // 161: illumio.cloud.config.v1.ConfigService.UpdateApplicationAwsResources:output_type -> illumio.cloud.config.v1.UpdateApplicationAwsResourcesResponse
+	152, // 162: illumio.cloud.config.v1.ConfigService.DeleteApplicationAwsResources:output_type -> google.protobuf.Empty
+	15,  // 163: illumio.cloud.config.v1.ConfigService.CreateApplicationAzureResources:output_type -> illumio.cloud.config.v1.CreateApplicationAzureResourcesResponse
+	17,  // 164: illumio.cloud.config.v1.ConfigService.ReadApplicationAzureResources:output_type -> illumio.cloud.config.v1.ReadApplicationAzureResourcesResponse
+	19,  // 165: illumio.cloud.config.v1.ConfigService.UpdateApplicationAzureResources:output_type -> illumio.cloud.config.v1.UpdateApplicationAzureResourcesResponse
+	152, // 166: illumio.cloud.config.v1.ConfigService.DeleteApplicationAzureResources:output_type -> google.protobuf.Empty
+	25,  // 167: illumio.cloud.config.v1.ConfigService.CreateApplicationPolicyRule:output_type -> illumio.cloud.config.v1.CreateApplicationPolicyRuleResponse
+	27,  // 168: illumio.cloud.config.v1.ConfigService.ReadApplicationPolicyRule:output_type -> illumio.cloud.config.v1.ReadApplicationPolicyRuleResponse
+	29,  // 169: illumio.cloud.config.v1.ConfigService.UpdateApplicationPolicyRule:output_type -> illumio.cloud.config.v1.UpdateApplicationPolicyRuleResponse
+	152, // 170: illumio.cloud.config.v1.ConfigService.DeleteApplicationPolicyRule:output_type -> google.protobuf.Empty
+	32,  // 171: illumio.cloud.config.v1.ConfigService.CreateAwsAccount:output_type -> illumio.cloud.config.v1.CreateAwsAccountResponse
+	34,  // 172: illumio.cloud.config.v1.ConfigService.ReadAwsAccount:output_type -> illumio.cloud.config.v1.ReadAwsAccountResponse
+	36,  // 173: illumio.cloud.config.v1.ConfigService.UpdateAwsAccount:output_type -> illumio.cloud.config.v1.UpdateAwsAccountResponse
+	152, // 174: illumio.cloud.config.v1.ConfigService.DeleteAwsAccount:output_type -> google.protobuf.Empty
+	39,  // 175: illumio.cloud.config.v1.ConfigService.CreateAwsFlowLogsS3Bucket:output_type -> illumio.cloud.config.v1.CreateAwsFlowLogsS3BucketResponse
+	41,  // 176: illumio.cloud.config.v1.ConfigService.ReadAwsFlowLogsS3Bucket:output_type -> illumio.cloud.config.v1.ReadAwsFlowLogsS3BucketResponse
+	43,  // 177: illumio.cloud.config.v1.ConfigService.UpdateAwsFlowLogsS3Bucket:output_type -> illumio.cloud.config.v1.UpdateAwsFlowLogsS3BucketResponse
+	152, // 178: illumio.cloud.config.v1.ConfigService.DeleteAwsFlowLogsS3Bucket:output_type -> google.protobuf.Empty
+	46,  // 179: illumio.cloud.config.v1.ConfigService.CreateAwsFlowLogsS3BucketSource:output_type -> illumio.cloud.config.v1.CreateAwsFlowLogsS3BucketSourceResponse
+	48,  // 180: illumio.cloud.config.v1.ConfigService.ReadAwsFlowLogsS3BucketSource:output_type -> illumio.cloud.config.v1.ReadAwsFlowLogsS3BucketSourceResponse
+	50,  // 181: illumio.cloud.config.v1.ConfigService.UpdateAwsFlowLogsS3BucketSource:output_type -> illumio.cloud.config.v1.UpdateAwsFlowLogsS3BucketSourceResponse
+	152, // 182: illumio.cloud.config.v1.ConfigService.DeleteAwsFlowLogsS3BucketSource:output_type -> google.protobuf.Empty
+	53,  // 183: illumio.cloud.config.v1.ConfigService.CreateAzureFlowLogsStorageAccount:output_type -> illumio.cloud.config.v1.CreateAzureFlowLogsStorageAccountResponse
+	55,  // 184: illumio.cloud.config.v1.ConfigService.ReadAzureFlowLogsStorageAccount:output_type -> illumio.cloud.config.v1.ReadAzureFlowLogsStorageAccountResponse
+	57,  // 185: illumio.cloud.config.v1.ConfigService.UpdateAzureFlowLogsStorageAccount:output_type -> illumio.cloud.config.v1.UpdateAzureFlowLogsStorageAccountResponse
+	152, // 186: illumio.cloud.config.v1.ConfigService.DeleteAzureFlowLogsStorageAccount:output_type -> google.protobuf.Empty
+	60,  // 187: illumio.cloud.config.v1.ConfigService.CreateAzureFlowLogsStorageAccountSource:output_type -> illumio.cloud.config.v1.CreateAzureFlowLogsStorageAccountSourceResponse
+	62,  // 188: illumio.cloud.config.v1.ConfigService.ReadAzureFlowLogsStorageAccountSource:output_type -> illumio.cloud.config.v1.ReadAzureFlowLogsStorageAccountSourceResponse
+	64,  // 189: illumio.cloud.config.v1.ConfigService.UpdateAzureFlowLogsStorageAccountSource:output_type -> illumio.cloud.config.v1.UpdateAzureFlowLogsStorageAccountSourceResponse
+	152, // 190: illumio.cloud.config.v1.ConfigService.DeleteAzureFlowLogsStorageAccountSource:output_type -> google.protobuf.Empty
+	67,  // 191: illumio.cloud.config.v1.ConfigService.CreateAzureSubscription:output_type -> illumio.cloud.config.v1.CreateAzureSubscriptionResponse
+	69,  // 192: illumio.cloud.config.v1.ConfigService.ReadAzureSubscription:output_type -> illumio.cloud.config.v1.ReadAzureSubscriptionResponse
+	71,  // 193: illumio.cloud.config.v1.ConfigService.UpdateAzureSubscription:output_type -> illumio.cloud.config.v1.UpdateAzureSubscriptionResponse
+	152, // 194: illumio.cloud.config.v1.ConfigService.DeleteAzureSubscription:output_type -> google.protobuf.Empty
+	76,  // 195: illumio.cloud.config.v1.ConfigService.CreateDeployment:output_type -> illumio.cloud.config.v1.CreateDeploymentResponse
+	78,  // 196: illumio.cloud.config.v1.ConfigService.ReadDeployment:output_type -> illumio.cloud.config.v1.ReadDeploymentResponse
+	80,  // 197: illumio.cloud.config.v1.ConfigService.UpdateDeployment:output_type -> illumio.cloud.config.v1.UpdateDeploymentResponse
+	152, // 198: illumio.cloud.config.v1.ConfigService.DeleteDeployment:output_type -> google.protobuf.Empty
+	83,  // 199: illumio.cloud.config.v1.ConfigService.CreateGcpFlowLogsPubsubTopic:output_type -> illumio.cloud.config.v1.CreateGcpFlowLogsPubsubTopicResponse
+	85,  // 200: illumio.cloud.config.v1.ConfigService.ReadGcpFlowLogsPubsubTopic:output_type -> illumio.cloud.config.v1.ReadGcpFlowLogsPubsubTopicResponse
+	87,  // 201: illumio.cloud.config.v1.ConfigService.UpdateGcpFlowLogsPubsubTopic:output_type -> illumio.cloud.config.v1.UpdateGcpFlowLogsPubsubTopicResponse
+	152, // 202: illumio.cloud.config.v1.ConfigService.DeleteGcpFlowLogsPubsubTopic:output_type -> google.protobuf.Empty
+	90,  // 203: illumio.cloud.config.v1.ConfigService.CreateGcpFlowLogsStorageBucketSource:output_type -> illumio.cloud.config.v1.CreateGcpFlowLogsStorageBucketSourceResponse
+	92,  // 204: illumio.cloud.config.v1.ConfigService.ReadGcpFlowLogsStorageBucketSource:output_type -> illumio.cloud.config.v1.ReadGcpFlowLogsStorageBucketSourceResponse
+	94,  // 205: illumio.cloud.config.v1.ConfigService.UpdateGcpFlowLogsStorageBucketSource:output_type -> illumio.cloud.config.v1.UpdateGcpFlowLogsStorageBucketSourceResponse
+	152, // 206: illumio.cloud.config.v1.ConfigService.DeleteGcpFlowLogsStorageBucketSource:output_type -> google.protobuf.Empty
+	97,  // 207: illumio.cloud.config.v1.ConfigService.CreateGcpProject:output_type -> illumio.cloud.config.v1.CreateGcpProjectResponse
+	99,  // 208: illumio.cloud.config.v1.ConfigService.ReadGcpProject:output_type -> illumio.cloud.config.v1.ReadGcpProjectResponse
+	101, // 209: illumio.cloud.config.v1.ConfigService.UpdateGcpProject:output_type -> illumio.cloud.config.v1.UpdateGcpProjectResponse
+	152, // 210: illumio.cloud.config.v1.ConfigService.DeleteGcpProject:output_type -> google.protobuf.Empty
+	106, // 211: illumio.cloud.config.v1.ConfigService.CreateIpList:output_type -> illumio.cloud.config.v1.CreateIpListResponse
+	108, // 212: illumio.cloud.config.v1.ConfigService.ReadIpList:output_type -> illumio.cloud.config.v1.ReadIpListResponse
+	110, // 213: illumio.cloud.config.v1.ConfigService.UpdateIpList:output_type -> illumio.cloud.config.v1.UpdateIpListResponse
+	152, // 214: illumio.cloud.config.v1.ConfigService.DeleteIpList:output_type -> google.protobuf.Empty
+	113, // 215: illumio.cloud.config.v1.ConfigService.CreateK8SCluster:output_type -> illumio.cloud.config.v1.CreateK8SClusterResponse
+	115, // 216: illumio.cloud.config.v1.ConfigService.ReadK8SCluster:output_type -> illumio.cloud.config.v1.ReadK8SClusterResponse
+	117, // 217: illumio.cloud.config.v1.ConfigService.UpdateK8SCluster:output_type -> illumio.cloud.config.v1.UpdateK8SClusterResponse
+	152, // 218: illumio.cloud.config.v1.ConfigService.DeleteK8SCluster:output_type -> google.protobuf.Empty
+	120, // 219: illumio.cloud.config.v1.ConfigService.CreateK8SClusterOnboardingCredential:output_type -> illumio.cloud.config.v1.CreateK8SClusterOnboardingCredentialResponse
+	122, // 220: illumio.cloud.config.v1.ConfigService.ReadK8SClusterOnboardingCredential:output_type -> illumio.cloud.config.v1.ReadK8SClusterOnboardingCredentialResponse
+	124, // 221: illumio.cloud.config.v1.ConfigService.UpdateK8SClusterOnboardingCredential:output_type -> illumio.cloud.config.v1.UpdateK8SClusterOnboardingCredentialResponse
+	152, // 222: illumio.cloud.config.v1.ConfigService.DeleteK8SClusterOnboardingCredential:output_type -> google.protobuf.Empty
+	127, // 223: illumio.cloud.config.v1.ConfigService.CreateOrganizationPolicy:output_type -> illumio.cloud.config.v1.CreateOrganizationPolicyResponse
+	129, // 224: illumio.cloud.config.v1.ConfigService.ReadOrganizationPolicy:output_type -> illumio.cloud.config.v1.ReadOrganizationPolicyResponse
+	131, // 225: illumio.cloud.config.v1.ConfigService.UpdateOrganizationPolicy:output_type -> illumio.cloud.config.v1.UpdateOrganizationPolicyResponse
+	152, // 226: illumio.cloud.config.v1.ConfigService.DeleteOrganizationPolicy:output_type -> google.protobuf.Empty
+	137, // 227: illumio.cloud.config.v1.ConfigService.CreateOrganizationPolicyRule:output_type -> illumio.cloud.config.v1.CreateOrganizationPolicyRuleResponse
+	139, // 228: illumio.cloud.config.v1.ConfigService.ReadOrganizationPolicyRule:output_type -> illumio.cloud.config.v1.ReadOrganizationPolicyRuleResponse
+	141, // 229: illumio.cloud.config.v1.ConfigService.UpdateOrganizationPolicyRule:output_type -> illumio.cloud.config.v1.UpdateOrganizationPolicyRuleResponse
+	152, // 230: illumio.cloud.config.v1.ConfigService.DeleteOrganizationPolicyRule:output_type -> google.protobuf.Empty
+	145, // 231: illumio.cloud.config.v1.ConfigService.CreateTagToLabel:output_type -> illumio.cloud.config.v1.CreateTagToLabelResponse
+	147, // 232: illumio.cloud.config.v1.ConfigService.ReadTagToLabel:output_type -> illumio.cloud.config.v1.ReadTagToLabelResponse
+	149, // 233: illumio.cloud.config.v1.ConfigService.UpdateTagToLabel:output_type -> illumio.cloud.config.v1.UpdateTagToLabelResponse
+	152, // 234: illumio.cloud.config.v1.ConfigService.DeleteTagToLabel:output_type -> google.protobuf.Empty
+	155, // [155:235] is the sub-list for method output_type
+	75,  // [75:155] is the sub-list for method input_type
+	75,  // [75:75] is the sub-list for extension type_name
+	75,  // [75:75] is the sub-list for extension extendee
+	0,   // [0:75] is the sub-list for field type_name
 }
 
 func init() { file_illumio_cloud_config_v1_config_proto_init() }
@@ -10846,38 +12279,50 @@ func file_illumio_cloud_config_v1_config_proto_init() {
 	file_illumio_cloud_config_v1_config_proto_msgTypes[32].OneofWrappers = []any{}
 	file_illumio_cloud_config_v1_config_proto_msgTypes[34].OneofWrappers = []any{}
 	file_illumio_cloud_config_v1_config_proto_msgTypes[36].OneofWrappers = []any{}
-	file_illumio_cloud_config_v1_config_proto_msgTypes[61].OneofWrappers = []any{}
+	file_illumio_cloud_config_v1_config_proto_msgTypes[45].OneofWrappers = []any{}
+	file_illumio_cloud_config_v1_config_proto_msgTypes[46].OneofWrappers = []any{}
+	file_illumio_cloud_config_v1_config_proto_msgTypes[48].OneofWrappers = []any{}
+	file_illumio_cloud_config_v1_config_proto_msgTypes[50].OneofWrappers = []any{}
+	file_illumio_cloud_config_v1_config_proto_msgTypes[59].OneofWrappers = []any{}
+	file_illumio_cloud_config_v1_config_proto_msgTypes[60].OneofWrappers = []any{}
 	file_illumio_cloud_config_v1_config_proto_msgTypes[62].OneofWrappers = []any{}
 	file_illumio_cloud_config_v1_config_proto_msgTypes[64].OneofWrappers = []any{}
-	file_illumio_cloud_config_v1_config_proto_msgTypes[65].OneofWrappers = []any{}
-	file_illumio_cloud_config_v1_config_proto_msgTypes[66].OneofWrappers = []any{}
-	file_illumio_cloud_config_v1_config_proto_msgTypes[84].OneofWrappers = []any{}
-	file_illumio_cloud_config_v1_config_proto_msgTypes[85].OneofWrappers = []any{}
-	file_illumio_cloud_config_v1_config_proto_msgTypes[87].OneofWrappers = []any{}
-	file_illumio_cloud_config_v1_config_proto_msgTypes[88].OneofWrappers = []any{}
+	file_illumio_cloud_config_v1_config_proto_msgTypes[75].OneofWrappers = []any{}
+	file_illumio_cloud_config_v1_config_proto_msgTypes[76].OneofWrappers = []any{}
+	file_illumio_cloud_config_v1_config_proto_msgTypes[78].OneofWrappers = []any{}
+	file_illumio_cloud_config_v1_config_proto_msgTypes[79].OneofWrappers = []any{}
+	file_illumio_cloud_config_v1_config_proto_msgTypes[80].OneofWrappers = []any{}
 	file_illumio_cloud_config_v1_config_proto_msgTypes[89].OneofWrappers = []any{}
-	file_illumio_cloud_config_v1_config_proto_msgTypes[98].OneofWrappers = []any{}
-	file_illumio_cloud_config_v1_config_proto_msgTypes[99].OneofWrappers = []any{}
-	file_illumio_cloud_config_v1_config_proto_msgTypes[101].OneofWrappers = []any{}
-	file_illumio_cloud_config_v1_config_proto_msgTypes[102].OneofWrappers = []any{}
-	file_illumio_cloud_config_v1_config_proto_msgTypes[103].OneofWrappers = []any{}
+	file_illumio_cloud_config_v1_config_proto_msgTypes[90].OneofWrappers = []any{}
+	file_illumio_cloud_config_v1_config_proto_msgTypes[92].OneofWrappers = []any{}
+	file_illumio_cloud_config_v1_config_proto_msgTypes[94].OneofWrappers = []any{}
 	file_illumio_cloud_config_v1_config_proto_msgTypes[105].OneofWrappers = []any{}
 	file_illumio_cloud_config_v1_config_proto_msgTypes[106].OneofWrappers = []any{}
 	file_illumio_cloud_config_v1_config_proto_msgTypes[108].OneofWrappers = []any{}
 	file_illumio_cloud_config_v1_config_proto_msgTypes[109].OneofWrappers = []any{}
 	file_illumio_cloud_config_v1_config_proto_msgTypes[110].OneofWrappers = []any{}
-	file_illumio_cloud_config_v1_config_proto_msgTypes[115].OneofWrappers = []any{}
-	file_illumio_cloud_config_v1_config_proto_msgTypes[116].OneofWrappers = []any{}
-	file_illumio_cloud_config_v1_config_proto_msgTypes[118].OneofWrappers = []any{}
 	file_illumio_cloud_config_v1_config_proto_msgTypes[119].OneofWrappers = []any{}
 	file_illumio_cloud_config_v1_config_proto_msgTypes[120].OneofWrappers = []any{}
+	file_illumio_cloud_config_v1_config_proto_msgTypes[122].OneofWrappers = []any{}
+	file_illumio_cloud_config_v1_config_proto_msgTypes[123].OneofWrappers = []any{}
+	file_illumio_cloud_config_v1_config_proto_msgTypes[124].OneofWrappers = []any{}
+	file_illumio_cloud_config_v1_config_proto_msgTypes[126].OneofWrappers = []any{}
+	file_illumio_cloud_config_v1_config_proto_msgTypes[127].OneofWrappers = []any{}
+	file_illumio_cloud_config_v1_config_proto_msgTypes[129].OneofWrappers = []any{}
+	file_illumio_cloud_config_v1_config_proto_msgTypes[130].OneofWrappers = []any{}
+	file_illumio_cloud_config_v1_config_proto_msgTypes[131].OneofWrappers = []any{}
+	file_illumio_cloud_config_v1_config_proto_msgTypes[136].OneofWrappers = []any{}
+	file_illumio_cloud_config_v1_config_proto_msgTypes[137].OneofWrappers = []any{}
+	file_illumio_cloud_config_v1_config_proto_msgTypes[139].OneofWrappers = []any{}
+	file_illumio_cloud_config_v1_config_proto_msgTypes[140].OneofWrappers = []any{}
+	file_illumio_cloud_config_v1_config_proto_msgTypes[141].OneofWrappers = []any{}
 	type x struct{}
 	out := protoimpl.TypeBuilder{
 		File: protoimpl.DescBuilder{
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: unsafe.Slice(unsafe.StringData(file_illumio_cloud_config_v1_config_proto_rawDesc), len(file_illumio_cloud_config_v1_config_proto_rawDesc)),
 			NumEnums:      0,
-			NumMessages:   130,
+			NumMessages:   151,
 			NumExtensions: 0,
 			NumServices:   1,
 		},

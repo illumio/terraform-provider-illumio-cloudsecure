@@ -50,14 +50,20 @@ func (p *Provider) Resources(ctx context.Context) []func() resource.Resource {
 			resp = append(resp, func() resource.Resource { return NewAwsAccountResource(r.Schema) })
 		case "aws_flow_logs_s3_bucket":
 			resp = append(resp, func() resource.Resource { return NewAwsFlowLogsS3BucketResource(r.Schema) })
+		case "aws_flow_logs_s3_bucket_source":
+			resp = append(resp, func() resource.Resource { return NewAwsFlowLogsS3BucketSourceResource(r.Schema) })
 		case "azure_flow_logs_storage_account":
 			resp = append(resp, func() resource.Resource { return NewAzureFlowLogsStorageAccountResource(r.Schema) })
+		case "azure_flow_logs_storage_account_source":
+			resp = append(resp, func() resource.Resource { return NewAzureFlowLogsStorageAccountSourceResource(r.Schema) })
 		case "azure_subscription":
 			resp = append(resp, func() resource.Resource { return NewAzureSubscriptionResource(r.Schema) })
 		case "deployment":
 			resp = append(resp, func() resource.Resource { return NewDeploymentResource(r.Schema) })
 		case "gcp_flow_logs_pubsub_topic":
 			resp = append(resp, func() resource.Resource { return NewGcpFlowLogsPubsubTopicResource(r.Schema) })
+		case "gcp_flow_logs_storage_bucket_source":
+			resp = append(resp, func() resource.Resource { return NewGcpFlowLogsStorageBucketSourceResource(r.Schema) })
 		case "gcp_project":
 			resp = append(resp, func() resource.Resource { return NewGcpProjectResource(r.Schema) })
 		case "ip_list":
@@ -1247,6 +1253,200 @@ func (r *AwsFlowLogsS3BucketResource) ImportState(ctx context.Context, req resou
 	// TODO
 }
 
+// AwsFlowLogsS3BucketSourceResource implements the aws_flow_logs_s3_bucket_source resource.
+type AwsFlowLogsS3BucketSourceResource struct {
+	// schema is the schema of the aws_flow_logs_s3_bucket_source resource.
+	schema resource_schema.Schema
+
+	// providerData is the provider configuration.
+	config ProviderData
+}
+
+var _ resource.ResourceWithConfigure = &AwsFlowLogsS3BucketSourceResource{}
+var _ resource.ResourceWithImportState = &AwsFlowLogsS3BucketSourceResource{}
+
+// NewAwsFlowLogsS3BucketSourceResource returns a new aws_flow_logs_s3_bucket_source resource.
+func NewAwsFlowLogsS3BucketSourceResource(schema resource_schema.Schema) resource.Resource {
+	return &AwsFlowLogsS3BucketSourceResource{
+		schema: schema,
+	}
+}
+
+func (r *AwsFlowLogsS3BucketSourceResource) Metadata(ctx context.Context, req resource.MetadataRequest, resp *resource.MetadataResponse) {
+	resp.TypeName = req.ProviderTypeName + "_aws_flow_logs_s3_bucket_source"
+}
+
+func (r *AwsFlowLogsS3BucketSourceResource) Schema(ctx context.Context, req resource.SchemaRequest, resp *resource.SchemaResponse) {
+	resp.Schema = r.schema
+}
+
+func (r *AwsFlowLogsS3BucketSourceResource) Configure(ctx context.Context, req resource.ConfigureRequest, resp *resource.ConfigureResponse) {
+	if req.ProviderData == nil {
+		return
+	}
+
+	providerData, ok := req.ProviderData.(ProviderData)
+	if !ok {
+		resp.Diagnostics.AddError(
+			"Unexpected Resource Configure Type",
+			fmt.Sprintf("Expected ProviderData, got: %T. Please report this issue to the provider developers.", req.ProviderData),
+		)
+
+		return
+	}
+
+	r.config = providerData
+}
+
+func (r *AwsFlowLogsS3BucketSourceResource) Create(ctx context.Context, req resource.CreateRequest, resp *resource.CreateResponse) {
+	var data AwsFlowLogsS3BucketSourceResourceModel
+
+	resp.Diagnostics.Append(req.Plan.Get(ctx, &data)...)
+	if resp.Diagnostics.HasError() {
+		return
+	}
+
+	protoReq, diagReq := NewCreateAwsFlowLogsS3BucketSourceRequest(ctx, &data)
+	resp.Diagnostics.Append(diagReq...)
+	if resp.Diagnostics.HasError() {
+		return
+	}
+
+	tflog.Trace(ctx, "creating a resource", map[string]any{"type": "aws_flow_logs_s3_bucket_source"})
+
+	rpcCtx, rpcCancel := context.WithTimeout(ctx, r.config.RequestTimeout())
+	protoResp, err := r.config.Client().CreateAwsFlowLogsS3BucketSource(rpcCtx, protoReq)
+	rpcCancel()
+	if err != nil {
+		resp.Diagnostics.AddError("Config API Error", fmt.Sprintf("Unable to create aws_flow_logs_s3_bucket_source, got error: %s", err))
+		return
+	}
+
+	CopyCreateAwsFlowLogsS3BucketSourceResponse(&data, protoResp)
+
+	tflog.Trace(ctx, "created a resource", map[string]any{"type": "aws_flow_logs_s3_bucket_source", "id": protoResp.Id})
+
+	resp.Diagnostics.Append(resp.State.Set(ctx, &data)...)
+}
+
+func (r *AwsFlowLogsS3BucketSourceResource) Read(ctx context.Context, req resource.ReadRequest, resp *resource.ReadResponse) {
+	var data AwsFlowLogsS3BucketSourceResourceModel
+
+	resp.Diagnostics.Append(req.State.Get(ctx, &data)...)
+	if resp.Diagnostics.HasError() {
+		return
+	}
+
+	protoReq, diagsReq := NewReadAwsFlowLogsS3BucketSourceRequest(ctx, &data)
+	resp.Diagnostics.Append(diagsReq...)
+	if resp.Diagnostics.HasError() {
+		return
+	}
+
+	tflog.Trace(ctx, "reading a resource", map[string]any{"type": "aws_flow_logs_s3_bucket_source", "id": protoReq.Id})
+
+	rpcCtx, rpcCancel := context.WithTimeout(ctx, r.config.RequestTimeout())
+	protoResp, err := r.config.Client().ReadAwsFlowLogsS3BucketSource(rpcCtx, protoReq)
+	rpcCancel()
+	if err != nil {
+		switch status.Code(err) {
+		case codes.NotFound:
+			resp.Diagnostics.AddWarning("Resource Not Found", fmt.Sprintf("No aws_flow_logs_s3_bucket_source found with id %s", protoReq.Id))
+			resp.State.RemoveResource(ctx)
+			return
+		default:
+			resp.Diagnostics.AddError("Config API Error", fmt.Sprintf("Unable to read aws_flow_logs_s3_bucket_source, got error: %s", err))
+			return
+		}
+	}
+
+	CopyReadAwsFlowLogsS3BucketSourceResponse(&data, protoResp)
+
+	tflog.Trace(ctx, "read a resource", map[string]any{"type": "aws_flow_logs_s3_bucket_source", "id": protoResp.Id})
+
+	resp.Diagnostics.Append(resp.State.Set(ctx, &data)...)
+}
+
+func (r *AwsFlowLogsS3BucketSourceResource) Update(ctx context.Context, req resource.UpdateRequest, resp *resource.UpdateResponse) {
+	var beforeData AwsFlowLogsS3BucketSourceResourceModel
+	var afterData AwsFlowLogsS3BucketSourceResourceModel
+
+	resp.Diagnostics.Append(req.State.Get(ctx, &beforeData)...)
+	if resp.Diagnostics.HasError() {
+		return
+	}
+
+	resp.Diagnostics.Append(req.Plan.Get(ctx, &afterData)...)
+	if resp.Diagnostics.HasError() {
+		return
+	}
+
+	protoReq, diags := NewUpdateAwsFlowLogsS3BucketSourceRequest(ctx, &beforeData, &afterData)
+	resp.Diagnostics.Append(diags...)
+	if resp.Diagnostics.HasError() {
+		return
+	}
+
+	tflog.Trace(ctx, "updating a resource", map[string]any{"type": "aws_flow_logs_s3_bucket_source", "id": protoReq.Id, "update_mask": protoReq.UpdateMask.Paths})
+
+	rpcCtx, rpcCancel := context.WithTimeout(ctx, r.config.RequestTimeout())
+	protoResp, err := r.config.Client().UpdateAwsFlowLogsS3BucketSource(rpcCtx, protoReq)
+	rpcCancel()
+	if err != nil {
+		switch status.Code(err) {
+		case codes.NotFound:
+			resp.Diagnostics.AddError("Resource Not Found", fmt.Sprintf("No aws_flow_logs_s3_bucket_source found with id %s", protoReq.Id))
+			resp.State.RemoveResource(ctx)
+			return
+		default:
+			resp.Diagnostics.AddError("Config API Error", fmt.Sprintf("Unable to update aws_flow_logs_s3_bucket_source, got error: %s", err))
+			return
+		}
+	}
+
+	CopyUpdateAwsFlowLogsS3BucketSourceResponse(&afterData, protoResp)
+
+	tflog.Trace(ctx, "updated a resource", map[string]any{"type": "aws_flow_logs_s3_bucket_source", "id": protoResp.Id})
+
+	resp.Diagnostics.Append(resp.State.Set(ctx, &afterData)...)
+}
+
+func (r *AwsFlowLogsS3BucketSourceResource) Delete(ctx context.Context, req resource.DeleteRequest, resp *resource.DeleteResponse) {
+	var data AwsFlowLogsS3BucketSourceResourceModel
+
+	resp.Diagnostics.Append(req.State.Get(ctx, &data)...)
+	if resp.Diagnostics.HasError() {
+		return
+	}
+
+	protoReq, diags := NewDeleteAwsFlowLogsS3BucketSourceRequest(ctx, &data)
+	resp.Diagnostics.Append(diags...)
+	if resp.Diagnostics.HasError() {
+		return
+	}
+
+	tflog.Trace(ctx, "deleting a resource", map[string]any{"type": "aws_flow_logs_s3_bucket_source", "id": protoReq.Id})
+
+	rpcCtx, rpcCancel := context.WithTimeout(ctx, r.config.RequestTimeout())
+	_, err := r.config.Client().DeleteAwsFlowLogsS3BucketSource(rpcCtx, protoReq)
+	rpcCancel()
+	if err != nil {
+		switch status.Code(err) {
+		case codes.NotFound:
+			tflog.Trace(ctx, "resource was already deleted", map[string]any{"type": "aws_flow_logs_s3_bucket_source", "id": protoReq.Id})
+		default:
+			resp.Diagnostics.AddError("Config API Error", fmt.Sprintf("Unable to delete aws_flow_logs_s3_bucket_source, got error: %s", err))
+			return
+		}
+	}
+
+	tflog.Trace(ctx, "deleted a resource", map[string]any{"type": "aws_flow_logs_s3_bucket_source", "id": protoReq.Id})
+}
+
+func (r *AwsFlowLogsS3BucketSourceResource) ImportState(ctx context.Context, req resource.ImportStateRequest, resp *resource.ImportStateResponse) {
+	// TODO
+}
+
 // AzureFlowLogsStorageAccountResource implements the azure_flow_logs_storage_account resource.
 type AzureFlowLogsStorageAccountResource struct {
 	// schema is the schema of the azure_flow_logs_storage_account resource.
@@ -1438,6 +1638,200 @@ func (r *AzureFlowLogsStorageAccountResource) Delete(ctx context.Context, req re
 }
 
 func (r *AzureFlowLogsStorageAccountResource) ImportState(ctx context.Context, req resource.ImportStateRequest, resp *resource.ImportStateResponse) {
+	// TODO
+}
+
+// AzureFlowLogsStorageAccountSourceResource implements the azure_flow_logs_storage_account_source resource.
+type AzureFlowLogsStorageAccountSourceResource struct {
+	// schema is the schema of the azure_flow_logs_storage_account_source resource.
+	schema resource_schema.Schema
+
+	// providerData is the provider configuration.
+	config ProviderData
+}
+
+var _ resource.ResourceWithConfigure = &AzureFlowLogsStorageAccountSourceResource{}
+var _ resource.ResourceWithImportState = &AzureFlowLogsStorageAccountSourceResource{}
+
+// NewAzureFlowLogsStorageAccountSourceResource returns a new azure_flow_logs_storage_account_source resource.
+func NewAzureFlowLogsStorageAccountSourceResource(schema resource_schema.Schema) resource.Resource {
+	return &AzureFlowLogsStorageAccountSourceResource{
+		schema: schema,
+	}
+}
+
+func (r *AzureFlowLogsStorageAccountSourceResource) Metadata(ctx context.Context, req resource.MetadataRequest, resp *resource.MetadataResponse) {
+	resp.TypeName = req.ProviderTypeName + "_azure_flow_logs_storage_account_source"
+}
+
+func (r *AzureFlowLogsStorageAccountSourceResource) Schema(ctx context.Context, req resource.SchemaRequest, resp *resource.SchemaResponse) {
+	resp.Schema = r.schema
+}
+
+func (r *AzureFlowLogsStorageAccountSourceResource) Configure(ctx context.Context, req resource.ConfigureRequest, resp *resource.ConfigureResponse) {
+	if req.ProviderData == nil {
+		return
+	}
+
+	providerData, ok := req.ProviderData.(ProviderData)
+	if !ok {
+		resp.Diagnostics.AddError(
+			"Unexpected Resource Configure Type",
+			fmt.Sprintf("Expected ProviderData, got: %T. Please report this issue to the provider developers.", req.ProviderData),
+		)
+
+		return
+	}
+
+	r.config = providerData
+}
+
+func (r *AzureFlowLogsStorageAccountSourceResource) Create(ctx context.Context, req resource.CreateRequest, resp *resource.CreateResponse) {
+	var data AzureFlowLogsStorageAccountSourceResourceModel
+
+	resp.Diagnostics.Append(req.Plan.Get(ctx, &data)...)
+	if resp.Diagnostics.HasError() {
+		return
+	}
+
+	protoReq, diagReq := NewCreateAzureFlowLogsStorageAccountSourceRequest(ctx, &data)
+	resp.Diagnostics.Append(diagReq...)
+	if resp.Diagnostics.HasError() {
+		return
+	}
+
+	tflog.Trace(ctx, "creating a resource", map[string]any{"type": "azure_flow_logs_storage_account_source"})
+
+	rpcCtx, rpcCancel := context.WithTimeout(ctx, r.config.RequestTimeout())
+	protoResp, err := r.config.Client().CreateAzureFlowLogsStorageAccountSource(rpcCtx, protoReq)
+	rpcCancel()
+	if err != nil {
+		resp.Diagnostics.AddError("Config API Error", fmt.Sprintf("Unable to create azure_flow_logs_storage_account_source, got error: %s", err))
+		return
+	}
+
+	CopyCreateAzureFlowLogsStorageAccountSourceResponse(&data, protoResp)
+
+	tflog.Trace(ctx, "created a resource", map[string]any{"type": "azure_flow_logs_storage_account_source", "id": protoResp.Id})
+
+	resp.Diagnostics.Append(resp.State.Set(ctx, &data)...)
+}
+
+func (r *AzureFlowLogsStorageAccountSourceResource) Read(ctx context.Context, req resource.ReadRequest, resp *resource.ReadResponse) {
+	var data AzureFlowLogsStorageAccountSourceResourceModel
+
+	resp.Diagnostics.Append(req.State.Get(ctx, &data)...)
+	if resp.Diagnostics.HasError() {
+		return
+	}
+
+	protoReq, diagsReq := NewReadAzureFlowLogsStorageAccountSourceRequest(ctx, &data)
+	resp.Diagnostics.Append(diagsReq...)
+	if resp.Diagnostics.HasError() {
+		return
+	}
+
+	tflog.Trace(ctx, "reading a resource", map[string]any{"type": "azure_flow_logs_storage_account_source", "id": protoReq.Id})
+
+	rpcCtx, rpcCancel := context.WithTimeout(ctx, r.config.RequestTimeout())
+	protoResp, err := r.config.Client().ReadAzureFlowLogsStorageAccountSource(rpcCtx, protoReq)
+	rpcCancel()
+	if err != nil {
+		switch status.Code(err) {
+		case codes.NotFound:
+			resp.Diagnostics.AddWarning("Resource Not Found", fmt.Sprintf("No azure_flow_logs_storage_account_source found with id %s", protoReq.Id))
+			resp.State.RemoveResource(ctx)
+			return
+		default:
+			resp.Diagnostics.AddError("Config API Error", fmt.Sprintf("Unable to read azure_flow_logs_storage_account_source, got error: %s", err))
+			return
+		}
+	}
+
+	CopyReadAzureFlowLogsStorageAccountSourceResponse(&data, protoResp)
+
+	tflog.Trace(ctx, "read a resource", map[string]any{"type": "azure_flow_logs_storage_account_source", "id": protoResp.Id})
+
+	resp.Diagnostics.Append(resp.State.Set(ctx, &data)...)
+}
+
+func (r *AzureFlowLogsStorageAccountSourceResource) Update(ctx context.Context, req resource.UpdateRequest, resp *resource.UpdateResponse) {
+	var beforeData AzureFlowLogsStorageAccountSourceResourceModel
+	var afterData AzureFlowLogsStorageAccountSourceResourceModel
+
+	resp.Diagnostics.Append(req.State.Get(ctx, &beforeData)...)
+	if resp.Diagnostics.HasError() {
+		return
+	}
+
+	resp.Diagnostics.Append(req.Plan.Get(ctx, &afterData)...)
+	if resp.Diagnostics.HasError() {
+		return
+	}
+
+	protoReq, diags := NewUpdateAzureFlowLogsStorageAccountSourceRequest(ctx, &beforeData, &afterData)
+	resp.Diagnostics.Append(diags...)
+	if resp.Diagnostics.HasError() {
+		return
+	}
+
+	tflog.Trace(ctx, "updating a resource", map[string]any{"type": "azure_flow_logs_storage_account_source", "id": protoReq.Id, "update_mask": protoReq.UpdateMask.Paths})
+
+	rpcCtx, rpcCancel := context.WithTimeout(ctx, r.config.RequestTimeout())
+	protoResp, err := r.config.Client().UpdateAzureFlowLogsStorageAccountSource(rpcCtx, protoReq)
+	rpcCancel()
+	if err != nil {
+		switch status.Code(err) {
+		case codes.NotFound:
+			resp.Diagnostics.AddError("Resource Not Found", fmt.Sprintf("No azure_flow_logs_storage_account_source found with id %s", protoReq.Id))
+			resp.State.RemoveResource(ctx)
+			return
+		default:
+			resp.Diagnostics.AddError("Config API Error", fmt.Sprintf("Unable to update azure_flow_logs_storage_account_source, got error: %s", err))
+			return
+		}
+	}
+
+	CopyUpdateAzureFlowLogsStorageAccountSourceResponse(&afterData, protoResp)
+
+	tflog.Trace(ctx, "updated a resource", map[string]any{"type": "azure_flow_logs_storage_account_source", "id": protoResp.Id})
+
+	resp.Diagnostics.Append(resp.State.Set(ctx, &afterData)...)
+}
+
+func (r *AzureFlowLogsStorageAccountSourceResource) Delete(ctx context.Context, req resource.DeleteRequest, resp *resource.DeleteResponse) {
+	var data AzureFlowLogsStorageAccountSourceResourceModel
+
+	resp.Diagnostics.Append(req.State.Get(ctx, &data)...)
+	if resp.Diagnostics.HasError() {
+		return
+	}
+
+	protoReq, diags := NewDeleteAzureFlowLogsStorageAccountSourceRequest(ctx, &data)
+	resp.Diagnostics.Append(diags...)
+	if resp.Diagnostics.HasError() {
+		return
+	}
+
+	tflog.Trace(ctx, "deleting a resource", map[string]any{"type": "azure_flow_logs_storage_account_source", "id": protoReq.Id})
+
+	rpcCtx, rpcCancel := context.WithTimeout(ctx, r.config.RequestTimeout())
+	_, err := r.config.Client().DeleteAzureFlowLogsStorageAccountSource(rpcCtx, protoReq)
+	rpcCancel()
+	if err != nil {
+		switch status.Code(err) {
+		case codes.NotFound:
+			tflog.Trace(ctx, "resource was already deleted", map[string]any{"type": "azure_flow_logs_storage_account_source", "id": protoReq.Id})
+		default:
+			resp.Diagnostics.AddError("Config API Error", fmt.Sprintf("Unable to delete azure_flow_logs_storage_account_source, got error: %s", err))
+			return
+		}
+	}
+
+	tflog.Trace(ctx, "deleted a resource", map[string]any{"type": "azure_flow_logs_storage_account_source", "id": protoReq.Id})
+}
+
+func (r *AzureFlowLogsStorageAccountSourceResource) ImportState(ctx context.Context, req resource.ImportStateRequest, resp *resource.ImportStateResponse) {
 	// TODO
 }
 
@@ -2020,6 +2414,200 @@ func (r *GcpFlowLogsPubsubTopicResource) Delete(ctx context.Context, req resourc
 }
 
 func (r *GcpFlowLogsPubsubTopicResource) ImportState(ctx context.Context, req resource.ImportStateRequest, resp *resource.ImportStateResponse) {
+	// TODO
+}
+
+// GcpFlowLogsStorageBucketSourceResource implements the gcp_flow_logs_storage_bucket_source resource.
+type GcpFlowLogsStorageBucketSourceResource struct {
+	// schema is the schema of the gcp_flow_logs_storage_bucket_source resource.
+	schema resource_schema.Schema
+
+	// providerData is the provider configuration.
+	config ProviderData
+}
+
+var _ resource.ResourceWithConfigure = &GcpFlowLogsStorageBucketSourceResource{}
+var _ resource.ResourceWithImportState = &GcpFlowLogsStorageBucketSourceResource{}
+
+// NewGcpFlowLogsStorageBucketSourceResource returns a new gcp_flow_logs_storage_bucket_source resource.
+func NewGcpFlowLogsStorageBucketSourceResource(schema resource_schema.Schema) resource.Resource {
+	return &GcpFlowLogsStorageBucketSourceResource{
+		schema: schema,
+	}
+}
+
+func (r *GcpFlowLogsStorageBucketSourceResource) Metadata(ctx context.Context, req resource.MetadataRequest, resp *resource.MetadataResponse) {
+	resp.TypeName = req.ProviderTypeName + "_gcp_flow_logs_storage_bucket_source"
+}
+
+func (r *GcpFlowLogsStorageBucketSourceResource) Schema(ctx context.Context, req resource.SchemaRequest, resp *resource.SchemaResponse) {
+	resp.Schema = r.schema
+}
+
+func (r *GcpFlowLogsStorageBucketSourceResource) Configure(ctx context.Context, req resource.ConfigureRequest, resp *resource.ConfigureResponse) {
+	if req.ProviderData == nil {
+		return
+	}
+
+	providerData, ok := req.ProviderData.(ProviderData)
+	if !ok {
+		resp.Diagnostics.AddError(
+			"Unexpected Resource Configure Type",
+			fmt.Sprintf("Expected ProviderData, got: %T. Please report this issue to the provider developers.", req.ProviderData),
+		)
+
+		return
+	}
+
+	r.config = providerData
+}
+
+func (r *GcpFlowLogsStorageBucketSourceResource) Create(ctx context.Context, req resource.CreateRequest, resp *resource.CreateResponse) {
+	var data GcpFlowLogsStorageBucketSourceResourceModel
+
+	resp.Diagnostics.Append(req.Plan.Get(ctx, &data)...)
+	if resp.Diagnostics.HasError() {
+		return
+	}
+
+	protoReq, diagReq := NewCreateGcpFlowLogsStorageBucketSourceRequest(ctx, &data)
+	resp.Diagnostics.Append(diagReq...)
+	if resp.Diagnostics.HasError() {
+		return
+	}
+
+	tflog.Trace(ctx, "creating a resource", map[string]any{"type": "gcp_flow_logs_storage_bucket_source"})
+
+	rpcCtx, rpcCancel := context.WithTimeout(ctx, r.config.RequestTimeout())
+	protoResp, err := r.config.Client().CreateGcpFlowLogsStorageBucketSource(rpcCtx, protoReq)
+	rpcCancel()
+	if err != nil {
+		resp.Diagnostics.AddError("Config API Error", fmt.Sprintf("Unable to create gcp_flow_logs_storage_bucket_source, got error: %s", err))
+		return
+	}
+
+	CopyCreateGcpFlowLogsStorageBucketSourceResponse(&data, protoResp)
+
+	tflog.Trace(ctx, "created a resource", map[string]any{"type": "gcp_flow_logs_storage_bucket_source", "id": protoResp.Id})
+
+	resp.Diagnostics.Append(resp.State.Set(ctx, &data)...)
+}
+
+func (r *GcpFlowLogsStorageBucketSourceResource) Read(ctx context.Context, req resource.ReadRequest, resp *resource.ReadResponse) {
+	var data GcpFlowLogsStorageBucketSourceResourceModel
+
+	resp.Diagnostics.Append(req.State.Get(ctx, &data)...)
+	if resp.Diagnostics.HasError() {
+		return
+	}
+
+	protoReq, diagsReq := NewReadGcpFlowLogsStorageBucketSourceRequest(ctx, &data)
+	resp.Diagnostics.Append(diagsReq...)
+	if resp.Diagnostics.HasError() {
+		return
+	}
+
+	tflog.Trace(ctx, "reading a resource", map[string]any{"type": "gcp_flow_logs_storage_bucket_source", "id": protoReq.Id})
+
+	rpcCtx, rpcCancel := context.WithTimeout(ctx, r.config.RequestTimeout())
+	protoResp, err := r.config.Client().ReadGcpFlowLogsStorageBucketSource(rpcCtx, protoReq)
+	rpcCancel()
+	if err != nil {
+		switch status.Code(err) {
+		case codes.NotFound:
+			resp.Diagnostics.AddWarning("Resource Not Found", fmt.Sprintf("No gcp_flow_logs_storage_bucket_source found with id %s", protoReq.Id))
+			resp.State.RemoveResource(ctx)
+			return
+		default:
+			resp.Diagnostics.AddError("Config API Error", fmt.Sprintf("Unable to read gcp_flow_logs_storage_bucket_source, got error: %s", err))
+			return
+		}
+	}
+
+	CopyReadGcpFlowLogsStorageBucketSourceResponse(&data, protoResp)
+
+	tflog.Trace(ctx, "read a resource", map[string]any{"type": "gcp_flow_logs_storage_bucket_source", "id": protoResp.Id})
+
+	resp.Diagnostics.Append(resp.State.Set(ctx, &data)...)
+}
+
+func (r *GcpFlowLogsStorageBucketSourceResource) Update(ctx context.Context, req resource.UpdateRequest, resp *resource.UpdateResponse) {
+	var beforeData GcpFlowLogsStorageBucketSourceResourceModel
+	var afterData GcpFlowLogsStorageBucketSourceResourceModel
+
+	resp.Diagnostics.Append(req.State.Get(ctx, &beforeData)...)
+	if resp.Diagnostics.HasError() {
+		return
+	}
+
+	resp.Diagnostics.Append(req.Plan.Get(ctx, &afterData)...)
+	if resp.Diagnostics.HasError() {
+		return
+	}
+
+	protoReq, diags := NewUpdateGcpFlowLogsStorageBucketSourceRequest(ctx, &beforeData, &afterData)
+	resp.Diagnostics.Append(diags...)
+	if resp.Diagnostics.HasError() {
+		return
+	}
+
+	tflog.Trace(ctx, "updating a resource", map[string]any{"type": "gcp_flow_logs_storage_bucket_source", "id": protoReq.Id, "update_mask": protoReq.UpdateMask.Paths})
+
+	rpcCtx, rpcCancel := context.WithTimeout(ctx, r.config.RequestTimeout())
+	protoResp, err := r.config.Client().UpdateGcpFlowLogsStorageBucketSource(rpcCtx, protoReq)
+	rpcCancel()
+	if err != nil {
+		switch status.Code(err) {
+		case codes.NotFound:
+			resp.Diagnostics.AddError("Resource Not Found", fmt.Sprintf("No gcp_flow_logs_storage_bucket_source found with id %s", protoReq.Id))
+			resp.State.RemoveResource(ctx)
+			return
+		default:
+			resp.Diagnostics.AddError("Config API Error", fmt.Sprintf("Unable to update gcp_flow_logs_storage_bucket_source, got error: %s", err))
+			return
+		}
+	}
+
+	CopyUpdateGcpFlowLogsStorageBucketSourceResponse(&afterData, protoResp)
+
+	tflog.Trace(ctx, "updated a resource", map[string]any{"type": "gcp_flow_logs_storage_bucket_source", "id": protoResp.Id})
+
+	resp.Diagnostics.Append(resp.State.Set(ctx, &afterData)...)
+}
+
+func (r *GcpFlowLogsStorageBucketSourceResource) Delete(ctx context.Context, req resource.DeleteRequest, resp *resource.DeleteResponse) {
+	var data GcpFlowLogsStorageBucketSourceResourceModel
+
+	resp.Diagnostics.Append(req.State.Get(ctx, &data)...)
+	if resp.Diagnostics.HasError() {
+		return
+	}
+
+	protoReq, diags := NewDeleteGcpFlowLogsStorageBucketSourceRequest(ctx, &data)
+	resp.Diagnostics.Append(diags...)
+	if resp.Diagnostics.HasError() {
+		return
+	}
+
+	tflog.Trace(ctx, "deleting a resource", map[string]any{"type": "gcp_flow_logs_storage_bucket_source", "id": protoReq.Id})
+
+	rpcCtx, rpcCancel := context.WithTimeout(ctx, r.config.RequestTimeout())
+	_, err := r.config.Client().DeleteGcpFlowLogsStorageBucketSource(rpcCtx, protoReq)
+	rpcCancel()
+	if err != nil {
+		switch status.Code(err) {
+		case codes.NotFound:
+			tflog.Trace(ctx, "resource was already deleted", map[string]any{"type": "gcp_flow_logs_storage_bucket_source", "id": protoReq.Id})
+		default:
+			resp.Diagnostics.AddError("Config API Error", fmt.Sprintf("Unable to delete gcp_flow_logs_storage_bucket_source, got error: %s", err))
+			return
+		}
+	}
+
+	tflog.Trace(ctx, "deleted a resource", map[string]any{"type": "gcp_flow_logs_storage_bucket_source", "id": protoReq.Id})
+}
+
+func (r *GcpFlowLogsStorageBucketSourceResource) ImportState(ctx context.Context, req resource.ImportStateRequest, resp *resource.ImportStateResponse) {
 	// TODO
 }
 
@@ -3444,10 +4032,25 @@ type AwsFlowLogsS3BucketResourceModel struct {
 	S3BucketArn types.String `tfsdk:"s3_bucket_arn"`
 }
 
+type AwsFlowLogsS3BucketSourceResourceModel struct {
+	Id         types.String `tfsdk:"id"`
+	AccountId  types.String `tfsdk:"account_id"`
+	BucketName types.String `tfsdk:"bucket_name"`
+	PathPrefix types.String `tfsdk:"path_prefix"`
+}
+
 type AzureFlowLogsStorageAccountResourceModel struct {
 	Id                       types.String `tfsdk:"id"`
 	StorageAccountResourceId types.String `tfsdk:"storage_account_resource_id"`
 	SubscriptionId           types.String `tfsdk:"subscription_id"`
+}
+
+type AzureFlowLogsStorageAccountSourceResourceModel struct {
+	Id                 types.String `tfsdk:"id"`
+	ContainerName      types.String `tfsdk:"container_name"`
+	PathPrefix         types.String `tfsdk:"path_prefix"`
+	StorageAccountName types.String `tfsdk:"storage_account_name"`
+	SubscriptionId     types.String `tfsdk:"subscription_id"`
 }
 
 type AzureSubscriptionResourceModel struct {
@@ -3480,6 +4083,13 @@ type GcpFlowLogsPubsubTopicResourceModel struct {
 	Id            types.String `tfsdk:"id"`
 	ProjectId     types.String `tfsdk:"project_id"`
 	PubsubTopicId types.String `tfsdk:"pubsub_topic_id"`
+}
+
+type GcpFlowLogsStorageBucketSourceResourceModel struct {
+	Id         types.String `tfsdk:"id"`
+	BucketName types.String `tfsdk:"bucket_name"`
+	PathPrefix types.String `tfsdk:"path_prefix"`
+	ProjectId  types.String `tfsdk:"project_id"`
 }
 
 type GcpProjectResourceModel struct {
@@ -4277,6 +4887,54 @@ func NewDeleteAwsFlowLogsS3BucketRequest(ctx context.Context, data *AwsFlowLogsS
 	return proto, diags
 }
 
+func NewCreateAwsFlowLogsS3BucketSourceRequest(ctx context.Context, data *AwsFlowLogsS3BucketSourceResourceModel) (*configv1.CreateAwsFlowLogsS3BucketSourceRequest, diag.Diagnostics) {
+	var diags diag.Diagnostics
+	proto := &configv1.CreateAwsFlowLogsS3BucketSourceRequest{}
+	if !data.AccountId.IsUnknown() && !data.AccountId.IsNull() {
+		var dataValue attr.Value = data.AccountId
+		var protoValue string
+		protoValue = dataValue.(types.String).ValueString()
+		proto.AccountId = protoValue
+	}
+	if !data.BucketName.IsUnknown() && !data.BucketName.IsNull() {
+		var dataValue attr.Value = data.BucketName
+		var protoValue string
+		protoValue = dataValue.(types.String).ValueString()
+		proto.BucketName = protoValue
+	}
+	if !data.PathPrefix.IsUnknown() && !data.PathPrefix.IsNull() {
+		var dataValue attr.Value = data.PathPrefix
+		var protoValue string
+		protoValue = dataValue.(types.String).ValueString()
+		proto.PathPrefix = &protoValue
+	}
+	return proto, diags
+}
+
+func NewReadAwsFlowLogsS3BucketSourceRequest(ctx context.Context, data *AwsFlowLogsS3BucketSourceResourceModel) (*configv1.ReadAwsFlowLogsS3BucketSourceRequest, diag.Diagnostics) {
+	var diags diag.Diagnostics
+	proto := &configv1.ReadAwsFlowLogsS3BucketSourceRequest{}
+	if !data.Id.IsUnknown() && !data.Id.IsNull() {
+		var dataValue attr.Value = data.Id
+		var protoValue string
+		protoValue = dataValue.(types.String).ValueString()
+		proto.Id = protoValue
+	}
+	return proto, diags
+}
+
+func NewDeleteAwsFlowLogsS3BucketSourceRequest(ctx context.Context, data *AwsFlowLogsS3BucketSourceResourceModel) (*configv1.DeleteAwsFlowLogsS3BucketSourceRequest, diag.Diagnostics) {
+	var diags diag.Diagnostics
+	proto := &configv1.DeleteAwsFlowLogsS3BucketSourceRequest{}
+	if !data.Id.IsUnknown() && !data.Id.IsNull() {
+		var dataValue attr.Value = data.Id
+		var protoValue string
+		protoValue = dataValue.(types.String).ValueString()
+		proto.Id = protoValue
+	}
+	return proto, diags
+}
+
 func NewCreateAzureFlowLogsStorageAccountRequest(ctx context.Context, data *AzureFlowLogsStorageAccountResourceModel) (*configv1.CreateAzureFlowLogsStorageAccountRequest, diag.Diagnostics) {
 	var diags diag.Diagnostics
 	proto := &configv1.CreateAzureFlowLogsStorageAccountRequest{}
@@ -4310,6 +4968,60 @@ func NewReadAzureFlowLogsStorageAccountRequest(ctx context.Context, data *AzureF
 func NewDeleteAzureFlowLogsStorageAccountRequest(ctx context.Context, data *AzureFlowLogsStorageAccountResourceModel) (*configv1.DeleteAzureFlowLogsStorageAccountRequest, diag.Diagnostics) {
 	var diags diag.Diagnostics
 	proto := &configv1.DeleteAzureFlowLogsStorageAccountRequest{}
+	if !data.Id.IsUnknown() && !data.Id.IsNull() {
+		var dataValue attr.Value = data.Id
+		var protoValue string
+		protoValue = dataValue.(types.String).ValueString()
+		proto.Id = protoValue
+	}
+	return proto, diags
+}
+
+func NewCreateAzureFlowLogsStorageAccountSourceRequest(ctx context.Context, data *AzureFlowLogsStorageAccountSourceResourceModel) (*configv1.CreateAzureFlowLogsStorageAccountSourceRequest, diag.Diagnostics) {
+	var diags diag.Diagnostics
+	proto := &configv1.CreateAzureFlowLogsStorageAccountSourceRequest{}
+	if !data.ContainerName.IsUnknown() && !data.ContainerName.IsNull() {
+		var dataValue attr.Value = data.ContainerName
+		var protoValue string
+		protoValue = dataValue.(types.String).ValueString()
+		proto.ContainerName = &protoValue
+	}
+	if !data.PathPrefix.IsUnknown() && !data.PathPrefix.IsNull() {
+		var dataValue attr.Value = data.PathPrefix
+		var protoValue string
+		protoValue = dataValue.(types.String).ValueString()
+		proto.PathPrefix = &protoValue
+	}
+	if !data.StorageAccountName.IsUnknown() && !data.StorageAccountName.IsNull() {
+		var dataValue attr.Value = data.StorageAccountName
+		var protoValue string
+		protoValue = dataValue.(types.String).ValueString()
+		proto.StorageAccountName = protoValue
+	}
+	if !data.SubscriptionId.IsUnknown() && !data.SubscriptionId.IsNull() {
+		var dataValue attr.Value = data.SubscriptionId
+		var protoValue string
+		protoValue = dataValue.(types.String).ValueString()
+		proto.SubscriptionId = protoValue
+	}
+	return proto, diags
+}
+
+func NewReadAzureFlowLogsStorageAccountSourceRequest(ctx context.Context, data *AzureFlowLogsStorageAccountSourceResourceModel) (*configv1.ReadAzureFlowLogsStorageAccountSourceRequest, diag.Diagnostics) {
+	var diags diag.Diagnostics
+	proto := &configv1.ReadAzureFlowLogsStorageAccountSourceRequest{}
+	if !data.Id.IsUnknown() && !data.Id.IsNull() {
+		var dataValue attr.Value = data.Id
+		var protoValue string
+		protoValue = dataValue.(types.String).ValueString()
+		proto.Id = protoValue
+	}
+	return proto, diags
+}
+
+func NewDeleteAzureFlowLogsStorageAccountSourceRequest(ctx context.Context, data *AzureFlowLogsStorageAccountSourceResourceModel) (*configv1.DeleteAzureFlowLogsStorageAccountSourceRequest, diag.Diagnostics) {
+	var diags diag.Diagnostics
+	proto := &configv1.DeleteAzureFlowLogsStorageAccountSourceRequest{}
 	if !data.Id.IsUnknown() && !data.Id.IsNull() {
 		var dataValue attr.Value = data.Id
 		var protoValue string
@@ -4628,6 +5340,54 @@ func NewReadGcpFlowLogsPubsubTopicRequest(ctx context.Context, data *GcpFlowLogs
 func NewDeleteGcpFlowLogsPubsubTopicRequest(ctx context.Context, data *GcpFlowLogsPubsubTopicResourceModel) (*configv1.DeleteGcpFlowLogsPubsubTopicRequest, diag.Diagnostics) {
 	var diags diag.Diagnostics
 	proto := &configv1.DeleteGcpFlowLogsPubsubTopicRequest{}
+	if !data.Id.IsUnknown() && !data.Id.IsNull() {
+		var dataValue attr.Value = data.Id
+		var protoValue string
+		protoValue = dataValue.(types.String).ValueString()
+		proto.Id = protoValue
+	}
+	return proto, diags
+}
+
+func NewCreateGcpFlowLogsStorageBucketSourceRequest(ctx context.Context, data *GcpFlowLogsStorageBucketSourceResourceModel) (*configv1.CreateGcpFlowLogsStorageBucketSourceRequest, diag.Diagnostics) {
+	var diags diag.Diagnostics
+	proto := &configv1.CreateGcpFlowLogsStorageBucketSourceRequest{}
+	if !data.BucketName.IsUnknown() && !data.BucketName.IsNull() {
+		var dataValue attr.Value = data.BucketName
+		var protoValue string
+		protoValue = dataValue.(types.String).ValueString()
+		proto.BucketName = protoValue
+	}
+	if !data.PathPrefix.IsUnknown() && !data.PathPrefix.IsNull() {
+		var dataValue attr.Value = data.PathPrefix
+		var protoValue string
+		protoValue = dataValue.(types.String).ValueString()
+		proto.PathPrefix = &protoValue
+	}
+	if !data.ProjectId.IsUnknown() && !data.ProjectId.IsNull() {
+		var dataValue attr.Value = data.ProjectId
+		var protoValue string
+		protoValue = dataValue.(types.String).ValueString()
+		proto.ProjectId = protoValue
+	}
+	return proto, diags
+}
+
+func NewReadGcpFlowLogsStorageBucketSourceRequest(ctx context.Context, data *GcpFlowLogsStorageBucketSourceResourceModel) (*configv1.ReadGcpFlowLogsStorageBucketSourceRequest, diag.Diagnostics) {
+	var diags diag.Diagnostics
+	proto := &configv1.ReadGcpFlowLogsStorageBucketSourceRequest{}
+	if !data.Id.IsUnknown() && !data.Id.IsNull() {
+		var dataValue attr.Value = data.Id
+		var protoValue string
+		protoValue = dataValue.(types.String).ValueString()
+		proto.Id = protoValue
+	}
+	return proto, diags
+}
+
+func NewDeleteGcpFlowLogsStorageBucketSourceRequest(ctx context.Context, data *GcpFlowLogsStorageBucketSourceResourceModel) (*configv1.DeleteGcpFlowLogsStorageBucketSourceRequest, diag.Diagnostics) {
+	var diags diag.Diagnostics
+	proto := &configv1.DeleteGcpFlowLogsStorageBucketSourceRequest{}
 	if !data.Id.IsUnknown() && !data.Id.IsNull() {
 		var dataValue attr.Value = data.Id
 		var protoValue string
@@ -5693,9 +6453,25 @@ func NewUpdateAwsFlowLogsS3BucketRequest(ctx context.Context, beforeData, afterD
 	return proto, diags
 }
 
+func NewUpdateAwsFlowLogsS3BucketSourceRequest(ctx context.Context, beforeData, afterData *AwsFlowLogsS3BucketSourceResourceModel) (*configv1.UpdateAwsFlowLogsS3BucketSourceRequest, diag.Diagnostics) {
+	var diags diag.Diagnostics
+	proto := &configv1.UpdateAwsFlowLogsS3BucketSourceRequest{}
+	proto.UpdateMask, _ = fieldmaskpb.New(proto)
+	proto.Id = beforeData.Id.ValueString()
+	return proto, diags
+}
+
 func NewUpdateAzureFlowLogsStorageAccountRequest(ctx context.Context, beforeData, afterData *AzureFlowLogsStorageAccountResourceModel) (*configv1.UpdateAzureFlowLogsStorageAccountRequest, diag.Diagnostics) {
 	var diags diag.Diagnostics
 	proto := &configv1.UpdateAzureFlowLogsStorageAccountRequest{}
+	proto.UpdateMask, _ = fieldmaskpb.New(proto)
+	proto.Id = beforeData.Id.ValueString()
+	return proto, diags
+}
+
+func NewUpdateAzureFlowLogsStorageAccountSourceRequest(ctx context.Context, beforeData, afterData *AzureFlowLogsStorageAccountSourceResourceModel) (*configv1.UpdateAzureFlowLogsStorageAccountSourceRequest, diag.Diagnostics) {
+	var diags diag.Diagnostics
+	proto := &configv1.UpdateAzureFlowLogsStorageAccountSourceRequest{}
 	proto.UpdateMask, _ = fieldmaskpb.New(proto)
 	proto.Id = beforeData.Id.ValueString()
 	return proto, diags
@@ -5945,6 +6721,14 @@ func NewUpdateDeploymentRequest(ctx context.Context, beforeData, afterData *Depl
 func NewUpdateGcpFlowLogsPubsubTopicRequest(ctx context.Context, beforeData, afterData *GcpFlowLogsPubsubTopicResourceModel) (*configv1.UpdateGcpFlowLogsPubsubTopicRequest, diag.Diagnostics) {
 	var diags diag.Diagnostics
 	proto := &configv1.UpdateGcpFlowLogsPubsubTopicRequest{}
+	proto.UpdateMask, _ = fieldmaskpb.New(proto)
+	proto.Id = beforeData.Id.ValueString()
+	return proto, diags
+}
+
+func NewUpdateGcpFlowLogsStorageBucketSourceRequest(ctx context.Context, beforeData, afterData *GcpFlowLogsStorageBucketSourceResourceModel) (*configv1.UpdateGcpFlowLogsStorageBucketSourceRequest, diag.Diagnostics) {
+	var diags diag.Diagnostics
+	proto := &configv1.UpdateGcpFlowLogsStorageBucketSourceRequest{}
 	proto.UpdateMask, _ = fieldmaskpb.New(proto)
 	proto.Id = beforeData.Id.ValueString()
 	return proto, diags
@@ -7746,6 +8530,24 @@ func CopyUpdateAwsFlowLogsS3BucketResponse(dst *AwsFlowLogsS3BucketResourceModel
 	dst.AccountId = types.StringValue(src.AccountId)
 	dst.S3BucketArn = types.StringValue(src.S3BucketArn)
 }
+func CopyCreateAwsFlowLogsS3BucketSourceResponse(dst *AwsFlowLogsS3BucketSourceResourceModel, src *configv1.CreateAwsFlowLogsS3BucketSourceResponse) {
+	dst.Id = types.StringValue(src.Id)
+	dst.AccountId = types.StringValue(src.AccountId)
+	dst.BucketName = types.StringValue(src.BucketName)
+	dst.PathPrefix = types.StringPointerValue(src.PathPrefix)
+}
+func CopyReadAwsFlowLogsS3BucketSourceResponse(dst *AwsFlowLogsS3BucketSourceResourceModel, src *configv1.ReadAwsFlowLogsS3BucketSourceResponse) {
+	dst.Id = types.StringValue(src.Id)
+	dst.AccountId = types.StringValue(src.AccountId)
+	dst.BucketName = types.StringValue(src.BucketName)
+	dst.PathPrefix = types.StringPointerValue(src.PathPrefix)
+}
+func CopyUpdateAwsFlowLogsS3BucketSourceResponse(dst *AwsFlowLogsS3BucketSourceResourceModel, src *configv1.UpdateAwsFlowLogsS3BucketSourceResponse) {
+	dst.Id = types.StringValue(src.Id)
+	dst.AccountId = types.StringValue(src.AccountId)
+	dst.BucketName = types.StringValue(src.BucketName)
+	dst.PathPrefix = types.StringPointerValue(src.PathPrefix)
+}
 func CopyCreateAzureFlowLogsStorageAccountResponse(dst *AzureFlowLogsStorageAccountResourceModel, src *configv1.CreateAzureFlowLogsStorageAccountResponse) {
 	dst.Id = types.StringValue(src.Id)
 	dst.StorageAccountResourceId = types.StringValue(src.StorageAccountResourceId)
@@ -7759,6 +8561,27 @@ func CopyReadAzureFlowLogsStorageAccountResponse(dst *AzureFlowLogsStorageAccoun
 func CopyUpdateAzureFlowLogsStorageAccountResponse(dst *AzureFlowLogsStorageAccountResourceModel, src *configv1.UpdateAzureFlowLogsStorageAccountResponse) {
 	dst.Id = types.StringValue(src.Id)
 	dst.StorageAccountResourceId = types.StringValue(src.StorageAccountResourceId)
+	dst.SubscriptionId = types.StringValue(src.SubscriptionId)
+}
+func CopyCreateAzureFlowLogsStorageAccountSourceResponse(dst *AzureFlowLogsStorageAccountSourceResourceModel, src *configv1.CreateAzureFlowLogsStorageAccountSourceResponse) {
+	dst.Id = types.StringValue(src.Id)
+	dst.ContainerName = types.StringPointerValue(src.ContainerName)
+	dst.PathPrefix = types.StringPointerValue(src.PathPrefix)
+	dst.StorageAccountName = types.StringValue(src.StorageAccountName)
+	dst.SubscriptionId = types.StringValue(src.SubscriptionId)
+}
+func CopyReadAzureFlowLogsStorageAccountSourceResponse(dst *AzureFlowLogsStorageAccountSourceResourceModel, src *configv1.ReadAzureFlowLogsStorageAccountSourceResponse) {
+	dst.Id = types.StringValue(src.Id)
+	dst.ContainerName = types.StringPointerValue(src.ContainerName)
+	dst.PathPrefix = types.StringPointerValue(src.PathPrefix)
+	dst.StorageAccountName = types.StringValue(src.StorageAccountName)
+	dst.SubscriptionId = types.StringValue(src.SubscriptionId)
+}
+func CopyUpdateAzureFlowLogsStorageAccountSourceResponse(dst *AzureFlowLogsStorageAccountSourceResourceModel, src *configv1.UpdateAzureFlowLogsStorageAccountSourceResponse) {
+	dst.Id = types.StringValue(src.Id)
+	dst.ContainerName = types.StringPointerValue(src.ContainerName)
+	dst.PathPrefix = types.StringPointerValue(src.PathPrefix)
+	dst.StorageAccountName = types.StringValue(src.StorageAccountName)
 	dst.SubscriptionId = types.StringValue(src.SubscriptionId)
 }
 func CopyCreateAzureSubscriptionResponse(dst *AzureSubscriptionResourceModel, src *configv1.CreateAzureSubscriptionResponse) {
@@ -8456,6 +9279,24 @@ func CopyUpdateGcpFlowLogsPubsubTopicResponse(dst *GcpFlowLogsPubsubTopicResourc
 	dst.Id = types.StringValue(src.Id)
 	dst.ProjectId = types.StringValue(src.ProjectId)
 	dst.PubsubTopicId = types.StringValue(src.PubsubTopicId)
+}
+func CopyCreateGcpFlowLogsStorageBucketSourceResponse(dst *GcpFlowLogsStorageBucketSourceResourceModel, src *configv1.CreateGcpFlowLogsStorageBucketSourceResponse) {
+	dst.Id = types.StringValue(src.Id)
+	dst.BucketName = types.StringValue(src.BucketName)
+	dst.PathPrefix = types.StringPointerValue(src.PathPrefix)
+	dst.ProjectId = types.StringValue(src.ProjectId)
+}
+func CopyReadGcpFlowLogsStorageBucketSourceResponse(dst *GcpFlowLogsStorageBucketSourceResourceModel, src *configv1.ReadGcpFlowLogsStorageBucketSourceResponse) {
+	dst.Id = types.StringValue(src.Id)
+	dst.BucketName = types.StringValue(src.BucketName)
+	dst.PathPrefix = types.StringPointerValue(src.PathPrefix)
+	dst.ProjectId = types.StringValue(src.ProjectId)
+}
+func CopyUpdateGcpFlowLogsStorageBucketSourceResponse(dst *GcpFlowLogsStorageBucketSourceResourceModel, src *configv1.UpdateGcpFlowLogsStorageBucketSourceResponse) {
+	dst.Id = types.StringValue(src.Id)
+	dst.BucketName = types.StringValue(src.BucketName)
+	dst.PathPrefix = types.StringPointerValue(src.PathPrefix)
+	dst.ProjectId = types.StringValue(src.ProjectId)
 }
 func CopyCreateGcpProjectResponse(dst *GcpProjectResourceModel, src *configv1.CreateGcpProjectResponse) {
 	dst.Id = types.StringValue(src.Id)

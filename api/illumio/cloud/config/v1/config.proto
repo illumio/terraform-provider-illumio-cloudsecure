@@ -30,10 +30,18 @@ service ConfigService {
   rpc ReadAwsFlowLogsS3Bucket(ReadAwsFlowLogsS3BucketRequest) returns (ReadAwsFlowLogsS3BucketResponse);
   rpc UpdateAwsFlowLogsS3Bucket(UpdateAwsFlowLogsS3BucketRequest) returns (UpdateAwsFlowLogsS3BucketResponse);
   rpc DeleteAwsFlowLogsS3Bucket(DeleteAwsFlowLogsS3BucketRequest) returns (google.protobuf.Empty);
+  rpc CreateAwsFlowLogsS3BucketSource(CreateAwsFlowLogsS3BucketSourceRequest) returns (CreateAwsFlowLogsS3BucketSourceResponse);
+  rpc ReadAwsFlowLogsS3BucketSource(ReadAwsFlowLogsS3BucketSourceRequest) returns (ReadAwsFlowLogsS3BucketSourceResponse);
+  rpc UpdateAwsFlowLogsS3BucketSource(UpdateAwsFlowLogsS3BucketSourceRequest) returns (UpdateAwsFlowLogsS3BucketSourceResponse);
+  rpc DeleteAwsFlowLogsS3BucketSource(DeleteAwsFlowLogsS3BucketSourceRequest) returns (google.protobuf.Empty);
   rpc CreateAzureFlowLogsStorageAccount(CreateAzureFlowLogsStorageAccountRequest) returns (CreateAzureFlowLogsStorageAccountResponse);
   rpc ReadAzureFlowLogsStorageAccount(ReadAzureFlowLogsStorageAccountRequest) returns (ReadAzureFlowLogsStorageAccountResponse);
   rpc UpdateAzureFlowLogsStorageAccount(UpdateAzureFlowLogsStorageAccountRequest) returns (UpdateAzureFlowLogsStorageAccountResponse);
   rpc DeleteAzureFlowLogsStorageAccount(DeleteAzureFlowLogsStorageAccountRequest) returns (google.protobuf.Empty);
+  rpc CreateAzureFlowLogsStorageAccountSource(CreateAzureFlowLogsStorageAccountSourceRequest) returns (CreateAzureFlowLogsStorageAccountSourceResponse);
+  rpc ReadAzureFlowLogsStorageAccountSource(ReadAzureFlowLogsStorageAccountSourceRequest) returns (ReadAzureFlowLogsStorageAccountSourceResponse);
+  rpc UpdateAzureFlowLogsStorageAccountSource(UpdateAzureFlowLogsStorageAccountSourceRequest) returns (UpdateAzureFlowLogsStorageAccountSourceResponse);
+  rpc DeleteAzureFlowLogsStorageAccountSource(DeleteAzureFlowLogsStorageAccountSourceRequest) returns (google.protobuf.Empty);
   rpc CreateAzureSubscription(CreateAzureSubscriptionRequest) returns (CreateAzureSubscriptionResponse);
   rpc ReadAzureSubscription(ReadAzureSubscriptionRequest) returns (ReadAzureSubscriptionResponse);
   rpc UpdateAzureSubscription(UpdateAzureSubscriptionRequest) returns (UpdateAzureSubscriptionResponse);
@@ -46,6 +54,10 @@ service ConfigService {
   rpc ReadGcpFlowLogsPubsubTopic(ReadGcpFlowLogsPubsubTopicRequest) returns (ReadGcpFlowLogsPubsubTopicResponse);
   rpc UpdateGcpFlowLogsPubsubTopic(UpdateGcpFlowLogsPubsubTopicRequest) returns (UpdateGcpFlowLogsPubsubTopicResponse);
   rpc DeleteGcpFlowLogsPubsubTopic(DeleteGcpFlowLogsPubsubTopicRequest) returns (google.protobuf.Empty);
+  rpc CreateGcpFlowLogsStorageBucketSource(CreateGcpFlowLogsStorageBucketSourceRequest) returns (CreateGcpFlowLogsStorageBucketSourceResponse);
+  rpc ReadGcpFlowLogsStorageBucketSource(ReadGcpFlowLogsStorageBucketSourceRequest) returns (ReadGcpFlowLogsStorageBucketSourceResponse);
+  rpc UpdateGcpFlowLogsStorageBucketSource(UpdateGcpFlowLogsStorageBucketSourceRequest) returns (UpdateGcpFlowLogsStorageBucketSourceResponse);
+  rpc DeleteGcpFlowLogsStorageBucketSource(DeleteGcpFlowLogsStorageBucketSourceRequest) returns (google.protobuf.Empty);
   rpc CreateGcpProject(CreateGcpProjectRequest) returns (CreateGcpProjectResponse);
   rpc ReadGcpProject(ReadGcpProjectRequest) returns (ReadGcpProjectResponse);
   rpc UpdateGcpProject(UpdateGcpProjectRequest) returns (UpdateGcpProjectResponse);
@@ -408,6 +420,39 @@ message UpdateAwsFlowLogsS3BucketResponse {
 message DeleteAwsFlowLogsS3BucketRequest {
   string id = 1;
 }
+message CreateAwsFlowLogsS3BucketSourceRequest {
+  string account_id = 2;
+  string bucket_name = 3;
+  optional string path_prefix = 4;
+}
+message CreateAwsFlowLogsS3BucketSourceResponse {
+  string id = 1;
+  string account_id = 2;
+  string bucket_name = 3;
+  optional string path_prefix = 4;
+}
+message ReadAwsFlowLogsS3BucketSourceRequest {
+  string id = 1;
+}
+message ReadAwsFlowLogsS3BucketSourceResponse {
+  string id = 1;
+  string account_id = 2;
+  string bucket_name = 3;
+  optional string path_prefix = 4;
+}
+message UpdateAwsFlowLogsS3BucketSourceRequest {
+  string id = 1;
+  google.protobuf.FieldMask update_mask = 5;
+}
+message UpdateAwsFlowLogsS3BucketSourceResponse {
+  string id = 1;
+  string account_id = 2;
+  string bucket_name = 3;
+  optional string path_prefix = 4;
+}
+message DeleteAwsFlowLogsS3BucketSourceRequest {
+  string id = 1;
+}
 message CreateAzureFlowLogsStorageAccountRequest {
   string storage_account_resource_id = 2;
   string subscription_id = 3;
@@ -435,6 +480,43 @@ message UpdateAzureFlowLogsStorageAccountResponse {
   string subscription_id = 3;
 }
 message DeleteAzureFlowLogsStorageAccountRequest {
+  string id = 1;
+}
+message CreateAzureFlowLogsStorageAccountSourceRequest {
+  optional string container_name = 2;
+  optional string path_prefix = 3;
+  string storage_account_name = 4;
+  string subscription_id = 5;
+}
+message CreateAzureFlowLogsStorageAccountSourceResponse {
+  string id = 1;
+  optional string container_name = 2;
+  optional string path_prefix = 3;
+  string storage_account_name = 4;
+  string subscription_id = 5;
+}
+message ReadAzureFlowLogsStorageAccountSourceRequest {
+  string id = 1;
+}
+message ReadAzureFlowLogsStorageAccountSourceResponse {
+  string id = 1;
+  optional string container_name = 2;
+  optional string path_prefix = 3;
+  string storage_account_name = 4;
+  string subscription_id = 5;
+}
+message UpdateAzureFlowLogsStorageAccountSourceRequest {
+  string id = 1;
+  google.protobuf.FieldMask update_mask = 6;
+}
+message UpdateAzureFlowLogsStorageAccountSourceResponse {
+  string id = 1;
+  optional string container_name = 2;
+  optional string path_prefix = 3;
+  string storage_account_name = 4;
+  string subscription_id = 5;
+}
+message DeleteAzureFlowLogsStorageAccountSourceRequest {
   string id = 1;
 }
 message CreateAzureSubscriptionRequest {
@@ -596,6 +678,39 @@ message UpdateGcpFlowLogsPubsubTopicResponse {
   string pubsub_topic_id = 3;
 }
 message DeleteGcpFlowLogsPubsubTopicRequest {
+  string id = 1;
+}
+message CreateGcpFlowLogsStorageBucketSourceRequest {
+  string bucket_name = 2;
+  optional string path_prefix = 3;
+  string project_id = 4;
+}
+message CreateGcpFlowLogsStorageBucketSourceResponse {
+  string id = 1;
+  string bucket_name = 2;
+  optional string path_prefix = 3;
+  string project_id = 4;
+}
+message ReadGcpFlowLogsStorageBucketSourceRequest {
+  string id = 1;
+}
+message ReadGcpFlowLogsStorageBucketSourceResponse {
+  string id = 1;
+  string bucket_name = 2;
+  optional string path_prefix = 3;
+  string project_id = 4;
+}
+message UpdateGcpFlowLogsStorageBucketSourceRequest {
+  string id = 1;
+  google.protobuf.FieldMask update_mask = 5;
+}
+message UpdateGcpFlowLogsStorageBucketSourceResponse {
+  string id = 1;
+  string bucket_name = 2;
+  optional string path_prefix = 3;
+  string project_id = 4;
+}
+message DeleteGcpFlowLogsStorageBucketSourceRequest {
   string id = 1;
 }
 message CreateGcpProjectRequest {
