@@ -43,6 +43,10 @@ const (
 	ConfigService_ReadAwsAccount_FullMethodName                       = "/illumio.cloud.config.v1.ConfigService/ReadAwsAccount"
 	ConfigService_UpdateAwsAccount_FullMethodName                     = "/illumio.cloud.config.v1.ConfigService/UpdateAwsAccount"
 	ConfigService_DeleteAwsAccount_FullMethodName                     = "/illumio.cloud.config.v1.ConfigService/DeleteAwsAccount"
+	ConfigService_CreateAwsCloudtrailS3Bucket_FullMethodName          = "/illumio.cloud.config.v1.ConfigService/CreateAwsCloudtrailS3Bucket"
+	ConfigService_ReadAwsCloudtrailS3Bucket_FullMethodName            = "/illumio.cloud.config.v1.ConfigService/ReadAwsCloudtrailS3Bucket"
+	ConfigService_UpdateAwsCloudtrailS3Bucket_FullMethodName          = "/illumio.cloud.config.v1.ConfigService/UpdateAwsCloudtrailS3Bucket"
+	ConfigService_DeleteAwsCloudtrailS3Bucket_FullMethodName          = "/illumio.cloud.config.v1.ConfigService/DeleteAwsCloudtrailS3Bucket"
 	ConfigService_CreateAwsFlowLogsS3Bucket_FullMethodName            = "/illumio.cloud.config.v1.ConfigService/CreateAwsFlowLogsS3Bucket"
 	ConfigService_ReadAwsFlowLogsS3Bucket_FullMethodName              = "/illumio.cloud.config.v1.ConfigService/ReadAwsFlowLogsS3Bucket"
 	ConfigService_UpdateAwsFlowLogsS3Bucket_FullMethodName            = "/illumio.cloud.config.v1.ConfigService/UpdateAwsFlowLogsS3Bucket"
@@ -117,6 +121,10 @@ type ConfigServiceClient interface {
 	ReadAwsAccount(ctx context.Context, in *ReadAwsAccountRequest, opts ...grpc.CallOption) (*ReadAwsAccountResponse, error)
 	UpdateAwsAccount(ctx context.Context, in *UpdateAwsAccountRequest, opts ...grpc.CallOption) (*UpdateAwsAccountResponse, error)
 	DeleteAwsAccount(ctx context.Context, in *DeleteAwsAccountRequest, opts ...grpc.CallOption) (*emptypb.Empty, error)
+	CreateAwsCloudtrailS3Bucket(ctx context.Context, in *CreateAwsCloudtrailS3BucketRequest, opts ...grpc.CallOption) (*CreateAwsCloudtrailS3BucketResponse, error)
+	ReadAwsCloudtrailS3Bucket(ctx context.Context, in *ReadAwsCloudtrailS3BucketRequest, opts ...grpc.CallOption) (*ReadAwsCloudtrailS3BucketResponse, error)
+	UpdateAwsCloudtrailS3Bucket(ctx context.Context, in *UpdateAwsCloudtrailS3BucketRequest, opts ...grpc.CallOption) (*UpdateAwsCloudtrailS3BucketResponse, error)
+	DeleteAwsCloudtrailS3Bucket(ctx context.Context, in *DeleteAwsCloudtrailS3BucketRequest, opts ...grpc.CallOption) (*emptypb.Empty, error)
 	CreateAwsFlowLogsS3Bucket(ctx context.Context, in *CreateAwsFlowLogsS3BucketRequest, opts ...grpc.CallOption) (*CreateAwsFlowLogsS3BucketResponse, error)
 	ReadAwsFlowLogsS3Bucket(ctx context.Context, in *ReadAwsFlowLogsS3BucketRequest, opts ...grpc.CallOption) (*ReadAwsFlowLogsS3BucketResponse, error)
 	UpdateAwsFlowLogsS3Bucket(ctx context.Context, in *UpdateAwsFlowLogsS3BucketRequest, opts ...grpc.CallOption) (*UpdateAwsFlowLogsS3BucketResponse, error)
@@ -369,6 +377,46 @@ func (c *configServiceClient) DeleteAwsAccount(ctx context.Context, in *DeleteAw
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
 	out := new(emptypb.Empty)
 	err := c.cc.Invoke(ctx, ConfigService_DeleteAwsAccount_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *configServiceClient) CreateAwsCloudtrailS3Bucket(ctx context.Context, in *CreateAwsCloudtrailS3BucketRequest, opts ...grpc.CallOption) (*CreateAwsCloudtrailS3BucketResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(CreateAwsCloudtrailS3BucketResponse)
+	err := c.cc.Invoke(ctx, ConfigService_CreateAwsCloudtrailS3Bucket_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *configServiceClient) ReadAwsCloudtrailS3Bucket(ctx context.Context, in *ReadAwsCloudtrailS3BucketRequest, opts ...grpc.CallOption) (*ReadAwsCloudtrailS3BucketResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(ReadAwsCloudtrailS3BucketResponse)
+	err := c.cc.Invoke(ctx, ConfigService_ReadAwsCloudtrailS3Bucket_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *configServiceClient) UpdateAwsCloudtrailS3Bucket(ctx context.Context, in *UpdateAwsCloudtrailS3BucketRequest, opts ...grpc.CallOption) (*UpdateAwsCloudtrailS3BucketResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(UpdateAwsCloudtrailS3BucketResponse)
+	err := c.cc.Invoke(ctx, ConfigService_UpdateAwsCloudtrailS3Bucket_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *configServiceClient) DeleteAwsCloudtrailS3Bucket(ctx context.Context, in *DeleteAwsCloudtrailS3BucketRequest, opts ...grpc.CallOption) (*emptypb.Empty, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(emptypb.Empty)
+	err := c.cc.Invoke(ctx, ConfigService_DeleteAwsCloudtrailS3Bucket_FullMethodName, in, out, cOpts...)
 	if err != nil {
 		return nil, err
 	}
@@ -879,6 +927,10 @@ type ConfigServiceServer interface {
 	ReadAwsAccount(context.Context, *ReadAwsAccountRequest) (*ReadAwsAccountResponse, error)
 	UpdateAwsAccount(context.Context, *UpdateAwsAccountRequest) (*UpdateAwsAccountResponse, error)
 	DeleteAwsAccount(context.Context, *DeleteAwsAccountRequest) (*emptypb.Empty, error)
+	CreateAwsCloudtrailS3Bucket(context.Context, *CreateAwsCloudtrailS3BucketRequest) (*CreateAwsCloudtrailS3BucketResponse, error)
+	ReadAwsCloudtrailS3Bucket(context.Context, *ReadAwsCloudtrailS3BucketRequest) (*ReadAwsCloudtrailS3BucketResponse, error)
+	UpdateAwsCloudtrailS3Bucket(context.Context, *UpdateAwsCloudtrailS3BucketRequest) (*UpdateAwsCloudtrailS3BucketResponse, error)
+	DeleteAwsCloudtrailS3Bucket(context.Context, *DeleteAwsCloudtrailS3BucketRequest) (*emptypb.Empty, error)
 	CreateAwsFlowLogsS3Bucket(context.Context, *CreateAwsFlowLogsS3BucketRequest) (*CreateAwsFlowLogsS3BucketResponse, error)
 	ReadAwsFlowLogsS3Bucket(context.Context, *ReadAwsFlowLogsS3BucketRequest) (*ReadAwsFlowLogsS3BucketResponse, error)
 	UpdateAwsFlowLogsS3Bucket(context.Context, *UpdateAwsFlowLogsS3BucketRequest) (*UpdateAwsFlowLogsS3BucketResponse, error)
@@ -996,6 +1048,18 @@ func (UnimplementedConfigServiceServer) UpdateAwsAccount(context.Context, *Updat
 }
 func (UnimplementedConfigServiceServer) DeleteAwsAccount(context.Context, *DeleteAwsAccountRequest) (*emptypb.Empty, error) {
 	return nil, status.Error(codes.Unimplemented, "method DeleteAwsAccount not implemented")
+}
+func (UnimplementedConfigServiceServer) CreateAwsCloudtrailS3Bucket(context.Context, *CreateAwsCloudtrailS3BucketRequest) (*CreateAwsCloudtrailS3BucketResponse, error) {
+	return nil, status.Error(codes.Unimplemented, "method CreateAwsCloudtrailS3Bucket not implemented")
+}
+func (UnimplementedConfigServiceServer) ReadAwsCloudtrailS3Bucket(context.Context, *ReadAwsCloudtrailS3BucketRequest) (*ReadAwsCloudtrailS3BucketResponse, error) {
+	return nil, status.Error(codes.Unimplemented, "method ReadAwsCloudtrailS3Bucket not implemented")
+}
+func (UnimplementedConfigServiceServer) UpdateAwsCloudtrailS3Bucket(context.Context, *UpdateAwsCloudtrailS3BucketRequest) (*UpdateAwsCloudtrailS3BucketResponse, error) {
+	return nil, status.Error(codes.Unimplemented, "method UpdateAwsCloudtrailS3Bucket not implemented")
+}
+func (UnimplementedConfigServiceServer) DeleteAwsCloudtrailS3Bucket(context.Context, *DeleteAwsCloudtrailS3BucketRequest) (*emptypb.Empty, error) {
+	return nil, status.Error(codes.Unimplemented, "method DeleteAwsCloudtrailS3Bucket not implemented")
 }
 func (UnimplementedConfigServiceServer) CreateAwsFlowLogsS3Bucket(context.Context, *CreateAwsFlowLogsS3BucketRequest) (*CreateAwsFlowLogsS3BucketResponse, error) {
 	return nil, status.Error(codes.Unimplemented, "method CreateAwsFlowLogsS3Bucket not implemented")
@@ -1518,6 +1582,78 @@ func _ConfigService_DeleteAwsAccount_Handler(srv interface{}, ctx context.Contex
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(ConfigServiceServer).DeleteAwsAccount(ctx, req.(*DeleteAwsAccountRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _ConfigService_CreateAwsCloudtrailS3Bucket_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(CreateAwsCloudtrailS3BucketRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(ConfigServiceServer).CreateAwsCloudtrailS3Bucket(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: ConfigService_CreateAwsCloudtrailS3Bucket_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(ConfigServiceServer).CreateAwsCloudtrailS3Bucket(ctx, req.(*CreateAwsCloudtrailS3BucketRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _ConfigService_ReadAwsCloudtrailS3Bucket_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(ReadAwsCloudtrailS3BucketRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(ConfigServiceServer).ReadAwsCloudtrailS3Bucket(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: ConfigService_ReadAwsCloudtrailS3Bucket_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(ConfigServiceServer).ReadAwsCloudtrailS3Bucket(ctx, req.(*ReadAwsCloudtrailS3BucketRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _ConfigService_UpdateAwsCloudtrailS3Bucket_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(UpdateAwsCloudtrailS3BucketRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(ConfigServiceServer).UpdateAwsCloudtrailS3Bucket(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: ConfigService_UpdateAwsCloudtrailS3Bucket_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(ConfigServiceServer).UpdateAwsCloudtrailS3Bucket(ctx, req.(*UpdateAwsCloudtrailS3BucketRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _ConfigService_DeleteAwsCloudtrailS3Bucket_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(DeleteAwsCloudtrailS3BucketRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(ConfigServiceServer).DeleteAwsCloudtrailS3Bucket(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: ConfigService_DeleteAwsCloudtrailS3Bucket_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(ConfigServiceServer).DeleteAwsCloudtrailS3Bucket(ctx, req.(*DeleteAwsCloudtrailS3BucketRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -2472,6 +2608,22 @@ var ConfigService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "DeleteAwsAccount",
 			Handler:    _ConfigService_DeleteAwsAccount_Handler,
+		},
+		{
+			MethodName: "CreateAwsCloudtrailS3Bucket",
+			Handler:    _ConfigService_CreateAwsCloudtrailS3Bucket_Handler,
+		},
+		{
+			MethodName: "ReadAwsCloudtrailS3Bucket",
+			Handler:    _ConfigService_ReadAwsCloudtrailS3Bucket_Handler,
+		},
+		{
+			MethodName: "UpdateAwsCloudtrailS3Bucket",
+			Handler:    _ConfigService_UpdateAwsCloudtrailS3Bucket_Handler,
+		},
+		{
+			MethodName: "DeleteAwsCloudtrailS3Bucket",
+			Handler:    _ConfigService_DeleteAwsCloudtrailS3Bucket_Handler,
 		},
 		{
 			MethodName: "CreateAwsFlowLogsS3Bucket",

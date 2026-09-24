@@ -26,6 +26,10 @@ service ConfigService {
   rpc ReadAwsAccount(ReadAwsAccountRequest) returns (ReadAwsAccountResponse);
   rpc UpdateAwsAccount(UpdateAwsAccountRequest) returns (UpdateAwsAccountResponse);
   rpc DeleteAwsAccount(DeleteAwsAccountRequest) returns (google.protobuf.Empty);
+  rpc CreateAwsCloudtrailS3Bucket(CreateAwsCloudtrailS3BucketRequest) returns (CreateAwsCloudtrailS3BucketResponse);
+  rpc ReadAwsCloudtrailS3Bucket(ReadAwsCloudtrailS3BucketRequest) returns (ReadAwsCloudtrailS3BucketResponse);
+  rpc UpdateAwsCloudtrailS3Bucket(UpdateAwsCloudtrailS3BucketRequest) returns (UpdateAwsCloudtrailS3BucketResponse);
+  rpc DeleteAwsCloudtrailS3Bucket(DeleteAwsCloudtrailS3BucketRequest) returns (google.protobuf.Empty);
   rpc CreateAwsFlowLogsS3Bucket(CreateAwsFlowLogsS3BucketRequest) returns (CreateAwsFlowLogsS3BucketResponse);
   rpc ReadAwsFlowLogsS3Bucket(ReadAwsFlowLogsS3BucketRequest) returns (ReadAwsFlowLogsS3BucketResponse);
   rpc UpdateAwsFlowLogsS3Bucket(UpdateAwsFlowLogsS3BucketRequest) returns (UpdateAwsFlowLogsS3BucketResponse);
@@ -377,6 +381,39 @@ message UpdateAwsAccountResponse {
   string role_arn = 8;
 }
 message DeleteAwsAccountRequest {
+  string id = 1;
+}
+message CreateAwsCloudtrailS3BucketRequest {
+  string account_id = 2;
+  string s3_bucket_arn = 3;
+  optional string s3_key_prefix = 4;
+}
+message CreateAwsCloudtrailS3BucketResponse {
+  string id = 1;
+  string account_id = 2;
+  string s3_bucket_arn = 3;
+  optional string s3_key_prefix = 4;
+}
+message ReadAwsCloudtrailS3BucketRequest {
+  string id = 1;
+}
+message ReadAwsCloudtrailS3BucketResponse {
+  string id = 1;
+  string account_id = 2;
+  string s3_bucket_arn = 3;
+  optional string s3_key_prefix = 4;
+}
+message UpdateAwsCloudtrailS3BucketRequest {
+  string id = 1;
+  google.protobuf.FieldMask update_mask = 5;
+}
+message UpdateAwsCloudtrailS3BucketResponse {
+  string id = 1;
+  string account_id = 2;
+  string s3_bucket_arn = 3;
+  optional string s3_key_prefix = 4;
+}
+message DeleteAwsCloudtrailS3BucketRequest {
   string id = 1;
 }
 message CreateAwsFlowLogsS3BucketRequest {
