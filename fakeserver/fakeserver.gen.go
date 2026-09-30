@@ -146,7 +146,6 @@ type AwsCloudtrailS3Bucket struct {
 	Id          string
 	AccountId   string
 	S3BucketArn string
-	S3KeyPrefix *string
 }
 
 type AwsFlowLogsS3Bucket struct {
@@ -1019,13 +1018,11 @@ func (s *FakeConfigServer) CreateAwsCloudtrailS3Bucket(ctx context.Context, req 
 		Id:          id,
 		AccountId:   req.AccountId,
 		S3BucketArn: req.S3BucketArn,
-		S3KeyPrefix: req.S3KeyPrefix,
 	}
 	resp := &configv1.CreateAwsCloudtrailS3BucketResponse{
 		Id:          id,
 		AccountId:   model.AccountId,
 		S3BucketArn: model.S3BucketArn,
-		S3KeyPrefix: model.S3KeyPrefix,
 	}
 	s.AwsCloudtrailS3BucketMutex.Lock()
 	s.AwsCloudtrailS3BucketMap[id] = model
@@ -1055,7 +1052,6 @@ func (s *FakeConfigServer) ReadAwsCloudtrailS3Bucket(ctx context.Context, req *c
 		Id:          id,
 		AccountId:   model.AccountId,
 		S3BucketArn: model.S3BucketArn,
-		S3KeyPrefix: model.S3KeyPrefix,
 	}
 	s.AwsCloudtrailS3BucketMutex.RUnlock()
 	s.Logger.Info("read resource",
@@ -1102,7 +1098,6 @@ func (s *FakeConfigServer) UpdateAwsCloudtrailS3Bucket(ctx context.Context, req 
 		Id:          id,
 		AccountId:   model.AccountId,
 		S3BucketArn: model.S3BucketArn,
-		S3KeyPrefix: model.S3KeyPrefix,
 	}
 	s.AwsCloudtrailS3BucketMutex.Unlock()
 	s.Logger.Info("updated resource",

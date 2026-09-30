@@ -41,18 +41,6 @@ var (
 						Mode: ImmutableAttributeMode,
 					},
 				},
-				"s3_key_prefix": StringResourceAttributeWithMode{
-					StringAttribute: resource_schema.StringAttribute{
-						Description: "Key prefix prepended to the AWSLogs/ path of the CloudTrail logs in the AWS S3 bucket. If unset, the CloudTrail logs are read from the root of the bucket.",
-						Optional:    true,
-						PlanModifiers: []planmodifier.String{
-							stringplanmodifier.RequiresReplace(),
-						},
-					},
-					attributeWithMode: attributeWithMode{
-						Mode: ImmutableAttributeMode,
-					},
-				},
 			},
 		},
 	}

@@ -24,7 +24,6 @@ higher-level abstractions on top of CloudSecure primitives.
 resource "illumio-cloudsecure_aws_cloudtrail_s3_bucket" "cloudtrail_bucket" {
   account_id    = "812713887999"
   s3_bucket_arn = "arn:aws:s3:::cloudtrailbucket"
-  s3_key_prefix = "org-trail"
 }
 ```
 
@@ -35,10 +34,6 @@ resource "illumio-cloudsecure_aws_cloudtrail_s3_bucket" "cloudtrail_bucket" {
 
 - `account_id` (String) AWS account ID.
 - `s3_bucket_arn` (String) ARN of the AWS S3 bucket containing CloudTrail logs.
-
-### Optional
-
-- `s3_key_prefix` (String) Key prefix prepended to the AWSLogs/ path of the CloudTrail logs in the AWS S3 bucket. If unset, the CloudTrail logs are read from the root of the bucket.
 
 ### Read-Only
 

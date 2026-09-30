@@ -3222,7 +3222,6 @@ type CreateAwsCloudtrailS3BucketRequest struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
 	AccountId     string                 `protobuf:"bytes,2,opt,name=account_id,json=accountId,proto3" json:"account_id,omitempty"`
 	S3BucketArn   string                 `protobuf:"bytes,3,opt,name=s3_bucket_arn,json=s3BucketArn,proto3" json:"s3_bucket_arn,omitempty"`
-	S3KeyPrefix   *string                `protobuf:"bytes,4,opt,name=s3_key_prefix,json=s3KeyPrefix,proto3,oneof" json:"s3_key_prefix,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -3271,19 +3270,11 @@ func (x *CreateAwsCloudtrailS3BucketRequest) GetS3BucketArn() string {
 	return ""
 }
 
-func (x *CreateAwsCloudtrailS3BucketRequest) GetS3KeyPrefix() string {
-	if x != nil && x.S3KeyPrefix != nil {
-		return *x.S3KeyPrefix
-	}
-	return ""
-}
-
 type CreateAwsCloudtrailS3BucketResponse struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
 	Id            string                 `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
 	AccountId     string                 `protobuf:"bytes,2,opt,name=account_id,json=accountId,proto3" json:"account_id,omitempty"`
 	S3BucketArn   string                 `protobuf:"bytes,3,opt,name=s3_bucket_arn,json=s3BucketArn,proto3" json:"s3_bucket_arn,omitempty"`
-	S3KeyPrefix   *string                `protobuf:"bytes,4,opt,name=s3_key_prefix,json=s3KeyPrefix,proto3,oneof" json:"s3_key_prefix,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -3339,13 +3330,6 @@ func (x *CreateAwsCloudtrailS3BucketResponse) GetS3BucketArn() string {
 	return ""
 }
 
-func (x *CreateAwsCloudtrailS3BucketResponse) GetS3KeyPrefix() string {
-	if x != nil && x.S3KeyPrefix != nil {
-		return *x.S3KeyPrefix
-	}
-	return ""
-}
-
 type ReadAwsCloudtrailS3BucketRequest struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
 	Id            string                 `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
@@ -3395,7 +3379,6 @@ type ReadAwsCloudtrailS3BucketResponse struct {
 	Id            string                 `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
 	AccountId     string                 `protobuf:"bytes,2,opt,name=account_id,json=accountId,proto3" json:"account_id,omitempty"`
 	S3BucketArn   string                 `protobuf:"bytes,3,opt,name=s3_bucket_arn,json=s3BucketArn,proto3" json:"s3_bucket_arn,omitempty"`
-	S3KeyPrefix   *string                `protobuf:"bytes,4,opt,name=s3_key_prefix,json=s3KeyPrefix,proto3,oneof" json:"s3_key_prefix,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -3447,13 +3430,6 @@ func (x *ReadAwsCloudtrailS3BucketResponse) GetAccountId() string {
 func (x *ReadAwsCloudtrailS3BucketResponse) GetS3BucketArn() string {
 	if x != nil {
 		return x.S3BucketArn
-	}
-	return ""
-}
-
-func (x *ReadAwsCloudtrailS3BucketResponse) GetS3KeyPrefix() string {
-	if x != nil && x.S3KeyPrefix != nil {
-		return *x.S3KeyPrefix
 	}
 	return ""
 }
@@ -3515,7 +3491,6 @@ type UpdateAwsCloudtrailS3BucketResponse struct {
 	Id            string                 `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
 	AccountId     string                 `protobuf:"bytes,2,opt,name=account_id,json=accountId,proto3" json:"account_id,omitempty"`
 	S3BucketArn   string                 `protobuf:"bytes,3,opt,name=s3_bucket_arn,json=s3BucketArn,proto3" json:"s3_bucket_arn,omitempty"`
-	S3KeyPrefix   *string                `protobuf:"bytes,4,opt,name=s3_key_prefix,json=s3KeyPrefix,proto3,oneof" json:"s3_key_prefix,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -3567,13 +3542,6 @@ func (x *UpdateAwsCloudtrailS3BucketResponse) GetAccountId() string {
 func (x *UpdateAwsCloudtrailS3BucketResponse) GetS3BucketArn() string {
 	if x != nil {
 		return x.S3BucketArn
-	}
-	return ""
-}
-
-func (x *UpdateAwsCloudtrailS3BucketResponse) GetS3KeyPrefix() string {
-	if x != nil && x.S3KeyPrefix != nil {
-		return *x.S3KeyPrefix
 	}
 	return ""
 }
@@ -10245,40 +10213,32 @@ const file_illumio_cloud_config_v1_config_proto_rawDesc = "" +
 	"\brole_arn\x18\b \x01(\tR\aroleArnB\x12\n" +
 	"\x10_organization_id\")\n" +
 	"\x17DeleteAwsAccountRequest\x12\x0e\n" +
-	"\x02id\x18\x01 \x01(\tR\x02id\"\xa2\x01\n" +
+	"\x02id\x18\x01 \x01(\tR\x02id\"g\n" +
 	"\"CreateAwsCloudtrailS3BucketRequest\x12\x1d\n" +
 	"\n" +
 	"account_id\x18\x02 \x01(\tR\taccountId\x12\"\n" +
-	"\rs3_bucket_arn\x18\x03 \x01(\tR\vs3BucketArn\x12'\n" +
-	"\rs3_key_prefix\x18\x04 \x01(\tH\x00R\vs3KeyPrefix\x88\x01\x01B\x10\n" +
-	"\x0e_s3_key_prefix\"\xb3\x01\n" +
+	"\rs3_bucket_arn\x18\x03 \x01(\tR\vs3BucketArn\"x\n" +
 	"#CreateAwsCloudtrailS3BucketResponse\x12\x0e\n" +
 	"\x02id\x18\x01 \x01(\tR\x02id\x12\x1d\n" +
 	"\n" +
 	"account_id\x18\x02 \x01(\tR\taccountId\x12\"\n" +
-	"\rs3_bucket_arn\x18\x03 \x01(\tR\vs3BucketArn\x12'\n" +
-	"\rs3_key_prefix\x18\x04 \x01(\tH\x00R\vs3KeyPrefix\x88\x01\x01B\x10\n" +
-	"\x0e_s3_key_prefix\"2\n" +
+	"\rs3_bucket_arn\x18\x03 \x01(\tR\vs3BucketArn\"2\n" +
 	" ReadAwsCloudtrailS3BucketRequest\x12\x0e\n" +
-	"\x02id\x18\x01 \x01(\tR\x02id\"\xb1\x01\n" +
+	"\x02id\x18\x01 \x01(\tR\x02id\"v\n" +
 	"!ReadAwsCloudtrailS3BucketResponse\x12\x0e\n" +
 	"\x02id\x18\x01 \x01(\tR\x02id\x12\x1d\n" +
 	"\n" +
 	"account_id\x18\x02 \x01(\tR\taccountId\x12\"\n" +
-	"\rs3_bucket_arn\x18\x03 \x01(\tR\vs3BucketArn\x12'\n" +
-	"\rs3_key_prefix\x18\x04 \x01(\tH\x00R\vs3KeyPrefix\x88\x01\x01B\x10\n" +
-	"\x0e_s3_key_prefix\"q\n" +
+	"\rs3_bucket_arn\x18\x03 \x01(\tR\vs3BucketArn\"q\n" +
 	"\"UpdateAwsCloudtrailS3BucketRequest\x12\x0e\n" +
 	"\x02id\x18\x01 \x01(\tR\x02id\x12;\n" +
 	"\vupdate_mask\x18\x05 \x01(\v2\x1a.google.protobuf.FieldMaskR\n" +
-	"updateMask\"\xb3\x01\n" +
+	"updateMask\"x\n" +
 	"#UpdateAwsCloudtrailS3BucketResponse\x12\x0e\n" +
 	"\x02id\x18\x01 \x01(\tR\x02id\x12\x1d\n" +
 	"\n" +
 	"account_id\x18\x02 \x01(\tR\taccountId\x12\"\n" +
-	"\rs3_bucket_arn\x18\x03 \x01(\tR\vs3BucketArn\x12'\n" +
-	"\rs3_key_prefix\x18\x04 \x01(\tH\x00R\vs3KeyPrefix\x88\x01\x01B\x10\n" +
-	"\x0e_s3_key_prefix\"4\n" +
+	"\rs3_bucket_arn\x18\x03 \x01(\tR\vs3BucketArn\"4\n" +
 	"\"DeleteAwsCloudtrailS3BucketRequest\x12\x0e\n" +
 	"\x02id\x18\x01 \x01(\tR\x02id\"e\n" +
 	" CreateAwsFlowLogsS3BucketRequest\x12\x1d\n" +
@@ -11305,10 +11265,6 @@ func file_illumio_cloud_config_v1_config_proto_init() {
 	file_illumio_cloud_config_v1_config_proto_msgTypes[32].OneofWrappers = []any{}
 	file_illumio_cloud_config_v1_config_proto_msgTypes[34].OneofWrappers = []any{}
 	file_illumio_cloud_config_v1_config_proto_msgTypes[36].OneofWrappers = []any{}
-	file_illumio_cloud_config_v1_config_proto_msgTypes[38].OneofWrappers = []any{}
-	file_illumio_cloud_config_v1_config_proto_msgTypes[39].OneofWrappers = []any{}
-	file_illumio_cloud_config_v1_config_proto_msgTypes[41].OneofWrappers = []any{}
-	file_illumio_cloud_config_v1_config_proto_msgTypes[43].OneofWrappers = []any{}
 	file_illumio_cloud_config_v1_config_proto_msgTypes[68].OneofWrappers = []any{}
 	file_illumio_cloud_config_v1_config_proto_msgTypes[69].OneofWrappers = []any{}
 	file_illumio_cloud_config_v1_config_proto_msgTypes[71].OneofWrappers = []any{}

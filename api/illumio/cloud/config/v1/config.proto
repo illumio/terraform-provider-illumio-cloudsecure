@@ -386,13 +386,11 @@ message DeleteAwsAccountRequest {
 message CreateAwsCloudtrailS3BucketRequest {
   string account_id = 2;
   string s3_bucket_arn = 3;
-  optional string s3_key_prefix = 4;
 }
 message CreateAwsCloudtrailS3BucketResponse {
   string id = 1;
   string account_id = 2;
   string s3_bucket_arn = 3;
-  optional string s3_key_prefix = 4;
 }
 message ReadAwsCloudtrailS3BucketRequest {
   string id = 1;
@@ -401,7 +399,6 @@ message ReadAwsCloudtrailS3BucketResponse {
   string id = 1;
   string account_id = 2;
   string s3_bucket_arn = 3;
-  optional string s3_key_prefix = 4;
 }
 message UpdateAwsCloudtrailS3BucketRequest {
   string id = 1;
@@ -411,7 +408,6 @@ message UpdateAwsCloudtrailS3BucketResponse {
   string id = 1;
   string account_id = 2;
   string s3_bucket_arn = 3;
-  optional string s3_key_prefix = 4;
 }
 message DeleteAwsCloudtrailS3BucketRequest {
   string id = 1;

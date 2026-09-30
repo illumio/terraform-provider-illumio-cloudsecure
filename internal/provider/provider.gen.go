@@ -3638,7 +3638,6 @@ type AwsCloudtrailS3BucketResourceModel struct {
 	Id          types.String `tfsdk:"id"`
 	AccountId   types.String `tfsdk:"account_id"`
 	S3BucketArn types.String `tfsdk:"s3_bucket_arn"`
-	S3KeyPrefix types.String `tfsdk:"s3_key_prefix"`
 }
 
 type AwsFlowLogsS3BucketResourceModel struct {
@@ -4452,12 +4451,6 @@ func NewCreateAwsCloudtrailS3BucketRequest(ctx context.Context, data *AwsCloudtr
 		var protoValue string
 		protoValue = dataValue.(types.String).ValueString()
 		proto.S3BucketArn = protoValue
-	}
-	if !data.S3KeyPrefix.IsUnknown() && !data.S3KeyPrefix.IsNull() {
-		var dataValue attr.Value = data.S3KeyPrefix
-		var protoValue string
-		protoValue = dataValue.(types.String).ValueString()
-		proto.S3KeyPrefix = &protoValue
 	}
 	return proto, diags
 }
@@ -7994,19 +7987,16 @@ func CopyCreateAwsCloudtrailS3BucketResponse(dst *AwsCloudtrailS3BucketResourceM
 	dst.Id = types.StringValue(src.Id)
 	dst.AccountId = types.StringValue(src.AccountId)
 	dst.S3BucketArn = types.StringValue(src.S3BucketArn)
-	dst.S3KeyPrefix = types.StringPointerValue(src.S3KeyPrefix)
 }
 func CopyReadAwsCloudtrailS3BucketResponse(dst *AwsCloudtrailS3BucketResourceModel, src *configv1.ReadAwsCloudtrailS3BucketResponse) {
 	dst.Id = types.StringValue(src.Id)
 	dst.AccountId = types.StringValue(src.AccountId)
 	dst.S3BucketArn = types.StringValue(src.S3BucketArn)
-	dst.S3KeyPrefix = types.StringPointerValue(src.S3KeyPrefix)
 }
 func CopyUpdateAwsCloudtrailS3BucketResponse(dst *AwsCloudtrailS3BucketResourceModel, src *configv1.UpdateAwsCloudtrailS3BucketResponse) {
 	dst.Id = types.StringValue(src.Id)
 	dst.AccountId = types.StringValue(src.AccountId)
 	dst.S3BucketArn = types.StringValue(src.S3BucketArn)
-	dst.S3KeyPrefix = types.StringPointerValue(src.S3KeyPrefix)
 }
 func CopyCreateAwsFlowLogsS3BucketResponse(dst *AwsFlowLogsS3BucketResourceModel, src *configv1.CreateAwsFlowLogsS3BucketResponse) {
 	dst.Id = types.StringValue(src.Id)
