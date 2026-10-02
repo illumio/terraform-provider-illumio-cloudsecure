@@ -22,6 +22,7 @@ func (c *cloudSecureSchema) Resources() Resources {
 		applicationPolicyRuleResource,
 		applicationResource,
 		awsAccountResource,
+		awsCloudtrailS3BucketResource,
 		awsFlowLogsS3BucketResource,
 		azureFlowLogsStorageAccountResource,
 		azureSubscriptionResource,
