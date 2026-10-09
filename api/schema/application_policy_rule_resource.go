@@ -24,8 +24,8 @@ var Label = types.ObjectType{
 var PortRange = types.ObjectType{
 	AttrTypes: map[string]attr.Type{
 		"from_port": types.Int64Type,
-		"to_port":   types.Int64Type,
 		"protocol":  types.StringType,
+		"to_port":   types.Int64Type,
 	},
 }
 
