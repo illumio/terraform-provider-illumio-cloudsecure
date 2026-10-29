@@ -18,7 +18,7 @@ type AttributeMode struct {
 	// InReadRequest is true if the attribute should be included in read RPC request messages.
 	InReadRequest bool
 
-	// InCreateRequest is true if the attribute should be included in read RPC response messages.
+	// InReadResponse is true if the attribute should be included in read RPC response messages.
 	InReadResponse bool
 
 	// InUpdateRequest is true if the attribute should be included in update RPC request messages.
@@ -87,14 +87,14 @@ var (
 	}
 
 	// WriteOnlyAttributeMode is the mode of write-only attributes, which are sent in every create and update operation, and never in any response.
-	// Attribute with this mode should also have the UseStateForUnknown plan modifier.
+	// Attributes with this mode should also have the UseStateForUnknown plan modifier.
 	WriteOnlyAttributeMode = AttributeMode{
 		InCreateRequest: true,
 		InUpdateRequest: true,
 	}
 
-	// WriteOnlyOnceAttributeMode is the mode of write-only-once attributes, which are sent in only in create operations.
-	// Attribute with this mode should also have the UseStateForUnknown plan modifier.
+	// WriteOnlyOnceAttributeMode is the mode of write-only-once attributes, which are sent only in create operations.
+	// Attributes with this mode should also have the UseStateForUnknown plan modifier.
 	WriteOnlyOnceAttributeMode = AttributeMode{
 		InCreateRequest: true,
 	}
@@ -134,13 +134,13 @@ type Float64ResourceAttributeWithMode struct {
 	attributeWithMode
 }
 
-// Int32ResourceAttributeWithMode is a Int32Attribute with an explicit attribute mode.
+// Int32ResourceAttributeWithMode is an Int32Attribute with an explicit attribute mode.
 type Int32ResourceAttributeWithMode struct {
 	resource_schema.Int32Attribute
 	attributeWithMode
 }
 
-// Int64ResourceAttributeWithMode is a Int64Attribute with an explicit attribute mode.
+// Int64ResourceAttributeWithMode is an Int64Attribute with an explicit attribute mode.
 type Int64ResourceAttributeWithMode struct {
 	resource_schema.Int64Attribute
 	attributeWithMode
@@ -170,7 +170,7 @@ type NumberResourceAttributeWithMode struct {
 	attributeWithMode
 }
 
-// ObjectResourceAttributeWithMode is a ObjectAttribute with an explicit attribute mode.
+// ObjectResourceAttributeWithMode is an ObjectAttribute with an explicit attribute mode.
 type ObjectResourceAttributeWithMode struct {
 	resource_schema.ObjectAttribute
 	attributeWithMode
