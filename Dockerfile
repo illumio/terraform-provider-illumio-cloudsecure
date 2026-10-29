@@ -12,7 +12,7 @@
 # To run the image:
 # docker run --rm -ti -e TF_VAR_illumio_cloudsecure_client_id -e TF_VAR_illumio_cloudsecure_client_secret --mount type=bind,src="$(pwd)",target=/workspace illumio-terraform:1.0.0-dev <terraform command and arguments...>
 
-FROM golang:1.26.2-trixie AS build
+FROM golang:1.26.9-trixie AS build
 
 ARG VERSION=v1.0.0-dev
 
