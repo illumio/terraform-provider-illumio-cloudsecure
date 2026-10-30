@@ -5438,42 +5438,33 @@ func NewUpdateApplicationAwsResourcesRequest(ctx context.Context, beforeData, af
 	proto := &configv1.UpdateApplicationAwsResourcesRequest{}
 	proto.UpdateMask, _ = fieldmaskpb.New(proto)
 	proto.Id = beforeData.Id.ValueString()
-	if !afterData.AccountId.Equal(beforeData.AccountId) {
-		proto.UpdateMask.Append(proto, "account_id")
-		if !afterData.AccountId.IsUnknown() && !afterData.AccountId.IsNull() {
-			var dataValue attr.Value = afterData.AccountId
-			var protoValue string
-			protoValue = dataValue.(types.String).ValueString()
-			proto.AccountId = protoValue
-		}
+	if !beforeData.AccountId.IsUnknown() && !beforeData.AccountId.IsNull() {
+		var dataValue attr.Value = beforeData.AccountId
+		var protoValue string
+		protoValue = dataValue.(types.String).ValueString()
+		proto.AccountId = protoValue
 	}
-	if !afterData.ApplicationId.Equal(beforeData.ApplicationId) {
-		proto.UpdateMask.Append(proto, "application_id")
-		if !afterData.ApplicationId.IsUnknown() && !afterData.ApplicationId.IsNull() {
-			var dataValue attr.Value = afterData.ApplicationId
-			var protoValue string
-			protoValue = dataValue.(types.String).ValueString()
-			proto.ApplicationId = protoValue
-		}
+	if !beforeData.ApplicationId.IsUnknown() && !beforeData.ApplicationId.IsNull() {
+		var dataValue attr.Value = beforeData.ApplicationId
+		var protoValue string
+		protoValue = dataValue.(types.String).ValueString()
+		proto.ApplicationId = protoValue
 	}
-	if !afterData.ApplicationResourceIds.Equal(beforeData.ApplicationResourceIds) {
-		proto.UpdateMask.Append(proto, "application_resource_ids")
-		if !afterData.ApplicationResourceIds.IsUnknown() && !afterData.ApplicationResourceIds.IsNull() {
-			var dataValue attr.Value = afterData.ApplicationResourceIds
-			var protoValue []string
-			{
-				dataElements := dataValue.(types.List).Elements()
-				protoValues := make([]string, 0, len(dataElements))
-				for _, dataElement := range dataElements {
-					var dataValue attr.Value = dataElement
-					var protoValue string
-					protoValue = dataValue.(types.String).ValueString()
-					protoValues = append(protoValues, protoValue)
-				}
-				protoValue = protoValues
+	if !beforeData.ApplicationResourceIds.IsUnknown() && !beforeData.ApplicationResourceIds.IsNull() {
+		var dataValue attr.Value = beforeData.ApplicationResourceIds
+		var protoValue []string
+		{
+			dataElements := dataValue.(types.List).Elements()
+			protoValues := make([]string, 0, len(dataElements))
+			for _, dataElement := range dataElements {
+				var dataValue attr.Value = dataElement
+				var protoValue string
+				protoValue = dataValue.(types.String).ValueString()
+				protoValues = append(protoValues, protoValue)
 			}
-			proto.ApplicationResourceIds = protoValue
+			protoValue = protoValues
 		}
+		proto.ApplicationResourceIds = protoValue
 	}
 	if !afterData.Arns.Equal(beforeData.Arns) {
 		proto.UpdateMask.Append(proto, "arns")
@@ -5711,33 +5702,27 @@ func NewUpdateApplicationAzureResourcesRequest(ctx context.Context, beforeData, 
 	proto := &configv1.UpdateApplicationAzureResourcesRequest{}
 	proto.UpdateMask, _ = fieldmaskpb.New(proto)
 	proto.Id = beforeData.Id.ValueString()
-	if !afterData.ApplicationId.Equal(beforeData.ApplicationId) {
-		proto.UpdateMask.Append(proto, "application_id")
-		if !afterData.ApplicationId.IsUnknown() && !afterData.ApplicationId.IsNull() {
-			var dataValue attr.Value = afterData.ApplicationId
-			var protoValue string
-			protoValue = dataValue.(types.String).ValueString()
-			proto.ApplicationId = protoValue
-		}
+	if !beforeData.ApplicationId.IsUnknown() && !beforeData.ApplicationId.IsNull() {
+		var dataValue attr.Value = beforeData.ApplicationId
+		var protoValue string
+		protoValue = dataValue.(types.String).ValueString()
+		proto.ApplicationId = protoValue
 	}
-	if !afterData.ApplicationResourceIds.Equal(beforeData.ApplicationResourceIds) {
-		proto.UpdateMask.Append(proto, "application_resource_ids")
-		if !afterData.ApplicationResourceIds.IsUnknown() && !afterData.ApplicationResourceIds.IsNull() {
-			var dataValue attr.Value = afterData.ApplicationResourceIds
-			var protoValue []string
-			{
-				dataElements := dataValue.(types.List).Elements()
-				protoValues := make([]string, 0, len(dataElements))
-				for _, dataElement := range dataElements {
-					var dataValue attr.Value = dataElement
-					var protoValue string
-					protoValue = dataValue.(types.String).ValueString()
-					protoValues = append(protoValues, protoValue)
-				}
-				protoValue = protoValues
+	if !beforeData.ApplicationResourceIds.IsUnknown() && !beforeData.ApplicationResourceIds.IsNull() {
+		var dataValue attr.Value = beforeData.ApplicationResourceIds
+		var protoValue []string
+		{
+			dataElements := dataValue.(types.List).Elements()
+			protoValues := make([]string, 0, len(dataElements))
+			for _, dataElement := range dataElements {
+				var dataValue attr.Value = dataElement
+				var protoValue string
+				protoValue = dataValue.(types.String).ValueString()
+				protoValues = append(protoValues, protoValue)
 			}
-			proto.ApplicationResourceIds = protoValue
+			protoValue = protoValues
 		}
+		proto.ApplicationResourceIds = protoValue
 	}
 	if !afterData.ResourceIds.Equal(beforeData.ResourceIds) {
 		proto.UpdateMask.Append(proto, "resource_ids")
@@ -5758,14 +5743,11 @@ func NewUpdateApplicationAzureResourcesRequest(ctx context.Context, beforeData, 
 			proto.ResourceIds = protoValue
 		}
 	}
-	if !afterData.SubscriptionId.Equal(beforeData.SubscriptionId) {
-		proto.UpdateMask.Append(proto, "subscription_id")
-		if !afterData.SubscriptionId.IsUnknown() && !afterData.SubscriptionId.IsNull() {
-			var dataValue attr.Value = afterData.SubscriptionId
-			var protoValue string
-			protoValue = dataValue.(types.String).ValueString()
-			proto.SubscriptionId = protoValue
-		}
+	if !beforeData.SubscriptionId.IsUnknown() && !beforeData.SubscriptionId.IsNull() {
+		var dataValue attr.Value = beforeData.SubscriptionId
+		var protoValue string
+		protoValue = dataValue.(types.String).ValueString()
+		proto.SubscriptionId = protoValue
 	}
 	return proto, diags
 }
