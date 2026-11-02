@@ -92,13 +92,13 @@ service ConfigService {
   rpc DeleteTagToLabel(DeleteTagToLabelRequest) returns (google.protobuf.Empty);
 }
 message CreateApplicationRequest {
-  string deployment_id = 2;
+  optional string deployment_id = 2;
   optional string description = 3;
   string name = 4;
 }
 message CreateApplicationResponse {
   string id = 1;
-  string deployment_id = 2;
+  optional string deployment_id = 2;
   optional string description = 3;
   string name = 4;
 }
@@ -107,7 +107,7 @@ message ReadApplicationRequest {
 }
 message ReadApplicationResponse {
   string id = 1;
-  string deployment_id = 2;
+  optional string deployment_id = 2;
   optional string description = 3;
   string name = 4;
 }
@@ -119,7 +119,7 @@ message UpdateApplicationRequest {
 }
 message UpdateApplicationResponse {
   string id = 1;
-  string deployment_id = 2;
+  optional string deployment_id = 2;
   optional string description = 3;
   string name = 4;
 }

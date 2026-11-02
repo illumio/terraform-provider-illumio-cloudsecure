@@ -4363,7 +4363,7 @@ func NewCreateApplicationRequest(ctx context.Context, data *ApplicationResourceM
 		var dataValue attr.Value = data.DeploymentId
 		var protoValue string
 		protoValue = dataValue.(types.String).ValueString()
-		proto.DeploymentId = protoValue
+		proto.DeploymentId = &protoValue
 	}
 	if !data.Description.IsUnknown() && !data.Description.IsNull() {
 		var dataValue attr.Value = data.Description
@@ -7430,19 +7430,19 @@ func NewUpdateTagToLabelRequest(ctx context.Context, beforeData, afterData *TagT
 }
 func CopyCreateApplicationResponse(dst *ApplicationResourceModel, src *configv1.CreateApplicationResponse) {
 	dst.Id = types.StringValue(src.Id)
-	dst.DeploymentId = types.StringValue(src.DeploymentId)
+	dst.DeploymentId = types.StringPointerValue(src.DeploymentId)
 	dst.Description = types.StringPointerValue(src.Description)
 	dst.Name = types.StringValue(src.Name)
 }
 func CopyReadApplicationResponse(dst *ApplicationResourceModel, src *configv1.ReadApplicationResponse) {
 	dst.Id = types.StringValue(src.Id)
-	dst.DeploymentId = types.StringValue(src.DeploymentId)
+	dst.DeploymentId = types.StringPointerValue(src.DeploymentId)
 	dst.Description = types.StringPointerValue(src.Description)
 	dst.Name = types.StringValue(src.Name)
 }
 func CopyUpdateApplicationResponse(dst *ApplicationResourceModel, src *configv1.UpdateApplicationResponse) {
 	dst.Id = types.StringValue(src.Id)
-	dst.DeploymentId = types.StringValue(src.DeploymentId)
+	dst.DeploymentId = types.StringPointerValue(src.DeploymentId)
 	dst.Description = types.StringPointerValue(src.Description)
 	dst.Name = types.StringValue(src.Name)
 }

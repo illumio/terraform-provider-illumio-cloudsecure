@@ -28,7 +28,7 @@ const (
 
 type CreateApplicationRequest struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
-	DeploymentId  string                 `protobuf:"bytes,2,opt,name=deployment_id,json=deploymentId,proto3" json:"deployment_id,omitempty"`
+	DeploymentId  *string                `protobuf:"bytes,2,opt,name=deployment_id,json=deploymentId,proto3,oneof" json:"deployment_id,omitempty"`
 	Description   *string                `protobuf:"bytes,3,opt,name=description,proto3,oneof" json:"description,omitempty"`
 	Name          string                 `protobuf:"bytes,4,opt,name=name,proto3" json:"name,omitempty"`
 	unknownFields protoimpl.UnknownFields
@@ -66,8 +66,8 @@ func (*CreateApplicationRequest) Descriptor() ([]byte, []int) {
 }
 
 func (x *CreateApplicationRequest) GetDeploymentId() string {
-	if x != nil {
-		return x.DeploymentId
+	if x != nil && x.DeploymentId != nil {
+		return *x.DeploymentId
 	}
 	return ""
 }
@@ -89,7 +89,7 @@ func (x *CreateApplicationRequest) GetName() string {
 type CreateApplicationResponse struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
 	Id            string                 `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
-	DeploymentId  string                 `protobuf:"bytes,2,opt,name=deployment_id,json=deploymentId,proto3" json:"deployment_id,omitempty"`
+	DeploymentId  *string                `protobuf:"bytes,2,opt,name=deployment_id,json=deploymentId,proto3,oneof" json:"deployment_id,omitempty"`
 	Description   *string                `protobuf:"bytes,3,opt,name=description,proto3,oneof" json:"description,omitempty"`
 	Name          string                 `protobuf:"bytes,4,opt,name=name,proto3" json:"name,omitempty"`
 	unknownFields protoimpl.UnknownFields
@@ -134,8 +134,8 @@ func (x *CreateApplicationResponse) GetId() string {
 }
 
 func (x *CreateApplicationResponse) GetDeploymentId() string {
-	if x != nil {
-		return x.DeploymentId
+	if x != nil && x.DeploymentId != nil {
+		return *x.DeploymentId
 	}
 	return ""
 }
@@ -201,7 +201,7 @@ func (x *ReadApplicationRequest) GetId() string {
 type ReadApplicationResponse struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
 	Id            string                 `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
-	DeploymentId  string                 `protobuf:"bytes,2,opt,name=deployment_id,json=deploymentId,proto3" json:"deployment_id,omitempty"`
+	DeploymentId  *string                `protobuf:"bytes,2,opt,name=deployment_id,json=deploymentId,proto3,oneof" json:"deployment_id,omitempty"`
 	Description   *string                `protobuf:"bytes,3,opt,name=description,proto3,oneof" json:"description,omitempty"`
 	Name          string                 `protobuf:"bytes,4,opt,name=name,proto3" json:"name,omitempty"`
 	unknownFields protoimpl.UnknownFields
@@ -246,8 +246,8 @@ func (x *ReadApplicationResponse) GetId() string {
 }
 
 func (x *ReadApplicationResponse) GetDeploymentId() string {
-	if x != nil {
-		return x.DeploymentId
+	if x != nil && x.DeploymentId != nil {
+		return *x.DeploymentId
 	}
 	return ""
 }
@@ -337,7 +337,7 @@ func (x *UpdateApplicationRequest) GetUpdateMask() *fieldmaskpb.FieldMask {
 type UpdateApplicationResponse struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
 	Id            string                 `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
-	DeploymentId  string                 `protobuf:"bytes,2,opt,name=deployment_id,json=deploymentId,proto3" json:"deployment_id,omitempty"`
+	DeploymentId  *string                `protobuf:"bytes,2,opt,name=deployment_id,json=deploymentId,proto3,oneof" json:"deployment_id,omitempty"`
 	Description   *string                `protobuf:"bytes,3,opt,name=description,proto3,oneof" json:"description,omitempty"`
 	Name          string                 `protobuf:"bytes,4,opt,name=name,proto3" json:"name,omitempty"`
 	unknownFields protoimpl.UnknownFields
@@ -382,8 +382,8 @@ func (x *UpdateApplicationResponse) GetId() string {
 }
 
 func (x *UpdateApplicationResponse) GetDeploymentId() string {
-	if x != nil {
-		return x.DeploymentId
+	if x != nil && x.DeploymentId != nil {
+		return *x.DeploymentId
 	}
 	return ""
 }
@@ -15882,25 +15882,28 @@ var File_illumio_cloud_config_v1_config_proto protoreflect.FileDescriptor
 
 const file_illumio_cloud_config_v1_config_proto_rawDesc = "" +
 	"\n" +
-	"$illumio/cloud/config/v1/config.proto\x12\x17illumio.cloud.config.v1\x1a\x1bgoogle/protobuf/empty.proto\x1a google/protobuf/field_mask.proto\"\x8a\x01\n" +
-	"\x18CreateApplicationRequest\x12#\n" +
-	"\rdeployment_id\x18\x02 \x01(\tR\fdeploymentId\x12%\n" +
-	"\vdescription\x18\x03 \x01(\tH\x00R\vdescription\x88\x01\x01\x12\x12\n" +
-	"\x04name\x18\x04 \x01(\tR\x04nameB\x0e\n" +
-	"\f_description\"\x9b\x01\n" +
+	"$illumio/cloud/config/v1/config.proto\x12\x17illumio.cloud.config.v1\x1a\x1bgoogle/protobuf/empty.proto\x1a google/protobuf/field_mask.proto\"\xa1\x01\n" +
+	"\x18CreateApplicationRequest\x12(\n" +
+	"\rdeployment_id\x18\x02 \x01(\tH\x00R\fdeploymentId\x88\x01\x01\x12%\n" +
+	"\vdescription\x18\x03 \x01(\tH\x01R\vdescription\x88\x01\x01\x12\x12\n" +
+	"\x04name\x18\x04 \x01(\tR\x04nameB\x10\n" +
+	"\x0e_deployment_idB\x0e\n" +
+	"\f_description\"\xb2\x01\n" +
 	"\x19CreateApplicationResponse\x12\x0e\n" +
-	"\x02id\x18\x01 \x01(\tR\x02id\x12#\n" +
-	"\rdeployment_id\x18\x02 \x01(\tR\fdeploymentId\x12%\n" +
-	"\vdescription\x18\x03 \x01(\tH\x00R\vdescription\x88\x01\x01\x12\x12\n" +
-	"\x04name\x18\x04 \x01(\tR\x04nameB\x0e\n" +
+	"\x02id\x18\x01 \x01(\tR\x02id\x12(\n" +
+	"\rdeployment_id\x18\x02 \x01(\tH\x00R\fdeploymentId\x88\x01\x01\x12%\n" +
+	"\vdescription\x18\x03 \x01(\tH\x01R\vdescription\x88\x01\x01\x12\x12\n" +
+	"\x04name\x18\x04 \x01(\tR\x04nameB\x10\n" +
+	"\x0e_deployment_idB\x0e\n" +
 	"\f_description\"(\n" +
 	"\x16ReadApplicationRequest\x12\x0e\n" +
-	"\x02id\x18\x01 \x01(\tR\x02id\"\x99\x01\n" +
+	"\x02id\x18\x01 \x01(\tR\x02id\"\xb0\x01\n" +
 	"\x17ReadApplicationResponse\x12\x0e\n" +
-	"\x02id\x18\x01 \x01(\tR\x02id\x12#\n" +
-	"\rdeployment_id\x18\x02 \x01(\tR\fdeploymentId\x12%\n" +
-	"\vdescription\x18\x03 \x01(\tH\x00R\vdescription\x88\x01\x01\x12\x12\n" +
-	"\x04name\x18\x04 \x01(\tR\x04nameB\x0e\n" +
+	"\x02id\x18\x01 \x01(\tR\x02id\x12(\n" +
+	"\rdeployment_id\x18\x02 \x01(\tH\x00R\fdeploymentId\x88\x01\x01\x12%\n" +
+	"\vdescription\x18\x03 \x01(\tH\x01R\vdescription\x88\x01\x01\x12\x12\n" +
+	"\x04name\x18\x04 \x01(\tR\x04nameB\x10\n" +
+	"\x0e_deployment_idB\x0e\n" +
 	"\f_description\"\xb2\x01\n" +
 	"\x18UpdateApplicationRequest\x12\x0e\n" +
 	"\x02id\x18\x01 \x01(\tR\x02id\x12%\n" +
@@ -15908,12 +15911,13 @@ const file_illumio_cloud_config_v1_config_proto_rawDesc = "" +
 	"\x04name\x18\x04 \x01(\tR\x04name\x12;\n" +
 	"\vupdate_mask\x18\x05 \x01(\v2\x1a.google.protobuf.FieldMaskR\n" +
 	"updateMaskB\x0e\n" +
-	"\f_description\"\x9b\x01\n" +
+	"\f_description\"\xb2\x01\n" +
 	"\x19UpdateApplicationResponse\x12\x0e\n" +
-	"\x02id\x18\x01 \x01(\tR\x02id\x12#\n" +
-	"\rdeployment_id\x18\x02 \x01(\tR\fdeploymentId\x12%\n" +
-	"\vdescription\x18\x03 \x01(\tH\x00R\vdescription\x88\x01\x01\x12\x12\n" +
-	"\x04name\x18\x04 \x01(\tR\x04nameB\x0e\n" +
+	"\x02id\x18\x01 \x01(\tR\x02id\x12(\n" +
+	"\rdeployment_id\x18\x02 \x01(\tH\x00R\fdeploymentId\x88\x01\x01\x12%\n" +
+	"\vdescription\x18\x03 \x01(\tH\x01R\vdescription\x88\x01\x01\x12\x12\n" +
+	"\x04name\x18\x04 \x01(\tR\x04nameB\x10\n" +
+	"\x0e_deployment_idB\x0e\n" +
 	"\f_description\"*\n" +
 	"\x18DeleteApplicationRequest\x12\x0e\n" +
 	"\x02id\x18\x01 \x01(\tR\x02id\"\xb7\x05\n" +

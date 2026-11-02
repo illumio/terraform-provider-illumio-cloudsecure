@@ -20,7 +20,7 @@ var (
 				"deployment_id": StringResourceAttributeWithMode{
 					StringAttribute: resource_schema.StringAttribute{
 						Description: "ID of the CloudSecure deployment.",
-						Required:    true,
+						Optional:    true,
 						PlanModifiers: []planmodifier.String{
 							stringplanmodifier.RequiresReplace(),
 						},
