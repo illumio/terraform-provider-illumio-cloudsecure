@@ -87,7 +87,7 @@ func NewFakeConfigServer(logger *zap.Logger) configv1.ConfigServiceServer {
 
 type Application struct {
 	Id           string
-	DeploymentId string
+	DeploymentId *string
 	Description  *string
 	Name         string
 }
