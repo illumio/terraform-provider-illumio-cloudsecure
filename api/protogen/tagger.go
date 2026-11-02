@@ -5,7 +5,7 @@ package main
 
 import "encoding/json"
 
-// attributeTagger assigns unique tags to the attributes of a resource or data source, which can be used as the tags of corresdponding fields in a Protocol Buffer message.
+// attributeTagger assigns unique tags to the attributes of a resource or data source, which can be used as the tags of corresponding fields in a Protocol Buffer message.
 type attributeTagger struct {
 	// AssignedTags maps names of attributes to the tags that are assigned to them.
 	AssignedTags map[string]int
@@ -23,7 +23,7 @@ var (
 // The values in preAssignedTags must be distinct.
 func newAttributeTagger(preAssignedTags map[string]int) *attributeTagger {
 	// Since all tags are assigned monotonically, the next tag immediately follows the highest previously assigned tag.
-	// If no tags were previouysly assigned, start from 1.
+	// If no tags were previously assigned, start from 1.
 	nextTag := 1
 
 	if preAssignedTags == nil {

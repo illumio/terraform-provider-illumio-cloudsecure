@@ -56,7 +56,7 @@ func (a *AuthService) authenticateHandler(w http.ResponseWriter, r *http.Request
 
 	var req TokenRequest
 
-	err := r.ParseForm() //nolint:gosec
+	err := r.ParseForm()
 	if err != nil {
 		a.logger.Error("Invalid request, unable to parse form", zap.Error(err))
 		http.Error(w, "Invalid request", http.StatusBadRequest)
@@ -64,9 +64,9 @@ func (a *AuthService) authenticateHandler(w http.ResponseWriter, r *http.Request
 		return
 	}
 
-	req.GrantType = r.FormValue("grant_type")       //nolint:gosec
-	req.ClientID = r.FormValue("client_id")         //nolint:gosec
-	req.ClientSecret = r.FormValue("client_secret") //nolint:gosec
+	req.GrantType = r.FormValue("grant_type")
+	req.ClientID = r.FormValue("client_id")
+	req.ClientSecret = r.FormValue("client_secret")
 
 	if req.GrantType != AllowedGrantType {
 		jsonResponse(w, http.StatusBadRequest, map[string]string{"error": InvalidGrantError})
