@@ -125,7 +125,8 @@ func (p *Provider) Schema(_ context.Context, _ provider.SchemaRequest, resp *pro
 				Optional:            true,
 				Sensitive:           true,
 				Validators: []validator.String{
-					stringvalidator.LengthBetween(1, 1024),
+					// No upper bound: the length of a JWT grows with its claims and signing key.
+					stringvalidator.LengthAtLeast(1),
 				},
 			},
 			"request_timeout": provider_schema.StringAttribute{
