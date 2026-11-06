@@ -8,7 +8,9 @@ import (
 	"testing"
 
 	"github.com/hashicorp/terraform-plugin-framework/attr"
+	resource_schema "github.com/hashicorp/terraform-plugin-framework/resource/schema"
 	"github.com/hashicorp/terraform-plugin-framework/types"
+	"github.com/illumio/terraform-provider-illumio-cloudsecure/api/schema"
 	"github.com/illumio/terraform-provider-illumio-cloudsecure/util"
 	"github.com/stretchr/testify/suite"
 )
@@ -967,6 +969,72 @@ func (suite *GenerateTestSuite) TestGRPCAPISpecTemplate() {
 			if suite.NoError(err, "template execution failed") {
 				got := buf.String()
 				suite.Equal(util.TrimEmptyLinesAndSpaces(tc.output), util.TrimEmptyLinesAndSpaces(got), "generated text must match")
+			}
+		})
+	}
+}
+
+// testSchema is a simple Schema implementation for testing.
+type testSchema struct {
+	resources   schema.Resources
+	dataSources schema.DataSources
+}
+
+func (s testSchema) Version() string                 { return "v1" }
+func (s testSchema) Resources() schema.Resources     { return s.resources }
+func (s testSchema) DataSources() schema.DataSources { return s.dataSources }
+
+// TestGenerateGRPCAPISpec verifies that GenerateGRPCAPISpec correctly generates proto definitions
+// for various resource attribute types. This tests the full pipeline including message name prefixing.
+func (suite *GenerateTestSuite) TestGenerateGRPCAPISpec() {
+	tests := map[string]struct {
+		resources       schema.Resources
+		expectedOutputs []string
+	}{
+		"map_nested_attribute": {
+			resources: schema.Resources{
+				{
+					TypeName: "map_test",
+					Schema: resource_schema.Schema{
+						Version: 1,
+						Attributes: map[string]resource_schema.Attribute{
+							"id": resource_schema.StringAttribute{
+								Computed: true,
+							},
+							"rules": resource_schema.MapNestedAttribute{
+								Required: true,
+								NestedObject: resource_schema.NestedAttributeObject{
+									Attributes: map[string]resource_schema.Attribute{
+										"action": resource_schema.StringAttribute{
+											Required: true,
+										},
+									},
+								},
+							},
+						},
+					},
+				},
+			},
+			expectedOutputs: []string{
+				"map<string, MapTest_Rules>",
+				"message MapTest_Rules",
+			},
+		},
+	}
+
+	for name, tc := range tests {
+		suite.Run(name, func() {
+			src := testSchema{resources: tc.resources}
+
+			var buf bytes.Buffer
+
+			tagger := newAPISpecTagger()
+			err := GenerateGRPCAPISpec(&buf, src, tagger)
+			suite.Require().NoError(err, "GenerateGRPCAPISpec should not return an error")
+
+			output := buf.String()
+			for _, expected := range tc.expectedOutputs {
+				suite.Contains(output, expected)
 			}
 		})
 	}
