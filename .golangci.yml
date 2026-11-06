@@ -19,6 +19,7 @@ linters:
     - gochecknoinits
     - goconst
     - godox
+    - gomodguard
     - ireturn
     - lll
     - mnd
@@ -30,6 +31,9 @@ linters:
     - wrapcheck
     - wsl
   settings:
+    modernize:
+      disable:
+        - embedlit
     gosec:
       config:
         G302: "0644" # Allow creating file with mode 0644
