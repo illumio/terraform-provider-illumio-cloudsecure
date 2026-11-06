@@ -83,6 +83,14 @@ const (
 
 	// DefaultRequestTimeout is the default CloudConfig Config API request timeout.
 	DefaultRequestTimeout = "30s"
+
+	// MinAccessTokenLength is the length of the shortest CloudSecure access token: an RS256 JWT
+	// with only the mandatory header and claims, signed with a 2048-bit key (the RS256 minimum).
+	MinAccessTokenLength = 658
+
+	// MaxAccessTokenLength leaves room above the longest current token, 1639 characters with
+	// all permissions and a 4096-bit key.
+	MaxAccessTokenLength = 2048
 )
 
 func (p *Provider) Schema(_ context.Context, _ provider.SchemaRequest, resp *provider.SchemaResponse) {
@@ -125,7 +133,7 @@ func (p *Provider) Schema(_ context.Context, _ provider.SchemaRequest, resp *pro
 				Optional:            true,
 				Sensitive:           true,
 				Validators: []validator.String{
-					stringvalidator.LengthBetween(1, 1024),
+					stringvalidator.LengthBetween(MinAccessTokenLength, MaxAccessTokenLength),
 				},
 			},
 			"request_timeout": provider_schema.StringAttribute{
