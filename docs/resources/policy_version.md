@@ -385,11 +385,14 @@ resource "illumio-cloudsecure_policy_version" "aws_multi_account_to_vpc" {
 # The "allow-dns" rule sets no tier, which only Cilium supports.
 # The "default-deny" rule denies all other traffic from the cluster's pods to any
 # destination, inside or outside the cluster, in the Baseline tier.
+# The "default-deny-ingress" rule denies traffic from any source to the
+# cluster's pods, in the Baseline tier.
 #
-# policy_apis lists the network policy APIs each side is rendered to, so that
-# rules those APIs can't support fail at plan rather than at provision. Cilium
-# supports the Baseline tier only on source.k8s, for a Deny to `any` on all TCP
-# and UDP ports, written as 0-0 (all ports).
+# policy_apis on each clusters entry lists the network policy APIs those
+# clusters can render, so that rules those APIs can't support fail at plan
+# rather than at provision. Cilium supports the Baseline tier only for a Deny
+# to or from `any` on all TCP and UDP ports, written as 0-0 (all ports). The
+# AWS VPC CNI cannot enforce ingress from `any` or from IP lists.
 
 variable "k8s_cluster_id" {
   type        = string
@@ -398,7 +401,7 @@ variable "k8s_cluster_id" {
 
 resource "illumio-cloudsecure_policy_version" "k8s_default_deny" {
   policy_id   = illumio-cloudsecure_policy.example.id
-  description = "Allow DNS to kube-system, deny all other egress"
+  description = "Allow DNS to kube-system, deny all other traffic"
 
   rules = {
     "allow-dns" = {
@@ -406,23 +409,21 @@ resource "illumio-cloudsecure_policy_version" "k8s_default_deny" {
 
       source = {
         k8s = {
-          clusters           = [{ id = var.k8s_cluster_id }]
+          clusters           = [{ id = var.k8s_cluster_id, policy_apis = ["cilium"] }]
           namespace_selector = {}
           workload_selector  = {}
-          policy_apis        = ["cilium"]
         }
       }
 
       destination = {
         k8s = {
-          clusters = [{ id = var.k8s_cluster_id }]
+          clusters = [{ id = var.k8s_cluster_id, policy_apis = ["cilium"] }]
           namespace_selector = {
             match_labels = [{ key = "kubernetes.io/metadata.name", value = "kube-system" }]
           }
           workload_selector = {
             match_labels = [{ key = "k8s-app", value = "kube-dns" }]
           }
-          policy_apis = ["cilium"]
         }
       }
 
@@ -437,16 +438,37 @@ resource "illumio-cloudsecure_policy_version" "k8s_default_deny" {
 
       source = {
         k8s = {
-          clusters           = [{ id = var.k8s_cluster_id }]
+          clusters           = [{ id = var.k8s_cluster_id, policy_apis = ["cilium", "aws_vpc"] }]
           namespace_selector = {}
           workload_selector  = {}
-          policy_apis        = ["cilium", "aws_vpc"]
           tier               = "Baseline"
         }
       }
 
       destination = {
         any = {}
+      }
+
+      port_ranges = [
+        { protocol = "TCP", from_port = 0, to_port = 0 },
+        { protocol = "UDP", from_port = 0, to_port = 0 },
+      ]
+    }
+
+    "default-deny-ingress" = {
+      action = "Deny"
+
+      source = {
+        any = {}
+      }
+
+      destination = {
+        k8s = {
+          clusters           = [{ id = var.k8s_cluster_id, policy_apis = ["cilium"] }]
+          namespace_selector = {}
+          workload_selector  = {}
+          tier               = "Baseline"
+        }
       }
 
       port_ranges = [
@@ -661,7 +683,6 @@ Optional:
 
 - `gateways` (List of String) List of K8s Gateway names to target. Mutually exclusive with workload_selector, services, and ingresses.
 - `ingresses` (List of String) List of K8s Ingress names to target. Mutually exclusive with workload_selector, services, and gateways.
-- `policy_apis` (List of String) Kubernetes network policy APIs this side of the rule is expected to be rendered to: `cilium` or `aws_vpc`. When set, the rule is checked at plan time against what every listed API supports. When omitted, the backend validates the rule when the policy is provisioned.
 - `priority` (Number) Priority of this side of the rule within its tier. Must be a non-negative integer. When `policy_apis` includes `aws_vpc`, must be between 0 and 1000. Not supported by `cilium`; leave it unset or 0.
 - `services` (List of String) List of K8s Service names to target. Mutually exclusive with workload_selector, ingresses, and gateways.
 - `tier` (String) Policy tier for this side of the rule: `Admin` or `Baseline`. When omitted, the side has no tier. Only `cilium` supports no tier: when `policy_apis` includes `aws_vpc`, a tier must be set.
@@ -677,6 +698,7 @@ Optional:
 - `gcp` (Attributes) GCP GKE clusters. Mutually exclusive with id, aws, azure, and oci. (see [below for nested schema](#nestedatt--rules--destination--k8s--clusters--gcp))
 - `id` (String) Cluster ID (from k8s_cluster resource/data source). Mutually exclusive with aws, gcp, azure, and oci.
 - `oci` (Attributes) OCI OKE clusters. Mutually exclusive with id, aws, gcp, and azure. (see [below for nested schema](#nestedatt--rules--destination--k8s--clusters--oci))
+- `policy_apis` (List of String) Kubernetes network policy APIs the clusters this entry matches can render: `cilium` or `aws_vpc`. When set, the rule is checked at plan time against what every listed API supports, across all entries of this side. When omitted, the backend validates the rule when the policy is provisioned.
 
 <a id="nestedatt--rules--destination--k8s--clusters--aws"></a>
 ### Nested Schema for `rules.destination.k8s.clusters.aws`
@@ -919,10 +941,15 @@ Required:
 
 Optional:
 
+- `any` (Attributes) Matches all sources, inside and outside the cluster. Must be an empty object: `any = {}`. Only valid when the destination is `k8s`. (see [below for nested schema](#nestedatt--rules--source--any))
 - `cloud` (Attributes) Cloud resource selector (Azure or AWS). (see [below for nested schema](#nestedatt--rules--source--cloud))
 - `illumio_labels` (Attributes) Illumio label selector. (see [below for nested schema](#nestedatt--rules--source--illumio_labels))
 - `ip_lists` (Attributes) IP list reference selector. (see [below for nested schema](#nestedatt--rules--source--ip_lists))
 - `k8s` (Attributes) K8s workload selector. (see [below for nested schema](#nestedatt--rules--source--k8s))
+
+<a id="nestedatt--rules--source--any"></a>
+### Nested Schema for `rules.source.any`
+
 
 <a id="nestedatt--rules--source--cloud"></a>
 ### Nested Schema for `rules.source.cloud`
@@ -1075,7 +1102,6 @@ Required:
 
 Optional:
 
-- `policy_apis` (List of String) Kubernetes network policy APIs this side of the rule is expected to be rendered to: `cilium` or `aws_vpc`. When set, the rule is checked at plan time against what every listed API supports. When omitted, the backend validates the rule when the policy is provisioned.
 - `priority` (Number) Priority of this side of the rule within its tier. Must be a non-negative integer. When `policy_apis` includes `aws_vpc`, must be between 0 and 1000. Not supported by `cilium`; leave it unset or 0.
 - `tier` (String) Policy tier for this side of the rule: `Admin` or `Baseline`. When omitted, the side has no tier. Only `cilium` supports no tier: when `policy_apis` includes `aws_vpc`, a tier must be set.
 
@@ -1089,6 +1115,7 @@ Optional:
 - `gcp` (Attributes) GCP GKE clusters. Mutually exclusive with id, aws, azure, and oci. (see [below for nested schema](#nestedatt--rules--source--k8s--clusters--gcp))
 - `id` (String) Cluster ID (from k8s_cluster resource/data source). Mutually exclusive with aws, gcp, azure, and oci.
 - `oci` (Attributes) OCI OKE clusters. Mutually exclusive with id, aws, gcp, and azure. (see [below for nested schema](#nestedatt--rules--source--k8s--clusters--oci))
+- `policy_apis` (List of String) Kubernetes network policy APIs the clusters this entry matches can render: `cilium` or `aws_vpc`. When set, the rule is checked at plan time against what every listed API supports, across all entries of this side. When omitted, the backend validates the rule when the policy is provisioned.
 
 <a id="nestedatt--rules--source--k8s--clusters--aws"></a>
 ### Nested Schema for `rules.source.k8s.clusters.aws`

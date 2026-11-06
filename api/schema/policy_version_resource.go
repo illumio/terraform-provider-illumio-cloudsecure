@@ -250,6 +250,9 @@ var clusterSelectorAttributes = resource_schema.ListNestedAttribute{
 					),
 				},
 			},
+			// policy_apis is not a cluster selector: it can be set alongside whichever of the
+			// selectors above the entry uses.
+			"policy_apis": clusterPolicyAPIsAttribute,
 		},
 	},
 }
@@ -670,6 +673,7 @@ var (
 													path.MatchRelative().AtParent().AtName("ip_lists"),
 													path.MatchRelative().AtParent().AtName("cloud"),
 													path.MatchRelative().AtParent().AtName("illumio_labels"),
+													path.MatchRelative().AtParent().AtName("any"),
 												),
 											},
 										},
@@ -683,6 +687,7 @@ var (
 													path.MatchRelative().AtParent().AtName("ip_lists"),
 													path.MatchRelative().AtParent().AtName("cloud"),
 													path.MatchRelative().AtParent().AtName("illumio_labels"),
+													path.MatchRelative().AtParent().AtName("any"),
 												),
 											},
 										},
@@ -696,6 +701,7 @@ var (
 													path.MatchRelative().AtParent().AtName("ip_lists"),
 													path.MatchRelative().AtParent().AtName("cloud"),
 													path.MatchRelative().AtParent().AtName("illumio_labels"),
+													path.MatchRelative().AtParent().AtName("any"),
 												),
 											},
 										},
@@ -709,6 +715,21 @@ var (
 													path.MatchRelative().AtParent().AtName("ip_lists"),
 													path.MatchRelative().AtParent().AtName("cloud"),
 													path.MatchRelative().AtParent().AtName("illumio_labels"),
+													path.MatchRelative().AtParent().AtName("any"),
+												),
+											},
+										},
+										"any": resource_schema.SingleNestedAttribute{
+											MarkdownDescription: "Matches all sources, inside and outside the cluster. Must be an empty object: `any = {}`. Only valid when the destination is `k8s`.",
+											Optional:            true,
+											Attributes:          map[string]resource_schema.Attribute{},
+											Validators: []validator.Object{
+												objectvalidator.ExactlyOneOf(
+													path.MatchRelative().AtParent().AtName("k8s"),
+													path.MatchRelative().AtParent().AtName("ip_lists"),
+													path.MatchRelative().AtParent().AtName("cloud"),
+													path.MatchRelative().AtParent().AtName("illumio_labels"),
+													path.MatchRelative().AtParent().AtName("any"),
 												),
 											},
 										},

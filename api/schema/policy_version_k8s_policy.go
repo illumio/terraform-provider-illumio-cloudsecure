@@ -33,6 +33,25 @@ const (
 	tierBaseline = "Baseline"
 )
 
+// clusterPolicyAPIsAttribute is policy_apis on a clusters entry: the Kubernetes network policy
+// APIs that every cluster the entry matches can render. A rule side is checked against the union
+// of its entries' lists.
+//
+// It needs no default: a null list is sent as an empty repeated field and read back as null. An
+// empty list would read back as null too, so it is rejected.
+var clusterPolicyAPIsAttribute = resource_schema.ListAttribute{
+	MarkdownDescription: "Kubernetes network policy APIs the clusters this entry matches can render: `cilium` or `aws_vpc`. " +
+		"When set, the rule is checked at plan time against what every listed API supports, across all entries of this side. " +
+		"When omitted, the backend validates the rule when the policy is provisioned.",
+	Optional:    true,
+	ElementType: types.StringType,
+	Validators: []validator.List{
+		listvalidator.SizeAtLeast(1),
+		listvalidator.UniqueValues(),
+		listvalidator.ValueStringsAre(stringvalidator.OneOf(policyAPICilium, policyAPIAwsVpc)),
+	},
+}
+
 // k8sPolicyAttributes are the attributes shared by source.k8s and destination.k8s that control
 // how that side of a rule is rendered into Kubernetes network policies.
 //
@@ -41,21 +60,7 @@ const (
 // The default plans that zero value up front, which keeps apply consistent with the plan and makes
 // removing the attribute from config a change. (Optional and Computed alone would instead keep
 // the prior value, so removing tier would plan no change.)
-//
-// policy_apis needs no such treatment: a null list is sent as an empty repeated field and read
-// back as null. An empty list would read back as null too, so it is rejected.
 var k8sPolicyAttributes = map[string]resource_schema.Attribute{
-	"policy_apis": resource_schema.ListAttribute{
-		MarkdownDescription: "Kubernetes network policy APIs this side of the rule is expected to be rendered to: `cilium` or `aws_vpc`. " +
-			"When set, the rule is checked at plan time against what every listed API supports. When omitted, the backend validates the rule when the policy is provisioned.",
-		Optional:    true,
-		ElementType: types.StringType,
-		Validators: []validator.List{
-			listvalidator.SizeAtLeast(1),
-			listvalidator.UniqueValues(),
-			listvalidator.ValueStringsAre(stringvalidator.OneOf(policyAPICilium, policyAPIAwsVpc)),
-		},
-	},
 	"tier": resource_schema.StringAttribute{
 		MarkdownDescription: "Policy tier for this side of the rule: `Admin` or `Baseline`. When omitted, the side has no tier. " +
 			"Only `cilium` supports no tier: when `policy_apis` includes `aws_vpc`, a tier must be set.",
@@ -89,8 +94,9 @@ func withK8sPolicyAttributes(attributes map[string]resource_schema.Attribute) ma
 // policyVersionRuleValidator checks a policy version rule against the constraints that can only
 // be expressed across attributes:
 //
-//   - destination.any is only valid with a k8s source.
-//   - Each k8s side that sets policy_apis is checked against what every listed API supports.
+//   - source.any is only valid with a k8s destination, and destination.any with a k8s source.
+//   - Each k8s side whose clusters entries set policy_apis is checked against what every listed
+//     API supports.
 //     Sides are checked independently: the backend renders each side as its own object, at that
 //     side's tier. An omitted tier means no tier, which only cilium supports.
 //
@@ -100,7 +106,7 @@ type policyVersionRuleValidator struct{}
 var _ validator.Object = policyVersionRuleValidator{}
 
 func (policyVersionRuleValidator) Description(_ context.Context) string {
-	return "rule must be supported by the policy APIs listed in source.k8s.policy_apis and destination.k8s.policy_apis"
+	return "rule must be supported by the policy APIs listed in its clusters entries"
 }
 
 func (v policyVersionRuleValidator) MarkdownDescription(ctx context.Context) string {
@@ -120,7 +126,8 @@ func (policyVersionRuleValidator) ValidateObject(_ context.Context, req validato
 		diags: resp,
 	}
 
-	r.checkAnyDestination()
+	r.checkAny("source")
+	r.checkAny("destination")
 	r.checkSide("source")
 	r.checkSide("destination")
 }
@@ -138,23 +145,34 @@ func (r ruleCheck) addError(attrPath path.Path, side, reason string) {
 		fmt.Sprintf("Rule %q, %s: %s", r.name, side, reason))
 }
 
-// checkAnyDestination rejects destination.any unless the source is k8s.
-func (r ruleCheck) checkAnyDestination() {
-	destination, ok := knownAttributes(r.rule["destination"])
-	if !ok || !isSet(destination["any"]) {
-		return
+// peerOf returns the side of the rule opposite side.
+func peerOf(side string) string {
+	if side == "source" {
+		return "destination"
 	}
 
-	source, ok := knownAttributes(r.rule["source"])
-	if !ok || !isNull(source["k8s"]) {
-		return
-	}
-
-	r.addError(r.path.AtName("destination").AtName("any"), "destination",
-		"`any` is only valid when the source is k8s.")
+	return "source"
 }
 
-// checkSide checks one k8s side of the rule against every API in its policy_apis.
+// checkAny rejects any on side unless the other side is k8s.
+func (r ruleCheck) checkAny(side string) {
+	sideAttributes, ok := knownAttributes(r.rule[side])
+	if !ok || !isSet(sideAttributes["any"]) {
+		return
+	}
+
+	peer := peerOf(side)
+
+	peerAttributes, ok := knownAttributes(r.rule[peer])
+	if !ok || !isNull(peerAttributes["k8s"]) {
+		return
+	}
+
+	r.addError(r.path.AtName(side).AtName("any"), side,
+		fmt.Sprintf("`any` is only valid when the %s is k8s.", peer))
+}
+
+// checkSide checks one k8s side of the rule against every policy API its clusters entries list.
 func (r ruleCheck) checkSide(side string) {
 	sideAttributes, ok := knownAttributes(r.rule[side])
 	if !ok {
@@ -166,8 +184,8 @@ func (r ruleCheck) checkSide(side string) {
 		return
 	}
 
-	apis, ok := knownStrings(k8s["policy_apis"])
-	if !ok {
+	apis := clusterPolicyAPIs(k8s["clusters"])
+	if len(apis) == 0 {
 		return
 	}
 
@@ -186,6 +204,18 @@ func (r ruleCheck) checkSide(side string) {
 			fmt.Sprintf("policy API %q supports priority 0-%d, got: %d.", policyAPIAwsVpc, awsVpcMaxPriority, priority))
 	}
 
+	// AWS ClusterNetworkPolicy has no CIDR ingress peer, so a k8s destination cannot be enforced
+	// against traffic from IP lists or from any source.
+	if source, ok := knownAttributes(r.rule["source"]); ok && side == "destination" && slices.Contains(apis, policyAPIAwsVpc) {
+		for _, name := range []string{"any", "ip_lists"} {
+			if isSet(source[name]) {
+				r.addError(r.path.AtName("source").AtName(name), sideName,
+					fmt.Sprintf("policy API %q cannot enforce ingress from source.%s: AWS ClusterNetworkPolicy has no CIDR ingress peer.",
+						policyAPIAwsVpc, name))
+			}
+		}
+	}
+
 	if !slices.Contains(apis, policyAPICilium) {
 		return
 	}
@@ -202,30 +232,64 @@ func (r ruleCheck) checkSide(side string) {
 }
 
 // checkCiliumBaseline checks that a Baseline tier k8s side is a deny of all TCP and UDP traffic
-// from the source to any destination, which is the only Baseline rule Cilium can render. The k8s
-// side must therefore be the source, and all ports must be written as TCP 0-0 and UDP 0-0.
+// to or from any peer, which is the only Baseline rule Cilium can render: egress when the k8s
+// side is the source (a Deny to destination any), ingress when it is the destination (a Deny
+// from source any). All ports must be written as TCP 0-0 and UDP 0-0.
 func (r ruleCheck) checkCiliumBaseline(tierPath path.Path, side string) {
-	sideName := side + ".k8s"
-	prefix := fmt.Sprintf("policy API %q supports tier %q only on source.k8s, for a Deny to destination = { any = {} } on all TCP and UDP ports",
-		policyAPICilium, tierBaseline)
+	peer := peerOf(side)
+	direction := "to"
 
-	if side != "source" {
-		r.addError(tierPath, sideName, prefix+".")
-
-		return
+	if peer == "source" {
+		direction = "from"
 	}
+
+	sideName := side + ".k8s"
+	prefix := fmt.Sprintf("policy API %q supports tier %q only for a Deny %s %s = { any = {} } on all TCP and UDP ports",
+		policyAPICilium, tierBaseline, direction, peer)
 
 	if action, ok := knownString(r.rule["action"]); ok && action != "Deny" {
 		r.addError(tierPath, sideName, fmt.Sprintf("%s; action is %q.", prefix, action))
 	}
 
-	if destination, ok := knownAttributes(r.rule["destination"]); ok && isNull(destination["any"]) {
-		r.addError(tierPath, sideName, prefix+"; the destination is not `any`.")
+	if peerAttributes, ok := knownAttributes(r.rule[peer]); ok && isNull(peerAttributes["any"]) {
+		r.addError(tierPath, sideName, fmt.Sprintf("%s; the %s is not `any`.", prefix, peer))
 	}
 
 	if allPorts, known := isAllPortsTCPAndUDP(r.rule["port_ranges"]); known && !allPorts {
 		r.addError(tierPath, sideName, prefix+`; port_ranges must be exactly TCP 0-0 and UDP 0-0 (all ports).`)
 	}
+}
+
+// clusterPolicyAPIs returns the union of the known policy_apis of the given clusters entries.
+// Entries or values that are unknown at plan time are skipped: every rule an API adds is a
+// restriction, so a violation found with the known APIs is a violation with all of them.
+func clusterPolicyAPIs(clusters attr.Value) []string {
+	list, ok := clusters.(types.List)
+	if !ok || !isSet(clusters) {
+		return nil
+	}
+
+	var apis []string
+
+	for _, element := range list.Elements() {
+		entry, ok := knownAttributes(element)
+		if !ok {
+			continue
+		}
+
+		entryAPIs, ok := knownStrings(entry["policy_apis"])
+		if !ok {
+			continue
+		}
+
+		for _, api := range entryAPIs {
+			if !slices.Contains(apis, api) {
+				apis = append(apis, api)
+			}
+		}
+	}
+
+	return apis
 }
 
 // isAllPortsTCPAndUDP reports whether the port ranges are exactly "all TCP and UDP ports" in the

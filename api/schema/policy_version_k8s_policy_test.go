@@ -94,14 +94,23 @@ func diagnosticDetails(diags diag.Diagnostics) []string {
 	return details
 }
 
+// testK8sSide returns a k8s side for one cluster with extra attributes merged in.
+// policy_apis in extra is set on the first clusters entry, where the schema has it.
 func testK8sSide(extra map[string]any) map[string]any {
+	cluster := map[string]any{"id": "7f8f6b1e-5f0e-4d8c-9a64-3a8f2b6f1c11"}
 	k8s := map[string]any{
-		"clusters":           []any{map[string]any{"id": "7f8f6b1e-5f0e-4d8c-9a64-3a8f2b6f1c11"}},
+		"clusters":           []any{cluster},
 		"namespace_selector": map[string]any{},
 		"workload_selector":  map[string]any{},
 	}
 
 	maps.Copy(k8s, extra)
+
+	if apis, ok := k8s["policy_apis"]; ok {
+		cluster["policy_apis"] = apis
+
+		delete(k8s, "policy_apis")
+	}
 
 	return map[string]any{"k8s": k8s}
 }
@@ -116,8 +125,9 @@ var (
 func (suite *SchemaTestSuite) TestPolicyVersionRuleValidator() {
 	ruleType := policyVersionRuleType()
 
-	baselinePrefix := `policy API "cilium" supports tier "Baseline" only on source.k8s, for a Deny to destination = { any = {} } on all TCP and UDP ports`
-	egressBaseline := func(reason string) string { return baselinePrefix + "; " + reason }
+	baselineMessage := `policy API "cilium" supports tier "Baseline" only for a Deny %s %s = { any = {} } on all TCP and UDP ports; %s`
+	egressBaseline := func(reason string) string { return fmt.Sprintf(baselineMessage, "to", "destination", reason) }
+	ingressBaseline := func(reason string) string { return fmt.Sprintf(baselineMessage, "from", "source", reason) }
 	allPortsReason := "port_ranges must be exactly TCP 0-0 and UDP 0-0 (all ports)."
 
 	tests := map[string]struct {
@@ -163,9 +173,26 @@ func (suite *SchemaTestSuite) TestPolicyVersionRuleValidator() {
 			wantErrors: []string{egressBaseline(`action is "Allow".`)},
 		},
 
-		"cilium Baseline on destination.k8s fails": {
+		"cilium Baseline Deny from any on all ports passes": {
+			action: "Deny", source: testAny, destination: testK8sSide(testCilium), portRanges: testAllPorts,
+		},
+		"cilium Baseline on the destination needs source any": {
 			action: "Deny", source: testK8sSide(nil), destination: testK8sSide(testCilium), portRanges: testAllPorts,
-			wantErrors: []string{`Rule "r", destination.k8s: ` + baselinePrefix + "."},
+			wantErrors: []string{`Rule "r", destination.k8s: ` + ingressBaseline("the source is not `any`.")},
+		},
+		"policy_apis is the union across clusters entries": {
+			action: "Allow",
+			source: map[string]any{"k8s": map[string]any{
+				"clusters": []any{
+					map[string]any{"id": "7f8f6b1e-5f0e-4d8c-9a64-3a8f2b6f1c11", "policy_apis": []any{"aws_vpc"}},
+					map[string]any{"id": "0c7d3b5a-9e41-4f2a-8b6d-1a2e3f4c5d6e", "policy_apis": []any{"cilium"}},
+				},
+				"namespace_selector": map[string]any{},
+				"workload_selector":  map[string]any{},
+				"tier":               "Baseline",
+			}},
+			destination: testAny, portRanges: testAllPorts,
+			wantErrors: []string{egressBaseline(`action is "Allow".`)},
 		},
 
 		// Sides are checked independently.
@@ -225,11 +252,39 @@ func (suite *SchemaTestSuite) TestPolicyVersionRuleValidator() {
 			destination: testK8sSide(nil), portRanges: testTCP443,
 		},
 
+		// aws_vpc has no CIDR ingress peer.
+		"aws_vpc rejects ingress from source any": {
+			action: "Deny", source: testAny,
+			destination: testK8sSide(map[string]any{"policy_apis": []any{"aws_vpc"}, "tier": "Admin"}), portRanges: testTCP443,
+			wantErrors: []string{`Rule "r", destination.k8s: policy API "aws_vpc" cannot enforce ingress from source.any: AWS ClusterNetworkPolicy has no CIDR ingress peer.`},
+		},
+		"aws_vpc rejects ingress from source ip_lists": {
+			action: "Allow", source: map[string]any{"ip_lists": map[string]any{"ids": []any{"ipl-1"}}},
+			destination: testK8sSide(map[string]any{"policy_apis": []any{"aws_vpc"}, "tier": "Admin"}), portRanges: testTCP443,
+			wantErrors: []string{`Rule "r", destination.k8s: policy API "aws_vpc" cannot enforce ingress from source.ip_lists: AWS ClusterNetworkPolicy has no CIDR ingress peer.`},
+		},
+		"aws_vpc allows egress to any": {
+			action: "Deny", source: testK8sSide(map[string]any{"policy_apis": []any{"aws_vpc"}, "tier": "Admin"}),
+			destination: testAny, portRanges: testTCP443,
+		},
+
 		// any placement.
 		"destination any requires a k8s source": {
 			action: "Deny", source: map[string]any{"ip_lists": map[string]any{"ids": []any{"ipl-1"}}},
 			destination: testAny, portRanges: testTCP443,
 			wantErrors: []string{"Rule \"r\", destination: `any` is only valid when the source is k8s."},
+		},
+		"source any requires a k8s destination": {
+			action: "Deny", source: testAny,
+			destination: map[string]any{"fqdns": map[string]any{"names": []any{"api.example.com"}}}, portRanges: testTCP443,
+			wantErrors: []string{"Rule \"r\", source: `any` is only valid when the destination is k8s."},
+		},
+		"any to any fails on both sides": {
+			action: "Deny", source: testAny, destination: testAny, portRanges: testTCP443,
+			wantErrors: []string{
+				"Rule \"r\", source: `any` is only valid when the destination is k8s.",
+				"Rule \"r\", destination: `any` is only valid when the source is k8s.",
+			},
 		},
 	}
 

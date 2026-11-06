@@ -1136,6 +1136,7 @@ message PolicyVersion_Rules {
         Azure azure = 2;
         Gcp gcp = 3;
         Oci oci = 4;
+        repeated string policy_apis = 6;
       }
       message NamespaceSelector {
         message MatchExpressions {
@@ -1168,10 +1169,9 @@ message PolicyVersion_Rules {
       repeated string gateways = 4;
       repeated string ingresses = 5;
       NamespaceSelector namespace_selector = 2;
-      repeated string policy_apis = 7;
-      int64 priority = 8;
+      int64 priority = 7;
       repeated string services = 6;
-      string tier = 9;
+      string tier = 8;
       WorkloadSelector workload_selector = 3;
     }
     Any any = 6;
@@ -1187,6 +1187,7 @@ message PolicyVersion_Rules {
     int64 to_port = 3;
   }
   message Source {
+    message Any {}
     message Cloud {
       message Aws {
         message Network {
@@ -1334,6 +1335,7 @@ message PolicyVersion_Rules {
         Azure azure = 2;
         Gcp gcp = 3;
         Oci oci = 4;
+        repeated string policy_apis = 6;
       }
       message NamespaceSelector {
         message MatchExpressions {
@@ -1364,11 +1366,11 @@ message PolicyVersion_Rules {
       }
       repeated Clusters clusters = 1;
       NamespaceSelector namespace_selector = 2;
-      repeated string policy_apis = 4;
-      int64 priority = 5;
-      string tier = 6;
+      int64 priority = 4;
+      string tier = 5;
       WorkloadSelector workload_selector = 3;
     }
+    Any any = 5;
     Cloud cloud = 1;
     IllumioLabels illumio_labels = 2;
     IpLists ip_lists = 3;
