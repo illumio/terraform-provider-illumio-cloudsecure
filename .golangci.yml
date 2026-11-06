@@ -19,6 +19,7 @@ linters:
     - gochecknoinits
     - goconst
     - godox
+    - gomodguard
     - ireturn
     - lll
     - mnd
