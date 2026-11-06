@@ -255,7 +255,7 @@ var clusterSelectorAttributes = resource_schema.ListNestedAttribute{
 }
 
 // k8sSourceSelectorAttributes is used for source.k8s. Source always targets pods.
-var k8sSourceSelectorAttributes = map[string]resource_schema.Attribute{
+var k8sSourceSelectorAttributes = withK8sPolicyAttributes(map[string]resource_schema.Attribute{
 	"clusters": clusterSelectorAttributes,
 	"namespace_selector": resource_schema.SingleNestedAttribute{
 		Description: "Label selector for K8s namespaces. Use empty {} to match all namespaces.",
@@ -267,11 +267,11 @@ var k8sSourceSelectorAttributes = map[string]resource_schema.Attribute{
 		Required:    true,
 		Attributes:  workloadSelectorAttributes,
 	},
-}
+})
 
 // k8sDestinationSelectorAttributes is used for destination.k8s.
 // Destination supports targeting pods, Services, Ingresses, or Gateways (exactly one).
-var k8sDestinationSelectorAttributes = map[string]resource_schema.Attribute{
+var k8sDestinationSelectorAttributes = withK8sPolicyAttributes(map[string]resource_schema.Attribute{
 	"clusters": clusterSelectorAttributes,
 	"namespace_selector": resource_schema.SingleNestedAttribute{
 		Description: "Label selector for K8s namespaces. Use empty {} to match all namespaces.",
@@ -315,7 +315,7 @@ var k8sDestinationSelectorAttributes = map[string]resource_schema.Attribute{
 			listvalidator.SizeAtLeast(1),
 		},
 	},
-}
+})
 
 // ipSelectorAttributes is reused for source.ip_lists and destination.ip_lists.
 var ipSelectorAttributes = map[string]resource_schema.Attribute{
@@ -645,6 +645,9 @@ var (
 							mapplanmodifier.RequiresReplace(),
 						},
 						NestedObject: resource_schema.NestedAttributeObject{
+							Validators: []validator.Object{
+								policyVersionRuleValidator{},
+							},
 							Attributes: map[string]resource_schema.Attribute{
 								"action": resource_schema.StringAttribute{
 									Description: "Action to take: Allow or Deny.",
@@ -726,6 +729,7 @@ var (
 													path.MatchRelative().AtParent().AtName("fqdns"),
 													path.MatchRelative().AtParent().AtName("cloud"),
 													path.MatchRelative().AtParent().AtName("illumio_labels"),
+													path.MatchRelative().AtParent().AtName("any"),
 												),
 											},
 										},
@@ -740,6 +744,7 @@ var (
 													path.MatchRelative().AtParent().AtName("fqdns"),
 													path.MatchRelative().AtParent().AtName("cloud"),
 													path.MatchRelative().AtParent().AtName("illumio_labels"),
+													path.MatchRelative().AtParent().AtName("any"),
 												),
 											},
 										},
@@ -760,6 +765,7 @@ var (
 													path.MatchRelative().AtParent().AtName("fqdns"),
 													path.MatchRelative().AtParent().AtName("cloud"),
 													path.MatchRelative().AtParent().AtName("illumio_labels"),
+													path.MatchRelative().AtParent().AtName("any"),
 												),
 											},
 										},
@@ -774,6 +780,7 @@ var (
 													path.MatchRelative().AtParent().AtName("fqdns"),
 													path.MatchRelative().AtParent().AtName("cloud"),
 													path.MatchRelative().AtParent().AtName("illumio_labels"),
+													path.MatchRelative().AtParent().AtName("any"),
 												),
 											},
 										},
@@ -788,6 +795,22 @@ var (
 													path.MatchRelative().AtParent().AtName("fqdns"),
 													path.MatchRelative().AtParent().AtName("cloud"),
 													path.MatchRelative().AtParent().AtName("illumio_labels"),
+													path.MatchRelative().AtParent().AtName("any"),
+												),
+											},
+										},
+										"any": resource_schema.SingleNestedAttribute{
+											MarkdownDescription: "Matches all destinations, inside and outside the cluster. Must be an empty object: `any = {}`. Only valid when the source is `k8s`.",
+											Optional:            true,
+											Attributes:          map[string]resource_schema.Attribute{},
+											Validators: []validator.Object{
+												objectvalidator.ExactlyOneOf(
+													path.MatchRelative().AtParent().AtName("k8s"),
+													path.MatchRelative().AtParent().AtName("ip_lists"),
+													path.MatchRelative().AtParent().AtName("fqdns"),
+													path.MatchRelative().AtParent().AtName("cloud"),
+													path.MatchRelative().AtParent().AtName("illumio_labels"),
+													path.MatchRelative().AtParent().AtName("any"),
 												),
 											},
 										},

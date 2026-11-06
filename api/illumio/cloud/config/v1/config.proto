@@ -985,6 +985,7 @@ message DeletePolicyProvisionRequest {
 }
 message PolicyVersion_Rules {
   message Destination {
+    message Any {}
     message Cloud {
       message Aws {
         message Network {
@@ -1167,9 +1168,13 @@ message PolicyVersion_Rules {
       repeated string gateways = 4;
       repeated string ingresses = 5;
       NamespaceSelector namespace_selector = 2;
+      repeated string policy_apis = 7;
+      int64 priority = 8;
       repeated string services = 6;
+      string tier = 9;
       WorkloadSelector workload_selector = 3;
     }
+    Any any = 6;
     Cloud cloud = 1;
     Fqdns fqdns = 2;
     IllumioLabels illumio_labels = 3;
@@ -1359,6 +1364,9 @@ message PolicyVersion_Rules {
       }
       repeated Clusters clusters = 1;
       NamespaceSelector namespace_selector = 2;
+      repeated string policy_apis = 4;
+      int64 priority = 5;
+      string tier = 6;
       WorkloadSelector workload_selector = 3;
     }
     Cloud cloud = 1;

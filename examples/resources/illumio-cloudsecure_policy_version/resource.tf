@@ -364,3 +364,80 @@ resource "illumio-cloudsecure_policy_version" "aws_multi_account_to_vpc" {
     }
   ]
 }
+
+# Example 8: Kubernetes default deny
+#
+# The "allow-dns" rule sets no tier, which only Cilium supports.
+# The "default-deny" rule denies all other traffic from the cluster's pods to any
+# destination, inside or outside the cluster, in the Baseline tier.
+#
+# policy_apis lists the network policy APIs each side is rendered to, so that
+# rules those APIs can't support fail at plan rather than at provision. Cilium
+# supports the Baseline tier only on source.k8s, for a Deny to `any` on all TCP
+# and UDP ports, written as 0-0 (all ports).
+
+variable "k8s_cluster_id" {
+  type        = string
+  description = "ID of the CloudSecure-onboarded Kubernetes cluster."
+}
+
+resource "illumio-cloudsecure_policy_version" "k8s_default_deny" {
+  policy_id   = illumio-cloudsecure_policy.example.id
+  description = "Allow DNS to kube-system, deny all other egress"
+
+  rules = {
+    "allow-dns" = {
+      action = "Allow"
+
+      source = {
+        k8s = {
+          clusters           = [{ id = var.k8s_cluster_id }]
+          namespace_selector = {}
+          workload_selector  = {}
+          policy_apis        = ["cilium"]
+        }
+      }
+
+      destination = {
+        k8s = {
+          clusters = [{ id = var.k8s_cluster_id }]
+          namespace_selector = {
+            match_labels = [{ key = "kubernetes.io/metadata.name", value = "kube-system" }]
+          }
+          workload_selector = {
+            match_labels = [{ key = "k8s-app", value = "kube-dns" }]
+          }
+          policy_apis = ["cilium"]
+        }
+      }
+
+      port_ranges = [
+        { protocol = "UDP", from_port = 53, to_port = 53 },
+        { protocol = "TCP", from_port = 53, to_port = 53 },
+      ]
+    }
+
+    "default-deny" = {
+      action = "Deny"
+
+      source = {
+        k8s = {
+          clusters           = [{ id = var.k8s_cluster_id }]
+          namespace_selector = {}
+          workload_selector  = {}
+          policy_apis        = ["cilium", "aws_vpc"]
+          tier               = "Baseline"
+        }
+      }
+
+      destination = {
+        any = {}
+      }
+
+      port_ranges = [
+        { protocol = "TCP", from_port = 0, to_port = 0 },
+        { protocol = "UDP", from_port = 0, to_port = 0 },
+      ]
+    }
+  }
+}
