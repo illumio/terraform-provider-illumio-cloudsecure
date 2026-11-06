@@ -31,11 +31,15 @@ func TestProviderSchemaAccessTokenLength(t *testing.T) {
 		length  int
 		wantErr bool
 	}{
-		"empty":         {length: 0, wantErr: true},
-		"one character": {length: 1, wantErr: false},
+		"empty":                 {length: 0, wantErr: true},
+		"one below the minimum": {length: MinAccessTokenLength - 1, wantErr: true},
+		"minimum":               {length: MinAccessTokenLength, wantErr: false},
 		// A CloudSecure service account token (RS256, 4096-bit key) was 1172 characters long.
 		"1172 characters": {length: 1172, wantErr: false},
-		"16 KiB":          {length: 16 * 1024, wantErr: false},
+		// The longest current token: all permissions, 4096-bit key.
+		"1639 characters":       {length: 1639, wantErr: false},
+		"maximum":               {length: MaxAccessTokenLength, wantErr: false},
+		"one above the maximum": {length: MaxAccessTokenLength + 1, wantErr: true},
 	}
 
 	for name, tc := range tests {
