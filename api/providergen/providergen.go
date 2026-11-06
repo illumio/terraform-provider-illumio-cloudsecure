@@ -345,6 +345,18 @@ func {{.Name}}(ctx context.Context, beforeData, afterData *{{.ModelName}}) (*con
 	proto.Id = beforeData.Id.ValueString()
 	{{- range $field := .Fields}}
 	{{- if ne $field.Name "Id" }}
+	{{- if $field.UpdateFromState}}
+	if !beforeData.{{$field.Name}}.IsUnknown() && !beforeData.{{$field.Name}}.IsNull() {
+		var dataValue attr.Value = beforeData.{{$field.Name}}
+		{{- if eq $field.Type.NestedModel nil}}
+		var protoValue {{$field.Type.ProtoTypeName}}
+		{{- else}}
+		var protoValue *{{$field.Type.ProtoTypeName}}
+		{{- end}}
+		{{- template "convertDataValueToProto" $field.Type}}
+		proto.{{$field.Name}} = protoValue
+	}
+	{{- else}}
 	if !afterData.{{$field.Name}}.Equal(beforeData.{{$field.Name}}) {
 		proto.UpdateMask.Append(proto, "{{$field.AttributeName}}")
 		if !afterData.{{$field.Name}}.IsUnknown() && !afterData.{{$field.Name}}.IsNull() {
@@ -362,6 +374,7 @@ func {{.Name}}(ctx context.Context, beforeData, afterData *{{.ModelName}}) (*con
 			{{- end}}
 		}
 	}
+	{{- end}}
 	{{- end}}
 	{{- end}}
 	return proto, diags
@@ -486,6 +499,9 @@ type field struct {
 
 	// Optional is true is the field is optional.
 	Optional bool
+
+	// UpdateFromState copies a key or ID field from prior state outside the update mask.
+	UpdateFromState bool
 }
 
 // fieldType defines the type of a field.
@@ -687,16 +703,17 @@ func AddResourceToProviderTemplateData(resource *schema.Resource, data *provider
 			data.HasObjectElementType = true
 		}
 
+		mode := schema.GetResourceAttributeMode(attrSchema)
 		f := field{
 			Name:          schema.ProtoMessageName(attrName),
 			AttributeName: attrName,
 			Type:          t,
 			Optional:      schema.AttributeIsOptional(attrSchema),
+			UpdateFromState: (resourceName == "application_aws_resources" || resourceName == "application_azure_resources") &&
+				(mode == schema.KeyAttributeMode || mode == schema.IDAttributeMode),
 		}
 
 		resourceModel.Fields = append(resourceModel.Fields, f)
-
-		mode := schema.GetResourceAttributeMode(attrSchema)
 
 		if mode.InCreateRequest {
 			createRequestFunc.Fields = append(createRequestFunc.Fields, f)
