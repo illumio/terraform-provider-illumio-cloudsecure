@@ -42,7 +42,8 @@ const (
 var clusterPolicyAPIsAttribute = resource_schema.ListAttribute{
 	MarkdownDescription: "Kubernetes network policy APIs the clusters this entry matches can render: `cilium` or `aws_vpc`. " +
 		"When set, the rule is checked at plan time against what every listed API supports, across all entries of this side. " +
-		"When omitted, the backend validates the rule when the policy is provisioned.",
+		"Required on every entry of this side when the rule uses a feature only some APIs support: a non-zero `priority`, " +
+		"tier `Baseline`, `workload_selector.service_accounts`, or, on the destination, ingress from `source.any` or `source.ip_lists`.",
 	Optional:    true,
 	ElementType: types.StringType,
 	Validators: []validator.List{
@@ -55,24 +56,22 @@ var clusterPolicyAPIsAttribute = resource_schema.ListAttribute{
 // k8sPolicyAttributes are the attributes shared by source.k8s and destination.k8s that control
 // how that side of a rule is rendered into Kubernetes network policies.
 //
-// tier and priority default to "" and 0. The generated converters cannot tell an unset nested
-// scalar from its zero value, so an omitted value is sent as "" or 0 and read back the same way.
-// The default plans that zero value up front, which keeps apply consistent with the plan and makes
-// removing the attribute from config a change. (Optional and Computed alone would instead keep
-// the prior value, so removing tier would plan no change.)
+// tier and priority default to "Admin" and 0. The generated converters cannot tell an unset
+// nested scalar from its zero value, so the default is planned up front, which keeps apply
+// consistent with the plan and makes removing the attribute from config a change. (Optional and
+// Computed alone would instead keep the prior value, so removing tier would plan no change.)
 var k8sPolicyAttributes = map[string]resource_schema.Attribute{
 	"tier": resource_schema.StringAttribute{
-		MarkdownDescription: "Policy tier for this side of the rule: `Admin` or `Baseline`. When omitted, the side has no tier. " +
-			"Only `cilium` supports no tier: when `policy_apis` includes `aws_vpc`, a tier must be set.",
-		Optional: true,
-		Computed: true,
-		Default:  stringdefault.StaticString(""),
+		MarkdownDescription: "Policy tier for this side of the rule: `Admin` or `Baseline`. Defaults to `Admin`.",
+		Optional:            true,
+		Computed:            true,
+		Default:             stringdefault.StaticString(tierAdmin),
 		Validators: []validator.String{
 			stringvalidator.OneOf(tierAdmin, tierBaseline),
 		},
 	},
 	"priority": resource_schema.Int64Attribute{
-		MarkdownDescription: "Priority of this side of the rule within its tier. Must be a non-negative integer. When `policy_apis` includes `aws_vpc`, must be between 0 and 1000. Not supported by `cilium`; leave it unset or 0.",
+		MarkdownDescription: "Priority of this side of the rule within its tier. Must be a non-negative integer. When `policy_apis` includes `aws_vpc`, must be between 0 and 1000. Not supported by `cilium`; leave it unset or 0. A non-zero priority requires `policy_apis`.",
 		Optional:            true,
 		Computed:            true,
 		Default:             int64default.StaticInt64(0),
@@ -95,10 +94,12 @@ func withK8sPolicyAttributes(attributes map[string]resource_schema.Attribute) ma
 // be expressed across attributes:
 //
 //   - source.any is only valid with a k8s destination, and destination.any with a k8s source.
+//   - A k8s side that uses a feature only some APIs support must set policy_apis on every
+//     clusters entry.
 //   - Each k8s side whose clusters entries set policy_apis is checked against what every listed
 //     API supports.
 //     Sides are checked independently: the backend renders each side as its own object, at that
-//     side's tier. An omitted tier means no tier, which only cilium supports.
+//     side's tier.
 //
 // Values that are unknown at plan time are skipped; the backend validates them at provision.
 type policyVersionRuleValidator struct{}
@@ -184,19 +185,17 @@ func (r ruleCheck) checkSide(side string) {
 		return
 	}
 
-	apis := clusterPolicyAPIs(k8s["clusters"])
-	if len(apis) == 0 {
-		return
-	}
-
 	k8sPath := r.path.AtName(side).AtName("k8s")
 	sideName := side + ".k8s"
 
-	// An omitted tier means no tier. In config it is null; an unknown tier is left to the backend.
-	if tier := k8s["tier"]; slices.Contains(apis, policyAPIAwsVpc) && tier != nil && tier.IsNull() {
-		r.addError(k8sPath.AtName("tier"), sideName,
-			fmt.Sprintf("policy API %q requires a tier; set tier to %q or %q. Only %q supports no tier.",
-				policyAPIAwsVpc, tierAdmin, tierBaseline, policyAPICilium))
+	if features := r.apiSpecificFeatures(side, k8s); len(features) > 0 && missingPolicyAPIs(k8s["clusters"]) {
+		r.addError(k8sPath.AtName("clusters"), sideName,
+			fmt.Sprintf("policy_apis must be set on every clusters entry when using %s.", strings.Join(features, ", ")))
+	}
+
+	apis := clusterPolicyAPIs(k8s["clusters"])
+	if len(apis) == 0 {
+		return
 	}
 
 	if priority, ok := knownInt64(k8s["priority"]); ok && slices.Contains(apis, policyAPIAwsVpc) && priority > awsVpcMaxPriority {
@@ -216,6 +215,11 @@ func (r ruleCheck) checkSide(side string) {
 		}
 	}
 
+	if slices.Contains(apis, policyAPIAwsVpc) && hasServiceAccounts(k8s) {
+		r.addError(k8sPath.AtName("workload_selector").AtName("service_accounts"), sideName,
+			fmt.Sprintf("policy API %q does not support workload_selector.service_accounts.", policyAPIAwsVpc))
+	}
+
 	if !slices.Contains(apis, policyAPICilium) {
 		return
 	}
@@ -229,6 +233,33 @@ func (r ruleCheck) checkSide(side string) {
 		r.addError(k8sPath.AtName("priority"), sideName,
 			fmt.Sprintf("policy API %q does not support priority.", policyAPICilium))
 	}
+}
+
+// apiSpecificFeatures returns the features the k8s side uses that only some policy APIs support.
+func (r ruleCheck) apiSpecificFeatures(side string, k8s map[string]attr.Value) []string {
+	var features []string
+
+	if priority, ok := knownInt64(k8s["priority"]); ok && priority != 0 {
+		features = append(features, "a non-zero priority")
+	}
+
+	if tier, ok := knownString(k8s["tier"]); ok && tier == tierBaseline {
+		features = append(features, fmt.Sprintf("tier %q", tierBaseline))
+	}
+
+	if hasServiceAccounts(k8s) {
+		features = append(features, "workload_selector.service_accounts")
+	}
+
+	if source, ok := knownAttributes(r.rule["source"]); ok && side == "destination" {
+		for _, name := range []string{"any", "ip_lists"} {
+			if isSet(source[name]) {
+				features = append(features, "ingress from source."+name)
+			}
+		}
+	}
+
+	return features
 }
 
 // checkCiliumBaseline checks that a Baseline tier k8s side is a deny of all TCP and UDP traffic
@@ -290,6 +321,34 @@ func clusterPolicyAPIs(clusters attr.Value) []string {
 	}
 
 	return apis
+}
+
+// hasServiceAccounts reports whether the k8s side's workload_selector lists service accounts.
+func hasServiceAccounts(k8s map[string]attr.Value) bool {
+	workloadSelector, ok := knownAttributes(k8s["workload_selector"])
+	if !ok {
+		return false
+	}
+
+	serviceAccounts, ok := workloadSelector["service_accounts"].(types.List)
+
+	return ok && isSet(serviceAccounts) && len(serviceAccounts.Elements()) > 0
+}
+
+// missingPolicyAPIs reports whether any clusters entry is known to have no policy_apis.
+func missingPolicyAPIs(clusters attr.Value) bool {
+	list, ok := clusters.(types.List)
+	if !ok || !isSet(clusters) {
+		return false
+	}
+
+	for _, element := range list.Elements() {
+		if entry, ok := knownAttributes(element); ok && isNull(entry["policy_apis"]) {
+			return true
+		}
+	}
+
+	return false
 }
 
 // isAllPortsTCPAndUDP reports whether the port ranges are exactly "all TCP and UDP ports" in the

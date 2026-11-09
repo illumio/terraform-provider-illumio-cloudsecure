@@ -202,29 +202,15 @@ func (suite *SchemaTestSuite) TestPolicyVersionRuleValidator() {
 			destination: testK8sSide(map[string]any{"policy_apis": []any{"aws_vpc"}, "tier": "Baseline"}),
 			portRanges:  testTCP443,
 		},
-		"without policy_apis a Baseline Allow is left to the backend": {
-			action: "Allow", source: testK8sSide(map[string]any{"tier": "Baseline"}),
-			destination: testK8sSide(map[string]any{"tier": "Baseline"}), portRanges: testTCP443,
-		},
 		"aws_vpc allows a Baseline Allow": {
 			action: "Allow", source: testK8sSide(map[string]any{"policy_apis": []any{"aws_vpc"}, "tier": "Baseline"}),
 			destination: testAny, portRanges: testTCP443,
 		},
 
 		// Tier.
-		"cilium allows no tier": {
-			action: "Allow", source: testK8sSide(map[string]any{"policy_apis": []any{"cilium"}}),
-			destination: testK8sSide(nil), portRanges: testTCP443,
-		},
-		"aws_vpc requires a tier": {
-			action: "Allow", source: testK8sSide(nil),
-			destination: testK8sSide(map[string]any{"policy_apis": []any{"aws_vpc"}}), portRanges: testTCP443,
-			wantErrors: []string{`Rule "r", destination.k8s: policy API "aws_vpc" requires a tier; set tier to "Admin" or "Baseline". Only "cilium" supports no tier.`},
-		},
-		"aws_vpc with cilium still requires a tier": {
+		"an omitted tier passes with both APIs": {
 			action: "Allow", source: testK8sSide(map[string]any{"policy_apis": []any{"cilium", "aws_vpc"}}),
 			destination: testK8sSide(nil), portRanges: testTCP443,
-			wantErrors: []string{`Rule "r", source.k8s: policy API "aws_vpc" requires a tier`},
 		},
 
 		// Priority.
@@ -237,10 +223,6 @@ func (suite *SchemaTestSuite) TestPolicyVersionRuleValidator() {
 			destination: testK8sSide(nil), portRanges: testTCP443,
 			wantErrors: []string{`Rule "r", source.k8s: policy API "aws_vpc" supports priority 0-1000, got: 1001.`},
 		},
-		"without policy_apis priority above 1000 is left to the backend": {
-			action: "Allow", source: testK8sSide(map[string]any{"tier": "Admin", "priority": 5000}),
-			destination: testK8sSide(nil), portRanges: testTCP443,
-		},
 		"cilium rejects priority": {
 			action: "Allow", source: testK8sSide(map[string]any{"policy_apis": []any{"cilium"}, "priority": 10}),
 			destination: testK8sSide(nil), portRanges: testTCP443,
@@ -250,6 +232,48 @@ func (suite *SchemaTestSuite) TestPolicyVersionRuleValidator() {
 		"cilium treats priority 0 as unset": {
 			action: "Allow", source: testK8sSide(map[string]any{"policy_apis": []any{"cilium"}, "priority": 0}),
 			destination: testK8sSide(nil), portRanges: testTCP443,
+		},
+
+		// policy_apis is required for features only some APIs support.
+		"priority without policy_apis fails": {
+			action: "Allow", source: testK8sSide(map[string]any{"priority": 5}),
+			destination: testK8sSide(nil), portRanges: testTCP443,
+			wantErrors: []string{`Rule "r", source.k8s: policy_apis must be set on every clusters entry when using a non-zero priority.`},
+		},
+		"Baseline without policy_apis fails": {
+			action: "Deny", source: testK8sSide(map[string]any{"tier": "Baseline"}),
+			destination: testAny, portRanges: testAllPorts,
+			wantErrors: []string{`Rule "r", source.k8s: policy_apis must be set on every clusters entry when using tier "Baseline".`},
+		},
+		"ingress from ip_lists without policy_apis fails": {
+			action: "Allow", source: map[string]any{"ip_lists": map[string]any{"ids": []any{"ipl-1"}}},
+			destination: testK8sSide(nil), portRanges: testTCP443,
+			wantErrors: []string{`Rule "r", destination.k8s: policy_apis must be set on every clusters entry when using ingress from source.ip_lists.`},
+		},
+		"policy_apis is required on every clusters entry": {
+			action: "Allow",
+			source: map[string]any{"k8s": map[string]any{
+				"clusters": []any{
+					map[string]any{"id": "7f8f6b1e-5f0e-4d8c-9a64-3a8f2b6f1c11", "policy_apis": []any{"aws_vpc"}},
+					map[string]any{"id": "0c7d3b5a-9e41-4f2a-8b6d-1a2e3f4c5d6e"},
+				},
+				"namespace_selector": map[string]any{},
+				"workload_selector":  map[string]any{},
+				"priority":           5,
+			}},
+			destination: testK8sSide(nil), portRanges: testTCP443,
+			wantErrors: []string{`Rule "r", source.k8s: policy_apis must be set on every clusters entry when using a non-zero priority.`},
+		},
+		"service_accounts without policy_apis fails": {
+			action: "Allow", source: testK8sSide(map[string]any{"workload_selector": map[string]any{"service_accounts": []any{"api"}}}),
+			destination: testK8sSide(nil), portRanges: testTCP443,
+			wantErrors: []string{`Rule "r", source.k8s: policy_apis must be set on every clusters entry when using workload_selector.service_accounts.`},
+		},
+		"aws_vpc rejects service_accounts": {
+			action: "Allow", source: testK8sSide(nil),
+			destination: testK8sSide(map[string]any{"policy_apis": []any{"aws_vpc"}, "workload_selector": map[string]any{"service_accounts": []any{"api"}}}),
+			portRanges:  testTCP443,
+			wantErrors:  []string{`Rule "r", destination.k8s: policy API "aws_vpc" does not support workload_selector.service_accounts.`},
 		},
 
 		// aws_vpc has no CIDR ingress peer.

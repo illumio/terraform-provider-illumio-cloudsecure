@@ -532,7 +532,7 @@ func (s *PolicyVersionResourceTestSuite) TestCreateReadWithOmittedFields() {
 
 	sent := s.config.lastCreatedRules()["plain"]
 	s.Nil(sent.GetSource().GetK8S().GetClusters()[0].GetPolicyApis())
-	s.Empty(sent.GetSource().GetK8S().GetTier(), "an omitted tier is sent empty, meaning no tier")
+	s.Equal("Admin", sent.GetSource().GetK8S().GetTier(), "an omitted tier is sent as Admin")
 	s.Zero(sent.GetSource().GetK8S().GetPriority())
 	s.Nil(sent.GetDestination().GetAny())
 
@@ -541,7 +541,7 @@ func (s *PolicyVersionResourceTestSuite) TestCreateReadWithOmittedFields() {
 		WithAttributeName("destination").WithAttributeName("k8s")
 	s.True(s.walk(state, destinationK8s.WithAttributeName("clusters").WithElementKeyInt(0).WithAttributeName("policy_apis")).IsNull(),
 		"an omitted policy_apis stays null")
-	s.True(tftypes.NewValue(tftypes.String, "").Equal(s.walk(state, destinationK8s.WithAttributeName("tier"))))
+	s.True(tftypes.NewValue(tftypes.String, "Admin").Equal(s.walk(state, destinationK8s.WithAttributeName("tier"))))
 }
 
 func (s *PolicyVersionResourceTestSuite) TestUpdateReplacesVersion() {
@@ -615,7 +615,7 @@ func (s *PolicyVersionResourceTestSuite) TestRemovingTierAndPriorityReplacesVers
 		WithAttributeName("rules").WithElementKeyString("rule").
 		WithAttributeName("source").WithAttributeName("k8s")
 	planned := s.value(planResp.PlannedState)
-	s.True(tftypes.NewValue(tftypes.String, "").Equal(s.walk(planned, sourceK8s.WithAttributeName("tier"))))
+	s.True(tftypes.NewValue(tftypes.String, "Admin").Equal(s.walk(planned, sourceK8s.WithAttributeName("tier"))))
 	s.True(tftypes.NewValue(tftypes.Number, 0).Equal(s.walk(planned, sourceK8s.WithAttributeName("priority"))))
 }
 

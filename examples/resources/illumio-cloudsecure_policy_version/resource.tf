@@ -367,7 +367,7 @@ resource "illumio-cloudsecure_policy_version" "aws_multi_account_to_vpc" {
 
 # Example 8: Kubernetes default deny
 #
-# The "allow-dns" rule sets no tier, which only Cilium supports.
+# The "allow-dns" rule omits tier, so it is in the Admin tier.
 # The "default-deny" rule denies all other traffic from the cluster's pods to any
 # destination, inside or outside the cluster, in the Baseline tier.
 # The "default-deny-ingress" rule denies traffic from any source to the
@@ -375,9 +375,11 @@ resource "illumio-cloudsecure_policy_version" "aws_multi_account_to_vpc" {
 #
 # policy_apis on each clusters entry lists the network policy APIs those
 # clusters can render, so that rules those APIs can't support fail at plan
-# rather than at provision. Cilium supports the Baseline tier only for a Deny
-# to or from `any` on all TCP and UDP ports, written as 0-0 (all ports). The
-# AWS VPC CNI cannot enforce ingress from `any` or from IP lists.
+# rather than at provision. It is required for priority, the Baseline tier,
+# service accounts and ingress from `any` or IP lists. Cilium supports the
+# Baseline tier only for a Deny to or from `any` on all TCP and UDP ports,
+# written as 0-0 (all ports). The AWS VPC CNI cannot enforce ingress from `any`
+# or from IP lists.
 
 variable "k8s_cluster_id" {
   type        = string
