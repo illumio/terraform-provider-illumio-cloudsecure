@@ -334,7 +334,7 @@ func assertAppliedMatchesPlan(path *tftypes.AttributePath, planned, applied tfty
 }
 
 // k8sSource returns a source.k8s selector for one cluster, with extra attributes such as
-// policy_apis and tier merged in.
+// policy_api and tier merged in.
 func k8sSource(extra map[string]any) map[string]any {
 	return map[string]any{"k8s": k8sSelector(extra)}
 }
@@ -346,7 +346,7 @@ func k8sDestination(extra map[string]any) map[string]any {
 }
 
 // k8sSelector returns a k8s selector for one cluster with extra attributes merged in.
-// policy_apis in extra is set on the first clusters entry, where the schema has it.
+// policy_api in extra is set on the clusters entry, where the schema has it.
 func k8sSelector(extra map[string]any) map[string]any {
 	cluster := map[string]any{"id": "7f8f6b1e-5f0e-4d8c-9a64-3a8f2b6f1c11"}
 	k8s := map[string]any{
@@ -356,10 +356,10 @@ func k8sSelector(extra map[string]any) map[string]any {
 	}
 	maps.Copy(k8s, extra)
 
-	if apis, ok := k8s["policy_apis"]; ok {
-		cluster["policy_apis"] = apis
+	if api, ok := k8s["policy_api"]; ok {
+		cluster["policy_api"] = api
 
-		delete(k8s, "policy_apis")
+		delete(k8s, "policy_api")
 	}
 
 	return k8s
@@ -477,16 +477,16 @@ func (s *PolicyVersionResourceTestSuite) TearDownTest() {
 func (s *PolicyVersionResourceTestSuite) TestCreateReadRoundTripsNewFields() {
 	config := s.resourceValue(policyVersionConfig(map[string]any{
 		"baseline-deny": rule("Deny",
-			k8sSource(map[string]any{"policy_apis": []any{"cilium", "aws_vpc"}, "tier": "Baseline"}),
+			k8sSource(map[string]any{"policy_api": "cilium", "tier": "Baseline"}),
 			anyDestination(),
 			allPortsTCPAndUDP()),
 		"ingress-deny": rule("Deny",
 			anySource(),
-			k8sDestination(map[string]any{"policy_apis": []any{"cilium"}, "tier": "Baseline"}),
+			k8sDestination(map[string]any{"policy_api": "cilium", "tier": "Baseline"}),
 			allPortsTCPAndUDP()),
 		"k8s-to-k8s": rule("Allow",
-			k8sSource(map[string]any{"policy_apis": []any{"aws_vpc"}, "tier": "Admin", "priority": 100}),
-			k8sDestination(map[string]any{"policy_apis": []any{"cilium"}, "tier": "Admin"}),
+			k8sSource(map[string]any{"policy_api": "aws_vpc", "tier": "Admin", "priority": 100}),
+			k8sDestination(map[string]any{"policy_api": "cilium", "tier": "Admin"}),
 			allTCP()),
 	}))
 
@@ -495,7 +495,7 @@ func (s *PolicyVersionResourceTestSuite) TestCreateReadRoundTripsNewFields() {
 	sent := s.config.lastCreatedRules()
 
 	baseline := sent["baseline-deny"]
-	s.Equal([]string{"cilium", "aws_vpc"}, baseline.GetSource().GetK8S().GetClusters()[0].GetPolicyApis())
+	s.Equal("cilium", baseline.GetSource().GetK8S().GetClusters()[0].GetPolicyApi())
 	s.Equal("Baseline", baseline.GetSource().GetK8S().GetTier())
 	s.NotNil(baseline.GetDestination().GetAny(), "destination.any must be sent as a present, empty message")
 	s.Nil(baseline.GetDestination().GetK8S())
@@ -505,22 +505,19 @@ func (s *PolicyVersionResourceTestSuite) TestCreateReadRoundTripsNewFields() {
 	s.Equal("Baseline", ingress.GetDestination().GetK8S().GetTier())
 
 	k8sToK8s := sent["k8s-to-k8s"]
-	s.Equal([]string{"aws_vpc"}, k8sToK8s.GetSource().GetK8S().GetClusters()[0].GetPolicyApis())
+	s.Equal("aws_vpc", k8sToK8s.GetSource().GetK8S().GetClusters()[0].GetPolicyApi())
 	s.Equal(int64(100), k8sToK8s.GetSource().GetK8S().GetPriority())
-	s.Equal([]string{"cilium"}, k8sToK8s.GetDestination().GetK8S().GetClusters()[0].GetPolicyApis())
+	s.Equal("cilium", k8sToK8s.GetDestination().GetK8S().GetClusters()[0].GetPolicyApi())
 	s.Equal("Admin", k8sToK8s.GetDestination().GetK8S().GetTier())
 	s.Nil(k8sToK8s.GetDestination().GetAny())
 
-	// An omitted priority is stored as 0, and policy_apis keeps its order.
+	// An omitted priority is stored as 0.
 	sourceK8s := tftypes.NewAttributePath().
 		WithAttributeName("rules").WithElementKeyString("baseline-deny").
 		WithAttributeName("source").WithAttributeName("k8s")
 	s.True(tftypes.NewValue(tftypes.Number, 0).Equal(s.walk(state, sourceK8s.WithAttributeName("priority"))))
-	s.True(
-		tftypes.NewValue(tftypes.List{ElementType: tftypes.String}, []tftypes.Value{
-			tftypes.NewValue(tftypes.String, "cilium"),
-			tftypes.NewValue(tftypes.String, "aws_vpc"),
-		}).Equal(s.walk(state, sourceK8s.WithAttributeName("clusters").WithElementKeyInt(0).WithAttributeName("policy_apis"))))
+	s.True(tftypes.NewValue(tftypes.String, "cilium").Equal(
+		s.walk(state, sourceK8s.WithAttributeName("clusters").WithElementKeyInt(0).WithAttributeName("policy_api"))))
 }
 
 func (s *PolicyVersionResourceTestSuite) TestCreateReadWithOmittedFields() {
@@ -531,7 +528,7 @@ func (s *PolicyVersionResourceTestSuite) TestCreateReadWithOmittedFields() {
 	state := s.create(config)
 
 	sent := s.config.lastCreatedRules()["plain"]
-	s.Nil(sent.GetSource().GetK8S().GetClusters()[0].GetPolicyApis())
+	s.Empty(sent.GetSource().GetK8S().GetClusters()[0].GetPolicyApi(), "an omitted policy_api is sent empty")
 	s.Equal("Admin", sent.GetSource().GetK8S().GetTier(), "an omitted tier is sent as Admin")
 	s.Zero(sent.GetSource().GetK8S().GetPriority())
 	s.Nil(sent.GetDestination().GetAny())
@@ -539,8 +536,9 @@ func (s *PolicyVersionResourceTestSuite) TestCreateReadWithOmittedFields() {
 	destinationK8s := tftypes.NewAttributePath().
 		WithAttributeName("rules").WithElementKeyString("plain").
 		WithAttributeName("destination").WithAttributeName("k8s")
-	s.True(s.walk(state, destinationK8s.WithAttributeName("clusters").WithElementKeyInt(0).WithAttributeName("policy_apis")).IsNull(),
-		"an omitted policy_apis stays null")
+	s.True(tftypes.NewValue(tftypes.String, "").Equal(
+		s.walk(state, destinationK8s.WithAttributeName("clusters").WithElementKeyInt(0).WithAttributeName("policy_api"))),
+		"an omitted policy_api is stored as its default")
 	s.True(tftypes.NewValue(tftypes.String, "Admin").Equal(s.walk(state, destinationK8s.WithAttributeName("tier"))))
 }
 
@@ -558,7 +556,7 @@ func (s *PolicyVersionResourceTestSuite) TestUpdateReplacesVersion() {
 
 	after := policyVersionConfig(map[string]any{
 		"rule": rule("Deny",
-			k8sSource(map[string]any{"policy_apis": []any{"cilium"}, "tier": "Baseline"}),
+			k8sSource(map[string]any{"policy_api": "cilium", "tier": "Baseline"}),
 			anyDestination(),
 			allPortsTCPAndUDP()),
 	})
@@ -580,7 +578,7 @@ func (s *PolicyVersionResourceTestSuite) TestUpdateReplacesVersion() {
 	s.create(config)
 
 	sent := s.config.lastCreatedRules()["rule"]
-	s.Equal([]string{"cilium"}, sent.GetSource().GetK8S().GetClusters()[0].GetPolicyApis())
+	s.Equal("cilium", sent.GetSource().GetK8S().GetClusters()[0].GetPolicyApi())
 	s.Equal("Baseline", sent.GetSource().GetK8S().GetTier())
 	s.NotNil(sent.GetDestination().GetAny())
 	s.Nil(sent.GetDestination().GetFqdns())
@@ -590,7 +588,7 @@ func (s *PolicyVersionResourceTestSuite) TestUpdateReplacesVersion() {
 // a change. Terraform proposes the prior value for an omitted Optional+Computed attribute, so
 // without a default the plan would show no change and the old tier would stay in effect.
 func (s *PolicyVersionResourceTestSuite) TestRemovingTierAndPriorityReplacesVersion() {
-	withTier := map[string]any{"policy_apis": []any{"aws_vpc"}, "tier": "Baseline", "priority": 5}
+	withTier := map[string]any{"policy_api": "aws_vpc", "tier": "Baseline", "priority": 5}
 	prior := s.create(s.resourceValue(policyVersionConfig(map[string]any{
 		"rule": rule("Allow", k8sSource(withTier), k8sDestination(nil), allTCP()),
 	})))
@@ -624,10 +622,10 @@ func (s *PolicyVersionResourceTestSuite) TestRemovingTierAndPriorityReplacesVers
 func (s *PolicyVersionResourceTestSuite) TestRuleValidatorIsWired() {
 	diags := s.validate(s.resourceValue(policyVersionConfig(map[string]any{
 		"r": rule("Allow",
-			k8sSource(map[string]any{"policy_apis": []any{"cilium"}, "tier": "Baseline"}),
+			k8sSource(map[string]any{"policy_api": "cilium", "tier": "Baseline"}),
 			anyDestination(), allPortsTCPAndUDP()),
 	})))
-	s.Contains(errorSummaries(diags), `Rule "r", source.k8s: policy API "cilium" supports tier "Baseline" only for a Deny to destination`)
+	s.Contains(errorSummaries(diags), `Rule "r", source.k8s: tier "Baseline", other than for a default deny`)
 }
 
 func (s *PolicyVersionResourceTestSuite) walk(v tftypes.Value, p *tftypes.AttributePath) tftypes.Value {

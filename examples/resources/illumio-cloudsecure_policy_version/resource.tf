@@ -373,13 +373,14 @@ resource "illumio-cloudsecure_policy_version" "aws_multi_account_to_vpc" {
 # The "default-deny-ingress" rule denies traffic from any source to the
 # cluster's pods, in the Baseline tier.
 #
-# policy_apis on each clusters entry lists the network policy APIs those
-# clusters can render, so that rules those APIs can't support fail at plan
-# rather than at provision. It is required for priority, the Baseline tier,
-# service accounts and ingress from `any` or IP lists. Cilium supports the
-# Baseline tier only for a Deny to or from `any` on all TCP and UDP ports,
-# written as 0-0 (all ports). The AWS VPC CNI cannot enforce ingress from `any`
-# or from IP lists.
+# policy_api on a clusters entry selects only clusters that provide that
+# network policy API. Features only one API supports require it, so rules fail
+# at plan rather than at provision: ingress from `any` or IP lists and service
+# accounts need "cilium"; priority and the Baseline tier need "aws_vpc", except
+# a Baseline default deny (a Deny to or from `any` on TCP 0-0 and UDP 0-0, all
+# ports). Both APIs support the egress default deny, so "allow-dns" and
+# "default-deny" omit policy_api and apply to every selected cluster. The
+# ingress default deny needs "cilium", so it applies only to Cilium clusters.
 
 variable "k8s_cluster_id" {
   type        = string
@@ -396,7 +397,7 @@ resource "illumio-cloudsecure_policy_version" "k8s_default_deny" {
 
       source = {
         k8s = {
-          clusters           = [{ id = var.k8s_cluster_id, policy_apis = ["cilium"] }]
+          clusters           = [{ id = var.k8s_cluster_id }]
           namespace_selector = {}
           workload_selector  = {}
         }
@@ -404,7 +405,7 @@ resource "illumio-cloudsecure_policy_version" "k8s_default_deny" {
 
       destination = {
         k8s = {
-          clusters = [{ id = var.k8s_cluster_id, policy_apis = ["cilium"] }]
+          clusters = [{ id = var.k8s_cluster_id }]
           namespace_selector = {
             match_labels = [{ key = "kubernetes.io/metadata.name", value = "kube-system" }]
           }
@@ -425,7 +426,7 @@ resource "illumio-cloudsecure_policy_version" "k8s_default_deny" {
 
       source = {
         k8s = {
-          clusters           = [{ id = var.k8s_cluster_id, policy_apis = ["cilium", "aws_vpc"] }]
+          clusters           = [{ id = var.k8s_cluster_id }]
           namespace_selector = {}
           workload_selector  = {}
           tier               = "Baseline"
@@ -451,7 +452,7 @@ resource "illumio-cloudsecure_policy_version" "k8s_default_deny" {
 
       destination = {
         k8s = {
-          clusters           = [{ id = var.k8s_cluster_id, policy_apis = ["cilium"] }]
+          clusters           = [{ id = var.k8s_cluster_id, policy_api = "cilium" }]
           namespace_selector = {}
           workload_selector  = {}
           tier               = "Baseline"

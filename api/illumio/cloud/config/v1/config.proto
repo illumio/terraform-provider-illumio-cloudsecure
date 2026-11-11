@@ -1136,7 +1136,7 @@ message PolicyVersion_Rules {
         Azure azure = 2;
         Gcp gcp = 3;
         Oci oci = 4;
-        repeated string policy_apis = 6;
+        string policy_api = 6;
       }
       message NamespaceSelector {
         message MatchExpressions {
@@ -1335,7 +1335,7 @@ message PolicyVersion_Rules {
         Azure azure = 2;
         Gcp gcp = 3;
         Oci oci = 4;
-        repeated string policy_apis = 6;
+        string policy_api = 6;
       }
       message NamespaceSelector {
         message MatchExpressions {

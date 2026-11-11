@@ -4,8 +4,10 @@
 package schema
 
 import (
+	"context"
 	"fmt"
 	"maps"
+	"strings"
 
 	"github.com/hashicorp/terraform-plugin-framework-validators/listvalidator"
 	"github.com/hashicorp/terraform-plugin-framework-validators/objectvalidator"
@@ -161,8 +163,12 @@ func clusterProviderAttributes(accountName, accountDescription, scopeName, scope
 
 // clusterSelectorAttributes is shared between source and destination k8s selectors.
 var clusterSelectorAttributes = resource_schema.ListNestedAttribute{
-	Description: "List of K8s cluster selectors. Each entry selects one or more clusters. A cluster matching any entry matches (OR logic).",
-	Required:    true,
+	Description: "List of K8s cluster selectors. Each entry selects one or more clusters. A cluster matching any entry matches (OR logic). " +
+		"A cluster matches an entry if it matches one of `id`, `aws`, `gcp`, `azure`, or `oci`, _and_ the optional `policy_api`.",
+	Required: true,
+	Validators: []validator.List{
+		listvalidator.SizeAtLeast(1),
+	},
 	NestedObject: resource_schema.NestedAttributeObject{
 		Attributes: map[string]resource_schema.Attribute{
 			"id": resource_schema.StringAttribute{
@@ -250,9 +256,9 @@ var clusterSelectorAttributes = resource_schema.ListNestedAttribute{
 					),
 				},
 			},
-			// policy_apis is not a cluster selector: it can be set alongside whichever of the
-			// selectors above the entry uses.
-			"policy_apis": clusterPolicyAPIsAttribute,
+			// policy_api selects clusters based on the network policy API they support, in
+			// conjunction with the selectors above.
+			"policy_api": clusterPolicyAPIAttribute,
 		},
 	},
 }
@@ -596,7 +602,8 @@ var illumioLabelsSelectorAttributes = map[string]resource_schema.Attribute{
 var workloadSelectorAttributes = func() map[string]resource_schema.Attribute {
 	m := maps.Clone(labelSelectorAttributes)
 	m["service_accounts"] = resource_schema.ListAttribute{
-		Description: "List of K8s service account names. Workload must run with one of these service accounts (OR logic).",
+		MarkdownDescription: "List of K8s service account names. Workload must run with one of these service accounts (OR logic). " +
+			"Requires `policy_api = \"cilium\"` on every clusters entry of this side.",
 		Optional:    true,
 		ElementType: types.StringType,
 	}
@@ -678,9 +685,9 @@ var (
 											},
 										},
 										"ip_lists": resource_schema.SingleNestedAttribute{
-											Description: "IP list reference selector.",
-											Optional:    true,
-											Attributes:  ipSelectorAttributes,
+											MarkdownDescription: "IP list reference selector. When the destination is `k8s`, requires `policy_api = \"cilium\"` on every destination clusters entry.",
+											Optional:            true,
+											Attributes:          ipSelectorAttributes,
 											Validators: []validator.Object{
 												objectvalidator.ExactlyOneOf(
 													path.MatchRelative().AtParent().AtName("k8s"),
@@ -720,9 +727,10 @@ var (
 											},
 										},
 										"any": resource_schema.SingleNestedAttribute{
-											MarkdownDescription: "Matches all sources, inside and outside the cluster. Must be an empty object: `any = {}`. Only valid when the destination is `k8s`.",
-											Optional:            true,
-											Attributes:          map[string]resource_schema.Attribute{},
+											MarkdownDescription: "Matches all sources. Must be an empty object: `any = {}`. Not valid when the destination is also `any`. " +
+												"When the destination is `k8s`, requires `policy_api = \"cilium\"` on every destination clusters entry.",
+											Optional:   true,
+											Attributes: map[string]resource_schema.Attribute{},
 											Validators: []validator.Object{
 												objectvalidator.ExactlyOneOf(
 													path.MatchRelative().AtParent().AtName("k8s"),
@@ -821,7 +829,7 @@ var (
 											},
 										},
 										"any": resource_schema.SingleNestedAttribute{
-											MarkdownDescription: "Matches all destinations, inside and outside the cluster. Must be an empty object: `any = {}`. Only valid when the source is `k8s`.",
+											MarkdownDescription: "Matches all destinations. Must be an empty object: `any = {}`. Not valid when the source is also `any`.",
 											Optional:            true,
 											Attributes:          map[string]resource_schema.Attribute{},
 											Validators: []validator.Object{
@@ -838,9 +846,12 @@ var (
 									},
 								},
 								"port_ranges": resource_schema.ListAttribute{
-									Description: "List of port ranges for the rule.",
-									Required:    true,
-									ElementType: PortRange,
+									MarkdownDescription: "List of port ranges for the rule. The `protocol` of each port range must be `TCP` or `UDP`.",
+									Required:            true,
+									ElementType:         PortRange,
+									Validators: []validator.List{
+										portRangeProtocolValidator{},
+									},
 								},
 							},
 						},
@@ -853,3 +864,42 @@ var (
 		},
 	}
 )
+
+// portRangeProtocolValidator checks that the protocol of every port range is TCP or UDP, the only
+// protocols the backend accepts. Like the backend, it ignores case.
+type portRangeProtocolValidator struct{}
+
+var _ validator.List = portRangeProtocolValidator{}
+
+func (portRangeProtocolValidator) Description(_ context.Context) string {
+	return "the protocol of each port range must be TCP or UDP"
+}
+
+func (v portRangeProtocolValidator) MarkdownDescription(ctx context.Context) string {
+	return v.Description(ctx)
+}
+
+func (portRangeProtocolValidator) ValidateList(_ context.Context, req validator.ListRequest, resp *validator.ListResponse) {
+	if req.ConfigValue.IsNull() || req.ConfigValue.IsUnknown() {
+		return
+	}
+
+	for i, element := range req.ConfigValue.Elements() {
+		portRange, ok := knownAttributes(element)
+		if !ok {
+			continue
+		}
+
+		protocol, ok := knownString(portRange["protocol"])
+		if !ok {
+			continue
+		}
+
+		switch strings.ToUpper(protocol) {
+		case "TCP", "UDP":
+		default:
+			resp.Diagnostics.AddAttributeError(req.Path.AtListIndex(i).AtName("protocol"), "Invalid Port Range Protocol",
+				fmt.Sprintf("protocol must be TCP or UDP, got: %q.", protocol))
+		}
+	}
+}

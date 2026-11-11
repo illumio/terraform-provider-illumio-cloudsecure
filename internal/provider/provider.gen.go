@@ -12105,12 +12105,12 @@ func ConvertDataValueToPolicyVersion_Rules_Destination_K8SProto(ctx context.Cont
 }
 
 type PolicyVersion_Rules_Destination_K8S_Clusters struct {
-	Id         types.String `tfsdk:"id"`
-	Aws        types.Object `tfsdk:"aws"`
-	Azure      types.Object `tfsdk:"azure"`
-	Gcp        types.Object `tfsdk:"gcp"`
-	Oci        types.Object `tfsdk:"oci"`
-	PolicyApis types.List   `tfsdk:"policy_apis"`
+	Id        types.String `tfsdk:"id"`
+	Aws       types.Object `tfsdk:"aws"`
+	Azure     types.Object `tfsdk:"azure"`
+	Gcp       types.Object `tfsdk:"gcp"`
+	Oci       types.Object `tfsdk:"oci"`
+	PolicyApi types.String `tfsdk:"policy_api"`
 }
 
 func GetTypeAttrsForPolicyVersion_Rules_Destination_K8S_Clusters() map[string]attr.Type {
@@ -12128,7 +12128,7 @@ func GetTypeAttrsForPolicyVersion_Rules_Destination_K8S_Clusters() map[string]at
 		"oci": types.ObjectType{
 			AttrTypes: GetTypeAttrsForPolicyVersion_Rules_Destination_K8S_Clusters_Oci(),
 		},
-		"policy_apis": types.ListType{ElemType: types.StringType},
+		"policy_api": types.StringType,
 	}
 }
 
@@ -12136,24 +12136,15 @@ func ConvertPolicyVersion_Rules_Destination_K8S_ClustersToObjectValueFromProto(p
 	if proto == nil {
 		return types.ObjectNull(GetTypeAttrsForPolicyVersion_Rules_Destination_K8S_Clusters())
 	}
-	elementsInPolicyApis := make([]attr.Value, 0, len(proto.PolicyApis))
-	for _, item := range proto.PolicyApis {
-		elementsInPolicyApis = append(elementsInPolicyApis, types.StringValue(item))
-	}
 	return types.ObjectValueMust(
 		GetTypeAttrsForPolicyVersion_Rules_Destination_K8S_Clusters(),
 		map[string]attr.Value{
-			"id":    types.StringValue(proto.Id),
-			"aws":   ConvertPolicyVersion_Rules_Destination_K8S_Clusters_AwsToObjectValueFromProto(proto.Aws),
-			"azure": ConvertPolicyVersion_Rules_Destination_K8S_Clusters_AzureToObjectValueFromProto(proto.Azure),
-			"gcp":   ConvertPolicyVersion_Rules_Destination_K8S_Clusters_GcpToObjectValueFromProto(proto.Gcp),
-			"oci":   ConvertPolicyVersion_Rules_Destination_K8S_Clusters_OciToObjectValueFromProto(proto.Oci),
-			"policy_apis": func() basetypes.ListValue {
-				if proto.PolicyApis == nil {
-					return types.ListNull(types.StringType)
-				}
-				return types.ListValueMust(types.StringType, elementsInPolicyApis)
-			}(),
+			"id":         types.StringValue(proto.Id),
+			"aws":        ConvertPolicyVersion_Rules_Destination_K8S_Clusters_AwsToObjectValueFromProto(proto.Aws),
+			"azure":      ConvertPolicyVersion_Rules_Destination_K8S_Clusters_AzureToObjectValueFromProto(proto.Azure),
+			"gcp":        ConvertPolicyVersion_Rules_Destination_K8S_Clusters_GcpToObjectValueFromProto(proto.Gcp),
+			"oci":        ConvertPolicyVersion_Rules_Destination_K8S_Clusters_OciToObjectValueFromProto(proto.Oci),
+			"policy_api": types.StringValue(proto.PolicyApi),
 		},
 	)
 }
@@ -12193,13 +12184,7 @@ func ConvertDataValueToPolicyVersion_Rules_Destination_K8S_ClustersProto(ctx con
 		return nil, diags
 	}
 	proto.Oci = pvModelOci
-	var pvModelPolicyApis []string
-	dvDiagsPolicyApis := pv.PolicyApis.ElementsAs(ctx, &pvModelPolicyApis, false)
-	diags.Append(dvDiagsPolicyApis...)
-	if diags.HasError() {
-		return nil, diags
-	}
-	proto.PolicyApis = pvModelPolicyApis
+	proto.PolicyApi = pv.PolicyApi.ValueString()
 	return proto, diags
 }
 
@@ -14632,12 +14617,12 @@ func ConvertDataValueToPolicyVersion_Rules_Source_K8SProto(ctx context.Context, 
 }
 
 type PolicyVersion_Rules_Source_K8S_Clusters struct {
-	Id         types.String `tfsdk:"id"`
-	Aws        types.Object `tfsdk:"aws"`
-	Azure      types.Object `tfsdk:"azure"`
-	Gcp        types.Object `tfsdk:"gcp"`
-	Oci        types.Object `tfsdk:"oci"`
-	PolicyApis types.List   `tfsdk:"policy_apis"`
+	Id        types.String `tfsdk:"id"`
+	Aws       types.Object `tfsdk:"aws"`
+	Azure     types.Object `tfsdk:"azure"`
+	Gcp       types.Object `tfsdk:"gcp"`
+	Oci       types.Object `tfsdk:"oci"`
+	PolicyApi types.String `tfsdk:"policy_api"`
 }
 
 func GetTypeAttrsForPolicyVersion_Rules_Source_K8S_Clusters() map[string]attr.Type {
@@ -14655,7 +14640,7 @@ func GetTypeAttrsForPolicyVersion_Rules_Source_K8S_Clusters() map[string]attr.Ty
 		"oci": types.ObjectType{
 			AttrTypes: GetTypeAttrsForPolicyVersion_Rules_Source_K8S_Clusters_Oci(),
 		},
-		"policy_apis": types.ListType{ElemType: types.StringType},
+		"policy_api": types.StringType,
 	}
 }
 
@@ -14663,24 +14648,15 @@ func ConvertPolicyVersion_Rules_Source_K8S_ClustersToObjectValueFromProto(proto 
 	if proto == nil {
 		return types.ObjectNull(GetTypeAttrsForPolicyVersion_Rules_Source_K8S_Clusters())
 	}
-	elementsInPolicyApis := make([]attr.Value, 0, len(proto.PolicyApis))
-	for _, item := range proto.PolicyApis {
-		elementsInPolicyApis = append(elementsInPolicyApis, types.StringValue(item))
-	}
 	return types.ObjectValueMust(
 		GetTypeAttrsForPolicyVersion_Rules_Source_K8S_Clusters(),
 		map[string]attr.Value{
-			"id":    types.StringValue(proto.Id),
-			"aws":   ConvertPolicyVersion_Rules_Source_K8S_Clusters_AwsToObjectValueFromProto(proto.Aws),
-			"azure": ConvertPolicyVersion_Rules_Source_K8S_Clusters_AzureToObjectValueFromProto(proto.Azure),
-			"gcp":   ConvertPolicyVersion_Rules_Source_K8S_Clusters_GcpToObjectValueFromProto(proto.Gcp),
-			"oci":   ConvertPolicyVersion_Rules_Source_K8S_Clusters_OciToObjectValueFromProto(proto.Oci),
-			"policy_apis": func() basetypes.ListValue {
-				if proto.PolicyApis == nil {
-					return types.ListNull(types.StringType)
-				}
-				return types.ListValueMust(types.StringType, elementsInPolicyApis)
-			}(),
+			"id":         types.StringValue(proto.Id),
+			"aws":        ConvertPolicyVersion_Rules_Source_K8S_Clusters_AwsToObjectValueFromProto(proto.Aws),
+			"azure":      ConvertPolicyVersion_Rules_Source_K8S_Clusters_AzureToObjectValueFromProto(proto.Azure),
+			"gcp":        ConvertPolicyVersion_Rules_Source_K8S_Clusters_GcpToObjectValueFromProto(proto.Gcp),
+			"oci":        ConvertPolicyVersion_Rules_Source_K8S_Clusters_OciToObjectValueFromProto(proto.Oci),
+			"policy_api": types.StringValue(proto.PolicyApi),
 		},
 	)
 }
@@ -14720,13 +14696,7 @@ func ConvertDataValueToPolicyVersion_Rules_Source_K8S_ClustersProto(ctx context.
 		return nil, diags
 	}
 	proto.Oci = pvModelOci
-	var pvModelPolicyApis []string
-	dvDiagsPolicyApis := pv.PolicyApis.ElementsAs(ctx, &pvModelPolicyApis, false)
-	diags.Append(dvDiagsPolicyApis...)
-	if diags.HasError() {
-		return nil, diags
-	}
-	proto.PolicyApis = pvModelPolicyApis
+	proto.PolicyApi = pv.PolicyApi.ValueString()
 	return proto, diags
 }
 

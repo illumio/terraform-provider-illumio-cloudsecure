@@ -13,6 +13,7 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework/attr"
 	"github.com/hashicorp/terraform-plugin-framework/diag"
 	"github.com/hashicorp/terraform-plugin-framework/path"
+	resource_schema "github.com/hashicorp/terraform-plugin-framework/resource/schema"
 	"github.com/hashicorp/terraform-plugin-framework/schema/validator"
 	"github.com/hashicorp/terraform-plugin-framework/types"
 	"github.com/hashicorp/terraform-plugin-framework/types/basetypes"
@@ -32,6 +33,9 @@ func policyVersionRuleType() types.ObjectType {
 
 	return ruleType
 }
+
+// testUnknown stands for a string that is unknown at plan time.
+type testUnknown struct{}
 
 // toAttrValue builds a value of type t from plain Go values. Object attributes missing from a
 // map are null, as Terraform does for omitted arguments.
@@ -68,6 +72,10 @@ func toAttrValue(t attr.Type, v any) attr.Value {
 			return types.StringNull()
 		}
 
+		if _, ok := v.(testUnknown); ok {
+			return types.StringUnknown()
+		}
+
 		s, _ := v.(string)
 
 		return types.StringValue(s)
@@ -95,22 +103,42 @@ func diagnosticDetails(diags diag.Diagnostics) []string {
 }
 
 // testK8sSide returns a k8s side for one cluster with extra attributes merged in.
-// policy_apis in extra is set on the first clusters entry, where the schema has it.
+// policy_api in extra is set on the clusters entry, where the schema has it.
 func testK8sSide(extra map[string]any) map[string]any {
-	cluster := map[string]any{"id": "7f8f6b1e-5f0e-4d8c-9a64-3a8f2b6f1c11"}
+	rest := maps.Clone(extra)
+	delete(rest, "policy_api")
+
+	side := testK8sEntries(rest, "")
+	if api, ok := extra["policy_api"]; ok {
+		k8s, _ := side["k8s"].(map[string]any)
+		clusters, _ := k8s["clusters"].([]any)
+		cluster, _ := clusters[0].(map[string]any)
+		cluster["policy_api"] = api
+	}
+
+	return side
+}
+
+// testK8sEntries returns a k8s side with extra attributes merged in and one clusters entry per
+// policy_api; "" leaves it unset.
+func testK8sEntries(extra map[string]any, apis ...string) map[string]any {
+	clusters := make([]any, 0, len(apis))
+
+	for i, api := range apis {
+		cluster := map[string]any{"id": fmt.Sprintf("7f8f6b1e-5f0e-4d8c-9a64-3a8f2b6f1c1%d", i)}
+		if api != "" {
+			cluster["policy_api"] = api
+		}
+
+		clusters = append(clusters, cluster)
+	}
+
 	k8s := map[string]any{
-		"clusters":           []any{cluster},
+		"clusters":           clusters,
 		"namespace_selector": map[string]any{},
 		"workload_selector":  map[string]any{},
 	}
-
 	maps.Copy(k8s, extra)
-
-	if apis, ok := k8s["policy_apis"]; ok {
-		cluster["policy_apis"] = apis
-
-		delete(k8s, "policy_apis")
-	}
 
 	return map[string]any{"k8s": k8s}
 }
@@ -119,16 +147,18 @@ var (
 	testAny      = map[string]any{"any": map[string]any{}}
 	testAllPorts = []any{map[string]any{"protocol": "TCP", "from_port": 0, "to_port": 0}, map[string]any{"protocol": "UDP", "from_port": 0, "to_port": 0}}
 	testTCP443   = []any{map[string]any{"protocol": "TCP", "from_port": 443, "to_port": 443}}
-	testCilium   = map[string]any{"policy_apis": []any{"cilium"}, "tier": "Baseline"}
+	testCilium   = map[string]any{"policy_api": "cilium", "tier": "Baseline"}
 )
 
 func (suite *SchemaTestSuite) TestPolicyVersionRuleValidator() {
 	ruleType := policyVersionRuleType()
 
-	baselineMessage := `policy API "cilium" supports tier "Baseline" only for a Deny %s %s = { any = {} } on all TCP and UDP ports; %s`
-	egressBaseline := func(reason string) string { return fmt.Sprintf(baselineMessage, "to", "destination", reason) }
-	ingressBaseline := func(reason string) string { return fmt.Sprintf(baselineMessage, "from", "source", reason) }
-	allPortsReason := "port_ranges must be exactly TCP 0-0 and UDP 0-0 (all ports)."
+	baselineNeedsAwsVpc := `tier "Baseline", other than for a default deny (a Deny to or from ` + "`any`" +
+		` with port_ranges exactly TCP 0-0 and UDP 0-0), requires policy_api "aws_vpc" on every clusters entry.`
+	priorityNeedsAwsVpc := `a non-zero priority requires policy_api "aws_vpc" on every clusters entry.`
+	needsCilium := func(feature string) string {
+		return feature + ` requires policy_api "cilium" on every clusters entry.`
+	}
 
 	tests := map[string]struct {
 		action      string
@@ -141,174 +171,170 @@ func (suite *SchemaTestSuite) TestPolicyVersionRuleValidator() {
 		"cilium Baseline Deny to any on all ports passes": {
 			action: "Deny", source: testK8sSide(testCilium), destination: testAny, portRanges: testAllPorts,
 		},
-		"cilium Baseline Allow fails": {
+		"Baseline Allow with cilium fails": {
 			action: "Allow", source: testK8sSide(testCilium), destination: testAny, portRanges: testAllPorts,
-			wantErrors: []string{`Rule "r", source.k8s: ` + egressBaseline(`action is "Allow".`)},
+			wantErrors: []string{`Rule "r", source.k8s: ` + baselineNeedsAwsVpc},
 		},
 		"cilium Baseline to a non-any destination fails": {
 			action: "Deny", source: testK8sSide(testCilium), destination: testK8sSide(nil), portRanges: testAllPorts,
-			wantErrors: []string{egressBaseline("the destination is not `any`.")},
+			wantErrors: []string{baselineNeedsAwsVpc},
 		},
 		"cilium Baseline on 1-65535 fails": {
 			action: "Deny", source: testK8sSide(testCilium), destination: testAny,
 			portRanges: []any{map[string]any{"protocol": "TCP", "from_port": 1, "to_port": 65535}, map[string]any{"protocol": "UDP", "from_port": 1, "to_port": 65535}},
-			wantErrors: []string{egressBaseline(allPortsReason)},
+			wantErrors: []string{baselineNeedsAwsVpc},
 		},
 		"cilium Baseline on TCP 0-0 only fails": {
 			action: "Deny", source: testK8sSide(testCilium), destination: testAny,
 			portRanges: []any{map[string]any{"protocol": "TCP", "from_port": 0, "to_port": 0}},
-			wantErrors: []string{egressBaseline(allPortsReason)},
+			wantErrors: []string{baselineNeedsAwsVpc},
 		},
 		"cilium Baseline with no port ranges fails": {
 			action: "Deny", source: testK8sSide(testCilium), destination: testAny, portRanges: []any{},
-			wantErrors: []string{egressBaseline(allPortsReason)},
+			wantErrors: []string{baselineNeedsAwsVpc},
 		},
 		"cilium Baseline accepts lowercase protocols": {
 			action: "Deny", source: testK8sSide(testCilium), destination: testAny,
 			portRanges: []any{map[string]any{"protocol": "tcp", "from_port": 0, "to_port": 0}, map[string]any{"protocol": "udp", "from_port": 0, "to_port": 0}},
 		},
-		"the strictest listed API wins": {
-			action: "Allow", source: testK8sSide(map[string]any{"policy_apis": []any{"aws_vpc", "cilium"}, "tier": "Baseline"}),
-			destination: testAny, portRanges: testAllPorts,
-			wantErrors: []string{egressBaseline(`action is "Allow".`)},
-		},
 
+		// Ingress Baseline and multiple clusters entries.
 		"cilium Baseline Deny from any on all ports passes": {
 			action: "Deny", source: testAny, destination: testK8sSide(testCilium), portRanges: testAllPorts,
 		},
 		"cilium Baseline on the destination needs source any": {
 			action: "Deny", source: testK8sSide(nil), destination: testK8sSide(testCilium), portRanges: testAllPorts,
-			wantErrors: []string{`Rule "r", destination.k8s: ` + ingressBaseline("the source is not `any`.")},
+			wantErrors: []string{`Rule "r", destination.k8s: ` + baselineNeedsAwsVpc},
 		},
-		"policy_apis is the union across clusters entries": {
-			action: "Allow",
-			source: map[string]any{"k8s": map[string]any{
-				"clusters": []any{
-					map[string]any{"id": "7f8f6b1e-5f0e-4d8c-9a64-3a8f2b6f1c11", "policy_apis": []any{"aws_vpc"}},
-					map[string]any{"id": "0c7d3b5a-9e41-4f2a-8b6d-1a2e3f4c5d6e", "policy_apis": []any{"cilium"}},
-				},
-				"namespace_selector": map[string]any{},
-				"workload_selector":  map[string]any{},
-				"tier":               "Baseline",
-			}},
+		"Baseline Allow fails if any clusters entry is cilium": {
+			action: "Allow", source: testK8sEntries(map[string]any{"tier": "Baseline"}, "aws_vpc", "cilium"),
 			destination: testAny, portRanges: testAllPorts,
-			wantErrors: []string{egressBaseline(`action is "Allow".`)},
+			wantErrors: []string{baselineNeedsAwsVpc},
+		},
+		"Baseline default deny passes with both APIs": {
+			action: "Deny", source: testK8sEntries(map[string]any{"tier": "Baseline"}, "cilium", "aws_vpc"),
+			destination: testAny, portRanges: testAllPorts,
 		},
 
 		// Sides are checked independently.
 		"K8S to K8S with different tiers passes": {
 			action:      "Allow",
-			source:      testK8sSide(map[string]any{"policy_apis": []any{"cilium"}, "tier": "Admin"}),
-			destination: testK8sSide(map[string]any{"policy_apis": []any{"aws_vpc"}, "tier": "Baseline"}),
+			source:      testK8sSide(map[string]any{"policy_api": "cilium", "tier": "Admin"}),
+			destination: testK8sSide(map[string]any{"policy_api": "aws_vpc", "tier": "Baseline"}),
 			portRanges:  testTCP443,
 		},
 		"aws_vpc allows a Baseline Allow": {
-			action: "Allow", source: testK8sSide(map[string]any{"policy_apis": []any{"aws_vpc"}, "tier": "Baseline"}),
+			action: "Allow", source: testK8sSide(map[string]any{"policy_api": "aws_vpc", "tier": "Baseline"}),
 			destination: testAny, portRanges: testTCP443,
 		},
 
 		// Tier.
 		"an omitted tier passes with both APIs": {
-			action: "Allow", source: testK8sSide(map[string]any{"policy_apis": []any{"cilium", "aws_vpc"}}),
+			action: "Allow", source: testK8sEntries(nil, "cilium", "aws_vpc"),
 			destination: testK8sSide(nil), portRanges: testTCP443,
 		},
 
 		// Priority.
 		"aws_vpc accepts priority 1000": {
-			action: "Allow", source: testK8sSide(map[string]any{"policy_apis": []any{"aws_vpc"}, "tier": "Admin", "priority": 1000}),
+			action: "Allow", source: testK8sSide(map[string]any{"policy_api": "aws_vpc", "tier": "Admin", "priority": 1000}),
 			destination: testK8sSide(nil), portRanges: testTCP443,
 		},
-		"aws_vpc rejects priority 1001": {
-			action: "Allow", source: testK8sSide(map[string]any{"policy_apis": []any{"aws_vpc"}, "tier": "Admin", "priority": 1001}),
+		"priority fails if any clusters entry is cilium": {
+			action: "Allow", source: testK8sEntries(map[string]any{"priority": 5}, "cilium", "aws_vpc"),
 			destination: testK8sSide(nil), portRanges: testTCP443,
-			wantErrors: []string{`Rule "r", source.k8s: policy API "aws_vpc" supports priority 0-1000, got: 1001.`},
+			wantErrors: []string{`Rule "r", source.k8s: ` + priorityNeedsAwsVpc},
 		},
-		"cilium rejects priority": {
-			action: "Allow", source: testK8sSide(map[string]any{"policy_apis": []any{"cilium"}, "priority": 10}),
+		"priority with cilium fails": {
+			action: "Allow", source: testK8sSide(map[string]any{"policy_api": "cilium", "priority": 10}),
 			destination: testK8sSide(nil), portRanges: testTCP443,
-			wantErrors: []string{`Rule "r", source.k8s: policy API "cilium" does not support priority.`},
-		},
-
-		"cilium treats priority 0 as unset": {
-			action: "Allow", source: testK8sSide(map[string]any{"policy_apis": []any{"cilium"}, "priority": 0}),
-			destination: testK8sSide(nil), portRanges: testTCP443,
+			wantErrors: []string{`Rule "r", source.k8s: ` + priorityNeedsAwsVpc},
 		},
 
-		// policy_apis is required for features only some APIs support.
-		"priority without policy_apis fails": {
+		"priority 0 passes with cilium": {
+			action: "Allow", source: testK8sSide(map[string]any{"policy_api": "cilium", "priority": 0}),
+			destination: testK8sSide(nil), portRanges: testTCP443,
+		},
+
+		// policy_api is required for features only one API supports.
+		"priority without policy_api fails": {
 			action: "Allow", source: testK8sSide(map[string]any{"priority": 5}),
 			destination: testK8sSide(nil), portRanges: testTCP443,
-			wantErrors: []string{`Rule "r", source.k8s: policy_apis must be set on every clusters entry when using a non-zero priority.`},
+			wantErrors: []string{`Rule "r", source.k8s: ` + priorityNeedsAwsVpc},
 		},
-		"Baseline without policy_apis fails": {
+		"Baseline Allow without policy_api fails": {
+			action: "Allow", source: testK8sSide(map[string]any{"tier": "Baseline"}),
+			destination: testAny, portRanges: testTCP443,
+			wantErrors: []string{`Rule "r", source.k8s: ` + baselineNeedsAwsVpc},
+		},
+		"Baseline default deny without policy_api passes": {
 			action: "Deny", source: testK8sSide(map[string]any{"tier": "Baseline"}),
 			destination: testAny, portRanges: testAllPorts,
-			wantErrors: []string{`Rule "r", source.k8s: policy_apis must be set on every clusters entry when using tier "Baseline".`},
 		},
-		"ingress from ip_lists without policy_apis fails": {
+		"ingress from ip_lists without policy_api fails": {
 			action: "Allow", source: map[string]any{"ip_lists": map[string]any{"ids": []any{"ipl-1"}}},
 			destination: testK8sSide(nil), portRanges: testTCP443,
-			wantErrors: []string{`Rule "r", destination.k8s: policy_apis must be set on every clusters entry when using ingress from source.ip_lists.`},
+			wantErrors: []string{`Rule "r", destination.k8s: ` + needsCilium("ingress from source.ip_lists")},
 		},
-		"policy_apis is required on every clusters entry": {
-			action: "Allow",
-			source: map[string]any{"k8s": map[string]any{
-				"clusters": []any{
-					map[string]any{"id": "7f8f6b1e-5f0e-4d8c-9a64-3a8f2b6f1c11", "policy_apis": []any{"aws_vpc"}},
-					map[string]any{"id": "0c7d3b5a-9e41-4f2a-8b6d-1a2e3f4c5d6e"},
-				},
-				"namespace_selector": map[string]any{},
-				"workload_selector":  map[string]any{},
-				"priority":           5,
-			}},
+		"priority fails if any clusters entry has no policy_api": {
+			action: "Allow", source: testK8sEntries(map[string]any{"priority": 5}, "aws_vpc", ""),
 			destination: testK8sSide(nil), portRanges: testTCP443,
-			wantErrors: []string{`Rule "r", source.k8s: policy_apis must be set on every clusters entry when using a non-zero priority.`},
+			wantErrors: []string{`Rule "r", source.k8s: ` + priorityNeedsAwsVpc},
 		},
-		"service_accounts without policy_apis fails": {
+		"service_accounts without policy_api fails": {
 			action: "Allow", source: testK8sSide(map[string]any{"workload_selector": map[string]any{"service_accounts": []any{"api"}}}),
 			destination: testK8sSide(nil), portRanges: testTCP443,
-			wantErrors: []string{`Rule "r", source.k8s: policy_apis must be set on every clusters entry when using workload_selector.service_accounts.`},
+			wantErrors: []string{`Rule "r", source.k8s: ` + needsCilium("workload_selector.service_accounts")},
 		},
-		"aws_vpc rejects service_accounts": {
+		"service_accounts with aws_vpc fails": {
 			action: "Allow", source: testK8sSide(nil),
-			destination: testK8sSide(map[string]any{"policy_apis": []any{"aws_vpc"}, "workload_selector": map[string]any{"service_accounts": []any{"api"}}}),
+			destination: testK8sSide(map[string]any{"policy_api": "aws_vpc", "workload_selector": map[string]any{"service_accounts": []any{"api"}}}),
 			portRanges:  testTCP443,
-			wantErrors:  []string{`Rule "r", destination.k8s: policy API "aws_vpc" does not support workload_selector.service_accounts.`},
+			wantErrors:  []string{`Rule "r", destination.k8s: ` + needsCilium("workload_selector.service_accounts")},
+		},
+
+		"ingress Baseline default deny with aws_vpc fails": {
+			action: "Deny", source: testAny,
+			destination: testK8sSide(map[string]any{"policy_api": "aws_vpc", "tier": "Baseline"}), portRanges: testAllPorts,
+			wantErrors: []string{`Rule "r", destination.k8s: ` + needsCilium("ingress from source.any")},
+		},
+		"ingress Baseline default deny without policy_api fails": {
+			action: "Deny", source: testAny,
+			destination: testK8sSide(map[string]any{"tier": "Baseline"}), portRanges: testAllPorts,
+			wantErrors: []string{`Rule "r", destination.k8s: ` + needsCilium("ingress from source.any")},
+		},
+		"an unknown policy_api is left to the backend": {
+			action: "Allow", source: testK8sSide(map[string]any{"policy_api": testUnknown{}, "priority": 5}),
+			destination: testK8sSide(nil), portRanges: testTCP443,
 		},
 
 		// aws_vpc has no CIDR ingress peer.
-		"aws_vpc rejects ingress from source any": {
+		"ingress from source any with aws_vpc fails": {
 			action: "Deny", source: testAny,
-			destination: testK8sSide(map[string]any{"policy_apis": []any{"aws_vpc"}, "tier": "Admin"}), portRanges: testTCP443,
-			wantErrors: []string{`Rule "r", destination.k8s: policy API "aws_vpc" cannot enforce ingress from source.any: AWS ClusterNetworkPolicy has no CIDR ingress peer.`},
+			destination: testK8sSide(map[string]any{"policy_api": "aws_vpc", "tier": "Admin"}), portRanges: testTCP443,
+			wantErrors: []string{`Rule "r", destination.k8s: ` + needsCilium("ingress from source.any")},
 		},
-		"aws_vpc rejects ingress from source ip_lists": {
+		"ingress from source ip_lists with aws_vpc fails": {
 			action: "Allow", source: map[string]any{"ip_lists": map[string]any{"ids": []any{"ipl-1"}}},
-			destination: testK8sSide(map[string]any{"policy_apis": []any{"aws_vpc"}, "tier": "Admin"}), portRanges: testTCP443,
-			wantErrors: []string{`Rule "r", destination.k8s: policy API "aws_vpc" cannot enforce ingress from source.ip_lists: AWS ClusterNetworkPolicy has no CIDR ingress peer.`},
+			destination: testK8sSide(map[string]any{"policy_api": "aws_vpc", "tier": "Admin"}), portRanges: testTCP443,
+			wantErrors: []string{`Rule "r", destination.k8s: ` + needsCilium("ingress from source.ip_lists")},
 		},
 		"aws_vpc allows egress to any": {
-			action: "Deny", source: testK8sSide(map[string]any{"policy_apis": []any{"aws_vpc"}, "tier": "Admin"}),
+			action: "Deny", source: testK8sSide(map[string]any{"policy_api": "aws_vpc", "tier": "Admin"}),
 			destination: testAny, portRanges: testTCP443,
 		},
 
 		// any placement.
-		"destination any requires a k8s source": {
+		"destination any with an ip_lists source passes": {
 			action: "Deny", source: map[string]any{"ip_lists": map[string]any{"ids": []any{"ipl-1"}}},
 			destination: testAny, portRanges: testTCP443,
-			wantErrors: []string{"Rule \"r\", destination: `any` is only valid when the source is k8s."},
 		},
-		"source any requires a k8s destination": {
+		"source any with an fqdns destination passes": {
 			action: "Deny", source: testAny,
 			destination: map[string]any{"fqdns": map[string]any{"names": []any{"api.example.com"}}}, portRanges: testTCP443,
-			wantErrors: []string{"Rule \"r\", source: `any` is only valid when the destination is k8s."},
 		},
-		"any to any fails on both sides": {
+		"any to any fails": {
 			action: "Deny", source: testAny, destination: testAny, portRanges: testTCP443,
-			wantErrors: []string{
-				"Rule \"r\", source: `any` is only valid when the destination is k8s.",
-				"Rule \"r\", destination: `any` is only valid when the source is k8s.",
-			},
+			wantErrors: []string{"Rule \"r\", destination: `any` is not valid when the source is also `any`."},
 		},
 	}
 
@@ -343,5 +369,38 @@ func (suite *SchemaTestSuite) TestPolicyVersionRuleValidator() {
 					"missing error %q in %q", want, details)
 			}
 		})
+	}
+}
+
+func (suite *SchemaTestSuite) TestPriorityRange() {
+	priority, ok := k8sPolicyAttributes["priority"].(resource_schema.Int64Attribute)
+	suite.Require().True(ok)
+
+	for value, wantError := range map[int64]bool{0: false, 1000: false, 1001: true, -1: true} {
+		resp := &validator.Int64Response{}
+		for _, v := range priority.Validators {
+			v.ValidateInt64(context.Background(), validator.Int64Request{ConfigValue: types.Int64Value(value)}, resp)
+		}
+
+		suite.Equal(wantError, resp.Diagnostics.HasError(), "priority %d", value)
+	}
+}
+
+func (suite *SchemaTestSuite) TestPortRangeProtocolValidator() {
+	for protocol, wantError := range map[string]bool{"TCP": false, "udp": false, "ICMP": true, "": true} {
+		ports := toAttrValue(types.ListType{ElemType: PortRange}, []any{
+			map[string]any{"protocol": protocol, "from_port": 443, "to_port": 443},
+		})
+
+		list, ok := ports.(types.List)
+		suite.Require().True(ok)
+
+		resp := &validator.ListResponse{}
+		portRangeProtocolValidator{}.ValidateList(context.Background(), validator.ListRequest{
+			Path:        path.Root("port_ranges"),
+			ConfigValue: list,
+		}, resp)
+
+		suite.Equal(wantError, resp.Diagnostics.HasError(), "protocol %q", protocol)
 	}
 }
