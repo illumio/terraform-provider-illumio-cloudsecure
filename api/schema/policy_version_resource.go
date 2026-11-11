@@ -163,8 +163,8 @@ func clusterProviderAttributes(accountName, accountDescription, scopeName, scope
 
 // clusterSelectorAttributes is shared between source and destination k8s selectors.
 var clusterSelectorAttributes = resource_schema.ListNestedAttribute{
-	Description: "List of K8s cluster selectors. Each entry selects one or more clusters. A cluster matching any entry matches (OR logic). " +
-		"A cluster matches an entry if it matches one of `id`, `aws`, `gcp`, `azure`, or `oci`, _and_ the optional `policy_api`.",
+	Description: "List of K8s cluster selectors. Each entry selects one or more clusters by `id`, `aws`, `gcp`, `azure`, or `oci`. " +
+		"A cluster matching any entry matches (OR logic). If an entry sets `policy_api`, every cluster it selects must run it, or provisioning fails.",
 	Required: true,
 	Validators: []validator.List{
 		listvalidator.SizeAtLeast(1),
@@ -256,8 +256,8 @@ var clusterSelectorAttributes = resource_schema.ListNestedAttribute{
 					),
 				},
 			},
-			// policy_api selects clusters based on the network policy API they support, in
-			// conjunction with the selectors above.
+			// policy_api is the network policy API to render for the clusters the selectors above
+			// pick.
 			"policy_api": clusterPolicyAPIAttribute,
 		},
 	},

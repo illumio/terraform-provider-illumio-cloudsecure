@@ -31,13 +31,16 @@ const (
 	tierBaseline = "Baseline"
 )
 
-// clusterPolicyAPIAttribute is policy_api on a clusters entry: it narrows the entry to clusters
-// that provide that Kubernetes network policy API. It defaults to "", meaning unset, for the same
-// reason tier and priority have defaults (see k8sPolicyAttributes).
+// clusterPolicyAPIAttribute is policy_api on a clusters entry: the Kubernetes network policy API to
+// render for the clusters the entry selects.
+//
+// It defaults to "", meaning unset. The generated converters send an omitted value as "" and read
+// it back as "", so without the default, apply would store "" where the plan had null and fail
+// with an inconsistent result.
 var clusterPolicyAPIAttribute = resource_schema.StringAttribute{
-	MarkdownDescription: "Selects only clusters that provide this Kubernetes network policy API: " +
-		"`cilium` (Cilium `CiliumClusterwideNetworkPolicy`) or `aws_vpc` (AWS VPC CNI `ClusterNetworkPolicy`). " +
-		"When omitted, the entry matches clusters regardless of the API they provide. " +
+	MarkdownDescription: "The Kubernetes network policy API required from the clusters this entry selects: " +
+		"`cilium` (Cilium's `CiliumClusterwideNetworkPolicy` API) or `aws_vpc` (AWS VPC CNI plugin's `ClusterNetworkPolicy` API). " +
+		"When set, every selected cluster must provide it. When unset, any cluster can be used. " +
 		"Some rule attributes require it; see each attribute.",
 	Optional: true,
 	Computed: true,
@@ -70,7 +73,7 @@ var k8sPolicyAttributes = map[string]resource_schema.Attribute{
 		},
 	},
 	"priority": resource_schema.Int64Attribute{
-		MarkdownDescription: "Priority of this side of the rule within its tier, between 0 and 1000. " +
+		MarkdownDescription: "Priority of this side of the rule within its tier, between 0 and 1000, inclusive. " +
 			"A non-zero priority requires `policy_api = \"aws_vpc\"` on every clusters entry of this side.",
 		Optional: true,
 		Computed: true,
