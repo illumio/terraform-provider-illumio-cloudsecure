@@ -8,7 +8,6 @@ import (
 	"fmt"
 	"maps"
 	"slices"
-	"strings"
 
 	"github.com/hashicorp/terraform-plugin-framework-validators/int64validator"
 	"github.com/hashicorp/terraform-plugin-framework-validators/stringvalidator"
@@ -60,7 +59,7 @@ var k8sPolicyAttributes = map[string]resource_schema.Attribute{
 	"tier": resource_schema.StringAttribute{
 		MarkdownDescription: "Policy tier for this side of the rule: `Admin` or `Baseline`. Defaults to `Admin`. " +
 			"`Baseline` requires `policy_api = \"aws_vpc\"` on every clusters entry of this side, except for a default deny: " +
-			"a `Deny` to or from `any` with empty `port_ranges` (all ports and protocols), or with TCP 0-0 and UDP 0-0. " +
+			"a `Deny` to or from `any` with `port_ranges` not set (all ports and protocols). " +
 			"Both APIs support the egress default deny (to destination `any`); the ingress one (from source `any`) " +
 			"requires `policy_api = \"cilium\"`, like all ingress from source `any`.",
 		Optional: true,
@@ -95,8 +94,8 @@ func withK8sPolicyAttributes(attributes map[string]resource_schema.Attribute) ma
 // be expressed across attributes:
 //
 //   - source.any and destination.any cannot both be set.
-//   - port_ranges can be empty, meaning all ports and protocols, only where the backend can
-//     enforce that.
+//   - port_ranges can be empty (not set), meaning all ports and protocols, only where the backend
+//     can enforce that.
 //   - A k8s side that uses a feature only one policy API supports must set that policy_api on
 //     every clusters entry.
 //
@@ -106,7 +105,7 @@ type policyVersionRuleValidator struct{}
 var _ validator.Object = policyVersionRuleValidator{}
 
 func (policyVersionRuleValidator) Description(_ context.Context) string {
-	return "rule must not use `any` on both sides, must leave port_ranges empty only where supported, " +
+	return "rule must not use `any` on both sides, must leave port_ranges unset only where supported, " +
 		"and must use only features supported by the policy_api of every clusters entry"
 }
 
@@ -181,12 +180,11 @@ func (r ruleCheck) checkAnyOnBothSides() {
 	}
 }
 
-// checkEmptyPortRanges rejects empty port_ranges, meaning all ports and protocols, where the backend
-// can't enforce it: cloud security rules need a protocol and ports, and on a rule targeting
+// checkEmptyPortRanges rejects empty (unset) port_ranges, meaning all ports and protocols, where the
+// backend can't enforce it: cloud security rules need a protocol and ports, and on a rule targeting
 // services it would cover every port of the services' pods rather than the services' own ports.
 func (r ruleCheck) checkEmptyPortRanges() {
-	portRanges, ok := r.rule["port_ranges"].(types.List)
-	if !ok || !isSet(portRanges) || len(portRanges.Elements()) > 0 {
+	if !isNull(r.rule["port_ranges"]) {
 		return
 	}
 
@@ -195,14 +193,13 @@ func (r ruleCheck) checkEmptyPortRanges() {
 	for _, side := range ruleSides {
 		if sideAttributes, ok := knownAttributes(r.rule[side]); ok && isSet(sideAttributes["cloud"]) {
 			r.addError(portRangesPath, side+".cloud",
-				"empty port_ranges (all ports and protocols) is not supported for cloud resources; list the TCP and UDP port ranges.")
+				"port_ranges must be set for cloud resources.")
 		}
 	}
 
 	if k8s, ok := r.k8sOf("destination"); ok && isSet(k8s["services"]) {
 		r.addError(portRangesPath, "destination.k8s",
-			"empty port_ranges (all ports and protocols) is not supported when targeting services, as it would cover every port of "+
-				"the services' pods; list the services' port ranges.")
+			"port_ranges must be set when targeting services.")
 	}
 }
 
@@ -233,7 +230,7 @@ func (r ruleCheck) checkBaselineTier() {
 
 		if tier, ok := knownString(k8s["tier"]); ok && tier == tierBaseline && !r.isDefaultDeny(side) {
 			r.requireAPI(r.path.AtName(side).AtName("k8s").AtName("tier"), side+".k8s",
-				fmt.Sprintf("tier %q, other than for a default deny (a Deny to or from `any` with empty port_ranges, or TCP 0-0 and UDP 0-0),", tierBaseline),
+				fmt.Sprintf("tier %q, other than for a default deny (a Deny to or from `any` with port_ranges not set),", tierBaseline),
 				k8s["clusters"], policyAPIAWSVPC)
 		}
 	}
@@ -306,11 +303,10 @@ func (r ruleCheck) requireAPI(attrPath path.Path, sideName, feature string, clus
 }
 
 // isDefaultDeny reports whether the rule denies all traffic between the k8s side and any peer: a
-// Deny to destination any (egress) or from source any (ingress), with empty port_ranges or TCP 0-0
-// and UDP 0-0. Both policy APIs render this shape in the Baseline tier, so it is
-// exempt from the Baseline requirement; the ingress form still needs cilium for its source.any
-// peer, which checkIngressFromCIDR checks. Unknown values count as a match, leaving them to the
-// backend.
+// Deny to destination any (egress) or from source any (ingress), with port_ranges not set. Both
+// policy APIs render this shape in the Baseline tier, so it is exempt from the Baseline
+// requirement; the ingress form still needs cilium for its source.any peer, which
+// checkIngressFromCIDR checks. Unknown values count as a match, leaving them to the backend.
 func (r ruleCheck) isDefaultDeny(side string) bool {
 	if action, ok := knownString(r.rule["action"]); ok && action != "Deny" {
 		return false
@@ -320,7 +316,9 @@ func (r ruleCheck) isDefaultDeny(side string) bool {
 		return false
 	}
 
-	if allPorts, known := coversAllTCPAndUDPPorts(r.rule["port_ranges"]); known && !allPorts {
+	// An empty list is rejected on its own by the port_ranges validators, so only listed port
+	// ranges make this not a default deny.
+	if portRanges, ok := r.rule["port_ranges"].(types.List); ok && isSet(portRanges) && len(portRanges.Elements()) > 0 {
 		return false
 	}
 
@@ -337,50 +335,6 @@ func hasServiceAccounts(k8s map[string]attr.Value) bool {
 	serviceAccounts, ok := workloadSelector["service_accounts"].(types.List)
 
 	return ok && isSet(serviceAccounts) && len(serviceAccounts.Elements()) > 0
-}
-
-// coversAllTCPAndUDPPorts reports whether the port ranges cover every TCP and UDP port, as a
-// default deny needs: empty, meaning all ports and protocols, or every range 0-0, which the
-// backend renders as all ports, with both TCP and UDP present. known is false when any value
-// needed to decide is unknown.
-func coversAllTCPAndUDPPorts(portRanges attr.Value) (allPorts, known bool) {
-	if portRanges == nil || portRanges.IsUnknown() {
-		return false, false
-	}
-
-	list, ok := portRanges.(types.List)
-	if !ok || portRanges.IsNull() {
-		return false, true
-	}
-
-	if len(list.Elements()) == 0 {
-		return true, true
-	}
-
-	protocols := map[string]bool{}
-
-	for _, element := range list.Elements() {
-		portRange, ok := knownAttributes(element)
-		if !ok {
-			return false, false
-		}
-
-		protocol, okProtocol := knownString(portRange["protocol"])
-		from, okFrom := knownInt64(portRange["from_port"])
-		to, okTo := knownInt64(portRange["to_port"])
-
-		if !okProtocol || !okFrom || !okTo {
-			return false, false
-		}
-
-		if from != 0 || to != 0 {
-			return false, true
-		}
-
-		protocols[strings.ToUpper(protocol)] = true
-	}
-
-	return protocols["TCP"] && protocols["UDP"], true
 }
 
 // ruleName returns the map key of the rule at p, or p itself if it has none.

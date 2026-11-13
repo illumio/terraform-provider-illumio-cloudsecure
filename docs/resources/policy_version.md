@@ -393,7 +393,7 @@ resource "illumio-cloudsecure_policy_version" "aws_multi_account_to_vpc" {
 # at plan rather than at provision: ingress from `any` or IP lists and service
 # accounts need "cilium"; priority and the Baseline tier need "aws_vpc", except
 # a Baseline default deny (a Deny to or from `any` on all ports and protocols,
-# written as empty port_ranges). Both APIs support the egress default deny, so
+# written by leaving port_ranges unset). Both APIs support the egress default deny, so
 # "allow-dns" and "default-deny" omit policy_api. The ingress default deny
 # needs "cilium".
 
@@ -452,8 +452,7 @@ resource "illumio-cloudsecure_policy_version" "k8s_default_deny" {
         any = {}
       }
 
-      # Empty port_ranges means all ports and protocols.
-      port_ranges = []
+      # port_ranges is not set: all ports and protocols.
     }
 
     "default-deny-ingress" = {
@@ -472,8 +471,7 @@ resource "illumio-cloudsecure_policy_version" "k8s_default_deny" {
         }
       }
 
-      # Empty port_ranges means all ports and protocols.
-      port_ranges = []
+      # port_ranges is not set: all ports and protocols.
     }
   }
 }
@@ -503,8 +501,11 @@ Required:
 
 - `action` (String) Action to take: Allow or Deny.
 - `destination` (Attributes) Traffic destination selector. (see [below for nested schema](#nestedatt--rules--destination))
-- `port_ranges` (List of Object) List of port ranges for the rule. The `protocol` of each port range must be `TCP` or `UDP`. An empty list means all ports and all protocols; it is not supported for rules with a `cloud` side or that target `services`. (see [below for nested schema](#nestedatt--rules--port_ranges))
 - `source` (Attributes) Traffic source selector. (see [below for nested schema](#nestedatt--rules--source))
+
+Optional:
+
+- `port_ranges` (List of Object) List of port ranges for the rule. The `protocol` of each port range must be `TCP` or `UDP`. When not set, the rule applies to all ports and all protocols. It must be set for rules with a `cloud` side or that target `services`. (see [below for nested schema](#nestedatt--rules--port_ranges))
 
 <a id="nestedatt--rules--destination"></a>
 ### Nested Schema for `rules.destination`
@@ -684,7 +685,7 @@ Optional:
 - `ingresses` (List of String) List of K8s Ingress names to target. Mutually exclusive with workload_selector, services, and gateways.
 - `priority` (Number) Priority of this side of the rule within its tier, between 0 and 1000, inclusive. A non-zero priority requires `policy_api = "aws_vpc"` on every clusters entry of this side.
 - `services` (List of String) List of K8s Service names to target. Mutually exclusive with workload_selector, ingresses, and gateways.
-- `tier` (String) Policy tier for this side of the rule: `Admin` or `Baseline`. Defaults to `Admin`. `Baseline` requires `policy_api = "aws_vpc"` on every clusters entry of this side, except for a default deny: a `Deny` to or from `any` with empty `port_ranges` (all ports and protocols), or with TCP 0-0 and UDP 0-0. Both APIs support the egress default deny (to destination `any`); the ingress one (from source `any`) requires `policy_api = "cilium"`, like all ingress from source `any`.
+- `tier` (String) Policy tier for this side of the rule: `Admin` or `Baseline`. Defaults to `Admin`. `Baseline` requires `policy_api = "aws_vpc"` on every clusters entry of this side, except for a default deny: a `Deny` to or from `any` with `port_ranges` not set (all ports and protocols). Both APIs support the egress default deny (to destination `any`); the ingress one (from source `any`) requires `policy_api = "cilium"`, like all ingress from source `any`.
 - `workload_selector` (Attributes) Label selector for K8s workloads (pods). Use empty {} to match all pods. Mutually exclusive with services, ingresses, and gateways. (see [below for nested schema](#nestedatt--rules--destination--k8s--workload_selector))
 
 <a id="nestedatt--rules--destination--k8s--clusters"></a>
@@ -925,16 +926,6 @@ Required:
 
 
 
-<a id="nestedatt--rules--port_ranges"></a>
-### Nested Schema for `rules.port_ranges`
-
-Required:
-
-- `from_port` (Number)
-- `protocol` (String)
-- `to_port` (Number)
-
-
 <a id="nestedatt--rules--source"></a>
 ### Nested Schema for `rules.source`
 
@@ -1102,7 +1093,7 @@ Required:
 Optional:
 
 - `priority` (Number) Priority of this side of the rule within its tier, between 0 and 1000, inclusive. A non-zero priority requires `policy_api = "aws_vpc"` on every clusters entry of this side.
-- `tier` (String) Policy tier for this side of the rule: `Admin` or `Baseline`. Defaults to `Admin`. `Baseline` requires `policy_api = "aws_vpc"` on every clusters entry of this side, except for a default deny: a `Deny` to or from `any` with empty `port_ranges` (all ports and protocols), or with TCP 0-0 and UDP 0-0. Both APIs support the egress default deny (to destination `any`); the ingress one (from source `any`) requires `policy_api = "cilium"`, like all ingress from source `any`.
+- `tier` (String) Policy tier for this side of the rule: `Admin` or `Baseline`. Defaults to `Admin`. `Baseline` requires `policy_api = "aws_vpc"` on every clusters entry of this side, except for a default deny: a `Deny` to or from `any` with `port_ranges` not set (all ports and protocols). Both APIs support the egress default deny (to destination `any`); the ingress one (from source `any`) requires `policy_api = "cilium"`, like all ingress from source `any`.
 
 <a id="nestedatt--rules--source--k8s--clusters"></a>
 ### Nested Schema for `rules.source.k8s.clusters`
@@ -1337,3 +1328,16 @@ Required:
 
 - `key` (String) Label key.
 - `value` (String) Label value.
+
+
+
+
+
+<a id="nestedatt--rules--port_ranges"></a>
+### Nested Schema for `rules.port_ranges`
+
+Required:
+
+- `from_port` (Number)
+- `protocol` (String)
+- `to_port` (Number)

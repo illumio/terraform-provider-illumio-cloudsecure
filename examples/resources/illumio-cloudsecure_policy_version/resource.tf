@@ -378,7 +378,7 @@ resource "illumio-cloudsecure_policy_version" "aws_multi_account_to_vpc" {
 # at plan rather than at provision: ingress from `any` or IP lists and service
 # accounts need "cilium"; priority and the Baseline tier need "aws_vpc", except
 # a Baseline default deny (a Deny to or from `any` on all ports and protocols,
-# written as empty port_ranges). Both APIs support the egress default deny, so
+# written by leaving port_ranges unset). Both APIs support the egress default deny, so
 # "allow-dns" and "default-deny" omit policy_api. The ingress default deny
 # needs "cilium".
 
@@ -437,8 +437,7 @@ resource "illumio-cloudsecure_policy_version" "k8s_default_deny" {
         any = {}
       }
 
-      # Empty port_ranges means all ports and protocols.
-      port_ranges = []
+      # port_ranges is not set: all ports and protocols.
     }
 
     "default-deny-ingress" = {
@@ -457,8 +456,7 @@ resource "illumio-cloudsecure_policy_version" "k8s_default_deny" {
         }
       }
 
-      # Empty port_ranges means all ports and protocols.
-      port_ranges = []
+      # port_ranges is not set: all ports and protocols.
     }
   }
 }

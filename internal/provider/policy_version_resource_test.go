@@ -220,6 +220,11 @@ func toTerraformList(typ tftypes.List, v any) (tftypes.Value, error) {
 		return tftypes.Value{}, fmt.Errorf("expected slice for list, got %T", v)
 	}
 
+	// A nil slice is an unset list, as an omitted argument is; []any{} is an empty one.
+	if l == nil {
+		return tftypes.NewValue(typ, nil), nil
+	}
+
 	elems := make([]tftypes.Value, 0, len(l))
 
 	for i, elem := range l {
@@ -381,12 +386,9 @@ func allTCP() []any {
 	return []any{map[string]any{"protocol": "TCP", "from_port": 1, "to_port": 65535}}
 }
 
-// allPortsTCPAndUDP is all TCP and UDP ports in the 0-0 form Cilium Baseline rules require.
-func allPortsTCPAndUDP() []any {
-	return []any{
-		map[string]any{"protocol": "TCP", "from_port": 0, "to_port": 0},
-		map[string]any{"protocol": "UDP", "from_port": 0, "to_port": 0},
-	}
+// allPorts leaves port_ranges unset: all ports and protocols, as a default deny needs.
+func allPorts() []any {
+	return nil
 }
 
 func rule(action string, source, destination map[string]any, portRanges []any) map[string]any {
@@ -483,11 +485,11 @@ func (s *PolicyVersionResourceTestSuite) TestCreateReadRoundTripsNewFields() {
 		"baseline-deny": rule("Deny",
 			k8sSource(map[string]any{"policy_api": "cilium", "tier": "Baseline"}),
 			anyDestination(),
-			allPortsTCPAndUDP()),
+			allPorts()),
 		"ingress-deny": rule("Deny",
 			anySource(),
 			k8sDestination(map[string]any{"policy_api": "cilium", "tier": "Baseline"}),
-			allPortsTCPAndUDP()),
+			allPorts()),
 		"k8s-to-k8s": rule("Allow",
 			k8sSource(map[string]any{"policy_api": "aws_vpc", "tier": "Admin", "priority": 100}),
 			k8sDestination(map[string]any{"policy_api": "cilium", "tier": "Admin"}),
@@ -558,7 +560,7 @@ func (s *PolicyVersionResourceTestSuite) TestUpdateReplacesVersion() {
 		"rule": rule("Deny",
 			k8sSource(map[string]any{"policy_api": "cilium", "tier": "Baseline"}),
 			anyDestination(),
-			allPortsTCPAndUDP()),
+			allPorts()),
 	})
 	config := s.resourceValue(after)
 	s.requireNoErrorDiags(s.validate(config))
@@ -623,7 +625,7 @@ func (s *PolicyVersionResourceTestSuite) TestRuleValidatorIsWired() {
 	diags := s.validate(s.resourceValue(policyVersionConfig(map[string]any{
 		"r": rule("Allow",
 			k8sSource(map[string]any{"policy_api": "cilium", "tier": "Baseline"}),
-			anyDestination(), allPortsTCPAndUDP()),
+			anyDestination(), allPorts()),
 	})))
 	s.Contains(errorSummaries(diags), `Rule "r", source.k8s: tier "Baseline", other than for a default deny`)
 }

@@ -847,10 +847,13 @@ var (
 								},
 								"port_ranges": resource_schema.ListAttribute{
 									MarkdownDescription: "List of port ranges for the rule. The `protocol` of each port range must be `TCP` or `UDP`. " +
-										"An empty list means all ports and all protocols; it is not supported for rules with a `cloud` side or that target `services`.",
-									Required:    true,
+										"When not set, the rule applies to all ports and all protocols. It must be set for rules with a `cloud` side " +
+										"or that target `services`.",
+									Optional:    true,
 									ElementType: PortRange,
 									Validators: []validator.List{
+										// An empty list would be read back as null, so all ports is written by leaving port_ranges unset.
+										listvalidator.SizeAtLeast(1),
 										portRangeProtocolValidator{},
 									},
 								},

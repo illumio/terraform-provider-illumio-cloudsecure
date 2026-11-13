@@ -60,6 +60,10 @@ func toAttrValue(t attr.Type, v any) attr.Value {
 		}
 
 		l, _ := v.([]any)
+		if l == nil { // a nil slice is an unset list, as an omitted argument is
+			return types.ListNull(t.ElemType)
+		}
+
 		elems := make([]attr.Value, 0, len(l))
 
 		for _, elem := range l {
@@ -145,7 +149,7 @@ func testK8sEntries(extra map[string]any, apis ...string) map[string]any {
 
 var (
 	testAny      = map[string]any{"any": map[string]any{}}
-	testAllPorts = []any{map[string]any{"protocol": "TCP", "from_port": 0, "to_port": 0}, map[string]any{"protocol": "UDP", "from_port": 0, "to_port": 0}}
+	testAllPorts []any // port_ranges not set: all ports and protocols
 	testTCP443   = []any{map[string]any{"protocol": "TCP", "from_port": 443, "to_port": 443}}
 	testCilium   = map[string]any{"policy_api": "cilium", "tier": "Baseline"}
 )
@@ -154,7 +158,7 @@ func (suite *SchemaTestSuite) TestPolicyVersionRuleValidator() {
 	ruleType := policyVersionRuleType()
 
 	baselineNeedsAWSVPC := `tier "Baseline", other than for a default deny (a Deny to or from ` + "`any`" +
-		` with empty port_ranges, or TCP 0-0 and UDP 0-0), requires policy_api "aws_vpc" on every clusters entry.`
+		` with port_ranges not set), requires policy_api "aws_vpc" on every clusters entry.`
 	priorityNeedsAWSVPC := `a non-zero priority requires policy_api "aws_vpc" on every clusters entry.`
 	needsCilium := func(feature string) string {
 		return feature + ` requires policy_api "cilium" on every clusters entry.`
@@ -188,13 +192,6 @@ func (suite *SchemaTestSuite) TestPolicyVersionRuleValidator() {
 			action: "Deny", source: testK8sSide(testCilium), destination: testAny,
 			portRanges: []any{map[string]any{"protocol": "TCP", "from_port": 0, "to_port": 0}},
 			wantErrors: []string{baselineNeedsAWSVPC},
-		},
-		"cilium Baseline with empty port_ranges passes": {
-			action: "Deny", source: testK8sSide(testCilium), destination: testAny, portRanges: []any{},
-		},
-		"cilium Baseline accepts lowercase protocols": {
-			action: "Deny", source: testK8sSide(testCilium), destination: testAny,
-			portRanges: []any{map[string]any{"protocol": "tcp", "from_port": 0, "to_port": 0}, map[string]any{"protocol": "udp", "from_port": 0, "to_port": 0}},
 		},
 
 		// Ingress Baseline and multiple clusters entries.
@@ -322,19 +319,19 @@ func (suite *SchemaTestSuite) TestPolicyVersionRuleValidator() {
 			destination: testAny, portRanges: testTCP443,
 		},
 
-		// Empty port_ranges means all ports and protocols.
-		"empty port_ranges between k8s workloads passes": {
-			action: "Allow", source: testK8sSide(nil), destination: testK8sSide(nil), portRanges: []any{},
+		// port_ranges not set means all ports and protocols.
+		"port_ranges unset between k8s workloads passes": {
+			action: "Allow", source: testK8sSide(nil), destination: testK8sSide(nil), portRanges: testAllPorts,
 		},
-		"empty port_ranges with a cloud side fails": {
+		"port_ranges unset with a cloud side fails": {
 			action: "Allow", source: testK8sSide(nil),
-			destination: map[string]any{"cloud": map[string]any{"aws": map[string]any{}}}, portRanges: []any{},
-			wantErrors: []string{`Rule "r", destination.cloud: empty port_ranges (all ports and protocols) is not supported for cloud resources`},
+			destination: map[string]any{"cloud": map[string]any{"aws": map[string]any{}}}, portRanges: testAllPorts,
+			wantErrors: []string{`Rule "r", destination.cloud: port_ranges must be set for cloud resources`},
 		},
-		"empty port_ranges targeting services fails": {
+		"port_ranges unset targeting services fails": {
 			action: "Allow", source: testK8sSide(nil),
-			destination: testK8sSide(map[string]any{"services": []any{"api"}, "workload_selector": nil}), portRanges: []any{},
-			wantErrors: []string{`Rule "r", destination.k8s: empty port_ranges (all ports and protocols) is not supported when targeting services`},
+			destination: testK8sSide(map[string]any{"services": []any{"api"}, "workload_selector": nil}), portRanges: testAllPorts,
+			wantErrors: []string{`Rule "r", destination.k8s: port_ranges must be set when targeting services`},
 		},
 
 		// any placement.
