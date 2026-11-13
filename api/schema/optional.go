@@ -102,17 +102,19 @@ func AttributeIsOptional(attribute any) bool { //nolint: gocyclo
 // NestedAttributes returns the attributes of the object nested in attribute, keyed by name, or nil
 // if attribute has no nested schema. Attributes declared with an object type rather than nested
 // attributes, e.g. a ListAttribute of an ObjectType, have no nested schema.
-func NestedAttributes(attribute any) map[string]any {
+func NestedAttributes(attribute resource_schema.Attribute) map[string]resource_schema.Attribute {
 	nested, ok := attribute.(resource_schema.NestedAttribute)
 	if !ok {
 		return nil
 	}
 
 	attributes := nested.GetNestedObject().GetAttributes()
-	out := make(map[string]any, len(attributes))
+	out := make(map[string]resource_schema.Attribute, len(attributes))
 
 	for name, a := range attributes {
-		out[name] = a
+		if resourceAttribute, ok := a.(resource_schema.Attribute); ok {
+			out[name] = resourceAttribute
+		}
 	}
 
 	return out
@@ -121,15 +123,14 @@ func NestedAttributes(attribute any) map[string]any {
 // NestedScalarIsOptional returns whether a scalar field of a nested object should be optional in
 // gRPC messages, so that an unset value round-trips as null rather than as its zero value. attrSchema
 // is the field's schema, or nil if the object has no nested schema.
-func NestedScalarIsOptional(attrSchema any) bool {
-	a, ok := attrSchema.(resource_schema.Attribute)
-	if !ok {
+func NestedScalarIsOptional(attrSchema resource_schema.Attribute) bool {
+	if attrSchema == nil {
 		return false
 	}
 
-	switch a.GetType().(type) {
+	switch attrSchema.GetType().(type) {
 	case basetypes.BoolType, basetypes.Float64Type, basetypes.Int64Type, basetypes.StringType:
-		return AttributeIsOptional(a)
+		return AttributeIsOptional(attrSchema)
 	default:
 		return false
 	}

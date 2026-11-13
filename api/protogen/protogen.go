@@ -10,6 +10,7 @@ import (
 	"text/template" // nosemgrep: go.lang.security.audit.xss.import-text-template.import-text-template
 
 	"github.com/hashicorp/terraform-plugin-framework/attr"
+	resource_schema "github.com/hashicorp/terraform-plugin-framework/resource/schema"
 	"github.com/hashicorp/terraform-plugin-framework/types"
 	"github.com/hashicorp/terraform-plugin-framework/types/basetypes"
 	"github.com/illumio/terraform-provider-illumio-cloudsecure/api/schema"
@@ -261,7 +262,7 @@ func GenerateGRPCAPISpec(dst io.Writer, src schema.Schema, tagger *apiSpecTagger
 
 // terraformAttributeTypeToProtoType converts a Terraform attribute type into the corresponding Protocol Buffer type, and optionally additional Protocol Buffer messages that represent nested types.
 // attrSchema is the attribute's schema, or nil if it has none (e.g. a field of an object type); it is used to tell which nested fields are optional.
-func terraformAttributeTypeToProtoType(messageNamePrefix, attrName string, attrType attr.Type, attrSchema any, tagger *apiSpecTagger) (explicitlyRepeated, implicitlyRepeated bool, protoType string, nestedMessage *message, err error) {
+func terraformAttributeTypeToProtoType(messageNamePrefix, attrName string, attrType attr.Type, attrSchema resource_schema.Attribute, tagger *apiSpecTagger) (explicitlyRepeated, implicitlyRepeated bool, protoType string, nestedMessage *message, err error) {
 	switch v := attrType.(type) {
 	case basetypes.BoolType:
 		return false, false, "bool", nil, nil
@@ -286,7 +287,7 @@ func terraformAttributeTypeToProtoType(messageNamePrefix, attrName string, attrT
 }
 
 // terraformRepeatedAttributeTypeToProtoType converts a Terraform explicitly repeated attribute type into the corresponding Protocol Buffer type, and optionally additional Protocol Buffer messages that represent nested types.
-func terraformRepeatedAttributeTypeToProtoType(messageNamePrefix, attrName string, elementType attr.Type, attrSchema any, tagger *apiSpecTagger) (explicitlyRepeated, implicitlyRepeated bool, protoType string, nestedMessage *message, err error) {
+func terraformRepeatedAttributeTypeToProtoType(messageNamePrefix, attrName string, elementType attr.Type, attrSchema resource_schema.Attribute, tagger *apiSpecTagger) (explicitlyRepeated, implicitlyRepeated bool, protoType string, nestedMessage *message, err error) {
 	elemProtoType, elemMessage, err := terraformCollectionAttributeTypeToProtoType(messageNamePrefix, attrName, elementType, attrSchema, tagger)
 	if err != nil {
 		return false, false, "", nil, fmt.Errorf("unsupported element type %s: %w", elementType.String(), err)
@@ -296,7 +297,7 @@ func terraformRepeatedAttributeTypeToProtoType(messageNamePrefix, attrName strin
 }
 
 // terraformMapAttributeTypeToProtoType converts a Terraform MapAttribute into a Protocol Buffer map type.
-func terraformMapAttributeTypeToProtoType(messageNamePrefix, attrName string, elementType attr.Type, attrSchema any, tagger *apiSpecTagger) (explicitlyRepeated, implicitlyRepeated bool, protoType string, nestedMessage *message, err error) {
+func terraformMapAttributeTypeToProtoType(messageNamePrefix, attrName string, elementType attr.Type, attrSchema resource_schema.Attribute, tagger *apiSpecTagger) (explicitlyRepeated, implicitlyRepeated bool, protoType string, nestedMessage *message, err error) {
 	elemProtoType, elemMessage, err := terraformCollectionAttributeTypeToProtoType(messageNamePrefix, attrName, elementType, attrSchema, tagger)
 	if err != nil {
 		return false, false, "", nil, fmt.Errorf("unsupported element type %s: %w", elementType.String(), err)
@@ -309,7 +310,7 @@ func terraformMapAttributeTypeToProtoType(messageNamePrefix, attrName string, el
 }
 
 // terraformCollectionAttributeTypeToProtoType converts a Terraform collection attribute type into the corresponding Protocol Buffer type, and optionally additional Protocol Buffer messages that represent nested types.
-func terraformCollectionAttributeTypeToProtoType(messageNamePrefix, attrName string, elementType attr.Type, attrSchema any, tagger *apiSpecTagger) (protoType string, nestedMessage *message, err error) {
+func terraformCollectionAttributeTypeToProtoType(messageNamePrefix, attrName string, elementType attr.Type, attrSchema resource_schema.Attribute, tagger *apiSpecTagger) (protoType string, nestedMessage *message, err error) {
 	// For nested collections (List of Lists, Set of Sets, etc.), use a distinct name for the inner element.
 	// This ensures each nesting level gets a unique message name instead of repeating the same name.
 	// E.g., Set{Set{Object}} produces "Items" (wrapper) and "ItemsElem" (object) instead of "Items" and "Items".
@@ -354,7 +355,7 @@ func terraformCollectionAttributeTypeToProtoType(messageNamePrefix, attrName str
 }
 
 // terraformObjectAttributeTypeToProtoType converts a Terraform object attribute into a Protocol Buffer message type.
-func terraformObjectAttributeTypeToProtoType(messageNamePrefix, attrName string, obj types.ObjectType, attrSchema any, tagger *apiSpecTagger) (explicitlyRepeated, implicitlyRepeated bool, protoType string, nestedMessage *message, err error) {
+func terraformObjectAttributeTypeToProtoType(messageNamePrefix, attrName string, obj types.ObjectType, attrSchema resource_schema.Attribute, tagger *apiSpecTagger) (explicitlyRepeated, implicitlyRepeated bool, protoType string, nestedMessage *message, err error) {
 	messageName := schema.ProtoMessageName(attrName)
 
 	newMessage := &message{

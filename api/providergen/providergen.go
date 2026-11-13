@@ -9,6 +9,7 @@ import (
 	"text/template" // nosemgrep: go.lang.security.audit.xss.import-text-template.import-text-template
 
 	"github.com/hashicorp/terraform-plugin-framework/attr"
+	resource_schema "github.com/hashicorp/terraform-plugin-framework/resource/schema"
 	"github.com/hashicorp/terraform-plugin-framework/types"
 	"github.com/hashicorp/terraform-plugin-framework/types/basetypes"
 	"github.com/illumio/terraform-provider-illumio-cloudsecure/api/schema"
@@ -805,7 +806,7 @@ func AddResourceToProviderTemplateData(resource *schema.Resource, data *provider
 
 // TerraformAttributeTypeToProtoType converts a Terraform attribute type into the corresponding Protocol Buffer Golang type.
 // attrSchema is the attribute's schema, or nil if it has none (e.g. a field of an object type); it is used to tell which nested fields are optional.
-func TerraformAttributeTypeToProtoType(nestedMessageNamePrefix, attrName string, attrType attr.Type, attrSchema any) (t fieldType, err error) {
+func TerraformAttributeTypeToProtoType(nestedMessageNamePrefix, attrName string, attrType attr.Type, attrSchema resource_schema.Attribute) (t fieldType, err error) {
 	switch v := attrType.(type) {
 	case basetypes.BoolType:
 		return fieldType{
@@ -888,7 +889,7 @@ func TerraformAttributeTypeToProtoType(nestedMessageNamePrefix, attrName string,
 }
 
 // TerraformObjectAttributeTypeToProtoType converts a Terraform object attribute type into the corresponding Protocol Buffer Golang type.
-func TerraformObjectAttributeTypeToProtoType(nestedMessageNamePrefix, attrName string, object types.ObjectType, attrSchema any) (protoTypeName string, nestedModel *model, err error) {
+func TerraformObjectAttributeTypeToProtoType(nestedMessageNamePrefix, attrName string, object types.ObjectType, attrSchema resource_schema.Attribute) (protoTypeName string, nestedModel *model, err error) {
 	protoAttrName := schema.ProtoMessageName(attrName)
 	fields := make([]field, 0, len(object.AttrTypes))
 	wrappedMessageName := nestedMessageNamePrefix + "_" + protoAttrName
@@ -925,7 +926,7 @@ func TerraformObjectAttributeTypeToProtoType(nestedMessageNamePrefix, attrName s
 
 // TerraformRepeatedAttributeTypeToProtoType converts a Terraform repeated (List/Set) attribute type
 // into the corresponding Protocol Buffer Golang type.
-func TerraformRepeatedAttributeTypeToProtoType(nestedMessageNamePrefix, attrName string, elementType attr.Type, attrSchema any) (protoTypeName string, wrapProtoValueElementExpr, unwrapProtoValueElementExpr *string, elemProtoType fieldType, err error) {
+func TerraformRepeatedAttributeTypeToProtoType(nestedMessageNamePrefix, attrName string, elementType attr.Type, attrSchema resource_schema.Attribute) (protoTypeName string, wrapProtoValueElementExpr, unwrapProtoValueElementExpr *string, elemProtoType fieldType, err error) {
 	camelCasedAttrName := schema.ProtoMessageName(attrName)
 	wrapperMessageName := nestedMessageNamePrefix + "_" + camelCasedAttrName
 

@@ -394,7 +394,7 @@ func (suite *GenerateTestSuite) TestNestedOptionalScalars() {
 		},
 	}
 
-	optionalFields := func(attrSchema any) map[string]bool {
+	optionalFields := func(attrSchema resource_schema.Attribute) map[string]bool {
 		explicitlyRepeated, implicitlyRepeated, protoType, msg, err := terraformAttributeTypeToProtoType("Dummy", "selector", nested.GetType(), attrSchema, newAPISpecTagger())
 		suite.Require().NoError(err)
 		suite.False(explicitlyRepeated)
