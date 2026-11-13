@@ -8,6 +8,7 @@ import (
 
 	datasource_schema "github.com/hashicorp/terraform-plugin-framework/datasource/schema"
 	resource_schema "github.com/hashicorp/terraform-plugin-framework/resource/schema"
+	"github.com/hashicorp/terraform-plugin-framework/types/basetypes"
 )
 
 // AttributeIsOptional returns whether an attribute should be optional in gRPC messages, i.e., whether it is optional with no default value.
@@ -95,5 +96,41 @@ func AttributeIsOptional(attribute any) bool { //nolint: gocyclo
 		return a.Default == nil
 	default:
 		panic(fmt.Sprintf("unknown attribute type: %T", attribute))
+	}
+}
+
+// NestedAttributes returns the attributes of the object nested in attribute, keyed by name, or nil
+// if attribute has no nested schema. Attributes declared with an object type rather than nested
+// attributes, e.g. a ListAttribute of an ObjectType, have no nested schema.
+func NestedAttributes(attribute any) map[string]any {
+	nested, ok := attribute.(resource_schema.NestedAttribute)
+	if !ok {
+		return nil
+	}
+
+	attributes := nested.GetNestedObject().GetAttributes()
+	out := make(map[string]any, len(attributes))
+
+	for name, a := range attributes {
+		out[name] = a
+	}
+
+	return out
+}
+
+// NestedScalarIsOptional returns whether a scalar field of a nested object should be optional in
+// gRPC messages, so that an unset value round-trips as null rather than as its zero value. attrSchema
+// is the field's schema, or nil if the object has no nested schema.
+func NestedScalarIsOptional(attrSchema any) bool {
+	a, ok := attrSchema.(resource_schema.Attribute)
+	if !ok {
+		return false
+	}
+
+	switch a.GetType().(type) {
+	case basetypes.BoolType, basetypes.Float64Type, basetypes.Int64Type, basetypes.StringType:
+		return AttributeIsOptional(a)
+	default:
+		return false
 	}
 }

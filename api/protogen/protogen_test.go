@@ -9,6 +9,7 @@ import (
 
 	"github.com/hashicorp/terraform-plugin-framework/attr"
 	resource_schema "github.com/hashicorp/terraform-plugin-framework/resource/schema"
+	"github.com/hashicorp/terraform-plugin-framework/resource/schema/stringdefault"
 	"github.com/hashicorp/terraform-plugin-framework/types"
 	"github.com/illumio/terraform-provider-illumio-cloudsecure/api/schema"
 	"github.com/illumio/terraform-provider-illumio-cloudsecure/util"
@@ -368,7 +369,7 @@ func (suite *GenerateTestSuite) TestTerraformAttributeTypeToProtoType() { //noli
 		tagger := newAPISpecTagger()
 
 		suite.Run(name, func() {
-			gotExplicitlyRepeated, gotImplicitlyRepeated, gotType, gotMessages, gotErr := terraformAttributeTypeToProtoType("Dummy", fieldName, tc.tfType, tagger)
+			gotExplicitlyRepeated, gotImplicitlyRepeated, gotType, gotMessages, gotErr := terraformAttributeTypeToProtoType("Dummy", fieldName, tc.tfType, nil, tagger)
 			suite.Equal(tc.expectedExplicitlyRepeated, gotExplicitlyRepeated, "Protocol Buffer explicitly repeated flag should match")
 			suite.Equal(tc.expectedImplicitlyRepeated, gotImplicitlyRepeated, "Protocol Buffer implicitly repeated flag should match")
 			suite.Equal(tc.expectedType, gotType, "Protocol Buffer type should match")
@@ -376,6 +377,54 @@ func (suite *GenerateTestSuite) TestTerraformAttributeTypeToProtoType() { //noli
 			suite.Equal(tc.expectedErr, gotErr, "Error should match")
 		})
 	}
+}
+
+func (suite *GenerateTestSuite) TestNestedOptionalScalars() {
+	nested := resource_schema.SingleNestedAttribute{
+		Optional: true,
+		Attributes: map[string]resource_schema.Attribute{
+			"optional_name": resource_schema.StringAttribute{Optional: true},
+			"required_name": resource_schema.StringAttribute{Required: true},
+			"with_default": resource_schema.StringAttribute{
+				Optional: true,
+				Computed: true,
+				Default:  stringdefault.StaticString("x"),
+			},
+			"labels": resource_schema.ListAttribute{Optional: true, ElementType: types.StringType},
+		},
+	}
+
+	optionalFields := func(attrSchema any) map[string]bool {
+		explicitlyRepeated, implicitlyRepeated, protoType, msg, err := terraformAttributeTypeToProtoType("Dummy", "selector", nested.GetType(), attrSchema, newAPISpecTagger())
+		suite.Require().NoError(err)
+		suite.False(explicitlyRepeated)
+		suite.False(implicitlyRepeated)
+		suite.Equal("Selector", protoType)
+		suite.Require().NotNil(msg)
+
+		optional := map[string]bool{}
+		for _, f := range msg.Fields {
+			optional[f.Name] = f.Optional
+		}
+
+		return optional
+	}
+
+	// Only an optional scalar without a default is optional, so that unset round-trips as null.
+	suite.Equal(map[string]bool{
+		"labels":        false,
+		"optional_name": true,
+		"required_name": false,
+		"with_default":  false,
+	}, optionalFields(nested))
+
+	// Without a nested schema, e.g. a list of an object type, no field is optional.
+	suite.Equal(map[string]bool{
+		"labels":        false,
+		"optional_name": false,
+		"required_name": false,
+		"with_default":  false,
+	}, optionalFields(nil))
 }
 
 func (suite *GenerateTestSuite) TestGRPCAPISpecTemplateMessage() { //nolint:maintidx

@@ -76,6 +76,8 @@ func Convert{{.Name}}ToObjectValueFromProto(proto *configv1.{{.Name}}) basetypes
 			"{{$field.AttributeName}}": func() basetypes.{{$field.Type.ModelTypeName}}Value { if proto.{{$field.Name}} == nil { return types.{{$field.Type.ModelTypeName}}Null(types.ObjectType{AttrTypes: GetTypeAttrsFor{{$field.Type.CollectionElementType.NestedModel.Name}}()}) }; return types.{{$field.Type.ModelTypeName}}ValueMust(types.ObjectType{AttrTypes: GetTypeAttrsFor{{$field.Type.CollectionElementType.NestedModel.Name}}()}, elementsIn{{$field.Name}}) }(),
 			{{- else if ne $field.Type.CollectionElementType nil}}
 			"{{$field.AttributeName}}": func() basetypes.{{$field.Type.ModelTypeName}}Value { if proto.{{$field.Name}} == nil { return types.{{$field.Type.ModelTypeName}}Null(types.{{$field.Type.CollectionElementType.ModelTypeName}}Type) }; return types.{{$field.Type.ModelTypeName}}ValueMust(types.{{$field.Type.CollectionElementType.ModelTypeName}}Type, elementsIn{{$field.Name}}) }(),
+			{{- else if $field.Optional}}
+			"{{$field.AttributeName}}": types.{{$field.Type.ModelTypeName}}PointerValue(proto.{{$field.Name}}),
 			{{- else}}
 			"{{$field.AttributeName}}": types.{{$field.Type.ModelTypeName}}Value(proto.{{$field.Name}}),
 			{{- end}}
@@ -144,6 +146,8 @@ func ConvertDataValueTo{{.Name}}Proto(ctx context.Context, dataValue attr.Value)
 	}
 	proto.{{$field.Name}} = pvModel{{$field.Name}}
 	{{- end}}
+	{{- else if $field.Optional}}
+	proto.{{$field.Name}} = pv.{{$field.Name}}.Value{{$field.Type.ModelTypeName}}Pointer()
 	{{- else}}
 	proto.{{$field.Name}} = pv.{{$field.Name}}.Value{{$field.Type.ModelTypeName}}()
 	{{- end}}
