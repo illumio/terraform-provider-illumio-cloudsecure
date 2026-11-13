@@ -373,13 +373,14 @@ resource "illumio-cloudsecure_policy_version" "aws_multi_account_to_vpc" {
 # The "default-deny-ingress" rule denies traffic from any source to the
 # cluster's pods, in the Baseline tier.
 #
-# policy_api on a clusters entry is the network policy API to render for the
-# clusters it selects. Features only one API supports require it, so rules fail
+# policy_api on a clusters entry selects only clusters that provide that
+# network policy API. Features only one API supports require it, so rules fail
 # at plan rather than at provision: ingress from `any` or IP lists and service
 # accounts need "cilium"; priority and the Baseline tier need "aws_vpc", except
-# a Baseline default deny (a Deny to or from `any` on TCP 0-0 and UDP 0-0, all
-# ports). Both APIs support the egress default deny, so "allow-dns" and
-# "default-deny" omit policy_api. The ingress default deny needs "cilium".
+# a Baseline default deny (a Deny to or from `any` on all ports and protocols,
+# written as empty port_ranges). Both APIs support the egress default deny, so
+# "allow-dns" and "default-deny" omit policy_api. The ingress default deny
+# needs "cilium".
 
 variable "k8s_cluster_id" {
   type        = string
@@ -436,10 +437,8 @@ resource "illumio-cloudsecure_policy_version" "k8s_default_deny" {
         any = {}
       }
 
-      port_ranges = [
-        { protocol = "TCP", from_port = 0, to_port = 0 },
-        { protocol = "UDP", from_port = 0, to_port = 0 },
-      ]
+      # Empty port_ranges means all ports and protocols.
+      port_ranges = []
     }
 
     "default-deny-ingress" = {
@@ -458,10 +457,8 @@ resource "illumio-cloudsecure_policy_version" "k8s_default_deny" {
         }
       }
 
-      port_ranges = [
-        { protocol = "TCP", from_port = 0, to_port = 0 },
-        { protocol = "UDP", from_port = 0, to_port = 0 },
-      ]
+      # Empty port_ranges means all ports and protocols.
+      port_ranges = []
     }
   }
 }

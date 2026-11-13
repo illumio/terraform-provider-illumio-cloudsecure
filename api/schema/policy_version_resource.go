@@ -163,8 +163,8 @@ func clusterProviderAttributes(accountName, accountDescription, scopeName, scope
 
 // clusterSelectorAttributes is shared between source and destination k8s selectors.
 var clusterSelectorAttributes = resource_schema.ListNestedAttribute{
-	Description: "List of K8s cluster selectors. Each entry selects one or more clusters by `id`, `aws`, `gcp`, `azure`, or `oci`. " +
-		"A cluster matching any entry matches (OR logic). If an entry sets `policy_api`, every cluster it selects must run it, or provisioning fails.",
+	Description: "List of K8s cluster selectors. Each entry selects one or more clusters. A cluster matching any entry matches (OR logic). " +
+		"A cluster matches an entry if it matches one of `id`, `aws`, `gcp`, `azure`, or `oci`, _and_ the optional `policy_api`.",
 	Required: true,
 	Validators: []validator.List{
 		listvalidator.SizeAtLeast(1),
@@ -256,8 +256,8 @@ var clusterSelectorAttributes = resource_schema.ListNestedAttribute{
 					),
 				},
 			},
-			// policy_api is the network policy API to render for the clusters the selectors above
-			// pick.
+			// policy_api selects clusters by the network policy API they provide, in conjunction with
+			// the selectors above.
 			"policy_api": clusterPolicyAPIAttribute,
 		},
 	},
@@ -846,9 +846,10 @@ var (
 									},
 								},
 								"port_ranges": resource_schema.ListAttribute{
-									MarkdownDescription: "List of port ranges for the rule. The `protocol` of each port range must be `TCP` or `UDP`.",
-									Required:            true,
-									ElementType:         PortRange,
+									MarkdownDescription: "List of port ranges for the rule. The `protocol` of each port range must be `TCP` or `UDP`. " +
+										"An empty list means all ports and all protocols; it is not supported for rules with a `cloud` side or that target `services`.",
+									Required:    true,
+									ElementType: PortRange,
 									Validators: []validator.List{
 										portRangeProtocolValidator{},
 									},
