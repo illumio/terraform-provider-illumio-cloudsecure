@@ -10947,6 +10947,7 @@ func ConvertDataValueToPolicyVersion_RulesProto(ctx context.Context, dataValue a
 }
 
 type PolicyVersion_Rules_Destination struct {
+	Any           types.Object `tfsdk:"any"`
 	Cloud         types.Object `tfsdk:"cloud"`
 	Fqdns         types.Object `tfsdk:"fqdns"`
 	IllumioLabels types.Object `tfsdk:"illumio_labels"`
@@ -10956,6 +10957,9 @@ type PolicyVersion_Rules_Destination struct {
 
 func GetTypeAttrsForPolicyVersion_Rules_Destination() map[string]attr.Type {
 	return map[string]attr.Type{
+		"any": types.ObjectType{
+			AttrTypes: GetTypeAttrsForPolicyVersion_Rules_Destination_Any(),
+		},
 		"cloud": types.ObjectType{
 			AttrTypes: GetTypeAttrsForPolicyVersion_Rules_Destination_Cloud(),
 		},
@@ -10981,6 +10985,7 @@ func ConvertPolicyVersion_Rules_DestinationToObjectValueFromProto(proto *configv
 	return types.ObjectValueMust(
 		GetTypeAttrsForPolicyVersion_Rules_Destination(),
 		map[string]attr.Value{
+			"any":            ConvertPolicyVersion_Rules_Destination_AnyToObjectValueFromProto(proto.Any),
 			"cloud":          ConvertPolicyVersion_Rules_Destination_CloudToObjectValueFromProto(proto.Cloud),
 			"fqdns":          ConvertPolicyVersion_Rules_Destination_FqdnsToObjectValueFromProto(proto.Fqdns),
 			"illumio_labels": ConvertPolicyVersion_Rules_Destination_IllumioLabelsToObjectValueFromProto(proto.IllumioLabels),
@@ -11000,6 +11005,12 @@ func ConvertDataValueToPolicyVersion_Rules_DestinationProto(ctx context.Context,
 		return nil, diags
 	}
 	proto := &configv1.PolicyVersion_Rules_Destination{}
+	pvModelAny, dvDiagsAny := ConvertDataValueToPolicyVersion_Rules_Destination_AnyProto(ctx, pv.Any)
+	diags.Append(dvDiagsAny...)
+	if diags.HasError() {
+		return nil, diags
+	}
+	proto.Any = pvModelAny
 	pvModelCloud, dvDiagsCloud := ConvertDataValueToPolicyVersion_Rules_Destination_CloudProto(ctx, pv.Cloud)
 	diags.Append(dvDiagsCloud...)
 	if diags.HasError() {
@@ -11030,6 +11041,36 @@ func ConvertDataValueToPolicyVersion_Rules_DestinationProto(ctx context.Context,
 		return nil, diags
 	}
 	proto.K8S = pvModelK8S
+	return proto, diags
+}
+
+type PolicyVersion_Rules_Destination_Any struct {
+}
+
+func GetTypeAttrsForPolicyVersion_Rules_Destination_Any() map[string]attr.Type {
+	return map[string]attr.Type{}
+}
+
+func ConvertPolicyVersion_Rules_Destination_AnyToObjectValueFromProto(proto *configv1.PolicyVersion_Rules_Destination_Any) basetypes.ObjectValue {
+	if proto == nil {
+		return types.ObjectNull(GetTypeAttrsForPolicyVersion_Rules_Destination_Any())
+	}
+	return types.ObjectValueMust(
+		GetTypeAttrsForPolicyVersion_Rules_Destination_Any(),
+		map[string]attr.Value{},
+	)
+}
+
+func ConvertDataValueToPolicyVersion_Rules_Destination_AnyProto(ctx context.Context, dataValue attr.Value) (*configv1.PolicyVersion_Rules_Destination_Any, diag.Diagnostics) {
+	if dataValue.IsNull() || dataValue.IsUnknown() {
+		return nil, nil
+	}
+	pv := PolicyVersion_Rules_Destination_Any{}
+	diags := tfsdk.ValueAs(ctx, dataValue, &pv)
+	if diags.HasError() {
+		return nil, diags
+	}
+	proto := &configv1.PolicyVersion_Rules_Destination_Any{}
 	return proto, diags
 }
 
@@ -11925,7 +11966,9 @@ type PolicyVersion_Rules_Destination_K8S struct {
 	Gateways          types.List   `tfsdk:"gateways"`
 	Ingresses         types.List   `tfsdk:"ingresses"`
 	NamespaceSelector types.Object `tfsdk:"namespace_selector"`
+	Priority          types.Int64  `tfsdk:"priority"`
 	Services          types.List   `tfsdk:"services"`
+	Tier              types.String `tfsdk:"tier"`
 	WorkloadSelector  types.Object `tfsdk:"workload_selector"`
 }
 
@@ -11939,7 +11982,9 @@ func GetTypeAttrsForPolicyVersion_Rules_Destination_K8S() map[string]attr.Type {
 		"namespace_selector": types.ObjectType{
 			AttrTypes: GetTypeAttrsForPolicyVersion_Rules_Destination_K8S_NamespaceSelector(),
 		},
+		"priority": types.Int64Type,
 		"services": types.ListType{ElemType: types.StringType},
+		"tier":     types.StringType,
 		"workload_selector": types.ObjectType{
 			AttrTypes: GetTypeAttrsForPolicyVersion_Rules_Destination_K8S_WorkloadSelector(),
 		},
@@ -11988,12 +12033,14 @@ func ConvertPolicyVersion_Rules_Destination_K8SToObjectValueFromProto(proto *con
 				return types.ListValueMust(types.StringType, elementsInIngresses)
 			}(),
 			"namespace_selector": ConvertPolicyVersion_Rules_Destination_K8S_NamespaceSelectorToObjectValueFromProto(proto.NamespaceSelector),
+			"priority":           types.Int64Value(proto.Priority),
 			"services": func() basetypes.ListValue {
 				if proto.Services == nil {
 					return types.ListNull(types.StringType)
 				}
 				return types.ListValueMust(types.StringType, elementsInServices)
 			}(),
+			"tier":              types.StringValue(proto.Tier),
 			"workload_selector": ConvertPolicyVersion_Rules_Destination_K8S_WorkloadSelectorToObjectValueFromProto(proto.WorkloadSelector),
 		},
 	)
@@ -12039,6 +12086,7 @@ func ConvertDataValueToPolicyVersion_Rules_Destination_K8SProto(ctx context.Cont
 		return nil, diags
 	}
 	proto.NamespaceSelector = pvModelNamespaceSelector
+	proto.Priority = pv.Priority.ValueInt64()
 	var pvModelServices []string
 	dvDiagsServices := pv.Services.ElementsAs(ctx, &pvModelServices, false)
 	diags.Append(dvDiagsServices...)
@@ -12046,6 +12094,7 @@ func ConvertDataValueToPolicyVersion_Rules_Destination_K8SProto(ctx context.Cont
 		return nil, diags
 	}
 	proto.Services = pvModelServices
+	proto.Tier = pv.Tier.ValueString()
 	pvModelWorkloadSelector, dvDiagsWorkloadSelector := ConvertDataValueToPolicyVersion_Rules_Destination_K8S_WorkloadSelectorProto(ctx, pv.WorkloadSelector)
 	diags.Append(dvDiagsWorkloadSelector...)
 	if diags.HasError() {
@@ -12056,11 +12105,12 @@ func ConvertDataValueToPolicyVersion_Rules_Destination_K8SProto(ctx context.Cont
 }
 
 type PolicyVersion_Rules_Destination_K8S_Clusters struct {
-	Id    types.String `tfsdk:"id"`
-	Aws   types.Object `tfsdk:"aws"`
-	Azure types.Object `tfsdk:"azure"`
-	Gcp   types.Object `tfsdk:"gcp"`
-	Oci   types.Object `tfsdk:"oci"`
+	Id        types.String `tfsdk:"id"`
+	Aws       types.Object `tfsdk:"aws"`
+	Azure     types.Object `tfsdk:"azure"`
+	Gcp       types.Object `tfsdk:"gcp"`
+	Oci       types.Object `tfsdk:"oci"`
+	PolicyApi types.String `tfsdk:"policy_api"`
 }
 
 func GetTypeAttrsForPolicyVersion_Rules_Destination_K8S_Clusters() map[string]attr.Type {
@@ -12078,6 +12128,7 @@ func GetTypeAttrsForPolicyVersion_Rules_Destination_K8S_Clusters() map[string]at
 		"oci": types.ObjectType{
 			AttrTypes: GetTypeAttrsForPolicyVersion_Rules_Destination_K8S_Clusters_Oci(),
 		},
+		"policy_api": types.StringType,
 	}
 }
 
@@ -12088,11 +12139,12 @@ func ConvertPolicyVersion_Rules_Destination_K8S_ClustersToObjectValueFromProto(p
 	return types.ObjectValueMust(
 		GetTypeAttrsForPolicyVersion_Rules_Destination_K8S_Clusters(),
 		map[string]attr.Value{
-			"id":    types.StringPointerValue(proto.Id),
-			"aws":   ConvertPolicyVersion_Rules_Destination_K8S_Clusters_AwsToObjectValueFromProto(proto.Aws),
-			"azure": ConvertPolicyVersion_Rules_Destination_K8S_Clusters_AzureToObjectValueFromProto(proto.Azure),
-			"gcp":   ConvertPolicyVersion_Rules_Destination_K8S_Clusters_GcpToObjectValueFromProto(proto.Gcp),
-			"oci":   ConvertPolicyVersion_Rules_Destination_K8S_Clusters_OciToObjectValueFromProto(proto.Oci),
+			"id":         types.StringPointerValue(proto.Id),
+			"aws":        ConvertPolicyVersion_Rules_Destination_K8S_Clusters_AwsToObjectValueFromProto(proto.Aws),
+			"azure":      ConvertPolicyVersion_Rules_Destination_K8S_Clusters_AzureToObjectValueFromProto(proto.Azure),
+			"gcp":        ConvertPolicyVersion_Rules_Destination_K8S_Clusters_GcpToObjectValueFromProto(proto.Gcp),
+			"oci":        ConvertPolicyVersion_Rules_Destination_K8S_Clusters_OciToObjectValueFromProto(proto.Oci),
+			"policy_api": types.StringPointerValue(proto.PolicyApi),
 		},
 	)
 }
@@ -12132,6 +12184,7 @@ func ConvertDataValueToPolicyVersion_Rules_Destination_K8S_ClustersProto(ctx con
 		return nil, diags
 	}
 	proto.Oci = pvModelOci
+	proto.PolicyApi = pv.PolicyApi.ValueStringPointer()
 	return proto, diags
 }
 
@@ -13525,6 +13578,7 @@ func ConvertDataValueToPolicyVersion_Rules_PortRangesProto(ctx context.Context, 
 }
 
 type PolicyVersion_Rules_Source struct {
+	Any           types.Object `tfsdk:"any"`
 	Cloud         types.Object `tfsdk:"cloud"`
 	IllumioLabels types.Object `tfsdk:"illumio_labels"`
 	IpLists       types.Object `tfsdk:"ip_lists"`
@@ -13533,6 +13587,9 @@ type PolicyVersion_Rules_Source struct {
 
 func GetTypeAttrsForPolicyVersion_Rules_Source() map[string]attr.Type {
 	return map[string]attr.Type{
+		"any": types.ObjectType{
+			AttrTypes: GetTypeAttrsForPolicyVersion_Rules_Source_Any(),
+		},
 		"cloud": types.ObjectType{
 			AttrTypes: GetTypeAttrsForPolicyVersion_Rules_Source_Cloud(),
 		},
@@ -13555,6 +13612,7 @@ func ConvertPolicyVersion_Rules_SourceToObjectValueFromProto(proto *configv1.Pol
 	return types.ObjectValueMust(
 		GetTypeAttrsForPolicyVersion_Rules_Source(),
 		map[string]attr.Value{
+			"any":            ConvertPolicyVersion_Rules_Source_AnyToObjectValueFromProto(proto.Any),
 			"cloud":          ConvertPolicyVersion_Rules_Source_CloudToObjectValueFromProto(proto.Cloud),
 			"illumio_labels": ConvertPolicyVersion_Rules_Source_IllumioLabelsToObjectValueFromProto(proto.IllumioLabels),
 			"ip_lists":       ConvertPolicyVersion_Rules_Source_IpListsToObjectValueFromProto(proto.IpLists),
@@ -13573,6 +13631,12 @@ func ConvertDataValueToPolicyVersion_Rules_SourceProto(ctx context.Context, data
 		return nil, diags
 	}
 	proto := &configv1.PolicyVersion_Rules_Source{}
+	pvModelAny, dvDiagsAny := ConvertDataValueToPolicyVersion_Rules_Source_AnyProto(ctx, pv.Any)
+	diags.Append(dvDiagsAny...)
+	if diags.HasError() {
+		return nil, diags
+	}
+	proto.Any = pvModelAny
 	pvModelCloud, dvDiagsCloud := ConvertDataValueToPolicyVersion_Rules_Source_CloudProto(ctx, pv.Cloud)
 	diags.Append(dvDiagsCloud...)
 	if diags.HasError() {
@@ -13597,6 +13661,36 @@ func ConvertDataValueToPolicyVersion_Rules_SourceProto(ctx context.Context, data
 		return nil, diags
 	}
 	proto.K8S = pvModelK8S
+	return proto, diags
+}
+
+type PolicyVersion_Rules_Source_Any struct {
+}
+
+func GetTypeAttrsForPolicyVersion_Rules_Source_Any() map[string]attr.Type {
+	return map[string]attr.Type{}
+}
+
+func ConvertPolicyVersion_Rules_Source_AnyToObjectValueFromProto(proto *configv1.PolicyVersion_Rules_Source_Any) basetypes.ObjectValue {
+	if proto == nil {
+		return types.ObjectNull(GetTypeAttrsForPolicyVersion_Rules_Source_Any())
+	}
+	return types.ObjectValueMust(
+		GetTypeAttrsForPolicyVersion_Rules_Source_Any(),
+		map[string]attr.Value{},
+	)
+}
+
+func ConvertDataValueToPolicyVersion_Rules_Source_AnyProto(ctx context.Context, dataValue attr.Value) (*configv1.PolicyVersion_Rules_Source_Any, diag.Diagnostics) {
+	if dataValue.IsNull() || dataValue.IsUnknown() {
+		return nil, nil
+	}
+	pv := PolicyVersion_Rules_Source_Any{}
+	diags := tfsdk.ValueAs(ctx, dataValue, &pv)
+	if diags.HasError() {
+		return nil, diags
+	}
+	proto := &configv1.PolicyVersion_Rules_Source_Any{}
 	return proto, diags
 }
 
@@ -14439,6 +14533,8 @@ func ConvertDataValueToPolicyVersion_Rules_Source_IpListsProto(ctx context.Conte
 type PolicyVersion_Rules_Source_K8S struct {
 	Clusters          types.List   `tfsdk:"clusters"`
 	NamespaceSelector types.Object `tfsdk:"namespace_selector"`
+	Priority          types.Int64  `tfsdk:"priority"`
+	Tier              types.String `tfsdk:"tier"`
 	WorkloadSelector  types.Object `tfsdk:"workload_selector"`
 }
 
@@ -14450,6 +14546,8 @@ func GetTypeAttrsForPolicyVersion_Rules_Source_K8S() map[string]attr.Type {
 		"namespace_selector": types.ObjectType{
 			AttrTypes: GetTypeAttrsForPolicyVersion_Rules_Source_K8S_NamespaceSelector(),
 		},
+		"priority": types.Int64Type,
+		"tier":     types.StringType,
 		"workload_selector": types.ObjectType{
 			AttrTypes: GetTypeAttrsForPolicyVersion_Rules_Source_K8S_WorkloadSelector(),
 		},
@@ -14474,6 +14572,8 @@ func ConvertPolicyVersion_Rules_Source_K8SToObjectValueFromProto(proto *configv1
 				return types.ListValueMust(types.ObjectType{AttrTypes: GetTypeAttrsForPolicyVersion_Rules_Source_K8S_Clusters()}, elementsInClusters)
 			}(),
 			"namespace_selector": ConvertPolicyVersion_Rules_Source_K8S_NamespaceSelectorToObjectValueFromProto(proto.NamespaceSelector),
+			"priority":           types.Int64Value(proto.Priority),
+			"tier":               types.StringValue(proto.Tier),
 			"workload_selector":  ConvertPolicyVersion_Rules_Source_K8S_WorkloadSelectorToObjectValueFromProto(proto.WorkloadSelector),
 		},
 	)
@@ -14505,6 +14605,8 @@ func ConvertDataValueToPolicyVersion_Rules_Source_K8SProto(ctx context.Context, 
 		return nil, diags
 	}
 	proto.NamespaceSelector = pvModelNamespaceSelector
+	proto.Priority = pv.Priority.ValueInt64()
+	proto.Tier = pv.Tier.ValueString()
 	pvModelWorkloadSelector, dvDiagsWorkloadSelector := ConvertDataValueToPolicyVersion_Rules_Source_K8S_WorkloadSelectorProto(ctx, pv.WorkloadSelector)
 	diags.Append(dvDiagsWorkloadSelector...)
 	if diags.HasError() {
@@ -14515,11 +14617,12 @@ func ConvertDataValueToPolicyVersion_Rules_Source_K8SProto(ctx context.Context, 
 }
 
 type PolicyVersion_Rules_Source_K8S_Clusters struct {
-	Id    types.String `tfsdk:"id"`
-	Aws   types.Object `tfsdk:"aws"`
-	Azure types.Object `tfsdk:"azure"`
-	Gcp   types.Object `tfsdk:"gcp"`
-	Oci   types.Object `tfsdk:"oci"`
+	Id        types.String `tfsdk:"id"`
+	Aws       types.Object `tfsdk:"aws"`
+	Azure     types.Object `tfsdk:"azure"`
+	Gcp       types.Object `tfsdk:"gcp"`
+	Oci       types.Object `tfsdk:"oci"`
+	PolicyApi types.String `tfsdk:"policy_api"`
 }
 
 func GetTypeAttrsForPolicyVersion_Rules_Source_K8S_Clusters() map[string]attr.Type {
@@ -14537,6 +14640,7 @@ func GetTypeAttrsForPolicyVersion_Rules_Source_K8S_Clusters() map[string]attr.Ty
 		"oci": types.ObjectType{
 			AttrTypes: GetTypeAttrsForPolicyVersion_Rules_Source_K8S_Clusters_Oci(),
 		},
+		"policy_api": types.StringType,
 	}
 }
 
@@ -14547,11 +14651,12 @@ func ConvertPolicyVersion_Rules_Source_K8S_ClustersToObjectValueFromProto(proto 
 	return types.ObjectValueMust(
 		GetTypeAttrsForPolicyVersion_Rules_Source_K8S_Clusters(),
 		map[string]attr.Value{
-			"id":    types.StringPointerValue(proto.Id),
-			"aws":   ConvertPolicyVersion_Rules_Source_K8S_Clusters_AwsToObjectValueFromProto(proto.Aws),
-			"azure": ConvertPolicyVersion_Rules_Source_K8S_Clusters_AzureToObjectValueFromProto(proto.Azure),
-			"gcp":   ConvertPolicyVersion_Rules_Source_K8S_Clusters_GcpToObjectValueFromProto(proto.Gcp),
-			"oci":   ConvertPolicyVersion_Rules_Source_K8S_Clusters_OciToObjectValueFromProto(proto.Oci),
+			"id":         types.StringPointerValue(proto.Id),
+			"aws":        ConvertPolicyVersion_Rules_Source_K8S_Clusters_AwsToObjectValueFromProto(proto.Aws),
+			"azure":      ConvertPolicyVersion_Rules_Source_K8S_Clusters_AzureToObjectValueFromProto(proto.Azure),
+			"gcp":        ConvertPolicyVersion_Rules_Source_K8S_Clusters_GcpToObjectValueFromProto(proto.Gcp),
+			"oci":        ConvertPolicyVersion_Rules_Source_K8S_Clusters_OciToObjectValueFromProto(proto.Oci),
+			"policy_api": types.StringPointerValue(proto.PolicyApi),
 		},
 	)
 }
@@ -14591,6 +14696,7 @@ func ConvertDataValueToPolicyVersion_Rules_Source_K8S_ClustersProto(ctx context.
 		return nil, diags
 	}
 	proto.Oci = pvModelOci
+	proto.PolicyApi = pv.PolicyApi.ValueStringPointer()
 	return proto, diags
 }
 

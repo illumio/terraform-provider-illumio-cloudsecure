@@ -4,8 +4,10 @@
 package schema
 
 import (
+	"context"
 	"fmt"
 	"maps"
+	"strings"
 
 	"github.com/hashicorp/terraform-plugin-framework-validators/listvalidator"
 	"github.com/hashicorp/terraform-plugin-framework-validators/objectvalidator"
@@ -161,8 +163,12 @@ func clusterProviderAttributes(accountName, accountDescription, scopeName, scope
 
 // clusterSelectorAttributes is shared between source and destination k8s selectors.
 var clusterSelectorAttributes = resource_schema.ListNestedAttribute{
-	Description: "List of K8s cluster selectors. Each entry selects one or more clusters. A cluster matching any entry matches (OR logic).",
-	Required:    true,
+	Description: "List of K8s cluster selectors. Each entry selects one or more clusters. A cluster matching any entry matches (OR logic). " +
+		"A cluster matches an entry if it matches one of `id`, `aws`, `gcp`, `azure`, or `oci`, _and_ the optional `policy_api`.",
+	Required: true,
+	Validators: []validator.List{
+		listvalidator.SizeAtLeast(1),
+	},
 	NestedObject: resource_schema.NestedAttributeObject{
 		Attributes: map[string]resource_schema.Attribute{
 			"id": resource_schema.StringAttribute{
@@ -250,12 +256,15 @@ var clusterSelectorAttributes = resource_schema.ListNestedAttribute{
 					),
 				},
 			},
+			// policy_api selects clusters by the network policy API they provide, in conjunction with
+			// the selectors above.
+			"policy_api": clusterPolicyAPIAttribute,
 		},
 	},
 }
 
 // k8sSourceSelectorAttributes is used for source.k8s. Source always targets pods.
-var k8sSourceSelectorAttributes = map[string]resource_schema.Attribute{
+var k8sSourceSelectorAttributes = withK8sPolicyAttributes(map[string]resource_schema.Attribute{
 	"clusters": clusterSelectorAttributes,
 	"namespace_selector": resource_schema.SingleNestedAttribute{
 		Description: "Label selector for K8s namespaces. Use empty {} to match all namespaces.",
@@ -267,11 +276,11 @@ var k8sSourceSelectorAttributes = map[string]resource_schema.Attribute{
 		Required:    true,
 		Attributes:  workloadSelectorAttributes,
 	},
-}
+})
 
 // k8sDestinationSelectorAttributes is used for destination.k8s.
 // Destination supports targeting pods, Services, Ingresses, or Gateways (exactly one).
-var k8sDestinationSelectorAttributes = map[string]resource_schema.Attribute{
+var k8sDestinationSelectorAttributes = withK8sPolicyAttributes(map[string]resource_schema.Attribute{
 	"clusters": clusterSelectorAttributes,
 	"namespace_selector": resource_schema.SingleNestedAttribute{
 		Description: "Label selector for K8s namespaces. Use empty {} to match all namespaces.",
@@ -315,7 +324,7 @@ var k8sDestinationSelectorAttributes = map[string]resource_schema.Attribute{
 			listvalidator.SizeAtLeast(1),
 		},
 	},
-}
+})
 
 // ipSelectorAttributes is reused for source.ip_lists and destination.ip_lists.
 var ipSelectorAttributes = map[string]resource_schema.Attribute{
@@ -593,7 +602,8 @@ var illumioLabelsSelectorAttributes = map[string]resource_schema.Attribute{
 var workloadSelectorAttributes = func() map[string]resource_schema.Attribute {
 	m := maps.Clone(labelSelectorAttributes)
 	m["service_accounts"] = resource_schema.ListAttribute{
-		Description: "List of K8s service account names. Workload must run with one of these service accounts (OR logic).",
+		MarkdownDescription: "List of K8s service account names. Workload must run with one of these service accounts (OR logic). " +
+			"Requires `policy_api = \"cilium\"` on every clusters entry of this side.",
 		Optional:    true,
 		ElementType: types.StringType,
 	}
@@ -645,6 +655,9 @@ var (
 							mapplanmodifier.RequiresReplace(),
 						},
 						NestedObject: resource_schema.NestedAttributeObject{
+							Validators: []validator.Object{
+								policyVersionRuleValidator{},
+							},
 							Attributes: map[string]resource_schema.Attribute{
 								"action": resource_schema.StringAttribute{
 									Description: "Action to take: Allow or Deny.",
@@ -667,19 +680,21 @@ var (
 													path.MatchRelative().AtParent().AtName("ip_lists"),
 													path.MatchRelative().AtParent().AtName("cloud"),
 													path.MatchRelative().AtParent().AtName("illumio_labels"),
+													path.MatchRelative().AtParent().AtName("any"),
 												),
 											},
 										},
 										"ip_lists": resource_schema.SingleNestedAttribute{
-											Description: "IP list reference selector.",
-											Optional:    true,
-											Attributes:  ipSelectorAttributes,
+											MarkdownDescription: "IP list reference selector. When the destination is `k8s`, requires `policy_api = \"cilium\"` on every destination clusters entry.",
+											Optional:            true,
+											Attributes:          ipSelectorAttributes,
 											Validators: []validator.Object{
 												objectvalidator.ExactlyOneOf(
 													path.MatchRelative().AtParent().AtName("k8s"),
 													path.MatchRelative().AtParent().AtName("ip_lists"),
 													path.MatchRelative().AtParent().AtName("cloud"),
 													path.MatchRelative().AtParent().AtName("illumio_labels"),
+													path.MatchRelative().AtParent().AtName("any"),
 												),
 											},
 										},
@@ -693,6 +708,7 @@ var (
 													path.MatchRelative().AtParent().AtName("ip_lists"),
 													path.MatchRelative().AtParent().AtName("cloud"),
 													path.MatchRelative().AtParent().AtName("illumio_labels"),
+													path.MatchRelative().AtParent().AtName("any"),
 												),
 											},
 										},
@@ -706,6 +722,22 @@ var (
 													path.MatchRelative().AtParent().AtName("ip_lists"),
 													path.MatchRelative().AtParent().AtName("cloud"),
 													path.MatchRelative().AtParent().AtName("illumio_labels"),
+													path.MatchRelative().AtParent().AtName("any"),
+												),
+											},
+										},
+										"any": resource_schema.SingleNestedAttribute{
+											MarkdownDescription: "Matches all sources. Must be an empty object: `any = {}`. Not valid when the destination is also `any`. " +
+												"When the destination is `k8s`, requires `policy_api = \"cilium\"` on every destination clusters entry.",
+											Optional:   true,
+											Attributes: map[string]resource_schema.Attribute{},
+											Validators: []validator.Object{
+												objectvalidator.ExactlyOneOf(
+													path.MatchRelative().AtParent().AtName("k8s"),
+													path.MatchRelative().AtParent().AtName("ip_lists"),
+													path.MatchRelative().AtParent().AtName("cloud"),
+													path.MatchRelative().AtParent().AtName("illumio_labels"),
+													path.MatchRelative().AtParent().AtName("any"),
 												),
 											},
 										},
@@ -726,6 +758,7 @@ var (
 													path.MatchRelative().AtParent().AtName("fqdns"),
 													path.MatchRelative().AtParent().AtName("cloud"),
 													path.MatchRelative().AtParent().AtName("illumio_labels"),
+													path.MatchRelative().AtParent().AtName("any"),
 												),
 											},
 										},
@@ -740,6 +773,7 @@ var (
 													path.MatchRelative().AtParent().AtName("fqdns"),
 													path.MatchRelative().AtParent().AtName("cloud"),
 													path.MatchRelative().AtParent().AtName("illumio_labels"),
+													path.MatchRelative().AtParent().AtName("any"),
 												),
 											},
 										},
@@ -760,6 +794,7 @@ var (
 													path.MatchRelative().AtParent().AtName("fqdns"),
 													path.MatchRelative().AtParent().AtName("cloud"),
 													path.MatchRelative().AtParent().AtName("illumio_labels"),
+													path.MatchRelative().AtParent().AtName("any"),
 												),
 											},
 										},
@@ -774,6 +809,7 @@ var (
 													path.MatchRelative().AtParent().AtName("fqdns"),
 													path.MatchRelative().AtParent().AtName("cloud"),
 													path.MatchRelative().AtParent().AtName("illumio_labels"),
+													path.MatchRelative().AtParent().AtName("any"),
 												),
 											},
 										},
@@ -788,15 +824,38 @@ var (
 													path.MatchRelative().AtParent().AtName("fqdns"),
 													path.MatchRelative().AtParent().AtName("cloud"),
 													path.MatchRelative().AtParent().AtName("illumio_labels"),
+													path.MatchRelative().AtParent().AtName("any"),
+												),
+											},
+										},
+										"any": resource_schema.SingleNestedAttribute{
+											MarkdownDescription: "Matches all destinations. Must be an empty object: `any = {}`. Not valid when the source is also `any`.",
+											Optional:            true,
+											Attributes:          map[string]resource_schema.Attribute{},
+											Validators: []validator.Object{
+												objectvalidator.ExactlyOneOf(
+													path.MatchRelative().AtParent().AtName("k8s"),
+													path.MatchRelative().AtParent().AtName("ip_lists"),
+													path.MatchRelative().AtParent().AtName("fqdns"),
+													path.MatchRelative().AtParent().AtName("cloud"),
+													path.MatchRelative().AtParent().AtName("illumio_labels"),
+													path.MatchRelative().AtParent().AtName("any"),
 												),
 											},
 										},
 									},
 								},
 								"port_ranges": resource_schema.ListAttribute{
-									Description: "List of port ranges for the rule.",
-									Required:    true,
+									MarkdownDescription: "List of port ranges for the rule. The `protocol` of each port range must be `TCP` or `UDP`. " +
+										"When not set, the rule applies to all ports and all protocols. It must be set for rules with a `cloud` side " +
+										"or that target `services`.",
+									Optional:    true,
 									ElementType: PortRange,
+									Validators: []validator.List{
+										// An empty list would be read back as null, so all ports is written by leaving port_ranges unset.
+										listvalidator.SizeAtLeast(1),
+										portRangeProtocolValidator{},
+									},
 								},
 							},
 						},
@@ -809,3 +868,42 @@ var (
 		},
 	}
 )
+
+// portRangeProtocolValidator checks that the protocol of every port range is TCP or UDP, the only
+// protocols the backend accepts. Like the backend, it ignores case.
+type portRangeProtocolValidator struct{}
+
+var _ validator.List = portRangeProtocolValidator{}
+
+func (portRangeProtocolValidator) Description(_ context.Context) string {
+	return "the protocol of each port range must be TCP or UDP"
+}
+
+func (v portRangeProtocolValidator) MarkdownDescription(ctx context.Context) string {
+	return v.Description(ctx)
+}
+
+func (portRangeProtocolValidator) ValidateList(_ context.Context, req validator.ListRequest, resp *validator.ListResponse) {
+	if req.ConfigValue.IsNull() || req.ConfigValue.IsUnknown() {
+		return
+	}
+
+	for i, element := range req.ConfigValue.Elements() {
+		portRange, ok := knownAttributes(element)
+		if !ok {
+			continue
+		}
+
+		protocol, ok := knownString(portRange["protocol"])
+		if !ok {
+			continue
+		}
+
+		switch strings.ToUpper(protocol) {
+		case "TCP", "UDP":
+		default:
+			resp.Diagnostics.AddAttributeError(req.Path.AtListIndex(i).AtName("protocol"), "Invalid Port Range Protocol",
+				fmt.Sprintf("protocol must be TCP or UDP, got: %q.", protocol))
+		}
+	}
+}
