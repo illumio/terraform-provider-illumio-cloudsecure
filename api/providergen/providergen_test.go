@@ -343,6 +343,19 @@ func (suite *GenerateProviderTestSuite) TestListAndMapNestedAttribute() { //noli
 	suite.Require().NotNil(k8sField.Type.NestedModel, "k8s should have NestedModel")
 	suite.Equal("PolicyVersion_Spec_Rules_Destination_K8S", k8sField.Type.NestedModel.Name, "k8s model name")
 
+	// A nested scalar is optional only if its schema says so, so that an unset value
+	// round-trips as null rather than as its zero value.
+	k8sModel := k8sField.Type.NestedModel
+	suite.Require().Len(k8sModel.Fields, 1)
+	suite.Equal("cluster_name", k8sModel.Fields[0].AttributeName)
+	suite.True(k8sModel.Fields[0].Optional, "optional nested scalar cluster_name should be optional")
+
+	for _, f := range rulesModel.Fields {
+		if f.AttributeName == "action" {
+			suite.False(f.Optional, "required nested scalar action should not be optional")
+		}
+	}
+
 	// Find the "rules_by_name" field inside spec
 	var rulesByNameField *field
 
@@ -438,6 +451,13 @@ func ConvertPolicyVersion_SpecToObjectValueFromProto(proto *configv1.PolicyVersi
 }
 `
 	suite.Contains(output, expectedConvertToObjectValue)
+
+	// An optional nested scalar converts through a pointer so that null round-trips; a required one
+	// converts by value.
+	suite.Contains(output, `"cluster_name": types.StringPointerValue(proto.ClusterName),`)
+	suite.Contains(output, `proto.ClusterName = pv.ClusterName.ValueStringPointer()`)
+	suite.Contains(output, `"action": types.StringValue(proto.Action),`)
+	suite.Contains(output, `proto.Action = pv.Action.ValueString()`)
 
 	// Verify ConvertDataValueToProto uses Elements() and iterates to convert each element back to proto
 	expectedConvertDataValue := `

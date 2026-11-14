@@ -12344,12 +12344,12 @@ func (x *PolicyVersion_Rules_Destination_IllumioLabels_Labels) GetValues() []str
 
 type PolicyVersion_Rules_Destination_K8S_Clusters struct {
 	state         protoimpl.MessageState                              `protogen:"open.v1"`
-	Id            string                                              `protobuf:"bytes,5,opt,name=id,proto3" json:"id,omitempty"`
+	Id            *string                                             `protobuf:"bytes,5,opt,name=id,proto3,oneof" json:"id,omitempty"`
 	Aws           *PolicyVersion_Rules_Destination_K8S_Clusters_Aws   `protobuf:"bytes,1,opt,name=aws,proto3" json:"aws,omitempty"`
 	Azure         *PolicyVersion_Rules_Destination_K8S_Clusters_Azure `protobuf:"bytes,2,opt,name=azure,proto3" json:"azure,omitempty"`
 	Gcp           *PolicyVersion_Rules_Destination_K8S_Clusters_Gcp   `protobuf:"bytes,3,opt,name=gcp,proto3" json:"gcp,omitempty"`
 	Oci           *PolicyVersion_Rules_Destination_K8S_Clusters_Oci   `protobuf:"bytes,4,opt,name=oci,proto3" json:"oci,omitempty"`
-	PolicyApi     string                                              `protobuf:"bytes,6,opt,name=policy_api,json=policyApi,proto3" json:"policy_api,omitempty"`
+	PolicyApi     *string                                             `protobuf:"bytes,6,opt,name=policy_api,json=policyApi,proto3,oneof" json:"policy_api,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -12385,8 +12385,8 @@ func (*PolicyVersion_Rules_Destination_K8S_Clusters) Descriptor() ([]byte, []int
 }
 
 func (x *PolicyVersion_Rules_Destination_K8S_Clusters) GetId() string {
-	if x != nil {
-		return x.Id
+	if x != nil && x.Id != nil {
+		return *x.Id
 	}
 	return ""
 }
@@ -12420,8 +12420,8 @@ func (x *PolicyVersion_Rules_Destination_K8S_Clusters) GetOci() *PolicyVersion_R
 }
 
 func (x *PolicyVersion_Rules_Destination_K8S_Clusters) GetPolicyApi() string {
-	if x != nil {
-		return x.PolicyApi
+	if x != nil && x.PolicyApi != nil {
+		return *x.PolicyApi
 	}
 	return ""
 }
@@ -12540,11 +12540,11 @@ func (x *PolicyVersion_Rules_Destination_K8S_WorkloadSelector) GetServiceAccount
 
 type PolicyVersion_Rules_Destination_K8S_Clusters_Aws struct {
 	state            protoimpl.MessageState                                             `protogen:"open.v1"`
-	AccountId        string                                                             `protobuf:"bytes,1,opt,name=account_id,json=accountId,proto3" json:"account_id,omitempty"`
+	AccountId        *string                                                            `protobuf:"bytes,1,opt,name=account_id,json=accountId,proto3,oneof" json:"account_id,omitempty"`
 	AccountIdMatch   *PolicyVersion_Rules_Destination_K8S_Clusters_Aws_AccountIdMatch   `protobuf:"bytes,4,opt,name=account_id_match,json=accountIdMatch,proto3" json:"account_id_match,omitempty"`
-	ClusterName      string                                                             `protobuf:"bytes,2,opt,name=cluster_name,json=clusterName,proto3" json:"cluster_name,omitempty"`
+	ClusterName      *string                                                            `protobuf:"bytes,2,opt,name=cluster_name,json=clusterName,proto3,oneof" json:"cluster_name,omitempty"`
 	ClusterNameMatch *PolicyVersion_Rules_Destination_K8S_Clusters_Aws_ClusterNameMatch `protobuf:"bytes,5,opt,name=cluster_name_match,json=clusterNameMatch,proto3" json:"cluster_name_match,omitempty"`
-	Region           string                                                             `protobuf:"bytes,3,opt,name=region,proto3" json:"region,omitempty"`
+	Region           *string                                                            `protobuf:"bytes,3,opt,name=region,proto3,oneof" json:"region,omitempty"`
 	RegionMatch      *PolicyVersion_Rules_Destination_K8S_Clusters_Aws_RegionMatch      `protobuf:"bytes,6,opt,name=region_match,json=regionMatch,proto3" json:"region_match,omitempty"`
 	unknownFields    protoimpl.UnknownFields
 	sizeCache        protoimpl.SizeCache
@@ -12581,8 +12581,8 @@ func (*PolicyVersion_Rules_Destination_K8S_Clusters_Aws) Descriptor() ([]byte, [
 }
 
 func (x *PolicyVersion_Rules_Destination_K8S_Clusters_Aws) GetAccountId() string {
-	if x != nil {
-		return x.AccountId
+	if x != nil && x.AccountId != nil {
+		return *x.AccountId
 	}
 	return ""
 }
@@ -12595,8 +12595,8 @@ func (x *PolicyVersion_Rules_Destination_K8S_Clusters_Aws) GetAccountIdMatch() *
 }
 
 func (x *PolicyVersion_Rules_Destination_K8S_Clusters_Aws) GetClusterName() string {
-	if x != nil {
-		return x.ClusterName
+	if x != nil && x.ClusterName != nil {
+		return *x.ClusterName
 	}
 	return ""
 }
@@ -12609,8 +12609,8 @@ func (x *PolicyVersion_Rules_Destination_K8S_Clusters_Aws) GetClusterNameMatch()
 }
 
 func (x *PolicyVersion_Rules_Destination_K8S_Clusters_Aws) GetRegion() string {
-	if x != nil {
-		return x.Region
+	if x != nil && x.Region != nil {
+		return *x.Region
 	}
 	return ""
 }
@@ -12624,11 +12624,11 @@ func (x *PolicyVersion_Rules_Destination_K8S_Clusters_Aws) GetRegionMatch() *Pol
 
 type PolicyVersion_Rules_Destination_K8S_Clusters_Azure struct {
 	state               protoimpl.MessageState                                                  `protogen:"open.v1"`
-	ClusterName         string                                                                  `protobuf:"bytes,1,opt,name=cluster_name,json=clusterName,proto3" json:"cluster_name,omitempty"`
+	ClusterName         *string                                                                 `protobuf:"bytes,1,opt,name=cluster_name,json=clusterName,proto3,oneof" json:"cluster_name,omitempty"`
 	ClusterNameMatch    *PolicyVersion_Rules_Destination_K8S_Clusters_Azure_ClusterNameMatch    `protobuf:"bytes,4,opt,name=cluster_name_match,json=clusterNameMatch,proto3" json:"cluster_name_match,omitempty"`
-	ResourceGroup       string                                                                  `protobuf:"bytes,2,opt,name=resource_group,json=resourceGroup,proto3" json:"resource_group,omitempty"`
+	ResourceGroup       *string                                                                 `protobuf:"bytes,2,opt,name=resource_group,json=resourceGroup,proto3,oneof" json:"resource_group,omitempty"`
 	ResourceGroupMatch  *PolicyVersion_Rules_Destination_K8S_Clusters_Azure_ResourceGroupMatch  `protobuf:"bytes,5,opt,name=resource_group_match,json=resourceGroupMatch,proto3" json:"resource_group_match,omitempty"`
-	SubscriptionId      string                                                                  `protobuf:"bytes,3,opt,name=subscription_id,json=subscriptionId,proto3" json:"subscription_id,omitempty"`
+	SubscriptionId      *string                                                                 `protobuf:"bytes,3,opt,name=subscription_id,json=subscriptionId,proto3,oneof" json:"subscription_id,omitempty"`
 	SubscriptionIdMatch *PolicyVersion_Rules_Destination_K8S_Clusters_Azure_SubscriptionIdMatch `protobuf:"bytes,6,opt,name=subscription_id_match,json=subscriptionIdMatch,proto3" json:"subscription_id_match,omitempty"`
 	unknownFields       protoimpl.UnknownFields
 	sizeCache           protoimpl.SizeCache
@@ -12665,8 +12665,8 @@ func (*PolicyVersion_Rules_Destination_K8S_Clusters_Azure) Descriptor() ([]byte,
 }
 
 func (x *PolicyVersion_Rules_Destination_K8S_Clusters_Azure) GetClusterName() string {
-	if x != nil {
-		return x.ClusterName
+	if x != nil && x.ClusterName != nil {
+		return *x.ClusterName
 	}
 	return ""
 }
@@ -12679,8 +12679,8 @@ func (x *PolicyVersion_Rules_Destination_K8S_Clusters_Azure) GetClusterNameMatch
 }
 
 func (x *PolicyVersion_Rules_Destination_K8S_Clusters_Azure) GetResourceGroup() string {
-	if x != nil {
-		return x.ResourceGroup
+	if x != nil && x.ResourceGroup != nil {
+		return *x.ResourceGroup
 	}
 	return ""
 }
@@ -12693,8 +12693,8 @@ func (x *PolicyVersion_Rules_Destination_K8S_Clusters_Azure) GetResourceGroupMat
 }
 
 func (x *PolicyVersion_Rules_Destination_K8S_Clusters_Azure) GetSubscriptionId() string {
-	if x != nil {
-		return x.SubscriptionId
+	if x != nil && x.SubscriptionId != nil {
+		return *x.SubscriptionId
 	}
 	return ""
 }
@@ -12708,11 +12708,11 @@ func (x *PolicyVersion_Rules_Destination_K8S_Clusters_Azure) GetSubscriptionIdMa
 
 type PolicyVersion_Rules_Destination_K8S_Clusters_Gcp struct {
 	state            protoimpl.MessageState                                             `protogen:"open.v1"`
-	ClusterName      string                                                             `protobuf:"bytes,1,opt,name=cluster_name,json=clusterName,proto3" json:"cluster_name,omitempty"`
+	ClusterName      *string                                                            `protobuf:"bytes,1,opt,name=cluster_name,json=clusterName,proto3,oneof" json:"cluster_name,omitempty"`
 	ClusterNameMatch *PolicyVersion_Rules_Destination_K8S_Clusters_Gcp_ClusterNameMatch `protobuf:"bytes,4,opt,name=cluster_name_match,json=clusterNameMatch,proto3" json:"cluster_name_match,omitempty"`
-	Location         string                                                             `protobuf:"bytes,2,opt,name=location,proto3" json:"location,omitempty"`
+	Location         *string                                                            `protobuf:"bytes,2,opt,name=location,proto3,oneof" json:"location,omitempty"`
 	LocationMatch    *PolicyVersion_Rules_Destination_K8S_Clusters_Gcp_LocationMatch    `protobuf:"bytes,5,opt,name=location_match,json=locationMatch,proto3" json:"location_match,omitempty"`
-	ProjectId        string                                                             `protobuf:"bytes,3,opt,name=project_id,json=projectId,proto3" json:"project_id,omitempty"`
+	ProjectId        *string                                                            `protobuf:"bytes,3,opt,name=project_id,json=projectId,proto3,oneof" json:"project_id,omitempty"`
 	ProjectIdMatch   *PolicyVersion_Rules_Destination_K8S_Clusters_Gcp_ProjectIdMatch   `protobuf:"bytes,6,opt,name=project_id_match,json=projectIdMatch,proto3" json:"project_id_match,omitempty"`
 	unknownFields    protoimpl.UnknownFields
 	sizeCache        protoimpl.SizeCache
@@ -12749,8 +12749,8 @@ func (*PolicyVersion_Rules_Destination_K8S_Clusters_Gcp) Descriptor() ([]byte, [
 }
 
 func (x *PolicyVersion_Rules_Destination_K8S_Clusters_Gcp) GetClusterName() string {
-	if x != nil {
-		return x.ClusterName
+	if x != nil && x.ClusterName != nil {
+		return *x.ClusterName
 	}
 	return ""
 }
@@ -12763,8 +12763,8 @@ func (x *PolicyVersion_Rules_Destination_K8S_Clusters_Gcp) GetClusterNameMatch()
 }
 
 func (x *PolicyVersion_Rules_Destination_K8S_Clusters_Gcp) GetLocation() string {
-	if x != nil {
-		return x.Location
+	if x != nil && x.Location != nil {
+		return *x.Location
 	}
 	return ""
 }
@@ -12777,8 +12777,8 @@ func (x *PolicyVersion_Rules_Destination_K8S_Clusters_Gcp) GetLocationMatch() *P
 }
 
 func (x *PolicyVersion_Rules_Destination_K8S_Clusters_Gcp) GetProjectId() string {
-	if x != nil {
-		return x.ProjectId
+	if x != nil && x.ProjectId != nil {
+		return *x.ProjectId
 	}
 	return ""
 }
@@ -12792,11 +12792,11 @@ func (x *PolicyVersion_Rules_Destination_K8S_Clusters_Gcp) GetProjectIdMatch() *
 
 type PolicyVersion_Rules_Destination_K8S_Clusters_Oci struct {
 	state              protoimpl.MessageState                                               `protogen:"open.v1"`
-	ClusterName        string                                                               `protobuf:"bytes,1,opt,name=cluster_name,json=clusterName,proto3" json:"cluster_name,omitempty"`
+	ClusterName        *string                                                              `protobuf:"bytes,1,opt,name=cluster_name,json=clusterName,proto3,oneof" json:"cluster_name,omitempty"`
 	ClusterNameMatch   *PolicyVersion_Rules_Destination_K8S_Clusters_Oci_ClusterNameMatch   `protobuf:"bytes,4,opt,name=cluster_name_match,json=clusterNameMatch,proto3" json:"cluster_name_match,omitempty"`
-	CompartmentId      string                                                               `protobuf:"bytes,2,opt,name=compartment_id,json=compartmentId,proto3" json:"compartment_id,omitempty"`
+	CompartmentId      *string                                                              `protobuf:"bytes,2,opt,name=compartment_id,json=compartmentId,proto3,oneof" json:"compartment_id,omitempty"`
 	CompartmentIdMatch *PolicyVersion_Rules_Destination_K8S_Clusters_Oci_CompartmentIdMatch `protobuf:"bytes,5,opt,name=compartment_id_match,json=compartmentIdMatch,proto3" json:"compartment_id_match,omitempty"`
-	Region             string                                                               `protobuf:"bytes,3,opt,name=region,proto3" json:"region,omitempty"`
+	Region             *string                                                              `protobuf:"bytes,3,opt,name=region,proto3,oneof" json:"region,omitempty"`
 	RegionMatch        *PolicyVersion_Rules_Destination_K8S_Clusters_Oci_RegionMatch        `protobuf:"bytes,6,opt,name=region_match,json=regionMatch,proto3" json:"region_match,omitempty"`
 	unknownFields      protoimpl.UnknownFields
 	sizeCache          protoimpl.SizeCache
@@ -12833,8 +12833,8 @@ func (*PolicyVersion_Rules_Destination_K8S_Clusters_Oci) Descriptor() ([]byte, [
 }
 
 func (x *PolicyVersion_Rules_Destination_K8S_Clusters_Oci) GetClusterName() string {
-	if x != nil {
-		return x.ClusterName
+	if x != nil && x.ClusterName != nil {
+		return *x.ClusterName
 	}
 	return ""
 }
@@ -12847,8 +12847,8 @@ func (x *PolicyVersion_Rules_Destination_K8S_Clusters_Oci) GetClusterNameMatch()
 }
 
 func (x *PolicyVersion_Rules_Destination_K8S_Clusters_Oci) GetCompartmentId() string {
-	if x != nil {
-		return x.CompartmentId
+	if x != nil && x.CompartmentId != nil {
+		return *x.CompartmentId
 	}
 	return ""
 }
@@ -12861,8 +12861,8 @@ func (x *PolicyVersion_Rules_Destination_K8S_Clusters_Oci) GetCompartmentIdMatch
 }
 
 func (x *PolicyVersion_Rules_Destination_K8S_Clusters_Oci) GetRegion() string {
-	if x != nil {
-		return x.Region
+	if x != nil && x.Region != nil {
+		return *x.Region
 	}
 	return ""
 }
@@ -14636,12 +14636,12 @@ func (x *PolicyVersion_Rules_Source_IllumioLabels_Labels) GetValues() []string {
 
 type PolicyVersion_Rules_Source_K8S_Clusters struct {
 	state         protoimpl.MessageState                         `protogen:"open.v1"`
-	Id            string                                         `protobuf:"bytes,5,opt,name=id,proto3" json:"id,omitempty"`
+	Id            *string                                        `protobuf:"bytes,5,opt,name=id,proto3,oneof" json:"id,omitempty"`
 	Aws           *PolicyVersion_Rules_Source_K8S_Clusters_Aws   `protobuf:"bytes,1,opt,name=aws,proto3" json:"aws,omitempty"`
 	Azure         *PolicyVersion_Rules_Source_K8S_Clusters_Azure `protobuf:"bytes,2,opt,name=azure,proto3" json:"azure,omitempty"`
 	Gcp           *PolicyVersion_Rules_Source_K8S_Clusters_Gcp   `protobuf:"bytes,3,opt,name=gcp,proto3" json:"gcp,omitempty"`
 	Oci           *PolicyVersion_Rules_Source_K8S_Clusters_Oci   `protobuf:"bytes,4,opt,name=oci,proto3" json:"oci,omitempty"`
-	PolicyApi     string                                         `protobuf:"bytes,6,opt,name=policy_api,json=policyApi,proto3" json:"policy_api,omitempty"`
+	PolicyApi     *string                                        `protobuf:"bytes,6,opt,name=policy_api,json=policyApi,proto3,oneof" json:"policy_api,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -14677,8 +14677,8 @@ func (*PolicyVersion_Rules_Source_K8S_Clusters) Descriptor() ([]byte, []int) {
 }
 
 func (x *PolicyVersion_Rules_Source_K8S_Clusters) GetId() string {
-	if x != nil {
-		return x.Id
+	if x != nil && x.Id != nil {
+		return *x.Id
 	}
 	return ""
 }
@@ -14712,8 +14712,8 @@ func (x *PolicyVersion_Rules_Source_K8S_Clusters) GetOci() *PolicyVersion_Rules_
 }
 
 func (x *PolicyVersion_Rules_Source_K8S_Clusters) GetPolicyApi() string {
-	if x != nil {
-		return x.PolicyApi
+	if x != nil && x.PolicyApi != nil {
+		return *x.PolicyApi
 	}
 	return ""
 }
@@ -14832,11 +14832,11 @@ func (x *PolicyVersion_Rules_Source_K8S_WorkloadSelector) GetServiceAccounts() [
 
 type PolicyVersion_Rules_Source_K8S_Clusters_Aws struct {
 	state            protoimpl.MessageState                                        `protogen:"open.v1"`
-	AccountId        string                                                        `protobuf:"bytes,1,opt,name=account_id,json=accountId,proto3" json:"account_id,omitempty"`
+	AccountId        *string                                                       `protobuf:"bytes,1,opt,name=account_id,json=accountId,proto3,oneof" json:"account_id,omitempty"`
 	AccountIdMatch   *PolicyVersion_Rules_Source_K8S_Clusters_Aws_AccountIdMatch   `protobuf:"bytes,4,opt,name=account_id_match,json=accountIdMatch,proto3" json:"account_id_match,omitempty"`
-	ClusterName      string                                                        `protobuf:"bytes,2,opt,name=cluster_name,json=clusterName,proto3" json:"cluster_name,omitempty"`
+	ClusterName      *string                                                       `protobuf:"bytes,2,opt,name=cluster_name,json=clusterName,proto3,oneof" json:"cluster_name,omitempty"`
 	ClusterNameMatch *PolicyVersion_Rules_Source_K8S_Clusters_Aws_ClusterNameMatch `protobuf:"bytes,5,opt,name=cluster_name_match,json=clusterNameMatch,proto3" json:"cluster_name_match,omitempty"`
-	Region           string                                                        `protobuf:"bytes,3,opt,name=region,proto3" json:"region,omitempty"`
+	Region           *string                                                       `protobuf:"bytes,3,opt,name=region,proto3,oneof" json:"region,omitempty"`
 	RegionMatch      *PolicyVersion_Rules_Source_K8S_Clusters_Aws_RegionMatch      `protobuf:"bytes,6,opt,name=region_match,json=regionMatch,proto3" json:"region_match,omitempty"`
 	unknownFields    protoimpl.UnknownFields
 	sizeCache        protoimpl.SizeCache
@@ -14873,8 +14873,8 @@ func (*PolicyVersion_Rules_Source_K8S_Clusters_Aws) Descriptor() ([]byte, []int)
 }
 
 func (x *PolicyVersion_Rules_Source_K8S_Clusters_Aws) GetAccountId() string {
-	if x != nil {
-		return x.AccountId
+	if x != nil && x.AccountId != nil {
+		return *x.AccountId
 	}
 	return ""
 }
@@ -14887,8 +14887,8 @@ func (x *PolicyVersion_Rules_Source_K8S_Clusters_Aws) GetAccountIdMatch() *Polic
 }
 
 func (x *PolicyVersion_Rules_Source_K8S_Clusters_Aws) GetClusterName() string {
-	if x != nil {
-		return x.ClusterName
+	if x != nil && x.ClusterName != nil {
+		return *x.ClusterName
 	}
 	return ""
 }
@@ -14901,8 +14901,8 @@ func (x *PolicyVersion_Rules_Source_K8S_Clusters_Aws) GetClusterNameMatch() *Pol
 }
 
 func (x *PolicyVersion_Rules_Source_K8S_Clusters_Aws) GetRegion() string {
-	if x != nil {
-		return x.Region
+	if x != nil && x.Region != nil {
+		return *x.Region
 	}
 	return ""
 }
@@ -14916,11 +14916,11 @@ func (x *PolicyVersion_Rules_Source_K8S_Clusters_Aws) GetRegionMatch() *PolicyVe
 
 type PolicyVersion_Rules_Source_K8S_Clusters_Azure struct {
 	state               protoimpl.MessageState                                             `protogen:"open.v1"`
-	ClusterName         string                                                             `protobuf:"bytes,1,opt,name=cluster_name,json=clusterName,proto3" json:"cluster_name,omitempty"`
+	ClusterName         *string                                                            `protobuf:"bytes,1,opt,name=cluster_name,json=clusterName,proto3,oneof" json:"cluster_name,omitempty"`
 	ClusterNameMatch    *PolicyVersion_Rules_Source_K8S_Clusters_Azure_ClusterNameMatch    `protobuf:"bytes,4,opt,name=cluster_name_match,json=clusterNameMatch,proto3" json:"cluster_name_match,omitempty"`
-	ResourceGroup       string                                                             `protobuf:"bytes,2,opt,name=resource_group,json=resourceGroup,proto3" json:"resource_group,omitempty"`
+	ResourceGroup       *string                                                            `protobuf:"bytes,2,opt,name=resource_group,json=resourceGroup,proto3,oneof" json:"resource_group,omitempty"`
 	ResourceGroupMatch  *PolicyVersion_Rules_Source_K8S_Clusters_Azure_ResourceGroupMatch  `protobuf:"bytes,5,opt,name=resource_group_match,json=resourceGroupMatch,proto3" json:"resource_group_match,omitempty"`
-	SubscriptionId      string                                                             `protobuf:"bytes,3,opt,name=subscription_id,json=subscriptionId,proto3" json:"subscription_id,omitempty"`
+	SubscriptionId      *string                                                            `protobuf:"bytes,3,opt,name=subscription_id,json=subscriptionId,proto3,oneof" json:"subscription_id,omitempty"`
 	SubscriptionIdMatch *PolicyVersion_Rules_Source_K8S_Clusters_Azure_SubscriptionIdMatch `protobuf:"bytes,6,opt,name=subscription_id_match,json=subscriptionIdMatch,proto3" json:"subscription_id_match,omitempty"`
 	unknownFields       protoimpl.UnknownFields
 	sizeCache           protoimpl.SizeCache
@@ -14957,8 +14957,8 @@ func (*PolicyVersion_Rules_Source_K8S_Clusters_Azure) Descriptor() ([]byte, []in
 }
 
 func (x *PolicyVersion_Rules_Source_K8S_Clusters_Azure) GetClusterName() string {
-	if x != nil {
-		return x.ClusterName
+	if x != nil && x.ClusterName != nil {
+		return *x.ClusterName
 	}
 	return ""
 }
@@ -14971,8 +14971,8 @@ func (x *PolicyVersion_Rules_Source_K8S_Clusters_Azure) GetClusterNameMatch() *P
 }
 
 func (x *PolicyVersion_Rules_Source_K8S_Clusters_Azure) GetResourceGroup() string {
-	if x != nil {
-		return x.ResourceGroup
+	if x != nil && x.ResourceGroup != nil {
+		return *x.ResourceGroup
 	}
 	return ""
 }
@@ -14985,8 +14985,8 @@ func (x *PolicyVersion_Rules_Source_K8S_Clusters_Azure) GetResourceGroupMatch() 
 }
 
 func (x *PolicyVersion_Rules_Source_K8S_Clusters_Azure) GetSubscriptionId() string {
-	if x != nil {
-		return x.SubscriptionId
+	if x != nil && x.SubscriptionId != nil {
+		return *x.SubscriptionId
 	}
 	return ""
 }
@@ -15000,11 +15000,11 @@ func (x *PolicyVersion_Rules_Source_K8S_Clusters_Azure) GetSubscriptionIdMatch()
 
 type PolicyVersion_Rules_Source_K8S_Clusters_Gcp struct {
 	state            protoimpl.MessageState                                        `protogen:"open.v1"`
-	ClusterName      string                                                        `protobuf:"bytes,1,opt,name=cluster_name,json=clusterName,proto3" json:"cluster_name,omitempty"`
+	ClusterName      *string                                                       `protobuf:"bytes,1,opt,name=cluster_name,json=clusterName,proto3,oneof" json:"cluster_name,omitempty"`
 	ClusterNameMatch *PolicyVersion_Rules_Source_K8S_Clusters_Gcp_ClusterNameMatch `protobuf:"bytes,4,opt,name=cluster_name_match,json=clusterNameMatch,proto3" json:"cluster_name_match,omitempty"`
-	Location         string                                                        `protobuf:"bytes,2,opt,name=location,proto3" json:"location,omitempty"`
+	Location         *string                                                       `protobuf:"bytes,2,opt,name=location,proto3,oneof" json:"location,omitempty"`
 	LocationMatch    *PolicyVersion_Rules_Source_K8S_Clusters_Gcp_LocationMatch    `protobuf:"bytes,5,opt,name=location_match,json=locationMatch,proto3" json:"location_match,omitempty"`
-	ProjectId        string                                                        `protobuf:"bytes,3,opt,name=project_id,json=projectId,proto3" json:"project_id,omitempty"`
+	ProjectId        *string                                                       `protobuf:"bytes,3,opt,name=project_id,json=projectId,proto3,oneof" json:"project_id,omitempty"`
 	ProjectIdMatch   *PolicyVersion_Rules_Source_K8S_Clusters_Gcp_ProjectIdMatch   `protobuf:"bytes,6,opt,name=project_id_match,json=projectIdMatch,proto3" json:"project_id_match,omitempty"`
 	unknownFields    protoimpl.UnknownFields
 	sizeCache        protoimpl.SizeCache
@@ -15041,8 +15041,8 @@ func (*PolicyVersion_Rules_Source_K8S_Clusters_Gcp) Descriptor() ([]byte, []int)
 }
 
 func (x *PolicyVersion_Rules_Source_K8S_Clusters_Gcp) GetClusterName() string {
-	if x != nil {
-		return x.ClusterName
+	if x != nil && x.ClusterName != nil {
+		return *x.ClusterName
 	}
 	return ""
 }
@@ -15055,8 +15055,8 @@ func (x *PolicyVersion_Rules_Source_K8S_Clusters_Gcp) GetClusterNameMatch() *Pol
 }
 
 func (x *PolicyVersion_Rules_Source_K8S_Clusters_Gcp) GetLocation() string {
-	if x != nil {
-		return x.Location
+	if x != nil && x.Location != nil {
+		return *x.Location
 	}
 	return ""
 }
@@ -15069,8 +15069,8 @@ func (x *PolicyVersion_Rules_Source_K8S_Clusters_Gcp) GetLocationMatch() *Policy
 }
 
 func (x *PolicyVersion_Rules_Source_K8S_Clusters_Gcp) GetProjectId() string {
-	if x != nil {
-		return x.ProjectId
+	if x != nil && x.ProjectId != nil {
+		return *x.ProjectId
 	}
 	return ""
 }
@@ -15084,11 +15084,11 @@ func (x *PolicyVersion_Rules_Source_K8S_Clusters_Gcp) GetProjectIdMatch() *Polic
 
 type PolicyVersion_Rules_Source_K8S_Clusters_Oci struct {
 	state              protoimpl.MessageState                                          `protogen:"open.v1"`
-	ClusterName        string                                                          `protobuf:"bytes,1,opt,name=cluster_name,json=clusterName,proto3" json:"cluster_name,omitempty"`
+	ClusterName        *string                                                         `protobuf:"bytes,1,opt,name=cluster_name,json=clusterName,proto3,oneof" json:"cluster_name,omitempty"`
 	ClusterNameMatch   *PolicyVersion_Rules_Source_K8S_Clusters_Oci_ClusterNameMatch   `protobuf:"bytes,4,opt,name=cluster_name_match,json=clusterNameMatch,proto3" json:"cluster_name_match,omitempty"`
-	CompartmentId      string                                                          `protobuf:"bytes,2,opt,name=compartment_id,json=compartmentId,proto3" json:"compartment_id,omitempty"`
+	CompartmentId      *string                                                         `protobuf:"bytes,2,opt,name=compartment_id,json=compartmentId,proto3,oneof" json:"compartment_id,omitempty"`
 	CompartmentIdMatch *PolicyVersion_Rules_Source_K8S_Clusters_Oci_CompartmentIdMatch `protobuf:"bytes,5,opt,name=compartment_id_match,json=compartmentIdMatch,proto3" json:"compartment_id_match,omitempty"`
-	Region             string                                                          `protobuf:"bytes,3,opt,name=region,proto3" json:"region,omitempty"`
+	Region             *string                                                         `protobuf:"bytes,3,opt,name=region,proto3,oneof" json:"region,omitempty"`
 	RegionMatch        *PolicyVersion_Rules_Source_K8S_Clusters_Oci_RegionMatch        `protobuf:"bytes,6,opt,name=region_match,json=regionMatch,proto3" json:"region_match,omitempty"`
 	unknownFields      protoimpl.UnknownFields
 	sizeCache          protoimpl.SizeCache
@@ -15125,8 +15125,8 @@ func (*PolicyVersion_Rules_Source_K8S_Clusters_Oci) Descriptor() ([]byte, []int)
 }
 
 func (x *PolicyVersion_Rules_Source_K8S_Clusters_Oci) GetClusterName() string {
-	if x != nil {
-		return x.ClusterName
+	if x != nil && x.ClusterName != nil {
+		return *x.ClusterName
 	}
 	return ""
 }
@@ -15139,8 +15139,8 @@ func (x *PolicyVersion_Rules_Source_K8S_Clusters_Oci) GetClusterNameMatch() *Pol
 }
 
 func (x *PolicyVersion_Rules_Source_K8S_Clusters_Oci) GetCompartmentId() string {
-	if x != nil {
-		return x.CompartmentId
+	if x != nil && x.CompartmentId != nil {
+		return *x.CompartmentId
 	}
 	return ""
 }
@@ -15153,8 +15153,8 @@ func (x *PolicyVersion_Rules_Source_K8S_Clusters_Oci) GetCompartmentIdMatch() *P
 }
 
 func (x *PolicyVersion_Rules_Source_K8S_Clusters_Oci) GetRegion() string {
-	if x != nil {
-		return x.Region
+	if x != nil && x.Region != nil {
+		return *x.Region
 	}
 	return ""
 }
@@ -16905,13 +16905,13 @@ const file_illumio_cloud_config_v1_config_proto_rawDesc = "" +
 	"\x02id\x18\x01 \x01(\tR\x02id\x12*\n" +
 	"\x11policy_version_id\x18\x05 \x01(\tR\x0fpolicyVersionId\".\n" +
 	"\x1cDeletePolicyProvisionRequest\x12\x0e\n" +
-	"\x02id\x18\x01 \x01(\tR\x02id\"\xecq\n" +
+	"\x02id\x18\x01 \x01(\tR\x02id\"\xa2v\n" +
 	"\x13PolicyVersion_Rules\x12\x16\n" +
 	"\x06action\x18\x01 \x01(\tR\x06action\x12Z\n" +
 	"\vdestination\x18\x02 \x01(\v28.illumio.cloud.config.v1.PolicyVersion_Rules.DestinationR\vdestination\x12X\n" +
 	"\vport_ranges\x18\x03 \x03(\v27.illumio.cloud.config.v1.PolicyVersion_Rules.PortRangesR\n" +
 	"portRanges\x12K\n" +
-	"\x06source\x18\x04 \x01(\v23.illumio.cloud.config.v1.PolicyVersion_Rules.SourceR\x06source\x1a\xfb8\n" +
+	"\x06source\x18\x04 \x01(\v23.illumio.cloud.config.v1.PolicyVersion_Rules.SourceR\x06source\x1a\x96;\n" +
 	"\vDestination\x12N\n" +
 	"\x03any\x18\x06 \x01(\v2<.illumio.cloud.config.v1.PolicyVersion_Rules.Destination.AnyR\x03any\x12T\n" +
 	"\x05cloud\x18\x01 \x01(\v2>.illumio.cloud.config.v1.PolicyVersion_Rules.Destination.CloudR\x05cloud\x12T\n" +
@@ -16967,7 +16967,7 @@ const file_illumio_cloud_config_v1_config_proto_rawDesc = "" +
 	"\x03key\x18\x01 \x01(\tR\x03key\x12\x16\n" +
 	"\x06values\x18\x02 \x03(\tR\x06values\x1a\x1b\n" +
 	"\aIpLists\x12\x10\n" +
-	"\x03ids\x18\x02 \x03(\tR\x03ids\x1a\x9c%\n" +
+	"\x03ids\x18\x02 \x03(\tR\x03ids\x1a\xb7'\n" +
 	"\x03K8S\x12a\n" +
 	"\bclusters\x18\x01 \x03(\v2E.illumio.cloud.config.v1.PolicyVersion_Rules.Destination.K8S.ClustersR\bclusters\x12\x1a\n" +
 	"\bgateways\x18\x04 \x03(\tR\bgateways\x12\x1c\n" +
@@ -16976,22 +16976,22 @@ const file_illumio_cloud_config_v1_config_proto_rawDesc = "" +
 	"\bpriority\x18\a \x01(\x03R\bpriority\x12\x1a\n" +
 	"\bservices\x18\x06 \x03(\tR\bservices\x12\x12\n" +
 	"\x04tier\x18\b \x01(\tR\x04tier\x12z\n" +
-	"\x11workload_selector\x18\x03 \x01(\v2M.illumio.cloud.config.v1.PolicyVersion_Rules.Destination.K8S.WorkloadSelectorR\x10workloadSelector\x1a\x9e\x1a\n" +
-	"\bClusters\x12\x0e\n" +
-	"\x02id\x18\x05 \x01(\tR\x02id\x12[\n" +
+	"\x11workload_selector\x18\x03 \x01(\v2M.illumio.cloud.config.v1.PolicyVersion_Rules.Destination.K8S.WorkloadSelectorR\x10workloadSelector\x1a\xb9\x1c\n" +
+	"\bClusters\x12\x13\n" +
+	"\x02id\x18\x05 \x01(\tH\x00R\x02id\x88\x01\x01\x12[\n" +
 	"\x03aws\x18\x01 \x01(\v2I.illumio.cloud.config.v1.PolicyVersion_Rules.Destination.K8S.Clusters.AwsR\x03aws\x12a\n" +
 	"\x05azure\x18\x02 \x01(\v2K.illumio.cloud.config.v1.PolicyVersion_Rules.Destination.K8S.Clusters.AzureR\x05azure\x12[\n" +
 	"\x03gcp\x18\x03 \x01(\v2I.illumio.cloud.config.v1.PolicyVersion_Rules.Destination.K8S.Clusters.GcpR\x03gcp\x12[\n" +
-	"\x03oci\x18\x04 \x01(\v2I.illumio.cloud.config.v1.PolicyVersion_Rules.Destination.K8S.Clusters.OciR\x03oci\x12\x1d\n" +
+	"\x03oci\x18\x04 \x01(\v2I.illumio.cloud.config.v1.PolicyVersion_Rules.Destination.K8S.Clusters.OciR\x03oci\x12\"\n" +
 	"\n" +
-	"policy_api\x18\x06 \x01(\tR\tpolicyApi\x1a\xba\x05\n" +
-	"\x03Aws\x12\x1d\n" +
+	"policy_api\x18\x06 \x01(\tH\x01R\tpolicyApi\x88\x01\x01\x1a\xf4\x05\n" +
+	"\x03Aws\x12\"\n" +
 	"\n" +
-	"account_id\x18\x01 \x01(\tR\taccountId\x12\x82\x01\n" +
-	"\x10account_id_match\x18\x04 \x01(\v2X.illumio.cloud.config.v1.PolicyVersion_Rules.Destination.K8S.Clusters.Aws.AccountIdMatchR\x0eaccountIdMatch\x12!\n" +
-	"\fcluster_name\x18\x02 \x01(\tR\vclusterName\x12\x88\x01\n" +
-	"\x12cluster_name_match\x18\x05 \x01(\v2Z.illumio.cloud.config.v1.PolicyVersion_Rules.Destination.K8S.Clusters.Aws.ClusterNameMatchR\x10clusterNameMatch\x12\x16\n" +
-	"\x06region\x18\x03 \x01(\tR\x06region\x12x\n" +
+	"account_id\x18\x01 \x01(\tH\x00R\taccountId\x88\x01\x01\x12\x82\x01\n" +
+	"\x10account_id_match\x18\x04 \x01(\v2X.illumio.cloud.config.v1.PolicyVersion_Rules.Destination.K8S.Clusters.Aws.AccountIdMatchR\x0eaccountIdMatch\x12&\n" +
+	"\fcluster_name\x18\x02 \x01(\tH\x01R\vclusterName\x88\x01\x01\x12\x88\x01\n" +
+	"\x12cluster_name_match\x18\x05 \x01(\v2Z.illumio.cloud.config.v1.PolicyVersion_Rules.Destination.K8S.Clusters.Aws.ClusterNameMatchR\x10clusterNameMatch\x12\x1b\n" +
+	"\x06region\x18\x03 \x01(\tH\x02R\x06region\x88\x01\x01\x12x\n" +
 	"\fregion_match\x18\x06 \x01(\v2U.illumio.cloud.config.v1.PolicyVersion_Rules.Destination.K8S.Clusters.Aws.RegionMatchR\vregionMatch\x1aD\n" +
 	"\x0eAccountIdMatch\x12\x1a\n" +
 	"\boperator\x18\x01 \x01(\tR\boperator\x12\x16\n" +
@@ -17001,13 +17001,16 @@ const file_illumio_cloud_config_v1_config_proto_rawDesc = "" +
 	"\x06values\x18\x02 \x03(\tR\x06values\x1aA\n" +
 	"\vRegionMatch\x12\x1a\n" +
 	"\boperator\x18\x01 \x01(\tR\boperator\x12\x16\n" +
-	"\x06values\x18\x02 \x03(\tR\x06values\x1a\x8d\x06\n" +
-	"\x05Azure\x12!\n" +
-	"\fcluster_name\x18\x01 \x01(\tR\vclusterName\x12\x8a\x01\n" +
-	"\x12cluster_name_match\x18\x04 \x01(\v2\\.illumio.cloud.config.v1.PolicyVersion_Rules.Destination.K8S.Clusters.Azure.ClusterNameMatchR\x10clusterNameMatch\x12%\n" +
-	"\x0eresource_group\x18\x02 \x01(\tR\rresourceGroup\x12\x90\x01\n" +
-	"\x14resource_group_match\x18\x05 \x01(\v2^.illumio.cloud.config.v1.PolicyVersion_Rules.Destination.K8S.Clusters.Azure.ResourceGroupMatchR\x12resourceGroupMatch\x12'\n" +
-	"\x0fsubscription_id\x18\x03 \x01(\tR\x0esubscriptionId\x12\x93\x01\n" +
+	"\x06values\x18\x02 \x03(\tR\x06valuesB\r\n" +
+	"\v_account_idB\x0f\n" +
+	"\r_cluster_nameB\t\n" +
+	"\a_region\x1a\xd4\x06\n" +
+	"\x05Azure\x12&\n" +
+	"\fcluster_name\x18\x01 \x01(\tH\x00R\vclusterName\x88\x01\x01\x12\x8a\x01\n" +
+	"\x12cluster_name_match\x18\x04 \x01(\v2\\.illumio.cloud.config.v1.PolicyVersion_Rules.Destination.K8S.Clusters.Azure.ClusterNameMatchR\x10clusterNameMatch\x12*\n" +
+	"\x0eresource_group\x18\x02 \x01(\tH\x01R\rresourceGroup\x88\x01\x01\x12\x90\x01\n" +
+	"\x14resource_group_match\x18\x05 \x01(\v2^.illumio.cloud.config.v1.PolicyVersion_Rules.Destination.K8S.Clusters.Azure.ResourceGroupMatchR\x12resourceGroupMatch\x12,\n" +
+	"\x0fsubscription_id\x18\x03 \x01(\tH\x02R\x0esubscriptionId\x88\x01\x01\x12\x93\x01\n" +
 	"\x15subscription_id_match\x18\x06 \x01(\v2_.illumio.cloud.config.v1.PolicyVersion_Rules.Destination.K8S.Clusters.Azure.SubscriptionIdMatchR\x13subscriptionIdMatch\x1aF\n" +
 	"\x10ClusterNameMatch\x12\x1a\n" +
 	"\boperator\x18\x01 \x01(\tR\boperator\x12\x16\n" +
@@ -17017,14 +17020,17 @@ const file_illumio_cloud_config_v1_config_proto_rawDesc = "" +
 	"\x06values\x18\x02 \x03(\tR\x06values\x1aI\n" +
 	"\x13SubscriptionIdMatch\x12\x1a\n" +
 	"\boperator\x18\x01 \x01(\tR\boperator\x12\x16\n" +
-	"\x06values\x18\x02 \x03(\tR\x06values\x1a\xc6\x05\n" +
-	"\x03Gcp\x12!\n" +
-	"\fcluster_name\x18\x01 \x01(\tR\vclusterName\x12\x88\x01\n" +
-	"\x12cluster_name_match\x18\x04 \x01(\v2Z.illumio.cloud.config.v1.PolicyVersion_Rules.Destination.K8S.Clusters.Gcp.ClusterNameMatchR\x10clusterNameMatch\x12\x1a\n" +
-	"\blocation\x18\x02 \x01(\tR\blocation\x12~\n" +
-	"\x0elocation_match\x18\x05 \x01(\v2W.illumio.cloud.config.v1.PolicyVersion_Rules.Destination.K8S.Clusters.Gcp.LocationMatchR\rlocationMatch\x12\x1d\n" +
+	"\x06values\x18\x02 \x03(\tR\x06valuesB\x0f\n" +
+	"\r_cluster_nameB\x11\n" +
+	"\x0f_resource_groupB\x12\n" +
+	"\x10_subscription_id\x1a\x82\x06\n" +
+	"\x03Gcp\x12&\n" +
+	"\fcluster_name\x18\x01 \x01(\tH\x00R\vclusterName\x88\x01\x01\x12\x88\x01\n" +
+	"\x12cluster_name_match\x18\x04 \x01(\v2Z.illumio.cloud.config.v1.PolicyVersion_Rules.Destination.K8S.Clusters.Gcp.ClusterNameMatchR\x10clusterNameMatch\x12\x1f\n" +
+	"\blocation\x18\x02 \x01(\tH\x01R\blocation\x88\x01\x01\x12~\n" +
+	"\x0elocation_match\x18\x05 \x01(\v2W.illumio.cloud.config.v1.PolicyVersion_Rules.Destination.K8S.Clusters.Gcp.LocationMatchR\rlocationMatch\x12\"\n" +
 	"\n" +
-	"project_id\x18\x03 \x01(\tR\tprojectId\x12\x82\x01\n" +
+	"project_id\x18\x03 \x01(\tH\x02R\tprojectId\x88\x01\x01\x12\x82\x01\n" +
 	"\x10project_id_match\x18\x06 \x01(\v2X.illumio.cloud.config.v1.PolicyVersion_Rules.Destination.K8S.Clusters.Gcp.ProjectIdMatchR\x0eprojectIdMatch\x1aF\n" +
 	"\x10ClusterNameMatch\x12\x1a\n" +
 	"\boperator\x18\x01 \x01(\tR\boperator\x12\x16\n" +
@@ -17034,13 +17040,16 @@ const file_illumio_cloud_config_v1_config_proto_rawDesc = "" +
 	"\x06values\x18\x02 \x03(\tR\x06values\x1aD\n" +
 	"\x0eProjectIdMatch\x12\x1a\n" +
 	"\boperator\x18\x01 \x01(\tR\boperator\x12\x16\n" +
-	"\x06values\x18\x02 \x03(\tR\x06values\x1a\xd2\x05\n" +
-	"\x03Oci\x12!\n" +
-	"\fcluster_name\x18\x01 \x01(\tR\vclusterName\x12\x88\x01\n" +
-	"\x12cluster_name_match\x18\x04 \x01(\v2Z.illumio.cloud.config.v1.PolicyVersion_Rules.Destination.K8S.Clusters.Oci.ClusterNameMatchR\x10clusterNameMatch\x12%\n" +
-	"\x0ecompartment_id\x18\x02 \x01(\tR\rcompartmentId\x12\x8e\x01\n" +
-	"\x14compartment_id_match\x18\x05 \x01(\v2\\.illumio.cloud.config.v1.PolicyVersion_Rules.Destination.K8S.Clusters.Oci.CompartmentIdMatchR\x12compartmentIdMatch\x12\x16\n" +
-	"\x06region\x18\x03 \x01(\tR\x06region\x12x\n" +
+	"\x06values\x18\x02 \x03(\tR\x06valuesB\x0f\n" +
+	"\r_cluster_nameB\v\n" +
+	"\t_locationB\r\n" +
+	"\v_project_id\x1a\x90\x06\n" +
+	"\x03Oci\x12&\n" +
+	"\fcluster_name\x18\x01 \x01(\tH\x00R\vclusterName\x88\x01\x01\x12\x88\x01\n" +
+	"\x12cluster_name_match\x18\x04 \x01(\v2Z.illumio.cloud.config.v1.PolicyVersion_Rules.Destination.K8S.Clusters.Oci.ClusterNameMatchR\x10clusterNameMatch\x12*\n" +
+	"\x0ecompartment_id\x18\x02 \x01(\tH\x01R\rcompartmentId\x88\x01\x01\x12\x8e\x01\n" +
+	"\x14compartment_id_match\x18\x05 \x01(\v2\\.illumio.cloud.config.v1.PolicyVersion_Rules.Destination.K8S.Clusters.Oci.CompartmentIdMatchR\x12compartmentIdMatch\x12\x1b\n" +
+	"\x06region\x18\x03 \x01(\tH\x02R\x06region\x88\x01\x01\x12x\n" +
 	"\fregion_match\x18\x06 \x01(\v2U.illumio.cloud.config.v1.PolicyVersion_Rules.Destination.K8S.Clusters.Oci.RegionMatchR\vregionMatch\x1aF\n" +
 	"\x10ClusterNameMatch\x12\x1a\n" +
 	"\boperator\x18\x01 \x01(\tR\boperator\x12\x16\n" +
@@ -17050,7 +17059,12 @@ const file_illumio_cloud_config_v1_config_proto_rawDesc = "" +
 	"\x06values\x18\x02 \x03(\tR\x06values\x1aA\n" +
 	"\vRegionMatch\x12\x1a\n" +
 	"\boperator\x18\x01 \x01(\tR\boperator\x12\x16\n" +
-	"\x06values\x18\x02 \x03(\tR\x06values\x1a\xb2\x03\n" +
+	"\x06values\x18\x02 \x03(\tR\x06valuesB\x0f\n" +
+	"\r_cluster_nameB\x11\n" +
+	"\x0f_compartment_idB\t\n" +
+	"\a_regionB\x05\n" +
+	"\x03_idB\r\n" +
+	"\v_policy_api\x1a\xb2\x03\n" +
 	"\x11NamespaceSelector\x12\x8c\x01\n" +
 	"\x11match_expressions\x18\x01 \x03(\v2_.illumio.cloud.config.v1.PolicyVersion_Rules.Destination.K8S.NamespaceSelector.MatchExpressionsR\x10matchExpressions\x12}\n" +
 	"\fmatch_labels\x18\x02 \x03(\v2Z.illumio.cloud.config.v1.PolicyVersion_Rules.Destination.K8S.NamespaceSelector.MatchLabelsR\vmatchLabels\x1aX\n" +
@@ -17076,7 +17090,7 @@ const file_illumio_cloud_config_v1_config_proto_rawDesc = "" +
 	"PortRanges\x12\x1b\n" +
 	"\tfrom_port\x18\x01 \x01(\x03R\bfromPort\x12\x1a\n" +
 	"\bprotocol\x18\x02 \x01(\tR\bprotocol\x12\x17\n" +
-	"\ato_port\x18\x03 \x01(\x03R\x06toPort\x1a\xdb5\n" +
+	"\ato_port\x18\x03 \x01(\x03R\x06toPort\x1a\xf67\n" +
 	"\x06Source\x12I\n" +
 	"\x03any\x18\x05 \x01(\v27.illumio.cloud.config.v1.PolicyVersion_Rules.Source.AnyR\x03any\x12O\n" +
 	"\x05cloud\x18\x01 \x01(\v29.illumio.cloud.config.v1.PolicyVersion_Rules.Source.CloudR\x05cloud\x12h\n" +
@@ -17129,28 +17143,28 @@ const file_illumio_cloud_config_v1_config_proto_rawDesc = "" +
 	"\x03key\x18\x01 \x01(\tR\x03key\x12\x16\n" +
 	"\x06values\x18\x02 \x03(\tR\x06values\x1a\x1b\n" +
 	"\aIpLists\x12\x10\n" +
-	"\x03ids\x18\x02 \x03(\tR\x03ids\x1a\xd1#\n" +
+	"\x03ids\x18\x02 \x03(\tR\x03ids\x1a\xec%\n" +
 	"\x03K8S\x12\\\n" +
 	"\bclusters\x18\x01 \x03(\v2@.illumio.cloud.config.v1.PolicyVersion_Rules.Source.K8S.ClustersR\bclusters\x12x\n" +
 	"\x12namespace_selector\x18\x02 \x01(\v2I.illumio.cloud.config.v1.PolicyVersion_Rules.Source.K8S.NamespaceSelectorR\x11namespaceSelector\x12\x1a\n" +
 	"\bpriority\x18\x04 \x01(\x03R\bpriority\x12\x12\n" +
 	"\x04tier\x18\x05 \x01(\tR\x04tier\x12u\n" +
-	"\x11workload_selector\x18\x03 \x01(\v2H.illumio.cloud.config.v1.PolicyVersion_Rules.Source.K8S.WorkloadSelectorR\x10workloadSelector\x1a\xcc\x19\n" +
-	"\bClusters\x12\x0e\n" +
-	"\x02id\x18\x05 \x01(\tR\x02id\x12V\n" +
+	"\x11workload_selector\x18\x03 \x01(\v2H.illumio.cloud.config.v1.PolicyVersion_Rules.Source.K8S.WorkloadSelectorR\x10workloadSelector\x1a\xe7\x1b\n" +
+	"\bClusters\x12\x13\n" +
+	"\x02id\x18\x05 \x01(\tH\x00R\x02id\x88\x01\x01\x12V\n" +
 	"\x03aws\x18\x01 \x01(\v2D.illumio.cloud.config.v1.PolicyVersion_Rules.Source.K8S.Clusters.AwsR\x03aws\x12\\\n" +
 	"\x05azure\x18\x02 \x01(\v2F.illumio.cloud.config.v1.PolicyVersion_Rules.Source.K8S.Clusters.AzureR\x05azure\x12V\n" +
 	"\x03gcp\x18\x03 \x01(\v2D.illumio.cloud.config.v1.PolicyVersion_Rules.Source.K8S.Clusters.GcpR\x03gcp\x12V\n" +
-	"\x03oci\x18\x04 \x01(\v2D.illumio.cloud.config.v1.PolicyVersion_Rules.Source.K8S.Clusters.OciR\x03oci\x12\x1d\n" +
+	"\x03oci\x18\x04 \x01(\v2D.illumio.cloud.config.v1.PolicyVersion_Rules.Source.K8S.Clusters.OciR\x03oci\x12\"\n" +
 	"\n" +
-	"policy_api\x18\x06 \x01(\tR\tpolicyApi\x1a\xaa\x05\n" +
-	"\x03Aws\x12\x1d\n" +
+	"policy_api\x18\x06 \x01(\tH\x01R\tpolicyApi\x88\x01\x01\x1a\xe4\x05\n" +
+	"\x03Aws\x12\"\n" +
 	"\n" +
-	"account_id\x18\x01 \x01(\tR\taccountId\x12}\n" +
-	"\x10account_id_match\x18\x04 \x01(\v2S.illumio.cloud.config.v1.PolicyVersion_Rules.Source.K8S.Clusters.Aws.AccountIdMatchR\x0eaccountIdMatch\x12!\n" +
-	"\fcluster_name\x18\x02 \x01(\tR\vclusterName\x12\x83\x01\n" +
-	"\x12cluster_name_match\x18\x05 \x01(\v2U.illumio.cloud.config.v1.PolicyVersion_Rules.Source.K8S.Clusters.Aws.ClusterNameMatchR\x10clusterNameMatch\x12\x16\n" +
-	"\x06region\x18\x03 \x01(\tR\x06region\x12s\n" +
+	"account_id\x18\x01 \x01(\tH\x00R\taccountId\x88\x01\x01\x12}\n" +
+	"\x10account_id_match\x18\x04 \x01(\v2S.illumio.cloud.config.v1.PolicyVersion_Rules.Source.K8S.Clusters.Aws.AccountIdMatchR\x0eaccountIdMatch\x12&\n" +
+	"\fcluster_name\x18\x02 \x01(\tH\x01R\vclusterName\x88\x01\x01\x12\x83\x01\n" +
+	"\x12cluster_name_match\x18\x05 \x01(\v2U.illumio.cloud.config.v1.PolicyVersion_Rules.Source.K8S.Clusters.Aws.ClusterNameMatchR\x10clusterNameMatch\x12\x1b\n" +
+	"\x06region\x18\x03 \x01(\tH\x02R\x06region\x88\x01\x01\x12s\n" +
 	"\fregion_match\x18\x06 \x01(\v2P.illumio.cloud.config.v1.PolicyVersion_Rules.Source.K8S.Clusters.Aws.RegionMatchR\vregionMatch\x1aD\n" +
 	"\x0eAccountIdMatch\x12\x1a\n" +
 	"\boperator\x18\x01 \x01(\tR\boperator\x12\x16\n" +
@@ -17160,13 +17174,16 @@ const file_illumio_cloud_config_v1_config_proto_rawDesc = "" +
 	"\x06values\x18\x02 \x03(\tR\x06values\x1aA\n" +
 	"\vRegionMatch\x12\x1a\n" +
 	"\boperator\x18\x01 \x01(\tR\boperator\x12\x16\n" +
-	"\x06values\x18\x02 \x03(\tR\x06values\x1a\xfe\x05\n" +
-	"\x05Azure\x12!\n" +
-	"\fcluster_name\x18\x01 \x01(\tR\vclusterName\x12\x85\x01\n" +
-	"\x12cluster_name_match\x18\x04 \x01(\v2W.illumio.cloud.config.v1.PolicyVersion_Rules.Source.K8S.Clusters.Azure.ClusterNameMatchR\x10clusterNameMatch\x12%\n" +
-	"\x0eresource_group\x18\x02 \x01(\tR\rresourceGroup\x12\x8b\x01\n" +
-	"\x14resource_group_match\x18\x05 \x01(\v2Y.illumio.cloud.config.v1.PolicyVersion_Rules.Source.K8S.Clusters.Azure.ResourceGroupMatchR\x12resourceGroupMatch\x12'\n" +
-	"\x0fsubscription_id\x18\x03 \x01(\tR\x0esubscriptionId\x12\x8e\x01\n" +
+	"\x06values\x18\x02 \x03(\tR\x06valuesB\r\n" +
+	"\v_account_idB\x0f\n" +
+	"\r_cluster_nameB\t\n" +
+	"\a_region\x1a\xc5\x06\n" +
+	"\x05Azure\x12&\n" +
+	"\fcluster_name\x18\x01 \x01(\tH\x00R\vclusterName\x88\x01\x01\x12\x85\x01\n" +
+	"\x12cluster_name_match\x18\x04 \x01(\v2W.illumio.cloud.config.v1.PolicyVersion_Rules.Source.K8S.Clusters.Azure.ClusterNameMatchR\x10clusterNameMatch\x12*\n" +
+	"\x0eresource_group\x18\x02 \x01(\tH\x01R\rresourceGroup\x88\x01\x01\x12\x8b\x01\n" +
+	"\x14resource_group_match\x18\x05 \x01(\v2Y.illumio.cloud.config.v1.PolicyVersion_Rules.Source.K8S.Clusters.Azure.ResourceGroupMatchR\x12resourceGroupMatch\x12,\n" +
+	"\x0fsubscription_id\x18\x03 \x01(\tH\x02R\x0esubscriptionId\x88\x01\x01\x12\x8e\x01\n" +
 	"\x15subscription_id_match\x18\x06 \x01(\v2Z.illumio.cloud.config.v1.PolicyVersion_Rules.Source.K8S.Clusters.Azure.SubscriptionIdMatchR\x13subscriptionIdMatch\x1aF\n" +
 	"\x10ClusterNameMatch\x12\x1a\n" +
 	"\boperator\x18\x01 \x01(\tR\boperator\x12\x16\n" +
@@ -17176,14 +17193,17 @@ const file_illumio_cloud_config_v1_config_proto_rawDesc = "" +
 	"\x06values\x18\x02 \x03(\tR\x06values\x1aI\n" +
 	"\x13SubscriptionIdMatch\x12\x1a\n" +
 	"\boperator\x18\x01 \x01(\tR\boperator\x12\x16\n" +
-	"\x06values\x18\x02 \x03(\tR\x06values\x1a\xb6\x05\n" +
-	"\x03Gcp\x12!\n" +
-	"\fcluster_name\x18\x01 \x01(\tR\vclusterName\x12\x83\x01\n" +
-	"\x12cluster_name_match\x18\x04 \x01(\v2U.illumio.cloud.config.v1.PolicyVersion_Rules.Source.K8S.Clusters.Gcp.ClusterNameMatchR\x10clusterNameMatch\x12\x1a\n" +
-	"\blocation\x18\x02 \x01(\tR\blocation\x12y\n" +
-	"\x0elocation_match\x18\x05 \x01(\v2R.illumio.cloud.config.v1.PolicyVersion_Rules.Source.K8S.Clusters.Gcp.LocationMatchR\rlocationMatch\x12\x1d\n" +
+	"\x06values\x18\x02 \x03(\tR\x06valuesB\x0f\n" +
+	"\r_cluster_nameB\x11\n" +
+	"\x0f_resource_groupB\x12\n" +
+	"\x10_subscription_id\x1a\xf2\x05\n" +
+	"\x03Gcp\x12&\n" +
+	"\fcluster_name\x18\x01 \x01(\tH\x00R\vclusterName\x88\x01\x01\x12\x83\x01\n" +
+	"\x12cluster_name_match\x18\x04 \x01(\v2U.illumio.cloud.config.v1.PolicyVersion_Rules.Source.K8S.Clusters.Gcp.ClusterNameMatchR\x10clusterNameMatch\x12\x1f\n" +
+	"\blocation\x18\x02 \x01(\tH\x01R\blocation\x88\x01\x01\x12y\n" +
+	"\x0elocation_match\x18\x05 \x01(\v2R.illumio.cloud.config.v1.PolicyVersion_Rules.Source.K8S.Clusters.Gcp.LocationMatchR\rlocationMatch\x12\"\n" +
 	"\n" +
-	"project_id\x18\x03 \x01(\tR\tprojectId\x12}\n" +
+	"project_id\x18\x03 \x01(\tH\x02R\tprojectId\x88\x01\x01\x12}\n" +
 	"\x10project_id_match\x18\x06 \x01(\v2S.illumio.cloud.config.v1.PolicyVersion_Rules.Source.K8S.Clusters.Gcp.ProjectIdMatchR\x0eprojectIdMatch\x1aF\n" +
 	"\x10ClusterNameMatch\x12\x1a\n" +
 	"\boperator\x18\x01 \x01(\tR\boperator\x12\x16\n" +
@@ -17193,13 +17213,16 @@ const file_illumio_cloud_config_v1_config_proto_rawDesc = "" +
 	"\x06values\x18\x02 \x03(\tR\x06values\x1aD\n" +
 	"\x0eProjectIdMatch\x12\x1a\n" +
 	"\boperator\x18\x01 \x01(\tR\boperator\x12\x16\n" +
-	"\x06values\x18\x02 \x03(\tR\x06values\x1a\xc3\x05\n" +
-	"\x03Oci\x12!\n" +
-	"\fcluster_name\x18\x01 \x01(\tR\vclusterName\x12\x83\x01\n" +
-	"\x12cluster_name_match\x18\x04 \x01(\v2U.illumio.cloud.config.v1.PolicyVersion_Rules.Source.K8S.Clusters.Oci.ClusterNameMatchR\x10clusterNameMatch\x12%\n" +
-	"\x0ecompartment_id\x18\x02 \x01(\tR\rcompartmentId\x12\x89\x01\n" +
-	"\x14compartment_id_match\x18\x05 \x01(\v2W.illumio.cloud.config.v1.PolicyVersion_Rules.Source.K8S.Clusters.Oci.CompartmentIdMatchR\x12compartmentIdMatch\x12\x16\n" +
-	"\x06region\x18\x03 \x01(\tR\x06region\x12s\n" +
+	"\x06values\x18\x02 \x03(\tR\x06valuesB\x0f\n" +
+	"\r_cluster_nameB\v\n" +
+	"\t_locationB\r\n" +
+	"\v_project_id\x1a\x81\x06\n" +
+	"\x03Oci\x12&\n" +
+	"\fcluster_name\x18\x01 \x01(\tH\x00R\vclusterName\x88\x01\x01\x12\x83\x01\n" +
+	"\x12cluster_name_match\x18\x04 \x01(\v2U.illumio.cloud.config.v1.PolicyVersion_Rules.Source.K8S.Clusters.Oci.ClusterNameMatchR\x10clusterNameMatch\x12*\n" +
+	"\x0ecompartment_id\x18\x02 \x01(\tH\x01R\rcompartmentId\x88\x01\x01\x12\x89\x01\n" +
+	"\x14compartment_id_match\x18\x05 \x01(\v2W.illumio.cloud.config.v1.PolicyVersion_Rules.Source.K8S.Clusters.Oci.CompartmentIdMatchR\x12compartmentIdMatch\x12\x1b\n" +
+	"\x06region\x18\x03 \x01(\tH\x02R\x06region\x88\x01\x01\x12s\n" +
 	"\fregion_match\x18\x06 \x01(\v2P.illumio.cloud.config.v1.PolicyVersion_Rules.Source.K8S.Clusters.Oci.RegionMatchR\vregionMatch\x1aF\n" +
 	"\x10ClusterNameMatch\x12\x1a\n" +
 	"\boperator\x18\x01 \x01(\tR\boperator\x12\x16\n" +
@@ -17209,7 +17232,12 @@ const file_illumio_cloud_config_v1_config_proto_rawDesc = "" +
 	"\x06values\x18\x02 \x03(\tR\x06values\x1aA\n" +
 	"\vRegionMatch\x12\x1a\n" +
 	"\boperator\x18\x01 \x01(\tR\boperator\x12\x16\n" +
-	"\x06values\x18\x02 \x03(\tR\x06values\x1a\xa8\x03\n" +
+	"\x06values\x18\x02 \x03(\tR\x06valuesB\x0f\n" +
+	"\r_cluster_nameB\x11\n" +
+	"\x0f_compartment_idB\t\n" +
+	"\a_regionB\x05\n" +
+	"\x03_idB\r\n" +
+	"\v_policy_api\x1a\xa8\x03\n" +
 	"\x11NamespaceSelector\x12\x87\x01\n" +
 	"\x11match_expressions\x18\x01 \x03(\v2Z.illumio.cloud.config.v1.PolicyVersion_Rules.Source.K8S.NamespaceSelector.MatchExpressionsR\x10matchExpressions\x12x\n" +
 	"\fmatch_labels\x18\x02 \x03(\v2U.illumio.cloud.config.v1.PolicyVersion_Rules.Source.K8S.NamespaceSelector.MatchLabelsR\vmatchLabels\x1aX\n" +
@@ -18096,6 +18124,16 @@ func file_illumio_cloud_config_v1_config_proto_init() {
 	file_illumio_cloud_config_v1_config_proto_msgTypes[145].OneofWrappers = []any{}
 	file_illumio_cloud_config_v1_config_proto_msgTypes[147].OneofWrappers = []any{}
 	file_illumio_cloud_config_v1_config_proto_msgTypes[149].OneofWrappers = []any{}
+	file_illumio_cloud_config_v1_config_proto_msgTypes[181].OneofWrappers = []any{}
+	file_illumio_cloud_config_v1_config_proto_msgTypes[184].OneofWrappers = []any{}
+	file_illumio_cloud_config_v1_config_proto_msgTypes[185].OneofWrappers = []any{}
+	file_illumio_cloud_config_v1_config_proto_msgTypes[186].OneofWrappers = []any{}
+	file_illumio_cloud_config_v1_config_proto_msgTypes[187].OneofWrappers = []any{}
+	file_illumio_cloud_config_v1_config_proto_msgTypes[222].OneofWrappers = []any{}
+	file_illumio_cloud_config_v1_config_proto_msgTypes[225].OneofWrappers = []any{}
+	file_illumio_cloud_config_v1_config_proto_msgTypes[226].OneofWrappers = []any{}
+	file_illumio_cloud_config_v1_config_proto_msgTypes[227].OneofWrappers = []any{}
+	file_illumio_cloud_config_v1_config_proto_msgTypes[228].OneofWrappers = []any{}
 	type x struct{}
 	out := protoimpl.TypeBuilder{
 		File: protoimpl.DescBuilder{

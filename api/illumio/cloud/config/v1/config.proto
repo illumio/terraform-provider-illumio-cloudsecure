@@ -1064,11 +1064,11 @@ message PolicyVersion_Rules {
             string operator = 1;
             repeated string values = 2;
           }
-          string account_id = 1;
+          optional string account_id = 1;
           AccountIdMatch account_id_match = 4;
-          string cluster_name = 2;
+          optional string cluster_name = 2;
           ClusterNameMatch cluster_name_match = 5;
-          string region = 3;
+          optional string region = 3;
           RegionMatch region_match = 6;
         }
         message Azure {
@@ -1084,11 +1084,11 @@ message PolicyVersion_Rules {
             string operator = 1;
             repeated string values = 2;
           }
-          string cluster_name = 1;
+          optional string cluster_name = 1;
           ClusterNameMatch cluster_name_match = 4;
-          string resource_group = 2;
+          optional string resource_group = 2;
           ResourceGroupMatch resource_group_match = 5;
-          string subscription_id = 3;
+          optional string subscription_id = 3;
           SubscriptionIdMatch subscription_id_match = 6;
         }
         message Gcp {
@@ -1104,11 +1104,11 @@ message PolicyVersion_Rules {
             string operator = 1;
             repeated string values = 2;
           }
-          string cluster_name = 1;
+          optional string cluster_name = 1;
           ClusterNameMatch cluster_name_match = 4;
-          string location = 2;
+          optional string location = 2;
           LocationMatch location_match = 5;
-          string project_id = 3;
+          optional string project_id = 3;
           ProjectIdMatch project_id_match = 6;
         }
         message Oci {
@@ -1124,19 +1124,19 @@ message PolicyVersion_Rules {
             string operator = 1;
             repeated string values = 2;
           }
-          string cluster_name = 1;
+          optional string cluster_name = 1;
           ClusterNameMatch cluster_name_match = 4;
-          string compartment_id = 2;
+          optional string compartment_id = 2;
           CompartmentIdMatch compartment_id_match = 5;
-          string region = 3;
+          optional string region = 3;
           RegionMatch region_match = 6;
         }
-        string id = 5;
+        optional string id = 5;
         Aws aws = 1;
         Azure azure = 2;
         Gcp gcp = 3;
         Oci oci = 4;
-        string policy_api = 6;
+        optional string policy_api = 6;
       }
       message NamespaceSelector {
         message MatchExpressions {
@@ -1263,11 +1263,11 @@ message PolicyVersion_Rules {
             string operator = 1;
             repeated string values = 2;
           }
-          string account_id = 1;
+          optional string account_id = 1;
           AccountIdMatch account_id_match = 4;
-          string cluster_name = 2;
+          optional string cluster_name = 2;
           ClusterNameMatch cluster_name_match = 5;
-          string region = 3;
+          optional string region = 3;
           RegionMatch region_match = 6;
         }
         message Azure {
@@ -1283,11 +1283,11 @@ message PolicyVersion_Rules {
             string operator = 1;
             repeated string values = 2;
           }
-          string cluster_name = 1;
+          optional string cluster_name = 1;
           ClusterNameMatch cluster_name_match = 4;
-          string resource_group = 2;
+          optional string resource_group = 2;
           ResourceGroupMatch resource_group_match = 5;
-          string subscription_id = 3;
+          optional string subscription_id = 3;
           SubscriptionIdMatch subscription_id_match = 6;
         }
         message Gcp {
@@ -1303,11 +1303,11 @@ message PolicyVersion_Rules {
             string operator = 1;
             repeated string values = 2;
           }
-          string cluster_name = 1;
+          optional string cluster_name = 1;
           ClusterNameMatch cluster_name_match = 4;
-          string location = 2;
+          optional string location = 2;
           LocationMatch location_match = 5;
-          string project_id = 3;
+          optional string project_id = 3;
           ProjectIdMatch project_id_match = 6;
         }
         message Oci {
@@ -1323,19 +1323,19 @@ message PolicyVersion_Rules {
             string operator = 1;
             repeated string values = 2;
           }
-          string cluster_name = 1;
+          optional string cluster_name = 1;
           ClusterNameMatch cluster_name_match = 4;
-          string compartment_id = 2;
+          optional string compartment_id = 2;
           CompartmentIdMatch compartment_id_match = 5;
-          string region = 3;
+          optional string region = 3;
           RegionMatch region_match = 6;
         }
-        string id = 5;
+        optional string id = 5;
         Aws aws = 1;
         Azure azure = 2;
         Gcp gcp = 3;
         Oci oci = 4;
-        string policy_api = 6;
+        optional string policy_api = 6;
       }
       message NamespaceSelector {
         message MatchExpressions {

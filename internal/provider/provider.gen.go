@@ -12139,12 +12139,12 @@ func ConvertPolicyVersion_Rules_Destination_K8S_ClustersToObjectValueFromProto(p
 	return types.ObjectValueMust(
 		GetTypeAttrsForPolicyVersion_Rules_Destination_K8S_Clusters(),
 		map[string]attr.Value{
-			"id":         types.StringValue(proto.Id),
+			"id":         types.StringPointerValue(proto.Id),
 			"aws":        ConvertPolicyVersion_Rules_Destination_K8S_Clusters_AwsToObjectValueFromProto(proto.Aws),
 			"azure":      ConvertPolicyVersion_Rules_Destination_K8S_Clusters_AzureToObjectValueFromProto(proto.Azure),
 			"gcp":        ConvertPolicyVersion_Rules_Destination_K8S_Clusters_GcpToObjectValueFromProto(proto.Gcp),
 			"oci":        ConvertPolicyVersion_Rules_Destination_K8S_Clusters_OciToObjectValueFromProto(proto.Oci),
-			"policy_api": types.StringValue(proto.PolicyApi),
+			"policy_api": types.StringPointerValue(proto.PolicyApi),
 		},
 	)
 }
@@ -12159,7 +12159,7 @@ func ConvertDataValueToPolicyVersion_Rules_Destination_K8S_ClustersProto(ctx con
 		return nil, diags
 	}
 	proto := &configv1.PolicyVersion_Rules_Destination_K8S_Clusters{}
-	proto.Id = pv.Id.ValueString()
+	proto.Id = pv.Id.ValueStringPointer()
 	pvModelAws, dvDiagsAws := ConvertDataValueToPolicyVersion_Rules_Destination_K8S_Clusters_AwsProto(ctx, pv.Aws)
 	diags.Append(dvDiagsAws...)
 	if diags.HasError() {
@@ -12184,7 +12184,7 @@ func ConvertDataValueToPolicyVersion_Rules_Destination_K8S_ClustersProto(ctx con
 		return nil, diags
 	}
 	proto.Oci = pvModelOci
-	proto.PolicyApi = pv.PolicyApi.ValueString()
+	proto.PolicyApi = pv.PolicyApi.ValueStringPointer()
 	return proto, diags
 }
 
@@ -12221,11 +12221,11 @@ func ConvertPolicyVersion_Rules_Destination_K8S_Clusters_AwsToObjectValueFromPro
 	return types.ObjectValueMust(
 		GetTypeAttrsForPolicyVersion_Rules_Destination_K8S_Clusters_Aws(),
 		map[string]attr.Value{
-			"account_id":         types.StringValue(proto.AccountId),
+			"account_id":         types.StringPointerValue(proto.AccountId),
 			"account_id_match":   ConvertPolicyVersion_Rules_Destination_K8S_Clusters_Aws_AccountIdMatchToObjectValueFromProto(proto.AccountIdMatch),
-			"cluster_name":       types.StringValue(proto.ClusterName),
+			"cluster_name":       types.StringPointerValue(proto.ClusterName),
 			"cluster_name_match": ConvertPolicyVersion_Rules_Destination_K8S_Clusters_Aws_ClusterNameMatchToObjectValueFromProto(proto.ClusterNameMatch),
-			"region":             types.StringValue(proto.Region),
+			"region":             types.StringPointerValue(proto.Region),
 			"region_match":       ConvertPolicyVersion_Rules_Destination_K8S_Clusters_Aws_RegionMatchToObjectValueFromProto(proto.RegionMatch),
 		},
 	)
@@ -12241,21 +12241,21 @@ func ConvertDataValueToPolicyVersion_Rules_Destination_K8S_Clusters_AwsProto(ctx
 		return nil, diags
 	}
 	proto := &configv1.PolicyVersion_Rules_Destination_K8S_Clusters_Aws{}
-	proto.AccountId = pv.AccountId.ValueString()
+	proto.AccountId = pv.AccountId.ValueStringPointer()
 	pvModelAccountIdMatch, dvDiagsAccountIdMatch := ConvertDataValueToPolicyVersion_Rules_Destination_K8S_Clusters_Aws_AccountIdMatchProto(ctx, pv.AccountIdMatch)
 	diags.Append(dvDiagsAccountIdMatch...)
 	if diags.HasError() {
 		return nil, diags
 	}
 	proto.AccountIdMatch = pvModelAccountIdMatch
-	proto.ClusterName = pv.ClusterName.ValueString()
+	proto.ClusterName = pv.ClusterName.ValueStringPointer()
 	pvModelClusterNameMatch, dvDiagsClusterNameMatch := ConvertDataValueToPolicyVersion_Rules_Destination_K8S_Clusters_Aws_ClusterNameMatchProto(ctx, pv.ClusterNameMatch)
 	diags.Append(dvDiagsClusterNameMatch...)
 	if diags.HasError() {
 		return nil, diags
 	}
 	proto.ClusterNameMatch = pvModelClusterNameMatch
-	proto.Region = pv.Region.ValueString()
+	proto.Region = pv.Region.ValueStringPointer()
 	pvModelRegionMatch, dvDiagsRegionMatch := ConvertDataValueToPolicyVersion_Rules_Destination_K8S_Clusters_Aws_RegionMatchProto(ctx, pv.RegionMatch)
 	diags.Append(dvDiagsRegionMatch...)
 	if diags.HasError() {
@@ -12463,11 +12463,11 @@ func ConvertPolicyVersion_Rules_Destination_K8S_Clusters_AzureToObjectValueFromP
 	return types.ObjectValueMust(
 		GetTypeAttrsForPolicyVersion_Rules_Destination_K8S_Clusters_Azure(),
 		map[string]attr.Value{
-			"cluster_name":          types.StringValue(proto.ClusterName),
+			"cluster_name":          types.StringPointerValue(proto.ClusterName),
 			"cluster_name_match":    ConvertPolicyVersion_Rules_Destination_K8S_Clusters_Azure_ClusterNameMatchToObjectValueFromProto(proto.ClusterNameMatch),
-			"resource_group":        types.StringValue(proto.ResourceGroup),
+			"resource_group":        types.StringPointerValue(proto.ResourceGroup),
 			"resource_group_match":  ConvertPolicyVersion_Rules_Destination_K8S_Clusters_Azure_ResourceGroupMatchToObjectValueFromProto(proto.ResourceGroupMatch),
-			"subscription_id":       types.StringValue(proto.SubscriptionId),
+			"subscription_id":       types.StringPointerValue(proto.SubscriptionId),
 			"subscription_id_match": ConvertPolicyVersion_Rules_Destination_K8S_Clusters_Azure_SubscriptionIdMatchToObjectValueFromProto(proto.SubscriptionIdMatch),
 		},
 	)
@@ -12483,21 +12483,21 @@ func ConvertDataValueToPolicyVersion_Rules_Destination_K8S_Clusters_AzureProto(c
 		return nil, diags
 	}
 	proto := &configv1.PolicyVersion_Rules_Destination_K8S_Clusters_Azure{}
-	proto.ClusterName = pv.ClusterName.ValueString()
+	proto.ClusterName = pv.ClusterName.ValueStringPointer()
 	pvModelClusterNameMatch, dvDiagsClusterNameMatch := ConvertDataValueToPolicyVersion_Rules_Destination_K8S_Clusters_Azure_ClusterNameMatchProto(ctx, pv.ClusterNameMatch)
 	diags.Append(dvDiagsClusterNameMatch...)
 	if diags.HasError() {
 		return nil, diags
 	}
 	proto.ClusterNameMatch = pvModelClusterNameMatch
-	proto.ResourceGroup = pv.ResourceGroup.ValueString()
+	proto.ResourceGroup = pv.ResourceGroup.ValueStringPointer()
 	pvModelResourceGroupMatch, dvDiagsResourceGroupMatch := ConvertDataValueToPolicyVersion_Rules_Destination_K8S_Clusters_Azure_ResourceGroupMatchProto(ctx, pv.ResourceGroupMatch)
 	diags.Append(dvDiagsResourceGroupMatch...)
 	if diags.HasError() {
 		return nil, diags
 	}
 	proto.ResourceGroupMatch = pvModelResourceGroupMatch
-	proto.SubscriptionId = pv.SubscriptionId.ValueString()
+	proto.SubscriptionId = pv.SubscriptionId.ValueStringPointer()
 	pvModelSubscriptionIdMatch, dvDiagsSubscriptionIdMatch := ConvertDataValueToPolicyVersion_Rules_Destination_K8S_Clusters_Azure_SubscriptionIdMatchProto(ctx, pv.SubscriptionIdMatch)
 	diags.Append(dvDiagsSubscriptionIdMatch...)
 	if diags.HasError() {
@@ -12705,11 +12705,11 @@ func ConvertPolicyVersion_Rules_Destination_K8S_Clusters_GcpToObjectValueFromPro
 	return types.ObjectValueMust(
 		GetTypeAttrsForPolicyVersion_Rules_Destination_K8S_Clusters_Gcp(),
 		map[string]attr.Value{
-			"cluster_name":       types.StringValue(proto.ClusterName),
+			"cluster_name":       types.StringPointerValue(proto.ClusterName),
 			"cluster_name_match": ConvertPolicyVersion_Rules_Destination_K8S_Clusters_Gcp_ClusterNameMatchToObjectValueFromProto(proto.ClusterNameMatch),
-			"location":           types.StringValue(proto.Location),
+			"location":           types.StringPointerValue(proto.Location),
 			"location_match":     ConvertPolicyVersion_Rules_Destination_K8S_Clusters_Gcp_LocationMatchToObjectValueFromProto(proto.LocationMatch),
-			"project_id":         types.StringValue(proto.ProjectId),
+			"project_id":         types.StringPointerValue(proto.ProjectId),
 			"project_id_match":   ConvertPolicyVersion_Rules_Destination_K8S_Clusters_Gcp_ProjectIdMatchToObjectValueFromProto(proto.ProjectIdMatch),
 		},
 	)
@@ -12725,21 +12725,21 @@ func ConvertDataValueToPolicyVersion_Rules_Destination_K8S_Clusters_GcpProto(ctx
 		return nil, diags
 	}
 	proto := &configv1.PolicyVersion_Rules_Destination_K8S_Clusters_Gcp{}
-	proto.ClusterName = pv.ClusterName.ValueString()
+	proto.ClusterName = pv.ClusterName.ValueStringPointer()
 	pvModelClusterNameMatch, dvDiagsClusterNameMatch := ConvertDataValueToPolicyVersion_Rules_Destination_K8S_Clusters_Gcp_ClusterNameMatchProto(ctx, pv.ClusterNameMatch)
 	diags.Append(dvDiagsClusterNameMatch...)
 	if diags.HasError() {
 		return nil, diags
 	}
 	proto.ClusterNameMatch = pvModelClusterNameMatch
-	proto.Location = pv.Location.ValueString()
+	proto.Location = pv.Location.ValueStringPointer()
 	pvModelLocationMatch, dvDiagsLocationMatch := ConvertDataValueToPolicyVersion_Rules_Destination_K8S_Clusters_Gcp_LocationMatchProto(ctx, pv.LocationMatch)
 	diags.Append(dvDiagsLocationMatch...)
 	if diags.HasError() {
 		return nil, diags
 	}
 	proto.LocationMatch = pvModelLocationMatch
-	proto.ProjectId = pv.ProjectId.ValueString()
+	proto.ProjectId = pv.ProjectId.ValueStringPointer()
 	pvModelProjectIdMatch, dvDiagsProjectIdMatch := ConvertDataValueToPolicyVersion_Rules_Destination_K8S_Clusters_Gcp_ProjectIdMatchProto(ctx, pv.ProjectIdMatch)
 	diags.Append(dvDiagsProjectIdMatch...)
 	if diags.HasError() {
@@ -12947,11 +12947,11 @@ func ConvertPolicyVersion_Rules_Destination_K8S_Clusters_OciToObjectValueFromPro
 	return types.ObjectValueMust(
 		GetTypeAttrsForPolicyVersion_Rules_Destination_K8S_Clusters_Oci(),
 		map[string]attr.Value{
-			"cluster_name":         types.StringValue(proto.ClusterName),
+			"cluster_name":         types.StringPointerValue(proto.ClusterName),
 			"cluster_name_match":   ConvertPolicyVersion_Rules_Destination_K8S_Clusters_Oci_ClusterNameMatchToObjectValueFromProto(proto.ClusterNameMatch),
-			"compartment_id":       types.StringValue(proto.CompartmentId),
+			"compartment_id":       types.StringPointerValue(proto.CompartmentId),
 			"compartment_id_match": ConvertPolicyVersion_Rules_Destination_K8S_Clusters_Oci_CompartmentIdMatchToObjectValueFromProto(proto.CompartmentIdMatch),
-			"region":               types.StringValue(proto.Region),
+			"region":               types.StringPointerValue(proto.Region),
 			"region_match":         ConvertPolicyVersion_Rules_Destination_K8S_Clusters_Oci_RegionMatchToObjectValueFromProto(proto.RegionMatch),
 		},
 	)
@@ -12967,21 +12967,21 @@ func ConvertDataValueToPolicyVersion_Rules_Destination_K8S_Clusters_OciProto(ctx
 		return nil, diags
 	}
 	proto := &configv1.PolicyVersion_Rules_Destination_K8S_Clusters_Oci{}
-	proto.ClusterName = pv.ClusterName.ValueString()
+	proto.ClusterName = pv.ClusterName.ValueStringPointer()
 	pvModelClusterNameMatch, dvDiagsClusterNameMatch := ConvertDataValueToPolicyVersion_Rules_Destination_K8S_Clusters_Oci_ClusterNameMatchProto(ctx, pv.ClusterNameMatch)
 	diags.Append(dvDiagsClusterNameMatch...)
 	if diags.HasError() {
 		return nil, diags
 	}
 	proto.ClusterNameMatch = pvModelClusterNameMatch
-	proto.CompartmentId = pv.CompartmentId.ValueString()
+	proto.CompartmentId = pv.CompartmentId.ValueStringPointer()
 	pvModelCompartmentIdMatch, dvDiagsCompartmentIdMatch := ConvertDataValueToPolicyVersion_Rules_Destination_K8S_Clusters_Oci_CompartmentIdMatchProto(ctx, pv.CompartmentIdMatch)
 	diags.Append(dvDiagsCompartmentIdMatch...)
 	if diags.HasError() {
 		return nil, diags
 	}
 	proto.CompartmentIdMatch = pvModelCompartmentIdMatch
-	proto.Region = pv.Region.ValueString()
+	proto.Region = pv.Region.ValueStringPointer()
 	pvModelRegionMatch, dvDiagsRegionMatch := ConvertDataValueToPolicyVersion_Rules_Destination_K8S_Clusters_Oci_RegionMatchProto(ctx, pv.RegionMatch)
 	diags.Append(dvDiagsRegionMatch...)
 	if diags.HasError() {
@@ -14651,12 +14651,12 @@ func ConvertPolicyVersion_Rules_Source_K8S_ClustersToObjectValueFromProto(proto 
 	return types.ObjectValueMust(
 		GetTypeAttrsForPolicyVersion_Rules_Source_K8S_Clusters(),
 		map[string]attr.Value{
-			"id":         types.StringValue(proto.Id),
+			"id":         types.StringPointerValue(proto.Id),
 			"aws":        ConvertPolicyVersion_Rules_Source_K8S_Clusters_AwsToObjectValueFromProto(proto.Aws),
 			"azure":      ConvertPolicyVersion_Rules_Source_K8S_Clusters_AzureToObjectValueFromProto(proto.Azure),
 			"gcp":        ConvertPolicyVersion_Rules_Source_K8S_Clusters_GcpToObjectValueFromProto(proto.Gcp),
 			"oci":        ConvertPolicyVersion_Rules_Source_K8S_Clusters_OciToObjectValueFromProto(proto.Oci),
-			"policy_api": types.StringValue(proto.PolicyApi),
+			"policy_api": types.StringPointerValue(proto.PolicyApi),
 		},
 	)
 }
@@ -14671,7 +14671,7 @@ func ConvertDataValueToPolicyVersion_Rules_Source_K8S_ClustersProto(ctx context.
 		return nil, diags
 	}
 	proto := &configv1.PolicyVersion_Rules_Source_K8S_Clusters{}
-	proto.Id = pv.Id.ValueString()
+	proto.Id = pv.Id.ValueStringPointer()
 	pvModelAws, dvDiagsAws := ConvertDataValueToPolicyVersion_Rules_Source_K8S_Clusters_AwsProto(ctx, pv.Aws)
 	diags.Append(dvDiagsAws...)
 	if diags.HasError() {
@@ -14696,7 +14696,7 @@ func ConvertDataValueToPolicyVersion_Rules_Source_K8S_ClustersProto(ctx context.
 		return nil, diags
 	}
 	proto.Oci = pvModelOci
-	proto.PolicyApi = pv.PolicyApi.ValueString()
+	proto.PolicyApi = pv.PolicyApi.ValueStringPointer()
 	return proto, diags
 }
 
@@ -14733,11 +14733,11 @@ func ConvertPolicyVersion_Rules_Source_K8S_Clusters_AwsToObjectValueFromProto(pr
 	return types.ObjectValueMust(
 		GetTypeAttrsForPolicyVersion_Rules_Source_K8S_Clusters_Aws(),
 		map[string]attr.Value{
-			"account_id":         types.StringValue(proto.AccountId),
+			"account_id":         types.StringPointerValue(proto.AccountId),
 			"account_id_match":   ConvertPolicyVersion_Rules_Source_K8S_Clusters_Aws_AccountIdMatchToObjectValueFromProto(proto.AccountIdMatch),
-			"cluster_name":       types.StringValue(proto.ClusterName),
+			"cluster_name":       types.StringPointerValue(proto.ClusterName),
 			"cluster_name_match": ConvertPolicyVersion_Rules_Source_K8S_Clusters_Aws_ClusterNameMatchToObjectValueFromProto(proto.ClusterNameMatch),
-			"region":             types.StringValue(proto.Region),
+			"region":             types.StringPointerValue(proto.Region),
 			"region_match":       ConvertPolicyVersion_Rules_Source_K8S_Clusters_Aws_RegionMatchToObjectValueFromProto(proto.RegionMatch),
 		},
 	)
@@ -14753,21 +14753,21 @@ func ConvertDataValueToPolicyVersion_Rules_Source_K8S_Clusters_AwsProto(ctx cont
 		return nil, diags
 	}
 	proto := &configv1.PolicyVersion_Rules_Source_K8S_Clusters_Aws{}
-	proto.AccountId = pv.AccountId.ValueString()
+	proto.AccountId = pv.AccountId.ValueStringPointer()
 	pvModelAccountIdMatch, dvDiagsAccountIdMatch := ConvertDataValueToPolicyVersion_Rules_Source_K8S_Clusters_Aws_AccountIdMatchProto(ctx, pv.AccountIdMatch)
 	diags.Append(dvDiagsAccountIdMatch...)
 	if diags.HasError() {
 		return nil, diags
 	}
 	proto.AccountIdMatch = pvModelAccountIdMatch
-	proto.ClusterName = pv.ClusterName.ValueString()
+	proto.ClusterName = pv.ClusterName.ValueStringPointer()
 	pvModelClusterNameMatch, dvDiagsClusterNameMatch := ConvertDataValueToPolicyVersion_Rules_Source_K8S_Clusters_Aws_ClusterNameMatchProto(ctx, pv.ClusterNameMatch)
 	diags.Append(dvDiagsClusterNameMatch...)
 	if diags.HasError() {
 		return nil, diags
 	}
 	proto.ClusterNameMatch = pvModelClusterNameMatch
-	proto.Region = pv.Region.ValueString()
+	proto.Region = pv.Region.ValueStringPointer()
 	pvModelRegionMatch, dvDiagsRegionMatch := ConvertDataValueToPolicyVersion_Rules_Source_K8S_Clusters_Aws_RegionMatchProto(ctx, pv.RegionMatch)
 	diags.Append(dvDiagsRegionMatch...)
 	if diags.HasError() {
@@ -14975,11 +14975,11 @@ func ConvertPolicyVersion_Rules_Source_K8S_Clusters_AzureToObjectValueFromProto(
 	return types.ObjectValueMust(
 		GetTypeAttrsForPolicyVersion_Rules_Source_K8S_Clusters_Azure(),
 		map[string]attr.Value{
-			"cluster_name":          types.StringValue(proto.ClusterName),
+			"cluster_name":          types.StringPointerValue(proto.ClusterName),
 			"cluster_name_match":    ConvertPolicyVersion_Rules_Source_K8S_Clusters_Azure_ClusterNameMatchToObjectValueFromProto(proto.ClusterNameMatch),
-			"resource_group":        types.StringValue(proto.ResourceGroup),
+			"resource_group":        types.StringPointerValue(proto.ResourceGroup),
 			"resource_group_match":  ConvertPolicyVersion_Rules_Source_K8S_Clusters_Azure_ResourceGroupMatchToObjectValueFromProto(proto.ResourceGroupMatch),
-			"subscription_id":       types.StringValue(proto.SubscriptionId),
+			"subscription_id":       types.StringPointerValue(proto.SubscriptionId),
 			"subscription_id_match": ConvertPolicyVersion_Rules_Source_K8S_Clusters_Azure_SubscriptionIdMatchToObjectValueFromProto(proto.SubscriptionIdMatch),
 		},
 	)
@@ -14995,21 +14995,21 @@ func ConvertDataValueToPolicyVersion_Rules_Source_K8S_Clusters_AzureProto(ctx co
 		return nil, diags
 	}
 	proto := &configv1.PolicyVersion_Rules_Source_K8S_Clusters_Azure{}
-	proto.ClusterName = pv.ClusterName.ValueString()
+	proto.ClusterName = pv.ClusterName.ValueStringPointer()
 	pvModelClusterNameMatch, dvDiagsClusterNameMatch := ConvertDataValueToPolicyVersion_Rules_Source_K8S_Clusters_Azure_ClusterNameMatchProto(ctx, pv.ClusterNameMatch)
 	diags.Append(dvDiagsClusterNameMatch...)
 	if diags.HasError() {
 		return nil, diags
 	}
 	proto.ClusterNameMatch = pvModelClusterNameMatch
-	proto.ResourceGroup = pv.ResourceGroup.ValueString()
+	proto.ResourceGroup = pv.ResourceGroup.ValueStringPointer()
 	pvModelResourceGroupMatch, dvDiagsResourceGroupMatch := ConvertDataValueToPolicyVersion_Rules_Source_K8S_Clusters_Azure_ResourceGroupMatchProto(ctx, pv.ResourceGroupMatch)
 	diags.Append(dvDiagsResourceGroupMatch...)
 	if diags.HasError() {
 		return nil, diags
 	}
 	proto.ResourceGroupMatch = pvModelResourceGroupMatch
-	proto.SubscriptionId = pv.SubscriptionId.ValueString()
+	proto.SubscriptionId = pv.SubscriptionId.ValueStringPointer()
 	pvModelSubscriptionIdMatch, dvDiagsSubscriptionIdMatch := ConvertDataValueToPolicyVersion_Rules_Source_K8S_Clusters_Azure_SubscriptionIdMatchProto(ctx, pv.SubscriptionIdMatch)
 	diags.Append(dvDiagsSubscriptionIdMatch...)
 	if diags.HasError() {
@@ -15217,11 +15217,11 @@ func ConvertPolicyVersion_Rules_Source_K8S_Clusters_GcpToObjectValueFromProto(pr
 	return types.ObjectValueMust(
 		GetTypeAttrsForPolicyVersion_Rules_Source_K8S_Clusters_Gcp(),
 		map[string]attr.Value{
-			"cluster_name":       types.StringValue(proto.ClusterName),
+			"cluster_name":       types.StringPointerValue(proto.ClusterName),
 			"cluster_name_match": ConvertPolicyVersion_Rules_Source_K8S_Clusters_Gcp_ClusterNameMatchToObjectValueFromProto(proto.ClusterNameMatch),
-			"location":           types.StringValue(proto.Location),
+			"location":           types.StringPointerValue(proto.Location),
 			"location_match":     ConvertPolicyVersion_Rules_Source_K8S_Clusters_Gcp_LocationMatchToObjectValueFromProto(proto.LocationMatch),
-			"project_id":         types.StringValue(proto.ProjectId),
+			"project_id":         types.StringPointerValue(proto.ProjectId),
 			"project_id_match":   ConvertPolicyVersion_Rules_Source_K8S_Clusters_Gcp_ProjectIdMatchToObjectValueFromProto(proto.ProjectIdMatch),
 		},
 	)
@@ -15237,21 +15237,21 @@ func ConvertDataValueToPolicyVersion_Rules_Source_K8S_Clusters_GcpProto(ctx cont
 		return nil, diags
 	}
 	proto := &configv1.PolicyVersion_Rules_Source_K8S_Clusters_Gcp{}
-	proto.ClusterName = pv.ClusterName.ValueString()
+	proto.ClusterName = pv.ClusterName.ValueStringPointer()
 	pvModelClusterNameMatch, dvDiagsClusterNameMatch := ConvertDataValueToPolicyVersion_Rules_Source_K8S_Clusters_Gcp_ClusterNameMatchProto(ctx, pv.ClusterNameMatch)
 	diags.Append(dvDiagsClusterNameMatch...)
 	if diags.HasError() {
 		return nil, diags
 	}
 	proto.ClusterNameMatch = pvModelClusterNameMatch
-	proto.Location = pv.Location.ValueString()
+	proto.Location = pv.Location.ValueStringPointer()
 	pvModelLocationMatch, dvDiagsLocationMatch := ConvertDataValueToPolicyVersion_Rules_Source_K8S_Clusters_Gcp_LocationMatchProto(ctx, pv.LocationMatch)
 	diags.Append(dvDiagsLocationMatch...)
 	if diags.HasError() {
 		return nil, diags
 	}
 	proto.LocationMatch = pvModelLocationMatch
-	proto.ProjectId = pv.ProjectId.ValueString()
+	proto.ProjectId = pv.ProjectId.ValueStringPointer()
 	pvModelProjectIdMatch, dvDiagsProjectIdMatch := ConvertDataValueToPolicyVersion_Rules_Source_K8S_Clusters_Gcp_ProjectIdMatchProto(ctx, pv.ProjectIdMatch)
 	diags.Append(dvDiagsProjectIdMatch...)
 	if diags.HasError() {
@@ -15459,11 +15459,11 @@ func ConvertPolicyVersion_Rules_Source_K8S_Clusters_OciToObjectValueFromProto(pr
 	return types.ObjectValueMust(
 		GetTypeAttrsForPolicyVersion_Rules_Source_K8S_Clusters_Oci(),
 		map[string]attr.Value{
-			"cluster_name":         types.StringValue(proto.ClusterName),
+			"cluster_name":         types.StringPointerValue(proto.ClusterName),
 			"cluster_name_match":   ConvertPolicyVersion_Rules_Source_K8S_Clusters_Oci_ClusterNameMatchToObjectValueFromProto(proto.ClusterNameMatch),
-			"compartment_id":       types.StringValue(proto.CompartmentId),
+			"compartment_id":       types.StringPointerValue(proto.CompartmentId),
 			"compartment_id_match": ConvertPolicyVersion_Rules_Source_K8S_Clusters_Oci_CompartmentIdMatchToObjectValueFromProto(proto.CompartmentIdMatch),
-			"region":               types.StringValue(proto.Region),
+			"region":               types.StringPointerValue(proto.Region),
 			"region_match":         ConvertPolicyVersion_Rules_Source_K8S_Clusters_Oci_RegionMatchToObjectValueFromProto(proto.RegionMatch),
 		},
 	)
@@ -15479,21 +15479,21 @@ func ConvertDataValueToPolicyVersion_Rules_Source_K8S_Clusters_OciProto(ctx cont
 		return nil, diags
 	}
 	proto := &configv1.PolicyVersion_Rules_Source_K8S_Clusters_Oci{}
-	proto.ClusterName = pv.ClusterName.ValueString()
+	proto.ClusterName = pv.ClusterName.ValueStringPointer()
 	pvModelClusterNameMatch, dvDiagsClusterNameMatch := ConvertDataValueToPolicyVersion_Rules_Source_K8S_Clusters_Oci_ClusterNameMatchProto(ctx, pv.ClusterNameMatch)
 	diags.Append(dvDiagsClusterNameMatch...)
 	if diags.HasError() {
 		return nil, diags
 	}
 	proto.ClusterNameMatch = pvModelClusterNameMatch
-	proto.CompartmentId = pv.CompartmentId.ValueString()
+	proto.CompartmentId = pv.CompartmentId.ValueStringPointer()
 	pvModelCompartmentIdMatch, dvDiagsCompartmentIdMatch := ConvertDataValueToPolicyVersion_Rules_Source_K8S_Clusters_Oci_CompartmentIdMatchProto(ctx, pv.CompartmentIdMatch)
 	diags.Append(dvDiagsCompartmentIdMatch...)
 	if diags.HasError() {
 		return nil, diags
 	}
 	proto.CompartmentIdMatch = pvModelCompartmentIdMatch
-	proto.Region = pv.Region.ValueString()
+	proto.Region = pv.Region.ValueStringPointer()
 	pvModelRegionMatch, dvDiagsRegionMatch := ConvertDataValueToPolicyVersion_Rules_Source_K8S_Clusters_Oci_RegionMatchProto(ctx, pv.RegionMatch)
 	diags.Append(dvDiagsRegionMatch...)
 	if diags.HasError() {
