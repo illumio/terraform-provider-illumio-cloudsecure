@@ -8,7 +8,10 @@ import (
 	"testing"
 
 	"github.com/hashicorp/terraform-plugin-framework/attr"
+	resource_schema "github.com/hashicorp/terraform-plugin-framework/resource/schema"
+	"github.com/hashicorp/terraform-plugin-framework/resource/schema/stringdefault"
 	"github.com/hashicorp/terraform-plugin-framework/types"
+	"github.com/illumio/terraform-provider-illumio-cloudsecure/api/schema"
 	"github.com/illumio/terraform-provider-illumio-cloudsecure/util"
 	"github.com/stretchr/testify/suite"
 )
@@ -366,7 +369,7 @@ func (suite *GenerateTestSuite) TestTerraformAttributeTypeToProtoType() { //noli
 		tagger := newAPISpecTagger()
 
 		suite.Run(name, func() {
-			gotExplicitlyRepeated, gotImplicitlyRepeated, gotType, gotMessages, gotErr := terraformAttributeTypeToProtoType("Dummy", fieldName, tc.tfType, tagger)
+			gotExplicitlyRepeated, gotImplicitlyRepeated, gotType, gotMessages, gotErr := terraformAttributeTypeToProtoType("Dummy", fieldName, tc.tfType, nil, tagger)
 			suite.Equal(tc.expectedExplicitlyRepeated, gotExplicitlyRepeated, "Protocol Buffer explicitly repeated flag should match")
 			suite.Equal(tc.expectedImplicitlyRepeated, gotImplicitlyRepeated, "Protocol Buffer implicitly repeated flag should match")
 			suite.Equal(tc.expectedType, gotType, "Protocol Buffer type should match")
@@ -374,6 +377,54 @@ func (suite *GenerateTestSuite) TestTerraformAttributeTypeToProtoType() { //noli
 			suite.Equal(tc.expectedErr, gotErr, "Error should match")
 		})
 	}
+}
+
+func (suite *GenerateTestSuite) TestNestedOptionalScalars() {
+	nested := resource_schema.SingleNestedAttribute{
+		Optional: true,
+		Attributes: map[string]resource_schema.Attribute{
+			"optional_name": resource_schema.StringAttribute{Optional: true},
+			"required_name": resource_schema.StringAttribute{Required: true},
+			"with_default": resource_schema.StringAttribute{
+				Optional: true,
+				Computed: true,
+				Default:  stringdefault.StaticString("x"),
+			},
+			"labels": resource_schema.ListAttribute{Optional: true, ElementType: types.StringType},
+		},
+	}
+
+	optionalFields := func(attrSchema resource_schema.Attribute) map[string]bool {
+		explicitlyRepeated, implicitlyRepeated, protoType, msg, err := terraformAttributeTypeToProtoType("Dummy", "selector", nested.GetType(), attrSchema, newAPISpecTagger())
+		suite.Require().NoError(err)
+		suite.False(explicitlyRepeated)
+		suite.False(implicitlyRepeated)
+		suite.Equal("Selector", protoType)
+		suite.Require().NotNil(msg)
+
+		optional := map[string]bool{}
+		for _, f := range msg.Fields {
+			optional[f.Name] = f.Optional
+		}
+
+		return optional
+	}
+
+	// Only an optional scalar without a default is optional, so that unset round-trips as null.
+	suite.Equal(map[string]bool{
+		"labels":        false,
+		"optional_name": true,
+		"required_name": false,
+		"with_default":  false,
+	}, optionalFields(nested))
+
+	// Without a nested schema, e.g. a list of an object type, no field is optional.
+	suite.Equal(map[string]bool{
+		"labels":        false,
+		"optional_name": false,
+		"required_name": false,
+		"with_default":  false,
+	}, optionalFields(nil))
 }
 
 func (suite *GenerateTestSuite) TestGRPCAPISpecTemplateMessage() { //nolint:maintidx
@@ -967,6 +1018,72 @@ func (suite *GenerateTestSuite) TestGRPCAPISpecTemplate() {
 			if suite.NoError(err, "template execution failed") {
 				got := buf.String()
 				suite.Equal(util.TrimEmptyLinesAndSpaces(tc.output), util.TrimEmptyLinesAndSpaces(got), "generated text must match")
+			}
+		})
+	}
+}
+
+// testSchema is a simple Schema implementation for testing.
+type testSchema struct {
+	resources   schema.Resources
+	dataSources schema.DataSources
+}
+
+func (s testSchema) Version() string                 { return "v1" }
+func (s testSchema) Resources() schema.Resources     { return s.resources }
+func (s testSchema) DataSources() schema.DataSources { return s.dataSources }
+
+// TestGenerateGRPCAPISpec verifies that GenerateGRPCAPISpec correctly generates proto definitions
+// for various resource attribute types. This tests the full pipeline including message name prefixing.
+func (suite *GenerateTestSuite) TestGenerateGRPCAPISpec() {
+	tests := map[string]struct {
+		resources       schema.Resources
+		expectedOutputs []string
+	}{
+		"map_nested_attribute": {
+			resources: schema.Resources{
+				{
+					TypeName: "map_test",
+					Schema: resource_schema.Schema{
+						Version: 1,
+						Attributes: map[string]resource_schema.Attribute{
+							"id": resource_schema.StringAttribute{
+								Computed: true,
+							},
+							"rules": resource_schema.MapNestedAttribute{
+								Required: true,
+								NestedObject: resource_schema.NestedAttributeObject{
+									Attributes: map[string]resource_schema.Attribute{
+										"action": resource_schema.StringAttribute{
+											Required: true,
+										},
+									},
+								},
+							},
+						},
+					},
+				},
+			},
+			expectedOutputs: []string{
+				"map<string, MapTest_Rules>",
+				"message MapTest_Rules",
+			},
+		},
+	}
+
+	for name, tc := range tests {
+		suite.Run(name, func() {
+			src := testSchema{resources: tc.resources}
+
+			var buf bytes.Buffer
+
+			tagger := newAPISpecTagger()
+			err := GenerateGRPCAPISpec(&buf, src, tagger)
+			suite.Require().NoError(err, "GenerateGRPCAPISpec should not return an error")
+
+			output := buf.String()
+			for _, expected := range tc.expectedOutputs {
+				suite.Contains(output, expected)
 			}
 		})
 	}

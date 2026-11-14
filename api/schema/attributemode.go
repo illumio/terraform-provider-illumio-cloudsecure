@@ -152,6 +152,12 @@ type ListNestedResourceAttributeWithMode struct {
 	attributeWithMode
 }
 
+// MapNestedResourceAttributeWithMode is a MapNestedAttribute with an explicit attribute mode.
+type MapNestedResourceAttributeWithMode struct {
+	resource_schema.MapNestedAttribute
+	attributeWithMode
+}
+
 // ListResourceAttributeWithMode is a ListAttribute with an explicit attribute mode.
 type ListResourceAttributeWithMode struct {
 	resource_schema.ListAttribute
@@ -196,6 +202,7 @@ var (
 	_ AttributeWithMode = Int32ResourceAttributeWithMode{}
 	_ AttributeWithMode = Int64ResourceAttributeWithMode{}
 	_ AttributeWithMode = ListNestedResourceAttributeWithMode{}
+	_ AttributeWithMode = MapNestedResourceAttributeWithMode{}
 	_ AttributeWithMode = ListResourceAttributeWithMode{}
 	_ AttributeWithMode = MapResourceAttributeWithMode{}
 	_ AttributeWithMode = NumberResourceAttributeWithMode{}
