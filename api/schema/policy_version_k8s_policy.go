@@ -33,10 +33,6 @@ const (
 
 // clusterPolicyAPIAttribute is policy_api on a clusters entry: it selects clusters by the Kubernetes
 // network policy API they provide, together with the entry's other selectors.
-//
-// TODO: Omitting it currently fails apply with an inconsistent result: the generated converters
-// don't make optional scalars in nested objects proto3 optional, so null is sent as "" and read
-// back as "". Fix the generators rather than adding a default.
 var clusterPolicyAPIAttribute = resource_schema.StringAttribute{
 	MarkdownDescription: "Selects only clusters that provide this Kubernetes network policy API: " +
 		"`cilium` (Cilium's `CiliumClusterwideNetworkPolicy` API) or `aws_vpc` (AWS VPC CNI plugin's `ClusterNetworkPolicy` API). " +
