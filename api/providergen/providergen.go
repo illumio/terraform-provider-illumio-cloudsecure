@@ -9,6 +9,7 @@ import (
 	"text/template" // nosemgrep: go.lang.security.audit.xss.import-text-template.import-text-template
 
 	"github.com/hashicorp/terraform-plugin-framework/attr"
+	resource_schema "github.com/hashicorp/terraform-plugin-framework/resource/schema"
 	"github.com/hashicorp/terraform-plugin-framework/types"
 	"github.com/hashicorp/terraform-plugin-framework/types/basetypes"
 	"github.com/illumio/terraform-provider-illumio-cloudsecure/api/schema"
@@ -291,6 +292,22 @@ type {{.Name}} struct {
 		}
 	{{- else if eq .CollectionElementType nil}}
 		protoValue = dataValue.(types.{{.ModelTypeName}}).Value{{.ModelTypeName}}()
+	{{- else if eq .ModelTypeName "Map"}}
+		{
+			dataElements := dataValue.(types.{{.ModelTypeName}}).Elements()
+			protoValues := make({{.ProtoTypeName}}, len(dataElements))
+			for key, dataElement := range dataElements {
+				var dataValue attr.Value = dataElement
+				{{- if eq .CollectionElementType.NestedModel nil}}
+				var protoValue {{.CollectionElementType.ProtoTypeName}}
+				{{- else}}
+				var protoValue *{{.CollectionElementType.ProtoTypeName}}
+				{{- end}}
+				{{- template "convertDataValueToProto" .CollectionElementType}}
+				protoValues[key] = {{if ne .WrapProtoValueElementExpr nil}}{{.WrapProtoValueElementExpr}}{{else}}protoValue{{end}}
+			}
+			protoValue = protoValues
+		}
 	{{- else}}
 		{
 			dataElements := dataValue.(types.{{.ModelTypeName}}).Elements()
@@ -386,6 +403,27 @@ types.{{.ModelTypeName}}Type{ElemType: {{- template "modelDataType" .CollectionE
 		dataValue = Convert{{.NestedModel.Name}}ToObjectValueFromProto(protoValue)
 	{{- else if eq .CollectionElementType nil}}
 		dataValue = types.{{.ModelTypeName}}Value(protoValue)
+	{{- else if eq .ModelTypeName "Map"}}
+		{
+			dataElementType := {{template "modelDataType" .CollectionElementType}}
+			protoElements := protoValue
+			if protoElements == nil {
+				dataValue = types.MapNull(dataElementType)
+			} else {
+				dataValues := make(map[string]attr.Value, len(protoElements))
+				for key, protoElement := range protoElements {
+					{{- if ne .CollectionElementType.NestedModel nil}}
+					var protoValue *{{.CollectionElementType.ProtoTypeName}} = {{if ne .UnwrapProtoValueElementExpr nil}}{{.UnwrapProtoValueElementExpr}}{{else}}protoElement{{end}}
+					{{- else}}
+					var protoValue {{.CollectionElementType.ProtoTypeName}} = {{if ne .UnwrapProtoValueElementExpr nil}}{{.UnwrapProtoValueElementExpr}}{{else}}protoElement{{end}}
+					{{- end}}
+					var dataValue attr.Value
+					{{- template "convertRepeatedProtoValueToData" .CollectionElementType}}
+					dataValues[key] = dataValue
+				}
+				dataValue = types.MapValueMust(dataElementType, dataValues)
+			}
+		}
 	{{- else}}
 		{
 			dataElementType := {{template "modelDataType" .CollectionElementType}}
@@ -397,9 +435,9 @@ types.{{.ModelTypeName}}Type{ElemType: {{- template "modelDataType" .CollectionE
 				for _, protoElement := range protoElements {
 					{{- if ne .CollectionElementType.NestedModel nil}}
 					var protoValue *{{.CollectionElementType.ProtoTypeName}} = {{if ne .UnwrapProtoValueElementExpr nil}}{{.UnwrapProtoValueElementExpr}}{{else}}protoElement{{end}}
-					{{- else}}	
+					{{- else}}
 					var protoValue {{.CollectionElementType.ProtoTypeName}} = {{if ne .UnwrapProtoValueElementExpr nil}}{{.UnwrapProtoValueElementExpr}}{{else}}protoElement{{end}}
-					{{- end}}	
+					{{- end}}
 					var dataValue attr.Value
 					{{- template "convertRepeatedProtoValueToData" .CollectionElementType}}
 					dataValues = append(dataValues, dataValue)
@@ -678,7 +716,7 @@ func AddResourceToProviderTemplateData(resource *schema.Resource, data *provider
 	for _, attrName := range attrNames {
 		attrSchema := resource.Schema.Attributes[attrName]
 
-		t, err := TerraformAttributeTypeToProtoType("configv1."+resourceMessageName, attrName, attrSchema.GetType())
+		t, err := TerraformAttributeTypeToProtoType("configv1."+resourceMessageName, attrName, attrSchema.GetType(), attrSchema)
 		if err != nil {
 			return fmt.Errorf("failed to parse field %s in resource %s: %w", attrName, resourceMessageName, err)
 		}
@@ -767,7 +805,8 @@ func AddResourceToProviderTemplateData(resource *schema.Resource, data *provider
 }
 
 // TerraformAttributeTypeToProtoType converts a Terraform attribute type into the corresponding Protocol Buffer Golang type.
-func TerraformAttributeTypeToProtoType(nestedMessageNamePrefix, attrName string, attrType attr.Type) (t fieldType, err error) {
+// attrSchema is the attribute's schema, or nil if it has none (e.g. a field of an object type); it is used to tell which nested fields are optional.
+func TerraformAttributeTypeToProtoType(nestedMessageNamePrefix, attrName string, attrType attr.Type, attrSchema resource_schema.Attribute) (t fieldType, err error) {
 	switch v := attrType.(type) {
 	case basetypes.BoolType:
 		return fieldType{
@@ -790,7 +829,7 @@ func TerraformAttributeTypeToProtoType(nestedMessageNamePrefix, attrName string,
 			ProtoTypeName: "string",
 		}, nil
 	case types.ListType:
-		protoTypeName, wrapProtoValueElementExpr, unwrapProtoValueElementExpr, elementProtoType, err := TerraformRepeatedAttributeTypeToProtoType(nestedMessageNamePrefix, attrName, v.ElementType())
+		protoTypeName, wrapProtoValueElementExpr, unwrapProtoValueElementExpr, elementProtoType, err := TerraformRepeatedAttributeTypeToProtoType(nestedMessageNamePrefix, attrName, v.ElementType(), attrSchema)
 		if err != nil {
 			return fieldType{}, err
 		}
@@ -803,7 +842,7 @@ func TerraformAttributeTypeToProtoType(nestedMessageNamePrefix, attrName string,
 			UnwrapProtoValueElementExpr: unwrapProtoValueElementExpr,
 		}, nil
 	case types.SetType:
-		protoTypeName, wrapProtoValueElementExpr, unwrapProtoValueElementExpr, elementProtoType, err := TerraformRepeatedAttributeTypeToProtoType(nestedMessageNamePrefix, attrName, v.ElementType())
+		protoTypeName, wrapProtoValueElementExpr, unwrapProtoValueElementExpr, elementProtoType, err := TerraformRepeatedAttributeTypeToProtoType(nestedMessageNamePrefix, attrName, v.ElementType(), attrSchema)
 		if err != nil {
 			return fieldType{}, err
 		}
@@ -816,7 +855,7 @@ func TerraformAttributeTypeToProtoType(nestedMessageNamePrefix, attrName string,
 			UnwrapProtoValueElementExpr: unwrapProtoValueElementExpr,
 		}, nil
 	case types.ObjectType:
-		protoTypeName, objModel, err := TerraformObjectAttributeTypeToProtoType(nestedMessageNamePrefix, attrName, v)
+		protoTypeName, objModel, err := TerraformObjectAttributeTypeToProtoType(nestedMessageNamePrefix, attrName, v, attrSchema)
 		if err != nil {
 			return fieldType{}, err
 		}
@@ -827,18 +866,21 @@ func TerraformAttributeTypeToProtoType(nestedMessageNamePrefix, attrName string,
 			NestedModel:   objModel,
 		}, nil
 	case types.MapType:
-		valueType, err := TerraformAttributeTypeToProtoType(nestedMessageNamePrefix, attrName, v.ElemType)
-
-		// Only support primitive value types for now
-		// MapNestedAttribute (map of objects) and nested collections are not supported
+		valueType, err := TerraformAttributeTypeToProtoType(nestedMessageNamePrefix, attrName, v.ElemType, attrSchema)
 		if err != nil {
 			return fieldType{}, fmt.Errorf("unsupported map value type: %s", v.ElemType.String())
 		}
 
-		// Terraform maps always have string keys
+		// Terraform maps always have string keys.
+		// Proto map values of message types require a pointer.
+		protoTypeName := "map[string]" + valueType.ProtoTypeName
+		if valueType.NestedModel != nil {
+			protoTypeName = "map[string]*" + valueType.ProtoTypeName
+		}
+
 		return fieldType{
 			ModelTypeName:         "Map",
-			ProtoTypeName:         "map[string]" + valueType.ProtoTypeName,
+			ProtoTypeName:         protoTypeName,
 			CollectionElementType: &valueType,
 		}, nil
 	default:
@@ -847,17 +889,19 @@ func TerraformAttributeTypeToProtoType(nestedMessageNamePrefix, attrName string,
 }
 
 // TerraformObjectAttributeTypeToProtoType converts a Terraform object attribute type into the corresponding Protocol Buffer Golang type.
-func TerraformObjectAttributeTypeToProtoType(nestedMessageNamePrefix, attrName string, object types.ObjectType) (protoTypeName string, nestedModel *model, err error) {
+func TerraformObjectAttributeTypeToProtoType(nestedMessageNamePrefix, attrName string, object types.ObjectType, attrSchema resource_schema.Attribute) (protoTypeName string, nestedModel *model, err error) {
 	protoAttrName := schema.ProtoMessageName(attrName)
 	fields := make([]field, 0, len(object.AttrTypes))
 	wrappedMessageName := nestedMessageNamePrefix + "_" + protoAttrName
 
 	attrs := schema.SortObjectAttributes(object.AttrTypes)
+	nestedAttributes := schema.NestedAttributes(attrSchema)
 
 	for _, attrName := range attrs {
 		fieldType := object.AttrTypes[attrName]
+		fieldSchema := nestedAttributes[attrName]
 
-		t, err := TerraformAttributeTypeToProtoType(wrappedMessageName, attrName, fieldType)
+		t, err := TerraformAttributeTypeToProtoType(wrappedMessageName, attrName, fieldType, fieldSchema)
 		if err != nil {
 			return "", nil, fmt.Errorf("failed to transform field %s in object %s: %w", attrName, nestedMessageNamePrefix, err)
 		}
@@ -866,7 +910,7 @@ func TerraformObjectAttributeTypeToProtoType(nestedMessageNamePrefix, attrName s
 			Name:          schema.ProtoMessageName(attrName),
 			AttributeName: attrName,
 			Type:          t,
-			Optional:      false,
+			Optional:      schema.NestedScalarIsOptional(fieldSchema),
 		})
 	}
 
@@ -882,7 +926,7 @@ func TerraformObjectAttributeTypeToProtoType(nestedMessageNamePrefix, attrName s
 
 // TerraformRepeatedAttributeTypeToProtoType converts a Terraform repeated (List/Set) attribute type
 // into the corresponding Protocol Buffer Golang type.
-func TerraformRepeatedAttributeTypeToProtoType(nestedMessageNamePrefix, attrName string, elementType attr.Type) (protoTypeName string, wrapProtoValueElementExpr, unwrapProtoValueElementExpr *string, elemProtoType fieldType, err error) {
+func TerraformRepeatedAttributeTypeToProtoType(nestedMessageNamePrefix, attrName string, elementType attr.Type, attrSchema resource_schema.Attribute) (protoTypeName string, wrapProtoValueElementExpr, unwrapProtoValueElementExpr *string, elemProtoType fieldType, err error) {
 	camelCasedAttrName := schema.ProtoMessageName(attrName)
 	wrapperMessageName := nestedMessageNamePrefix + "_" + camelCasedAttrName
 
@@ -897,7 +941,7 @@ func TerraformRepeatedAttributeTypeToProtoType(nestedMessageNamePrefix, attrName
 		innerAttrName = attrName + "_elem"
 	}
 
-	elemType, err := TerraformAttributeTypeToProtoType(nestedMessageNamePrefix, innerAttrName, elementType)
+	elemType, err := TerraformAttributeTypeToProtoType(nestedMessageNamePrefix, innerAttrName, elementType, attrSchema)
 
 	switch {
 	case err != nil:
