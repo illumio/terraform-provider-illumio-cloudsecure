@@ -364,3 +364,99 @@ resource "illumio-cloudsecure_policy_version" "aws_multi_account_to_vpc" {
     }
   ]
 }
+
+# Example 8: Kubernetes default deny
+#
+# The "allow-dns" rule omits tier, so it is in the Admin tier.
+# The "default-deny" rule denies all other traffic from the cluster's pods to any
+# destination, inside or outside the cluster, in the Baseline tier.
+# The "default-deny-ingress" rule denies traffic from any source to the
+# cluster's pods, in the Baseline tier.
+#
+# policy_api on a clusters entry selects only clusters that provide that
+# network policy API. Features only one API supports require it, so rules fail
+# at plan rather than at provision: ingress from `any` or IP lists and service
+# accounts need "cilium"; priority and the Baseline tier need "aws_vpc", except
+# a Baseline default deny (a Deny to or from `any` on all ports and protocols,
+# written by leaving port_ranges unset). Both APIs support the egress default deny, so
+# "allow-dns" and "default-deny" omit policy_api. The ingress default deny
+# needs "cilium".
+
+variable "k8s_cluster_id" {
+  type        = string
+  description = "ID of the CloudSecure-onboarded Kubernetes cluster."
+}
+
+resource "illumio-cloudsecure_policy_version" "k8s_default_deny" {
+  policy_id   = illumio-cloudsecure_policy.example.id
+  description = "Allow DNS to kube-system, deny all other traffic"
+
+  rules = {
+    "allow-dns" = {
+      action = "Allow"
+
+      source = {
+        k8s = {
+          clusters           = [{ id = var.k8s_cluster_id }]
+          namespace_selector = {}
+          workload_selector  = {}
+        }
+      }
+
+      destination = {
+        k8s = {
+          clusters = [{ id = var.k8s_cluster_id }]
+          namespace_selector = {
+            match_labels = [{ key = "kubernetes.io/metadata.name", value = "kube-system" }]
+          }
+          workload_selector = {
+            match_labels = [{ key = "k8s-app", value = "kube-dns" }]
+          }
+        }
+      }
+
+      port_ranges = [
+        { protocol = "UDP", from_port = 53, to_port = 53 },
+        { protocol = "TCP", from_port = 53, to_port = 53 },
+      ]
+    }
+
+    "default-deny" = {
+      action = "Deny"
+
+      source = {
+        k8s = {
+          clusters           = [{ id = var.k8s_cluster_id }]
+          namespace_selector = {}
+          workload_selector  = {}
+          tier               = "Baseline"
+        }
+      }
+
+      destination = {
+        any = {}
+      }
+
+      # port_ranges is not set: all ports and protocols.
+    }
+
+    "default-deny-ingress" = {
+      action = "Deny"
+
+      source = {
+        any = {}
+      }
+
+      destination = {
+        k8s = {
+          clusters           = [{ id = var.k8s_cluster_id, policy_api = "cilium" }]
+          namespace_selector = {}
+          workload_selector  = {}
+          tier               = "Baseline"
+        }
+      }
+
+      # port_ranges is not set: all ports and protocols.
+    }
+  }
+}
