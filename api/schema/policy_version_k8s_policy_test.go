@@ -91,6 +91,14 @@ func toAttrValue(t attr.Type, v any) attr.Value {
 		i, _ := v.(int)
 
 		return types.Int64Value(int64(i))
+	case basetypes.BoolType:
+		if v == nil {
+			return types.BoolNull()
+		}
+
+		b, _ := v.(bool)
+
+		return types.BoolValue(b)
 	default:
 		panic(fmt.Sprintf("unsupported type %s", t))
 	}
